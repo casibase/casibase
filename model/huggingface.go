@@ -25,12 +25,13 @@ import (
 )
 
 type HuggingFaceModelProvider struct {
-	subType     string
-	secretKey   string
-	temperature float32
+	subType       string
+	secretKey     string
+	temperature   float32
+	contextLength int
 }
 
-func NewHuggingFaceModelProvider(subType string, secretKey string, temperature float32) (*HuggingFaceModelProvider, error) {
+func NewHuggingFaceModelProvider(subType string, secretKey string, temperature float32, contextLength int) (*HuggingFaceModelProvider, error) {
 	return &HuggingFaceModelProvider{subType: subType, secretKey: secretKey, temperature: temperature}, nil
 }
 
@@ -53,12 +54,14 @@ func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, 
 		o.HTTPClient = proxy.ProxyHttpClient
 	})
 
+	maxTokens := p.contextLength
+
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if 2048 > modelResult.TotalTokenCount {
+		if maxTokens > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

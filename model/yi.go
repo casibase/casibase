@@ -25,18 +25,20 @@ import (
 )
 
 type YiProvider struct {
-	subType     string
-	apiKey      string
-	temperature float32
-	topP        float32
+	subType       string
+	apiKey        string
+	temperature   float32
+	topP          float32
+	contextLength int
 }
 
-func NewYiProvider(subType string, apiKey string, temperature float32, topP float32) (*YiProvider, error) {
+func NewYiProvider(subType string, apiKey string, temperature float32, topP float32, contextLength int) (*YiProvider, error) {
 	return &YiProvider{
-		subType:     subType,
-		apiKey:      apiKey,
-		temperature: temperature,
-		topP:        topP,
+		subType:       subType,
+		apiKey:        apiKey,
+		temperature:   temperature,
+		topP:          topP,
+		contextLength: contextLength,
 	}, nil
 }
 
@@ -110,7 +112,7 @@ func (p *YiProvider) QueryText(question string, writer io.Writer, history []*Raw
 
 	// Handle dry run
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
-		if GetOpenAiMaxTokens(p.subType) > modelResult.TotalTokenCount {
+		if p.contextLength > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

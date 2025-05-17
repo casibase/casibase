@@ -20,12 +20,14 @@ import (
 )
 
 type DummyModelProvider struct {
-	subType string
+	subType       string
+	contextLength int
 }
 
-func NewDummyModelProvider(subType string) (*DummyModelProvider, error) {
+func NewDummyModelProvider(subType string, contextLength int) (*DummyModelProvider, error) {
 	return &DummyModelProvider{
-		subType: subType,
+		subType:       subType,
+		contextLength: contextLength,
 	}, nil
 }
 

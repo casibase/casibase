@@ -26,22 +26,24 @@ import (
 )
 
 type OpenRouterModelProvider struct {
-	subType     string
-	secretKey   string
-	siteName    string
-	siteUrl     string
-	temperature *float32
-	topP        *float32
+	subType       string
+	secretKey     string
+	siteName      string
+	siteUrl       string
+	temperature   *float32
+	topP          *float32
+	contextLength int
 }
 
-func NewOpenRouterModelProvider(subType string, secretKey string, temperature float32, topP float32) (*OpenRouterModelProvider, error) {
+func NewOpenRouterModelProvider(subType string, secretKey string, temperature float32, topP float32, contextLength int) (*OpenRouterModelProvider, error) {
 	p := &OpenRouterModelProvider{
-		subType:     subType,
-		secretKey:   secretKey,
-		siteName:    "Casibase",
-		siteUrl:     "https://casibase.org",
-		temperature: &temperature,
-		topP:        &topP,
+		subType:       subType,
+		secretKey:     secretKey,
+		siteName:      "Casibase",
+		siteUrl:       "https://casibase.org",
+		temperature:   &temperature,
+		topP:          &topP,
+		contextLength: contextLength,
 	}
 	return p, nil
 }
@@ -150,16 +152,16 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if GetOpenAiMaxTokens(model) > modelResult.TotalTokenCount {
+		if p.contextLength > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")
 		}
 	}
 
-	maxTokens := GetOpenAiMaxTokens(model) - tokenCount
+	maxTokens := p.contextLength - tokenCount
 	if maxTokens < 0 {
-		return nil, fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, GetOpenAiMaxTokens(model))
+		return nil, fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, p.contextLength)
 	}
 
 	temperature := p.temperature

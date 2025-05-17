@@ -19,7 +19,7 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-func NewAzureModelProvider(typ string, subType string, deploymentName string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string) (*LocalModelProvider, error) {
+func NewAzureModelProvider(typ string, subType string, deploymentName string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string, contextLength int) (*LocalModelProvider, error) {
 	p := &LocalModelProvider{
 		typ:              typ,
 		subType:          subType,
@@ -31,6 +31,7 @@ func NewAzureModelProvider(typ string, subType string, deploymentName string, se
 		presencePenalty:  presencePenalty,
 		providerUrl:      providerUrl,
 		apiVersion:       apiVersion,
+		contextLength:    contextLength,
 	}
 	return p, nil
 }

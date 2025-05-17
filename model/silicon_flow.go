@@ -20,18 +20,20 @@ import (
 )
 
 type SiliconFlowProvider struct {
-	subType     string
-	apiKey      string
-	temperature float32
-	topP        float32
+	subType       string
+	apiKey        string
+	temperature   float32
+	topP          float32
+	contextLength int
 }
 
-func NewSiliconFlowProvider(subType string, apiKey string, temperature float32, topP float32) (*SiliconFlowProvider, error) {
+func NewSiliconFlowProvider(subType string, apiKey string, temperature float32, topP float32, contextLength int) (*SiliconFlowProvider, error) {
 	return &SiliconFlowProvider{
-		subType:     subType,
-		apiKey:      apiKey,
-		temperature: temperature,
-		topP:        topP,
+		subType:       subType,
+		apiKey:        apiKey,
+		temperature:   temperature,
+		topP:          topP,
+		contextLength: contextLength,
 	}, nil
 }
 
@@ -107,7 +109,7 @@ func (p *SiliconFlowProvider) calculatePrice(modelResult *ModelResult) error {
 func (p *SiliconFlowProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	const BaseUrl = "https://api.siliconflow.cn/v1"
 	// Create a new LocalModelProvider to handle the request
-	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "USD")
+	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "USD", p.contextLength)
 	if err != nil {
 		return nil, err
 	}

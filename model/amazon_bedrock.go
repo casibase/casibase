@@ -27,16 +27,18 @@ import (
 )
 
 type AmazonBedrockModelProvider struct {
-	temperature float64
-	subType     string
-	secretKey   string
+	temperature   float64
+	subType       string
+	secretKey     string
+	contextLength int
 }
 
-func NewAmazonBedrockModelProvider(subType string, secretKey string, temperature float64) (*AmazonBedrockModelProvider, error) {
+func NewAmazonBedrockModelProvider(subType string, secretKey string, temperature float64, contextLength int) (*AmazonBedrockModelProvider, error) {
 	client := &AmazonBedrockModelProvider{
-		subType:     subType,
-		secretKey:   secretKey,
-		temperature: temperature,
+		subType:       subType,
+		secretKey:     secretKey,
+		temperature:   temperature,
+		contextLength: contextLength,
 	}
 	return client, nil
 }
@@ -114,10 +116,12 @@ func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer
 	}
 	client := bedrockruntime.NewFromConfig(cfg)
 
+	maxTokens := p.contextLength
+
 	requestBody, err := json.Marshal(map[string]interface{}{
 		"prompt":      prompt + question,
 		"temperature": p.temperature,
-		"max_tokens":  2048,
+		"max_tokens":  maxTokens,
 	})
 	if err != nil {
 		return nil, err
@@ -128,7 +132,7 @@ func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if 2048 > modelResult.TotalTokenCount {
+		if maxTokens > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

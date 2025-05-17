@@ -25,19 +25,13 @@ import (
 )
 
 type ChatGLMModelProvider struct {
-	subType      string
-	clientSecret string
+	subType       string
+	clientSecret  string
+	contextLength int
 }
 
-func GetChatGLMMaxTokens(model string) int {
-	if model == "GLM-4V" {
-		return 2000
-	}
-	return 128000
-}
-
-func NewChatGLMModelProvider(subType string, clientSecret string) (*ChatGLMModelProvider, error) {
-	return &ChatGLMModelProvider{subType: subType, clientSecret: clientSecret}, nil
+func NewChatGLMModelProvider(subType string, clientSecret string, contextLength int) (*ChatGLMModelProvider, error) {
+	return &ChatGLMModelProvider{subType: subType, clientSecret: clientSecret, contextLength: contextLength}, nil
 }
 
 func (c *ChatGLMModelProvider) GetPricing() string {
@@ -91,12 +85,14 @@ func (p *ChatGLMModelProvider) QueryText(question string, writer io.Writer, hist
 		return nil
 	}
 
+	maxTokens := p.contextLength
+
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if GetChatGLMMaxTokens(p.subType) > modelResult.TotalTokenCount {
+		if maxTokens > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

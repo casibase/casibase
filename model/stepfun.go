@@ -23,18 +23,20 @@ import (
 )
 
 type StepFunModelProvider struct {
-	subType     string
-	apiKey      string
-	temperature float32
-	topP        float32
+	subType       string
+	apiKey        string
+	temperature   float32
+	topP          float32
+	contextLength int
 }
 
-func NewStepFunModelProvider(subType string, apiKey string, temperature float32, topP float32) (*StepFunModelProvider, error) {
+func NewStepFunModelProvider(subType string, apiKey string, temperature float32, topP float32, contextLength int) (*StepFunModelProvider, error) {
 	return &StepFunModelProvider{
-		subType:     subType,
-		apiKey:      apiKey,
-		temperature: temperature,
-		topP:        topP,
+		subType:       subType,
+		apiKey:        apiKey,
+		temperature:   temperature,
+		topP:          topP,
+		contextLength: contextLength,
 	}, nil
 }
 

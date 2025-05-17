@@ -26,20 +26,22 @@ import (
 )
 
 type VolcengineModelProvider struct {
-	subType     string
-	endpointID  string
-	apiKey      string
-	temperature float32
-	topP        float32
+	subType       string
+	endpointID    string
+	apiKey        string
+	temperature   float32
+	topP          float32
+	contextLength int
 }
 
-func NewVolcengineModelProvider(subType string, endpointID string, apiKey string, temperature float32, topP float32) (*VolcengineModelProvider, error) {
+func NewVolcengineModelProvider(subType string, endpointID string, apiKey string, temperature float32, topP float32, contextLength int) (*VolcengineModelProvider, error) {
 	return &VolcengineModelProvider{
-		subType:     subType,
-		endpointID:  endpointID,
-		apiKey:      apiKey,
-		temperature: temperature,
-		topP:        topP,
+		subType:       subType,
+		endpointID:    endpointID,
+		apiKey:        apiKey,
+		temperature:   temperature,
+		topP:          topP,
+		contextLength: contextLength,
 	}, nil
 }
 
