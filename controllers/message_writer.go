@@ -119,6 +119,10 @@ func (c *Cleaner) GetCleanedData() string {
 	return cleanString(strings.Join(c.buffer, ""))
 }
 
+func (c *Cleaner) CleanString(data string) string {
+	return cleanString(data)
+}
+
 func cleanString(data string) string {
 	img := regexp.MustCompile(`<img[^>]+>`)
 	if img.MatchString(data) {

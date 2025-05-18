@@ -189,3 +189,16 @@ func SnakeString(s string) string {
 func GetChatFromProvider(owner, name string) string {
 	return GetIdFromOwnerAndName(owner, fmt.Sprintf("chat_%s", name))
 }
+
+func GetRandomString(length int) string {
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	result := make([]byte, length)
+	for i := range result {
+		result[i] = charset[rand.Intn(len(charset))]
+	}
+	return string(result)
+}
+
+func GenerateUUID() string {
+	return uuid.New().String()
+}

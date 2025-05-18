@@ -49,6 +49,7 @@ class ProviderListPage extends BaseListPage {
       currency: "USD",
       providerUrl: "https://platform.openai.com/account/api-keys",
       apiVersion: "",
+      apiKey: "",
       state: "Active",
     };
   }
@@ -165,7 +166,7 @@ class ProviderListPage extends BaseListPage {
         sorter: (a, b) => a.subType.localeCompare(b.subType),
       },
       {
-        title: i18next.t("provider:API key"),
+        title: i18next.t("provider:Client ID"),
         dataIndex: "clientId",
         key: "clientId",
         width: "240px",
@@ -200,6 +201,13 @@ class ProviderListPage extends BaseListPage {
             </a>
           );
         },
+      },
+      {
+        title: i18next.t("provider:API key"),
+        dataIndex: "apiKey",
+        key: "apiKey",
+        width: "240px",
+        sorter: (a, b) => a.apiKey.localeCompare(b.apiKey),
       },
       {
         title: i18next.t("general:Action"),

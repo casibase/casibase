@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/storage"
@@ -60,9 +61,67 @@ type Provider struct {
 	TestContent string `xorm:"varchar(100)" json:"testContent"`
 	State       string `xorm:"varchar(100)" json:"state"`
 	BrowserUrl  string `xorm:"varchar(200)" json:"browserUrl"`
+
+	ApiKey string `xorm:"varchar(100)" json:"apiKey"`
 }
 
-func GetMaskedProvider(provider *Provider, isMaskEnabled bool) *Provider {
+// GetProviderByApiKey retrieves a provider using the API key
+func GetProviderByApiKey(apiKey string) (*Provider, error) {
+	if apiKey == "" {
+		return nil, fmt.Errorf("empty API key")
+	}
+
+	provider := &Provider{}
+
+	// Try to find in main database first
+	existed, err := adapter.engine.Where("api_key = ?", apiKey).Get(provider)
+	if err != nil {
+		return nil, err
+	}
+
+	// If not found in main database, try provider adapter
+	if providerAdapter != nil && !existed {
+		existed, err = providerAdapter.engine.Where("api_key = ?", apiKey).Get(provider)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if existed {
+		return provider, nil
+	}
+
+	return nil, nil
+}
+
+// GetModelProviderByApiKey retrieves both the provider and its model provider by API key
+func GetModelProviderByApiKey(apiKey string) (model.ModelProvider, error) {
+	provider, err := GetProviderByApiKey(apiKey)
+	if err != nil {
+		return nil, err
+	}
+
+	if provider == nil {
+		return nil, fmt.Errorf("The provider is not found")
+	}
+
+	// Ensure it's a model provider
+	if provider.Category != "Model" {
+		return nil, fmt.Errorf("The model provider: %s is not found", provider.Name)
+	}
+
+	modelProvider, err := provider.GetModelProvider()
+	if err != nil {
+		return nil, err
+	}
+	if modelProvider == nil {
+		return nil, fmt.Errorf("The model provider: %s is not found", provider.Name)
+	}
+
+	return modelProvider, nil
+}
+
+func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.User) *Provider {
 	if !isMaskEnabled {
 		return provider
 	}
@@ -74,17 +133,20 @@ func GetMaskedProvider(provider *Provider, isMaskEnabled bool) *Provider {
 	if provider.ClientSecret != "" {
 		provider.ClientSecret = "***"
 	}
+	if provider.ApiKey != "" && (user == nil || user.Name != "admin") {
+		provider.ApiKey = "***"
+	}
 
 	return provider
 }
 
-func GetMaskedProviders(providers []*Provider, isMaskEnabled bool) []*Provider {
+func GetMaskedProviders(providers []*Provider, isMaskEnabled bool, user *casdoorsdk.User) []*Provider {
 	if !isMaskEnabled {
 		return providers
 	}
 
 	for _, provider := range providers {
-		provider = GetMaskedProvider(provider, isMaskEnabled)
+		provider = GetMaskedProvider(provider, isMaskEnabled, user)
 	}
 	return providers
 }
@@ -312,6 +374,10 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 		provider.ClientSecret = p.ClientSecret
 	}
 
+	if provider.ApiKey == "" && provider.Category == "Model" {
+		provider.ApiKey = generateApiKey()
+	}
+
 	if provider.Type == "Ollama" && provider.ProviderUrl != "" && !strings.HasPrefix(provider.ProviderUrl, "http") {
 		provider.ProviderUrl = "http://" + provider.ProviderUrl
 	}
@@ -335,7 +401,15 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 	return true, nil
 }
 
+func generateApiKey() string {
+	return fmt.Sprintf("sk-%s", util.GetRandomString(24))
+}
+
 func AddProvider(provider *Provider) (bool, error) {
+	if provider.ApiKey == "" {
+		provider.ApiKey = generateApiKey()
+	}
+
 	if providerAdapter != nil && provider.Category != "Storage" {
 		affected, err := providerAdapter.engine.Insert(provider)
 		if err != nil {
