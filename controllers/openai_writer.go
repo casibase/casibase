@@ -15,6 +15,7 @@
 package controllers
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 
@@ -28,6 +29,7 @@ type OpenAIWriter struct {
 	context.Response
 	Cleaner    Cleaner
 	Buffer     []byte
+	MessageBuf []byte
 	RequestID  string
 	Stream     bool
 	StreamSent bool
@@ -36,7 +38,30 @@ type OpenAIWriter struct {
 
 // Write processes incoming data chunks and formats them for OpenAI compatibility
 func (w *OpenAIWriter) Write(p []byte) (n int, err error) {
-	// Append received data to buffer
+	// Parse the incoming SSE message format
+	var content string
+
+	if bytes.HasPrefix(p, []byte("event: message\ndata: ")) {
+		prefix := []byte("event: message\ndata: ")
+		suffix := []byte("\n\n")
+		content = string(bytes.TrimSuffix(bytes.TrimPrefix(p, prefix), suffix))
+
+		// Add content to message buffer
+		w.MessageBuf = append(w.MessageBuf, []byte(content)...)
+	} else if bytes.HasPrefix(p, []byte("event: reason\ndata: ")) {
+		// We don't expose reason data in OpenAI format, but we'll store it
+		prefix := []byte("event: reason\ndata: ")
+		suffix := []byte("\n\n")
+		content = string(bytes.TrimSuffix(bytes.TrimPrefix(p, prefix), suffix))
+	} else {
+		// If we can't parse, just store the raw bytes and attempt to clean
+		content = w.Cleaner.CleanString(string(p))
+		if content != "" {
+			w.MessageBuf = append(w.MessageBuf, []byte(content)...)
+		}
+	}
+
+	// Always store the original bytes
 	w.Buffer = append(w.Buffer, p...)
 
 	// For non-streaming, just collect the data
@@ -44,9 +69,8 @@ func (w *OpenAIWriter) Write(p []byte) (n int, err error) {
 		return len(p), nil
 	}
 
-	// For streaming, send data in OpenAI format
-	cleanedData := w.Cleaner.CleanString(string(p))
-	if cleanedData == "" {
+	// Skip empty content
+	if content == "" {
 		return len(p), nil
 	}
 
@@ -60,8 +84,9 @@ func (w *OpenAIWriter) Write(p []byte) (n int, err error) {
 			{
 				Index: 0,
 				Delta: openai.ChatCompletionStreamChoiceDelta{
-					Content: cleanedData,
+					Content: content,
 				},
+				FinishReason: openai.FinishReasonNull,
 			},
 		},
 	}
@@ -85,12 +110,16 @@ func (w *OpenAIWriter) Write(p []byte) (n int, err error) {
 
 // MessageString returns the complete buffered message
 func (w *OpenAIWriter) MessageString() string {
-	return string(w.Buffer)
+	return string(w.MessageBuf)
 }
 
 // Close finalizes the stream by sending completion message and DONE marker
-func (w *OpenAIWriter) Close(inputTokens, outputTokens, totalTokens int) error {
-	if w.Stream && w.StreamSent {
+func (w *OpenAIWriter) Close(promptTokens, completionTokens, totalTokens int) error {
+	if !w.Stream {
+		return nil
+	}
+
+	if w.StreamSent {
 		// Send final message with finish_reason
 		chunk := openai.ChatCompletionStreamResponse{
 			ID:      "chatcmpl-" + w.RequestID,
@@ -99,8 +128,9 @@ func (w *OpenAIWriter) Close(inputTokens, outputTokens, totalTokens int) error {
 			Model:   w.Model,
 			Choices: []openai.ChatCompletionStreamChoice{
 				{
-					Index: 0,
-					Delta: openai.ChatCompletionStreamChoiceDelta{},
+					Index:        0,
+					Delta:        openai.ChatCompletionStreamChoiceDelta{}, // Empty delta
+					FinishReason: openai.FinishReasonStop,
 				},
 			},
 		}
@@ -111,6 +141,25 @@ func (w *OpenAIWriter) Close(inputTokens, outputTokens, totalTokens int) error {
 		}
 
 		_, err = w.ResponseWriter.Write([]byte(fmt.Sprintf("data: %s\n\n", jsonData)))
+		if err != nil {
+			return err
+		}
+
+		// Send usage information as a custom message
+		usage := map[string]interface{}{
+			"usage": openai.Usage{
+				PromptTokens:     promptTokens,
+				CompletionTokens: completionTokens,
+				TotalTokens:      totalTokens,
+			},
+		}
+
+		usageData, err := json.Marshal(usage)
+		if err != nil {
+			return err
+		}
+
+		_, err = w.ResponseWriter.Write([]byte(fmt.Sprintf("data: %s\n\n", usageData)))
 		if err != nil {
 			return err
 		}

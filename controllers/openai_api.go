@@ -116,9 +116,10 @@ func (c *ApiController) ChatCompletions() {
 
 		// Create response using go-openai structures
 		response := openai.ChatCompletionResponse{
-			ID:     "chatcmpl-" + requestId,
-			Object: "chat.completion",
-			Model:  request.Model,
+			ID:      "chatcmpl-" + requestId,
+			Object:  "chat.completion",
+			Created: util.GetCurrentUnixTime(),
+			Model:   request.Model,
 			Choices: []openai.ChatCompletionChoice{
 				{
 					Index: 0,
@@ -126,7 +127,7 @@ func (c *ApiController) ChatCompletions() {
 						Role:    "assistant",
 						Content: answer,
 					},
-					FinishReason: "stop",
+					FinishReason: openai.FinishReasonStop,
 				},
 			},
 			Usage: openai.Usage{
@@ -156,4 +157,5 @@ func (c *ApiController) ChatCompletions() {
 			return
 		}
 	}
+	c.EnableRender = false
 }
