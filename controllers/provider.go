@@ -29,13 +29,14 @@ import (
 // @Success 200 {array} object.Provider The Response object
 // @router /get-global-providers [get]
 func (c *ApiController) GetGlobalProviders() {
+	user := c.GetSessionUser()
 	providers, err := object.GetGlobalProviders()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(object.GetMaskedProviders(providers, true))
+	c.ResponseOk(object.GetMaskedProviders(providers, true, user))
 }
 
 // GetProviders
@@ -52,6 +53,7 @@ func (c *ApiController) GetProviders() {
 	value := c.Input().Get("value")
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
+	user := c.GetSessionUser()
 
 	if limit == "" || page == "" {
 		providers, err := object.GetProviders(owner)
@@ -60,7 +62,7 @@ func (c *ApiController) GetProviders() {
 			return
 		}
 
-		providers = object.GetMaskedProviders(providers, true)
+		providers = object.GetMaskedProviders(providers, true, user)
 		c.ResponseOk(providers)
 	} else {
 		limit := util.ParseInt(limit)
@@ -77,7 +79,7 @@ func (c *ApiController) GetProviders() {
 			return
 		}
 
-		providers = object.GetMaskedProviders(providers, true)
+		providers = object.GetMaskedProviders(providers, true, user)
 		c.ResponseOk(providers, paginator.Nums())
 	}
 }
@@ -91,6 +93,7 @@ func (c *ApiController) GetProviders() {
 // @router /get-provider [get]
 func (c *ApiController) GetProvider() {
 	id := c.Input().Get("id")
+	user := c.GetSessionUser()
 
 	provider, err := object.GetProvider(id)
 	if err != nil {
@@ -98,7 +101,7 @@ func (c *ApiController) GetProvider() {
 		return
 	}
 
-	c.ResponseOk(object.GetMaskedProvider(provider, true))
+	c.ResponseOk(object.GetMaskedProvider(provider, true, user))
 }
 
 // UpdateProvider

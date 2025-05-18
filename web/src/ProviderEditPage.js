@@ -36,6 +36,7 @@ class ProviderEditPage extends React.Component {
       provider: null,
       originalProvider: null,
       testButtonLoading: false,
+      isAdmin: props.account?.isAdmin || props.account?.owner === "admin",
     };
   }
 
@@ -749,6 +750,24 @@ class ProviderEditPage extends React.Component {
                 </Col>
               </Row>
             </React.Fragment>
+          ) : null
+        }
+        {
+          this.state.provider.category === "Model" ? (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("provider:Api Key")}:
+              </Col>
+              <Col span={22} >
+                <Input.Password
+                  value={this.state.provider.apiKey}
+                  disabled={!this.state.isAdmin}
+                  onChange={e => {
+                    this.updateProviderField("apiKey", e.target.value);
+                  }}
+                />
+              </Col>
+            </Row>
           ) : null
         }
         <Row style={{marginTop: "20px"}} >

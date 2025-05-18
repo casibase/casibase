@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/storage"
@@ -120,7 +121,7 @@ func GetModelProviderByApiKey(apiKey string) (model.ModelProvider, error) {
 	return modelProvider, nil
 }
 
-func GetMaskedProvider(provider *Provider, isMaskEnabled bool) *Provider {
+func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.User) *Provider {
 	if !isMaskEnabled {
 		return provider
 	}
@@ -132,17 +133,20 @@ func GetMaskedProvider(provider *Provider, isMaskEnabled bool) *Provider {
 	if provider.ClientSecret != "" {
 		provider.ClientSecret = "***"
 	}
+	if provider.ApiKey != "" && (user == nil || user.Name != "admin") {
+		provider.ApiKey = "***"
+	}
 
 	return provider
 }
 
-func GetMaskedProviders(providers []*Provider, isMaskEnabled bool) []*Provider {
+func GetMaskedProviders(providers []*Provider, isMaskEnabled bool, user *casdoorsdk.User) []*Provider {
 	if !isMaskEnabled {
 		return providers
 	}
 
 	for _, provider := range providers {
-		provider = GetMaskedProvider(provider, isMaskEnabled)
+		provider = GetMaskedProvider(provider, isMaskEnabled, user)
 	}
 	return providers
 }
@@ -370,6 +374,10 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 		provider.ClientSecret = p.ClientSecret
 	}
 
+	if provider.ApiKey == "" && provider.Category == "Model" {
+		provider.ApiKey = generateApiKey()
+	}
+
 	if provider.Type == "Ollama" && provider.ProviderUrl != "" && !strings.HasPrefix(provider.ProviderUrl, "http") {
 		provider.ProviderUrl = "http://" + provider.ProviderUrl
 	}
@@ -394,8 +402,7 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 }
 
 func generateApiKey() string {
-	// generate a random API key
-	return fmt.Sprintf("cb-key-%s", util.GetRandomString(32))
+	return fmt.Sprintf("sk-%s", util.GetRandomString(24))
 }
 
 func AddProvider(provider *Provider) (bool, error) {
