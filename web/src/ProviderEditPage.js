@@ -756,7 +756,7 @@ class ProviderEditPage extends React.Component {
           this.state.provider.category === "Model" ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("provider:Api Key")}:
+                {i18next.t("provider:API Key")}:
               </Col>
               <Col span={22} >
                 <Input.Password

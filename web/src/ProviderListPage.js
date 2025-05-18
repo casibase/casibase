@@ -203,7 +203,7 @@ class ProviderListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("provider:Api Key"),
+        title: i18next.t("provider:API Key"),
         dataIndex: "apiKey",
         key: "apiKey",
         width: "240px",
