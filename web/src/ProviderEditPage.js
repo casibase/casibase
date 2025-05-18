@@ -22,6 +22,7 @@ import * as setting from "./Setting";
 import * as ProviderEditTestTts from "./common/TestTtsWidget";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
+import McpToolsTable from "./McpToolsTable";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/javascript/javascript");
 
@@ -36,6 +37,7 @@ class ProviderEditPage extends React.Component {
       provider: null,
       originalProvider: null,
       testButtonLoading: false,
+      flashButtonLoading: false,
       isAdmin: props.account?.isAdmin || props.account?.owner === "admin",
     };
   }
@@ -94,6 +96,22 @@ class ProviderEditPage extends React.Component {
       value = Setting.myParseFloat(value);
     }
     return value;
+  }
+
+  parseMcpToolsField(key, value) {
+    if ([""].includes(key)) {
+      value = Setting.myParseInt(value);
+    }
+    return value;
+  }
+
+  updateMcpToolsField(key, value) {
+    value = this.parseMcpToolsField(key, value);
+    const provider = this.state.provider;
+    provider[key] = value;
+    this.setState({
+      provider: provider,
+    });
   }
 
   updateProviderField(key, value) {
@@ -384,7 +402,7 @@ class ProviderEditPage extends React.Component {
           (this.state.provider.type === "Baidu Cloud" || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
           (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
           ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
-          (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category))) ? (
+          (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent"].includes(this.state.provider.category))) ? (
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {this.getClientIdLabel(this.state.provider)}:
@@ -514,7 +532,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud")) ? null : (
+          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Agent" && this.state.provider.type === "MCP")) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {this.getClientSecretLabel(this.state.provider)}:
@@ -529,22 +547,47 @@ class ProviderEditPage extends React.Component {
         }
         {
           !["Agent"].includes(this.state.provider.category) ? null : (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("general:Text")}:
-              </Col>
-              <Col span={10} >
-                <div style={{height: "500px"}}>
-                  <CodeMirror
-                    value={this.state.provider.text}
-                    options={{mode: "application/json", theme: "material-darker"}}
-                    onBeforeChange={(editor, data, value) => {
-                      this.updateProviderField("text", value);
-                    }}
-                  />
-                </div>
-              </Col>
-            </Row>
+            <>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("general:MCP servers")}:
+                </Col>
+                <Col span={10} >
+                  <div style={{height: "500px"}}>
+                    <CodeMirror
+                      value={this.state.provider.text}
+                      options={{mode: "application/json", theme: "material-darker"}}
+                      onBeforeChange={(editor, data, value) => {
+                        this.updateProviderField("text", value);
+                      }}
+                    />
+                  </div>
+                  <br />
+                  <Button loading={this.state.flashButtonLoading} style={{marginBottom: "10px"}} type="primary" onClick={() => {
+                    this.flashMcpTools();
+                  }}
+                  >
+                    {i18next.t("general:Flash MCP tools")}
+                  </Button>
+                </Col>
+              </Row>
+              {this.state.provider.mcpTools && this.state.provider.mcpTools.length > 0 && (
+                <Row style={{marginTop: "20px"}} >
+                  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                    {i18next.t("general:MCP tools")}:
+                  </Col>
+                  <Col span={22}>
+                    <McpToolsTable
+                      title={i18next.t("application:MCP tools")}
+                      table={this.state.provider.mcpTools}
+                      onUpdateTable={(value) => {
+                        this.updateMcpToolsField("mcpTools", value);
+                      }}
+                    />
+                  </Col>
+                </Row>
+              )}
+            </>
           )
         }
         {
@@ -798,6 +841,37 @@ class ProviderEditPage extends React.Component {
     );
   }
 
+  flashMcpTools() {
+    this.setState({
+      flashButtonLoading: true,
+    });
+    const provider = Setting.deepCopy(this.state.provider);
+    provider.mcpTools = [];
+    ProviderBackend.refreshMcpTools(provider)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", i18next.t("general:Successfully flashed"));
+          this.setState({
+            provider: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to flash MCP tools")}: ${res.msg}`);
+          this.setState({
+            provider: provider,
+          });
+        }
+      })
+      .catch((error) => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to flash MCP tools")}: ${error}`);
+        this.setState({
+          provider: provider,
+        });
+      })
+      .finally(() => {
+        this.setState({flashButtonLoading: false});
+      });
+  }
+
   submitProviderEdit(exitAfterSave) {
     const provider = Setting.deepCopy(this.state.provider);
     ProviderBackend.updateProvider(this.state.provider.owner, this.state.providerName, provider)
@@ -819,7 +893,7 @@ class ProviderEditPage extends React.Component {
             this.updateProviderField("name", this.state.providerName);
           }
         } else {
-          Setting.showMessage("error", `f${i18next.t("general:Failed to save")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {

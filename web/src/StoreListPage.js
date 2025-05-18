@@ -122,6 +122,7 @@ class StoreListPage extends BaseListPage {
       embeddingProvider: "",
       textToSpeechProvider: "Browser Built-In",
       speechToTextProvider: "Browser Built-In",
+      agentProvider: "",
       memoryLimit: 5,
       frequency: 10000,
       limitMinutes: 10,
@@ -287,6 +288,16 @@ class StoreListPage extends BaseListPage {
         key: "speechToTextProvider",
         width: "200px",
         sorter: (a, b) => a.speechToTextProvider.localeCompare(b.speechToTextProvider),
+        render: (text) => {
+          return this.renderProviderInfo(text);
+        },
+      },
+      {
+        title: i18next.t("store:Agent provider"),
+        dataIndex: "agentProvider",
+        key: "agentProvider",
+        width: "200px",
+        sorter: (a, b) => a.agentProvider.localeCompare(b.agentProvider),
         render: (text) => {
           return this.renderProviderInfo(text);
         },

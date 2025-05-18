@@ -19,6 +19,7 @@ import (
 	"strings"
 
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/casibase/casibase/agent"
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/storage"
@@ -33,18 +34,19 @@ type Provider struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	DisplayName        string `xorm:"varchar(100)" json:"displayName"`
-	Category           string `xorm:"varchar(100)" json:"category"`
-	Type               string `xorm:"varchar(100)" json:"type"`
-	SubType            string `xorm:"varchar(100)" json:"subType"`
-	Flavor             string `xorm:"varchar(100)" json:"flavor"`
-	ClientId           string `xorm:"varchar(100)" json:"clientId"`
-	ClientSecret       string `xorm:"varchar(2000)" json:"clientSecret"`
-	Region             string `xorm:"varchar(100)" json:"region"`
-	ProviderUrl        string `xorm:"varchar(200)" json:"providerUrl"`
-	ApiVersion         string `xorm:"varchar(100)" json:"apiVersion"`
-	CompitableProvider string `xorm:"varchar(100)" json:"compitableProvider"`
-	Text               string `xorm:"mediumtext" json:"text"`
+	DisplayName        string            `xorm:"varchar(100)" json:"displayName"`
+	Category           string            `xorm:"varchar(100)" json:"category"`
+	Type               string            `xorm:"varchar(100)" json:"type"`
+	SubType            string            `xorm:"varchar(100)" json:"subType"`
+	Flavor             string            `xorm:"varchar(100)" json:"flavor"`
+	ClientId           string            `xorm:"varchar(100)" json:"clientId"`
+	ClientSecret       string            `xorm:"varchar(2000)" json:"clientSecret"`
+	Region             string            `xorm:"varchar(100)" json:"region"`
+	ProviderUrl        string            `xorm:"varchar(200)" json:"providerUrl"`
+	ApiVersion         string            `xorm:"varchar(100)" json:"apiVersion"`
+	CompitableProvider string            `xorm:"varchar(100)" json:"compitableProvider"`
+	McpTools           []*agent.McpTools `xorm:"text" json:"mcpTools"`
+	Text               string            `xorm:"mediumtext" json:"text"`
 
 	Temperature      float32 `xorm:"float" json:"temperature"`
 	TopP             float32 `xorm:"float" json:"topP"`
@@ -564,4 +566,14 @@ func GetPaginationProviders(owner string, offset, limit int, field, value, sortF
 	}
 
 	return providers, nil
+}
+
+func RefreshMcpTools(provider *Provider) error {
+	tools, err := agent.GetToolsList(provider.Text)
+	if err != nil {
+		return err
+	}
+
+	provider.McpTools = tools
+	return nil
 }
