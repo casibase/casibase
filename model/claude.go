@@ -48,13 +48,6 @@ https://docs.anthropic.com/claude/docs/models-overview#model-comparison
 `
 }
 
-func GetClaudeMaxTokens(model string) int {
-	if model == "Claude 2.0" || model == "Claude Instant" {
-		return 100000
-	}
-	return 200000
-}
-
 func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	priceTable := map[string][]float64{
@@ -96,7 +89,7 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if GetClaudeMaxTokens(p.subType) > modelResult.TotalTokenCount {
+		if getContextLength(p.subType) > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

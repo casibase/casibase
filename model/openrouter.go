@@ -145,21 +145,23 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 		return nil, err
 	}
 
+	contextLength := getContextLength(p.subType)
+
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(model, question, "")
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if GetOpenAiMaxTokens(model) > modelResult.TotalTokenCount {
+		if contextLength > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")
 		}
 	}
 
-	maxTokens := GetOpenAiMaxTokens(model) - tokenCount
+	maxTokens := contextLength - tokenCount
 	if maxTokens < 0 {
-		return nil, fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, GetOpenAiMaxTokens(model))
+		return nil, fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, contextLength)
 	}
 
 	temperature := p.temperature

@@ -114,10 +114,12 @@ func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer
 	}
 	client := bedrockruntime.NewFromConfig(cfg)
 
+	maxTokens := getContextLength(p.subType)
+
 	requestBody, err := json.Marshal(map[string]interface{}{
 		"prompt":      prompt + question,
 		"temperature": p.temperature,
-		"max_tokens":  2048,
+		"max_tokens":  maxTokens,
 	})
 	if err != nil {
 		return nil, err
@@ -128,7 +130,7 @@ func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if 2048 > modelResult.TotalTokenCount {
+		if maxTokens > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")
