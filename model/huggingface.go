@@ -58,7 +58,7 @@ func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, 
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if 2048 > modelResult.TotalTokenCount {
+		if getContextLength("Github", p.subType) > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

@@ -29,13 +29,6 @@ type ChatGLMModelProvider struct {
 	clientSecret string
 }
 
-func GetChatGLMMaxTokens(model string) int {
-	if model == "GLM-4V" {
-		return 2000
-	}
-	return 128000
-}
-
 func NewChatGLMModelProvider(subType string, clientSecret string) (*ChatGLMModelProvider, error) {
 	return &ChatGLMModelProvider{subType: subType, clientSecret: clientSecret}, nil
 }
@@ -96,7 +89,7 @@ func (p *ChatGLMModelProvider) QueryText(question string, writer io.Writer, hist
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if GetChatGLMMaxTokens(p.subType) > modelResult.TotalTokenCount {
+		if getContextLength("ChatGLM", p.subType) > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

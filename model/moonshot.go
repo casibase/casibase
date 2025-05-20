@@ -40,15 +40,6 @@ func NewMoonshotModelProvider(subType string, secretKey string, temperature floa
 	return client, nil
 }
 
-func GetMoonShotMaxTokens(model string) int {
-	if model == "moonshot-v1-128k" {
-		return 128000
-	} else if model == "moonshot-v1-32k" {
-		return 32000
-	}
-	return 8000
-}
-
 func (p *MoonshotModelProvider) GetPricing() string {
 	return `URL: 
 	https://api.moonshot.cn
@@ -98,7 +89,7 @@ func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, his
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if GetMoonShotMaxTokens(p.subType) > modelResult.TotalTokenCount {
+		if getContextLength("Moonshot", p.subType) > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

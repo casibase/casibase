@@ -110,7 +110,7 @@ func (p *YiProvider) QueryText(question string, writer io.Writer, history []*Raw
 
 	// Handle dry run
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
-		if GetOpenAiMaxTokens(p.subType) > modelResult.TotalTokenCount {
+		if getContextLength("Yi", p.subType) > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")
