@@ -79,3 +79,15 @@ export function deleteProvider(provider) {
     body: JSON.stringify(newProvider),
   }).then(res => res.json());
 }
+
+export function refreshMcpTools(provider) {
+  const newProvider = Setting.deepCopy(provider);
+  return fetch(`${Setting.ServerUrl}/api/refresh-mcp-tools`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: JSON.stringify(newProvider),
+  }).then(res => res.json());
+}

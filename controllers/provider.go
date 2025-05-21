@@ -179,3 +179,27 @@ func (c *ApiController) DeleteProvider() {
 
 	c.ResponseOk(success)
 }
+
+// RefreshMcpTools
+// @Title RefreshMcpTools
+// @Tag Provider API
+// @Description refresh Mcp tools
+// @Param body body object.Provider true "The details of the provider"
+// @Success 200 {object} controllers.Response The Response object
+// @router /refresh-mcp-tools [post]
+func (c *ApiController) RefreshMcpTools() {
+	var provider object.Provider
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &provider)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	err = object.RefreshMcpTools(&provider)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(&provider)
+}

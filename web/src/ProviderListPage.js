@@ -39,6 +39,7 @@ class ProviderListPage extends BaseListPage {
       subType: "text-davinci-003",
       clientId: "",
       clientSecret: "",
+      mcpTools: [],
       temperature: 1,
       topP: 1,
       topK: 4,

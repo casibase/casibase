@@ -68,6 +68,7 @@ func initAPI() {
 	beego.Router("/api/update-provider", &controllers.ApiController{}, "POST:UpdateProvider")
 	beego.Router("/api/add-provider", &controllers.ApiController{}, "POST:AddProvider")
 	beego.Router("/api/delete-provider", &controllers.ApiController{}, "POST:DeleteProvider")
+	beego.Router("/api/refresh-mcp-tools", &controllers.ApiController{}, "POST:RefreshMcpTools")
 
 	beego.Router("/api/get-global-vectors", &controllers.ApiController{}, "GET:GetGlobalVectors")
 	beego.Router("/api/get-vectors", &controllers.ApiController{}, "GET:GetVectors")
