@@ -882,6 +882,16 @@ export const OtherProviderInfo = {
       url: "https://www.alibabacloud.com/",
     },
   },
+  Agent: {
+    "MCP": {
+      logo: `${StaticBaseUrl}/img/social_mcp.png`,
+      url: "https://modelcontextprotocol.io/",
+    },
+    "A2A": {
+      logo: `${StaticBaseUrl}/img/social_a2a.png`,
+      url: "https://agent2agent.info/",
+    },
+  },
   "Public Cloud": {
     "Aliyun": {
       logo: `${StaticBaseUrl}/img/social_aliyun.png`,
