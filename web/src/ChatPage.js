@@ -183,7 +183,7 @@ class ChatPage extends BaseListPage {
                 messageLoading: false,
               });
             } else {
-              Setting.showMessage("error", `${i18next.t("general:Failed to update")}: ${res.msg}`);
+              Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
             }
           })
           .catch(error => {
@@ -494,9 +494,9 @@ class ChatPage extends BaseListPage {
     ChatBackend.updateChat("admin", name, chat)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully update"));
+          Setting.showMessage("success", i18next.t("general:Successfully saved"));
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to update")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {

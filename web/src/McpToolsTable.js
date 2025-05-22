@@ -26,7 +26,7 @@ class McpToolsTable extends React.Component {
   renderTable(table) {
     const columns = [
       {
-        title: i18next.t("organization:Is enabled"),
+        title: i18next.t("general:Is enabled"),
         dataIndex: "isEnabled",
         key: "isEnabled",
         width: "120px",
@@ -39,7 +39,7 @@ class McpToolsTable extends React.Component {
         },
       },
       {
-        title: i18next.t("general:Server name"),
+        title: i18next.t("provider:Server name"),
         dataIndex: "serverName",
         key: "serverName",
         width: "200px",
@@ -51,7 +51,7 @@ class McpToolsTable extends React.Component {
         },
       },
       {
-        title: i18next.t("general:Tools"),
+        title: i18next.t("provider:Tools"),
         dataIndex: "tools",
         key: "tools",
         width: "800px",

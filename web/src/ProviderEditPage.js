@@ -550,7 +550,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("general:MCP servers")}:
+                  {i18next.t("provider:MCP servers")}:
                 </Col>
                 <Col span={10} >
                   <div style={{height: "500px"}}>
@@ -567,18 +567,18 @@ class ProviderEditPage extends React.Component {
                     this.flashMcpTools();
                   }}
                   >
-                    {i18next.t("general:Flash MCP tools")}
+                    {i18next.t("provider:Flash MCP tools")}
                   </Button>
                 </Col>
               </Row>
               {this.state.provider.mcpTools && this.state.provider.mcpTools.length > 0 && (
                 <Row style={{marginTop: "20px"}} >
                   <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                    {i18next.t("general:MCP tools")}:
+                    {i18next.t("provider:MCP tools")}:
                   </Col>
                   <Col span={22}>
                     <McpToolsTable
-                      title={i18next.t("application:MCP tools")}
+                      title={i18next.t("provider:MCP tools")}
                       table={this.state.provider.mcpTools}
                       onUpdateTable={(value) => {
                         this.updateMcpToolsField("mcpTools", value);
@@ -769,7 +769,7 @@ class ProviderEditPage extends React.Component {
             <React.Fragment>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("Provider test")}:
+                  {i18next.t("provider:Provider test")}:
                 </Col>
                 <Col span={10} >
                   <Input.TextArea
@@ -850,19 +850,19 @@ class ProviderEditPage extends React.Component {
     ProviderBackend.refreshMcpTools(provider)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully flashed"));
+          Setting.showMessage("success", i18next.t("general:Successfully saved"));
           this.setState({
             provider: res.data,
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to flash MCP tools")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
           this.setState({
             provider: provider,
           });
         }
       })
       .catch((error) => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to flash MCP tools")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
         this.setState({
           provider: provider,
         });

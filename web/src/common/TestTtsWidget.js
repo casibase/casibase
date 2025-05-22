@@ -60,7 +60,7 @@ export async function sendTestTts(provider, originalProvider, text, owner, user,
       };
 
       audioPlayer.onerror = (e) => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to play audio")}: ${e.target.error?.message || "Unknown error"}`);
+        Setting.showMessage("error", `${i18next.t("provider:Failed to play audio")}: ${e.target.error?.message || "Unknown error"}`);
         URL.revokeObjectURL(audioUrl);
         if (setLoading) {setLoading(false);}
       };
