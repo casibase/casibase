@@ -94,6 +94,10 @@ class ChatListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(i) => {
+    return ChatBackend.deleteChat(this.state.data[i]);
+  };
+
   deleteChat(record) {
     ChatBackend.deleteChat(record)
       .then((res) => {
@@ -435,7 +439,7 @@ class ChatListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={chats} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={chats} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("chat:Chats")}&nbsp;&nbsp;&nbsp;&nbsp;

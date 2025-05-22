@@ -66,6 +66,10 @@ class TaskListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(i) => {
+    return TaskBackend.deleteTask(this.state.data[i]);
+  };
+
   deleteTask(record) {
     TaskBackend.deleteTask(record)
       .then((res) => {
@@ -272,7 +276,7 @@ class TaskListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={tasks} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={tasks} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Tasks")}&nbsp;&nbsp;&nbsp;&nbsp;

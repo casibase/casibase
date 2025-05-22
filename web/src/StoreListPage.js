@@ -161,6 +161,10 @@ class StoreListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(i) => {
+    return StoreBackend.deleteStore(this.state.data[i]);
+  };
+
   deleteStore(record) {
     StoreBackend.deleteStore(record)
       .then((res) => {
@@ -371,7 +375,7 @@ class StoreListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={stores} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={stores} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Stores")}&nbsp;&nbsp;&nbsp;&nbsp;

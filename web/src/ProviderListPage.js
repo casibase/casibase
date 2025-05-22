@@ -96,6 +96,10 @@ class ProviderListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(i) => {
+    return ProviderBackend.deleteProvider(this.state.data[i]);
+  };
+
   deleteProvider(record) {
     ProviderBackend.deleteProvider(record)
       .then((res) => {
@@ -244,7 +248,7 @@ class ProviderListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={providers} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={providers} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Providers")}&nbsp;&nbsp;&nbsp;&nbsp;

@@ -66,6 +66,10 @@ class NodeListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(i) => {
+    return NodeBackend.deleteNode(this.state.data[i]);
+  };
+
   deleteNode(i) {
     NodeBackend.deleteNode(this.state.data[i])
       .then((res) => {
@@ -273,7 +277,7 @@ class NodeListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={nodes} rowKey={(node) => `${node.owner}/${node.name}`} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={nodes} rowKey={(node) => `${node.owner}/${node.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Nodes")}&nbsp;&nbsp;&nbsp;&nbsp;

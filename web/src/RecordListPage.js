@@ -85,6 +85,10 @@ class RecordListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(i) => {
+    return RecordBackend.deleteRecord(this.state.data[i]);
+  };
+
   deleteRecord(i) {
     RecordBackend.deleteRecord(this.state.data[i])
       .then((res) => {

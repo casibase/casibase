@@ -59,6 +59,10 @@ class WorkflowListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(i) => {
+    return WorkflowBackend.deleteWorkflow(this.state.data[i]);
+  };
+
   deleteWorkflow(record) {
     WorkflowBackend.deleteWorkflow(record)
       .then((res) => {
@@ -213,7 +217,7 @@ class WorkflowListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={workflows} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={workflows} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Workflows")}&nbsp;&nbsp;&nbsp;&nbsp;

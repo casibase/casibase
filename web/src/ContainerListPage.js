@@ -61,6 +61,10 @@ class ContainerListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(i) => {
+    return ContainerBackend.deleteContainer(this.state.data[i]);
+  };
+
   deleteContainer(i) {
     ContainerBackend.deleteContainer(this.state.data[i])
       .then((res) => {
@@ -221,17 +225,13 @@ class ContainerListPage extends BaseListPage {
       pageSize: this.state.pagination.pageSize,
       showQuickJumper: true,
       showSizeChanger: true,
+      pageSizeOptions: ["10", "20", "50", "100", "1000", "10000", "100000"],
       showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
     };
 
     return (
       <div>
-        <Table columns={columns}
-          dataSource={containers}
-          rowKey="name"
-          size="middle"
-          bordered
-          pagination={paginationProps}
+        <Table columns={columns} dataSource={containers} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Containers")}&nbsp;&nbsp;&nbsp;&nbsp;

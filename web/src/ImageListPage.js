@@ -64,6 +64,10 @@ class ImageListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(index) => {
+    return ImageBackend.deleteImage(this.state.data[index]);
+  };
+
   deleteImage(i) {
     ImageBackend.deleteImage(this.state.data[i])
       .then((res) => {
@@ -272,7 +276,7 @@ class ImageListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={images} rowKey={(image) => `${image.owner}/${image.name}`} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={images} rowKey={(image) => `${image.owner}/${image.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Images")}&nbsp;&nbsp;&nbsp;&nbsp;

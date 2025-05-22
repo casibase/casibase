@@ -68,6 +68,10 @@ class MessageListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(i) => {
+    return MessageBackend.deleteMessage(this.state.data[i]);
+  };
+
   deleteMessage(record) {
     MessageBackend.deleteMessage(record)
       .then((res) => {
@@ -414,7 +418,7 @@ class MessageListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={messages} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={messages} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Messages")}&nbsp;&nbsp;&nbsp;&nbsp;

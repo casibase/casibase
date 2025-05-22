@@ -503,7 +503,7 @@ class VideoListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={videos} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={videos} rowKey="name" size="middle" rowSelection={this.getRowSelection()} bordered pagination={paginationProps}
           title={() => (
             <div style={{height: this.state.tableTitleHeight}}>
               {i18next.t("general:Videos")}

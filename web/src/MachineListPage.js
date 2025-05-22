@@ -66,6 +66,10 @@ class MachineListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(i) => {
+    return MachineBackend.deleteMachine(this.state.data[i]);
+  };
+
   deleteMachine(i) {
     MachineBackend.deleteMachine(this.state.data[i])
       .then((res) => {
@@ -241,12 +245,7 @@ class MachineListPage extends BaseListPage {
 
     return (
       <div>
-        <Table columns={columns}
-          dataSource={machines}
-          rowKey="name"
-          size="middle"
-          bordered
-          pagination={paginationProps}
+        <Table columns={columns} dataSource={machines} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Machines")}&nbsp;&nbsp;&nbsp;&nbsp;

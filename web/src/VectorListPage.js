@@ -64,6 +64,10 @@ class VectorListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(i) => {
+    return VectorBackend.deleteVector(this.state.data[i]);
+  };
+
   deleteVector(record) {
     VectorBackend.deleteVector(record)
       .then((res) => {
@@ -255,7 +259,7 @@ class VectorListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={vectors} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={vectors} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Vectors")}&nbsp;&nbsp;&nbsp;&nbsp;

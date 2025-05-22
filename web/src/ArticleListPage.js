@@ -62,6 +62,10 @@ class ArticleListPage extends BaseListPage {
       });
   }
 
+  deleteItem = async(i) => {
+    return ArticleBackend.deleteArticle(this.state.data[i]);
+  };
+
   deleteArticle(record) {
     ArticleBackend.deleteArticle(record)
       .then((res) => {
@@ -185,7 +189,7 @@ class ArticleListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={articles} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={articles} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Articles")}&nbsp;&nbsp;&nbsp;&nbsp;

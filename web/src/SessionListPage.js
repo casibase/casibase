@@ -42,6 +42,10 @@ class SessionListPage extends BaseListPage {
     }
   }
 
+  deleteItem = async(i) => {
+    return SessionBackend.deleteSession(this.state.data[i]);
+  };
+
   deleteSession(i) {
     SessionBackend.deleteSession(this.state.data[i])
       .then((res) => {
@@ -240,7 +244,7 @@ class SessionListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={sessions} rowKey={(record) => `${record.owner}/${record.name}`} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={sessions} rowKey={(record) => `${record.owner}/${record.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Sessions")}&nbsp;&nbsp;&nbsp;&nbsp;
