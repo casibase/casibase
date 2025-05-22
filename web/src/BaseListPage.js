@@ -147,7 +147,7 @@ class BaseListPage extends React.Component {
     const {selectedRows, selectedRowKeys} = this.state;
 
     confirm({
-      title: `${i18next.t("general:Sure to delete")}: ${selectedRowKeys.length} items ?`,
+      title: `${i18next.t("general:Sure to delete")}: ${selectedRowKeys.length} ${i18next.t("general:items")} ?`,
       icon: <ExclamationCircleOutlined />,
       okText: i18next.t("general:OK"),
       okType: "danger",
