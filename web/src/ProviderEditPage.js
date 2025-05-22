@@ -37,7 +37,7 @@ class ProviderEditPage extends React.Component {
       provider: null,
       originalProvider: null,
       testButtonLoading: false,
-      flashButtonLoading: false,
+      refreshButtonLoading: false,
       isAdmin: props.account?.isAdmin || props.account?.owner === "admin",
     };
   }
@@ -563,30 +563,28 @@ class ProviderEditPage extends React.Component {
                     />
                   </div>
                   <br />
-                  <Button loading={this.state.flashButtonLoading} style={{marginBottom: "10px"}} type="primary" onClick={() => {
-                    this.flashMcpTools();
+                  <Button loading={this.state.refreshButtonLoading} style={{marginBottom: "10px"}} type="primary" onClick={() => {
+                    this.refreshMcpTools();
                   }}
                   >
-                    {i18next.t("provider:Flash MCP tools")}
+                    {i18next.t("provider:Refresh MCP tools")}
                   </Button>
                 </Col>
               </Row>
-              {this.state.provider.mcpTools && this.state.provider.mcpTools.length > 0 && (
-                <Row style={{marginTop: "20px"}} >
-                  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                    {i18next.t("provider:MCP tools")}:
-                  </Col>
-                  <Col span={22}>
-                    <McpToolsTable
-                      title={i18next.t("provider:MCP tools")}
-                      table={this.state.provider.mcpTools}
-                      onUpdateTable={(value) => {
-                        this.updateMcpToolsField("mcpTools", value);
-                      }}
-                    />
-                  </Col>
-                </Row>
-              )}
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:MCP tools")}:
+                </Col>
+                <Col span={22}>
+                  <McpToolsTable
+                    title={i18next.t("provider:MCP tools")}
+                    table={this.state.provider.mcpTools}
+                    onUpdateTable={(value) => {
+                      this.updateMcpToolsField("mcpTools", value);
+                    }}
+                  />
+                </Col>
+              </Row>
             </>
           )
         }
@@ -841,9 +839,9 @@ class ProviderEditPage extends React.Component {
     );
   }
 
-  flashMcpTools() {
+  refreshMcpTools() {
     this.setState({
-      flashButtonLoading: true,
+      refreshButtonLoading: true,
     });
     const provider = Setting.deepCopy(this.state.provider);
     provider.mcpTools = [];
@@ -853,6 +851,8 @@ class ProviderEditPage extends React.Component {
           Setting.showMessage("success", i18next.t("general:Successfully saved"));
           this.setState({
             provider: res.data,
+          }, () => {
+            this.submitProviderEdit(false);
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
@@ -868,7 +868,7 @@ class ProviderEditPage extends React.Component {
         });
       })
       .finally(() => {
-        this.setState({flashButtonLoading: false});
+        this.setState({refreshButtonLoading: false});
       });
   }
 
