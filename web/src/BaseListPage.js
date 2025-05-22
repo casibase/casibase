@@ -146,7 +146,12 @@ class BaseListPage extends React.Component {
   handleBulkDelete = () => {
     const {selectedRows, selectedRowKeys} = this.state;
 
-    confirm({title: i18next.t("general:Are you sure you want to delete these items?"), icon: <ExclamationCircleOutlined />, okText: i18next.t("general:Yes"), okType: "danger", cancelText: i18next.t("general:No"),
+    confirm({
+      title: `${i18next.t("general:Sure to delete")}: ${selectedRowKeys.length} items ?`,
+      icon: <ExclamationCircleOutlined />,
+      okText: i18next.t("general:OK"),
+      okType: "danger",
+      cancelText: i18next.t("general:Cancel"),
       onOk: () => {
         this.performBulkDelete(selectedRows, selectedRowKeys);
       },

@@ -14,7 +14,7 @@
 
 import * as SessionBackend from "./backend/SessionBackend";
 import * as Setting from "./Setting";
-import {Button, Radio, Table} from "antd";
+import {Button, Popconfirm, Radio, Table} from "antd";
 import i18next from "i18next";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import BaseListPage from "./BaseListPage";
@@ -258,7 +258,13 @@ class SessionListPage extends BaseListPage {
                 <Radio.Button value={Connected}>{i18next.t("session:Online")}</Radio.Button>
                 <Radio.Button value={Disconnected}>{i18next.t("session:History")}</Radio.Button>
               </Radio.Group>
-              {this.state.selectedRowKeys.length > 0 && (<Button type="primary" danger size="small" icon={<DeleteOutlined />} onClick={this.handleBulkDelete} style={{marginLeft: 8}}>{i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})</Button>)}
+              {this.state.selectedRowKeys.length > 0 && (
+                <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} items ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
+                    {i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})
+                  </Button>
+                </Popconfirm>
+              )}
             </div>
           )}
           loading={this.state.loading}
