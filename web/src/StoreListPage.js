@@ -296,7 +296,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Agent provider"),
         dataIndex: "agentProvider",
         key: "agentProvider",
-        width: "200px",
+        width: "250px",
         sorter: (a, b) => a.agentProvider.localeCompare(b.agentProvider),
         render: (text) => {
           return this.renderProviderInfo(text);
