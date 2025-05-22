@@ -23,6 +23,7 @@ import i18next from "i18next";
 import {ThemeDefault} from "./Conf";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
+import {DeleteOutlined} from "@ant-design/icons";
 
 const defaultPrompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems.";
 
@@ -381,7 +382,10 @@ class StoreListPage extends BaseListPage {
               {i18next.t("general:Stores")}&nbsp;&nbsp;&nbsp;&nbsp;
               {
                 !Setting.isLocalAdminUser(this.props.account) ? null : (
-                  <Button type="primary" size="small" onClick={this.addStore.bind(this)}>{i18next.t("general:Add")}</Button>
+                  <>
+                    <Button type="primary" size="small" onClick={this.addStore.bind(this)}>{i18next.t("general:Add")}</Button>
+                    {this.state.selectedRowKeys.length > 0 && (<Button type="primary" danger size="small" icon={<DeleteOutlined />} onClick={this.handleBulkDelete} style={{marginLeft: 8}}>{i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})</Button>)}
+                  </>
                 )
               }
             </div>

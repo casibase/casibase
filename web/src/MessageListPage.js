@@ -22,6 +22,7 @@ import * as MessageBackend from "./backend/MessageBackend";
 import moment from "moment";
 import i18next from "i18next";
 import * as Conf from "./Conf";
+import {DeleteOutlined} from "@ant-design/icons";
 
 class MessageListPage extends BaseListPage {
   constructor(props) {
@@ -423,6 +424,7 @@ class MessageListPage extends BaseListPage {
             <div>
               {i18next.t("general:Messages")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addMessage.bind(this)}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (<Button type="primary" danger size="small" icon={<DeleteOutlined />} onClick={this.handleBulkDelete} style={{marginLeft: 8}}>{i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})</Button>)}
               &nbsp;&nbsp;&nbsp;&nbsp;
               {
                 this.renderDownloadXlsxButton()

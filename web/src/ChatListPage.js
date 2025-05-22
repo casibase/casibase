@@ -24,6 +24,7 @@ import * as Conf from "./Conf";
 import * as MessageBackend from "./backend/MessageBackend";
 import ChatBox from "./ChatBox";
 import {renderText} from "./ChatMessageRender";
+import {DeleteOutlined} from "@ant-design/icons";
 
 class ChatListPage extends BaseListPage {
   constructor(props) {
@@ -444,6 +445,7 @@ class ChatListPage extends BaseListPage {
             <div>
               {i18next.t("chat:Chats")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addChat.bind(this)}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (<Button type="primary" danger size="small" icon={<DeleteOutlined />} onClick={this.handleBulkDelete} style={{marginLeft: 8}}>{i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})</Button>)}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               &nbsp;&nbsp;&nbsp;&nbsp;
               {i18next.t("general:Users")}:

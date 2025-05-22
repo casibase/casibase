@@ -15,7 +15,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {Button, List, Popconfirm, Table, Tooltip, Upload} from "antd";
-import {UploadOutlined} from "@ant-design/icons";
+import {DeleteOutlined, UploadOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -513,6 +513,7 @@ class VideoListPage extends BaseListPage {
               {
                 this.renderUpload()
               }
+              {this.state.selectedRowKeys.length > 0 && (<Button type="primary" danger size="small" icon={<DeleteOutlined />} onClick={this.handleBulkDelete} style={{marginLeft: 8}}>{i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})</Button>)}
             </div>
           )}
           loading={this.state.loading}

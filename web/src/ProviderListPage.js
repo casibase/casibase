@@ -21,6 +21,7 @@ import * as Setting from "./Setting";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import * as Provider from "./Provider";
+import {DeleteOutlined} from "@ant-design/icons";
 
 class ProviderListPage extends BaseListPage {
   constructor(props) {
@@ -253,6 +254,7 @@ class ProviderListPage extends BaseListPage {
             <div>
               {i18next.t("general:Providers")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={() => this.addProvider()}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (<Button type="primary" danger size="small" icon={<DeleteOutlined />} onClick={this.handleBulkDelete} style={{marginLeft: 8}}>{i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})</Button>)}
               &nbsp;&nbsp;&nbsp;&nbsp;
               <Button size="small" onClick={() => this.addProvider(true)}>{i18next.t("provider:Add Storage Provider")}</Button>
             </div>

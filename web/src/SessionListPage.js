@@ -14,13 +14,14 @@
 
 import * as SessionBackend from "./backend/SessionBackend";
 import * as Setting from "./Setting";
-import {Radio, Table} from "antd";
+import {Button, Radio, Table} from "antd";
 import i18next from "i18next";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import BaseListPage from "./BaseListPage";
 import moment from "moment";
 import React from "react";
 import {Link} from "react-router-dom";
+import {DeleteOutlined} from "@ant-design/icons";
 
 export const Connected = "connected";
 const Disconnected = "disconnected";
@@ -257,6 +258,7 @@ class SessionListPage extends BaseListPage {
                 <Radio.Button value={Connected}>{i18next.t("session:Online")}</Radio.Button>
                 <Radio.Button value={Disconnected}>{i18next.t("session:History")}</Radio.Button>
               </Radio.Group>
+              {this.state.selectedRowKeys.length > 0 && (<Button type="primary" danger size="small" icon={<DeleteOutlined />} onClick={this.handleBulkDelete} style={{marginLeft: 8}}>{i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})</Button>)}
             </div>
           )}
           loading={this.state.loading}

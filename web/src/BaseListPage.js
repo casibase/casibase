@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Button, Input, Modal, Result, Space} from "antd";
-import {DeleteOutlined, ExclamationCircleOutlined, SearchOutlined} from "@ant-design/icons";
+import {ExclamationCircleOutlined, SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import i18next from "i18next";
 import * as Setting from "./Setting";
@@ -197,26 +197,6 @@ class BaseListPage extends React.Component {
     throw new Error("deleteItem method must be implemented by subclass");
   };
 
-  renderBulkActions = () => {
-    const {selectedRowKeys} = this.state;
-    const hasSelected = selectedRowKeys.length > 0;
-
-    return (
-      <div style={{marginBottom: 16}}>
-        <Space>
-          <Button type="primary" danger icon={<DeleteOutlined />} disabled={!hasSelected} onClick={this.handleBulkDelete}>
-            {i18next.t("general:Delete")} ({selectedRowKeys.length})
-          </Button>
-          {hasSelected && (
-            <Button onClick={this.clearSelection}>
-              {i18next.t("general:Clear")}
-            </Button>
-          )}
-        </Space>
-      </div>
-    );
-  };
-
   handleSearch = (selectedKeys, confirm, dataIndex) => {
     this.fetch({searchText: selectedKeys[0], searchedColumn: dataIndex, pagination: this.state.pagination});
   };
@@ -252,7 +232,6 @@ class BaseListPage extends React.Component {
 
     return (
       <div>
-        {this.renderBulkActions()}
         {this.renderTable(this.state.data)}
       </div>
     );

@@ -22,6 +22,7 @@ import * as NodeBackend from "./backend/NodeBackend";
 import i18next from "i18next";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import ConnectModal from "./modal/ConnectModal";
+import {DeleteOutlined} from "@ant-design/icons";
 
 class NodeListPage extends BaseListPage {
   constructor(props) {
@@ -282,6 +283,7 @@ class NodeListPage extends BaseListPage {
             <div>
               {i18next.t("general:Nodes")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addNode.bind(this)}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (<Button type="primary" danger size="small" icon={<DeleteOutlined />} onClick={this.handleBulkDelete} style={{marginLeft: 8}}>{i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})</Button>)}
             </div>
           )}
           loading={this.state.loading}

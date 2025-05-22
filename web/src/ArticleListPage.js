@@ -20,6 +20,7 @@ import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as ArticleBackend from "./backend/ArticleBackend";
 import i18next from "i18next";
+import {DeleteOutlined} from "@ant-design/icons";
 
 class ArticleListPage extends BaseListPage {
   constructor(props) {
@@ -194,6 +195,7 @@ class ArticleListPage extends BaseListPage {
             <div>
               {i18next.t("general:Articles")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addArticle.bind(this)}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (<Button type="primary" danger size="small" icon={<DeleteOutlined />} onClick={this.handleBulkDelete} style={{marginLeft: 8}}>{i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})</Button>)}
             </div>
           )}
           loading={this.state.loading}

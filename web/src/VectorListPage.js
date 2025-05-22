@@ -20,6 +20,7 @@ import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
 import i18next from "i18next";
+import {DeleteOutlined} from "@ant-design/icons";
 
 const {TextArea} = Input;
 
@@ -264,6 +265,7 @@ class VectorListPage extends BaseListPage {
             <div>
               {i18next.t("general:Vectors")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addVector.bind(this)}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (<Button type="primary" danger size="small" icon={<DeleteOutlined />} onClick={this.handleBulkDelete} style={{marginLeft: 8}}>{i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})</Button>)}
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete all")} ${i18next.t("general:Vectors")}`}
                 onConfirm={() => this.deleteAllVectors()}

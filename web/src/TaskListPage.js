@@ -21,6 +21,7 @@ import * as Setting from "./Setting";
 import * as TaskBackend from "./backend/TaskBackend";
 import i18next from "i18next";
 import * as ConfTask from "./ConfTask";
+import {DeleteOutlined} from "@ant-design/icons";
 
 class TaskListPage extends BaseListPage {
   constructor(props) {
@@ -281,6 +282,7 @@ class TaskListPage extends BaseListPage {
             <div>
               {i18next.t("general:Tasks")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addTask.bind(this)}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (<Button type="primary" danger size="small" icon={<DeleteOutlined />} onClick={this.handleBulkDelete} style={{marginLeft: 8}}>{i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})</Button>)}
             </div>
           )}
           loading={this.state.loading}
