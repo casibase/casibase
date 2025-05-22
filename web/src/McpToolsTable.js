@@ -5,6 +5,8 @@ import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css";
 import "codemirror/mode/javascript/javascript";
+import "codemirror/addon/scroll/simplescrollbars.js";
+import "codemirror/addon/scroll/simplescrollbars.css";
 
 class McpToolsTable extends React.Component {
   constructor(props) {
@@ -26,7 +28,7 @@ class McpToolsTable extends React.Component {
   renderTable(table) {
     const columns = [
       {
-        title: i18next.t("organization:Is enabled"),
+        title: i18next.t("general:Is enabled"),
         dataIndex: "isEnabled",
         key: "isEnabled",
         width: "120px",
@@ -39,7 +41,7 @@ class McpToolsTable extends React.Component {
         },
       },
       {
-        title: i18next.t("general:Server name"),
+        title: i18next.t("provider:Server name"),
         dataIndex: "serverName",
         key: "serverName",
         width: "200px",
@@ -51,14 +53,14 @@ class McpToolsTable extends React.Component {
         },
       },
       {
-        title: i18next.t("general:Tools"),
+        title: i18next.t("provider:Tools"),
         dataIndex: "tools",
         key: "tools",
         width: "800px",
         render: (text, record, index) => {
           const formattedTools = JSON.stringify(JSON.parse(record.tools), null, 2);
           return (
-            <div style={{height: "300px"}}>
+            <div style={{height: "490px", overflow: "auto"}}>
               <CodeMirror
                 value={formattedTools}
                 options={{
@@ -66,6 +68,9 @@ class McpToolsTable extends React.Component {
                   theme: "material-darker",
                   readOnly: true,
                   lineNumbers: true,
+                  scrollbarStyle: "simple",
+                  lineWrapping: true,
+                  autoRefresh: true,
                 }}
                 onBeforeChange={(editor, data, value) => {
                 }}

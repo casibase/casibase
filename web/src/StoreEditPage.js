@@ -40,6 +40,7 @@ class StoreEditPage extends React.Component {
       embeddingProviders: [],
       textToSpeechProviders: [],
       speechToTextProviders: [],
+      agentProviders: [],
       enableTtsStreaming: false,
       store: null,
       themeColor: ThemeDefault.colorPrimary,

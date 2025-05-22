@@ -107,7 +107,7 @@ class ContainerEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:DisplayName"), i18next.t("general:DisplayName - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.container.displayName} onChange={e => {
@@ -127,7 +127,7 @@ class ContainerEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Image"), i18next.t("general:Image - Tooltip"))} :
+            {Setting.getLabel(i18next.t("machine:Image"), i18next.t("machine:Image - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={Setting.getFormattedDate(this.state.container.image)} onChange={e => {
@@ -137,7 +137,7 @@ class ContainerEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:ImageId"), i18next.t("general:ImageId - Tooltip"))} :
+            {Setting.getLabel(i18next.t("container:Image ID"), i18next.t("container:Image ID - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.container.imageId} onChange={e => {
@@ -147,7 +147,7 @@ class ContainerEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Command"), i18next.t("general:Command - Tooltip"))} :
+            {Setting.getLabel(i18next.t("container:Command"), i18next.t("container:Command - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.container.command} onChange={e => {
@@ -157,7 +157,7 @@ class ContainerEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:SizeRw"), i18next.t("general:SizeRw - Tooltip"))} :
+            {Setting.getLabel(i18next.t("container:Size RW"), i18next.t("container:Size RW - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.container.sizeRw} onChange={e => {
@@ -167,7 +167,7 @@ class ContainerEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:SizeRootFs"), i18next.t("general:SizeRootFs - Tooltip"))} :
+            {Setting.getLabel(i18next.t("container:Size root FS"), i18next.t("container:Size root FS - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.container.sizeRootFs} onChange={e => {
