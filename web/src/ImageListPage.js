@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Table} from "antd";
+import {Button, Popconfirm, Table} from "antd";
 import BaseListPage from "./BaseListPage";
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -22,6 +22,7 @@ import * as ImageBackend from "./backend/ImageBackend";
 import i18next from "i18next";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import * as MachineBackend from "./backend/MachineBackend";
+import {DeleteOutlined} from "@ant-design/icons";
 
 class ImageListPage extends BaseListPage {
   constructor(props) {
@@ -63,6 +64,10 @@ class ImageListPage extends BaseListPage {
         Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
       });
   }
+
+  deleteItem = async(index) => {
+    return ImageBackend.deleteImage(this.state.data[index]);
+  };
 
   deleteImage(i) {
     ImageBackend.deleteImage(this.state.data[i])
@@ -272,11 +277,18 @@ class ImageListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={images} rowKey={(image) => `${image.owner}/${image.name}`} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={images} rowKey={(image) => `${image.owner}/${image.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Images")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addImage.bind(this)}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (
+                <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
+                    {i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})
+                  </Button>
+                </Popconfirm>
+              )}
             </div>
           )}
           loading={this.state.loading}

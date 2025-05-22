@@ -13,10 +13,13 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Input, Result, Space} from "antd";
-import {SearchOutlined} from "@ant-design/icons";
+import {Button, Input, Modal, Result, Space} from "antd";
+import {ExclamationCircleOutlined, SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import i18next from "i18next";
+import * as Setting from "./Setting";
+
+const {confirm} = Modal;
 
 class BaseListPage extends React.Component {
   constructor(props) {
@@ -32,6 +35,8 @@ class BaseListPage extends React.Component {
       searchText: "",
       searchedColumn: "",
       isAuthorized: true,
+      selectedRowKeys: [],
+      selectedRows: [],
     };
   }
 
@@ -106,6 +111,97 @@ class BaseListPage extends React.Component {
       ),
   });
 
+  getRowSelection = () => ({
+    selectedRowKeys: this.state.selectedRowKeys,
+    onChange: this.onSelectChange,
+    onSelectAll: this.onSelectAll,
+  });
+
+  onSelectChange = (selectedRowKeys, selectedRows) => {
+    this.setState({
+      selectedRowKeys,
+      selectedRows,
+    });
+  };
+
+  onSelectAll = (selected, selectedRows) => {
+    const keys = selectedRows.map(row => this.getRowKey(row));
+    this.setState({
+      selectedRowKeys: keys,
+      selectedRows: selectedRows,
+    });
+  };
+
+  getRowKey = (record) => {
+    return record.key || record.id || record.name;
+  };
+
+  clearSelection = () => {
+    this.setState({
+      selectedRowKeys: [],
+      selectedRows: [],
+    });
+  };
+
+  handleBulkDelete = () => {
+    const {selectedRows, selectedRowKeys} = this.state;
+
+    confirm({
+      title: `${i18next.t("general:Sure to delete")}: ${selectedRowKeys.length} ${i18next.t("general:items")} ?`,
+      icon: <ExclamationCircleOutlined />,
+      okText: i18next.t("general:OK"),
+      okType: "danger",
+      cancelText: i18next.t("general:Cancel"),
+      onOk: () => {
+        this.performBulkDelete(selectedRows, selectedRowKeys);
+      },
+    });
+  };
+
+  performBulkDelete = async(selectedRows, selectedRowKeys) => {
+    try {
+      this.setState({loading: true});
+
+      const sortedSelectedRows = [...selectedRows].sort((a, b) => {
+        const indexA = this.state.data.findIndex(item => this.getRowKey(item) === this.getRowKey(a));
+        const indexB = this.state.data.findIndex(item => this.getRowKey(item) === this.getRowKey(b));
+        return indexB - indexA; // Sort in descending order of index
+      });
+
+      const deletePromises = sortedSelectedRows.map(selectedRow => {
+        const index = this.state.data.findIndex(item => this.getRowKey(item) === this.getRowKey(selectedRow));
+        return this.deleteItem(index);
+      });
+
+      const results = await Promise.allSettled(deletePromises);
+
+      // Check results and handle partial failures
+      const failureCount = results.filter(result =>
+        result.status === "rejected" || result.value.status !== "ok"
+      ).length;
+
+      if (failureCount > 0) {
+        Setting.showMessage("error", `${failureCount} ${i18next.t("general:Failed to delete")}`);
+      }
+
+      this.clearSelection();
+
+      // Refresh the data to ensure consistency
+      const {pagination} = this.state;
+      this.fetch({pagination});
+
+    } catch (error) {
+      Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+    } finally {
+      this.setState({loading: false});
+    }
+  };
+
+  // Default deleteItem method - should be overridden by subclasses
+  deleteItem = async(item) => {
+    throw new Error("deleteItem method must be implemented by subclass");
+  };
+
   handleSearch = (selectedKeys, confirm, dataIndex) => {
     this.fetch({searchText: selectedKeys[0], searchedColumn: dataIndex, pagination: this.state.pagination});
   };
@@ -141,9 +237,7 @@ class BaseListPage extends React.Component {
 
     return (
       <div>
-        {
-          this.renderTable(this.state.data)
-        }
+        {this.renderTable(this.state.data)}
       </div>
     );
   }

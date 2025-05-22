@@ -24,6 +24,7 @@ import * as Conf from "./Conf";
 import * as MessageBackend from "./backend/MessageBackend";
 import ChatBox from "./ChatBox";
 import {renderText} from "./ChatMessageRender";
+import {DeleteOutlined} from "@ant-design/icons";
 
 class ChatListPage extends BaseListPage {
   constructor(props) {
@@ -93,6 +94,10 @@ class ChatListPage extends BaseListPage {
         Setting.showMessage("error", `Chat failed to add: ${error}`);
       });
   }
+
+  deleteItem = async(i) => {
+    return ChatBackend.deleteChat(this.state.data[i]);
+  };
 
   deleteChat(record) {
     ChatBackend.deleteChat(record)
@@ -435,11 +440,18 @@ class ChatListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={chats} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={chats} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("chat:Chats")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addChat.bind(this)}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (
+                <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
+                    {i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})
+                  </Button>
+                </Popconfirm>
+              )}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               &nbsp;&nbsp;&nbsp;&nbsp;
               {i18next.t("general:Users")}:

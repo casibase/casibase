@@ -21,6 +21,7 @@ import * as Setting from "./Setting";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import * as Provider from "./Provider";
+import {DeleteOutlined} from "@ant-design/icons";
 
 class ProviderListPage extends BaseListPage {
   constructor(props) {
@@ -95,6 +96,10 @@ class ProviderListPage extends BaseListPage {
         Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
       });
   }
+
+  deleteItem = async(i) => {
+    return ProviderBackend.deleteProvider(this.state.data[i]);
+  };
 
   deleteProvider(record) {
     ProviderBackend.deleteProvider(record)
@@ -244,11 +249,18 @@ class ProviderListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={providers} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={providers} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Providers")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={() => this.addProvider()}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (
+                <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
+                    {i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})
+                  </Button>
+                </Popconfirm>
+              )}
               &nbsp;&nbsp;&nbsp;&nbsp;
               <Button size="small" onClick={() => this.addProvider(true)}>{i18next.t("provider:Add Storage Provider")}</Button>
             </div>

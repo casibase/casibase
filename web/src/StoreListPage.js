@@ -23,6 +23,7 @@ import i18next from "i18next";
 import {ThemeDefault} from "./Conf";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
+import {DeleteOutlined} from "@ant-design/icons";
 
 const defaultPrompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems.";
 
@@ -160,6 +161,10 @@ class StoreListPage extends BaseListPage {
         Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
       });
   }
+
+  deleteItem = async(i) => {
+    return StoreBackend.deleteStore(this.state.data[i]);
+  };
 
   deleteStore(record) {
     StoreBackend.deleteStore(record)
@@ -371,13 +376,22 @@ class StoreListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={stores} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={stores} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Stores")}&nbsp;&nbsp;&nbsp;&nbsp;
               {
                 !Setting.isLocalAdminUser(this.props.account) ? null : (
-                  <Button type="primary" size="small" onClick={this.addStore.bind(this)}>{i18next.t("general:Add")}</Button>
+                  <>
+                    <Button type="primary" size="small" onClick={this.addStore.bind(this)}>{i18next.t("general:Add")}</Button>
+                    {this.state.selectedRowKeys.length > 0 && (
+                      <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                        <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
+                          {i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})
+                        </Button>
+                      </Popconfirm>
+                    )}
+                  </>
                 )
               }
             </div>

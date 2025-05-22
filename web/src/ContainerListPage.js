@@ -14,13 +14,14 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Table} from "antd";
+import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as ContainerBackend from "./backend/ContainerBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
+import {DeleteOutlined} from "@ant-design/icons";
 
 class ContainerListPage extends BaseListPage {
   constructor(props) {
@@ -60,6 +61,10 @@ class ContainerListPage extends BaseListPage {
         Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
       });
   }
+
+  deleteItem = async(i) => {
+    return ContainerBackend.deleteContainer(this.state.data[i]);
+  };
 
   deleteContainer(i) {
     ContainerBackend.deleteContainer(this.state.data[i])
@@ -221,21 +226,24 @@ class ContainerListPage extends BaseListPage {
       pageSize: this.state.pagination.pageSize,
       showQuickJumper: true,
       showSizeChanger: true,
+      pageSizeOptions: ["10", "20", "50", "100", "1000", "10000", "100000"],
       showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
     };
 
     return (
       <div>
-        <Table columns={columns}
-          dataSource={containers}
-          rowKey="name"
-          size="middle"
-          bordered
-          pagination={paginationProps}
+        <Table columns={columns} dataSource={containers} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Containers")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={() => this.addContainer()}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (
+                <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
+                    {i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})
+                  </Button>
+                </Popconfirm>
+              )}
             </div>
           )}
           loading={containers === null}

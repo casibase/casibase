@@ -15,7 +15,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {Button, List, Popconfirm, Table, Tooltip, Upload} from "antd";
-import {UploadOutlined} from "@ant-design/icons";
+import {DeleteOutlined, UploadOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -503,7 +503,7 @@ class VideoListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={videos} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={videos} rowKey="name" size="middle" rowSelection={this.getRowSelection()} bordered pagination={paginationProps}
           title={() => (
             <div style={{height: this.state.tableTitleHeight}}>
               {i18next.t("general:Videos")}
@@ -513,6 +513,13 @@ class VideoListPage extends BaseListPage {
               {
                 this.renderUpload()
               }
+              {this.state.selectedRowKeys.length > 0 && (
+                <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
+                    {i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})
+                  </Button>
+                </Popconfirm>
+              )}
             </div>
           )}
           loading={this.state.loading}

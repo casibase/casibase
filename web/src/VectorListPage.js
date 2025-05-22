@@ -20,6 +20,7 @@ import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
 import i18next from "i18next";
+import {DeleteOutlined} from "@ant-design/icons";
 
 const {TextArea} = Input;
 
@@ -63,6 +64,10 @@ class VectorListPage extends BaseListPage {
         Setting.showMessage("error", `Vector failed to add: ${error}`);
       });
   }
+
+  deleteItem = async(i) => {
+    return VectorBackend.deleteVector(this.state.data[i]);
+  };
 
   deleteVector(record) {
     VectorBackend.deleteVector(record)
@@ -255,11 +260,18 @@ class VectorListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={vectors} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={vectors} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Vectors")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addVector.bind(this)}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (
+                <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
+                    {i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})
+                  </Button>
+                </Popconfirm>
+              )}
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete all")} ${i18next.t("general:Vectors")}`}
                 onConfirm={() => this.deleteAllVectors()}

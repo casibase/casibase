@@ -14,13 +14,14 @@
 
 import * as SessionBackend from "./backend/SessionBackend";
 import * as Setting from "./Setting";
-import {Radio, Table} from "antd";
+import {Button, Popconfirm, Radio, Table} from "antd";
 import i18next from "i18next";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import BaseListPage from "./BaseListPage";
 import moment from "moment";
 import React from "react";
 import {Link} from "react-router-dom";
+import {DeleteOutlined} from "@ant-design/icons";
 
 export const Connected = "connected";
 const Disconnected = "disconnected";
@@ -41,6 +42,10 @@ class SessionListPage extends BaseListPage {
       });
     }
   }
+
+  deleteItem = async(i) => {
+    return SessionBackend.deleteSession(this.state.data[i]);
+  };
 
   deleteSession(i) {
     SessionBackend.deleteSession(this.state.data[i])
@@ -240,7 +245,7 @@ class SessionListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={sessions} rowKey={(record) => `${record.owner}/${record.name}`} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={sessions} rowKey={(record) => `${record.owner}/${record.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Sessions")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -253,6 +258,13 @@ class SessionListPage extends BaseListPage {
                 <Radio.Button value={Connected}>{i18next.t("session:Online")}</Radio.Button>
                 <Radio.Button value={Disconnected}>{i18next.t("session:History")}</Radio.Button>
               </Radio.Group>
+              {this.state.selectedRowKeys.length > 0 && (
+                <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
+                    {i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})
+                  </Button>
+                </Popconfirm>
+              )}
             </div>
           )}
           loading={this.state.loading}

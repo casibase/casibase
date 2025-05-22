@@ -22,6 +22,7 @@ import * as MessageBackend from "./backend/MessageBackend";
 import moment from "moment";
 import i18next from "i18next";
 import * as Conf from "./Conf";
+import {DeleteOutlined} from "@ant-design/icons";
 
 class MessageListPage extends BaseListPage {
   constructor(props) {
@@ -67,6 +68,10 @@ class MessageListPage extends BaseListPage {
         Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
       });
   }
+
+  deleteItem = async(i) => {
+    return MessageBackend.deleteMessage(this.state.data[i]);
+  };
 
   deleteMessage(record) {
     MessageBackend.deleteMessage(record)
@@ -414,11 +419,18 @@ class MessageListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={messages} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={messages} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Messages")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addMessage.bind(this)}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (
+                <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
+                    {i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})
+                  </Button>
+                </Popconfirm>
+              )}
               &nbsp;&nbsp;&nbsp;&nbsp;
               {
                 this.renderDownloadXlsxButton()

@@ -20,6 +20,7 @@ import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as ArticleBackend from "./backend/ArticleBackend";
 import i18next from "i18next";
+import {DeleteOutlined} from "@ant-design/icons";
 
 class ArticleListPage extends BaseListPage {
   constructor(props) {
@@ -61,6 +62,10 @@ class ArticleListPage extends BaseListPage {
         Setting.showMessage("error", `Article failed to add: ${error}`);
       });
   }
+
+  deleteItem = async(i) => {
+    return ArticleBackend.deleteArticle(this.state.data[i]);
+  };
 
   deleteArticle(record) {
     ArticleBackend.deleteArticle(record)
@@ -185,11 +190,18 @@ class ArticleListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={articles} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={articles} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Articles")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addArticle.bind(this)}>{i18next.t("general:Add")}</Button>
+              {this.state.selectedRowKeys.length > 0 && (
+                <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
+                    {i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})
+                  </Button>
+                </Popconfirm>
+              )}
             </div>
           )}
           loading={this.state.loading}
