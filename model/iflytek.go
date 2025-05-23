@@ -100,7 +100,7 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if 32000 > modelResult.TotalTokenCount {
+		if getContextLength(p.subType) > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")
