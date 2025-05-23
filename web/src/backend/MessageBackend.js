@@ -164,3 +164,28 @@ export function deleteWelcomeMessage(message) {
     body: JSON.stringify(newMessage),
   }).then(res => res.json());
 }
+
+export function getChatPrompt(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-chat-prompt?id=${id}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}
+
+export function setChatPrompt(id, prompt) {
+  return fetch(`${Setting.ServerUrl}/api/set-chat-prompt`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: JSON.stringify({
+      id: id,
+      prompt: prompt,
+    }),
+  }).then(res => res.json());
+}
