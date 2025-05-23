@@ -310,7 +310,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	frequencyPenalty := p.frequencyPenalty
 	presencePenalty := p.presencePenalty
 
-	maxTokens := getContextLength(p.subType)
+	maxTokens := getContextLength(p.compitableProvider)
 
 	modelResult := &ModelResult{}
 	if getOpenAiModelType(p.subType) == "Chat" {
