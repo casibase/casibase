@@ -71,7 +71,7 @@ func getAllJsFilePaths() []string {
 	return res
 }
 
-func parseToData() *I18nData {
+func parseToData() (*I18nData, error) {
 	allWords := []string{}
 	paths := getAllJsFilePaths()
 	for _, path := range paths {
@@ -79,11 +79,16 @@ func parseToData() *I18nData {
 		words := getAllI18nStrings(fileContent)
 		allWords = append(allWords, words...)
 	}
-	fmt.Printf("%v\n", allWords)
 
 	data := I18nData{}
+	errorData := []string{}
 	for _, word := range allWords {
+		fmt.Printf("%v\n", word)
 		tokens := strings.Split(word, ":")
+		if len(tokens) < 2 {
+			errorData = append(errorData, word)
+			continue
+		}
 		namespace := tokens[0]
 		key := tokens[1]
 
@@ -92,6 +97,9 @@ func parseToData() *I18nData {
 		}
 		data[namespace][key] = key
 	}
+	if len(errorData) > 0 {
+		return nil, fmt.Errorf("error data: %v", errorData)
+	}
 
-	return &data
+	return &data, nil
 }

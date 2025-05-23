@@ -25,7 +25,11 @@ func applyToOtherLanguage(dataEn *I18nData, lang string) {
 }
 
 func TestGenerateI18nStrings(t *testing.T) {
-	dataEn := parseToData()
+	dataEn, err := parseToData()
+	if err != nil {
+		t.Error(err)
+		return
+	}
 	writeI18nFile("en", dataEn)
 
 	applyToOtherLanguage(dataEn, "zh")
