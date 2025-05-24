@@ -265,7 +265,7 @@ func GetDefaultVideoProvider() (*Provider, error) {
 }
 
 func GetDefaultModelProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Model", IsDefault: true}
+	provider := Provider{Owner: "admin", Category: "Model", Type: "Azure", IsDefault: true}
 	existed, err := adapter.engine.Get(&provider)
 	if err != nil {
 		return &provider, err

@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/util"
@@ -41,7 +42,7 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 	imageProviderName := ""
 	providerDbName := conf.GetConfigString("providerDbName")
 	if providerDbName != "" {
-		imageProviderName = "provider_storage_casibase_casbin"
+		imageProviderName = "provider_storage_casibase_default"
 	}
 
 	store := &Store{
@@ -76,6 +77,24 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		State:                "Active",
 		PropertiesMap:        map[string]*Properties{},
 	}
+
+	if providerDbName != "" {
+		store.ShowAutoRead = true
+		store.DisableFileUpload = true
+
+		path := "C:/casibase_data/config.txt"
+		if util.FileExist(path) {
+			text := util.ReadStringFromPath("C:/casibase_data/config.txt")
+			tokens := strings.Split(text, "\n")
+			store.Title = tokens[0]
+			store.Avatar = tokens[1]
+			store.Welcome = tokens[2]
+			store.WelcomeTitle = tokens[3]
+			store.WelcomeText = tokens[4]
+			store.Prompt = tokens[5]
+		}
+	}
+
 	_, err = AddStore(store)
 	if err != nil {
 		panic(err)
