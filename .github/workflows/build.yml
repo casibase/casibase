@@ -27,6 +27,9 @@ jobs:
         # go test -v $(go list ./...) -tags skipCi
         working-directory: ./
 
+      - name: verify model context length
+        run: go test ./model -v
+
   frontend:
     name: Front-end
     runs-on: ubuntu-latest
