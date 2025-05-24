@@ -138,7 +138,7 @@ func getContextLength(typ string) int {
 		}
 	} else if strings.Contains(typ, "hunyuan") {
 		if strings.Contains(typ, "lite") {
-			return 8192
+			return 262144
 		} else if strings.Contains(typ, "standard") {
 			if strings.Contains(typ, "256K") {
 				return 262144
@@ -148,34 +148,30 @@ func getContextLength(typ string) int {
 			return 8192
 		} else if strings.Contains(typ, "role") {
 			return 32768
+		} else if strings.Contains(typ, "turbo") {
+			return 32768
 		} else {
 			return 4096
 		}
 	} else if strings.Contains(typ, "step") {
-		if strings.Contains(typ, "1") {
-			if strings.Contains(typ, "8k") || strings.Contains(typ, "flash") {
-				return 8192
-			} else if strings.Contains(typ, "32k") {
-				return 32768
-			} else if strings.Contains(typ, "128k") {
-				return 131072
-			} else if strings.Contains(typ, "256k") {
-				return 262144
-			} else {
-				return 4096
-			}
-		} else if strings.Contains(typ, "2") {
-			if strings.Contains(typ, "16k") {
-				return 16384
-			} else {
-				return 4096
-			}
+		if strings.Contains(typ, "8k") || strings.Contains(typ, "flash") {
+			return 8192
+		} else if strings.Contains(typ, "16k") {
+			return 16384
+		} else if strings.Contains(typ, "32k") {
+			return 32768
+		} else if strings.Contains(typ, "128k") {
+			return 131072
+		} else if strings.Contains(typ, "256k") {
+			return 262144
+		} else {
+			return 4096
 		}
 	} else if strings.Contains(typ, "gpt") {
 		if strings.Contains(typ, "curie") {
 			return 2048
 		} else if strings.Contains(typ, "4.5") || strings.Contains(typ, "4o") {
-			return 131072
+			return 128000
 		} else if strings.Contains(typ, "4") {
 			if strings.Contains(typ, "32k") {
 				return 32768
@@ -186,10 +182,7 @@ func getContextLength(typ string) int {
 			}
 		} else if strings.Contains(typ, "3.5") {
 			if strings.Contains(typ, "turbo") {
-				if strings.Contains(typ, "16k") {
-					return 16385
-				}
-				return 4096
+				return 16385
 			}
 		} else {
 			return 2048
