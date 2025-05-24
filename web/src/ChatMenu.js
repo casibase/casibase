@@ -181,6 +181,9 @@ class ChatMenu extends React.Component {
   }
 
   getSelectedKeyOfCurrentChat(chats, chatName) {
+    if (!chatName) {
+      return null;
+    }
     const items = this.chatsToItems(chats);
     const chat = chats.find(chat => chat.name === chatName);
     let selectedKey = null;
