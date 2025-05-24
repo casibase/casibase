@@ -270,6 +270,19 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Agent provider")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.store.agentProvider} onChange={(value => {this.updateStoreField("agentProvider", value);})}>
+              <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
+              {
+                this.state.agentProviders.map((provider, index) => this.renderProviderOption(provider, index))
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Text-to-Speech provider")}:
           </Col>
           <Col span={22} >
@@ -279,19 +292,6 @@ class StoreEditPage extends React.Component {
               <Option key="Browser Built-In" value="Browser Built-In">Browser Built-In</Option>
               {
                 this.state.textToSpeechProviders.map((provider, index) => this.renderProviderOption(provider, index))
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Agent provider")}:
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.agentProvider} onChange={(value => {this.updateStoreField("agentProvider", value);})}>
-              <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
-              {
-                this.state.agentProviders.map((provider, index) => this.renderProviderOption(provider, index))
               }
             </Select>
           </Col>

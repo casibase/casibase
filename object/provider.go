@@ -42,6 +42,7 @@ type Provider struct {
 	ClientId           string            `xorm:"varchar(100)" json:"clientId"`
 	ClientSecret       string            `xorm:"varchar(2000)" json:"clientSecret"`
 	Region             string            `xorm:"varchar(100)" json:"region"`
+	ApiKey             string            `xorm:"varchar(100)" json:"apiKey"`
 	ProviderUrl        string            `xorm:"varchar(200)" json:"providerUrl"`
 	ApiVersion         string            `xorm:"varchar(100)" json:"apiVersion"`
 	CompitableProvider string            `xorm:"varchar(100)" json:"compitableProvider"`
@@ -61,10 +62,9 @@ type Provider struct {
 	Network     string `xorm:"varchar(100)" json:"network"`
 	Chain       string `xorm:"varchar(100)" json:"chain"`
 	TestContent string `xorm:"varchar(100)" json:"testContent"`
+	IsDefault   bool   `json:"isDefault"`
 	State       string `xorm:"varchar(100)" json:"state"`
 	BrowserUrl  string `xorm:"varchar(200)" json:"browserUrl"`
-
-	ApiKey string `xorm:"varchar(100)" json:"apiKey"`
 }
 
 // GetProviderByApiKey retrieves a provider using the API key
@@ -265,7 +265,7 @@ func GetDefaultVideoProvider() (*Provider, error) {
 }
 
 func GetDefaultModelProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Model"}
+	provider := Provider{Owner: "admin", Category: "Model", IsDefault: true}
 	existed, err := adapter.engine.Get(&provider)
 	if err != nil {
 		return &provider, err
@@ -286,7 +286,7 @@ func GetDefaultModelProvider() (*Provider, error) {
 }
 
 func GetDefaultEmbeddingProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Embedding"}
+	provider := Provider{Owner: "admin", Category: "Embedding", IsDefault: true}
 	existed, err := adapter.engine.Get(&provider)
 	if err != nil {
 		return &provider, err
@@ -307,7 +307,7 @@ func GetDefaultEmbeddingProvider() (*Provider, error) {
 }
 
 func GetDefaultTextToSpeechProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Text-to-Speech"}
+	provider := Provider{Owner: "admin", Category: "Text-to-Speech", IsDefault: true}
 	existed, err := adapter.engine.Get(&provider)
 	if err != nil {
 		return &provider, err
@@ -408,7 +408,7 @@ func generateApiKey() string {
 }
 
 func AddProvider(provider *Provider) (bool, error) {
-	if provider.ApiKey == "" {
+	if provider.ApiKey == "" && provider.Category == "Model" {
 		provider.ApiKey = generateApiKey()
 	}
 

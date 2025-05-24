@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {AutoComplete, Button, Card, Col, Input, InputNumber, Row, Select, Slider} from "antd";
+import {AutoComplete, Button, Card, Col, Input, InputNumber, Row, Select, Slider, Switch} from "antd";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -818,6 +818,16 @@ class ProviderEditPage extends React.Component {
           <Col span={22} >
             <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
               this.updateProviderField("providerUrl", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Is default")}:
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.provider.isDefault} onChange={checked => {
+              this.updateProviderField("isDefault", checked);
             }} />
           </Col>
         </Row>

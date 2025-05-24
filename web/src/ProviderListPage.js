@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table} from "antd";
+import {Button, Popconfirm, Switch, Table} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -193,6 +193,13 @@ class ProviderListPage extends BaseListPage {
         sorter: (a, b) => a.region.localeCompare(b.region),
       },
       {
+        title: i18next.t("provider:API key"),
+        dataIndex: "apiKey",
+        key: "apiKey",
+        width: "240px",
+        sorter: (a, b) => a.apiKey.localeCompare(b.apiKey),
+      },
+      {
         title: i18next.t("provider:Provider URL"),
         dataIndex: "providerUrl",
         key: "providerUrl",
@@ -209,11 +216,24 @@ class ProviderListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("provider:API key"),
-        dataIndex: "apiKey",
-        key: "apiKey",
-        width: "240px",
-        sorter: (a, b) => a.apiKey.localeCompare(b.apiKey),
+        title: i18next.t("store:Is default"),
+        dataIndex: "isDefault",
+        key: "isDefault",
+        width: "120px",
+        sorter: (a, b) => a.isDefault - b.isDefault,
+        // ...this.getColumnSearchProps("isDefault"),
+        render: (text, record, index) => {
+          return (
+            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+          );
+        },
+      },
+      {
+        title: i18next.t("general:State"),
+        dataIndex: "state",
+        key: "state",
+        width: "90px",
+        sorter: (a, b) => a.state.localeCompare(b.state),
       },
       {
         title: i18next.t("general:Action"),
