@@ -74,6 +74,26 @@ func GetConfigString(key string) string {
 		return value
 	}
 
+	path := "C:/casibase_data/config.txt"
+	if FileExist(path) {
+		text := ReadStringFromPath(path)
+		tokens := strings.Split(text, "\n")
+
+		if key == "forceLanguage" {
+			return tokens[6]
+		} else if key == "defaultLanguage" {
+			return tokens[7]
+		} else if key == "htmlTitle" {
+			return tokens[8]
+		} else if key == "faviconUrl" {
+			return tokens[9]
+		} else if key == "logoUrl" {
+			return tokens[10]
+		} else if key == "footerHtml" {
+			return tokens[11]
+		}
+	}
+
 	res := beego.AppConfig.String(key)
 	if res == "" {
 		if key == "staticBaseUrl" {

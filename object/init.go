@@ -84,8 +84,9 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 
 		path := "C:/casibase_data/config.txt"
 		if util.FileExist(path) {
-			text := util.ReadStringFromPath("C:/casibase_data/config.txt")
+			text := util.ReadStringFromPath(path)
 			tokens := strings.Split(text, "\n")
+
 			store.Title = tokens[0]
 			store.Avatar = tokens[1]
 			store.Welcome = tokens[2]
