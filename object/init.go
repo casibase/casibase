@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/util"
@@ -82,11 +81,8 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		store.ShowAutoRead = true
 		store.DisableFileUpload = true
 
-		path := "C:/casibase_data/config.txt"
-		if util.FileExist(path) {
-			text := util.ReadStringFromPath(path)
-			tokens := strings.Split(text, "\n")
-
+		tokens := conf.ReadGlobalConfigTokens()
+		if len(tokens) > 0 {
 			store.Title = tokens[0]
 			store.Avatar = tokens[1]
 			store.Welcome = tokens[2]

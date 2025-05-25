@@ -69,16 +69,29 @@ func init() {
 	}
 }
 
+func ReadGlobalConfigTokens() []string {
+	dbName := beego.AppConfig.String("dbName")
+	if strings.Count(dbName, "_") < 2 {
+		return nil
+	}
+
+	path := "C:/casibase_data/config.txt"
+	if !FileExist(path) {
+		return nil
+	}
+
+	text := ReadStringFromPath(path)
+	tokens := strings.Split(text, "\n")
+	return tokens
+}
+
 func GetConfigString(key string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value
 	}
 
-	path := "C:/casibase_data/config.txt"
-	if FileExist(path) {
-		text := ReadStringFromPath(path)
-		tokens := strings.Split(text, "\n")
-
+	tokens := ReadGlobalConfigTokens()
+	if len(tokens) > 0 {
 		if key == "forceLanguage" {
 			return tokens[6]
 		} else if key == "defaultLanguage" {
