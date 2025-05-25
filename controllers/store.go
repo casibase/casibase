@@ -135,10 +135,40 @@ func (c *ApiController) UpdateStore() {
 		return
 	}
 
+	oldStore, err := object.GetStore(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	if oldStore.IsDefault && !store.IsDefault {
+		c.ResponseError("given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default")
+		return
+	}
+
 	success, err := object.UpdateStore(id, &store)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	if !oldStore.IsDefault && store.IsDefault {
+		stores, err := object.GetGlobalStores()
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		for _, store2 := range stores {
+			if store2.GetId() != store.GetId() && store2.IsDefault {
+				store2.IsDefault = false
+				success, err = object.UpdateStore(store2.GetId(), store2)
+				if err != nil {
+					c.ResponseError(err.Error())
+					return
+				}
+			}
+		}
 	}
 
 	c.ResponseOk(success)
