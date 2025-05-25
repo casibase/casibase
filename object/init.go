@@ -106,7 +106,7 @@ func getDefaultStoragePath(storeName string) (string, error) {
 	providerDbName := conf.GetConfigString("providerDbName")
 	if providerDbName != "" {
 		dbName := conf.GetConfigString("dbName")
-		return fmt.Sprintf("C:/casibase_data/%s", dbName), nil
+		return fmt.Sprintf("C:/casibase_data/%s/%s", dbName, storeName), nil
 	}
 
 	cwd, err := os.Getwd()
