@@ -723,12 +723,6 @@ class ChatPage extends BaseListPage {
             this.setState({
               chat: chat,
             });
-          } else if (this.state.chat?.name === undefined && chats.length > 0) {
-            const chat = chats[0];
-            this.getMessages(chat);
-            this.setState({
-              chat: chat,
-            });
           }
           this.getGlobalStores();
 
