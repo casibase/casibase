@@ -265,8 +265,8 @@ func GetDefaultVideoProvider() (*Provider, error) {
 }
 
 func GetDefaultModelProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Model", Type: "Azure", IsDefault: true}
-	existed, err := adapter.engine.Get(&provider)
+	provider := Provider{Owner: "admin", Category: "Model", IsDefault: true}
+	existed, err := adapter.engine.UseBool().Get(&provider)
 	if err != nil {
 		return &provider, err
 	}
@@ -287,7 +287,7 @@ func GetDefaultModelProvider() (*Provider, error) {
 
 func GetDefaultEmbeddingProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Embedding", IsDefault: true}
-	existed, err := adapter.engine.Get(&provider)
+	existed, err := adapter.engine.UseBool().Get(&provider)
 	if err != nil {
 		return &provider, err
 	}
@@ -308,7 +308,7 @@ func GetDefaultEmbeddingProvider() (*Provider, error) {
 
 func GetDefaultTextToSpeechProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Text-to-Speech", IsDefault: true}
-	existed, err := adapter.engine.Get(&provider)
+	existed, err := adapter.engine.UseBool().Get(&provider)
 	if err != nil {
 		return &provider, err
 	}
