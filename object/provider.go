@@ -272,7 +272,7 @@ func GetDefaultModelProvider() (*Provider, error) {
 	}
 
 	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.Get(&provider)
+		existed, err = providerAdapter.engine.UseBool().Get(&provider)
 		if err != nil {
 			return &provider, err
 		}
@@ -293,7 +293,7 @@ func GetDefaultEmbeddingProvider() (*Provider, error) {
 	}
 
 	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.Get(&provider)
+		existed, err = providerAdapter.engine.UseBool().Get(&provider)
 		if err != nil {
 			return &provider, err
 		}
@@ -314,7 +314,7 @@ func GetDefaultTextToSpeechProvider() (*Provider, error) {
 	}
 
 	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.Get(&provider)
+		existed, err = providerAdapter.engine.UseBool().Get(&provider)
 		if err != nil {
 			return &provider, err
 		}

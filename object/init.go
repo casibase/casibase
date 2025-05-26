@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/util"
@@ -154,7 +155,7 @@ func initBuiltInProviders() (string, string, string, string) {
 			ClientId:    path,
 		}
 		_, err = AddProvider(storageProvider)
-		if err != nil {
+		if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
 			panic(err)
 		}
 	}
@@ -170,7 +171,7 @@ func initBuiltInProviders() (string, string, string, string) {
 			SubType:     "Dummy",
 		}
 		_, err = AddProvider(modelProvider)
-		if err != nil {
+		if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
 			panic(err)
 		}
 	}
@@ -186,7 +187,7 @@ func initBuiltInProviders() (string, string, string, string) {
 			SubType:     "Dummy",
 		}
 		_, err = AddProvider(embeddingProvider)
-		if err != nil {
+		if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
 			panic(err)
 		}
 	}
