@@ -139,6 +139,7 @@ func (c *ApiController) addInitialChat(organization string, userName string) (*o
 		ClientIp:     c.getClientIp(),
 		UserAgent:    c.getUserAgent(),
 		MessageCount: 0,
+		NeedTitle:    true,
 	}
 
 	if store.Welcome != "Hello" {

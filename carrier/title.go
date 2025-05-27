@@ -32,10 +32,10 @@ func (p *TitleCarrier) GetQuestion(question string) (string, error) {
 
 	format := "<title>"
 	question = question +
-		"  **Generate a concise and meaningful title summarizing the content of the answer.**\n\n" +
-		"The title should appear at the very end of the response, prefixed by " + p.divider + "\n" +
-		"Only include the title and divider if a meaningful title can be generated.\n" +
-		"Format your response as: <Your answer and generated suggestion(if any)>" + p.divider + format + "\n\n"
+		"\n\n**At the end of your answer, if and only if a clear, concise, and meaningful title can be generated to summarize the content, append it.**\n" +
+		"The title should appear at the very end of the response, prefixed by: " + p.divider + "\n" +
+		"Do not include the divider or title if a meaningful title cannot be generated.\n" +
+		"Format:\n<Your complete answer>\n" + p.divider + format + "\n"
 
 	return question, nil
 }
