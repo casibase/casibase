@@ -18,7 +18,6 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
-import * as setting from "./Setting";
 import * as ProviderEditTestTts from "./common/TestTtsWidget";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -63,30 +62,30 @@ class ProviderEditPage extends React.Component {
   getClientIdLabel(provider) {
     if (["Model", "Embedding"].includes(provider.category)) {
       if (provider.type === "Tencent Cloud") {
-        return Setting.getLabel("Secret ID", "Secret ID");
+        return Setting.getLabel(i18next.t("general:Secret ID"), i18next.t("general:Secret ID - Tooltip"));
       } else if (provider.type === "Baidu Cloud") {
-        return Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path"));
+        return Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path - Tooltip"));
       } else if (provider.type === "Azure") {
-        return Setting.getLabel(i18next.t("provider:Deployment name"), i18next.t("provider:Deployment name"));
+        return Setting.getLabel(i18next.t("provider:Deployment name"), i18next.t("provider:Deployment name - Tooltip"));
       } else if (provider.type === "MiniMax") {
-        return setting.getLabel(i18next.t("provider:Group ID"), i18next.t("provider:Group ID"));
+        return Setting.getLabel(i18next.t("provider:Group ID"), i18next.t("provider:Group ID - Tooltip"));
       }
     }
     if (provider.category === "Storage") {
-      return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key"));
+      return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
     }
-    return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID"));
+    return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID - Tooltip"));
   }
 
   getClientSecretLabel(provider) {
     if (["Storage", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(provider.category)) {
-      return Setting.getLabel("Secret key", "Secret key");
+      return Setting.getLabel(i18next.t("general:Secret key"), i18next.t("general:Secret key - Tooltip"));
     } else if (provider.category === "Model") {
       if (provider.type === "Tencent Cloud") {
-        return Setting.getLabel("API key", "API key");
+        return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
       }
     }
-    return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret"));
+    return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret - Tooltip"));
   }
 
   parseProviderField(key, value) {
@@ -173,7 +172,7 @@ class ProviderEditPage extends React.Component {
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Name")}:
+            {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.provider.name} onChange={e => {
@@ -183,7 +182,7 @@ class ProviderEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Display name")}:
+            {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.provider.displayName} onChange={e => {
@@ -193,7 +192,7 @@ class ProviderEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("provider:Category")}:
+            {Setting.getLabel(i18next.t("provider:Category"), i18next.t("provider:Category - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.provider.category} onChange={(value => {
@@ -242,7 +241,7 @@ class ProviderEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Type")}:
+            {Setting.getLabel(i18next.t("general:Type"), i18next.t("general:Type - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.provider.type} onChange={(value => {
@@ -348,7 +347,7 @@ class ProviderEditPage extends React.Component {
           !["Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("provider:Sub type")}:
+                {Setting.getLabel(i18next.t("provider:Sub type"), i18next.t("provider:Sub type - Tooltip"))} :
               </Col>
               <Col span={22} >
                 {this.state.provider.type === "Ollama" ? (
@@ -385,7 +384,7 @@ class ProviderEditPage extends React.Component {
           (this.state.provider.type === "Cohere" && this.state.provider.category === "Embedding") && (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("provider:Input type")}:
+                {Setting.getLabel(i18next.t("provider:Input type"), i18next.t("provider:Input type - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Select virtual={false} style={{width: "100%"}} value={this.state.provider.clientId} onChange={(value => {this.updateProviderField("clientId", value);})}>
@@ -405,7 +404,7 @@ class ProviderEditPage extends React.Component {
           (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent"].includes(this.state.provider.category))) ? (
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {this.getClientIdLabel(this.state.provider)}:
+                  {this.getClientIdLabel(this.state.provider)} :
                 </Col>
                 <Col span={22} >
                   <Input value={this.state.provider.clientId} onChange={e => {
@@ -420,7 +419,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Compitable Provider")}:
+                  {Setting.getLabel(i18next.t("provider:Compitable Provider"), i18next.t("provider:Compitable Provider - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <Select virtual={false} style={{width: "100%"}} value={this.state.provider.compitableProvider} onChange={(value => {
@@ -442,7 +441,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Input price / 1k tokens")}:
+                  {Setting.getLabel(i18next.t("provider:Input price / 1k tokens"), i18next.t("provider:Input price / 1k tokens - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <InputNumber min={0} value={this.state.provider.inputPricePerThousandTokens} onChange={value => {
@@ -452,7 +451,7 @@ class ProviderEditPage extends React.Component {
               </Row>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Output price / 1k tokens")}:
+                  {Setting.getLabel(i18next.t("provider:Output price / 1k tokens"), i18next.t("provider:Output price / 1k tokens - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <InputNumber min={0} value={this.state.provider.outputPricePerThousandTokens} onChange={value => {
@@ -468,7 +467,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Input price / 1k tokens")}:
+                  {Setting.getLabel(i18next.t("provider:Input price / 1k tokens"), i18next.t("provider:Input price / 1k tokens - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <InputNumber min={0} value={this.state.provider.inputPricePerThousandTokens} onChange={value => {
@@ -484,7 +483,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Currency")}:
+                  {Setting.getLabel(i18next.t("provider:Currency"), i18next.t("provider:Currency - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <Select virtual={false} style={{width: "100%"}} value={this.state.provider.currency} onChange={(value => {
@@ -515,7 +514,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Flavor")}:
+                  {Setting.getLabel(i18next.t("provider:Flavor"), i18next.t("provider:Flavor - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <Select virtual={false} style={{width: "100%"}} value={this.state.provider.flavor} onChange={(value => {
@@ -535,7 +534,7 @@ class ProviderEditPage extends React.Component {
           (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Agent" && this.state.provider.type === "MCP")) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {this.getClientSecretLabel(this.state.provider)}:
+                {this.getClientSecretLabel(this.state.provider)} :
               </Col>
               <Col span={22} >
                 <Input value={this.state.provider.clientSecret} onChange={e => {
@@ -550,7 +549,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:MCP servers")}:
+                  {Setting.getLabel(i18next.t("provider:MCP servers"), i18next.t("provider:MCP servers - Tooltip"))} :
                 </Col>
                 <Col span={10} >
                   <div style={{height: "500px"}}>
@@ -573,7 +572,7 @@ class ProviderEditPage extends React.Component {
               </Row>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:MCP tools")}:
+                    {Setting.getLabel(i18next.t("provider:MCP tools"), i18next.t("provider:MCP tools - Tooltip"))} :
                 </Col>
                 <Col span={22}>
                   <McpToolsTable
@@ -592,7 +591,7 @@ class ProviderEditPage extends React.Component {
           ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("general:Region")}:
+                {Setting.getLabel(i18next.t("general:Region"), i18next.t("general:Region - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Input value={this.state.provider.region} onChange={e => {
@@ -607,7 +606,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("general:Network")} :
+                  {Setting.getLabel(i18next.t("general:Network"), i18next.t("general:Network - Tooltip"))} :
                 </Col>
                 <Col span={22}>
                   <Input value={this.state.provider.network} onChange={e => {
@@ -617,7 +616,7 @@ class ProviderEditPage extends React.Component {
               </Row>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Chain")} :
+                  {Setting.getLabel(i18next.t("provider:Chain"), i18next.t("provider:Chain - Tooltip"))} :
                 </Col>
                 <Col span={22}>
                   <Input value={this.state.provider.chain} onChange={e => {
@@ -627,7 +626,7 @@ class ProviderEditPage extends React.Component {
               </Row>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Browser URL")} :
+                  {Setting.getLabel(i18next.t("provider:Browser URL"), i18next.t("provider:Browser URL - Tooltip"))} :
                 </Col>
                 <Col span={22}>
                   <Input prefix={<LinkOutlined />} value={this.state.provider.browserUrl} onChange={e => {
@@ -643,7 +642,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Temperature")}:
+                  {Setting.getLabel(i18next.t("provider:Temperature"), i18next.t("provider:Temperature - Tooltip"))} :
                 </Col>
                 <this.InputSlider
                   min={0}
@@ -664,7 +663,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Top P")}:
+                  {Setting.getLabel(i18next.t("provider:Top P"), i18next.t("provider:Top P - Tooltip"))} :
                 </Col>
                 <this.InputSlider
                   min={0}
@@ -685,7 +684,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Top K")}:
+                  {Setting.getLabel(i18next.t("provider:Top K"), i18next.t("provider:Top K - Tooltip"))} :
                 </Col>
                 <this.InputSlider
                   min={1}
@@ -706,7 +705,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Presence penalty")}:
+                  {Setting.getLabel(i18next.t("provider:Presence penalty"), i18next.t("provider:Presence penalty - Tooltip"))} :
                 </Col>
                 <this.InputSlider
                   label={i18next.t("provider:Presence penalty")}
@@ -728,7 +727,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Frequency penalty")}:
+                  {Setting.getLabel(i18next.t("provider:Frequency penalty"), i18next.t("provider:Frequency penalty - Tooltip"))} :
                 </Col>
                 <this.InputSlider
                   label={i18next.t("provider:Frequency penalty")}
@@ -750,7 +749,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:API version")}:
+                  {Setting.getLabel(i18next.t("provider:API version"), i18next.t("provider:API version - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <AutoComplete style={{width: "100%"}} value={this.state.provider.apiVersion}
@@ -767,7 +766,7 @@ class ProviderEditPage extends React.Component {
             <React.Fragment>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Provider test")}:
+                  {Setting.getLabel(i18next.t("provider:Provider test"), i18next.t("provider:Provider test - Tooltip"))} :
                 </Col>
                 <Col span={10} >
                   <Input.TextArea
@@ -797,7 +796,7 @@ class ProviderEditPage extends React.Component {
           this.state.provider.category === "Model" ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("provider:API key")}:
+                {Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Input.Password
@@ -813,7 +812,7 @@ class ProviderEditPage extends React.Component {
         }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {this.state.provider.type === "Volcano Engine" ? i18next.t("provider:EndpointID") : i18next.t("general:Provider URL")}:
+            {this.state.provider.type === "Volcano Engine" ? Setting.getLabel(i18next.t("provider:EndpointID"), i18next.t("provider:EndpointID - Tooltip")) : Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
@@ -823,7 +822,7 @@ class ProviderEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Is default")}:
+            {Setting.getLabel(i18next.t("store:Is default"), i18next.t("store:Is default - Tooltip"))} :
           </Col>
           <Col span={1}>
             <Switch checked={this.state.provider.isDefault} onChange={checked => {
@@ -833,7 +832,7 @@ class ProviderEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:State")} :
+            {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Select virtual={false} style={{width: "100%"}} value={this.state.provider.state} onChange={value => {

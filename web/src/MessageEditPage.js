@@ -131,7 +131,7 @@ class MessageEditPage extends React.Component {
         {/* </Row>*/}
         <Row style={{marginTop: "10px"}}>
           <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("general:Name")}:
+            {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Input
@@ -144,7 +144,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:User")}:
+            {Setting.getLabel(i18next.t("general:User"), i18next.t("general:User - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.message.user} onChange={e => {
@@ -154,7 +154,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("message:Chat")}:
+            {Setting.getLabel(i18next.t("message:Chat"), i18next.t("message:Chat - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Button onClick={() => this.props.history.push(`/chats/${this.state.message.chat}`)} >
@@ -176,7 +176,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("message:Author")}:
+            {Setting.getLabel(i18next.t("message:Author"), i18next.t("message:Author - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Select
@@ -198,7 +198,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("message:Reply to")}:
+            {Setting.getLabel(i18next.t("message:Reply to"), i18next.t("message:Reply to - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Select
@@ -220,7 +220,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("general:Reasoning text")}:
+            {Setting.getLabel(i18next.t("general:Reasoning text"), i18next.t("general:Reasoning text - Tooltip"))} :
           </Col>
           <Col span={22}>
             <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.message.reasonText} onChange={(e) => {
@@ -230,7 +230,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("general:Text")}:
+            {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
           </Col>
           <Col span={22}>
             <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.message.text} onChange={(e) => {
@@ -240,7 +240,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("message:Error text")}:
+            {Setting.getLabel(i18next.t("message:Error text"), i18next.t("message:Error text - Tooltip"))} :
           </Col>
           <Col span={22}>
             <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.message.errorText} onChange={(e) => {
@@ -250,7 +250,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("message:Comment")}:
+            {Setting.getLabel(i18next.t("message:Comment"), i18next.t("message:Comment - Tooltip"))} :
           </Col>
           <Col span={22}>
             <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.message.comment} onChange={(e) => {
@@ -266,7 +266,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("message:Need notify")}:
+            {Setting.getLabel(i18next.t("message:Need notify"), i18next.t("message:Need notify - Tooltip"))} :
           </Col>
           <Col span={1} >
             <Switch checked={this.state.message.needNotify} onChange={checked => {
@@ -276,7 +276,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 19 : 2}>
-            {i18next.t("general:Is deleted")}:
+            {Setting.getLabel(i18next.t("general:Is deleted"), i18next.t("general:Is deleted - Tooltip"))} :
           </Col>
           <Col span={1} >
             <Switch checked={this.state.message.isDeleted} onChange={checked => {
@@ -286,7 +286,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 19 : 2}>
-            {i18next.t("general:Is alerted")}:
+            {Setting.getLabel(i18next.t("general:Is alerted"), i18next.t("general:Is alerted - Tooltip"))} :
           </Col>
           <Col span={1} >
             <Switch checked={this.state.message.isAlerted} onChange={checked => {
