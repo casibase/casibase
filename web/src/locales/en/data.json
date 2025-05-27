@@ -483,6 +483,7 @@
     "Split provider - Tooltip": "Text splitting strategy for document processing",
     "Storage provider": "Storage provider",
     "Storage provider - Tooltip": "Storage service provider for data persistence",
+    "Storage subpath": "Storage subpath",
     "Subject": "Subject",
     "Subject - Tooltip": "Academic subject category",
     "Suggestion count": "Suggestion count",

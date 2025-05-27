@@ -483,6 +483,7 @@
     "Split provider - Tooltip": "文本分割策略",
     "Storage provider": "存储提供商",
     "Storage provider - Tooltip": "数据持久化服务提供商",
+    "Storage subpath": "存储路径",
     "Subject": "学科",
     "Subject - Tooltip": "学科分类",
     "Suggestion count": "建议数量",

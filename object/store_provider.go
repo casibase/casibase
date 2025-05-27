@@ -79,13 +79,30 @@ func isObjectLeaf(object *storage.Object) bool {
 	return isLeaf
 }
 
+// removeSubPath removes storage sub path prefix from object key
+func (store *Store) removeSubPath(objectKey string) string {
+	if store.StorageSubpath == "" {
+		return objectKey
+	}
+	subPath := strings.Trim(store.StorageSubpath, "/") + "/"
+	if strings.HasPrefix(objectKey, subPath) {
+		return strings.TrimPrefix(objectKey, subPath)
+	}
+	return objectKey
+}
+
 func (store *Store) Populate(origin string) error {
 	storageProviderObj, err := store.GetStorageProviderObj()
 	if err != nil {
 		return err
 	}
 
-	objects, err := storageProviderObj.ListObjects("")
+	// List objects with sub path prefix
+	prefix := ""
+	if store.StorageSubpath != "" {
+		prefix = strings.Trim(store.StorageSubpath, "/")
+	}
+	objects, err := storageProviderObj.ListObjects(prefix)
 	if err != nil {
 		return err
 	}
@@ -125,7 +142,17 @@ func (store *Store) Populate(origin string) error {
 			return err
 		}
 
-		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
+		// Remove sub path prefix to get relative path
+		relativePath := store.removeSubPath(object.Key)
+		if relativePath == "" {
+			continue
+		}
+
+		tokens := strings.Split(strings.Trim(relativePath, "/"), "/")
+		if len(tokens) == 1 && tokens[0] == "" {
+			continue
+		}
+
 		store.createPathIfNotExisted(tokens, size, url, lastModifiedTime, isLeaf)
 
 		// fmt.Printf("%s, %d, %v\n", object.Key, object.Size, object.LastModified)

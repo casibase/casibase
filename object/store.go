@@ -59,6 +59,7 @@ type Store struct {
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
 	StorageProvider      string `xorm:"varchar(100)" json:"storageProvider"`
+	StorageSubpath       string `xorm:"varchar(100)" json:"storageSubpath"`
 	ImageProvider        string `xorm:"varchar(100)" json:"imageProvider"`
 	SplitProvider        string `xorm:"varchar(100)" json:"splitProvider"`
 	ModelProvider        string `xorm:"varchar(100)" json:"modelProvider"`
