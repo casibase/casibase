@@ -26,8 +26,8 @@ func UpdateFile(storeId string, key string, file *File) bool {
 	return true
 }
 
-// addSubPath adds storage sub path prefix to the object key
-func (store *Store) addSubPath(key string) string {
+// addSubpath adds storage sub path prefix to the object key
+func (store *Store) addSubpath(key string) string {
 	if store.StorageSubpath == "" {
 		return strings.TrimLeft(key, "/")
 	}
@@ -49,11 +49,12 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 		return false, nil, err
 	}
 
+	processedKey := store.addSubpath(key)
+
 	var objectKey string
 	var fileBuffer *bytes.Buffer
 	if isLeaf {
-		objectKey = fmt.Sprintf("%s/%s", key, filename)
-		objectKey = store.addSubPath(objectKey)
+		objectKey = fmt.Sprintf("%s/%s", processedKey, filename)
 		fileBuffer = bytes.NewBuffer(nil)
 		_, err = io.Copy(fileBuffer, file)
 		if err != nil {
@@ -68,8 +69,7 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 
 		return true, bs, nil
 	} else {
-		objectKey = fmt.Sprintf("%s/%s/_hidden.ini", key, filename)
-		objectKey = store.addSubPath(objectKey)
+		objectKey = fmt.Sprintf("%s/%s/_hidden.ini", processedKey, filename)
 		fileBuffer = bytes.NewBuffer(nil)
 		bs := fileBuffer.Bytes()
 		_, err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
@@ -94,15 +94,16 @@ func DeleteFile(storeId string, key string, isLeaf bool) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	
+	processedKey := store.addSubpath(key)
 
 	if isLeaf {
-		objectKey := store.addSubPath(key)
-		err = storageProviderObj.DeleteObject(objectKey)
+		err = storageProviderObj.DeleteObject(processedKey)
 		if err != nil {
 			return false, err
 		}
 	} else {
-		prefix := store.addSubPath(key)
+		prefix := processedKey
 		if !strings.HasSuffix(prefix, "/") {
 			prefix += "/"
 		}

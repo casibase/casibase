@@ -79,8 +79,8 @@ func isObjectLeaf(object *storage.Object) bool {
 	return isLeaf
 }
 
-// removeSubPath removes storage sub path prefix from object key
-func (store *Store) removeSubPath(objectKey string) string {
+// removeSubpath removes storage sub path prefix from object key
+func (store *Store) removeSubpath(objectKey string) string {
 	if store.StorageSubpath == "" {
 		return objectKey
 	}
@@ -143,7 +143,7 @@ func (store *Store) Populate(origin string) error {
 		}
 
 		// Remove sub path prefix to get relative path
-		relativePath := store.removeSubPath(object.Key)
+		relativePath := store.removeSubpath(object.Key)
 		if relativePath == "" {
 			continue
 		}

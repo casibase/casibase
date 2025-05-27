@@ -37,18 +37,8 @@ func NewLocalFileSystemStorageProvider(path string) (*LocalFileSystemStorageProv
 func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, error) {
 	objects := []*Object{}
 	fullPath := p.path
-
-	// Handle subpath prefix
-	if prefix != "" {
-		fullPath = filepath.Join(p.path, prefix)
-		util.EnsureFileFolderExists(fullPath)
-		if _, err := os.Stat(fullPath); os.IsNotExist(err) {
-			err = os.Mkdir(fullPath, os.ModePerm)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
+	fullPath = filepath.Join(p.path, prefix)
+	util.EnsureFolderExists(fullPath)
 
 	filepath.Walk(fullPath, func(path string, info os.FileInfo, err error) error {
 		if path == fullPath {
@@ -66,10 +56,6 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 			searchPath := strings.ReplaceAll(fullPath, "\\", "/")
 			relativePath := strings.TrimPrefix(path, searchPath)
 			relativePath = strings.TrimPrefix(relativePath, "/")
-
-			if prefix != "" {
-				relativePath = prefix + "/" + relativePath
-			}
 
 			objects = append(objects, &Object{
 				Key:          relativePath,
