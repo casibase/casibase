@@ -94,7 +94,7 @@ func DeleteFile(storeId string, key string, isLeaf bool) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	
+
 	processedKey := store.addSubpath(key)
 
 	if isLeaf {

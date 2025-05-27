@@ -142,13 +142,7 @@ func (store *Store) Populate(origin string) error {
 			return err
 		}
 
-		// Remove sub path prefix to get relative path
-		relativePath := store.removeSubpath(object.Key)
-		if relativePath == "" {
-			continue
-		}
-
-		tokens := strings.Split(strings.Trim(relativePath, "/"), "/")
+		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
 		if len(tokens) == 1 && tokens[0] == "" {
 			continue
 		}
