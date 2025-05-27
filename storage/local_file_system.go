@@ -56,6 +56,10 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 			relativePath := strings.TrimPrefix(path, searchPath)
 			relativePath = strings.TrimPrefix(relativePath, "/")
 
+			if prefix != "" {
+				relativePath = prefix + "/" + relativePath
+			}
+
 			objects = append(objects, &Object{
 				Key:          relativePath,
 				LastModified: modTime.Format(time.RFC3339),
