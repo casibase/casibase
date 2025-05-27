@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Dropdown, Input, Menu, Popconfirm} from "antd";
+import {Button, Dropdown, Input, Menu, Popconfirm, Tooltip} from "antd";
 import {CloseOutlined, DeleteOutlined, EditOutlined, LayoutOutlined, PlusOutlined, SaveOutlined} from "@ant-design/icons";
 import i18next from "i18next";
 import {ThemeDefault} from "./Conf";
@@ -110,7 +110,9 @@ class ChatMenu extends React.Component {
                   />
                 </div>) : (
                 <div className="menu-item-container">
-                  <div style={{width: "70%", overflow: "hidden"}}>{chat.displayName}</div>
+                  <div style={{width: "70%", overflow: "hidden"}}>
+                    <Tooltip title={chat.displayName}>{chat.displayName}</Tooltip>
+                  </div>
                   {isSelected && (
                     <div>
                       <EditOutlined className="menu-item-icon"
