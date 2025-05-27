@@ -154,7 +154,7 @@ class VideoEditPage extends React.Component {
     return (
       <div style={{marginTop: "10px"}}>
         <div style={{fontSize: 16, marginTop: "10px", marginBottom: "10px"}}>
-          {i18next.t("video:Current time (second)")}: {" "}
+          {Setting.getLabel(i18next.t("video:Current time (second)"), i18next.t("video:Current time (second) - Tooltip"))} : {" "}
           <Tag color={"processing"}>
             {this.state.currentTime}
           </Tag>
@@ -196,7 +196,7 @@ class VideoEditPage extends React.Component {
       <React.Fragment>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Data")}:
+            {Setting.getLabel(i18next.t("general:Data"), i18next.t("general:Data - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%", marginBottom: "10px"}} value={this.state.video.dataUrl} onChange={(value => {
@@ -356,7 +356,7 @@ class VideoEditPage extends React.Component {
       <React.Fragment>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:School")}:
+            {Setting.getLabel(i18next.t("video:School"), i18next.t("video:School - Tooltip"))} :
           </Col>
           <Col span={3} >
             <Input value={this.state.video.school} onChange={e => {
@@ -365,7 +365,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Stage")}:
+            {Setting.getLabel(i18next.t("video:Stage"), i18next.t("video:Stage - Tooltip"))} :
           </Col>
           <Col span={3} >
             <Input value={this.state.video.stage} onChange={e => {
@@ -374,7 +374,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Grade")}:
+            {Setting.getLabel(i18next.t("video:Grade"), i18next.t("video:Grade - Tooltip"))} :
           </Col>
           <Col span={3} >
             <Input value={this.state.video.grade} onChange={e => {
@@ -383,7 +383,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Class")}:
+            {Setting.getLabel(i18next.t("video:Class"), i18next.t("video:Class - Tooltip"))} :
           </Col>
           <Col span={3} >
             <Input value={this.state.video.class} onChange={e => {
@@ -393,7 +393,7 @@ class VideoEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Keywords")}:
+            {Setting.getLabel(i18next.t("video:Keywords"), i18next.t("video:Keywords - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.video.keywords} onChange={(value => {this.updateVideoField("keywords", value);})}>
@@ -405,7 +405,7 @@ class VideoEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Subject")}:
+            {Setting.getLabel(i18next.t("video:Subject"), i18next.t("video:Subject - Tooltip"))} :
           </Col>
           <Col span={3} >
             <Input value={this.state.video.subject} onChange={e => {
@@ -414,7 +414,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Topic")}:
+            {Setting.getLabel(i18next.t("video:Topic"), i18next.t("video:Topic - Tooltip"))} :
           </Col>
           <Col span={3} >
             <Input value={this.state.video.topic} onChange={e => {
@@ -540,7 +540,7 @@ class VideoEditPage extends React.Component {
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Name")}:
+            {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={5} >
             <Input disabled={this.requireUserOrAdmin(this.state.video)} value={this.state.video.name} onChange={e => {
@@ -549,7 +549,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Display name")}:
+            {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
           </Col>
           <Col span={6} >
             <Input disabled={this.requireUserOrAdmin(this.state.video)} value={this.state.video.displayName} onChange={e => {
@@ -558,7 +558,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Video ID")}:
+            {Setting.getLabel(i18next.t("video:Video ID"), i18next.t("video:Video ID - Tooltip"))} :
           </Col>
           <Col span={5} >
             <Input disabled={this.requireUserOrAdmin(this.state.video)} value={this.state.video.videoId} onChange={e => {
@@ -568,7 +568,7 @@ class VideoEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Description")}:
+            {Setting.getLabel(i18next.t("general:Description"), i18next.t("general:Description - Tooltip"))} :
           </Col>
           <Col span={22} >
             <TextArea disabled={this.requireUserOrAdmin(this.state.video)} showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={this.state.video.description} onChange={(e) => {
@@ -578,7 +578,7 @@ class VideoEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Grade")}:
+            {Setting.getLabel(i18next.t("video:Grade"), i18next.t("video:Grade - Tooltip"))} :
           </Col>
           <Col span={5} >
             <Select disabled={this.requireUserOrAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.grade} onChange={(value => {
@@ -596,7 +596,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Unit")}:
+            {Setting.getLabel(i18next.t("video:Unit"), i18next.t("video:Unit - Tooltip"))} :
           </Col>
           <Col span={6} >
             <Select disabled={this.requireUserOrAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.unit} onChange={(value => {
@@ -612,7 +612,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Lesson")}:
+            {Setting.getLabel(i18next.t("video:Lesson"), i18next.t("video:Lesson - Tooltip"))} :
           </Col>
           <Col span={5} >
             <Select disabled={this.requireUserOrAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.lesson} onChange={(value => {this.updateVideoField("lesson", value);})}>
@@ -628,7 +628,7 @@ class VideoEditPage extends React.Component {
           this.requireReviewerOrAdmin() ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("video:Remarks1")}:
+                {Setting.getLabel(i18next.t("video:Remarks1"), i18next.t("video:Remarks1 - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <RemarkTable
@@ -654,7 +654,7 @@ class VideoEditPage extends React.Component {
           this.requireReviewer2OrAdminOrPublic() ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("video:Remarks2")}:
+                {Setting.getLabel(i18next.t("video:Remarks2"), i18next.t("video:Remarks2 - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <RemarkTable
@@ -685,7 +685,7 @@ class VideoEditPage extends React.Component {
         }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:State")}:
+            {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
           </Col>
           <Col span={5} >
             <Select disabled={this.requireAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.state} onChange={(value => {
@@ -704,7 +704,7 @@ class VideoEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Is public")}:
+            {Setting.getLabel(i18next.t("video:Is public"), i18next.t("video:Is public - Tooltip"))} :
           </Col>
           <Col span={5} >
             <Switch disabled={this.requireAdmin()} checked={this.state.video.isPublic} onChange={checked => {
@@ -714,12 +714,12 @@ class VideoEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Cover")}:
+            {Setting.getLabel(i18next.t("video:Cover"), i18next.t("video:Cover - Tooltip"))} :
           </Col>
           <Col span={22} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
-                {i18next.t("general:URL")}:
+                {Setting.getLabel(i18next.t("general:URL"), i18next.t("general:URL - Tooltip"))} :
               </Col>
               <Col span={23} >
                 <Input disabled={true} prefix={<LinkOutlined />} value={this.state.video.coverUrl} onChange={e => {
@@ -729,7 +729,7 @@ class VideoEditPage extends React.Component {
             </Row>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
-                {i18next.t("general:Preview")}:
+                {Setting.getLabel(i18next.t("general:Preview"), i18next.t("general:Preview - Tooltip"))} :
               </Col>
               <Col span={23} >
                 <a target="_blank" rel="noreferrer" href={this.state.video.coverUrl}>
@@ -809,7 +809,7 @@ class VideoEditPage extends React.Component {
             (this.state.video.editMode === "Text Tagging" || this.state.video.editMode === "AI Assistant") ? null : (
               <React.Fragment>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Video")}:
+                  {Setting.getLabel(i18next.t("video:Video"), i18next.t("video:Video - Tooltip"))} :
                 </Col>
                 <Col span={9} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
                   <React.Fragment>

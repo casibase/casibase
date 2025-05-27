@@ -154,7 +154,7 @@ class StoreEditPage extends React.Component {
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Name")}:
+            {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.store.name} onChange={e => {
@@ -164,7 +164,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Display name")}:
+            {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.store.displayName} onChange={e => {
@@ -174,7 +174,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Title")}:
+            {Setting.getLabel(i18next.t("general:Title"), i18next.t("general:Title - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.store.title} onChange={e => {
@@ -184,7 +184,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Avatar")}:
+            {Setting.getLabel(i18next.t("general:Avatar"), i18next.t("general:Avatar - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.store.avatar} onChange={e => {
@@ -194,7 +194,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Storage provider")}:
+            {Setting.getLabel(i18next.t("store:Storage provider"), i18next.t("store:Storage provider - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.storageProvider} onChange={(value => {this.updateStoreField("storageProvider", value);})}
@@ -209,7 +209,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Image provider")}:
+            {Setting.getLabel(i18next.t("store:Image provider"), i18next.t("store:Image provider - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.imageProvider} onChange={(value => {this.updateStoreField("imageProvider", value);})}
@@ -227,7 +227,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Split provider")}:
+            {Setting.getLabel(i18next.t("store:Split provider"), i18next.t("store:Split provider - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.splitProvider} onChange={(value => {this.updateStoreField("splitProvider", value);})}
@@ -237,7 +237,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Model provider")}:
+            {Setting.getLabel(i18next.t("store:Model provider"), i18next.t("store:Model provider - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.modelProvider} onChange={(value => {this.updateStoreField("modelProvider", value);})}
@@ -252,7 +252,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Embedding provider")}:
+            {Setting.getLabel(i18next.t("store:Embedding provider"), i18next.t("store:Embedding provider - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProvider} onChange={(value => {this.updateStoreField("embeddingProvider", value);})}
@@ -270,7 +270,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Agent provider")}:
+            {Setting.getLabel(i18next.t("store:Agent provider"), i18next.t("store:Agent provider - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.agentProvider} onChange={(value => {this.updateStoreField("agentProvider", value);})}>
@@ -283,7 +283,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Text-to-Speech provider")}:
+            {Setting.getLabel(i18next.t("store:Text-to-Speech provider"), i18next.t("store:Text-to-Speech provider - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.textToSpeechProvider} onChange={(value => {this.updateStoreField("textToSpeechProvider", value);})}
@@ -298,7 +298,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Enable TTS streaming")}:
+            {Setting.getLabel(i18next.t("store:Enable TTS streaming"), i18next.t("store:Enable TTS streaming - Tooltip"))} :
           </Col>
           <Col span={1}>
             <Switch checked={this.state.store.enableTtsStreaming} onChange={checked => {
@@ -308,7 +308,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Speech-to-Text provider")}:
+            {Setting.getLabel(i18next.t("store:Speech-to-Text provider"), i18next.t("store:Speech-to-Text provider - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.speechToTextProvider} onChange={(value => {this.updateStoreField("speechToTextProvider", value);})}>
@@ -322,7 +322,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Frequency")}:
+            {Setting.getLabel(i18next.t("store:Frequency"), i18next.t("store:Frequency - Tooltip"))} :
           </Col>
           <Col span={22} >
             <InputNumber min={0} value={this.state.store.frequency} onChange={value => {
@@ -332,7 +332,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Memory limit")}:
+            {Setting.getLabel(i18next.t("store:Memory limit"), i18next.t("store:Memory limit - Tooltip"))} :
           </Col>
           <Col span={22} >
             <InputNumber min={0} value={this.state.store.memoryLimit} onChange={value => {
@@ -342,7 +342,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Limit minutes")}:
+            {Setting.getLabel(i18next.t("store:Limit minutes"), i18next.t("store:Limit minutes - Tooltip"))} :
           </Col>
           <Col span={22} >
             <InputNumber min={0} value={this.state.store.limitMinutes} onChange={value => {
@@ -352,7 +352,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Welcome")}:
+            {Setting.getLabel(i18next.t("store:Welcome"), i18next.t("store:Welcome - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.store.welcome} onChange={e => {
@@ -362,7 +362,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Welcome title")}:
+            {Setting.getLabel(i18next.t("store:Welcome title"), i18next.t("store:Welcome title - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input
@@ -374,7 +374,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Welcome text")}:
+            {Setting.getLabel(i18next.t("store:Welcome text"), i18next.t("store:Welcome text - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input
@@ -386,7 +386,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Prompt")}:
+            {Setting.getLabel(i18next.t("store:Prompt"), i18next.t("store:Prompt - Tooltip"))} :
           </Col>
           <Col span={22} >
             <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.store.prompt} onChange={(e) => {
@@ -396,7 +396,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Prompts")}:
+            {Setting.getLabel(i18next.t("store:Prompts"), i18next.t("store:Prompts - Tooltip"))} :
           </Col>
           <Col span={22} >
             <PromptTable prompts={this.state.store.prompts} onUpdatePrompts={(prompts) => {
@@ -406,7 +406,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Knowledge count")}:
+            {Setting.getLabel(i18next.t("store:Knowledge count"), i18next.t("store:Knowledge count - Tooltip"))} :
           </Col>
           <Col span={22} >
             <InputNumber min={0} max={100} value={this.state.store.knowledgeCount} onChange={value => {
@@ -416,7 +416,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Suggestion count")}:
+            {Setting.getLabel(i18next.t("store:Suggestion count"), i18next.t("store:Suggestion count - Tooltip"))} :
           </Col>
           <Col span={22} >
             <InputNumber min={0} max={10} value={this.state.store.suggestionCount} onChange={value => {
@@ -426,7 +426,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Theme color")}:
+            {Setting.getLabel(i18next.t("store:Theme color"), i18next.t("store:Theme color - Tooltip"))} :
           </Col>
           <Col span={22} >
             <input type="color" value={this.state.store.themeColor} onChange={(e) => {
@@ -436,7 +436,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Child stores")}:
+            {Setting.getLabel(i18next.t("store:Child stores"), i18next.t("store:Child stores - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childStores} onChange={(value => {this.updateStoreField("childStores", value);})}>
@@ -448,7 +448,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Child model providers")}:
+            {Setting.getLabel(i18next.t("store:Child model providers"), i18next.t("store:Child model providers - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childModelProviders} onChange={(value => {this.updateStoreField("childModelProviders", value);})}>
@@ -462,7 +462,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Show auto read")}:
+            {Setting.getLabel(i18next.t("store:Show auto read"), i18next.t("store:Show auto read - Tooltip"))} :
           </Col>
           <Col span={1}>
             <Switch checked={this.state.store.showAutoRead} onChange={checked => {
@@ -472,7 +472,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Disable file upload")}:
+            {Setting.getLabel(i18next.t("store:Disable file upload"), i18next.t("store:Disable file upload - Tooltip"))} :
           </Col>
           <Col span={1}>
             <Switch checked={this.state.store.disableFileUpload} onChange={checked => {
@@ -482,7 +482,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Is default")}:
+            {Setting.getLabel(i18next.t("store:Is default"), i18next.t("store:Is default - Tooltip"))} :
           </Col>
           <Col span={1}>
             <Switch checked={this.state.store.isDefault} onChange={checked => {
@@ -492,7 +492,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:State")} :
+            {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
           </Col>
           <Col span={5}>
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.state} onChange={value => {
@@ -506,7 +506,7 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:File tree")}:
+            {Setting.getLabel(i18next.t("store:File tree"), i18next.t("store:File tree - Tooltip"))} :
           </Col>
           <Col span={22} >
             <FileTree account={this.props.account} store={this.state.store} onUpdateStore={(store) => {
