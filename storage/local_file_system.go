@@ -1,17 +1,3 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package storage
 
 import (
@@ -21,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/casibase/casibase/util"
 )
 
 type LocalFileSystemStorageProvider struct {
@@ -36,6 +24,18 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 	objects := []*Object{}
 	fullPath := p.path
 
+	// Handle subpath prefix
+	if prefix != "" {
+		fullPath = filepath.Join(p.path, prefix)
+		util.EnsureFileFolderExists(fullPath)
+		if _, err := os.Stat(fullPath); os.IsNotExist(err) {
+			err = os.Mkdir(fullPath, os.ModePerm)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	filepath.Walk(fullPath, func(path string, info os.FileInfo, err error) error {
 		if path == fullPath {
 			return nil
@@ -49,8 +49,13 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 		if err == nil && !info.IsDir() {
 			modTime := info.ModTime()
 			path = strings.ReplaceAll(path, "\\", "/")
-			relativePath := strings.TrimPrefix(path, fullPath)
+			searchPath := strings.ReplaceAll(fullPath, "\\", "/")
+			relativePath := strings.TrimPrefix(path, searchPath)
 			relativePath = strings.TrimPrefix(relativePath, "/")
+
+			if prefix != "" {
+				relativePath = prefix + "/" + relativePath
+			}
 
 			objects = append(objects, &Object{
 				Key:          relativePath,
