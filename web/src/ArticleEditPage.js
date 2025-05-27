@@ -341,7 +341,7 @@ class ArticleEditPage extends React.Component {
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Name")}:
+            {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={2} >
             <Input value={this.state.article.name} onChange={e => {
@@ -350,7 +350,7 @@ class ArticleEditPage extends React.Component {
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Display name")}:
+            {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
           </Col>
           <Col span={2} >
             <Input value={this.state.article.displayName} onChange={e => {
@@ -362,7 +362,7 @@ class ArticleEditPage extends React.Component {
               <React.Fragment>
                 <Col span={1} />
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("store:Model provider")}:
+                  {Setting.getLabel(i18next.t("store:Model provider"), i18next.t("store:Model provider - Tooltip"))} :
                 </Col>
                 <Col span={5} >
                   <Select virtual={false} style={{width: "100%"}} value={this.state.article.provider} onChange={(value => {this.updateArticleField("provider", value);})}
@@ -374,7 +374,7 @@ class ArticleEditPage extends React.Component {
           }
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("general:Text")}:
+            {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
           </Col>
           <Col span={4}>
             <Popover placement="left" content={

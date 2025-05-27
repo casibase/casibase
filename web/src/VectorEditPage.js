@@ -84,7 +84,7 @@ class VectorEditPage extends React.Component {
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Name")}:
+            {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.vector.name} onChange={e => {
@@ -94,7 +94,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Display name")}:
+            {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.vector.displayName} onChange={e => {
@@ -104,7 +104,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Store")}:
+            {Setting.getLabel(i18next.t("general:Store"), i18next.t("general:Store - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.vector.store} onChange={e => {
@@ -114,7 +114,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("vector:Provider")}:
+            {Setting.getLabel(i18next.t("vector:Provider"), i18next.t("vector:Provider - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.vector.provider} onChange={e => {
@@ -124,7 +124,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:File")}:
+            {Setting.getLabel(i18next.t("store:File"), i18next.t("store:File - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.vector.file} onChange={e => {
@@ -134,7 +134,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Text")}:
+            {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
           </Col>
           <Col span={22} >
             <CodeMirror value={this.state.vector.text}
@@ -147,7 +147,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Size")}:
+            {Setting.getLabel(i18next.t("general:Size"), i18next.t("general:Size - Tooltip"))} :
           </Col>
           <Col span={22} >
             <InputNumber disabled={true} value={this.state.vector.size} onChange={value => {
@@ -157,7 +157,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("vector:Dimension")}:
+            {Setting.getLabel(i18next.t("vector:Dimension"), i18next.t("vector:Dimension - Tooltip"))} :
           </Col>
           <Col span={22} >
             <InputNumber disabled={true} value={this.state.vector.dimension} onChange={value => {
@@ -167,7 +167,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("vector:Data")}:
+            {Setting.getLabel(i18next.t("vector:Data"), i18next.t("vector:Data - Tooltip"))} :
           </Col>
           <Col span={22} >
             <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.vector.data} onChange={(e) => {

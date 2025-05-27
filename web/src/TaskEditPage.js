@@ -138,7 +138,7 @@ class TaskEditPage extends React.Component {
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Name")}:
+            {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.task.name} onChange={e => {
@@ -150,7 +150,7 @@ class TaskEditPage extends React.Component {
           this.state.task.type !== "Labeling" ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("general:Display name")}:
+                {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Input value={this.state.task.displayName} onChange={e => {
@@ -164,7 +164,7 @@ class TaskEditPage extends React.Component {
           this.props.account.name !== "admin" ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("store:Model provider")}:
+                {Setting.getLabel(i18next.t("store:Model provider"), i18next.t("store:Model provider - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Select virtual={false} style={{width: "100%"}} value={this.state.task.provider} onChange={(value => {this.updateTaskField("provider", value);})}
@@ -178,7 +178,7 @@ class TaskEditPage extends React.Component {
           this.props.account.name !== "admin" ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("store:Model providers")}:
+                {Setting.getLabel(i18next.t("store:Model providers"), i18next.t("store:Model providers - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Select mode={"multiple"} virtual={false} style={{width: "100%"}} value={this.state.task.providers ?? []} onChange={(value => {
@@ -217,7 +217,7 @@ class TaskEditPage extends React.Component {
         {/* </Row>*/}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Type")}:
+            {Setting.getLabel(i18next.t("general:Type"), i18next.t("general:Type - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.task.type} onChange={(value => {this.updateTaskField("type", value);})}>
@@ -235,7 +235,7 @@ class TaskEditPage extends React.Component {
             <React.Fragment>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("store:Subject")}:
+                  {Setting.getLabel(i18next.t("store:Subject"), i18next.t("store:Subject - Tooltip"))} :
                 </Col>
                 <Col span={3} >
                   <Select virtual={false} style={{width: "100%"}} value={this.state.task.subject} onChange={(value => {this.updateTaskField("subject", value);})}>
@@ -246,7 +246,7 @@ class TaskEditPage extends React.Component {
                 </Col>
                 <Col span={2} />
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Topic")}:
+                  {Setting.getLabel(i18next.t("video:Topic"), i18next.t("video:Topic - Tooltip"))} :
                 </Col>
                 <Col span={3} >
                   <Select virtual={false} style={{width: "100%"}} value={this.state.task.topic} onChange={(value => {this.updateTaskField("topic", value);})}>
@@ -257,7 +257,7 @@ class TaskEditPage extends React.Component {
                 </Col>
                 <Col span={2} />
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Grade")}:
+                  {Setting.getLabel(i18next.t("video:Grade"), i18next.t("video:Grade - Tooltip"))} :
                 </Col>
                 <Col span={3} >
                   <Select virtual={false} style={{width: "100%"}} value={this.state.task.grade} onChange={(value => {this.updateTaskField("grade", value);})}>
@@ -269,7 +269,7 @@ class TaskEditPage extends React.Component {
               </Row>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("general:Result")}:
+                  {Setting.getLabel(i18next.t("general:Result"), i18next.t("general:Result - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <Select virtual={false} style={{width: "100%"}} value={this.state.task.result} onChange={(value => {this.updateTaskField("result", value);})}>
@@ -281,7 +281,7 @@ class TaskEditPage extends React.Component {
               </Row>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("task:Activity")}:
+                  {Setting.getLabel(i18next.t("task:Activity"), i18next.t("task:Activity - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <Select virtual={false} style={{width: "100%"}} value={this.state.task.activity} onChange={(value => {this.updateTaskField("activity", value);})}>
@@ -296,7 +296,7 @@ class TaskEditPage extends React.Component {
         }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Text")}:
+            {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
           </Col>
           <Col span={22} >
             <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.task.text} onChange={(e) => {
@@ -309,7 +309,7 @@ class TaskEditPage extends React.Component {
             <React.Fragment>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("task:Example")}:
+                  {Setting.getLabel(i18next.t("task:Example"), i18next.t("task:Example - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <Input value={this.state.task.example} onChange={e => {
@@ -319,7 +319,7 @@ class TaskEditPage extends React.Component {
               </Row>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("task:Labels")}:
+                  {Setting.getLabel(i18next.t("task:Labels"), i18next.t("task:Labels - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.task.labels} onChange={(value => {this.updateTaskField("labels", value);})}>
@@ -334,7 +334,7 @@ class TaskEditPage extends React.Component {
         }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("task:Question")}:
+            {Setting.getLabel(i18next.t("task:Question"), i18next.t("task:Question - Tooltip"))} :
           </Col>
           <Col span={22} >
             <TextArea disabled={true} autoSize={{minRows: 1, maxRows: 15}} value={(this.state.task.type !== "Labeling") ? this.getProjectText() : this.getQuestion()} onChange={(e) => {}} />
@@ -344,7 +344,7 @@ class TaskEditPage extends React.Component {
           (this.state.task.type !== "Labeling") ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("general:Chat")}:
+                {Setting.getLabel(i18next.t("general:Chat"), i18next.t("general:Chat - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Button disabled={this.state.task.subject === "" || this.state.task.topic === "" || this.state.task.result === "" || this.state.task.activity === "" || this.state.task.grade === ""} style={{marginBottom: "20px", width: "200px"}} type="primary" onClick={() => this.generateProject()}>{i18next.t("task:Generate Project")}</Button>
@@ -354,7 +354,7 @@ class TaskEditPage extends React.Component {
           ) : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("task:Log")}:
+                {Setting.getLabel(i18next.t("task:Log"), i18next.t("task:Log - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Button loading={this.state.loading} style={{marginBottom: "20px", width: "100px"}} type="primary" onClick={this.runTask.bind(this)}>{i18next.t("general:Run")}</Button>
