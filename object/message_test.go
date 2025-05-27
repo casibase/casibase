@@ -57,7 +57,7 @@ func TestUpdateMessagePrices(t *testing.T) {
 			message.Price = defaultEmbeddingResult.Price
 			message.Currency = defaultEmbeddingResult.Currency
 
-			_, err = UpdateMessage(message.GetId(), message)
+			_, err = UpdateMessage(message.GetId(), message, false)
 			if err != nil {
 				panic(err)
 			}
@@ -106,7 +106,7 @@ func TestUpdateMessagePrices(t *testing.T) {
 			modelResult.ResponseTokenCount = responseTokenCount
 			modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
 
-			p, err := model.NewLocalModelProvider("", modelSubType, "", 0, 0, 0, 0, "")
+			p, err := model.NewLocalModelProvider("", modelSubType, "", 0, 0, 0, 0, "", "", 0, 0, "USD")
 			err = p.CalculatePrice(modelResult)
 			if err != nil {
 				panic(err)
@@ -118,7 +118,7 @@ func TestUpdateMessagePrices(t *testing.T) {
 
 			fmt.Printf("[%d/%d] message: %s, user: %s, author: %s, tokenCount: %d, price: %f\n", i+1, len(allMessages), message.Name, message.User, message.Author, message.TokenCount, message.Price)
 
-			_, err = UpdateMessage(message.GetId(), message)
+			_, err = UpdateMessage(message.GetId(), message, false)
 			if err != nil {
 				panic(err)
 			}
@@ -146,7 +146,7 @@ func TestUpdateMessagePricesFromTokens(t *testing.T) {
 		modelResult.ResponseTokenCount = message.TokenCount
 		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
 
-		p, err := model.NewLocalModelProvider("", modelSubType, "", 0, 0, 0, 0, "")
+		p, err := model.NewLocalModelProvider("", modelSubType, "", 0, 0, 0, 0, "", "", 0, 0, "USD")
 		err = p.CalculatePrice(modelResult)
 		if err != nil {
 			panic(err)
@@ -157,7 +157,7 @@ func TestUpdateMessagePricesFromTokens(t *testing.T) {
 
 		fmt.Printf("[%d/%d] message: %s, user: %s, author: %s, tokenCount: %d, price: %f\n", i+1, len(allMessages), message.Name, message.User, message.Author, message.TokenCount, message.Price)
 
-		_, err = UpdateMessage(message.GetId(), message)
+		_, err = UpdateMessage(message.GetId(), message, false)
 		if err != nil {
 			panic(err)
 		}

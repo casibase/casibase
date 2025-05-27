@@ -66,7 +66,7 @@ func TestUpdateMessagesForName(t *testing.T) {
 
 		fmt.Printf("[%d/%d] message: %s, organization: %s, user: %s, author: %s\n", i+1, len(messages), message.Name, message.Organization, message.User, message.Author)
 
-		_, err = object.UpdateMessage(message.GetId(), message)
+		_, err = object.UpdateMessage(message.GetId(), message, false)
 		if err != nil {
 			panic(err)
 		}

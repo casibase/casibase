@@ -33,7 +33,7 @@ func TestGetUsage(t *testing.T) {
 func TestGetUsages(t *testing.T) {
 	InitConfig()
 
-	usages, err := GetUsages(30)
+	usages, err := GetUsages(30, "admin")
 	if err != nil {
 		panic(err)
 	}
@@ -48,7 +48,7 @@ func TestGetRangeUsages(t *testing.T) {
 	InitConfig()
 
 	// usages, err := GetRangeUsages("Month", 6)
-	usages, err := GetRangeUsages("Week", 12)
+	usages, err := GetRangeUsages("Week", 12, "admin")
 	// usages, err := GetRangeUsages("Day", 30)
 	// usages, err := GetRangeUsages("Hour", 168)
 	if err != nil {
