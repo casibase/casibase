@@ -37,6 +37,7 @@ func NewLocalFileSystemStorageProvider(path string) (*LocalFileSystemStorageProv
 func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, error) {
 	objects := []*Object{}
 	fullPath := filepath.Join(p.path, prefix)
+	fullPath = strings.ReplaceAll(fullPath, "\\", "/")
 	util.EnsureFolderExists(fullPath)
 
 	filepath.Walk(fullPath, func(path string, info os.FileInfo, err error) error {
@@ -52,8 +53,7 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 		if err == nil && !info.IsDir() {
 			modTime := info.ModTime()
 			path = strings.ReplaceAll(path, "\\", "/")
-			normalizedFullPath := strings.ReplaceAll(fullPath, "\\", "/")
-			relativePath := strings.TrimPrefix(path, normalizedFullPath)
+			relativePath := strings.TrimPrefix(path, fullPath)
 			relativePath = strings.TrimPrefix(relativePath, "/")
 
 			objects = append(objects, &Object{

@@ -224,11 +224,7 @@ func (store *Store) GetStorageProviderObj() (storage.StorageProvider, error) {
 		}
 	}
 
-	if store.StorageSubpath != "" {
-		return NewStorageProviderWrapper(storageProvider, store.StorageSubpath), nil
-	}
-
-	return storageProvider, nil
+	return NewSubpathStorageProvider(storageProvider, store.StorageSubpath), nil
 }
 
 func (store *Store) GetImageProviderObj() (storage.StorageProvider, error) {

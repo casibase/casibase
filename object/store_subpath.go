@@ -1,3 +1,17 @@
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package object
 
 import (
@@ -7,20 +21,20 @@ import (
 	"github.com/casibase/casibase/storage"
 )
 
-type StorageProviderWrapper struct {
+type SubpathStorageProvider struct {
 	provider storage.StorageProvider
 	subpath  string
 }
 
-func NewStorageProviderWrapper(provider storage.StorageProvider, subpath string) *StorageProviderWrapper {
-	return &StorageProviderWrapper{
+func NewSubpathStorageProvider(provider storage.StorageProvider, subpath string) *SubpathStorageProvider {
+	return &SubpathStorageProvider{
 		provider: provider,
 		subpath:  strings.Trim(subpath, "/"),
 	}
 }
 
 // ListObjects Implements the StorageProvider interface, automatically prepending the subpath prefix in each method
-func (w *StorageProviderWrapper) ListObjects(prefix string) ([]*storage.Object, error) {
+func (w *SubpathStorageProvider) ListObjects(prefix string) ([]*storage.Object, error) {
 	// Combine the subpath with the provided prefix
 	fullPrefix := w.buildFullPath(prefix)
 	objects, err := w.provider.ListObjects(fullPrefix)
@@ -40,20 +54,20 @@ func (w *StorageProviderWrapper) ListObjects(prefix string) ([]*storage.Object, 
 	return objects, nil
 }
 
-func (w *StorageProviderWrapper) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) (string, error) {
+func (w *SubpathStorageProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) (string, error) {
 	// Prepend the subpath to the key
 	fullKey := w.buildFullPath(key)
 	return w.provider.PutObject(user, parent, fullKey, fileBuffer)
 }
 
-func (w *StorageProviderWrapper) DeleteObject(key string) error {
+func (w *SubpathStorageProvider) DeleteObject(key string) error {
 	// Prepend the subpath to the key
 	fullKey := w.buildFullPath(key)
 	return w.provider.DeleteObject(fullKey)
 }
 
 // Constructs the full path by combining subpath and path
-func (w *StorageProviderWrapper) buildFullPath(path string) string {
+func (w *SubpathStorageProvider) buildFullPath(path string) string {
 	if w.subpath == "" {
 		return path
 	}
