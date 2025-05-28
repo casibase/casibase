@@ -60,7 +60,8 @@ func getNearestVectors(target []float32, vectors [][]float32, n int) ([]Similari
 	similarities := []SimilarityIndex{}
 	for i, vector := range vectors {
 		if len(target) != len(vector) {
-			return nil, fmt.Errorf("The target vector's length: [%d] should equal to knowledge vector's length: [%d], target vector = %v, knowledge vector = %v", len(target), len(vector), target, vector)
+			fmt.Printf("The target vector's length: [%d] should equal to knowledge vector's length: [%d]", len(target), len(vector))
+			continue
 		}
 
 		similarity := cosineSimilarity(target, vector, targetNorm)
