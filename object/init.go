@@ -53,6 +53,7 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		Title:                "AI Assistant",
 		Avatar:               "https://cdn.casibase.com/static/favicon.png",
 		StorageProvider:      "provider-storage-built-in",
+		StorageSubpath:       "store-built-in",
 		ImageProvider:        imageProviderName,
 		SplitProvider:        "Default",
 		ModelProvider:        modelProviderName,
@@ -99,11 +100,11 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 	}
 }
 
-func getDefaultStoragePath(storeName string) (string, error) {
+func getDefaultStoragePath() (string, error) {
 	providerDbName := conf.GetConfigString("providerDbName")
 	if providerDbName != "" {
 		dbName := conf.GetConfigString("dbName")
-		return fmt.Sprintf("C:/casibase_data/%s/%s", dbName, storeName), nil
+		return fmt.Sprintf("C:/casibase_data/%s", dbName), nil
 	}
 
 	cwd, err := os.Getwd()
@@ -111,7 +112,7 @@ func getDefaultStoragePath(storeName string) (string, error) {
 		return "", err
 	}
 
-	res := filepath.Join(cwd, "files", storeName)
+	res := filepath.Join(cwd, "files")
 	return res, nil
 }
 
@@ -138,7 +139,7 @@ func initBuiltInProviders() (string, string, string, string) {
 
 	if storageProvider == nil {
 		var path string
-		path, err = getDefaultStoragePath("store-built-in")
+		path, err = getDefaultStoragePath()
 		if err != nil {
 			panic(err)
 		}

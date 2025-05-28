@@ -117,6 +117,7 @@ class StoreListPage extends BaseListPage {
       title: `Title - ${randomName}`,
       avatar: Setting.AiAvatar,
       storageProvider: "provider-storage-built-in",
+      storageSubpath: `store_${randomName}`,
       imageProvider: "",
       splitProvider: "Default",
       modelProvider: "",
