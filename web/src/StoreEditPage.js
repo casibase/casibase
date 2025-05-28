@@ -36,6 +36,7 @@ class StoreEditPage extends React.Component {
       stores: [],
       casdoorStorageProviders: [],
       storageProviders: [],
+      storageSubpath: "",
       modelProviders: [],
       embeddingProviders: [],
       textToSpeechProviders: [],
@@ -205,6 +206,16 @@ class StoreEditPage extends React.Component {
                 )
               }
             </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("store:Storage subpath"), i18next.t("store:Storage subpath - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.store.storageSubpath} onChange={e => {
+              this.updateStoreField("storageSubpath", e.target.value);
+            }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

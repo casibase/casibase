@@ -21,6 +21,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/casibase/casibase/util"
 )
 
 type LocalFileSystemStorageProvider struct {
@@ -34,7 +36,9 @@ func NewLocalFileSystemStorageProvider(path string) (*LocalFileSystemStorageProv
 
 func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, error) {
 	objects := []*Object{}
-	fullPath := p.path
+	fullPath := filepath.Join(p.path, prefix)
+	fullPath = strings.ReplaceAll(fullPath, "\\", "/")
+	util.EnsureFolderExists(fullPath)
 
 	filepath.Walk(fullPath, func(path string, info os.FileInfo, err error) error {
 		if path == fullPath {

@@ -59,6 +59,7 @@ type Store struct {
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
 	StorageProvider      string `xorm:"varchar(100)" json:"storageProvider"`
+	StorageSubpath       string `xorm:"varchar(100)" json:"storageSubpath"`
 	ImageProvider        string `xorm:"varchar(100)" json:"imageProvider"`
 	SplitProvider        string `xorm:"varchar(100)" json:"splitProvider"`
 	ModelProvider        string `xorm:"varchar(100)" json:"modelProvider"`
@@ -210,11 +211,20 @@ func (store *Store) GetStorageProviderObj() (storage.StorageProvider, error) {
 		return nil, err
 	}
 
+	var storageProvider storage.StorageProvider
 	if provider != nil {
-		return provider.GetStorageProviderObj()
+		storageProvider, err = provider.GetStorageProviderObj()
+		if err != nil {
+			return nil, err
+		}
 	} else {
-		return storage.NewCasdoorProvider(store.StorageProvider)
+		storageProvider, err = storage.NewCasdoorProvider(store.StorageProvider)
+		if err != nil {
+			return nil, err
+		}
 	}
+
+	return NewSubpathStorageProvider(storageProvider, store.StorageSubpath), nil
 }
 
 func (store *Store) GetImageProviderObj() (storage.StorageProvider, error) {
