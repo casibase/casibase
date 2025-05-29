@@ -483,6 +483,8 @@
     "Split provider - Tooltip": "Split provider - Tooltip",
     "Storage provider": "Storage provider",
     "Storage provider - Tooltip": "Storage provider - Tooltip",
+    "Storage subpath": "Storage subpath",
+    "Storage subpath - Tooltip": "Storage subpath - Tooltip",
     "Subject": "Субъект",
     "Subject - Tooltip": "Subject - Tooltip",
     "Suggestion count": "Suggestion count",
