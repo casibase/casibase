@@ -17,6 +17,8 @@ package model
 import (
 	"fmt"
 	"io"
+
+	"github.com/casibase/casibase/agent"
 )
 
 type AlibabacloudModelProvider struct {
@@ -91,7 +93,7 @@ func (p *AlibabacloudModelProvider) calculatePrice(modelResult *ModelResult) err
 	return nil
 }
 
-func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentClients *agent.AgentClients) (*ModelResult, error) {
 	const BaseUrl = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 	// Create a new LocalModelProvider to handle the request
 	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
@@ -99,7 +101,7 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 		return nil, err
 	}
 
-	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages)
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentClients)
 	if err != nil {
 		return nil, err
 	}

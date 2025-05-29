@@ -20,6 +20,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/casibase/casibase/agent"
 	"github.com/casibase/casibase/proxy"
 	"github.com/hupe1980/go-huggingface"
 )
@@ -47,7 +48,7 @@ func (p *HuggingFaceModelProvider) calculatePrice(modelResult *ModelResult) erro
 	return nil
 }
 
-func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentClients *agent.AgentClients) (*ModelResult, error) {
 	ctx := context.Background()
 	client := huggingface.NewInferenceClient(p.secretKey, func(o *huggingface.InferenceClientOptions) {
 		o.HTTPClient = proxy.ProxyHttpClient

@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/casibase/casibase/agent"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -68,7 +69,7 @@ func (p *YiProvider) calculatePrice(modelResult *ModelResult) error {
 	}
 }
 
-func (p *YiProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *YiProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentClients *agent.AgentClients) (*ModelResult, error) {
 	// Set up context and output stream
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)

@@ -16,6 +16,7 @@ package model
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"math/rand"
@@ -24,6 +25,8 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/ThinkInAIXYZ/go-mcp/protocol"
+	"github.com/casibase/casibase/agent"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -268,7 +271,7 @@ func flushDataThink(data string, eventType string, writer io.Writer) error {
 	return nil
 }
 
-func (p *LocalModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *LocalModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentClients *agent.AgentClients) (*ModelResult, error) {
 	var client *openai.Client
 	var flushData interface{} // Can be either flushData or flushDataThink
 
@@ -381,81 +384,15 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			}
 		}
 
-		respStream, err := client.CreateChatCompletionStream(
-			ctx,
-			ChatCompletionRequest(model, messages, temperature, topP, frequencyPenalty, presencePenalty),
-		)
+		var answerData strings.Builder
+		req := ChatCompletionRequest(model, messages, temperature, topP, frequencyPenalty, presencePenalty)
+		err = p.callModel(req, messages, client, ctx, writer, agentClients, flushData, &answerData)
 		if err != nil {
 			return nil, err
 		}
-		defer respStream.Close()
-
-		isLeadingReturn := true
-		var answerData strings.Builder
-		for {
-			completion, streamErr := respStream.Recv()
-			if streamErr != nil {
-				if streamErr == io.EOF {
-					break
-				}
-				return nil, streamErr
-			}
-
-			if len(completion.Choices) == 0 {
-				continue
-			}
-
-			// Handle both regular content and reasoning content
-			if p.typ == "Custom-think" {
-				// For Custom-think type, we'll handle both reasoning and regular content
-				flushThink := flushData.(func(string, string, io.Writer) error)
-
-				// Check if we have reasoning content (think_content)
-				if completion.Choices[0].Delta.ReasoningContent != "" {
-					reasoningData := completion.Choices[0].Delta.ReasoningContent
-					err = flushThink(reasoningData, "reason", writer)
-					if err != nil {
-						return nil, err
-					}
-				}
-
-				// Handle regular content
-				if completion.Choices[0].Delta.Content != "" {
-					data := completion.Choices[0].Delta.Content
-					if isLeadingReturn && len(data) != 0 {
-						if strings.Count(data, "\n") == len(data) {
-							continue
-						} else {
-							isLeadingReturn = false
-						}
-					}
-
-					err = flushThink(data, "message", writer)
-					if err != nil {
-						return nil, err
-					}
-
-					answerData.WriteString(data)
-				}
-			} else {
-				// For all other provider types, use the standard flush function
-				flushStandard := flushData.(func(string, io.Writer) error)
-
-				data := completion.Choices[0].Delta.Content
-				if isLeadingReturn && len(data) != 0 {
-					if strings.Count(data, "\n") == len(data) {
-						continue
-					} else {
-						isLeadingReturn = false
-					}
-				}
-
-				err = flushStandard(data, writer)
-				if err != nil {
-					return nil, err
-				}
-
-				answerData.WriteString(data)
+		if agentClients != nil {
+			for _, client := range agentClients.Clients {
+				client.Close()
 			}
 		}
 
@@ -534,4 +471,179 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	} else {
 		return nil, fmt.Errorf("QueryText() error: unknown model type: %s", p.subType)
 	}
+}
+
+func (p *LocalModelProvider) callModel(req openai.ChatCompletionRequest, messages []openai.ChatCompletionMessage, client *openai.Client, ctx context.Context, writer io.Writer, agentClients *agent.AgentClients, flushData interface{}, answerData *strings.Builder) error {
+	req.Messages = messages
+	if agentClients != nil && len(agentClients.Tools) > 0 {
+		req.Tools = agentClients.Tools
+		req.ToolChoice = "auto"
+	}
+
+	respStream, err := client.CreateChatCompletionStream(
+		ctx,
+		req,
+	)
+	if err != nil {
+		return err
+	}
+	defer respStream.Close()
+
+	isLeadingReturn := true
+	var (
+		toolCalls     []openai.ToolCall
+		reasoningData strings.Builder
+	)
+
+	for {
+		completion, streamErr := respStream.Recv()
+		if streamErr != nil {
+			if streamErr == io.EOF {
+				break
+			}
+			return streamErr
+		}
+
+		if len(completion.Choices) == 0 {
+			continue
+		}
+
+		if completion.Choices[0].Delta.ToolCalls != nil {
+			for _, toolCall := range completion.Choices[0].Delta.ToolCalls {
+				found := false
+				for i := range toolCalls {
+					if *toolCalls[i].Index == *toolCall.Index {
+						if toolCall.Function.Name != "" {
+							toolCalls[i].Function.Name = toolCall.Function.Name
+						}
+						if toolCall.Function.Arguments != "" {
+							toolCalls[i].Function.Arguments += toolCall.Function.Arguments
+						}
+						found = true
+						break
+					}
+				}
+				if !found {
+					toolCalls = append(toolCalls, toolCall)
+				}
+			}
+		}
+
+		// Handle both regular content and reasoning content
+		if p.typ == "Custom-think" {
+			// For Custom-think type, we'll handle both reasoning and regular content
+			flushThink := flushData.(func(string, string, io.Writer) error)
+
+			// Check if we have reasoning content (think_content)
+			if completion.Choices[0].Delta.ReasoningContent != "" {
+				reasoningContent := completion.Choices[0].Delta.ReasoningContent
+				err = flushThink(reasoningContent, "reason", writer)
+				if err != nil {
+					return err
+				}
+				reasoningData.WriteString(reasoningContent)
+			}
+
+			// Handle regular content
+			if completion.Choices[0].Delta.Content != "" {
+				data := completion.Choices[0].Delta.Content
+				if isLeadingReturn && len(data) != 0 {
+					if strings.Count(data, "\n") == len(data) {
+						continue
+					} else {
+						isLeadingReturn = false
+					}
+				}
+
+				err = flushThink(data, "message", writer)
+				if err != nil {
+					return err
+				}
+
+				answerData.WriteString(data)
+			}
+		} else {
+			// For all other provider types, use the standard flush function
+			flushStandard := flushData.(func(string, io.Writer) error)
+
+			data := completion.Choices[0].Delta.Content
+			if isLeadingReturn && len(data) != 0 {
+				if strings.Count(data, "\n") == len(data) {
+					continue
+				} else {
+					isLeadingReturn = false
+				}
+			}
+
+			err = flushStandard(data, writer)
+			if err != nil {
+				return err
+			}
+
+			answerData.WriteString(data)
+		}
+	}
+
+	// if there are tool calls, add the assistant message with the tool calls
+	if len(toolCalls) > 0 && agentClients != nil {
+		messages = append(messages, openai.ChatCompletionMessage{
+			Role:      openai.ChatMessageRoleAssistant,
+			Content:   " ",
+			ToolCalls: toolCalls,
+		})
+
+		for _, toolCall := range toolCalls {
+			parts := strings.SplitN(toolCall.Function.Name, "__", 2)
+			if len(parts) != 2 {
+				continue
+			}
+
+			serverName := parts[0]
+			functionName := parts[1]
+
+			client, ok := agentClients.Clients[serverName]
+			if !ok {
+				continue
+			}
+
+			var arguments map[string]interface{}
+			if err := json.Unmarshal([]byte(toolCall.Function.Arguments), &arguments); err != nil {
+				continue
+			}
+
+			req := &protocol.CallToolRequest{
+				Name:      functionName,
+				Arguments: arguments,
+			}
+			result, err := client.CallTool(ctx, req)
+			if err != nil || result.IsError {
+				messages = append(messages, openai.ChatCompletionMessage{
+					Role:       openai.ChatMessageRoleTool,
+					Content:    fmt.Sprintf("Tool %s returned error: %v", toolCall.Function.Name, err),
+					ToolCallID: toolCall.ID,
+				})
+				continue
+			}
+
+			var contents []string
+			for _, content := range result.Content {
+				jsonContent, err := json.Marshal(content)
+				if err != nil {
+					continue
+				}
+				contents = append(contents, string(jsonContent))
+			}
+			resultStr := strings.Join(contents, "\n")
+
+			messages = append(messages, openai.ChatCompletionMessage{
+				Role:       openai.ChatMessageRoleTool,
+				Content:    resultStr,
+				ToolCallID: toolCall.ID,
+			})
+		}
+
+		return p.callModel(req, messages, client, ctx, writer, agentClients, flushData, answerData)
+	}
+
+	return nil
 }
