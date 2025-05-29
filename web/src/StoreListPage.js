@@ -32,7 +32,7 @@ class StoreListPage extends BaseListPage {
     super(props);
     this.state = {
       ...this.state,
-      generating: false,
+      generating: {},
       providers: {},
     };
   }
@@ -189,7 +189,12 @@ class StoreListPage extends BaseListPage {
   }
 
   refreshStoreVectors(i) {
-    this.setState({generating: true});
+    this.setState(prevState => ({
+      generating: {
+        ...prevState.generating,
+        [i]: true,
+      },
+    }));
     StoreBackend.refreshStoreVectors(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
@@ -197,11 +202,21 @@ class StoreListPage extends BaseListPage {
         } else {
           Setting.showMessage("error", `${i18next.t("general:Vectors failed to generate")}: ${res.msg}`);
         }
-        this.setState({generating: false});
+        this.setState(prevState => ({
+          generating: {
+            ...prevState.generating,
+            [i]: false,
+          },
+        }));
       })
       .catch(error => {
         Setting.showMessage("error", `${i18next.t("general:Vectors failed to generate")}: ${error}`);
-        this.setState({generating: false});
+        this.setState(prevState => ({
+          generating: {
+            ...prevState.generating,
+            [i]: false,
+          },
+        }));
       });
   }
 
@@ -339,7 +354,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "380px",
+        width: "400px",
         fixed: "right",
         render: (text, record, index) => {
           return (
@@ -348,7 +363,7 @@ class StoreListPage extends BaseListPage {
               {
                 !Setting.isLocalAdminUser(this.props.account) ? null : (
                   <React.Fragment>
-                    <Button style={{marginBottom: "10px", marginRight: "10px"}} disabled={this.state.generating} onClick={() => this.refreshStoreVectors(index)}>{i18next.t("store:Refresh Vectors")}</Button>
+                    <Button style={{marginBottom: "10px", marginRight: "10px"}} loading={this.state.generating[index]} onClick={() => this.refreshStoreVectors(index)}>{i18next.t("store:Refresh Vectors")}</Button>
                     <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
                     <Popconfirm
                       title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
