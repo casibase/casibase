@@ -15,13 +15,110 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	"github.com/beego/beego"
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
+
+// SetChatPrompt
+// @Title SetChatPrompt
+// @Tag Chat API
+// @Description set custom prompt for a chat
+// @Param id query string true "The id of chat"
+// @Param prompt body string true "The custom prompt"
+// @Success 200 {object} controllers.Response "Success"
+// @router /set-chat-prompt [post]
+func (c *ApiController) SetChatPrompt() {
+	_, ok := c.CheckSignedIn()
+	if !ok {
+		return
+	}
+
+	var requestBody struct {
+		Id     string `json:"id"`
+		Prompt string `json:"prompt"`
+	}
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &requestBody)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	id := requestBody.Id
+	logs.Info("SetChatPrompt id: %s", id)
+
+	chat, err := object.GetChat(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	if chat == nil {
+		c.ResponseError(fmt.Sprintf("The chat: %s is not found", id))
+		return
+	}
+
+	chat.CustomPrompt = requestBody.Prompt
+	chat.UpdatedTime = util.GetCurrentTime()
+
+	_, err = object.UpdateChat(chat.GetId(), chat)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk("Custom prompt updated successfully")
+}
+
+// GetChatPrompt
+// @Title GetChatPrompt
+// @Tag Chat API
+// @Description get custom prompt for a chat
+// @Param id query string true "The id of chat"
+// @Success 200 {object} controllers.Response "Success"
+// @router /get-chat-prompt [get]
+func (c *ApiController) GetChatPrompt() {
+	id := c.Input().Get("id")
+
+	_, ok := c.RequireSignedIn()
+	if !ok {
+		return
+	}
+
+	chat, err := object.GetChat(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	if chat == nil {
+		c.ResponseError(fmt.Sprintf("The chat: %s is not found", id))
+		return
+	}
+
+	store, err := object.GetDefaultStore("admin")
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	response := struct {
+		CustomPrompt  string `json:"customPrompt"`
+		IsUsingCustom bool   `json:"isUsingCustom"`
+		DefaultPrompt string `json:"defaultPrompt"`
+	}{
+		CustomPrompt:  chat.CustomPrompt,
+		IsUsingCustom: chat.CustomPrompt != "",
+		DefaultPrompt: store.Prompt,
+	}
+
+	c.ResponseOk(response)
+}
 
 // GetMessageAnswer
 // @Title GetMessageAnswer
@@ -193,7 +290,13 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	modelResult, err := modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
+	promptToUse := store.Prompt
+	if chat.CustomPrompt != "" {
+		promptToUse = chat.CustomPrompt
+	}
+	logs.Debug("Prompt: %s", promptToUse)
+
+	modelResult, err := modelProviderObj.QueryText(question, writer, history, promptToUse, knowledge)
 	if err != nil {
 		if strings.Contains(err.Error(), "write tcp") {
 			c.ResponseError(err.Error())
