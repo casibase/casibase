@@ -29,6 +29,8 @@ type RawMessage struct {
 	Text           string
 	Author         string
 	TextTokenCount int
+	ToolCalls      []openai.ToolCall
+	ToolCallID     string
 }
 
 func reverseMessages(arr []*RawMessage) []*RawMessage {

@@ -20,6 +20,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/casibase/casibase/agent"
 	"github.com/madebywelch/anthropic-go/v2/pkg/anthropic"
 	"github.com/madebywelch/anthropic-go/v2/pkg/anthropic/utils"
 )
@@ -73,7 +74,7 @@ func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentClients *agent.AgentClients) (*ModelResult, error) {
 	client, err := anthropic.NewClient(p.secretKey)
 	if err != nil {
 		return nil, err

@@ -24,6 +24,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/bedrockruntime"
+	"github.com/casibase/casibase/agent"
 )
 
 type AmazonBedrockModelProvider struct {
@@ -107,7 +108,7 @@ func (p *AmazonBedrockModelProvider) calculatePrice(modelResult *ModelResult) er
 	return nil
 }
 
-func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentClients *agent.AgentClients) (*ModelResult, error) {
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-west-2"))
 	if err != nil {
 		return nil, err

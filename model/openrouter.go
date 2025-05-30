@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/casibase/casibase/agent"
 	"github.com/casibase/casibase/proxy"
 	"github.com/casibase/go-openrouter"
 )
@@ -126,7 +127,7 @@ func (p *OpenRouterModelProvider) getProxyClientFromToken() *openrouter.Client {
 	return c
 }
 
-func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentClients *agent.AgentClients) (*ModelResult, error) {
 	client := p.getProxyClientFromToken()
 
 	ctx := context.Background()

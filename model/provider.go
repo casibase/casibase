@@ -14,7 +14,11 @@
 
 package model
 
-import "io"
+import (
+	"io"
+
+	"github.com/casibase/casibase/agent"
+)
 
 type ModelResult struct {
 	PromptTokenCount   int
@@ -35,7 +39,7 @@ func newModelResult(promptTokenCount int, responseTokenCount int, totalTokenCoun
 
 type ModelProvider interface {
 	GetPricing() string
-	QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error)
+	QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentClients *agent.AgentClients) (*ModelResult, error)
 }
 
 func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string, compitableProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string) (ModelProvider, error) {

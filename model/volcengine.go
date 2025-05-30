@@ -20,6 +20,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/casibase/casibase/agent"
 	"github.com/volcengine/volcengine-go-sdk/service/arkruntime"
 	"github.com/volcengine/volcengine-go-sdk/service/arkruntime/model"
 	"github.com/volcengine/volcengine-go-sdk/volcengine"
@@ -106,7 +107,7 @@ func (p *VolcengineModelProvider) calculatePrice(modelResult *ModelResult) error
 	return nil
 }
 
-func (p *VolcengineModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *VolcengineModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentClients *agent.AgentClients) (*ModelResult, error) {
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
 	if !ok {

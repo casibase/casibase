@@ -306,6 +306,27 @@ func GetDefaultEmbeddingProvider() (*Provider, error) {
 	return &provider, nil
 }
 
+func GetDefaultAgentProvider() (*Provider, error) {
+	provider := Provider{Owner: "admin", Category: "Agent", IsDefault: true}
+	existed, err := adapter.engine.UseBool().Get(&provider)
+	if err != nil {
+		return &provider, err
+	}
+
+	if providerAdapter != nil && !existed {
+		existed, err = providerAdapter.engine.Get(&provider)
+		if err != nil {
+			return &provider, err
+		}
+	}
+
+	if !existed {
+		return nil, nil
+	}
+
+	return &provider, nil
+}
+
 func GetDefaultTextToSpeechProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Text-to-Speech", IsDefault: true}
 	existed, err := adapter.engine.UseBool().Get(&provider)
@@ -490,6 +511,19 @@ func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
 	return pProvider, nil
 }
 
+func (p *Provider) GetAgentProvider() (agent.AgentProvider, error) {
+	pProvider, err := agent.GetAgentProvider(p.Type, p.SubType, p.Text, p.McpTools)
+	if err != nil {
+		return nil, err
+	}
+
+	if pProvider == nil {
+		return nil, fmt.Errorf("the agent provider type: %s is not supported", p.Type)
+	}
+
+	return pProvider, nil
+}
+
 func (p *Provider) GetTextToSpeechProvider() (tts.TextToSpeechProvider, error) {
 	pProvider, err := tts.GetTextToSpeechProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.ProviderUrl, p.ApiVersion, p.InputPricePerThousandTokens, p.Currency, p.Flavor)
 	if err != nil {
@@ -550,6 +584,31 @@ func GetEmbeddingProviderFromContext(owner string, name string) (*Provider, embe
 	}
 
 	return getEmbeddingProviderFromName(owner, providerName)
+}
+
+func GetAgentProviderFromContext(owner string, name string) (*Provider, agent.AgentProvider, error) {
+	var providerName string
+	if name != "" {
+		providerName = name
+	} else {
+		store, err := GetDefaultStore(owner)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		if store != nil && store.AgentProvider != "" {
+			providerName = store.AgentProvider
+		}
+	}
+
+	return getAgentProviderFromName(owner, providerName)
+}
+
+func GetAgentClients(agentProviderObj agent.AgentProvider) (*agent.AgentClients, error) {
+	if agentProviderObj == nil {
+		return nil, nil
+	}
+	return agentProviderObj.GetAgentClients()
 }
 
 func GetProviderCount(owner, field, value string) (int64, error) {

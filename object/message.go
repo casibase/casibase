@@ -347,7 +347,7 @@ func GetAnswer(provider string, question string) (string, *model.ModelResult, er
 	knowledge := []*model.RawMessage{}
 	var writer MyWriter
 
-	modelResult, err := modelProviderObj.QueryText(question, &writer, history, "", knowledge)
+	modelResult, err := modelProviderObj.QueryText(question, &writer, history, "", knowledge, nil)
 	if err != nil {
 		return "", nil, err
 	}

@@ -20,6 +20,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/casibase/casibase/agent"
 	cohere "github.com/cohere-ai/cohere-go/v2"
 	cohereclient "github.com/cohere-ai/cohere-go/v2/client"
 )
@@ -90,7 +91,7 @@ func (p *CohereModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *CohereModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *CohereModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentClients *agent.AgentClients) (*ModelResult, error) {
 	client := cohereclient.NewClient(
 		cohereclient.WithToken(p.secretKey),
 	)
