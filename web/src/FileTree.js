@@ -304,10 +304,18 @@ class FileTree extends React.Component {
   }
 
   isFileReadable(file) {
+    if (Setting.isLocalAdminUser(this.props.account)) {
+      return true;
+    }
+
     return this.isFileOk(file, "Read");
   }
 
   isFileWritable(file) {
+    if (Setting.isLocalAdminUser(this.props.account)) {
+      return true;
+    }
+
     return this.isFileOk(file, "Write");
   }
 
