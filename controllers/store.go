@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"sort"
 
 	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
@@ -58,6 +59,10 @@ func (c *ApiController) GetGlobalStores() {
 			c.ResponseError(err.Error())
 			return
 		}
+
+		sort.SliceStable(stores, func(i, j int) bool {
+			return stores[i].IsDefault && !stores[j].IsDefault
+		})
 
 		c.ResponseOk(stores, paginator.Nums())
 	}

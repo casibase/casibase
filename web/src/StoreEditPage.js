@@ -195,6 +195,30 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("store:Is default"), i18next.t("store:Is default - Tooltip"))} :
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.store.isDefault} onChange={checked => {
+              this.updateStoreField("isDefault", checked);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
+          </Col>
+          <Col span={5}>
+            <Select virtual={false} style={{width: "100%"}} value={this.state.store.state} onChange={value => {
+              this.updateStoreField("state", value);
+            }}
+            options={[
+              {value: "Active", label: "Active"},
+              {value: "Inactive", label: "Inactive"},
+            ].map(item => Setting.getOption(item.label, item.value))} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Storage provider"), i18next.t("store:Storage provider - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -489,30 +513,6 @@ class StoreEditPage extends React.Component {
             <Switch checked={this.state.store.disableFileUpload} onChange={checked => {
               this.updateStoreField("disableFileUpload", checked);
             }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Is default"), i18next.t("store:Is default - Tooltip"))} :
-          </Col>
-          <Col span={1}>
-            <Switch checked={this.state.store.isDefault} onChange={checked => {
-              this.updateStoreField("isDefault", checked);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}}>
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
-          </Col>
-          <Col span={5}>
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.state} onChange={value => {
-              this.updateStoreField("state", value);
-            }}
-            options={[
-              {value: "Active", label: "Active"},
-              {value: "Inactive", label: "Inactive"},
-            ].map(item => Setting.getOption(item.label, item.value))} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

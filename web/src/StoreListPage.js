@@ -244,6 +244,19 @@ class StoreListPage extends BaseListPage {
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
+        title: i18next.t("store:Is default"),
+        dataIndex: "isDefault",
+        key: "isDefault",
+        width: "120px",
+        sorter: (a, b) => a.isDefault - b.isDefault,
+        // ...this.getColumnSearchProps("isDefault"),
+        render: (text, record, index) => {
+          return (
+            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+          );
+        },
+      },
+      {
         title: i18next.t("store:Storage provider"),
         dataIndex: "storageProvider",
         key: "storageProvider",
@@ -329,19 +342,6 @@ class StoreListPage extends BaseListPage {
         key: "memoryLimit",
         width: "120px",
         sorter: (a, b) => a.memoryLimit - b.memoryLimit,
-      },
-      {
-        title: i18next.t("store:Is default"),
-        dataIndex: "isDefault",
-        key: "isDefault",
-        width: "120px",
-        sorter: (a, b) => a.isDefault - b.isDefault,
-        // ...this.getColumnSearchProps("isDefault"),
-        render: (text, record, index) => {
-          return (
-            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
-          );
-        },
       },
       {
         title: i18next.t("general:State"),
