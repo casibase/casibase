@@ -72,5 +72,8 @@ func main() {
 
 	go object.ClearThroughputPerSecond()
 
+	chat_cleaner := &object.ChatCleaner{}
+	chat_cleaner.Start("0 0 * * *") //clean redundant chatsevery hour
+
 	beego.Run(fmt.Sprintf(":%v", port))
 }
