@@ -19,9 +19,11 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
 import * as ProviderEditTestTts from "./common/TestTtsWidget";
+import * as ProviderEditTestModel from "./common/TestModelWidget";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import McpToolsTable from "./McpToolsTable";
+import ChatBox from "./ChatBox";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/javascript/javascript");
 
@@ -36,6 +38,7 @@ class ProviderEditPage extends React.Component {
       provider: null,
       originalProvider: null,
       testButtonLoading: false,
+      testMessages: [],
       refreshButtonLoading: false,
       isAdmin: props.account?.isAdmin || props.account?.owner === "admin",
     };
@@ -49,9 +52,24 @@ class ProviderEditPage extends React.Component {
     ProviderBackend.getProvider("admin", this.state.providerName)
       .then((res) => {
         if (res.status === "ok") {
+          const provider = res.data;
+          const originalProvider = Setting.deepCopy(res.data);
+
+          if (provider.testContent === "") {
+            provider.testContent = "Hello, how are you today?";
+          }
+
+          if (provider.category === "Model") {
+            ProviderEditTestModel.getTestMessages(
+              provider,
+              this.props.account,
+              (messages) => this.setState({testMessages: messages})
+            );
+          }
+
           this.setState({
-            provider: res.data,
-            originalProvider: Setting.deepCopy(res.data),
+            provider: provider,
+            originalProvider: originalProvider,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -759,6 +777,50 @@ class ProviderEditPage extends React.Component {
                 </Col>
               </Row>
             </>
+          ) : null
+        }
+        {
+          this.state.provider.category === "Model" ? (
+            <React.Fragment>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("provider:Provider test"), i18next.t("provider:Provider test - Tooltip"))} :
+                </Col>
+                <Col span={20}>
+                  <div style={{marginBottom: "10px", textAlign: "right"}}>
+                    <Button
+                      type="primary"
+                      onClick={() => ProviderEditTestModel.clearTestMessages(
+                        this.state.provider,
+                        this.props.account,
+                        (messages) => this.setState({testMessages: messages})
+                      )}
+                      size="small"
+                    >
+                      {i18next.t("chat:New Chat")}
+                    </Button>
+                  </div>
+                  <div style={{width: "100%", height: "600px", border: "1px solid #d9d9d9", borderRadius: "6px"}}>
+                    <ChatBox
+                      disableInput={false}
+                      hideInput={false}
+                      messages={this.state.testMessages}
+                      sendMessage={(message) => ProviderEditTestModel.sendTestMessage(
+                        this.state.provider,
+                        this.state.originalProvider,
+                        message,
+                        this.props.account,
+                        (loading) => this.setState({testButtonLoading: loading}),
+                        (messages) => this.setState({testMessages: messages}),
+                        this.state.testMessages
+                      )}
+                      account={this.props.account}
+                      loading={this.state.testButtonLoading}
+                    />
+                  </div>
+                </Col>
+              </Row>
+            </React.Fragment>
           ) : null
         }
         {

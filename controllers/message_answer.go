@@ -355,6 +355,7 @@ func (c *ApiController) GetAnswer() {
 			ClientIp:     c.getClientIp(),
 			UserAgent:    c.getUserAgent(),
 			MessageCount: 0,
+			IsHidden:     strings.HasPrefix(framework, "chat_provider_"),
 		}
 
 		chat.ClientIpDesc = util.GetDescFromIP(chat.ClientIp)
@@ -376,7 +377,7 @@ func (c *ApiController) GetAnswer() {
 	questionMessage := &object.Message{
 		Owner:        "admin",
 		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
-		CreatedTime:  chat.CreatedTime,
+		CreatedTime:  util.GetCurrentTimeEx(chat.CreatedTime),
 		Organization: chat.Organization,
 		User:         userName,
 		Chat:         chat.Name,
