@@ -50,16 +50,9 @@ class ProviderEditPage extends React.Component {
     ProviderBackend.getProvider("admin", this.state.providerName)
       .then((res) => {
         if (res.status === "ok") {
-          const provider = res.data;
-          const originalProvider = Setting.deepCopy(res.data);
-
-          if (provider.testContent === "") {
-            provider.testContent = "Hello, how are you today?";
-          }
-
           this.setState({
-            provider: provider,
-            originalProvider: originalProvider,
+            provider: res.data,
+            originalProvider: Setting.deepCopy(res.data),
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
