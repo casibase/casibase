@@ -36,6 +36,7 @@ func main() {
 	util.InitMaxmindFiles()
 	util.InitIpDb()
 	util.InitParser()
+	object.InitCleanupChats()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},
