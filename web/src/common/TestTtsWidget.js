@@ -15,20 +15,10 @@
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import * as TtsBackend from "../backend/TtsBackend";
-import * as ProviderBackend from "../backend/ProviderBackend";
+import {checkProvider} from "./ProviderWidget";
 
 // Global audio player for TTS playback
 let audioPlayer = null;
-
-async function checkProvider(provider, originalProvider) {
-  const hasChanges = JSON.stringify(originalProvider) !== JSON.stringify(provider);
-  if (hasChanges) {
-    const saveRes = await ProviderBackend.updateProvider(provider.owner, provider.name, provider);
-    if (saveRes.status !== "ok") {
-      Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${saveRes.msg}`);
-    }
-  }
-}
 
 export async function sendTestTts(provider, originalProvider, text, owner, user, setLoading = null) {
   await checkProvider(provider, originalProvider);

@@ -22,6 +22,7 @@ import * as ProviderEditTestTts from "./common/TestTtsWidget";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import McpToolsTable from "./McpToolsTable";
+import ModelTestWidget from "./common/TestModelWidget";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/javascript/javascript");
 
@@ -761,6 +762,11 @@ class ProviderEditPage extends React.Component {
             </>
           ) : null
         }
+        <ModelTestWidget
+          provider={this.state.provider}
+          originalProvider={this.state.originalProvider}
+          account={this.props.account}
+        />
         {
           this.state.provider.category === "Text-to-Speech" ? (
             <React.Fragment>
