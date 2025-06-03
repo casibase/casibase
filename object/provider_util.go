@@ -17,6 +17,8 @@ package object
 import (
 	"fmt"
 
+	"github.com/casibase/casibase/agent"
+
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/util"
@@ -86,6 +88,34 @@ func getEmbeddingProviderFromName(owner string, providerName string) (*Provider,
 	}
 
 	providerObj, err := provider.GetEmbeddingProvider()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return provider, providerObj, err
+}
+
+func getAgentProviderFromName(owner string, providerName string) (*Provider, agent.AgentProvider, error) {
+	var provider *Provider
+	var err error
+	if providerName != "" {
+		providerId := util.GetIdFromOwnerAndName(owner, providerName)
+		provider, err = GetProvider(providerId)
+	} else {
+		provider, err = GetDefaultAgentProvider()
+	}
+	if err != nil {
+		return nil, nil, err
+	}
+	if provider == nil {
+		return nil, nil, nil
+	}
+
+	if provider.Category != "Agent" {
+		return nil, nil, fmt.Errorf("The agent provider: %s is expected to be \"Agent\" category, got: \"%s\"", provider.GetId(), provider.Category)
+	}
+
+	providerObj, err := provider.GetAgentProvider()
 	if err != nil {
 		return nil, nil, err
 	}

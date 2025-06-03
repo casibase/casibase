@@ -89,7 +89,7 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
 	client := iflytek.NewServer(p.appID, p.apiKey, p.secretKey)
 	flusher, ok := writer.(http.Flusher)
 	if !ok {

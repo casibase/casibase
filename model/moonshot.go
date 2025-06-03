@@ -71,7 +71,7 @@ func (p *MoonshotModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
 	if p.secretKey == "" {
 		return nil, errors.New("missing moonshot_key")
 	}

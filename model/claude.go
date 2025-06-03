@@ -73,7 +73,7 @@ func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
 	client, err := anthropic.NewClient(p.secretKey)
 	if err != nil {
 		return nil, err
