@@ -93,29 +93,28 @@ class ModelTestWidget extends React.Component {
       setLoading(true);
     }
 
-    const providerName = provider.name;
-
-    const response = await fetch(`${Setting.ServerUrl}/api/get-answer?provider=${encodeURIComponent(providerName)}&question=${encodeURIComponent(question)}&framework=chat_${encodeURIComponent(providerName)}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Accept": "application/json",
-      },
-    });
-
-    const result = await response.json();
-
-    if (result.status === "ok") {
-      if (setAnswer) {
-        setAnswer(result.data);
-        setLoading(false);
-      }
-    } else {
-      Setting.showMessage("error", Setting.getRefinedErrorText(result.msg));
-      if (setAnswer) {
-        setAnswer("");
-      }
-    }
+    MessageBackend.getAnswer(provider.name, question, `chat_${provider.name}`, "")
+      .then((result) => {
+        if (result.status === "ok") {
+          if (setAnswer) {
+            setAnswer(result.data);
+            setLoading(false);
+          }
+        } else {
+          Setting.showMessage("error", Setting.getRefinedErrorText(result.msg));
+          if (setAnswer) {
+            setAnswer("");
+            setLoading(false);
+          }
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+        if (setAnswer) {
+          setAnswer("");
+          setLoading(false);
+        }
+      });
   }
 
   sendTestMessage(provider, originalProvider, messageText, account, setLoading, setMessages, messages) {
