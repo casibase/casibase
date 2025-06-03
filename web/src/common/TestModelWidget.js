@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import React from "react";
+import {Button, Col, Row} from "antd";
 import * as Setting from "../Setting";
 import {renderText} from "../ChatMessageRender";
 import moment from "moment";
@@ -19,6 +21,7 @@ import {checkProvider} from "./ProviderWidget";
 import * as ChatBackend from "../backend/ChatBackend";
 import i18next from "i18next";
 import * as MessageBackend from "../backend/MessageBackend";
+import ChatBox from "../ChatBox";
 
 function newTestMessage(text, author, provider, account) {
   const randomName = Setting.getRandomName();
@@ -139,3 +142,88 @@ export function clearTestMessages(provider, account, setMessages) {
       Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
     });
 }
+
+// React Component for Model Testing
+class ModelTestWidget extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      testMessages: [],
+      testButtonLoading: false,
+    };
+  }
+
+  componentDidMount() {
+    if (this.props.provider && this.props.provider.category === "Model") {
+      getTestMessages(
+        this.props.provider,
+        this.props.account,
+        (messages) => this.setState({testMessages: messages})
+      );
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.provider?.name !== this.props.provider?.name &&
+        this.props.provider?.category === "Model") {
+      getTestMessages(
+        this.props.provider,
+        this.props.account,
+        (messages) => this.setState({testMessages: messages})
+      );
+    }
+  }
+
+  render() {
+    const {provider, originalProvider, account} = this.props;
+
+    if (!provider || provider.category !== "Model") {
+      return null;
+    }
+
+    return (
+      <React.Fragment>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("provider:Provider test"), i18next.t("provider:Provider test - Tooltip"))} :
+          </Col>
+          <Col span={20}>
+            <div style={{marginBottom: "10px", textAlign: "right"}}>
+              <Button
+                type="primary"
+                onClick={() => clearTestMessages(
+                  provider,
+                  account,
+                  (messages) => this.setState({testMessages: messages})
+                )}
+                size="small"
+              >
+                {i18next.t("chat:New Chat")}
+              </Button>
+            </div>
+            <div style={{width: "100%", height: "600px", border: "1px solid #d9d9d9", borderRadius: "6px"}}>
+              <ChatBox
+                disableInput={false}
+                hideInput={false}
+                messages={this.state.testMessages}
+                sendMessage={(message) => sendTestMessage(
+                  provider,
+                  originalProvider,
+                  message,
+                  account,
+                  (loading) => this.setState({testButtonLoading: loading}),
+                  (messages) => this.setState({testMessages: messages}),
+                  this.state.testMessages
+                )}
+                account={account}
+                loading={this.state.testButtonLoading}
+              />
+            </div>
+          </Col>
+        </Row>
+      </React.Fragment>
+    );
+  }
+}
+
+export default ModelTestWidget;
