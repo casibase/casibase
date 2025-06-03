@@ -18,11 +18,11 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
-import * as ProviderEditTestTts from "./common/TestTtsWidget";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import McpToolsTable from "./McpToolsTable";
 import ModelTestWidget from "./common/TestModelWidget";
+import TtsTestWidget from "./common/TestTtsWidget";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/javascript/javascript");
 
@@ -36,7 +36,6 @@ class ProviderEditPage extends React.Component {
       providerName: props.match.params.providerName,
       provider: null,
       originalProvider: null,
-      testButtonLoading: false,
       refreshButtonLoading: false,
       isAdmin: props.account?.isAdmin || props.account?.owner === "admin",
     };
@@ -214,9 +213,6 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Text-to-Speech") {
                 this.updateProviderField("type", "Alibaba Cloud");
                 this.updateProviderField("subType", "cosyvoice-v1");
-                if (this.state.provider.testContent === "") {
-                  this.updateProviderField("testContent", "Hello, this is a test for text to speech conversion.");
-                }
               } else if (value === "Speech-to-Text") {
                 this.updateProviderField("type", "Alibaba Cloud");
                 this.updateProviderField("subType", "paraformer-realtime-v1");
@@ -767,37 +763,12 @@ class ProviderEditPage extends React.Component {
           originalProvider={this.state.originalProvider}
           account={this.props.account}
         />
-        {
-          this.state.provider.category === "Text-to-Speech" ? (
-            <React.Fragment>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("provider:Provider test"), i18next.t("provider:Provider test - Tooltip"))} :
-                </Col>
-                <Col span={10} >
-                  <Input.TextArea
-                    rows={1}
-                    autoSize={{minRows: 1, maxRows: 5}}
-                    value={this.state.provider.testContent}
-                    onChange={e => {
-                      this.updateProviderField("testContent", e.target.value);
-                    }}
-                  />
-                </Col>
-                <Col span={6} >
-                  <Button
-                    style={{marginLeft: "10px", marginBottom: "5px"}}
-                    type="primary"
-                    loading={this.state.testButtonLoading}
-                    disabled={!this.state.provider.testContent}
-                    onClick={() => ProviderEditTestTts.sendTestTts(this.state.provider, this.state.originalProvider, this.state.provider.testContent, this.props.account.owner, this.props.account.name, (loading) => this.setState({testButtonLoading: loading}))} >
-                    {i18next.t("chat:Read it out")}
-                  </Button>
-                </Col>
-              </Row>
-            </React.Fragment>
-          ) : null
-        }
+        <TtsTestWidget
+          provider={this.state.provider}
+          originalProvider={this.state.originalProvider}
+          account={this.props.account}
+          onUpdateProvider={this.updateProviderField.bind(this)}
+        />
         {
           this.state.provider.category === "Model" ? (
             <Row style={{marginTop: "20px"}} >
