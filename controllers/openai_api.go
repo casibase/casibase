@@ -103,7 +103,7 @@ func (c *ApiController) ChatCompletions() {
 	knowledge := []*model.RawMessage{}
 
 	// Call the model provider
-	modelResult, err := modelProvider.QueryText(question, writer, history, "", knowledge)
+	modelResult, err := modelProvider.QueryText(question, writer, history, "", knowledge, nil)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

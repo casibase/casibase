@@ -3,12 +3,13 @@ package agent
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/ThinkInAIXYZ/go-mcp/client"
 	"github.com/ThinkInAIXYZ/go-mcp/transport"
-	"github.com/sashabaranov/go-openai"
 )
 
 type ServerConfig struct {
@@ -28,14 +29,13 @@ type McpTools struct {
 }
 
 func GetToolsList(config string) ([]*McpTools, error) {
-	clients, err := GetMCPClientList(config)
+	clients, err := GetMCPClientMap(config, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	var totalTools []*McpTools
 	for name, cli := range clients {
-		var tools []openai.Tool
 		defer cli.Close()
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
@@ -44,26 +44,7 @@ func GetToolsList(config string) ([]*McpTools, error) {
 			return nil, err
 		}
 
-		for _, tool := range list.Tools {
-			schemaBytes, err := json.Marshal(tool.InputSchema)
-			if err != nil {
-				return nil, err
-			}
-
-			var parameters map[string]interface{}
-			if err := json.Unmarshal(schemaBytes, &parameters); err != nil {
-				return nil, err
-			}
-			tools = append(tools, openai.Tool{
-				Type: "function",
-				Function: &openai.FunctionDefinition{
-					Name:        tool.Name,
-					Description: tool.Description,
-					Parameters:  parameters,
-				},
-			})
-		}
-		toolsJson, err := json.Marshal(tools)
+		toolsJson, err := json.Marshal(list.Tools)
 		if err != nil {
 			return nil, err
 		}
@@ -106,7 +87,7 @@ func createMCPClient(srv ServerConfig) (*client.Client, error) {
 	return cli, nil
 }
 
-func GetMCPClientList(config string) (map[string]*client.Client, error) {
+func GetMCPClientMap(config string, toolsMap map[string]bool) (map[string]*client.Client, error) {
 	var outer struct {
 		MCPServers map[string]ServerConfig `json:"mcpServers"`
 	}
@@ -116,12 +97,34 @@ func GetMCPClientList(config string) (map[string]*client.Client, error) {
 
 	clients := make(map[string]*client.Client)
 	for name, srv := range outer.MCPServers {
+		if toolsMap != nil {
+			if enabled, exists := toolsMap[name]; !exists || !enabled {
+				continue
+			}
+		}
+
 		cli, err := createMCPClient(srv)
 		if err != nil {
+			for _, c := range clients {
+				c.Close()
+			}
 			return nil, err
 		}
 		clients[name] = cli
 	}
 
 	return clients, nil
+}
+
+func GetServerNameAndToolNameFromId(id string) (string, string) {
+	tokens := strings.Split(id, "__")
+	if len(tokens) != 2 {
+		panic(errors.New("GetServerNameAndToolNameFromName() error, wrong token count for ID: " + id))
+	}
+
+	return tokens[0], tokens[1]
+}
+
+func GetIdFromServerNameAndToolName(ServerName, toolName string) string {
+	return ServerName + "__" + toolName
 }

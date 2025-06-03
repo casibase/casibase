@@ -268,7 +268,7 @@ func flushDataThink(data string, eventType string, writer io.Writer) error {
 	return nil
 }
 
-func (p *LocalModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *LocalModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
 	var client *openai.Client
 	var flushData interface{} // Can be either flushData or flushDataThink
 
@@ -349,6 +349,9 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		if err != nil {
 			return nil, err
 		}
+		if agentInfo != nil && agentInfo.AgentMessages != nil && agentInfo.AgentMessages.Messages != nil {
+			rawMessages = append(rawMessages, agentInfo.AgentMessages.Messages...)
+		}
 
 		var messages []openai.ChatCompletionMessage
 		if strings.HasSuffix(p.subType, "-vision-preview") || strings.Contains(p.subType, "4o") {
@@ -381,9 +384,19 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			}
 		}
 
+		req := ChatCompletionRequest(model, messages, temperature, topP, frequencyPenalty, presencePenalty)
+		if agentInfo != nil && agentInfo.AgentClients != nil {
+			tools, err := reverseToolsToOpenAi(agentInfo.AgentClients.Tools)
+			if err != nil {
+				return nil, err
+			}
+			req.Tools = tools
+			req.ToolChoice = "auto"
+		}
+
 		respStream, err := client.CreateChatCompletionStream(
 			ctx,
-			ChatCompletionRequest(model, messages, temperature, topP, frequencyPenalty, presencePenalty),
+			req,
 		)
 		if err != nil {
 			return nil, err
@@ -391,7 +404,12 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		defer respStream.Close()
 
 		isLeadingReturn := true
-		var answerData strings.Builder
+		var (
+			answerData   strings.Builder
+			toolCalls    []openai.ToolCall
+			toolCallsMap map[int]int
+		)
+
 		for {
 			completion, streamErr := respStream.Recv()
 			if streamErr != nil {
@@ -403,6 +421,11 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 			if len(completion.Choices) == 0 {
 				continue
+			}
+			if completion.Choices[0].Delta.ToolCalls != nil {
+				for _, toolCall := range completion.Choices[0].Delta.ToolCalls {
+					toolCalls, toolCallsMap = handleToolCallsParameters(toolCall, toolCalls, toolCallsMap)
+				}
 			}
 
 			// Handle both regular content and reasoning content
@@ -457,6 +480,15 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 				answerData.WriteString(data)
 			}
+		}
+
+		err = handleToolCalls(toolCalls, flushData, writer)
+		if err != nil {
+			return nil, err
+		}
+
+		if agentInfo != nil && agentInfo.AgentMessages != nil {
+			agentInfo.AgentMessages.ToolCalls = toolCalls
 		}
 
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875

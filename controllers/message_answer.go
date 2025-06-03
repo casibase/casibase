@@ -19,6 +19,7 @@ import (
 	"strings"
 
 	"github.com/beego/beego"
+	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -147,6 +148,18 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
+	_, agentProviderObj, err := object.GetAgentProviderFromContext("admin", store.AgentProvider)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
+
+	agentClients, err := object.GetAgentClients(agentProviderObj)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
+
 	knowledgeCount := store.KnowledgeCount
 	if knowledgeCount <= 0 {
 		knowledgeCount = 5
@@ -192,8 +205,20 @@ func (c *ApiController) GetMessageAnswer() {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
-
-	modelResult, err := modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
+	var modelResult *model.ModelResult
+	if agentClients != nil {
+		messages := &model.AgentMessages{
+			Messages:  []*model.RawMessage{},
+			ToolCalls: nil,
+		}
+		agentInfo := &model.AgentInfo{
+			AgentClients:  agentClients,
+			AgentMessages: messages,
+		}
+		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, store.Prompt, knowledge, agentInfo)
+	} else {
+		modelResult, err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge, nil)
+	}
 	if err != nil {
 		if strings.Contains(err.Error(), "write tcp") {
 			c.ResponseError(err.Error())

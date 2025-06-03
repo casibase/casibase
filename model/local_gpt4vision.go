@@ -75,6 +75,8 @@ func OpenaiRawMessagesToGpt4VisionMessages(messages []*RawMessage) ([]openai.Cha
 			role = openai.ChatMessageRoleAssistant
 		} else if message.Author == "System" {
 			role = openai.ChatMessageRoleSystem
+		} else if message.Author == "Tool" {
+			role = openai.ChatMessageRoleTool
 		} else {
 			role = openai.ChatMessageRoleUser
 		}
@@ -83,6 +85,12 @@ func OpenaiRawMessagesToGpt4VisionMessages(messages []*RawMessage) ([]openai.Cha
 
 		item := openai.ChatCompletionMessage{
 			Role: role,
+		}
+
+		if role == openai.ChatMessageRoleTool {
+			item.ToolCallID = message.ToolCallID
+		} else if role == openai.ChatMessageRoleAssistant {
+			item.ToolCalls = message.ToolCalls
 		}
 
 		if len(messageText) > 0 {

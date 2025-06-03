@@ -73,7 +73,7 @@ func (p *MiniMaxModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
 	ctx := context.Background()
 	client, err := minimax.New(
 		minimax.WithApiToken(p.apiKey),
