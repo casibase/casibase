@@ -21,11 +21,46 @@ import (
 )
 
 func getChatMessagesFromMessages(chat string, messages []*Message) []*Message {
-	return nil
+	var chatMessages []*Message
+	for _, message := range messages {
+		if message.Chat == chat {
+			chatMessages = append(chatMessages, message)
+		}
+	}
+	return chatMessages
 }
 
 func deleteChatAndMessages(chat string) error {
+	_, err := DeleteChat(&Chat{Name: chat, Owner: "admin"})
+	if err != nil {
+		return err
+	}
+	_, err = DeleteMessagesByChat(&Message{Owner: "admin", Chat: chat})
+	if err != nil {
+		return err
+	}
 	return nil
+}
+
+func isRedundentMessages(chatMessages []*Message) bool {
+	if len(chatMessages) != 2 {
+		return false
+	}
+	var aiMessage *Message
+	if chatMessages[0].Author == "AI" && chatMessages[1].Author != "AI" {
+		aiMessage = chatMessages[0]
+	} else if chatMessages[1].Author == "AI" && chatMessages[0].Author != "AI" {
+		aiMessage = chatMessages[1]
+	} else {
+		return false
+	}
+	if aiMessage == nil {
+		return false
+	}
+	if aiMessage.Text == "" && aiMessage.ReplyTo == "Welcome" {
+		return true
+	}
+	return false
 }
 
 func cleanupChats() error {
@@ -45,8 +80,7 @@ func cleanupChats() error {
 		}
 
 		chatMessages := getChatMessagesFromMessages(chat.Name, messages)
-		// TODO: update the logic
-		if len(chatMessages) > 1 {
+		if !isRedundentMessages(chatMessages) {
 			continue
 		}
 
