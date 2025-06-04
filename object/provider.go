@@ -314,7 +314,7 @@ func GetDefaultAgentProvider() (*Provider, error) {
 	}
 
 	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.Get(&provider)
+		existed, err = providerAdapter.engine.UseBool().Get(&provider)
 		if err != nil {
 			return &provider, err
 		}
