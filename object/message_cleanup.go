@@ -80,22 +80,29 @@ func cleanupChats() error {
 
 	i := 1
 	for _, chat := range chats {
-		if chat.MessageCount != 2 {
-			continue
-		}
-
+		needDelete := false
 		chatMessages := getChatMessagesFromMessages(chat.Name, messages)
-		if !isRedundentMessages(chatMessages) {
-			continue
+		if chat.MessageCount == 0 || len(chatMessages) == 0 {
+			needDelete = true
+		} else if chat.MessageCount == 1 {
+			if chatMessages[0].Author == "AI" {
+				needDelete = true
+			}
+		} else if chat.MessageCount == 2 {
+			if isRedundentMessages(chatMessages) {
+				needDelete = true
+			}
 		}
 
-		err = deleteChatAndMessages(chat.Name)
-		if err != nil {
-			return err
-		}
+		if needDelete {
+			err = deleteChatAndMessages(chat.Name)
+			if err != nil {
+				return err
+			}
 
-		fmt.Printf("[%d] Cleaned up empty chat: [%s], user = [%s], clientIp = [%s], userAgent = [%s]\n", i, chat.Name, chat.User, chat.ClientIp, chat.UserAgent)
-		i += 1
+			fmt.Printf("[%d] Cleaned up empty chat: [%s], user = [%s], clientIp = [%s], userAgent = [%s]\n", i, chat.Name, chat.User, chat.ClientIp, chat.UserAgent)
+			i += 1
+		}
 	}
 
 	return err
