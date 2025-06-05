@@ -176,13 +176,18 @@ class FileTree extends React.Component {
 
     Promise.all(promises)
       .then((values) => {
-        const res = values[0];
-        if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully uploaded"));
-          this.props.onRefresh();
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
+        if (promises.length === 0) {
+          // no new file was uploaded
+          return;
         }
+        values.forEach((res, _index) => {
+          if (res.status !== "ok") {
+            Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
+            return;
+          }
+        });
+        Setting.showMessage("success", i18next.t("general:Successfully uploaded"));
+        this.props.onRefresh();
       })
       .catch(error => {
         Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
