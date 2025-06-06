@@ -36,7 +36,8 @@
     "Unknown block type": "Unknown block type",
     "ZH 🡰 EN": "ZH 🡰 EN",
     "ZH 🡲 EN": "ZH 🡲 EN",
-    "failed to save": "failed to save"
+    "failed to save": "failed to save",
+    "failed to save: server side failure": "failed to save: server side failure"
   },
   "chat": {
     "AI": "AI",
@@ -104,7 +105,7 @@
     "Chat": "我的问答",
     "Chat - Tooltip": "与AI交互的对话界面（用于项目生成指导）",
     "Chats": "会话",
-    "Chats \u0026 Messages": "会话 \u0026 消息",
+    "Chats & Messages": "会话 & 消息",
     "Client IP": "客户端IP",
     "Client IP - Tooltip": "客户端原始IP地址",
     "Close": "关闭",
@@ -142,6 +143,7 @@
     "Failed to get users": "Failed to get users",
     "Failed to query record": "查询记录失败",
     "Failed to save": "保存失败",
+    "Failed to save: server side failure": "Failed to save: server side failure",
     "Failed to start recording": "启动录音失败",
     "Failed to stop": "停止失败",
     "Go to writable demo site?": "前往可写的演示站点？",
@@ -150,7 +152,7 @@
     "ID - Tooltip": "云平台中的镜像ID",
     "IP": "IP",
     "IP - Tooltip": "节点内网IP地址",
-    "Identity \u0026 Access Management": "身份 \u0026 访问管理",
+    "Identity & Access Management": "身份 & 访问管理",
     "Images": "镜像",
     "Is alerted": "已警告",
     "Is alerted - Tooltip": "标记是否已触发警告",
@@ -163,7 +165,7 @@
     "Language - Tooltip": "语言环境（如 zh-CN/en-US）",
     "Loading...": "加载中...",
     "Logged in successfully": "Logged in successfully",
-    "Logging \u0026 Auditing": "日志 \u0026 审计",
+    "Logging & Auditing": "日志 & 审计",
     "Machines": "主机",
     "Menu": "菜单",
     "Message": "消息",
@@ -221,7 +223,7 @@
     "Resume": "恢复",
     "Run": "运行",
     "Save": "保存",
-    "Save \u0026 Exit": "保存并退出",
+    "Save & Exit": "保存并退出",
     "Secret ID": "密钥ID",
     "Secret ID - Tooltip": "密钥ID",
     "Secret key": "云服务商加密密钥",
@@ -563,7 +565,7 @@
     "Total Throughput": "总吞吐量",
     "Unknown version": "未知版本",
     "Version": "版本",
-    "🚀⚡️Open-Source LangChain-like AI Knowledge Database \u0026 Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)": "🚀⚡️开源的LangChain风格AI知识库与对话平台，支持Admin管理界面和多模型集成（如ChatGPT、Claude、Llama 3、DeepSeek R1、HuggingFace等）"
+    "🚀⚡️Open-Source LangChain-like AI Knowledge Database & Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)": "🚀⚡️开源的LangChain风格AI知识库与对话平台，支持Admin管理界面和多模型集成（如ChatGPT、Claude、Llama 3、DeepSeek R1、HuggingFace等）"
   },
   "task": {
     "Activity": "入项活动",
@@ -583,7 +585,8 @@
     "Question": "问题",
     "Question - Tooltip": "自动生成的完整任务提示",
     "Successfully saved": "Successfully saved",
-    "failed to save": "failed to save"
+    "failed to save": "failed to save",
+    "failed to save: server side failure": "failed to save: server side failure"
   },
   "usage": {
     "All": "总计",
@@ -611,7 +614,8 @@
     "Vector failed to add": "Vector failed to add",
     "Vector failed to delete": "Vector failed to delete",
     "Vectors failed to delete": "Vectors failed to delete",
-    "failed to save": "failed to save"
+    "failed to save": "failed to save",
+    "failed to save: server side failure": "failed to save: server side failure"
   },
   "video": {
     "All": "全部",
@@ -690,7 +694,8 @@
     "Video failed to delete": "Video failed to delete",
     "Video failed to upload": "Video failed to upload",
     "Video uploaded successfully": "Video uploaded successfully",
-    "failed to save": "failed to save"
+    "failed to save": "failed to save",
+    "failed to save: server side failure": "failed to save: server side failure"
   },
   "workflow": {
     "Edit Workflow": "编辑工作流",
@@ -701,6 +706,7 @@
     "Workflow deleted successfully": "Workflow deleted successfully",
     "Workflow failed to add": "Workflow failed to add",
     "Workflow failed to delete": "Workflow failed to delete",
-    "failed to save": "failed to save"
+    "failed to save": "failed to save",
+    "failed to save: server side failure": "failed to save: server side failure"
   }
 }

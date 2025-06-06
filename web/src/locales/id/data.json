@@ -36,7 +36,8 @@
     "Unknown block type": "Unknown block type",
     "ZH 🡰 EN": "ZH 🡰 EN",
     "ZH 🡲 EN": "ZH 🡲 EN",
-    "failed to save": "failed to save"
+    "failed to save": "failed to save",
+    "failed to save: server side failure": "failed to save: server side failure"
   },
   "chat": {
     "AI": "AI",
@@ -104,7 +105,7 @@
     "Chat": "Chat",
     "Chat - Tooltip": "Chat - Tooltip",
     "Chats": "Chats",
-    "Chats \u0026 Messages": "Chats \u0026 Messages",
+    "Chats & Messages": "Chats & Messages",
     "Client IP": "Client IP",
     "Client IP - Tooltip": "Client IP - Tooltip",
     "Close": "Close",
@@ -142,6 +143,7 @@
     "Failed to get users": "Failed to get users",
     "Failed to query record": "Failed to query record",
     "Failed to save": "Failed to save",
+    "Failed to save: server side failure": "Failed to save: server side failure",
     "Failed to start recording": "Failed to start recording",
     "Failed to stop": "Failed to stop",
     "Go to writable demo site?": "Go to writable demo site?",
@@ -150,7 +152,7 @@
     "ID - Tooltip": "ID - Tooltip",
     "IP": "IP",
     "IP - Tooltip": "IP - Tooltip",
-    "Identity \u0026 Access Management": "Identity \u0026 Access Management",
+    "Identity & Access Management": "Identity & Access Management",
     "Images": "Images",
     "Is alerted": "Is alerted",
     "Is alerted - Tooltip": "Is alerted - Tooltip",
@@ -163,7 +165,7 @@
     "Language - Tooltip": "Language - Tooltip",
     "Loading...": "Loading...",
     "Logged in successfully": "Logged in successfully",
-    "Logging \u0026 Auditing": "Logging \u0026 Auditing",
+    "Logging & Auditing": "Logging & Auditing",
     "Machines": "Machines",
     "Menu": "Menu",
     "Message": "Message",
@@ -221,7 +223,7 @@
     "Resume": "Resume",
     "Run": "Run",
     "Save": "Save",
-    "Save \u0026 Exit": "Save \u0026 Exit",
+    "Save & Exit": "Save & Exit",
     "Secret ID": "Secret ID",
     "Secret ID - Tooltip": "Secret ID - Tooltip",
     "Secret key": "Secret key",
@@ -563,7 +565,7 @@
     "Total Throughput": "Jumlah Keluaran",
     "Unknown version": "Versi tidak diketahui",
     "Version": "Versi",
-    "🚀⚡️Open-Source LangChain-like AI Knowledge Database \u0026 Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)": "🚀⚡️Open-Source LangChain-like AI Knowledge Database \u0026 Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)"
+    "🚀⚡️Open-Source LangChain-like AI Knowledge Database & Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)": "🚀⚡️Open-Source LangChain-like AI Knowledge Database & Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)"
   },
   "task": {
     "Activity": "Activity",
@@ -583,7 +585,8 @@
     "Question": "Question",
     "Question - Tooltip": "Question - Tooltip",
     "Successfully saved": "Successfully saved",
-    "failed to save": "failed to save"
+    "failed to save": "failed to save",
+    "failed to save: server side failure": "failed to save: server side failure"
   },
   "usage": {
     "All": "All",
@@ -611,7 +614,8 @@
     "Vector failed to add": "Vector failed to add",
     "Vector failed to delete": "Vector failed to delete",
     "Vectors failed to delete": "Vectors failed to delete",
-    "failed to save": "failed to save"
+    "failed to save": "failed to save",
+    "failed to save: server side failure": "failed to save: server side failure"
   },
   "video": {
     "All": "All",
@@ -690,7 +694,8 @@
     "Video failed to delete": "Video failed to delete",
     "Video failed to upload": "Video failed to upload",
     "Video uploaded successfully": "Video uploaded successfully",
-    "failed to save": "failed to save"
+    "failed to save": "failed to save",
+    "failed to save: server side failure": "failed to save: server side failure"
   },
   "workflow": {
     "Edit Workflow": "Edit Workflow",
@@ -701,6 +706,7 @@
     "Workflow deleted successfully": "Workflow deleted successfully",
     "Workflow failed to add": "Workflow failed to add",
     "Workflow failed to delete": "Workflow failed to delete",
-    "failed to save": "failed to save"
+    "failed to save": "failed to save",
+    "failed to save: server side failure": "failed to save: server side failure"
   }
 }
