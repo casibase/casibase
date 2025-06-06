@@ -96,7 +96,7 @@ func (c *Client) initSliceUpload(filename, language string, filesize, sliceNum i
 	if info.Ok == 0 {
 		taskId = info.Data
 	} else {
-		err = fmt.Errorf(info.Failed)
+		err = fmt.Errorf("init slice upload failed: %s", info.Failed)
 	}
 
 	return
@@ -130,7 +130,7 @@ func (c *Client) performSliceUpload(filename, taskId string, filesize, sliceNum 
 		}
 
 		if info.Ok != 0 {
-			return fmt.Errorf(info.Failed)
+			return fmt.Errorf("perform slice upload failed: %s", info.Failed)
 		}
 	}
 	return nil
@@ -148,7 +148,7 @@ func (c *Client) completeSliceUpload(taskId string) (err error) {
 	}
 
 	if info.Ok != 0 {
-		return fmt.Errorf(info.Failed)
+		return fmt.Errorf("complete slice upload failed: %s", info.Failed)
 	}
 
 	return nil
@@ -167,7 +167,7 @@ func (c *Client) doWorker(filename, taskId string, b []byte) (err error) {
 	}
 
 	if info.Ok != 0 {
-		return fmt.Errorf(info.Failed)
+		return fmt.Errorf("worker upload failed: %s", info.Failed)
 	}
 
 	return
@@ -186,7 +186,7 @@ func (c *Client) getProgress(taskId string) (*Response, error) {
 	}
 
 	if info.Ok != 0 {
-		return nil, fmt.Errorf(info.Failed)
+		return nil, fmt.Errorf("get progress failed: %s", info.Failed)
 	}
 
 	var res *Response
@@ -208,7 +208,7 @@ func (c *Client) getResult(taskId string) ([]*Segment, error) {
 	}
 
 	if info.Ok != 0 {
-		return nil, fmt.Errorf(info.Failed)
+		return nil, fmt.Errorf("get result failed: %s", info.Failed)
 	}
 
 	segments, err := parseSegmentResponse(info.Data)
