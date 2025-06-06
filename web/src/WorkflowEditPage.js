@@ -49,7 +49,7 @@ class WorkflowEditPage extends React.Component {
             workflow: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get workflow: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("workflow:Failed to get workflow")}: ${res.msg}`);
         }
       });
   }
@@ -192,7 +192,7 @@ class WorkflowEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("workflow:Successfully saved"));
             this.setState({
               workflowName: this.state.workflow.name,
             });
@@ -203,15 +203,15 @@ class WorkflowEditPage extends React.Component {
               this.getWorkflow();
             }
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("workflow:failed to save: server side failure"));
             this.updateWorkflowField("name", this.state.workflowName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("workflow:failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("workflow:failed to save")}: ${error}`);
       });
   }
 

@@ -14,6 +14,7 @@
 
 import * as Setting from "../Setting";
 import * as STTBackend from "../backend/SttBackend";
+import i18next from "i18next";
 
 class RemoteSpeechToTextProvider {
   constructor(parent) {
@@ -102,7 +103,7 @@ class RemoteSpeechToTextProvider {
         })
         .catch(error => {
           reject(error);
-          Setting.showMessage("error", `Microphone access error: ${error.message}`);
+          Setting.showMessage("error", `${i18next.t("provider:Microphone access error")}: ${error.message}`);
         });
     });
   }
@@ -164,19 +165,19 @@ class RemoteSpeechToTextProvider {
           if (resultCallback && typeof resultCallback === "function") {
             try {
               resultCallback(syntheticEvent);
-              Setting.showMessage("success", "Speech recognition completed");
+              Setting.showMessage("success", i18next.t("provider:Speech recognition completed"));
             } catch (callbackError) {
-              Setting.showMessage("error", "Error displaying speech recognition result");
+              Setting.showMessage("error", i18next.t("provider:Error displaying speech recognition result"));
             }
           } else {
-            Setting.showMessage("error", "Cannot display speech recognition result");
+            Setting.showMessage("error", i18next.t("provider:Cannot display speech recognition result"));
           }
         } else {
           throw new Error(result.msg || "Speech-to-text processing failed");
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Cloud speech-to-text failed: ${error.message}. Falling back to browser recognition.`);
+        Setting.showMessage("error", `${i18next.t("provider:Cloud speech-to-text failed")}: ${error.message}. Falling back to browser recognition.`);
       });
   }
 
