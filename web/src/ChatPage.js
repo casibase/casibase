@@ -687,16 +687,25 @@ class ChatPage extends BaseListPage {
                   filter: "grayscale(80%) brightness(140%) contrast(90%)",
                   opacity: 0.5,
                   pointerEvents: "none",
-                }}></div>
+                }}>
+                </div>
               )}
-              <ChatBox ref={this.chatBox} disableInput={this.state.disableInput} loading={this.state.messageLoading}
-                messages={this.state.messages} messageError={this.state.messageError}
+              <ChatBox
+                ref={this.chatBox}
+                disableInput={this.state.disableInput}
+                loading={this.state.messageLoading}
+                messages={this.state.messages}
+                messageError={this.state.messageError}
                 sendMessage={(text, fileName, regenerate = false) => {
                   this.sendMessage(text, fileName, false, regenerate);
-                }} onMessageEdit={this.handleMessageEdit} onCancelMessage={this.cancelMessage}
-                account={this.props.account} name={this.state.chat?.name}
+                }}
+                onMessageEdit={this.handleMessageEdit}
+                onCancelMessage={this.cancelMessage}
+                account={this.props.account}
+                name={this.state.chat?.name}
                 displayName={this.state.chat?.displayName}
-                store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : this.state.defaultStore} />
+                store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : this.state.stores?.find(store => store.isDefault === true)}
+              />
             </div>
           )}
         </div>
