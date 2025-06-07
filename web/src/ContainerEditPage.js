@@ -44,7 +44,7 @@ class ContainerEditPage extends React.Component {
             container: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get container: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get container")}: ${res.msg}`);
         }
       });
   }

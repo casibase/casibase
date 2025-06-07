@@ -17,6 +17,7 @@ import FileTreePage from "./FileTreePage";
 import {Redirect} from "react-router-dom";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
+import i18next from "i18next";
 import ChatPage from "./ChatPage";
 import UsagePage from "./UsagePage";
 
@@ -45,7 +46,7 @@ class HomePage extends React.Component {
             store: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get store: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get store")}: ${res.msg}`);
         }
       });
   }

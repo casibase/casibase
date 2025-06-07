@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import * as Setting from "./Setting";
+import i18next from "i18next";
 import BrowserSpeechToTextProvider from "./SpeechProvider/BrowserSpeechToTextProvider";
 import RemoteSpeechToTextProvider from "./SpeechProvider/RemoteSpeechToTextProvider";
 import {bufferToWav} from "./SpeechProvider/AudioUtils";
@@ -82,7 +83,7 @@ class SpeechToTextHelper {
             }
           })
           .catch(error => {
-            Setting.showMessage("error", "Could not process audio recording. Please try again or speak more clearly.");
+            Setting.showMessage("error", i18next.t("general:Could not process audio recording. Please try again or speak more clearly."));
             reject(error);
           });
       };
@@ -98,7 +99,7 @@ class SpeechToTextHelper {
   // Process audio file with speech recognition
   processAudioFile(audioBlob, store, resultCallback) {
     if (!audioBlob || audioBlob.size === 0) {
-      Setting.showMessage("error", "No audio data was captured. Please try again.");
+      Setting.showMessage("error", i18next.t("general:No audio data was captured. Please try again."));
       return;
     }
     this.remoteProvider.processWithCloud(audioBlob, store, resultCallback);
