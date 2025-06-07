@@ -20,6 +20,7 @@ import * as StoreBackend from "./backend/StoreBackend";
 import ChatMenu from "./ChatMenu";
 import ChatBox from "./ChatBox";
 import StoreInfoTitle from "./StoreInfoTitle";
+import MultiPaneManager from "./MultiPaneManager";
 import {renderReason, renderText} from "./ChatMessageRender";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
@@ -46,6 +47,9 @@ class ChatPage extends BaseListPage {
       messageError: false,
       autoRead: false,
       chatMenuVisible: false,
+      defaultStore: null,
+      filteredStores: [],
+      paneCount: 1,
     });
 
     this.fetch();
@@ -84,8 +88,19 @@ class ChatPage extends BaseListPage {
   getGlobalStores() {
     StoreBackend.getGlobalStores("", "", "", "", "", "").then((res) => {
       if (res.status === "ok") {
+        const stores = res?.data;
+        const defaultStore = stores?.find(store => store.isDefault);
+
+        let filteredStores = [];
+        if (stores && defaultStore && defaultStore.childStores && defaultStore.childStores.length > 0) {
+          const childStoreNames = new Set(defaultStore.childStores);
+          filteredStores = stores.filter(store => childStoreNames.has(store.name));
+        }
+
         this.setState({
-          stores: res?.data,
+          stores: stores,
+          defaultStore: defaultStore,
+          filteredStores: filteredStores,
         });
       } else {
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -642,20 +657,22 @@ class ChatPage extends BaseListPage {
         )}
 
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative", display: "flex", flexDirection: "column"}}>
-          {this.state.chat && (
+          {this.state.chat && this.state.paneCount === 1 && (
             <div style={{display: "flex", alignItems: "center"}}>
               {Setting.isMobile() && (
                 <Button type="text" icon={<BarsOutlined />} onClick={this.toggleChatMenu} style={{marginRight: "8px"}} />
               )}
               <div style={{flex: 1}}>
-                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} />
+                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} />
               </div>
             </div>
           )}
 
-          <div style={{flex: 1, position: "relative", overflow: "auto"}}>
-            {
-              (this.state.messages === undefined || this.state.messages === null) ? null : (
+          {this.state.paneCount > 1 ? (
+            <MultiPaneManager stores={this.state.stores} filteredStores={this.state.filteredStores} defaultStore={this.state.defaultStore} account={this.props.account} messageLoading={this.state.messageLoading} messageError={this.state.messageError} onCancelMessage={this.cancelMessage} initialChat={this.state.chat} onChatUpdate={(chat) => this.setState({chat})} onSetMessageLoading={(loading) => this.setState({messageLoading: loading})} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} />
+          ) : (
+            <div style={{flex: 1, position: "relative", overflow: "auto"}}>
+              {(this.state.messages === undefined || this.state.messages === null) ? null : (
                 <div style={{
                   position: "absolute",
                   top: -50,
@@ -670,27 +687,18 @@ class ChatPage extends BaseListPage {
                   filter: "grayscale(80%) brightness(140%) contrast(90%)",
                   opacity: 0.5,
                   pointerEvents: "none",
-                }}>
-                </div>
-              )
-            }
-            <ChatBox
-              ref={this.chatBox}
-              disableInput={this.state.disableInput}
-              loading={this.state.messageLoading}
-              messages={this.state.messages}
-              messageError={this.state.messageError}
-              sendMessage={(text, fileName, regenerate = false) => {
-                this.sendMessage(text, fileName, false, regenerate);
-              }}
-              onMessageEdit={this.handleMessageEdit}
-              onCancelMessage={this.cancelMessage}
-              account={this.props.account}
-              name={this.state.chat?.name}
-              displayName={this.state.chat?.displayName}
-              store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : this.state.stores?.find(store => store.isDefault === true)}
-            />
-          </div>
+                }}></div>
+              )}
+              <ChatBox ref={this.chatBox} disableInput={this.state.disableInput} loading={this.state.messageLoading}
+                messages={this.state.messages} messageError={this.state.messageError}
+                sendMessage={(text, fileName, regenerate = false) => {
+                  this.sendMessage(text, fileName, false, regenerate);
+                }} onMessageEdit={this.handleMessageEdit} onCancelMessage={this.cancelMessage}
+                account={this.props.account} name={this.state.chat?.name}
+                displayName={this.state.chat?.displayName}
+                store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : this.state.defaultStore} />
+            </div>
+          )}
         </div>
       </div>
     );

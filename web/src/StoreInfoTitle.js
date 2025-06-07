@@ -1,5 +1,20 @@
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, {useEffect, useMemo, useRef, useState} from "react";
-import {Select, Switch} from "antd";
+import {Button, Select, Switch} from "antd";
+import {MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as ChatBackend from "./backend/ChatBackend";
@@ -7,7 +22,8 @@ import * as StoreBackend from "./backend/StoreBackend";
 import i18next from "i18next";
 
 const StoreInfoTitle = (props) => {
-  const {chat, stores, onChatUpdated, onStoreUpdated, autoRead, onUpdateAutoRead} = props;
+  const {chat, stores, onChatUpdated, onStoreUpdated, autoRead, onUpdateAutoRead, account, paneCount = 1, onPaneCountChange, showPaneControls = false} = props;
+
   const [modelProviders, setModelProviders] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [selectedProvider, setSelectedProvider] = useState(null);
@@ -26,17 +42,29 @@ const StoreInfoTitle = (props) => {
       setDefaultStore(foundDefaultStore);
     }
   }, [stores]);
-  // Filter stores to show default store and its child stores
+
+  // Filter stores based on user type and pane count
   const filteredStores = useMemo(() => {
     if (!stores || !defaultStore) {return [];}
 
+    // In multi-pane mode, all stores are available
+    if (paneCount > 1) {
+      return stores;
+    }
+
+    // In single chat mode: all users (including admin and chat-admin) can only see childStores
     if (defaultStore.childStores && defaultStore.childStores.length > 0) {
       const childStoreNames = new Set(defaultStore.childStores);
       return stores.filter(store => childStoreNames.has(store.name));
     }
 
     return [];
-  }, [stores, defaultStore]);
+  }, [stores, defaultStore, paneCount]);
+
+  // Check if user can manage panes: only admin and chat-admin
+  const canManagePanes = useMemo(() => {
+    return account?.isAdmin || account?.type === "chat-admin";
+  }, [account?.isAdmin, account?.type]);
 
   // Check if device is mobile
   useEffect(() => {
@@ -205,7 +233,27 @@ const StoreInfoTitle = (props) => {
     }
   };
 
-  const shouldShowTitleBar = filteredStores.length > 0 || modelProviders.length > 0 || storeInfo?.showAutoRead;
+  // Pane control functions
+  const addPane = () => {
+    const newCount = paneCount + 1;
+    if (newCount > 4) {
+      return;
+    }
+    if (onPaneCountChange) {
+      onPaneCountChange(newCount);
+    }
+  };
+
+  const deletePane = () => {
+    if (paneCount <= 1) {
+      return;
+    }
+    if (onPaneCountChange) {
+      onPaneCountChange(paneCount - 1);
+    }
+  };
+
+  const shouldShowTitleBar = paneCount === 1 && (filteredStores.length > 0 || modelProviders.length > 0 || storeInfo?.showAutoRead || (showPaneControls && canManagePanes));
 
   if (!shouldShowTitleBar) {
     return null;
@@ -223,12 +271,7 @@ const StoreInfoTitle = (props) => {
         {filteredStores.length > 0 && (
           <div style={{marginRight: "20px"}}>
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Store")}:</span>}
-            <Select
-              value={selectedStore?.name || storeInfo?.name || "Default Store"}
-              style={{width: isMobile ? "35vw" : "12rem"}}
-              onChange={handleStoreChange}
-              disabled={isUpdating}
-            >
+            <Select value={selectedStore?.name || storeInfo?.name || (filteredStores[0]?.name)} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating}>
               {filteredStores.map(store => (
                 <Select.Option key={store.name} value={store.name}>
                   {store.displayName || store.name}
@@ -240,15 +283,7 @@ const StoreInfoTitle = (props) => {
         {modelProviders.length > 0 && (
           <div>
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Model")}:</span>}
-            <Select
-              value={selectedProvider || storeInfo?.modelProvider || "Default"}
-              style={{width: isMobile ? "35vw" : "15rem"}}
-              onChange={handleProviderChange}
-              disabled={isUpdating}
-              popupMatchSelectWidth ={false}
-              optionLabelProp="children"
-              suffixIcon={<div />}
-            >
+            <Select value={selectedProvider || storeInfo?.modelProvider || (modelProviders[0]?.name)} style={{width: isMobile ? "35vw" : "15rem"}} onChange={handleProviderChange} disabled={isUpdating} popupMatchSelectWidth={false} optionLabelProp="children" suffixIcon={<div />}>
               {modelProviders.map(provider => {
                 const displayName = provider.displayName || provider.name;
                 return (
@@ -267,11 +302,6 @@ const StoreInfoTitle = (props) => {
                   </Select.Option>
                 );
               })}
-              {modelProviders.length === 0 && (
-                <Select.Option key="default" value="Default">
-                        Default
-                </Select.Option>
-              )}
             </Select>
           </div>)}
 
@@ -285,6 +315,14 @@ const StoreInfoTitle = (props) => {
             </div>
           )
         }
+
+        {showPaneControls && canManagePanes && (
+          <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+            <span style={{fontSize: "12px", color: "#666"}}>Panes: {paneCount}</span>
+            <Button size="small" icon={<PlusOutlined />} onClick={addPane} />
+            <Button size="small" icon={<MinusOutlined />} onClick={deletePane} disabled={paneCount <= 1} />
+          </div>
+        )}
       </div>
 
       {storeInfo && (
