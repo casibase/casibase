@@ -19,24 +19,48 @@ package i18n
 
 import "testing"
 
-func applyToOtherLanguage(dataEn *I18nData, lang string) {
-	dataOther := readI18nFile(lang)
-	println(dataOther)
+func TestGenerateI18nFrontend(t *testing.T) {
+	data := parseAllWords("frontend")
 
-	applyData(dataEn, dataOther)
-	writeI18nFile(lang, dataEn)
+	applyToOtherLanguage("frontend", "en", data)
+	applyToOtherLanguage("frontend", "zh", data)
+	applyToOtherLanguage("frontend", "fr", data)
+	applyToOtherLanguage("frontend", "de", data)
+	applyToOtherLanguage("frontend", "id", data)
+	applyToOtherLanguage("frontend", "ja", data)
+	applyToOtherLanguage("frontend", "ko", data)
+	applyToOtherLanguage("frontend", "ru", data)
+	applyToOtherLanguage("frontend", "es", data)
 }
 
-func TestGenerateI18nStrings(t *testing.T) {
-	dataEn := parseToData()
-	writeI18nFile("en", dataEn)
+// Backend I18n currently not implemented.
+// func TestGenerateI18nBackend(t *testing.T) {
+// 	data := parseAllWords("backend")
 
-	applyToOtherLanguage(dataEn, "zh")
-	applyToOtherLanguage(dataEn, "fr")
-	applyToOtherLanguage(dataEn, "de")
-	applyToOtherLanguage(dataEn, "id")
-	applyToOtherLanguage(dataEn, "ja")
-	applyToOtherLanguage(dataEn, "ko")
-	applyToOtherLanguage(dataEn, "ru")
-	applyToOtherLanguage(dataEn, "es")
-}
+// 	applyToOtherLanguage("backend", "en", data)
+// 	applyToOtherLanguage("backend", "zh", data)
+// 	applyToOtherLanguage("backend", "es", data)
+// 	applyToOtherLanguage("backend", "fr", data)
+// 	applyToOtherLanguage("backend", "de", data)
+// 	applyToOtherLanguage("backend", "id", data)
+// 	applyToOtherLanguage("backend", "ja", data)
+// 	applyToOtherLanguage("backend", "ko", data)
+// 	applyToOtherLanguage("backend", "ru", data)
+// 	applyToOtherLanguage("backend", "vi", data)
+// 	applyToOtherLanguage("backend", "pt", data)
+// 	applyToOtherLanguage("backend", "it", data)
+// 	applyToOtherLanguage("backend", "ms", data)
+// 	applyToOtherLanguage("backend", "tr", data)
+// 	applyToOtherLanguage("backend", "ar", data)
+// 	applyToOtherLanguage("backend", "he", data)
+// 	applyToOtherLanguage("backend", "nl", data)
+// 	applyToOtherLanguage("backend", "pl", data)
+// 	applyToOtherLanguage("backend", "fi", data)
+// 	applyToOtherLanguage("backend", "sv", data)
+// 	applyToOtherLanguage("backend", "uk", data)
+// 	applyToOtherLanguage("backend", "kk", data)
+// 	applyToOtherLanguage("backend", "fa", data)
+// 	applyToOtherLanguage("backend", "cs", data)
+// 	applyToOtherLanguage("backend", "sk", data)
+// 	applyToOtherLanguage("backend", "es", data)
+// }

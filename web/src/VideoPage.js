@@ -17,6 +17,7 @@ import {Card, Col, Row} from "antd";
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import Video from "./Video";
+import i18next from "i18next";
 
 class VideoPage extends React.Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class VideoPage extends React.Component {
             video: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get video: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }

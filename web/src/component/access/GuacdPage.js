@@ -23,6 +23,7 @@ import {Base64} from "js-base64";
 import Draggable from "react-draggable";
 import GuacdClipboard from "./GuacdClipboard";
 import * as SessionBackend from "../../backend/SessionBackend";
+import i18next from "i18next";
 
 const STATE_IDLE = 0;
 const STATE_CONNECTING = 1;
@@ -75,7 +76,7 @@ const GuacdPage = (props) => {
         setSession(session);
         renderDisplay(`${session.owner}/${session.name}`, session.protocol, box.width, box.height);
       } else {
-        Setting.showMessage("error", "Failed to connect: " + res.msg);
+        Setting.showMessage("error", i18next.t("general:Failed to connect" + res.msg));
       }
     });
   };
@@ -325,7 +326,7 @@ const GuacdPage = (props) => {
     for (let j = 0; j < keys.length; j++) {
       guacd.client.sendKeyEvent(0, keys[j]);
     }
-    Setting.showMessage("success", "Combination Keys successfully sent");
+    Setting.showMessage("success", i18next.t("general:Successfully uploaded"));
   };
 
   const showMessage = (msg) => {

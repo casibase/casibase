@@ -56,7 +56,7 @@ class TaskEditPage extends React.Component {
             task: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get task: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -75,7 +75,7 @@ class TaskEditPage extends React.Component {
         if (res.status === "ok") {
           this.updateTaskField("log", res.data);
         } else {
-          Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
 
         this.setState({
@@ -92,7 +92,7 @@ class TaskEditPage extends React.Component {
             modelProviders: res.data.filter(provider => provider.category === "Model"),
           });
         } else {
-          Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -404,7 +404,7 @@ class TaskEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               taskName: this.state.task.name,
             });
@@ -414,15 +414,15 @@ class TaskEditPage extends React.Component {
               this.props.history.push(`/tasks/${this.state.task.name}`);
             }
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("general:Failed to save"));
             this.updateTaskField("name", this.state.taskName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
       });
   }
 

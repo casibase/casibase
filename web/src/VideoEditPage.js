@@ -75,7 +75,7 @@ class VideoEditPage extends React.Component {
             this.getDataAndParse(res.data.dataUrl);
           }
         } else {
-          Setting.showMessage("error", `Failed to get video: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -88,7 +88,7 @@ class VideoEditPage extends React.Component {
             tasks: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get tasks: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -861,7 +861,7 @@ class VideoEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               videoName: this.state.video.name,
             });
@@ -871,15 +871,15 @@ class VideoEditPage extends React.Component {
               this.props.history.push(`/videos/${this.state.video.owner}/${this.state.video.name}`);
             }
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("general:Failed to save"));
             this.updateVideoField("name", this.state.videoName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
       });
   }
 

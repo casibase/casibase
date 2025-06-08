@@ -78,7 +78,7 @@ class ChatListPage extends BaseListPage {
     ChatBackend.addChat(newChat)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Chat added successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully added"));
           this.setState({
             data: Setting.prependRow(this.state.data, newChat),
             pagination: {
@@ -87,11 +87,11 @@ class ChatListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Failed to add Chat: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Chat failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
       });
   }
 
@@ -103,7 +103,7 @@ class ChatListPage extends BaseListPage {
     ChatBackend.deleteChat(record)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Chat deleted successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully deleted"));
           this.setState({
             data: this.state.data.filter((item) => item.name !== record.name),
             pagination: {
@@ -112,11 +112,11 @@ class ChatListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Failed to delete Chat: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Chat failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
       });
   }
 

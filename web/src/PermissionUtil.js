@@ -15,6 +15,7 @@
 import * as PermissionBackend from "./backend/PermissionBackend";
 import * as Setting from "./Setting";
 import moment from "moment";
+import i18next from "i18next";
 
 export function addPermission(account, store, file = null, fileKeys = null) {
   const randomName = Setting.getRandomName();
@@ -52,10 +53,10 @@ export function addPermission(account, store, file = null, fileKeys = null) {
       if (res.status === "ok") {
         Setting.openLink(Setting.getMyProfileUrl(account).replace("/account", `/permissions/${newPermission.owner}/${newPermission.name}`));
       } else {
-        Setting.showMessage("error", `Permission failed to add: ${res.msg}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
       }
     })
     .catch(error => {
-      Setting.showMessage("error", `Permission failed to add: ${error}`);
+      Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
     });
 }

@@ -15,18 +15,28 @@
 package i18n
 
 import (
+	"embed"
 	"fmt"
 	"strings"
 
 	"github.com/casibase/casibase/util"
 )
 
-func getI18nFilePath(language string) string {
-	return fmt.Sprintf("../web/src/locales/%s/data.json", language)
+// //go:embed locales/*/data.json
+var f embed.FS
+
+var langMap = make(map[string]map[string]map[string]string) // for example : langMap[en][account][Invalid information] = Invalid information
+
+func getI18nFilePath(category string, language string) string {
+	if category == "backend" {
+		return fmt.Sprintf("../i18n/locales/%s/data.json", language)
+	} else {
+		return fmt.Sprintf("../web/src/locales/%s/data.json", language)
+	}
 }
 
-func readI18nFile(language string) *I18nData {
-	s := util.ReadStringFromPath(getI18nFilePath(language))
+func readI18nFile(category string, language string) *I18nData {
+	s := util.ReadStringFromPath(getI18nFilePath(category, language))
 
 	data := &I18nData{}
 	err := util.JsonToStruct(s, data)
@@ -36,12 +46,14 @@ func readI18nFile(language string) *I18nData {
 	return data
 }
 
-func writeI18nFile(language string, data *I18nData) {
+func writeI18nFile(category string, language string, data *I18nData) {
 	s := util.StructToJson(data)
 	s = strings.ReplaceAll(s, "\\\\\"", "\"")
+	s = strings.ReplaceAll(s, "\\u0026", "&")
+	s += "\n"
 	println(s)
 
-	util.WriteStringToPath(s, getI18nFilePath(language))
+	util.WriteStringToPath(s, getI18nFilePath(category, language))
 }
 
 func applyData(data1 *I18nData, data2 *I18nData) {
@@ -60,4 +72,31 @@ func applyData(data1 *I18nData, data2 *I18nData) {
 			pairs1[key] = value
 		}
 	}
+}
+
+func Translate(language string, errorText string) string {
+	tokens := strings.SplitN(errorText, ":", 2)
+	if !strings.Contains(errorText, ":") || len(tokens) != 2 {
+		return fmt.Sprintf("Translate error: the error text doesn't contain \":\", errorText = %s", errorText)
+	}
+
+	if langMap[language] == nil {
+		file, err := f.ReadFile(fmt.Sprintf("locales/%s/data.json", language))
+		if err != nil {
+			return fmt.Sprintf("Translate error: the language \"%s\" is not supported, err = %s", language, err.Error())
+		}
+
+		data := I18nData{}
+		err = util.JsonToStruct(string(file), &data)
+		if err != nil {
+			panic(err)
+		}
+		langMap[language] = data
+	}
+
+	res := langMap[language][tokens[0]][tokens[1]]
+	if res == "" {
+		res = tokens[1]
+	}
+	return res
 }

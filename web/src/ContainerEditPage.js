@@ -44,7 +44,7 @@ class ContainerEditPage extends React.Component {
             container: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get container: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -232,7 +232,7 @@ class ContainerEditPage extends React.Component {
               this.props.history.push(`/containers/${this.state.container.owner}/${encodeURIComponent(this.state.container.name)}`);
             }
           } else {
-            Setting.showMessage("error", i18next.t("general:Failed to save: server side failure"));
+            Setting.showMessage("error", i18next.t("general:Failed to save"));
             this.updateContainerField("name", this.state.containerName);
           }
         } else {
