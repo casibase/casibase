@@ -307,7 +307,7 @@ func (c *ApiController) GetMessageAnswer() {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
-	
+
 	promptToUse := store.Prompt
 	if chat.CustomPrompt != "" {
 		promptToUse = chat.CustomPrompt

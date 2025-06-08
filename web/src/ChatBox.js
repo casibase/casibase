@@ -25,7 +25,6 @@ import WelcomeHeader from "./chat/WelcomeHeader";
 import * as MessageBackend from "./backend/MessageBackend";
 import TtsHelper from "./TextToSpeech";
 import SpeechToTextHelper from "./SpeechToText";
-import PromptInput from "./chat/PromptInput";
 
 // Store the input value when the name(chat) leaves
 const inputStore = new Map();
@@ -348,15 +347,6 @@ class ChatBox extends React.Component {
       <Layout style={{display: "flex", width: "100%", height: "100%", borderRadius: "6px"}}>
         <Card style={{display: "flex", width: "100%", height: "100%", flexDirection: "column", position: "relative", padding: "24px"}}>
           {messages.length === 0 && <WelcomeHeader store={this.props.store} />}
-          {!Setting.isAnonymousUser(this.props.account) && (
-            <div style={{marginBottom: "10px"}}>
-              <PromptInput
-                value={this.props.promptValue}
-                onChange={() => this.setState({promptModalVisible: true})}
-                disabled={this.props.disableInput || this.props.loading}
-              />
-            </div>
-          )}
           <MessageList
             ref={this.messageListRef}
             messages={messages}
