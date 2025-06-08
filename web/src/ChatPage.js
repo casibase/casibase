@@ -732,25 +732,25 @@ class ChatPage extends BaseListPage {
                   pointerEvents: "none",
                 }}>
                 </div>
-            )}
-            <ChatBox
-              ref={this.chatBox}
-              disableInput={this.state.disableInput}
-              loading={this.state.messageLoading}
-              messages={this.state.messages}
-              messageError={this.state.messageError}
-              sendMessage={(text, fileName, regenerate = false) => {
-                this.sendMessage(text, fileName, false, regenerate);
-              }}
-              onMessageEdit={this.handleMessageEdit}
-              onCancelMessage={this.cancelMessage}
-              account={this.props.account}
-              name={this.state.chat?.name}
-              displayName={this.state.chat?.displayName}
-              store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : this.state.stores?.find(store => store.isDefault === true)}
-              promptValue={this.state.chatPrompt}
-              onPromptChange={this.updateChatPrompt}
-            />
+              )}
+              <ChatBox
+                ref={this.chatBox}
+                disableInput={this.state.disableInput}
+                loading={this.state.messageLoading}
+                messages={this.state.messages}
+                messageError={this.state.messageError}
+                sendMessage={(text, fileName, regenerate = false) => {
+                  this.sendMessage(text, fileName, false, regenerate);
+                }}
+                onMessageEdit={this.handleMessageEdit}
+                onCancelMessage={this.cancelMessage}
+                account={this.props.account}
+                name={this.state.chat?.name}
+                displayName={this.state.chat?.displayName}
+                store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : this.state.stores?.find(store => store.isDefault === true)}
+                promptValue={this.state.chatPrompt}
+                onPromptChange={this.updateChatPrompt}
+              />
 
             </div>
           )}
