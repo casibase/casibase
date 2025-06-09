@@ -161,6 +161,12 @@ func initAPI() {
 	beego.Router("/api/add-container", &controllers.ApiController{}, "POST:AddContainer")
 	beego.Router("/api/delete-container", &controllers.ApiController{}, "POST:DeleteContainer")
 
+	beego.Router("/api/get-pods", &controllers.ApiController{}, "GET:GetPods")
+	beego.Router("/api/get-pod", &controllers.ApiController{}, "GET:GetPod")
+	beego.Router("/api/update-pod", &controllers.ApiController{}, "POST:UpdatePod")
+	beego.Router("/api/add-pod", &controllers.ApiController{}, "POST:AddPod")
+	beego.Router("/api/delete-pod", &controllers.ApiController{}, "POST:DeletePod")
+
 	beego.Router("/api/add-node-tunnel", &controllers.ApiController{}, "POST:AddNodeTunnel")
 	beego.Router("/api/get-node-tunnel", &controllers.ApiController{}, "GET:GetNodeTunnel")
 
