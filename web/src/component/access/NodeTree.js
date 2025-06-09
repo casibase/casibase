@@ -17,6 +17,7 @@ import {Tree} from "antd";
 import * as NodeBackend from "../../backend/NodeBackend";
 import * as Setting from "../../Setting";
 import Search from "antd/es/input/Search";
+import i18next from "i18next";
 
 const NodeTree = ({onSelect, account}) => {
   const [expandedKeys, setExpandedKeys] = useState([]);
@@ -32,11 +33,11 @@ const NodeTree = ({onSelect, account}) => {
         if (res.status === "ok") {
           setTreeData(transformData(res.data));
         } else {
-          Setting.showMessage("error", `Failed to get nodes: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       })
       .catch((error) => {
-        Setting.showMessage("error", `Failed to get nodes: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${error}`);
       });
   }, []);
 

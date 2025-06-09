@@ -125,7 +125,7 @@ class LabelTable extends React.Component {
       const fileName = `labels-${this.props.video.name}-${table.length}.xlsx`;
       FileSaver.saveAs(blob, fileName);
     } catch (error) {
-      Setting.showMessage("error", `failed to download: ${error.message}`);
+      Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error.message}`);
     }
   }
 

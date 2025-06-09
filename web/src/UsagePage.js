@@ -61,7 +61,7 @@ class UsagePage extends BaseListPage {
             usageMetadata: res.data2,
           });
         } else {
-          Setting.showMessage("error", `Failed to get usages: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -109,7 +109,7 @@ class UsagePage extends BaseListPage {
           );
           this.state.selectedUser = !(this.props.account.name === "admin" || this.props.account.type === "chat-admin") ? res.data[0] : "All";
         } else {
-          Setting.showMessage("error", `Failed to get users: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -122,7 +122,7 @@ class UsagePage extends BaseListPage {
           state[`rangeUsages${rangeType}`] = res.data;
           this.setState(state);
         } else {
-          Setting.showMessage("error", `Failed to get usages: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -134,7 +134,7 @@ class UsagePage extends BaseListPage {
             userTableInfo: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get userTableInfo: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }

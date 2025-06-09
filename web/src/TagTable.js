@@ -71,7 +71,7 @@ class TagTable extends React.Component {
         if (res.status === "ok") {
           this.updateField(this.props.table, rowIndex, `tag${columnIndex + 1}`, this.trimAnswer(res.data));
         } else {
-          Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }

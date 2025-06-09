@@ -14,6 +14,7 @@
 
 import * as Setting from "../Setting";
 import {showMessage} from "../Setting";
+import i18next from "i18next";
 
 class BrowserSpeechToTextProvider {
   constructor(parent) {
@@ -27,7 +28,7 @@ class BrowserSpeechToTextProvider {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      Setting.showMessage("error", "Speech recognition is not supported in this browser.");
+      Setting.showMessage("error", i18next.t("chat:Speech recognition not supported in this browser"));
       return null;
     }
 
@@ -63,7 +64,7 @@ class BrowserSpeechToTextProvider {
 
     this.recognition.onerror = (event) => {
       if (event.error !== "aborted") {
-        Setting.showMessage("error", `Speech recognition error: ${event.error}`);
+        Setting.showMessage("error", `${i18next.t("chat:Failed to recognize speech")}: ${event.error}`);
       }
     };
 
@@ -71,7 +72,7 @@ class BrowserSpeechToTextProvider {
       this.recognition.start();
       return this.recognition;
     } catch (error) {
-      Setting.showMessage("error", `Failed to start speech recognition: ${error.message}`);
+      Setting.showMessage("error", `${i18next.t("chat:Failed to recognize speech")}: ${error.message}`);
       this.recognition = null;
       return null;
     }

@@ -16,6 +16,7 @@ import * as Setting from "./Setting";
 import BrowserSpeechToTextProvider from "./SpeechProvider/BrowserSpeechToTextProvider";
 import RemoteSpeechToTextProvider from "./SpeechProvider/RemoteSpeechToTextProvider";
 import {bufferToWav} from "./SpeechProvider/AudioUtils";
+import i18next from "i18next";
 
 class SpeechToTextHelper {
   constructor(component) {
@@ -82,7 +83,7 @@ class SpeechToTextHelper {
             }
           })
           .catch(error => {
-            Setting.showMessage("error", "Could not process audio recording. Please try again or speak more clearly.");
+            Setting.showMessage("error", i18next.t("general:Failed to decode audio data"));
             reject(error);
           });
       };
@@ -98,7 +99,7 @@ class SpeechToTextHelper {
   // Process audio file with speech recognition
   processAudioFile(audioBlob, store, resultCallback) {
     if (!audioBlob || audioBlob.size === 0) {
-      Setting.showMessage("error", "No audio data was captured. Please try again.");
+      Setting.showMessage("error", i18next.t("general:No audio data was captured. Please try again"));
       return;
     }
     this.remoteProvider.processWithCloud(audioBlob, store, resultCallback);

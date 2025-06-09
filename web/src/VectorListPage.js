@@ -48,7 +48,7 @@ class VectorListPage extends BaseListPage {
     VectorBackend.addVector(newVector)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Vector added successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully added"));
           this.setState({
             data: Setting.prependRow(this.state.data, newVector),
             pagination: {
@@ -57,11 +57,11 @@ class VectorListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Failed to add vector: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Vector failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
       });
   }
 
@@ -73,7 +73,7 @@ class VectorListPage extends BaseListPage {
     VectorBackend.deleteVector(record)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Vector deleted successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully deleted"));
           this.setState({
             data: this.state.data.filter((item) => item.name !== record.name),
             pagination: {
@@ -82,11 +82,11 @@ class VectorListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Vector failed to delete: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Vector failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
       });
   }
 
@@ -94,7 +94,7 @@ class VectorListPage extends BaseListPage {
     VectorBackend.deleteAllVectors()
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "All vectors deleted successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully deleted"));
           this.setState({
             data: [],
             pagination: {
@@ -104,11 +104,11 @@ class VectorListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Vectors failed to delete: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Vectors failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
       });
   }
 

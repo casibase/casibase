@@ -53,7 +53,7 @@ class VideoListPage extends BaseListPage {
     VideoBackend.deleteVideo(record)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Video deleted successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully deleted"));
           this.setState({
             data: this.state.data.filter((item) => item.name !== record.name),
             pagination: {
@@ -62,11 +62,11 @@ class VideoListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Video failed to delete: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Video failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
       });
   }
 
@@ -81,17 +81,17 @@ class VideoListPage extends BaseListPage {
     // }
     if (status === "done") {
       if (res.status === "ok") {
-        Setting.showMessage("success", "Video uploaded successfully");
+        Setting.showMessage("success", i18next.t("general:Successfully uploaded"));
         const videoName = res.data;
         this.props.history.push(`/videos/${this.props.account.name}/${videoName}`);
         this.setState({
           tableTitleHeight: "100%",
         });
       } else {
-        Setting.showMessage("error", `Video failed to upload: ${res.msg}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
       }
     } else if (status === "error") {
-      Setting.showMessage("success", "Video failed to upload");
+      Setting.showMessage("success", i18next.t("general:Failed to save"));
     }
   }
 

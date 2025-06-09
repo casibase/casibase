@@ -191,8 +191,9 @@ export function isChatUser(account) {
 
 export function deepCopy(obj) {
   if (obj === null) {
-    showMessage("error", "deepCopy obj is null.");
+    return null;
   }
+
   return Object.assign({}, obj);
 }
 
@@ -441,7 +442,7 @@ export function saveSheetToFile(sheet, sheetName, filename) {
     const blob = sheet2blob(sheet, sheetName);
     FileSaver.saveAs(blob, filename);
   } catch (error) {
-    showMessage("error", `failed to save: ${error.message}`);
+    showMessage("error", `${i18next.t("general:Failed to save")}: ${error.message}`);
   }
 }
 
@@ -484,10 +485,10 @@ export const redirectCatchJsonError = async(url) => {
     if (response.ok) {
       this.props.history.push(url);
     } else {
-      showMessage("error", `error in redirect: ${msg}`);
+      showMessage("error", `${i18next.t("general:Failed to redirect")}: ${msg}`);
     }
   } catch (error) {
-    showMessage("error", `failed to redirect: ${error.message}`);
+    showMessage("error", `${i18next.t("general:Failed to redirect")}: ${error.message}`);
   }
 };
 
@@ -615,16 +616,16 @@ export function submitStoreEdit(storeObj) {
     .then((res) => {
       if (res.status === "ok") {
         if (res.data) {
-          showMessage("success", "Successfully saved");
+          showMessage("success", i18next.t("general:Successfully saved"));
         } else {
-          showMessage("error", "failed to save: server side failure");
+          showMessage("error", i18next.t("general:Failed to save"));
         }
       } else {
-        showMessage("error", `failed to save: ${res.msg}`);
+        showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
       }
     })
     .catch(error => {
-      showMessage("error", `failed to save: ${error}`);
+      showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
     });
 }
 

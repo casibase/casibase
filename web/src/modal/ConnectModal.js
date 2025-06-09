@@ -73,7 +73,7 @@ const ConnectModal = (props) => {
       const link = "databases";
       Setting.openLink(link);
     } else {
-      Setting.showMessage("error", `Unknown category: ${category}`);
+      Setting.showMessage("error", `${i18next.t("general:Unknown category")}: ${category}`);
     }
   };
 

@@ -14,6 +14,7 @@
 
 import * as Setting from "./Setting";
 import * as TTSBackend from "./backend/TtsBackend";
+import i18next from "i18next";
 
 class TtsHelper {
   constructor(component) {
@@ -136,7 +137,7 @@ class TtsHelper {
           }
         }
       } catch (error) {
-        Setting.showMessage("error", "TTS stream failed. Falling back to browser TTS.");
+        Setting.showMessage("error", i18next.t("general:Failed to call TTS API, will use default browser TTS instead"));
         this.useBrowserTTS(message);
       }
     });
@@ -155,9 +156,9 @@ class TtsHelper {
     this.eventSource.addEventListener("error", (e) => {
       try {
         const errorData = JSON.parse(e.data);
-        Setting.showMessage("error", `TTS failed: ${errorData.error}. Falling back to browser TTS.`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to call TTS API, will use default browser TTS instead")}: ${errorData.error}`);
       } catch (error) {
-        Setting.showMessage("error", "TTS stream failed. Falling back to browser TTS.");
+        Setting.showMessage("error", i18next.t("general:Failed to call TTS API, will use default browser TTS instead"));
       }
 
       if (this.eventSource) {
@@ -205,7 +206,7 @@ class TtsHelper {
           isLoadingTTS: false,
         });
 
-        Setting.showMessage("error", `TTS failed: ${error.message}. Falling back to browser TTS.`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to call TTS API, will use default browser TTS instead")}: ${error.message}`);
         this.useBrowserTTS(message);
       });
   }
