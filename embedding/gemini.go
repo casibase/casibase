@@ -17,7 +17,7 @@ package embedding
 import (
 	"context"
 
-	genai "github.com/casibase/generative-ai-go/genai"
+	genai "github.com/google/generative-ai-go/genai"
 	option "google.golang.org/api/option"
 )
 

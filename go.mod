@@ -3,7 +3,7 @@ module github.com/casibase/casibase
 go 1.23.0
 
 require (
-	cloud.google.com/go/compute v1.23.3
+	cloud.google.com/go/compute v1.27.0
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.8.2
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute v1.0.0
 	github.com/ConnectAI-E/go-minimax v0.0.1
@@ -20,7 +20,6 @@ require (
 	github.com/carmel/gooxml v0.0.0-20220216072414-40ff56130850
 	github.com/casdoor/casdoor-go-sdk v0.37.0
 	github.com/casibase/dashscope-go-sdk v0.0.2
-	github.com/casibase/generative-ai-go v0.5.1
 	github.com/casibase/go-openrouter v1.0.0
 	github.com/cohere-ai/cohere-go/v2 v2.5.2
 	github.com/denisenkom/go-mssqldb v0.10.0
@@ -29,6 +28,7 @@ require (
 	github.com/gage-technologies/mistral-go v1.1.0
 	github.com/go-git/go-git/v5 v5.11.0
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/google/generative-ai-go v0.20.1
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674
 	github.com/henomis/lingoose v0.1.0
@@ -59,7 +59,7 @@ require (
 	golang.org/x/net v0.38.0
 	golang.org/x/text v0.23.0
 	golang.org/x/time v0.9.0
-	google.golang.org/api v0.153.0
+	google.golang.org/api v0.186.0
 	google.golang.org/grpc v1.71.0
 	k8s.io/api v0.28.0
 	k8s.io/apimachinery v0.28.0
@@ -70,9 +70,12 @@ require (
 )
 
 require (
-	cloud.google.com/go/ai v0.3.0 // indirect
+	cloud.google.com/go v0.115.0 // indirect
+	cloud.google.com/go/ai v0.8.0 // indirect
+	cloud.google.com/go/auth v0.6.0 // indirect
+	cloud.google.com/go/auth/oauth2adapt v0.2.2 // indirect
 	cloud.google.com/go/compute/metadata v0.6.0 // indirect
-	cloud.google.com/go/longrunning v0.5.4 // indirect
+	cloud.google.com/go/longrunning v0.5.7 // indirect
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.17.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.10.0 // indirect
@@ -137,7 +140,7 @@ require (
 	github.com/google/pprof v0.0.0-20241029153458-d1b30febd7db // indirect
 	github.com/google/s2a-go v0.1.7 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
-	github.com/googleapis/gax-go/v2 v2.12.0 // indirect
+	github.com/googleapis/gax-go/v2 v2.12.5 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
@@ -209,6 +212,7 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.51.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.60.0 // indirect
 	go.opentelemetry.io/otel v1.35.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.35.0 // indirect
@@ -225,7 +229,7 @@ require (
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/term v0.30.0 // indirect
 	golang.org/x/tools v0.29.0 // indirect
-	google.golang.org/genproto v0.0.0-20231106174013-bbf56f31fb17 // indirect
+	google.golang.org/genproto v0.0.0-20240617180043-68d350f18fd4 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250218202821-56aae31c358a // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250218202821-56aae31c358a // indirect
 	google.golang.org/protobuf v1.36.5 // indirect

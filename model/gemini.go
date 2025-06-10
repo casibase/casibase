@@ -22,7 +22,7 @@ import (
 	"strings"
 
 	"github.com/casibase/casibase/proxy"
-	"github.com/casibase/generative-ai-go/genai"
+	"github.com/google/generative-ai-go/genai"
 	"google.golang.org/api/option"
 )
 
