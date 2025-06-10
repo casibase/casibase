@@ -21,8 +21,9 @@ import (
 	"net/http"
 	"strings"
 
-	genai "github.com/casibase/generative-ai-go/genai"
-	option "google.golang.org/api/option"
+	"github.com/casibase/casibase/proxy"
+	"github.com/casibase/generative-ai-go/genai"
+	"google.golang.org/api/option"
 )
 
 type GeminiModelProvider struct {
@@ -104,7 +105,7 @@ func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult) error {
 func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
 	ctx := context.Background()
 	// Access your API key as an environment variable (see "Set up your API key" above)
-	client, err := genai.NewClient(ctx, option.WithAPIKey(p.secretKey))
+	client, err := genai.NewClient(ctx, option.WithAPIKey(p.secretKey), option.WithHTTPClient(proxy.ProxyHttpClient))
 	if err != nil {
 		return nil, err
 	}

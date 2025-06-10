@@ -1746,7 +1746,7 @@ export function getRefinedErrorText(errorText) {
   } else if (errorText.startsWith("write tcp ")) {
     return i18next.t("chat:The response has been interrupted. Please do not refresh the page during responding.");
   } else {
-    return i18next.t("chat:An error occurred during responding.");
+    return `${i18next.t("chat:An error occurred during responding")}: ${errorText}`;
   }
 }
 
