@@ -110,6 +110,11 @@ func QueryTextWithTools(p ModelProvider, question string, writer io.Writer, hist
 	if err != nil {
 		return nil, err
 	}
+
+	if agentInfo.AgentMessages.ToolCalls == nil {
+		return modelResult, nil
+	}
+
 	toolCalls := agentInfo.AgentMessages.ToolCalls.([]openai.ToolCall)
 
 	for len(toolCalls) > 0 {
