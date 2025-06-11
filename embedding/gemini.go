@@ -63,7 +63,6 @@ func (p *GeminiEmbeddingProvider) QueryVector(text string, ctx context.Context) 
 	if err != nil {
 		return nil, nil, err
 	}
-	// defer client.Close()
 
 	contents := []*genai.Content{
 		genai.NewContentFromText(text, genai.RoleUser),
@@ -76,7 +75,6 @@ func (p *GeminiEmbeddingProvider) QueryVector(text string, ctx context.Context) 
 	}
 
 	embeddingResult := &EmbeddingResult{TokenCount: 0}
-
 	err = p.calculatePrice(embeddingResult)
 	if err != nil {
 		return nil, nil, err
