@@ -45,26 +45,23 @@ func NewGeminiModelProvider(subType string, secretKey string, temperature float3
 }
 
 func (p *GeminiModelProvider) GetPricing() string {
-	return `URL:
-https://cloud.google.com/vertex-ai/generative-ai/pricing
-
-| Model                                | Input Price                            | Output Price                    |
-|--------------------------------------|----------------------------------------|---------------------------------|
-| Gemini 1.0 pro                       | $0.000125/1K characters, $0.0025/image | $0.000375/1K characters         |
-
-| Model                                | Input Price per 1K characters      | Output Price per 1K characters  |
-|--------------------------------------|------------------------------------|---------------------------------|
-| PaLM 2 for Text (Text Bison)         | Online: $0.00025, Batch: $0.00020  | Online: $0.0005, Batch: $0.0004 |
-| PaLM 2 for Text 32k (Text Bison 32k) | Online: $0.00025, Batch: $0.00020  | Online: $0.0005, Batch: $0.0004 |
-| PaLM 2 for Text (Text Unicorn)       | Online: $0.0025, Batch: $0.0020    | Online: $0.0075, Batch: $0.0060 |
-| PaLM 2 for Chat (Chat Bison)         | Online: $0.00025                   | Online: $0.0005                 |
-| PaLM 2 for Chat 32k (Chat Bison 32k) | Online: $0.00025                   | Online: $0.0005                 |
-| Embeddings for Text                  | Online: $0.000025, Batch: $0.00002 | No charge                       |
-| Codey for Code Generation            | Online: $0.00025, Batch: $0.00020  | Online: $0.0005, Batch: $0.0004 |
-| Codey for Code Generation 32k        | Online: $0.00025                   | Online: $0.0005                 |
-| Codey for Code Chat                  | Online: $0.00025                   | Online: $0.0005                 |
-| Codey for Code Chat 32k              | Online: $0.00025                   | Online: $0.0005                 |
-| Codey for Code Completion            | Online: $0.00025                   | Online: $0.0005                 |
+	return `URL: https://ai.google.dev/gemini-api/docs/pricing
+| Model                                    | Input Price (per 1M tokens)              | Output Price (per 1M tokens)            |
+|------------------------------------------|------------------------------------------|-----------------------------------------|
+| Gemini 2.5 Flash Preview                 | $0.15 (text/image/video), $1.00 (audio) | Non-thinking: $0.60, Thinking: $3.50    |
+| Gemini 2.5 Pro Preview                   | $1.25 (≤200k), $2.50 (>200k)           | $10.00 (≤200k), $15.00 (>200k)         |
+| Gemini 2.5 Flash Native Audio            | $0.50 (text), $3.00 (audio/video)      | $2.00 (text), $12.00 (audio)           |
+| Gemini 2.5 Flash Preview TTS             | $0.50 (text)                            | $10.00 (audio)                          |
+| Gemini 2.5 Pro Preview TTS               | $1.00 (text)                            | $20.00 (audio)                          |
+| Gemini 2.0 Flash                         | $0.10 (text/image/video), $0.70 (audio) | $0.40                                   |
+| Gemini 2.0 Flash-Lite                    | $0.075                                  | $0.30                                   |
+| Gemini 1.5 Flash                         | $0.075 (≤128k), $0.15 (>128k)          | $0.30 (≤128k), $0.60 (>128k)           |
+| Gemini 1.5 Flash-8B                      | $0.0375 (≤128k), $0.075 (>128k)        | $0.15 (≤128k), $0.30 (>128k)           |
+| Gemini 1.5 Pro                           | $1.25 (≤128k), $2.50 (>128k)           | $5.00 (≤128k), $10.00 (>128k)          |
+| Gemini 1.0 Pro Vision                    | $0.125                                  | $0.375                                  |
+| Imagen 3                                 | $0.03 per image                         | -                                       |
+| Veo 2                                    | $0.35 per second                        | -                                       |
+| Gemma 3 / Gemma 3n                       | Free                                    | Free                                    |
 `
 }
 
@@ -73,29 +70,133 @@ func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult) error {
 		modelResult.ResponseTokenCount = modelResult.TotalTokenCount
 	}
 
-	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
+	var inputPricePerMillionTokens, outputPricePerMillionTokens float64
+
 	switch {
-	case strings.Contains(p.subType, "gemini-1.0-pro"), strings.Contains(p.subType, "gemini-pro"), strings.Contains(p.subType, "gemini-pro-vision"):
-		// https://ai.google.dev/models/gemini
-		// gemini-pro is an alias for gemini-1.0-pro
-		inputPricePerThousandTokens = 0.000125
-		outputPricePerThousandTokens = 0.000375
-	// https://ai.google.dev/models/palm
-	case strings.Contains(p.subType, "text-bison-001"), strings.Contains(p.subType, "text-bison-32k"):
-		inputPricePerThousandTokens = 0.00025
-		outputPricePerThousandTokens = 0.0005
-	case strings.Contains(p.subType, "text-unicorn"):
-		inputPricePerThousandTokens = 0.0025
-		outputPricePerThousandTokens = 0.0075
-	case strings.Contains(p.subType, "chat-bison-001"), strings.Contains(p.subType, "chat-bison-32k"):
-		inputPricePerThousandTokens = 0.00025
-		outputPricePerThousandTokens = 0.0005
+	// Gemini 2.5 Flash Preview models (including thinking variant)
+	case strings.Contains(p.subType, "gemini-2.5-flash-preview"):
+		if strings.Contains(p.subType, "thinking") {
+			// For thinking models, assuming text input
+			inputPricePerMillionTokens = 0.15
+			outputPricePerMillionTokens = 3.50 // Thinking output price
+		} else if strings.Contains(p.subType, "tts") {
+			inputPricePerMillionTokens = 0.50   // Text input
+			outputPricePerMillionTokens = 10.00 // Audio output
+		} else if strings.Contains(p.subType, "native-audio") {
+			// Native audio models
+			inputPricePerMillionTokens = 0.50  // Text input default
+			outputPricePerMillionTokens = 2.00 // Text output default
+			// Note: Would need additional context to determine if audio is being used
+		} else {
+			// Standard Flash Preview
+			inputPricePerMillionTokens = 0.15  // Text/image/video
+			outputPricePerMillionTokens = 0.60 // Non-thinking output
+		}
+
+	// Gemini 2.5 Pro Preview models
+	case strings.Contains(p.subType, "gemini-2.5-pro-preview"):
+		if strings.Contains(p.subType, "tts") {
+			inputPricePerMillionTokens = 1.00   // Text input
+			outputPricePerMillionTokens = 20.00 // Audio output
+		} else {
+			// Standard Pro Preview - using ≤200k pricing as default
+			inputPricePerMillionTokens = 1.25
+			outputPricePerMillionTokens = 10.00
+		}
+
+	// Gemini 2.0 Flash models
+	case strings.Contains(p.subType, "gemini-2.0-flash"):
+		if strings.Contains(p.subType, "lite") {
+			inputPricePerMillionTokens = 0.075
+			outputPricePerMillionTokens = 0.30
+		} else if strings.Contains(p.subType, "thinking") {
+			// Assuming similar to 2.5 Flash thinking pricing
+			inputPricePerMillionTokens = 0.10  // Text/image/video
+			outputPricePerMillionTokens = 3.50 // Thinking output (estimated)
+		} else if strings.Contains(p.subType, "live") {
+			// Live API pricing
+			inputPricePerMillionTokens = 0.35  // Text input
+			outputPricePerMillionTokens = 1.50 // Text output
+		} else {
+			// Standard 2.0 Flash
+			inputPricePerMillionTokens = 0.10 // Text/image/video
+			outputPricePerMillionTokens = 0.40
+		}
+
+	// Gemini 2.0 Pro models
+	case strings.Contains(p.subType, "gemini-2.0-pro"):
+		// Using similar pricing to 2.5 Pro as it's not explicitly listed
+		inputPricePerMillionTokens = 1.25
+		outputPricePerMillionTokens = 10.00
+
+	// Gemini 1.5 Flash models
+	case strings.Contains(p.subType, "gemini-1.5-flash"):
+		if strings.Contains(p.subType, "8b") {
+			// Flash-8B models - using ≤128k pricing as default
+			inputPricePerMillionTokens = 0.0375
+			outputPricePerMillionTokens = 0.15
+		} else {
+			// Standard 1.5 Flash - using ≤128k pricing as default
+			inputPricePerMillionTokens = 0.075
+			outputPricePerMillionTokens = 0.30
+		}
+
+	// Gemini 1.5 Pro models
+	case strings.Contains(p.subType, "gemini-1.5-pro"):
+		// Using ≤128k pricing as default
+		inputPricePerMillionTokens = 1.25
+		outputPricePerMillionTokens = 5.00
+
+	// Gemini 1.0 Pro Vision models
+	case strings.Contains(p.subType, "gemini-1.0-pro-vision"),
+		strings.Contains(p.subType, "gemini-pro-vision"):
+		inputPricePerMillionTokens = 0.125
+		outputPricePerMillionTokens = 0.375
+
+	// Gemma models (free)
+	case strings.Contains(p.subType, "gemma-3"):
+		inputPricePerMillionTokens = 0
+		outputPricePerMillionTokens = 0
+
+	// LearnLM models (assuming similar to Flash pricing)
+	case strings.Contains(p.subType, "learnlm"):
+		inputPricePerMillionTokens = 0.10
+		outputPricePerMillionTokens = 0.40
+
+	// Image generation models
+	case strings.Contains(p.subType, "imagen-3"):
+		// $0.03 per image - need special handling
+		modelResult.TotalPrice = 0.03
+		modelResult.Currency = "USD"
+		return nil
+
+	// Video generation models
+	case strings.Contains(p.subType, "veo-2"):
+		// $0.35 per second - need special handling
+		// Would need video duration information
+		return fmt.Errorf("calculatePrice() error: video generation pricing requires duration information")
+
+	// Experimental models (using default Flash pricing)
+	case strings.Contains(p.subType, "gemini-exp"):
+		inputPricePerMillionTokens = 0.10
+		outputPricePerMillionTokens = 0.40
+
+	// AQA model (assuming free as not listed)
+	case p.subType == "aqa":
+		inputPricePerMillionTokens = 0
+		outputPricePerMillionTokens = 0
+
 	default:
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}
 
-	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
-	outputPrice := getPrice(modelResult.ResponseTokenCount, outputPricePerThousandTokens)
+	// Convert from per million to per token pricing
+	inputPricePerToken := inputPricePerMillionTokens / 1000000
+	outputPricePerToken := outputPricePerMillionTokens / 1000000
+
+	inputPrice := float64(modelResult.PromptTokenCount) * inputPricePerToken
+	outputPrice := float64(modelResult.ResponseTokenCount) * outputPricePerToken
+
 	modelResult.TotalPrice = AddPrices(inputPrice, outputPrice)
 	modelResult.Currency = "USD"
 	return nil
