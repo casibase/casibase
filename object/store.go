@@ -82,8 +82,8 @@ type Store struct {
 	ThemeColor          string   `xorm:"varchar(100)" json:"themeColor"`
 	Avatar              string   `xorm:"varchar(200)" json:"avatar"`
 	Title               string   `xorm:"varchar(100)" json:"title"`
-	ChildStores         []string `xorm:"varchar(200)" json:"childStores"`
-	ChildModelProviders []string `xorm:"varchar(200)" json:"childModelProviders"`
+	ChildStores         []string `xorm:"varchar(500)" json:"childStores"`
+	ChildModelProviders []string `xorm:"varchar(500)" json:"childModelProviders"`
 	ShowAutoRead        bool     `json:"showAutoRead"`
 	DisableFileUpload   bool     `json:"disableFileUpload"`
 	IsDefault           bool     `json:"isDefault"`
