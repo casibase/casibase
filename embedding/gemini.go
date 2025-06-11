@@ -17,8 +17,8 @@ package embedding
 import (
 	"context"
 
-	genai "github.com/google/generative-ai-go/genai"
-	option "google.golang.org/api/option"
+	"github.com/casibase/casibase/proxy"
+	"google.golang.org/genai"
 )
 
 type GeminiEmbeddingProvider struct {
@@ -55,25 +55,31 @@ func (p *GeminiEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 
 func (p *GeminiEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
 	// Access your API key as an environment variable (see "Set up your API key" above)
-	client, err := genai.NewClient(ctx, option.WithAPIKey(p.secretKey))
+	client, err := genai.NewClient(ctx, &genai.ClientConfig{
+		APIKey:     p.secretKey,
+		Backend:    genai.BackendGeminiAPI,
+		HTTPClient: proxy.ProxyHttpClient,
+	})
 	if err != nil {
 		return nil, nil, err
 	}
-	defer client.Close()
 
-	em := client.EmbeddingModel(p.subType)
-	res, err := em.EmbedContent(ctx, genai.Text(text))
+	contents := []*genai.Content{
+		genai.NewContentFromText(text, genai.RoleUser),
+	}
+
+	em := client
+	res, err := em.Models.EmbedContent(ctx, p.subType, contents, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	embeddingResult := &EmbeddingResult{TokenCount: 0}
-
 	err = p.calculatePrice(embeddingResult)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	vector := res.Embedding.Values
+	vector := res.Embeddings[0].Values
 	return vector, embeddingResult, nil
 }

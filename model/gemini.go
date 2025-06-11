@@ -22,8 +22,7 @@ import (
 	"strings"
 
 	"github.com/casibase/casibase/proxy"
-	"github.com/google/generative-ai-go/genai"
-	"google.golang.org/api/option"
+	"google.golang.org/genai"
 )
 
 type GeminiModelProvider struct {
@@ -105,11 +104,15 @@ func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult) error {
 func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
 	ctx := context.Background()
 	// Access your API key as an environment variable (see "Set up your API key" above)
-	client, err := genai.NewClient(ctx, option.WithAPIKey(p.secretKey), option.WithHTTPClient(proxy.ProxyHttpClient))
+	client, err := genai.NewClient(ctx,
+		&genai.ClientConfig{
+			APIKey:     p.secretKey,
+			Backend:    genai.BackendGeminiAPI,
+			HTTPClient: proxy.ProxyHttpClient,
+		})
 	if err != nil {
 		return nil, err
 	}
-	defer client.Close()
 
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
@@ -123,16 +126,20 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 		}
 	}
 
-	model := client.GenerativeModel(p.subType)
+	model := client.Models
 
 	// https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/get-token-count#gemini-get-token-count-samples-drest
 	// has to use CountToken() to get
-	promptTokenCountResp, err := model.CountTokens(ctx, genai.Text(question))
+	contents := []*genai.Content{
+		genai.NewContentFromText(question, genai.RoleUser),
+	}
+	promptTokenCountResp, err := client.Models.CountTokens(ctx, p.subType, contents, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := model.GenerateContent(ctx, genai.Text(question))
+	messages := GenaiRawMessagesToMessages(question, history)
+	resp, err := model.GenerateContent(ctx, p.subType, messages, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -142,9 +149,9 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
 
-	flushData := func(data []genai.Part) error {
+	flushData := func(data []*genai.Part) error {
 		for _, message := range data {
-			if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", message); err != nil {
+			if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", message.Text); err != nil {
 				return err
 			}
 			flusher.Flush()
