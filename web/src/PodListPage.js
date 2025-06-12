@@ -143,14 +143,14 @@ class PodListPage extends BaseListPage {
         sorter: (a, b) => a.hostIP.localeCompare(b.hostIP),
       },
       {
-        title: i18next.t("pod:Pod IP"),
+        title: i18next.t("machine:Private IP"),
         dataIndex: "podIP",
         key: "podIp",
         width: "120px",
         sorter: (a, b) => a.podIP.localeCompare(b.podIP),
       },
       {
-        title: i18next.t("pod:Labels"),
+        title: i18next.t("task:Labels"),
         dataIndex: "labels",
         key: "labels",
         width: "120px",

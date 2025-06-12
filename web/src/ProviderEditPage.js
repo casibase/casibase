@@ -89,9 +89,9 @@ class ProviderEditPage extends React.Component {
   getProviderUrlLabel(provider) {
     if (["Model", "Blockchain"].includes(provider.category)) {
       if (provider.type === "Volcano Engine") {
-        return Setting.getLabel(i18next.t("provider:EndpointID"), i18next.t("provider:EndpointID - Tooltip"));
+        return Setting.getLabel(i18next.t("provider:Endpoint ID"), i18next.t("provider:Endpoint ID - Tooltip"));
       } else if (provider.type === "ChainMaker") {
-        return Setting.getLabel(i18next.t("general:Chainmaker endpoint"), i18next.t("general:Chainmaker endpoint - Tooltip"));
+        return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
       }
     }
     return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
@@ -100,7 +100,7 @@ class ProviderEditPage extends React.Component {
   getRegionLabel(provider) {
     if (provider.category === "Blockchain") {
       if (provider.type === "ChainMaker") {
-        return Setting.getLabel(i18next.t("general:orgId"), i18next.t("general:orgId - Tooltip"));
+        return Setting.getLabel(i18next.t("general:Org ID"), i18next.t("general:Org ID - Tooltip"));
       }
     }
     return Setting.getLabel(i18next.t("general:Region"), i18next.t("general:Region - Tooltip"));
@@ -634,7 +634,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("provider:ChainId"), i18next.t("provider:ChainId - Tooltip"))} :
+                  {Setting.getLabel(i18next.t("provider:Chain"), i18next.t("provider:Chain - Tooltip"))} :
                 </Col>
                 <Col span={22}>
                   <Input value={this.state.provider.chain} onChange={e => {
@@ -646,7 +646,7 @@ class ProviderEditPage extends React.Component {
                 <>
                   <Row style={{marginTop: "20px"}}>
                     <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {Setting.getLabel(i18next.t("provider:AuthType"), i18next.t("provider:AuthType - Tooltip"))} :
+                      {Setting.getLabel(i18next.t("provider:Auth type"), i18next.t("provider:Auth type - Tooltip"))} :
                     </Col>
                     <Col span={22}>
                       <Select
@@ -675,7 +675,7 @@ class ProviderEditPage extends React.Component {
                   </Row>
                   <Row style={{marginTop: "20px"}}>
                     <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {Setting.getLabel(i18next.t("provider:User cert"), i18next.t("provider:User certificate - Tooltip"))} :
+                      {Setting.getLabel(i18next.t("provider:User cert"), i18next.t("provider:User cert - Tooltip"))} :
                     </Col>
                     <Col span={22}>
                       <Input.TextArea rows={3} value={this.state.provider.userCert} onChange={e => {
@@ -695,7 +695,7 @@ class ProviderEditPage extends React.Component {
                   </Row>
                   <Row style={{marginTop: "20px"}}>
                     <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {Setting.getLabel(i18next.t("provider:Sign cert"), i18next.t("provider:Sign certificate - Tooltip"))} :
+                      {Setting.getLabel(i18next.t("provider:Sign cert"), i18next.t("provider:Sign cert - Tooltip"))} :
                     </Col>
                     <Col span={22}>
                       <Input.TextArea rows={3} value={this.state.provider.signCert} onChange={e => {
@@ -725,7 +725,7 @@ class ProviderEditPage extends React.Component {
                   </Row>
                   <Row style={{marginTop: "20px"}}>
                     <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {Setting.getLabel(i18next.t("provider:Invoke method"), i18next.t("provider:Invoke contract method name - Tooltip"))} :
+                      {Setting.getLabel(i18next.t("provider:Invoke method"), i18next.t("provider:Invoke method - Tooltip"))} :
                     </Col>
                     <Col span={22}>
                       <Input value={this.state.provider.contractMethod} onChange={e => {
