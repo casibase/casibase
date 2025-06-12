@@ -56,9 +56,9 @@ func (record *Record) getRecordChainClient() (chain.ChainClientInterface, error)
 		return nil, fmt.Errorf("there is no active blockchain provider")
 	}
 
-	client, err2 := chain.NewChainClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region, provider.Network, provider.Chain)
-	if err2 != nil {
-		return nil, err2
+	client, err := chain.NewChainClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region, provider.Network, provider.Chain, provider.ProviderUrl, provider.Text, provider.UserKey, provider.UserCert, provider.SignKey, provider.SignCert, provider.ContractName, provider.ContractMethod)
+	if err != nil {
+		return nil, err
 	}
 
 	return client, nil

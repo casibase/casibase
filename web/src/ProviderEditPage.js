@@ -77,6 +77,35 @@ class ProviderEditPage extends React.Component {
     return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID - Tooltip"));
   }
 
+  getNetworkLabel(provider) {
+    if (provider.category === "Blockchain") {
+      if (provider.type === "ChainMaker") {
+        return Setting.getLabel(i18next.t("general:Node address"), i18next.t("general:Node address - Tooltip"));
+      }
+    }
+    return Setting.getLabel(i18next.t("general:Network"), i18next.t("general:Network - Tooltip"));
+  }
+
+  getProviderUrlLabel(provider) {
+    if (["Model", "Blockchain"].includes(provider.category)) {
+      if (provider.type === "Volcano Engine") {
+        return Setting.getLabel(i18next.t("provider:EndpointID"), i18next.t("provider:EndpointID - Tooltip"));
+      } else if (provider.type === "ChainMaker") {
+        return Setting.getLabel(i18next.t("general:Chainmaker endpoint"), i18next.t("general:Chainmaker endpoint - Tooltip"));
+      }
+    }
+    return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
+  }
+
+  getRegionLabel(provider) {
+    if (provider.category === "Blockchain") {
+      if (provider.type === "ChainMaker") {
+        return Setting.getLabel(i18next.t("general:orgId"), i18next.t("general:orgId - Tooltip"));
+      }
+    }
+    return Setting.getLabel(i18next.t("general:Region"), i18next.t("general:Region - Tooltip"));
+  }
+
   getClientSecretLabel(provider) {
     if (["Storage", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(provider.category)) {
       return Setting.getLabel(i18next.t("general:Secret key"), i18next.t("general:Secret key - Tooltip"));
@@ -398,8 +427,9 @@ class ProviderEditPage extends React.Component {
         {
           (this.state.provider.type === "Baidu Cloud" || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
           (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
+          (this.state.provider.category === "Blockchain" && this.state.provider.type !== "ChainMaker") ||
           ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
-          (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent"].includes(this.state.provider.category))) ? (
+          (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent", "Blockchain"].includes(this.state.provider.category))) ? (
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {this.getClientIdLabel(this.state.provider)} :
@@ -529,7 +559,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Agent" && this.state.provider.type === "MCP")) ? null : (
+          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") || (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker")) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {this.getClientSecretLabel(this.state.provider)} :
@@ -589,7 +619,7 @@ class ProviderEditPage extends React.Component {
           ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("general:Region"), i18next.t("general:Region - Tooltip"))} :
+                {this.getRegionLabel(this.state.provider)} :
               </Col>
               <Col span={22} >
                 <Input value={this.state.provider.region} onChange={e => {
@@ -604,17 +634,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("general:Network"), i18next.t("general:Network - Tooltip"))} :
-                </Col>
-                <Col span={22}>
-                  <Input value={this.state.provider.network} onChange={e => {
-                    this.updateProviderField("network", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("provider:Chain"), i18next.t("provider:Chain - Tooltip"))} :
+                  {Setting.getLabel(i18next.t("provider:ChainId"), i18next.t("provider:ChainId - Tooltip"))} :
                 </Col>
                 <Col span={22}>
                   <Input value={this.state.provider.chain} onChange={e => {
@@ -622,6 +642,99 @@ class ProviderEditPage extends React.Component {
                   }} />
                 </Col>
               </Row>
+              {this.state.provider.type === "ChainMaker" ? (
+                <>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:AuthType"), i18next.t("provider:AuthType - Tooltip"))} :
+                    </Col>
+                    <Col span={22}>
+                      <Select
+                        virtual={false}
+                        style={{width: "100%"}}
+                        value={this.state.provider.text}
+                        onChange={value => {
+                          this.updateProviderField("text", value);
+                        }}
+                      >
+                        <Select.Option value="permissionedwithcert">permissionedwithcert</Select.Option>
+                        <Select.Option value="permissionedwithkey">permissionedwithkey</Select.Option>
+                        <Select.Option value="public">public</Select.Option>
+                      </Select>
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:User key"), i18next.t("provider:User key - Tooltip"))} :
+                    </Col>
+                    <Col span={22}>
+                      <Input.TextArea rows={3} value={this.state.provider.userKey} onChange={e => {
+                        this.updateProviderField("userKey", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:User cert"), i18next.t("provider:User certificate - Tooltip"))} :
+                    </Col>
+                    <Col span={22}>
+                      <Input.TextArea rows={3} value={this.state.provider.userCert} onChange={e => {
+                        this.updateProviderField("userCert", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:Sign key"), i18next.t("provider:Sign key - Tooltip"))} :
+                    </Col>
+                    <Col span={22}>
+                      <Input.TextArea rows={3} value={this.state.provider.signKey} onChange={e => {
+                        this.updateProviderField("signKey", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:Sign cert"), i18next.t("provider:Sign certificate - Tooltip"))} :
+                    </Col>
+                    <Col span={22}>
+                      <Input.TextArea rows={3} value={this.state.provider.signCert} onChange={e => {
+                        this.updateProviderField("signCert", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {this.getNetworkLabel(this.state.provider)} :
+                    </Col>
+                    <Col span={22}>
+                      <Input value={this.state.provider.network} onChange={e => {
+                        this.updateProviderField("network", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:Contract name"), i18next.t("provider:Contract name - Tooltip"))} :
+                    </Col>
+                    <Col span={22}>
+                      <Input value={this.state.provider.contractName} onChange={e => {
+                        this.updateProviderField("contractName", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:Invoke method"), i18next.t("provider:Invoke contract method name - Tooltip"))} :
+                    </Col>
+                    <Col span={22}>
+                      <Input value={this.state.provider.contractMethod} onChange={e => {
+                        this.updateProviderField("contractMethod", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                </>
+              ) : null}
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {Setting.getLabel(i18next.t("provider:Browser URL"), i18next.t("provider:Browser URL - Tooltip"))} :
@@ -790,7 +903,7 @@ class ProviderEditPage extends React.Component {
         }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {this.state.provider.type === "Volcano Engine" ? Setting.getLabel(i18next.t("provider:EndpointID"), i18next.t("provider:EndpointID - Tooltip")) : Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"))} :
+            {this.getProviderUrlLabel(this.state.provider)} :
           </Col>
           <Col span={22} >
             <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {

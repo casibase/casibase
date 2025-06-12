@@ -52,6 +52,13 @@ class ProviderListPage extends BaseListPage {
       providerUrl: "https://platform.openai.com/account/api-keys",
       apiVersion: "",
       apiKey: "",
+      network: "",
+      userKey: "",
+      userCert: "",
+      signKey: "",
+      signCert: "",
+      contractName: "",
+      contractMethod: "",
       state: "Active",
     };
   }

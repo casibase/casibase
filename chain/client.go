@@ -21,11 +21,11 @@ type ChainClientInterface interface {
 	Query(txId string, data string) (string, error)
 }
 
-func NewChainClient(providerType string, clientId string, clientSecret string, region string, networkId string, chainId string) (ChainClientInterface, error) {
+func NewChainClient(providerType string, clientId string, clientSecret string, region string, networkId string, chainId string, chainmakerEndpoint string, text string, UserKey string, UserCert string, SignKey string, SignCert string, ContractName string, ContractMethod string) (ChainClientInterface, error) {
 	var res ChainClientInterface
 	var err error
 	if providerType == "ChainMaker" {
-		res, err = newChainChainmakerClient(clientId, clientSecret, region, networkId, chainId)
+		res, err = newChainChainmakerClient(networkId, text, region, chainId, chainmakerEndpoint, UserKey, UserCert, SignKey, SignCert, ContractName, ContractMethod)
 	} else if providerType == "Tencent ChainMaker" {
 		res, err = newChainTencentChainmakerClient(clientId, clientSecret, region, networkId, chainId)
 	} else if providerType == "Tencent ChainMaker (Demo Network)" {
