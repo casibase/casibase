@@ -145,12 +145,11 @@ func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.
 	if provider.ApiKey != "" && (user == nil || user.Name != "admin") {
 		provider.ApiKey = "***"
 	}
-
-	if provider.SignCert != "" || provider.SignKey != "" || provider.UserCert != "" || provider.UserKey != "" {
-		provider.SignCert = "***"
-		provider.SignKey = "***"
-		provider.UserCert = "***"
+	if provider.UserKey != "" {
 		provider.UserKey = "***"
+	}
+	if provider.SignKey != "" {
+		provider.SignKey = "***"
 	}
 
 	return provider
@@ -410,12 +409,11 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 	if provider.ClientSecret == "***" {
 		provider.ClientSecret = p.ClientSecret
 	}
-
-	if provider.UserKey == "***" || provider.SignKey == "***" || provider.UserCert == "***" || provider.SignCert == "***" {
+	if provider.UserKey == "***" {
 		provider.UserKey = p.UserKey
+	}
+	if provider.SignKey == "***" {
 		provider.SignKey = p.SignKey
-		provider.UserCert = p.UserCert
-		provider.SignCert = p.SignCert
 	}
 
 	if provider.ApiKey == "" && provider.Category == "Model" {

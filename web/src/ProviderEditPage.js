@@ -665,16 +665,6 @@ class ProviderEditPage extends React.Component {
                   </Row>
                   <Row style={{marginTop: "20px"}}>
                     <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {Setting.getLabel(i18next.t("provider:User key"), i18next.t("provider:User key - Tooltip"))} :
-                    </Col>
-                    <Col span={22}>
-                      <Input.TextArea rows={3} value={this.state.provider.userKey} onChange={e => {
-                        this.updateProviderField("userKey", e.target.value);
-                      }} />
-                    </Col>
-                  </Row>
-                  <Row style={{marginTop: "20px"}}>
-                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                       {Setting.getLabel(i18next.t("provider:User cert"), i18next.t("provider:User cert - Tooltip"))} :
                     </Col>
                     <Col span={22}>
@@ -685,11 +675,11 @@ class ProviderEditPage extends React.Component {
                   </Row>
                   <Row style={{marginTop: "20px"}}>
                     <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {Setting.getLabel(i18next.t("provider:Sign key"), i18next.t("provider:Sign key - Tooltip"))} :
+                      {Setting.getLabel(i18next.t("provider:User key"), i18next.t("provider:User key - Tooltip"))} :
                     </Col>
                     <Col span={22}>
-                      <Input.TextArea rows={3} value={this.state.provider.signKey} onChange={e => {
-                        this.updateProviderField("signKey", e.target.value);
+                      <Input.TextArea rows={3} value={this.state.provider.userKey} onChange={e => {
+                        this.updateProviderField("userKey", e.target.value);
                       }} />
                     </Col>
                   </Row>
@@ -700,6 +690,16 @@ class ProviderEditPage extends React.Component {
                     <Col span={22}>
                       <Input.TextArea rows={3} value={this.state.provider.signCert} onChange={e => {
                         this.updateProviderField("signCert", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:Sign key"), i18next.t("provider:Sign key - Tooltip"))} :
+                    </Col>
+                    <Col span={22}>
+                      <Input.TextArea rows={3} value={this.state.provider.signKey} onChange={e => {
+                        this.updateProviderField("signKey", e.target.value);
                       }} />
                     </Col>
                   </Row>
