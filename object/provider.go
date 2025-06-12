@@ -59,12 +59,19 @@ type Provider struct {
 	OutputPricePerThousandTokens float64 `xorm:"DECIMAL(10, 4)" json:"outputPricePerThousandTokens"`
 	Currency                     string  `xorm:"varchar(100)" json:"currency"`
 
-	Network     string `xorm:"varchar(100)" json:"network"`
-	Chain       string `xorm:"varchar(100)" json:"chain"`
-	TestContent string `xorm:"varchar(100)" json:"testContent"`
-	IsDefault   bool   `json:"isDefault"`
-	State       string `xorm:"varchar(100)" json:"state"`
-	BrowserUrl  string `xorm:"varchar(200)" json:"browserUrl"`
+	UserKey        string `xorm:"varchar(1000)" json:"userKey"`
+	UserCert       string `xorm:"mediumtext" json:"userCert"`
+	SignKey        string `xorm:"varchar(1000)" json:"signKey"`
+	SignCert       string `xorm:"mediumtext" json:"signCert"`
+	ContractName   string `xorm:"varchar(100)" json:"contractName"`
+	ContractMethod string `xorm:"varchar(100)" json:"contractMethod"`
+	Network        string `xorm:"varchar(100)" json:"network"`
+	Chain          string `xorm:"varchar(100)" json:"chain"`
+	TestContent    string `xorm:"varchar(100)" json:"testContent"`
+
+	IsDefault  bool   `json:"isDefault"`
+	State      string `xorm:"varchar(100)" json:"state"`
+	BrowserUrl string `xorm:"varchar(200)" json:"browserUrl"`
 }
 
 // GetProviderByApiKey retrieves a provider using the API key
@@ -137,6 +144,13 @@ func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.
 	}
 	if provider.ApiKey != "" && (user == nil || user.Name != "admin") {
 		provider.ApiKey = "***"
+	}
+
+	if provider.SignCert != "" || provider.SignKey != "" || provider.UserCert != "" || provider.UserKey != "" {
+		provider.SignCert = "***"
+		provider.SignKey = "***"
+		provider.UserCert = "***"
+		provider.UserKey = "***"
 	}
 
 	return provider
@@ -395,6 +409,13 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 
 	if provider.ClientSecret == "***" {
 		provider.ClientSecret = p.ClientSecret
+	}
+
+	if provider.UserKey == "***" || provider.SignKey == "***" || provider.UserCert == "***" || provider.SignCert == "***" {
+		provider.UserKey = p.UserKey
+		provider.SignKey = p.SignKey
+		provider.UserCert = p.UserCert
+		provider.SignCert = p.SignCert
 	}
 
 	if provider.ApiKey == "" && provider.Category == "Model" {
