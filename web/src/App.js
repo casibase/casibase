@@ -63,6 +63,7 @@ import TaskEditPage from "./TaskEditPage";
 import FormListPage from "./FormListPage";
 import FormEditPage from "./FormEditPage";
 import FormDataPage from "./FormDataPage";
+import * as FormBackend from "./backend/FormBackend";
 import ArticleListPage from "./ArticleListPage";
 import ArticleEditPage from "./ArticleEditPage";
 import ChatPage from "./ChatPage";
@@ -91,6 +92,7 @@ class App extends Component {
       uri: null,
       themeData: Conf.ThemeDefault,
       menuVisible: false,
+      forms: [],
     };
     this.initConfig();
   }
@@ -109,6 +111,7 @@ class App extends Component {
     this.updateMenuKey();
     this.getAccount();
     this.setTheme();
+    this.getForms();
   }
 
   setTheme() {
@@ -129,6 +132,21 @@ class App extends Component {
     if (this.state.uri !== uri) {
       this.updateMenuKey();
     }
+  }
+
+  updateMenuKeyForm(forms) {
+    // eslint-disable-next-line no-restricted-globals
+    const uri = location.pathname;
+    this.setState({
+      uri: uri,
+    });
+
+    forms.forEach(form => {
+      const path = `/forms/${form.name}/data`;
+      if (uri.includes(path)) {
+        this.setState({selectedMenuKey: path});
+      }
+    });
   }
 
   updateMenuKey() {
@@ -220,6 +238,21 @@ class App extends Component {
         this.setState({
           account: account,
         });
+      });
+  }
+
+  getForms() {
+    FormBackend.getForms("admin")
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            forms: res.data,
+          });
+
+          this.updateMenuKeyForm(res.data);
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
       });
   }
 
@@ -578,6 +611,15 @@ class App extends Component {
           </a>, "/swagger")]));
     }
 
+    const sortedForms = this.state.forms.slice().sort((a, b) => {
+      return a.position.localeCompare(b.position);
+    });
+
+    sortedForms.forEach(form => {
+      const path = `/forms/${form.name}/data`;
+      res.push(Setting.getItem(<Link to={path}>{form.displayName}</Link>, path));
+    });
+
     return res;
   }
 
@@ -655,7 +697,7 @@ class App extends Component {
         <Route exact path="/tasks/:taskName" render={(props) => this.renderSigninIfNotSignedIn(<TaskEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/forms" render={(props) => this.renderSigninIfNotSignedIn(<FormListPage account={this.state.account} {...props} />)} />
         <Route exact path="/forms/:formName" render={(props) => this.renderSigninIfNotSignedIn(<FormEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/forms/:formName/data" render={(props) => this.renderSigninIfNotSignedIn(<FormDataPage account={this.state.account} {...props} />)} />
+        <Route exact path="/forms/:formName/data" render={(props) => this.renderSigninIfNotSignedIn(<FormDataPage key={props.match.params.formName} account={this.state.account} {...props} />)} />
         <Route exact path="/articles" render={(props) => this.renderSigninIfNotSignedIn(<ArticleListPage account={this.state.account} {...props} />)} />
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
