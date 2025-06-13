@@ -31,6 +31,8 @@ import (
 func (c *ApiController) GetFormData() {
 	owner := c.Input().Get("owner")
 	form := c.Input().Get("form")
+	limitStr := c.Input().Get("pageSize")
+	pageStr := c.Input().Get("p")
 
 	formObj, err := object.GetForm(util.GetId(owner, form))
 	if err != nil {
@@ -42,14 +44,34 @@ func (c *ApiController) GetFormData() {
 		return
 	}
 
-	var result []map[string]string
-	for i := 1; i <= 100; i++ {
+	totalCount := 100
+	allData := make([]map[string]string, 0, totalCount)
+
+	for i := 1; i <= totalCount; i++ {
 		itemMap := make(map[string]string)
 		for _, item := range formObj.FormItems {
 			itemMap[item.Name] = fmt.Sprintf("%s %d", item.Name, i)
 		}
-		result = append(result, itemMap)
+		allData = append(allData, itemMap)
 	}
 
-	c.ResponseOk(result, len(formObj.FormItems))
+	if limitStr == "" || pageStr == "" {
+		c.ResponseOk(allData, totalCount)
+		return
+	}
+
+	limit := util.ParseInt(limitStr)
+	page := util.ParseInt(pageStr)
+	offset := (page - 1) * limit
+
+	end := offset + limit
+	if offset > totalCount {
+		offset = totalCount
+	}
+	if end > totalCount {
+		end = totalCount
+	}
+
+	pagedData := allData[offset:end]
+	c.ResponseOk(pagedData, totalCount)
 }

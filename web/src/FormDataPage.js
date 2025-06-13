@@ -136,6 +136,10 @@ class FormDataPage extends BaseListPage {
   }
 
   fetch = (params = {}, form) => {
+    if (!form) {
+      form = this.state.form;
+    }
+
     const field = params.searchedColumn, value = params.searchText;
     const sortField = params.sortField, sortOrder = params.sortOrder;
     this.setState({loading: true});
