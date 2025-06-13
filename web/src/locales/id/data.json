@@ -74,6 +74,14 @@
     "Size root FS": "Size root FS",
     "Size root FS - Tooltip": "Size root FS - Tooltip"
   },
+  "form": {
+    "Edit Form": "Edit Form",
+    "Form items": "Form items",
+    "Form items - Tooltip": "Form items - Tooltip",
+    "Position": "Position",
+    "Position - Tooltip": "Position - Tooltip",
+    "Width": "Width"
+  },
   "general": {
     "AI Setting": "AI Setting",
     "Action": "Action",
@@ -106,6 +114,7 @@
     "Description - Tooltip": "Description - Tooltip",
     "Display name": "Display name",
     "Display name - Tooltip": "Display name - Tooltip",
+    "Down": "Down",
     "Download": "Download",
     "Edit": "Edit",
     "Exit": "Exit",
@@ -124,6 +133,7 @@
     "Failed to save": "Failed to save",
     "Failed to start recording": "Failed to start recording",
     "Failed to stop": "Failed to stop",
+    "Forms": "Forms",
     "Go to writable demo site?": "Go to writable demo site?",
     "Home": "Home",
     "ID": "ID",
@@ -139,6 +149,7 @@
     "Is enabled": "Is enabled",
     "Is triggered": "Is triggered",
     "Is triggered - Tooltip": "Is triggered - Tooltip",
+    "Label": "Label",
     "Language": "Language",
     "Language - Tooltip": "Language - Tooltip",
     "Loading...": "Loading...",
@@ -258,6 +269,7 @@
     "URL": "URL",
     "URL - Tooltip": "URL - Tooltip",
     "Unknown category": "Unknown category",
+    "Up": "Up",
     "Updated time": "Updated time",
     "Usages": "Usages",
     "User": "User",

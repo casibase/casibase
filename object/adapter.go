@@ -235,6 +235,11 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
+	err = a.engine.Sync2(new(Form))
+	if err != nil {
+		panic(err)
+	}
+
 	err = a.engine.Sync2(new(Workflow))
 	if err != nil {
 		panic(err)

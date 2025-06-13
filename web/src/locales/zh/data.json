@@ -74,6 +74,14 @@
     "Size root FS": "根文件系统大小",
     "Size root FS - Tooltip": "根文件系统大小（单位：MB）"
   },
+  "form": {
+    "Edit Form": "编辑表单",
+    "Form items": "表单项",
+    "Form items - Tooltip": "表单的各个列头",
+    "Position": "位置",
+    "Position - Tooltip": "列头在表单中的位置",
+    "Width": "宽度"
+  },
   "general": {
     "AI Setting": "AI设置",
     "Action": "操作",
@@ -106,6 +114,7 @@
     "Description - Tooltip": "详细描述",
     "Display name": "显示名称",
     "Display name - Tooltip": "面向用户显示的名称",
+    "Down": "下移",
     "Download": "下载",
     "Edit": "编辑",
     "Exit": "退出",
@@ -124,6 +133,7 @@
     "Failed to save": "保存失败",
     "Failed to start recording": "启动录音失败",
     "Failed to stop": "停止失败",
+    "Forms": "表单",
     "Go to writable demo site?": "前往可写的演示站点？",
     "Home": "首页",
     "ID": "ID",
@@ -139,6 +149,7 @@
     "Is enabled": "已启用",
     "Is triggered": "是否已触发",
     "Is triggered - Tooltip": "触发状态标识",
+    "Label": "标签",
     "Language": "语言",
     "Language - Tooltip": "语言环境（如 zh-CN/en-US）",
     "Loading...": "加载中...",
@@ -258,6 +269,7 @@
     "URL": "链接",
     "URL - Tooltip": "资源完整网络地址",
     "Unknown category": "未知分类",
+    "Up": "上移",
     "Updated time": "更新时间",
     "Usages": "用量统计",
     "User": "用户",

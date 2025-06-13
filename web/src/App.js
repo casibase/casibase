@@ -60,6 +60,8 @@ import WorkflowListPage from "./WorkflowListPage";
 import WorkflowEditPage from "./WorkflowEditPage";
 import TaskListPage from "./TaskListPage";
 import TaskEditPage from "./TaskEditPage";
+import FormListPage from "./FormListPage";
+import FormEditPage from "./FormEditPage";
 import ArticleListPage from "./ArticleListPage";
 import ArticleEditPage from "./ArticleEditPage";
 import ChatPage from "./ChatPage";
@@ -172,6 +174,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/sr"});
     } else if (uri.includes("/tasks")) {
       this.setState({selectedMenuKey: "/tasks"});
+    } else if (uri.includes("/forms")) {
+      this.setState({selectedMenuKey: "/forms"});
     } else if (uri.includes("/articles")) {
       this.setState({selectedMenuKey: "/articles"});
     } else if (uri.includes("/public-videos")) {
@@ -536,6 +540,7 @@ class App extends Component {
         Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"),
         Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"),
         Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"),
+        Setting.getItem(<Link to="/forms">{i18next.t("general:Forms")}</Link>, "/forms"),
         Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows"),
         Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"),
       ]));
@@ -647,6 +652,8 @@ class App extends Component {
         <Route exact path="/sr" render={(props) => this.renderSigninIfNotSignedIn(<PythonSrPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks" render={(props) => this.renderSigninIfNotSignedIn(<TaskListPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks/:taskName" render={(props) => this.renderSigninIfNotSignedIn(<TaskEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/forms" render={(props) => this.renderSigninIfNotSignedIn(<FormListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/forms/:formName" render={(props) => this.renderSigninIfNotSignedIn(<FormEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/articles" render={(props) => this.renderSigninIfNotSignedIn(<ArticleListPage account={this.state.account} {...props} />)} />
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
