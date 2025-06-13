@@ -125,6 +125,8 @@ func initAPI() {
 	beego.Router("/api/add-form", &controllers.ApiController{}, "POST:AddForm")
 	beego.Router("/api/delete-form", &controllers.ApiController{}, "POST:DeleteForm")
 
+	beego.Router("/api/get-form-data", &controllers.ApiController{}, "GET:GetFormData")
+
 	beego.Router("/api/get-global-articles", &controllers.ApiController{}, "GET:GetGlobalArticles")
 	beego.Router("/api/get-articles", &controllers.ApiController{}, "GET:GetArticles")
 	beego.Router("/api/get-article", &controllers.ApiController{}, "GET:GetArticle")
