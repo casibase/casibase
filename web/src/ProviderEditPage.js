@@ -20,7 +20,7 @@ import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
-import McpToolsTable from "./McpToolsTable";
+import McpToolsTable from "./table/McpToolsTable";
 import ModelTestWidget from "./common/TestModelWidget";
 import TtsTestWidget from "./common/TestTtsWidget";
 require("codemirror/theme/material-darker.css");

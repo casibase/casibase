@@ -15,10 +15,10 @@
 import React from "react";
 import {Button, Col, Input, Row, Select, Switch, Table, Tooltip} from "antd";
 import {DeleteOutlined, DownOutlined, UpOutlined} from "@ant-design/icons";
-import * as Setting from "./Setting";
+import * as Setting from "../Setting";
 import i18next from "i18next";
 import moment from "moment/moment";
-import * as Conf from "./Conf";
+import * as Conf from "../Conf";
 
 const {TextArea} = Input;
 const {Option} = Select;

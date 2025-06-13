@@ -17,7 +17,7 @@ import * as SystemBackend from "./backend/SystemInfo";
 import React from "react";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import PrometheusInfoTable from "./PrometheusInfoTable";
+import PrometheusInfoTable from "./table/PrometheusInfoTable";
 
 class SystemInfo extends React.Component {
 

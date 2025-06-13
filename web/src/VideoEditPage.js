@@ -19,15 +19,15 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import {CheckOutlined, EditOutlined, LinkOutlined, SyncOutlined} from "@ant-design/icons";
 import Video from "./Video";
-import LabelTable from "./LabelTable";
+import LabelTable from "./table/LabelTable";
 import * as Papa from "papaparse";
 import VideoDataChart from "./VideoDataChart";
 import WordCloudChart from "./WordCloudChart";
 import ChatPage from "./ChatPage";
-import TagTable from "./TagTable";
+import TagTable from "./table/TagTable";
 import * as TaskBackend from "./backend/TaskBackend";
 import * as VideoConf from "./VideoConf";
-import RemarkTable from "./RemarkTable";
+import RemarkTable from "./table/RemarkTable";
 
 const {TextArea} = Input;
 const {Option} = Select;

@@ -15,9 +15,9 @@
 import React from "react";
 import {Button, Col, Input, Row, Select, Table, Tooltip} from "antd";
 import {DeleteOutlined, RedoOutlined} from "@ant-design/icons";
-import * as Setting from "./Setting";
+import * as Setting from "../Setting";
 import i18next from "i18next";
-import * as MessageBackend from "./backend/MessageBackend";
+import * as MessageBackend from "../backend/MessageBackend";
 
 class TagTable extends React.Component {
   constructor(props) {

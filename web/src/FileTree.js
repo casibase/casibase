@@ -28,7 +28,7 @@ import i18next from "i18next";
 import * as PermissionBackend from "./backend/PermissionBackend";
 import * as PermissionUtil from "./PermissionUtil";
 import * as Conf from "./Conf";
-import FileTable from "./FileTable";
+import FileTable from "./table/FileTable";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";

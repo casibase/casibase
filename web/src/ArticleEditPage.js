@@ -18,7 +18,7 @@ import * as ArticleBackend from "./backend/ArticleBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import * as ProviderBackend from "./backend/ProviderBackend";
-import ArticleTable from "./ArticleTable";
+import ArticleTable from "./table/ArticleTable";
 import ArticleMenu from "./ArticleMenu";
 
 const {Option} = Select;

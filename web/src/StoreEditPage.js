@@ -21,7 +21,7 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import FileTree from "./FileTree";
 import {ThemeDefault} from "./Conf";
-import PromptTable from "./PromptTable";
+import PromptTable from "./table/PromptTable";
 
 const {Option} = Select;
 const {TextArea} = Input;
