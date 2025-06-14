@@ -15,7 +15,11 @@
 package controllers
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
@@ -44,34 +48,26 @@ func (c *ApiController) GetFormData() {
 		return
 	}
 
-	totalCount := 100
-	allData := make([]map[string]string, 0, totalCount)
-
-	for i := 1; i <= totalCount; i++ {
-		itemMap := make(map[string]string)
-		for _, item := range formObj.FormItems {
-			itemMap[item.Name] = fmt.Sprintf("%s %d", item.Name, i)
-		}
-		allData = append(allData, itemMap)
-	}
-
-	if limitStr == "" || pageStr == "" {
-		c.ResponseOk(allData, totalCount)
+	jsonData, err := json.Marshal(formObj)
+	if err != nil {
+		c.ResponseError("Failed to serialize formObj: " + err.Error())
 		return
 	}
 
-	limit := util.ParseInt(limitStr)
-	page := util.ParseInt(pageStr)
-	offset := (page - 1) * limit
-
-	end := offset + limit
-	if offset > totalCount {
-		offset = totalCount
+	url := fmt.Sprintf("http://localhost:13900/api/get-form-data?pageSize=%s&p=%s", limitStr, pageStr)
+	resp, err := http.Post(url, "application/json", bytes.NewReader(jsonData))
+	if err != nil {
+		c.ResponseError("HTTP request failed: " + err.Error())
+		return
 	}
-	if end > totalCount {
-		end = totalCount
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		c.ResponseError("Failed to read response body: " + err.Error())
+		return
 	}
 
-	pagedData := allData[offset:end]
-	c.ResponseOk(pagedData, totalCount)
+	c.Ctx.Output.Header("Content-Type", "application/json")
+	c.Ctx.Output.Body(body)
 }
