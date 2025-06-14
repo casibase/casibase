@@ -26,6 +26,7 @@ class FormEditPage extends React.Component {
       classes: props,
       formName: props.match.params.formName,
       form: null,
+      formCount: "key",
     };
   }
 
@@ -61,19 +62,6 @@ class FormEditPage extends React.Component {
     this.setState({
       form: form,
     });
-  }
-
-  updateModelUsageMapForForm(value) {
-    const modelUsageMap = {};
-
-    value.forEach(provider => {
-      modelUsageMap[provider] = {
-        tokenCount: 0,
-        startTime: new Date().toISOString(),
-      };
-    });
-
-    this.updateFormField("modelUsageMap", modelUsageMap);
   }
 
   renderForm() {
@@ -127,22 +115,27 @@ class FormEditPage extends React.Component {
             />
           </Col>
         </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Preview")}:
+          </Col>
+          <Col span={22} >
+            <div key={this.state.formCount}>
+              <iframe id="formData" title={"formData"} src={`${location.href}/data`} width="100%" height="700px" scrolling="no" style={{border: "1px solid #e0e0e0", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)"}} />
+            </div>
+          </Col>
+        </Row>
       </Card>
     );
   }
 
-  getProjectText() {
-    let text = this.state.form.text;
-    text = text.replaceAll("${subject}", this.state.form.subject);
-    text = text.replaceAll("${topic}", this.state.form.topic);
-    text = text.replaceAll("${result}", this.state.form.result);
-    text = text.replaceAll("${activity}", this.state.form.activity);
-    text = text.replaceAll("${grade}", this.state.form.grade);
-    return text;
-  }
-
   submitFormEdit(exitAfterSave) {
     const form = Setting.deepCopy(this.state.form);
+    if (!exitAfterSave) {
+      this.setState({
+        formCount: this.state.formCount + "a",
+      });
+    }
     FormBackend.updateForm(this.state.form.owner, this.state.formName, form)
       .then((res) => {
         if (res.status === "ok") {

@@ -509,6 +509,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"));
       res.push(Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"));
       res.push(Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"));
+      res.push(Setting.getItem(<Link to="/forms">{i18next.t("general:Forms")}</Link>, "/forms"));
       res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
       res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"));
 
@@ -576,6 +577,9 @@ class App extends Component {
         Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"),
         Setting.getItem(<Link to="/forms">{i18next.t("general:Forms")}</Link>, "/forms"),
         Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows"),
+        Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"),
+        Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
+        Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"),
         Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"),
       ]));
 
