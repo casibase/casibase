@@ -503,43 +503,6 @@ class App extends Component {
       if (window.location.pathname === "/") {
         Setting.goToLinkSoft(this, "/videos");
       }
-    } else if (domain === "med") {
-      res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
-      res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows"));
-      res.push(Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"));
-      res.push(Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"));
-      res.push(Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"));
-      res.push(Setting.getItem(<Link to="/forms">{i18next.t("general:Forms")}</Link>, "/forms"));
-      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
-      res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"));
-
-      const textColor = "black";
-      const twoToneColor = "rgb(89,54,213)";
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
-        Setting.getItem(
-          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
-            {i18next.t("general:Users")}
-            {Setting.renderExternalLink()}
-          </a>, "/users"),
-        Setting.getItem(
-          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
-            {i18next.t("general:Resources")}
-            {Setting.renderExternalLink()}
-          </a>, "/resources"),
-        Setting.getItem(
-          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
-            {i18next.t("general:Permissions")}
-            {Setting.renderExternalLink()}
-          </a>, "/permissions"),
-      ]));
-
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
-        Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
-        Setting.getItem(
-          <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
-            {i18next.t("general:Swagger")}
-            {Setting.renderExternalLink()}
-          </a>, "/swagger")]));
     } else {
       const textColor = "black";
       const twoToneColor = "rgb(89,54,213)";
