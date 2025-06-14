@@ -68,6 +68,24 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /add-container:
+    post:
+      tags:
+      - Container API
+      description: add a container
+      operationId: ApiController.AddContainer
+      parameters:
+      - in: body
+        name: body
+        description: The details of the container
+        required: true
+        schema:
+          $ref: '#/definitions/object.Container'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /add-file:
     post:
       tags:
@@ -100,6 +118,60 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /add-form:
+    post:
+      tags:
+      - Form API
+      description: add form
+      operationId: ApiController.AddForm
+      parameters:
+      - in: body
+        name: body
+        description: The details of the form
+        required: true
+        schema:
+          $ref: '#/definitions/object.Form'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-image:
+    post:
+      tags:
+      - Image API
+      description: add a image
+      operationId: ApiController.AddImage
+      parameters:
+      - in: body
+        name: body
+        description: The details of the image
+        required: true
+        schema:
+          $ref: '#/definitions/object.Image'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-machine:
+    post:
+      tags:
+      - Machine API
+      description: add a machine
+      operationId: ApiController.AddMachine
+      parameters:
+      - in: body
+        name: body
+        description: The details of the machine
+        required: true
+        schema:
+          $ref: '#/definitions/object.Machine'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /add-message:
     post:
       tags:
@@ -118,6 +190,41 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/object.Chat'
+  /add-node:
+    post:
+      tags:
+      - Node API
+      description: add a node
+      operationId: ApiController.AddNode
+      parameters:
+      - in: body
+        name: body
+        description: The details of the node
+        required: true
+        schema:
+          $ref: '#/definitions/object.Node'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-node-tunnel:
+    get:
+      tags:
+      - Session API
+      description: add session
+      operationId: ApiController.AddNodeTunnel
+      parameters:
+      - in: query
+        name: nodeId
+        description: The id of node
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/Response'
   /add-permission:
     post:
       tags:
@@ -131,6 +238,24 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/casdoorsdk.Permission'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-pod:
+    post:
+      tags:
+      - Pod API
+      description: add a pod
+      operationId: ApiController.AddPod
+      parameters:
+      - in: body
+        name: body
+        description: The details of the pod
+        required: true
+        schema:
+          $ref: '#/definitions/object.Pod'
       responses:
         "200":
           description: The Response object
@@ -154,6 +279,42 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /add-record:
+    post:
+      tags:
+      - Record API
+      description: add a record
+      operationId: ApiController.AddRecord
+      parameters:
+      - in: body
+        name: body
+        description: The details of the record
+        required: true
+        schema:
+          $ref: '#/definitions/object.Record'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-session:
+    post:
+      tags:
+      - Session API
+      description: add session
+      operationId: ApiController.AddSession
+      parameters:
+      - in: body
+        name: body
+        description: The session object
+        required: true
+        schema:
+          $ref: '#/definitions/object.Session'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/Response'
   /add-store:
     post:
       tags:
@@ -226,6 +387,71 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /add-workflow:
+    post:
+      tags:
+      - Workflow API
+      description: add workflow
+      operationId: ApiController.AddWorkflow
+      parameters:
+      - in: body
+        name: body
+        description: The details of the workflow
+        required: true
+        schema:
+          $ref: '#/definitions/object.Workflow'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /api/chat/completions:
+    post:
+      tags:
+      - OpenAI Compatible API
+      description: OpenAI compatible chat completions API
+      operationId: ApiController.ChatCompletions
+      parameters:
+      - in: body
+        name: body
+        description: The OpenAI chat request
+        required: true
+        schema:
+          $ref: '#/definitions/openai.ChatCompletionRequest'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/openai.ChatCompletionResponse'
+  /commit-record:
+    post:
+      tags:
+      - Record API
+      description: commit a record
+      operationId: ApiController.CommitRecord
+      parameters:
+      - in: body
+        name: body
+        description: The details of the record
+        required: true
+        schema:
+          $ref: '#/definitions/object.Record'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-all-vectors:
+    post:
+      tags:
+      - Vector API
+      description: delete all vectors
+      operationId: ApiController.DeleteAllVectors
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /delete-article:
     post:
       tags:
@@ -262,6 +488,24 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /delete-container:
+    post:
+      tags:
+      - Container API
+      description: delete a container
+      operationId: ApiController.DeleteContainer
+      parameters:
+      - in: body
+        name: body
+        description: The details of the container
+        required: true
+        schema:
+          $ref: '#/definitions/object.Container'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /delete-file:
     post:
       tags:
@@ -289,6 +533,60 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /delete-form:
+    post:
+      tags:
+      - Form API
+      description: delete form
+      operationId: ApiController.DeleteForm
+      parameters:
+      - in: body
+        name: body
+        description: The details of the form
+        required: true
+        schema:
+          $ref: '#/definitions/object.Form'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-image:
+    post:
+      tags:
+      - Image API
+      description: delete a image
+      operationId: ApiController.DeleteImage
+      parameters:
+      - in: body
+        name: body
+        description: The details of the image
+        required: true
+        schema:
+          $ref: '#/definitions/object.Image'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-machine:
+    post:
+      tags:
+      - Machine API
+      description: delete a machine
+      operationId: ApiController.DeleteMachine
+      parameters:
+      - in: body
+        name: body
+        description: The details of the machine
+        required: true
+        schema:
+          $ref: '#/definitions/object.Machine'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /delete-message:
     post:
       tags:
@@ -302,6 +600,24 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/object.Message'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-node:
+    post:
+      tags:
+      - Node API
+      description: delete a node
+      operationId: ApiController.DeleteNode
+      parameters:
+      - in: body
+        name: body
+        description: The details of the node
+        required: true
+        schema:
+          $ref: '#/definitions/object.Node'
       responses:
         "200":
           description: The Response object
@@ -325,6 +641,24 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /delete-pod:
+    post:
+      tags:
+      - Pod API
+      description: delete a pod
+      operationId: ApiController.DeletePod
+      parameters:
+      - in: body
+        name: body
+        description: The details of the pod
+        required: true
+        schema:
+          $ref: '#/definitions/object.Pod'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /delete-provider:
     post:
       tags:
@@ -343,6 +677,41 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /delete-record:
+    post:
+      tags:
+      - Record API
+      description: delete a record
+      operationId: ApiController.DeleteRecord
+      parameters:
+      - in: body
+        name: body
+        description: The details of the record
+        required: true
+        schema:
+          $ref: '#/definitions/object.Record'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-session:
+    post:
+      tags:
+      - Session API
+      description: delete session
+      operationId: ApiController.DeleteSession
+      parameters:
+      - in: query
+        name: id
+        description: The id of session
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/Response'
   /delete-store:
     post:
       tags:
@@ -415,6 +784,64 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /delete-workflow:
+    post:
+      tags:
+      - Workflow API
+      description: delete workflow
+      operationId: ApiController.DeleteWorkflow
+      parameters:
+      - in: body
+        name: body
+        description: The details of the workflow
+        required: true
+        schema:
+          $ref: '#/definitions/object.Workflow'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /generate-text-to-speech-audio:
+    post:
+      tags:
+      - TTS API
+      description: convert text to speech
+      operationId: ApiController.GenerateTextToSpeechAudio
+      parameters:
+      - in: controllers.TextToSpeechRequest
+        name: body
+        description: The text to convert to speech
+        schema:
+          $ref: '#/definitions/true'
+      responses:
+        "200":
+          description: The audio data
+          schema:
+            type: array
+            items:
+              format: byte
+              type: string
+  /generate-text-to-speech-audio-stream:
+    get:
+      tags:
+      - TTS API
+      description: convert text to speech with streaming
+      operationId: ApiController.GenerateTextToSpeechAudioStream
+      parameters:
+      - in: query
+        name: storeId
+        description: The store ID
+        required: true
+        type: string
+      - in: query
+        name: messageId
+        description: The message ID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{stream} string "An event stream of audio chunks in base64 format"'
   /get-Messages:
     get:
       tags:
@@ -575,6 +1002,100 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Chat'
+  /get-container:
+    get:
+      tags:
+      - Container API
+      description: get container
+      operationId: ApiController.GetContainer
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the container
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Container'
+  /get-containers:
+    get:
+      tags:
+      - Container API
+      description: get all containers
+      operationId: ApiController.GetContainers
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        required: true
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Container'
+  /get-form:
+    get:
+      tags:
+      - Form API
+      description: get form
+      operationId: ApiController.GetForm
+      parameters:
+      - in: query
+        name: id
+        description: The id (owner/name) of form
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Form'
+  /get-form-data:
+    get:
+      tags:
+      - Form API
+      description: get forms
+      operationId: ApiController.GetFormData
+      parameters:
+      - in: query
+        name: owner
+        description: The owner of form
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.Form'
+  /get-forms:
+    get:
+      tags:
+      - Form API
+      description: get forms
+      operationId: ApiController.GetForms
+      parameters:
+      - in: query
+        name: owner
+        description: The owner of form
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.Form'
   /get-global-articles:
     get:
       tags:
@@ -601,6 +1122,19 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Chat'
+  /get-global-forms:
+    get:
+      tags:
+      - Form API
+      description: get global forms
+      operationId: ApiController.GetGlobalForms
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.Form'
   /get-global-messages:
     get:
       tags:
@@ -679,6 +1213,97 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Video'
+  /get-global-workflows:
+    get:
+      tags:
+      - Workflow API
+      description: get global workflows
+      operationId: ApiController.GetGlobalWorkflows
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.Workflow'
+  /get-image:
+    get:
+      tags:
+      - Image API
+      description: get image
+      operationId: ApiController.GetImage
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the image
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Image'
+  /get-images:
+    get:
+      tags:
+      - Image API
+      description: get all images
+      operationId: ApiController.GetImages
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        required: true
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Image'
+  /get-machine:
+    get:
+      tags:
+      - Machine API
+      description: get machine
+      operationId: ApiController.GetMachine
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the machine
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Machine'
+  /get-machines:
+    get:
+      tags:
+      - Machine API
+      description: get all machines
+      operationId: ApiController.GetMachines
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        required: true
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Machine'
   /get-message:
     get:
       tags:
@@ -711,6 +1336,45 @@ paths:
       responses:
         "200":
           description: '{stream} string "An event stream of message answers in JSON format"'
+  /get-node:
+    get:
+      tags:
+      - Node API
+      description: get node
+      operationId: ApiController.GetNode
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the node
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Node'
+  /get-nodes:
+    get:
+      tags:
+      - Node API
+      description: get all nodes
+      operationId: ApiController.GetNodes
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        required: true
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Node'
   /get-permission:
     get:
       tags:
@@ -741,6 +1405,56 @@ paths:
             type: array
             items:
               $ref: '#/definitions/casdoorsdk.Permission'
+  /get-pod:
+    get:
+      tags:
+      - Pod API
+      description: get pod
+      operationId: ApiController.GetPod
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the pod
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Pod'
+  /get-pods:
+    get:
+      tags:
+      - Pod API
+      description: get all pods
+      operationId: ApiController.GetPods
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        required: true
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Pod'
+  /get-prometheus-info:
+    get:
+      tags:
+      - System API
+      description: get Prometheus Info
+      operationId: ApiController.GetPrometheusInfo
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.PrometheusInfo'
   /get-provider:
     get:
       tags:
@@ -790,6 +1504,84 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Usage'
+  /get-record:
+    get:
+      tags:
+      - Record API
+      description: get record
+      operationId: ApiController.GetRecord
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the record
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Record'
+  /get-records:
+    get:
+      tags:
+      - Record API
+      description: get all records
+      operationId: ApiController.GetRecords
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        required: true
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Record'
+  /get-session:
+    get:
+      tags:
+      - Session API
+      description: get session
+      operationId: ApiController.GetConnSession
+      parameters:
+      - in: query
+        name: id
+        description: The id of session
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/object.Session'
+  /get-sessions:
+    get:
+      tags:
+      - Session API
+      description: get all sessions
+      operationId: ApiController.GetSessions
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        required: true
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Session'
   /get-storage-providers:
     get:
       tags:
@@ -839,6 +1631,17 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Store'
+  /get-system-info:
+    get:
+      tags:
+      - System API
+      description: get system info like CPU and memory usage
+      operationId: ApiController.GetSystemInfo
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/util.SystemInfo'
   /get-task:
     get:
       tags:
@@ -879,14 +1682,8 @@ paths:
     get:
       tags:
       - Usage API
-      description: get usages
-      operationId: ApiController.GetUsages
-      parameters:
-      - in: query
-        name: days
-        description: days count
-        required: true
-        type: string
+      description: get userTableInfos
+      operationId: ApiController.GetUserTableInfos
       responses:
         "200":
           description: The Response object
@@ -894,6 +1691,19 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Usage'
+  /get-users:
+    get:
+      tags:
+      - Usage API
+      description: get users
+      operationId: ApiController.GetUsers
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              type: string
   /get-vectors:
     get:
       tags:
@@ -907,6 +1717,17 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Vector'
+  /get-version-info:
+    get:
+      tags:
+      - System API
+      description: get version info like Casdoor release version and commit ID
+      operationId: ApiController.GetVersionInfo
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/util.VersionInfo'
   /get-video:
     get:
       tags:
@@ -943,6 +1764,110 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Video'
+  /get-workflow:
+    get:
+      tags:
+      - Workflow API
+      description: get workflow
+      operationId: ApiController.GetWorkflow
+      parameters:
+      - in: query
+        name: id
+        description: The id (owner/name) of workflow
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Workflow'
+  /get-workflows:
+    get:
+      tags:
+      - Workflow API
+      description: get workflows
+      operationId: ApiController.GetWorkflows
+      parameters:
+      - in: query
+        name: owner
+        description: The owner of workflow
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.Workflow'
+  /health:
+    get:
+      tags:
+      - System API
+      description: check if the system is live
+      operationId: ApiController.Health
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /process-speech-to-text:
+    post:
+      tags:
+      - STT API
+      description: convert speech to text
+      operationId: ApiController.ProcessSpeechToText
+      parameters:
+      - in: formData
+        name: audio
+        description: The audio file to convert to text
+        required: true
+        type: file
+      - in: formData
+        name: storeId
+        description: The store ID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The transcribed text
+          schema:
+            $ref: '#/definitions/controllers.SpeechToTextResponse'
+  /query-record:
+    get:
+      tags:
+      - Record API
+      description: query record
+      operationId: ApiController.QueryRecord
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the record
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Record'
+  /refresh-mcp-tools:
+    post:
+      tags:
+      - Provider API
+      description: refresh Mcp tools
+      operationId: ApiController.RefreshMcpTools
+      parameters:
+      - in: body
+        name: body
+        description: The details of the provider
+        required: true
+        schema:
+          $ref: '#/definitions/object.Provider'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /refresh-store-vectors:
     post:
       tags:
@@ -1038,6 +1963,29 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /update-container:
+    post:
+      tags:
+      - Container API
+      description: update container
+      operationId: ApiController.UpdateContainer
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the container
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the container
+        required: true
+        schema:
+          $ref: '#/definitions/object.Container'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /update-file:
     post:
       tags:
@@ -1066,6 +2014,75 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /update-form:
+    post:
+      tags:
+      - Form API
+      description: update form
+      operationId: ApiController.UpdateForm
+      parameters:
+      - in: query
+        name: id
+        description: The id (owner/name) of the form
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the form
+        required: true
+        schema:
+          $ref: '#/definitions/object.Form'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /update-image:
+    post:
+      tags:
+      - Image API
+      description: update image
+      operationId: ApiController.UpdateImage
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the image
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the image
+        required: true
+        schema:
+          $ref: '#/definitions/object.Image'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /update-machine:
+    post:
+      tags:
+      - Machine API
+      description: update machine
+      operationId: ApiController.UpdateMachine
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the machine
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the machine
+        required: true
+        schema:
+          $ref: '#/definitions/object.Machine'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /update-message:
     post:
       tags:
@@ -1089,6 +2106,29 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /update-node:
+    post:
+      tags:
+      - Node API
+      description: update node
+      operationId: ApiController.UpdateNode
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the node
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the node
+        required: true
+        schema:
+          $ref: '#/definitions/object.Node'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /update-permission:
     post:
       tags:
@@ -1102,6 +2142,29 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/casdoorsdk.Permission'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /update-pod:
+    post:
+      tags:
+      - Pod API
+      description: update pod
+      operationId: ApiController.UpdatePod
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the pod
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the pod
+        required: true
+        schema:
+          $ref: '#/definitions/object.Pod'
       responses:
         "200":
           description: The Response object
@@ -1130,6 +2193,52 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /update-record:
+    post:
+      tags:
+      - Record API
+      description: update record
+      operationId: ApiController.UpdateRecord
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the record
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the record
+        required: true
+        schema:
+          $ref: '#/definitions/object.Record'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /update-session:
+    post:
+      tags:
+      - Session API
+      description: update session
+      operationId: ApiController.UpdateSession
+      parameters:
+      - in: query
+        name: id
+        description: The id of session
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The session object
+        required: true
+        schema:
+          $ref: '#/definitions/object.Session'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/Response'
   /update-store:
     post:
       tags:
@@ -1222,6 +2331,29 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /update-workflow:
+    post:
+      tags:
+      - Workflow API
+      description: update workflow
+      operationId: ApiController.UpdateWorkflow
+      parameters:
+      - in: query
+        name: id
+        description: The id (owner/name) of the workflow
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the workflow
+        required: true
+        schema:
+          $ref: '#/definitions/object.Workflow'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /upload-video:
     post:
       tags:
@@ -1240,12 +2372,25 @@ paths:
           schema:
             type: string
 definitions:
-  81136.File:
+  157591.File:
     title: File
     type: object
-  82282.Properties:
+  160355.Properties:
     title: Properties
     type: object
+  Response:
+    title: Response
+    type: object
+  agent.McpTools:
+    title: McpTools
+    type: object
+    properties:
+      isEnabled:
+        type: boolean
+      serverName:
+        type: string
+      tools:
+        type: string
   casdoorsdk.Permission:
     title: Permission
     type: object
@@ -1265,6 +2410,9 @@ definitions:
         type: string
       status:
         type: string
+  controllers.SpeechToTextResponse:
+    title: SpeechToTextResponse
+    type: object
   object:
     title: object
     type: object
@@ -1280,11 +2428,17 @@ definitions:
         type: string
       displayName:
         type: string
+      glossary:
+        type: array
+        items:
+          type: string
       name:
         type: string
       owner:
         type: string
       provider:
+        type: string
+      text:
         type: string
       type:
         type: string
@@ -1292,6 +2446,8 @@ definitions:
     title: Block
     type: object
     properties:
+      prompt:
+        type: string
       state:
         type: string
       text:
@@ -1318,11 +2474,15 @@ definitions:
         type: string
       isDeleted:
         type: boolean
+      isHidden:
+        type: boolean
       messageCount:
         type: integer
         format: int64
       name:
         type: string
+      needTitle:
+        type: boolean
       organization:
         type: string
       owner:
@@ -1353,6 +2513,38 @@ definitions:
         type: array
         items:
           type: string
+  object.Container:
+    title: Container
+    type: object
+    properties:
+      command:
+        type: string
+      createdTime:
+        type: string
+      displayName:
+        type: string
+      image:
+        type: string
+      imageId:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      ports:
+        type: string
+      provider:
+        type: string
+      sizeRootFs:
+        type: integer
+        format: int64
+      sizeRw:
+        type: integer
+        format: int64
+      state:
+        type: string
+      status:
+        type: string
   object.File:
     title: File
     type: object
@@ -1374,18 +2566,140 @@ definitions:
         type: string
       url:
         type: string
-  object.Graph:
-    title: Graph
+  object.Form:
+    title: Form
     type: object
     properties:
-      links:
+      createdTime:
+        type: string
+      displayName:
+        type: string
+      formItems:
         type: array
         items:
-          $ref: '#/definitions/object.Link'
-      nodes:
-        type: array
-        items:
-          $ref: '#/definitions/object.Node'
+          $ref: '#/definitions/object.FormItem'
+      name:
+        type: string
+      owner:
+        type: string
+      position:
+        type: string
+  object.FormItem:
+    title: FormItem
+    type: object
+    properties:
+      label:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+      width:
+        type: string
+  object.GaugeVecInfo:
+    title: GaugeVecInfo
+    type: object
+    properties:
+      method:
+        type: string
+      name:
+        type: string
+      throughput:
+        type: number
+        format: double
+  object.HistogramVecInfo:
+    title: HistogramVecInfo
+    type: object
+    properties:
+      count:
+        type: integer
+        format: int64
+      latency:
+        type: string
+      method:
+        type: string
+      name:
+        type: string
+  object.Image:
+    title: Image
+    type: object
+    properties:
+      ImageFamily:
+        type: string
+      ImageName:
+        type: string
+      ImageOwnerAlias:
+        type: string
+      ImageOwnerId:
+        type: integer
+        format: int64
+      ImageVersion:
+        type: string
+      IsCopied:
+        type: boolean
+      IsPublic:
+        type: boolean
+      IsSelfShared:
+        type: string
+      IsSubscribed:
+        type: boolean
+      IsSupportCloudinit:
+        type: boolean
+      IsSupportIoOptimized:
+        type: boolean
+      LoginAsNonRootSupported:
+        type: boolean
+      OSNameEn:
+        type: string
+      OSType:
+        type: string
+      ProductCode:
+        type: string
+      ResourceGroupId:
+        type: string
+      SupplierName:
+        type: string
+      Usage:
+        type: string
+      bootMode:
+        type: string
+      category:
+        type: string
+      createdTime:
+        type: string
+      description:
+        type: string
+      displayName:
+        type: string
+      imageId:
+        type: string
+      name:
+        type: string
+      os:
+        type: string
+      owner:
+        type: string
+      platform:
+        type: string
+      progress:
+        type: string
+      provider:
+        type: string
+      remotePassword:
+        type: string
+      remotePort:
+        type: integer
+        format: int64
+      remoteProtocol:
+        type: string
+      remoteUsername:
+        type: string
+      size:
+        type: string
+      state:
+        type: string
+      systemArchitecture:
+        type: string
   object.Label:
     title: Label
     type: object
@@ -1408,23 +2722,65 @@ definitions:
         type: string
       text:
         type: string
-  object.Link:
-    title: Link
+      type:
+        type: string
+      user:
+        type: string
+  object.Machine:
+    title: Machine
     type: object
     properties:
-      color:
+      category:
+        type: string
+      cpuSize:
+        type: string
+      createdTime:
+        type: string
+      displayName:
+        type: string
+      expireTime:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      memSize:
         type: string
       name:
         type: string
-      source:
+      os:
+        type: string
+      owner:
+        type: string
+      privateIp:
+        type: string
+      provider:
+        type: string
+      publicIp:
+        type: string
+      region:
+        type: string
+      remotePassword:
+        type: string
+      remotePort:
+        type: integer
+        format: int64
+      remoteProtocol:
+        type: string
+      remoteUsername:
+        type: string
+      size:
+        type: string
+      state:
         type: string
       tag:
         type: string
-      target:
+      type:
         type: string
-      value:
-        type: integer
-        format: int64
+      updatedTime:
+        type: string
+      zone:
+        type: string
   object.Message:
     title: Message
     type: object
@@ -1439,6 +2795,12 @@ definitions:
         type: string
       currency:
         type: string
+      dislikeUsers:
+        type: array
+        items:
+          type: string
+      embeddingProvider:
+        type: string
       errorText:
         type: string
       fileName:
@@ -1449,6 +2811,14 @@ definitions:
         type: boolean
       isHidden:
         type: boolean
+      isRegenerated:
+        type: boolean
+      likeUsers:
+        type: array
+        items:
+          type: string
+      modelProvider:
+        type: string
       name:
         type: string
       needNotify:
@@ -1460,10 +2830,19 @@ definitions:
       price:
         type: number
         format: double
+      reasonText:
+        type: string
       replyTo:
         type: string
+      suggestions:
+        type: array
+        items:
+          $ref: '#/definitions/object.Suggestion'
       text:
         type: string
+      textTokenCount:
+        type: integer
+        format: int64
       tokenCount:
         type: integer
         format: int64
@@ -1477,41 +2856,187 @@ definitions:
     title: Node
     type: object
     properties:
-      color:
+      autoQuery:
+        type: boolean
+      category:
         type: string
-      id:
+      cpuSize:
+        type: string
+      createdTime:
+        type: string
+      description:
+        type: string
+      displayName:
+        type: string
+      enableRemoteApp:
+        type: boolean
+      isPermanent:
+        type: boolean
+      language:
+        type: string
+      machineName:
+        type: string
+      memSize:
         type: string
       name:
         type: string
+      os:
+        type: string
+      owner:
+        type: string
+      patches:
+        type: array
+        items:
+          $ref: '#/definitions/object.Patch'
+      privateIp:
+        type: string
+      publicIp:
+        type: string
+      remoteApps:
+        type: array
+        items:
+          $ref: '#/definitions/object.RemoteApp'
+      remotePassword:
+        type: string
+      remotePort:
+        type: integer
+        format: int64
+      remoteProtocol:
+        type: string
+      remoteUsername:
+        type: string
+      services:
+        type: array
+        items:
+          $ref: '#/definitions/object.Service'
+      size:
+        type: string
       tag:
         type: string
-      val:
-        type: integer
-        format: int64
-      weight:
-        type: integer
-        format: int64
+      type:
+        type: string
+      updatedTime:
+        type: string
+  object.Patch:
+    title: Patch
+    type: object
+    properties:
+      category:
+        type: string
+      expectedStatus:
+        type: string
+      installTime:
+        type: string
+      message:
+        type: string
+      name:
+        type: string
+      size:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+  object.Pod:
+    title: Pod
+    type: object
+    properties:
+      createdTime:
+        type: string
+      hostIP:
+        type: string
+      labels:
+        type: string
+      name:
+        type: string
+      namespace:
+        type: string
+      owner:
+        type: string
+      podIP:
+        type: string
+      provider:
+        type: string
+      status:
+        type: string
+  object.PrometheusInfo:
+    title: PrometheusInfo
+    type: object
+    properties:
+      apiLatency:
+        type: array
+        items:
+          $ref: '#/definitions/object.HistogramVecInfo'
+      apiThroughput:
+        type: array
+        items:
+          $ref: '#/definitions/object.GaugeVecInfo'
+      totalThroughput:
+        type: number
+        format: double
+  object.Prompt:
+    title: Prompt
+    type: object
+    properties:
+      image:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
   object.Provider:
     title: Provider
     type: object
     properties:
+      apiKey:
+        type: string
       apiVersion:
         type: string
+      browserUrl:
+        type: string
       category:
+        type: string
+      chain:
         type: string
       clientId:
         type: string
       clientSecret:
         type: string
+      compitableProvider:
+        type: string
+      contractMethod:
+        type: string
+      contractName:
+        type: string
       createdTime:
         type: string
+      currency:
+        type: string
       displayName:
+        type: string
+      flavor:
         type: string
       frequencyPenalty:
         type: number
         format: float
+      inputPricePerThousandTokens:
+        type: number
+        format: double
+      isDefault:
+        type: boolean
+      mcpTools:
+        type: array
+        items:
+          $ref: '#/definitions/agent.McpTools'
       name:
         type: string
+      network:
+        type: string
+      outputPricePerThousandTokens:
+        type: number
+        format: double
       owner:
         type: string
       presencePenalty:
@@ -1519,11 +3044,23 @@ definitions:
         format: float
       providerUrl:
         type: string
+      region:
+        type: string
+      signCert:
+        type: string
+      signKey:
+        type: string
+      state:
+        type: string
       subType:
         type: string
       temperature:
         type: number
         format: float
+      testContent:
+        type: string
+      text:
+        type: string
       topK:
         type: integer
         format: int64
@@ -1532,16 +3069,185 @@ definitions:
         format: float
       type:
         type: string
+      userCert:
+        type: string
+      userKey:
+        type: string
+  object.Record:
+    title: Record
+    type: object
+    properties:
+      action:
+        type: string
+      block:
+        type: string
+      clientIp:
+        type: string
+      createdTime:
+        type: string
+      id:
+        type: integer
+        format: int64
+      isTriggered:
+        type: boolean
+      language:
+        type: string
+      method:
+        type: string
+      name:
+        type: string
+      object:
+        type: string
+      organization:
+        type: string
+      owner:
+        type: string
+      provider:
+        type: string
+      requestUri:
+        type: string
+      response:
+        type: string
+      transaction:
+        type: string
+      user:
+        type: string
+      userAgent:
+        type: string
+  object.Remark:
+    title: Remark
+    type: object
+    properties:
+      isPublic:
+        type: boolean
+      score:
+        type: string
+      text:
+        type: string
+      timestamp:
+        type: string
+      user:
+        type: string
+  object.RemoteApp:
+    title: RemoteApp
+    type: object
+    properties:
+      "no":
+        type: integer
+        format: int64
+      remoteAppArgs:
+        type: string
+      remoteAppDir:
+        type: string
+      remoteAppName:
+        type: string
+  object.Service:
+    title: Service
+    type: object
+    properties:
+      expectedStatus:
+        type: string
+      message:
+        type: string
+      name:
+        type: string
+      "no":
+        type: integer
+        format: int64
+      path:
+        type: string
+      port:
+        type: integer
+        format: int64
+      processId:
+        type: integer
+        format: int64
+      status:
+        type: string
+      subStatus:
+        type: string
+  object.Session:
+    title: Session
+    type: object
+    properties:
+      clientIp:
+        type: string
+      clientIpDesc:
+        type: string
+      code:
+        type: integer
+        format: int64
+      commandCount:
+        type: integer
+        format: int64
+      connectionId:
+        type: string
+      createdTime:
+        type: string
+      creator:
+        type: string
+      endTime:
+        type: string
+      height:
+        type: integer
+        format: int64
+      message:
+        type: string
+      mode:
+        type: string
+      name:
+        type: string
+      node:
+        type: string
+      operations:
+        type: array
+        items:
+          type: string
+      owner:
+        type: string
+      protocol:
+        type: string
+      recording:
+        type: string
+      reviewed:
+        type: boolean
+      startTime:
+        type: string
+      status:
+        type: string
+      userAgent:
+        type: string
+      userAgentDesc:
+        type: string
+      width:
+        type: integer
+        format: int64
   object.Store:
     title: Store
     type: object
     properties:
+      agentProvider:
+        type: string
+      avatar:
+        type: string
+      childModelProviders:
+        type: array
+        items:
+          type: string
+      childStores:
+        type: array
+        items:
+          type: string
       createdTime:
         type: string
+      disableFileUpload:
+        type: boolean
       displayName:
         type: string
       embeddingProvider:
         type: string
+      enableTtsStreaming:
+        type: boolean
       fileTree:
         $ref: '#/definitions/object.File'
       frequency:
@@ -1549,6 +3255,11 @@ definitions:
         format: int64
       imageProvider:
         type: string
+      isDefault:
+        type: boolean
+      knowledgeCount:
+        type: integer
+        format: int64
       limitMinutes:
         type: integer
         format: int64
@@ -1563,13 +3274,46 @@ definitions:
         type: string
       prompt:
         type: string
+      prompts:
+        type: array
+        items:
+          $ref: '#/definitions/object.Prompt'
       propertiesMap:
-        $ref: '#/definitions/82282.Properties'
+        $ref: '#/definitions/160355.Properties'
+      showAutoRead:
+        type: boolean
+      speechToTextProvider:
+        type: string
       splitProvider:
+        type: string
+      state:
         type: string
       storageProvider:
         type: string
+      storageSubpath:
+        type: string
+      suggestionCount:
+        type: integer
+        format: int64
+      textToSpeechProvider:
+        type: string
+      themeColor:
+        type: string
+      title:
+        type: string
       welcome:
+        type: string
+      welcomeText:
+        type: string
+      welcomeTitle:
+        type: string
+  object.Suggestion:
+    title: Suggestion
+    type: object
+    properties:
+      isHit:
+        type: boolean
+      text:
         type: string
   object.Task:
     title: Task
@@ -1593,6 +3337,8 @@ definitions:
           type: string
       log:
         type: string
+      modelUsageMap:
+        $ref: '#/definitions/object.UsageInfo'
       name:
         type: string
       owner:
@@ -1601,6 +3347,10 @@ definitions:
         type: string
       provider:
         type: string
+      providers:
+        type: array
+        items:
+          type: string
       result:
         type: string
       subject:
@@ -1632,6 +3382,18 @@ definitions:
         type: integer
         format: int64
       userCount:
+        type: integer
+        format: int64
+  object.UsageInfo:
+    title: UsageInfo
+    type: object
+    properties:
+      provider:
+        type: string
+      startTime:
+        type: string
+        format: datetime
+      tokenCount:
         type: integer
         format: int64
   object.Vector:
@@ -1703,12 +3465,21 @@ definitions:
         type: array
         items:
           type: string
+      description:
+        type: string
       displayName:
         type: string
       editMode:
         type: string
+      excellentCount:
+        type: integer
+        format: int64
       grade:
         type: string
+      grade2:
+        type: string
+      isPublic:
+        type: boolean
       keywords:
         type: array
         items:
@@ -1720,11 +3491,23 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/object.Label'
+      lesson:
+        type: string
       name:
         type: string
       owner:
         type: string
       playAuth:
+        type: string
+      remarks:
+        type: array
+        items:
+          $ref: '#/definitions/object.Remark'
+      remarks2:
+        type: array
+        items:
+          $ref: '#/definitions/object.Remark'
+      reviewState:
         type: string
       school:
         type: string
@@ -1736,6 +3519,8 @@ definitions:
         items:
           $ref: '#/definitions/object.Label'
       stage:
+        type: string
+      state:
         type: string
       subject:
         type: string
@@ -1755,6 +3540,8 @@ definitions:
         type: string
       type:
         type: string
+      unit:
+        type: string
       videoId:
         type: string
       videoLength:
@@ -1763,6 +3550,59 @@ definitions:
         additionalProperties:
           type: integer
           format: int64
+  object.Workflow:
+    title: Workflow
+    type: object
+    properties:
+      createdTime:
+        type: string
+      displayName:
+        type: string
+      message:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      text:
+        type: string
+      text2:
+        type: string
+  openai.ChatCompletionRequest:
+    title: ChatCompletionRequest
+    type: object
+  openai.ChatCompletionResponse:
+    title: ChatCompletionResponse
+    type: object
+  "true":
+    title: "true"
+    type: object
+  util.SystemInfo:
+    title: SystemInfo
+    type: object
+    properties:
+      cpuUsage:
+        type: array
+        items:
+          type: number
+          format: double
+      memoryTotal:
+        type: integer
+        format: int64
+      memoryUsed:
+        type: integer
+        format: int64
+  util.VersionInfo:
+    title: VersionInfo
+    type: object
+    properties:
+      commitId:
+        type: string
+      commitOffset:
+        type: integer
+        format: int64
+      version:
+        type: string
 securityDefinitions:
   AccessToken:
     type: apiKey
