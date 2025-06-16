@@ -47,21 +47,21 @@ func (record *Record) getRecordProvider() (*Provider, error) {
 	return provider, nil
 }
 
-func (record *Record) getRecordChainClient() (chain.ChainClientInterface, error) {
+func (record *Record) getRecordChainClient() (chain.ChainClientInterface, *Provider, error) {
 	provider, err := record.getRecordProvider()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if provider == nil {
-		return nil, fmt.Errorf("there is no active blockchain provider")
+		return nil, nil, fmt.Errorf("there is no active blockchain provider")
 	}
 
 	client, err := chain.NewChainClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region, provider.Network, provider.Chain, provider.ProviderUrl, provider.Text, provider.UserKey, provider.UserCert, provider.SignKey, provider.SignCert, provider.ContractName, provider.ContractMethod)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return client, nil
+	return client, provider, nil
 }
 
 func (record *Record) toMap() map[string]string {
@@ -108,10 +108,11 @@ func CommitRecord(record *Record) (bool, error) {
 		return false, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getId(), record.Block)
 	}
 
-	client, err := record.getRecordChainClient()
+	client, provider, err := record.getRecordChainClient()
 	if err != nil {
 		return false, err
 	}
+	record.Provider = provider.Name
 
 	blockId, transactionId, err := client.Commit(record.toParam())
 	if err != nil {
@@ -136,7 +137,7 @@ func QueryRecord(id string) (string, error) {
 		return "", fmt.Errorf("the record: %s's block ID should not be empty", record.getId())
 	}
 
-	client, err := record.getRecordChainClient()
+	client, _, err := record.getRecordChainClient()
 	if err != nil {
 		return "", err
 	}
