@@ -1954,13 +1954,18 @@ export function GenerateId() {
   return uuidv4();
 }
 
-export function getBlockBrowserUrl(providerMap, providerName, block) {
+export function getBlockBrowserUrl(providerMap, record, block) {
+  const providerName = record.provider;
   const provider = providerMap[providerName];
   if (!provider || provider.browserUrl === "") {
     return block;
   }
-
-  const url = provider.browserUrl.replace("{bh}", block).replace("{chainId}", 1).replace("{clusterId}", provider.network);
+  let url;
+  if (provider.type === "ChainMaker") {
+    url = provider.browserUrl.replace("{cm}", provider.text).replace("{txId}", record.transaction);
+  } else {
+    url = provider.browserUrl.replace("{bh}", block).replace("{chainId}", 1).replace("{clusterId}", provider.network);
+  }
   return (
     <a target="_blank" rel="noreferrer" href={url}>
       {block}

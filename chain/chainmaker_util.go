@@ -92,3 +92,16 @@ func SendChainmakerRequest(info *ChainChainmakerClient, method string) (*Chainma
 	}
 	return &chainmakerResp, nil
 }
+
+func normalizeChainData(data string) (string, error) {
+	var originChainData map[string]interface{}
+	if err := json.Unmarshal([]byte(data), &originChainData); err != nil {
+		return "", fmt.Errorf("parse json data error: %v", err)
+	}
+
+	normalizedData, err := json.Marshal(originChainData)
+	if err != nil {
+		return "", fmt.Errorf("marshal normalized data error: %v", err)
+	}
+	return string(normalizedData), nil
+}

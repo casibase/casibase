@@ -78,6 +78,11 @@ func (client *ChainChainmakerClient) Query(txId string, data string) (string, er
 	blockId := queryResult.Block
 	chainData := queryResult.Result
 
+	data, err = normalizeChainData(data)
+	if err != nil {
+		return "", err
+	}
+
 	res := "Mismatched"
 	if chainData == data {
 		res = fmt.Sprintf(`Matched
