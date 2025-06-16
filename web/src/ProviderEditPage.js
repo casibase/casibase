@@ -642,6 +642,16 @@ class ProviderEditPage extends React.Component {
                   }} />
                 </Col>
               </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {this.getNetworkLabel(this.state.provider)} :
+                </Col>
+                <Col span={22}>
+                  <Input value={this.state.provider.network} onChange={e => {
+                    this.updateProviderField("network", e.target.value);
+                  }} />
+                </Col>
+              </Row>
               {this.state.provider.type === "ChainMaker" ? (
                 <>
                   <Row style={{marginTop: "20px"}}>
@@ -700,16 +710,6 @@ class ProviderEditPage extends React.Component {
                     <Col span={22}>
                       <Input.TextArea rows={3} value={this.state.provider.signKey} onChange={e => {
                         this.updateProviderField("signKey", e.target.value);
-                      }} />
-                    </Col>
-                  </Row>
-                  <Row style={{marginTop: "20px"}}>
-                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {this.getNetworkLabel(this.state.provider)} :
-                    </Col>
-                    <Col span={22}>
-                      <Input value={this.state.provider.network} onChange={e => {
-                        this.updateProviderField("network", e.target.value);
                       }} />
                     </Col>
                   </Row>
