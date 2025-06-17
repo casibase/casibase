@@ -740,9 +740,11 @@ class ProviderEditPage extends React.Component {
                   {Setting.getLabel(i18next.t("provider:Browser URL"), i18next.t("provider:Browser URL - Tooltip"))} :
                 </Col>
                 <Col span={22}>
-                  <Input prefix={<LinkOutlined />} value={this.state.provider.browserUrl} onChange={e => {
-                    this.updateProviderField("browserUrl", e.target.value);
-                  }} />
+                  <Input prefix={<LinkOutlined />} value={this.state.provider.browserUrl}
+                    placeholder={this.state.provider.type === "ChainMaker" ? "https://explorer-testnet.chainmaker.org.cn/chainmaker_testnet_chain/block/{bh}" : ""}
+                    onChange={e => {
+                      this.updateProviderField("browserUrl", e.target.value);
+                    }} />
                 </Col>
               </Row>
             </>

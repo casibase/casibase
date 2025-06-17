@@ -94,6 +94,7 @@ func (record *Record) toParam() string {
 	record2 := *record
 	record2.Block = ""
 	record2.Transaction = ""
+	record2.BlockHash = ""
 
 	res := Param{
 		Key:   record2.getId(),
@@ -114,13 +115,14 @@ func CommitRecord(record *Record) (bool, error) {
 	}
 	record.Provider = provider.Name
 
-	blockId, transactionId, err := client.Commit(record.toParam())
+	blockId, transactionId, blockHash, err := client.Commit(record.toParam())
 	if err != nil {
 		return false, err
 	}
 
 	record.Block = blockId
 	record.Transaction = transactionId
+	record.BlockHash = blockHash
 	return UpdateRecord(record.getId(), record)
 }
 

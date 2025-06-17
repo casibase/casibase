@@ -1962,7 +1962,7 @@ export function getBlockBrowserUrl(providerMap, record, block) {
   }
   let url;
   if (provider.type === "ChainMaker") {
-    url = provider.browserUrl.replace("{cm}", provider.text).replace("{txId}", record.transaction);
+    url = provider.browserUrl.replace("{bh}", record.blockHash);
   } else {
     url = provider.browserUrl.replace("{bh}", block).replace("{chainId}", 1).replace("{clusterId}", provider.network);
   }

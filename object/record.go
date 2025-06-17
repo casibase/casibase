@@ -52,6 +52,7 @@ type Record struct {
 
 	Provider    string `xorm:"varchar(100)" json:"provider"`
 	Block       string `xorm:"varchar(100)" json:"block"`
+	BlockHash   string `xorm:"varchar(500)" json:"blockHash"`
 	Transaction string `xorm:"varchar(500)" json:"transaction"`
 	IsTriggered bool   `json:"isTriggered"`
 }
