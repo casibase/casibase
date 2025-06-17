@@ -136,7 +136,12 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", store.ModelProvider)
+	modelProviderName := store.ModelProvider
+	if message.ModelProvider != "" {
+		modelProviderName = message.ModelProvider
+	}
+
+	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", modelProviderName)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return

@@ -153,6 +153,9 @@ const MultiPaneManager = ({
         }
 
         lastMessage2.text = parsedResult.finalAnswer;
+        if (reasonText) {
+          lastMessage2.reasonText = reasonText;
+        }
         messages[messages.length - 1] = lastMessage2;
         messages.forEach(msg => msg.html = renderText(msg.text));
 
@@ -191,6 +194,10 @@ const MultiPaneManager = ({
         const finalMessage = Setting.deepCopy(lastMessage);
         finalMessage.text = text;
         finalMessage.isReasoningPhase = false;
+
+        if (reasonText) {
+          finalMessage.reasonText = reasonText;
+        }
 
         const parsedResult = messageCarrier.parseAnswerWithCarriers(text);
         if (parsedResult.title) {
@@ -307,6 +314,7 @@ const MultiPaneManager = ({
 
   const sendMessage = useCallback((paneIndex, text, fileName, isHidden, isRegenerated) => {
     const chat = panes[paneIndex]?.chat;
+    const modelProvider = panes[paneIndex]?.provider;
     if (!chat) {return;}
 
     const newMessage = {
@@ -324,6 +332,7 @@ const MultiPaneManager = ({
       isAlerted: false,
       isRegenerated,
       fileName,
+      modelProvider: modelProvider,
     };
 
     MessageBackend.addMessage(newMessage).then((res) => {
@@ -359,7 +368,6 @@ const MultiPaneManager = ({
     <div style={{padding: "8px 12px", borderBottom: "1px solid #f0f0f0", backgroundColor: "#fafafa", fontSize: "12px", display: "flex", gap: "12px", alignItems: "center", justifyContent: "space-between"}}>
       <div style={{display: "flex", gap: "12px", alignItems: "center"}}>
         <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
-          <span>Store:</span>
           <Select size="small" style={{minWidth: "100px"}} value={panes[index]?.store?.name || availableStores[0]?.name || ""} onChange={(value) => updatePaneStore(index, availableStores.find(s => s.name === value))} placeholder="Select store">
             {availableStores.map(store => (
               <Select.Option key={store.name} value={store.name}>{store.displayName || store.name}</Select.Option>
@@ -369,7 +377,6 @@ const MultiPaneManager = ({
 
         {modelProviders.length > 0 && (
           <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
-            <span>Model:</span>
             <Select size="small" style={{minWidth: "120px"}} value={panes[index]?.provider || modelProviders[0]?.name || ""} onChange={(value) => updatePaneProvider(index, value)} placeholder="Select model" optionLabelProp="children">
               {modelProviders.map(provider => (
                 <Select.Option key={provider.name} value={provider.name}>
@@ -386,7 +393,7 @@ const MultiPaneManager = ({
 
       {index === 0 && canManagePanes && (
         <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-          <span style={{fontSize: "12px", color: "#666"}}>Panes: {paneCount}</span>
+          <span style={{fontSize: "12px", color: "#666"}}>{i18next.t("chat:Panes")}: {paneCount}</span>
           <Button size="small" icon={<PlusOutlined />} onClick={() => paneCount < 4 && onPaneCountChange?.(paneCount + 1)} />
           <Button size="small" icon={<MinusOutlined />} onClick={() => paneCount > 1 && onPaneCountChange?.(paneCount - 1)} disabled={paneCount <= 1} />
         </div>
