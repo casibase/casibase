@@ -29,6 +29,16 @@
     "ZH 🡰 EN": "中文 🡰 英文",
     "ZH 🡲 EN": "中文 🡲 英文"
   },
+  "cert": {
+    "Sign cert": "签名证书",
+    "Sign cert - Tooltip": "签名证书",
+    "Sign key": "签名私钥",
+    "Sign key - Tooltip": "签名私钥",
+    "User cert": "用户证书",
+    "User cert - Tooltip": "用户证书",
+    "User key": "用户私钥",
+    "User key - Tooltip": "用户私钥"
+  },
   "chat": {
     "AI": "AI",
     "An error occurred during responding": "回答时出现错误",
@@ -104,6 +114,8 @@
     "Close": "关闭",
     "Cloud Resources": "云资源",
     "Containers": "容器",
+    "Copied to clipboard successfully": "已成功复制到剪贴板",
+    "Copy": "复制",
     "Created time": "创建时间",
     "Created time - Tooltip": "创建时间",
     "Data": "数据",
@@ -430,10 +442,6 @@
     "Refresh MCP tools": "刷新MCP工具",
     "Secret key": "密钥",
     "Server name": "服务器名称",
-    "Sign cert": "Sign cert",
-    "Sign cert - Tooltip": "Sign cert - Tooltip",
-    "Sign key": "Sign key",
-    "Sign key - Tooltip": "Sign key - Tooltip",
     "Speech recognition completed": "语音识别完成",
     "Sub type": "子类型",
     "Sub type - Tooltip": "子类型",
@@ -443,11 +451,7 @@
     "Top K": "Top K",
     "Top K - Tooltip": "候选token数量限制（1-6）",
     "Top P": "Top P",
-    "Top P - Tooltip": "概率采样阈值（0-1）",
-    "User cert": "User cert",
-    "User cert - Tooltip": "User cert - Tooltip",
-    "User key": "User key",
-    "User key - Tooltip": "User key - Tooltip"
+    "Top P - Tooltip": "概率采样阈值（0-1）"
   },
   "record": {
     "Commit": "上链",
