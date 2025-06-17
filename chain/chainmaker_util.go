@@ -24,9 +24,10 @@ import (
 )
 
 type ChainmakerResponse struct {
-	TxId   string `json:"tx_id"`
-	Result string `json:"result"`
-	Block  string `json:"block"`
+	TxId      string `json:"tx_id"`
+	Result    string `json:"result"`
+	Block     string `json:"block"`
+	BlockHash string `json:"block_hash"`
 }
 
 func SendChainmakerRequest(info *ChainChainmakerClient, method string) (*ChainmakerResponse, error) {

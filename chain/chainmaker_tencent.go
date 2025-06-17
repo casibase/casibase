@@ -52,7 +52,7 @@ func newChainTencentChainmakerClient(clientId, clientSecret, region, networkId, 
 	}, nil
 }
 
-func (client *ChainTencentChainmakerClient) Commit(data string) (string, string, error) {
+func (client *ChainTencentChainmakerClient) Commit(data string) (string, string, string, error) {
 	request := tbaas.NewInvokeRequest()
 	request.Module = common.StringPtr("transaction")
 	request.Operation = common.StringPtr("invoke")
@@ -70,13 +70,13 @@ func (client *ChainTencentChainmakerClient) Commit(data string) (string, string,
 	response, err := client.Client.Invoke(request)
 	if err != nil {
 		if sdkErr, ok := err.(*errors.TencentCloudSDKError); ok {
-			return "", "", fmt.Errorf("TencentCloudSDKError: %v", sdkErr)
+			return "", "", "", fmt.Errorf("TencentCloudSDKError: %v", sdkErr)
 		}
 
-		return "", "", fmt.Errorf("ChainTencentChainmakerClient.Client.Invoke() error: %v", err)
+		return "", "", "", fmt.Errorf("ChainTencentChainmakerClient.Client.Invoke() error: %v", err)
 	}
 
-	return response.ToJsonString(), "", nil
+	return response.ToJsonString(), "", "", nil
 }
 
 func (client ChainTencentChainmakerClient) Query(blockId string, data string) (string, error) {

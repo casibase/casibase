@@ -58,14 +58,14 @@ func newChainChainmakerClient(nodeAddr, authType, orgId, chainId, chainmakerEndp
 	}, nil
 }
 
-func (client *ChainChainmakerClient) Commit(data string) (string, string, error) {
+func (client *ChainChainmakerClient) Commit(data string) (string, string, string, error) {
 	client.Data = data
 	response, err := SendChainmakerRequest(client, "invoke-contract")
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 
-	return response.Block, response.TxId, nil
+	return response.Block, response.TxId, response.BlockHash, nil
 }
 
 func (client *ChainChainmakerClient) Query(txId string, data string) (string, error) {
