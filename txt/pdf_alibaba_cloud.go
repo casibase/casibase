@@ -192,6 +192,7 @@ func extractTextFromWordBase64(base64Str string) (string, error) {
 		for _, run := range para.Runs() {
 			text += run.Text()
 		}
+		text += "\n"
 	}
 	return text, nil
 }
