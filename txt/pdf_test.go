@@ -18,203 +18,38 @@
 package txt
 
 import (
-	"bytes"
-	"crypto/tls"
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
-
-	"github.com/carmel/gooxml/document"
-	"github.com/pdfcpu/pdfcpu/pkg/api"
 )
-
-const (
-	// alibaba cloud market
-	appCode    = ""
-	apiHost    = "https://generalpdf.market.alicloudapi.com"
-	apiPath    = "/ocrservice/pdf"
-	pdfDirPath = "papar_QA_dataset\\papers"
-	tmpDir     = "tmp_splits"
-	outDir     = "outputdir"
-)
-
-type OCRResponse struct {
-	FileBase64 string `json:"fileBase64"`
-}
-
-type RequestBody struct {
-	FileBase64 string `json:"fileBase64"`
-	FileType   string `json:"fileType"`
-}
 
 func TestParsePdfIntoTxt(t *testing.T) {
 	err := filepath.Walk(pdfDirPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			fmt.Println("walk error:", err)
+			panic(err)
 			return nil
 		}
+
 		if !info.IsDir() && strings.HasSuffix(strings.ToLower(info.Name()), ".pdf") {
 			relPath, _ := filepath.Rel(pdfDirPath, path)
+
 			parts := strings.Split(relPath, string(filepath.Separator))
 			if len(parts) < 2 {
 				return nil
 			}
 			number := parts[0]
-			err := processPDF(path, number)
+
+			err = processPdf(path, number)
 			if err != nil {
 				fmt.Println("Error processing:", path, "->", err)
 			}
 		}
+
 		return nil
 	})
 	if err != nil {
-		fmt.Println("Walk error:", err)
+		panic(err)
 	}
-}
-
-func processPDF(localPDFPath, number string) error {
-	os.RemoveAll(tmpDir)
-	ctx, err := api.ReadContextFile(localPDFPath)
-	pageCount := ctx.PageCount
-	fmt.Println("Total pages:", pageCount)
-
-	if err != nil {
-		return err
-	}
-
-	ans := ""
-
-	batchSize := 20
-	for start := 1; start <= pageCount; start += batchSize {
-		os.Mkdir(tmpDir, 0o755)
-		end := start + batchSize - 1
-		if end > pageCount {
-			end = pageCount
-		}
-		rangeStr := fmt.Sprintf("%d-%d", start, end)
-		err = api.ExtractPagesFile(localPDFPath, tmpDir, []string{rangeStr}, nil)
-		if err != nil {
-			return err
-		}
-		files, err := os.ReadDir(tmpDir)
-		if err != nil {
-			return err
-		}
-
-		var pagesToMerge []string
-		for _, f := range files {
-			if !f.IsDir() && filepath.Ext(f.Name()) == ".pdf" {
-				pagesToMerge = append(pagesToMerge, filepath.Join(tmpDir, f.Name()))
-			}
-		}
-		mergedFile := filepath.Join(tmpDir, fmt.Sprintf("merged_%d_%d.pdf", start, end))
-		err = api.MergeCreateFile(pagesToMerge, mergedFile, false, nil)
-		if err != nil {
-			return fmt.Errorf("failed to extract pages %s: %v", rangeStr, err)
-		}
-
-		res := parse(mergedFile)
-		ans = ans + res
-		os.RemoveAll(tmpDir)
-	}
-
-	outputFile := outDir + "\\" + number + ".txt"
-	err = os.WriteFile(outputFile, []byte(ans), 0o644)
-	if err != nil {
-		return fmt.Errorf("write to %s failed: %v", outputFile, err)
-	}
-
-	fmt.Println("Saved result to:", outputFile)
-
-	return nil
-}
-
-func parse(outputFile string) string {
-	b64, err := fileToBase64(outputFile)
-	if err != nil {
-		return fmt.Sprintf("file to base64 failed: %v", err)
-	}
-
-	reqBody := RequestBody{
-		FileBase64: b64,
-		FileType:   "word",
-	}
-
-	jsonData, err := json.Marshal(reqBody)
-	if err != nil {
-		return fmt.Sprintf("json marshal failed: %v", err)
-	}
-
-	url := apiHost + apiPath
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-	if err != nil {
-		return fmt.Sprintf("create request failed: %v", err)
-	}
-
-	req.Header.Add("Authorization", "APPCODE "+appCode)
-	req.Header.Add("Content-Type", "application/json; charset=UTF-8")
-
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-	client := &http.Client{Transport: tr}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return fmt.Sprintf("http request failed: %v", err)
-	}
-
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Sprintf("read response failed: %v", err)
-	}
-	var ocrResp OCRResponse
-	err = json.Unmarshal(body, &ocrResp)
-	if err != nil {
-		return err.Error()
-	}
-
-	text, err := extractTextFromWordBase64(ocrResp.FileBase64)
-	if err != nil {
-		return fmt.Sprintf("extract text from word base64 failed: %v", err)
-	}
-
-	return text
-}
-
-func extractTextFromWordBase64(base64Str string) (string, error) {
-	data, err := base64.StdEncoding.DecodeString(base64Str)
-	if err != nil {
-		return "", fmt.Errorf("base64 decode error: %v", err)
-	}
-	doc, err := document.Read(bytes.NewReader(data), int64(len(data)))
-	if err != nil {
-		return "", fmt.Errorf("failed to read docx: %v", err)
-	}
-	var text string
-	for _, para := range doc.Paragraphs() {
-		for _, run := range para.Runs() {
-			text += run.Text()
-		}
-	}
-
-	return text, nil
-}
-
-func fileToBase64(filePath string) (string, error) {
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		return "", fmt.Errorf("cannot read file: %v", err)
-	}
-
-	encoded := base64.StdEncoding.EncodeToString(data)
-	return encoded, nil
 }
