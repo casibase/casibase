@@ -19,6 +19,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/util"
 	"xorm.io/xorm"
 )
@@ -56,4 +57,13 @@ func GetSession(owner string, offset, limit int, field, value, sortField, sortOr
 		session = session.Desc(util.SnakeString(sortField))
 	}
 	return session
+}
+
+func isAdmin(user *casdoorsdk.User) bool {
+	if user == nil {
+		return false
+	}
+
+	res := user.IsAdmin || user.Type == "chat-admin"
+	return res
 }
