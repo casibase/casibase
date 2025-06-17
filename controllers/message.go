@@ -298,17 +298,18 @@ func (c *ApiController) AddMessage() {
 		}
 		if chat != nil && chat.Type == "AI" {
 			answerMessage := &object.Message{
-				Owner:        message.Owner,
-				Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
-				CreatedTime:  util.GetCurrentTimeEx(message.CreatedTime),
-				Organization: message.Organization,
-				User:         message.User,
-				Chat:         message.Chat,
-				ReplyTo:      message.Name,
-				Author:       "AI",
-				Text:         "",
-				FileName:     message.FileName,
-				VectorScores: []object.VectorScore{},
+				Owner:         message.Owner,
+				Name:          fmt.Sprintf("message_%s", util.GetRandomName()),
+				CreatedTime:   util.GetCurrentTimeEx(message.CreatedTime),
+				Organization:  message.Organization,
+				User:          message.User,
+				Chat:          message.Chat,
+				ReplyTo:       message.Name,
+				Author:        "AI",
+				Text:          "",
+				FileName:      message.FileName,
+				VectorScores:  []object.VectorScore{},
+				ModelProvider: message.ModelProvider,
 			}
 			_, err = object.AddMessage(answerMessage)
 			if err != nil {
