@@ -14,19 +14,23 @@
 
 import React from "react";
 import {AutoComplete, Button, Card, Col, Input, InputNumber, Row, Select, Slider, Switch} from "antd";
+import {LinkOutlined} from "@ant-design/icons";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import {LinkOutlined} from "@ant-design/icons";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
+import copy from "copy-to-clipboard";
+import FileSaver from "file-saver";
 import McpToolsTable from "./table/McpToolsTable";
 import ModelTestWidget from "./common/TestModelWidget";
 import TtsTestWidget from "./common/TestTtsWidget";
+
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/javascript/javascript");
 
 const {Option} = Select;
+const {TextArea} = Input;
 
 class ProviderEditPage extends React.Component {
   constructor(props) {
@@ -191,6 +195,7 @@ class ProviderEditPage extends React.Component {
   }
 
   renderProvider() {
+    const editorWidth = Setting.isMobile() ? 22 : 9;
     return (
       <Card size="small" title={
         <div>
@@ -673,42 +678,96 @@ class ProviderEditPage extends React.Component {
                       </Select>
                     </Col>
                   </Row>
-                  <Row style={{marginTop: "20px"}}>
+                  <Row style={{marginTop: "20px"}} >
                     <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {Setting.getLabel(i18next.t("provider:User cert"), i18next.t("provider:User cert - Tooltip"))} :
+                      {Setting.getLabel(i18next.t("cert:User cert"), i18next.t("cert:User cert - Tooltip"))} :
                     </Col>
-                    <Col span={22}>
-                      <Input.TextArea rows={3} value={this.state.provider.userCert} onChange={e => {
+                    <Col span={editorWidth} >
+                      <Button style={{marginRight: "10px", marginBottom: "10px"}} disabled={this.state.provider.userCert === ""} onClick={() => {
+                        copy(this.state.provider.userCert);
+                        Setting.showMessage("success", i18next.t("general:Copied to clipboard successfully"));
+                      }}
+                      >
+                        {i18next.t("general:Copy")}
+                      </Button>
+                      <Button type="primary" disabled={this.state.provider.userCert === ""} onClick={() => {
+                        const blob = new Blob([this.state.provider.userCert], {type: "text/plain;charset=utf-8"});
+                        FileSaver.saveAs(blob, "user_cert.pem");
+                      }}
+                      >
+                        {i18next.t("general:Download")}
+                      </Button>
+                      <TextArea autoSize={{minRows: 16, maxRows: 16}} value={this.state.provider.userCert} onChange={e => {
                         this.updateProviderField("userCert", e.target.value);
                       }} />
                     </Col>
-                  </Row>
-                  <Row style={{marginTop: "20px"}}>
+                    <Col span={1} />
                     <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {Setting.getLabel(i18next.t("provider:User key"), i18next.t("provider:User key - Tooltip"))} :
+                      {Setting.getLabel(i18next.t("cert:User key"), i18next.t("cert:User key - Tooltip"))} :
                     </Col>
-                    <Col span={22}>
-                      <Input.TextArea rows={3} value={this.state.provider.userKey} onChange={e => {
+                    <Col span={editorWidth} >
+                      <Button style={{marginRight: "10px", marginBottom: "10px"}} disabled={this.state.provider.userKey === ""} onClick={() => {
+                        copy(this.state.provider.userKey);
+                        Setting.showMessage("success", i18next.t("general:Copied to clipboard successfully"));
+                      }}
+                      >
+                        {i18next.t("general:Copy")}
+                      </Button>
+                      <Button type="primary" disabled={this.state.provider.userKey === ""} onClick={() => {
+                        const blob = new Blob([this.state.provider.userKey], {type: "text/plain;charset=utf-8"});
+                        FileSaver.saveAs(blob, "token_jwt_key.key");
+                      }}
+                      >
+                        {i18next.t("general:Download")}
+                      </Button>
+                      <TextArea autoSize={{minRows: 16, maxRows: 16}} value={this.state.provider.userKey} onChange={e => {
                         this.updateProviderField("userKey", e.target.value);
                       }} />
                     </Col>
                   </Row>
-                  <Row style={{marginTop: "20px"}}>
+                  <Row style={{marginTop: "20px"}} >
                     <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {Setting.getLabel(i18next.t("provider:Sign cert"), i18next.t("provider:Sign cert - Tooltip"))} :
+                      {Setting.getLabel(i18next.t("cert:Sign cert"), i18next.t("cert:Sign cert - Tooltip"))} :
                     </Col>
-                    <Col span={22}>
-                      <Input.TextArea rows={3} value={this.state.provider.signCert} onChange={e => {
+                    <Col span={editorWidth} >
+                      <Button style={{marginRight: "10px", marginBottom: "10px"}} disabled={this.state.provider.signCert === ""} onClick={() => {
+                        copy(this.state.provider.signCert);
+                        Setting.showMessage("success", i18next.t("general:Copied to clipboard successfully"));
+                      }}
+                      >
+                        {i18next.t("general:Copy")}
+                      </Button>
+                      <Button type="primary" disabled={this.state.provider.signCert === ""} onClick={() => {
+                        const blob = new Blob([this.state.provider.signCert], {type: "text/plain;charset=utf-8"});
+                        FileSaver.saveAs(blob, "user_cert.pem");
+                      }}
+                      >
+                        {i18next.t("general:Download")}
+                      </Button>
+                      <TextArea autoSize={{minRows: 16, maxRows: 16}} value={this.state.provider.signCert} onChange={e => {
                         this.updateProviderField("signCert", e.target.value);
                       }} />
                     </Col>
-                  </Row>
-                  <Row style={{marginTop: "20px"}}>
+                    <Col span={1} />
                     <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {Setting.getLabel(i18next.t("provider:Sign key"), i18next.t("provider:Sign key - Tooltip"))} :
+                      {Setting.getLabel(i18next.t("cert:Sign key"), i18next.t("cert:Sign key - Tooltip"))} :
                     </Col>
-                    <Col span={22}>
-                      <Input.TextArea rows={3} value={this.state.provider.signKey} onChange={e => {
+                    <Col span={editorWidth} >
+                      <Button style={{marginRight: "10px", marginBottom: "10px"}} disabled={this.state.provider.signKey === ""} onClick={() => {
+                        copy(this.state.provider.signKey);
+                        Setting.showMessage("success", i18next.t("general:Copied to clipboard successfully"));
+                      }}
+                      >
+                        {i18next.t("general:Copy")}
+                      </Button>
+                      <Button type="primary" disabled={this.state.provider.signKey === ""} onClick={() => {
+                        const blob = new Blob([this.state.provider.signKey], {type: "text/plain;charset=utf-8"});
+                        FileSaver.saveAs(blob, "token_jwt_key.key");
+                      }}
+                      >
+                        {i18next.t("general:Download")}
+                      </Button>
+                      <TextArea autoSize={{minRows: 16, maxRows: 16}} value={this.state.provider.signKey} onChange={e => {
                         this.updateProviderField("signKey", e.target.value);
                       }} />
                     </Col>
