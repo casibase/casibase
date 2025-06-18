@@ -18,7 +18,6 @@ import (
 	"fmt"
 
 	"github.com/casibase/casibase/agent"
-
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/util"
@@ -167,4 +166,8 @@ func getActiveBlockchainProvider(owner string) (*Provider, error) {
 		}
 	}
 	return nil, nil
+}
+
+func generateApiKey() string {
+	return fmt.Sprintf("sk-%s", util.GetRandomString(24))
 }
