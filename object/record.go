@@ -55,6 +55,7 @@ type Record struct {
 	BlockHash   string `xorm:"varchar(500)" json:"blockHash"`
 	Transaction string `xorm:"varchar(500)" json:"transaction"`
 	IsTriggered bool   `json:"isTriggered"`
+	NeedCommit  bool   `json:"needCommit"`
 }
 
 type Response struct {
@@ -198,6 +199,15 @@ func AddRecord(record *Record) (bool, error) {
 	affected, err := adapter.engine.Insert(record)
 	if err != nil {
 		return false, err
+	}
+
+	if record.NeedCommit {
+		affected2, err := CommitRecord(record)
+		if err != nil {
+			return false, err
+		}
+
+		return affected2, nil
 	}
 
 	return affected != 0, nil
