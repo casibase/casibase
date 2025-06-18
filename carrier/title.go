@@ -32,6 +32,7 @@ func (p *TitleCarrier) GetQuestion(question string) (string, error) {
 
 	format := "<title>"
 	question = question +
+		"\n\nYour response must be in the same language as my query." +
 		"\n\n**At the end of your answer, if and only if a clear, concise, and meaningful title can be generated to summarize the content, append it.**\n" +
 		"The title should appear at the very end of the response, prefixed by: " + p.divider + "\n" +
 		"Do not include the divider or title if a meaningful title cannot be generated.\n" +
