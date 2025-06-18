@@ -47,15 +47,16 @@ func getCachePrefix(filename string) string {
 	return res
 }
 
-func addFileToCache(key string, filename string, bs []byte) {
+func addFileToCache(key string, filename string, bs []byte) error {
 	prefix := getCachePrefix(filename)
 	if prefix == "" {
-		return
+		return nil
 	}
 
 	path := fmt.Sprintf("%s/%s/%s", cacheDir, key, filename)
 	util.EnsureFileFolderExists(path)
-	util.WriteBytesToPath(bs, path)
+	err := util.WriteBytesToPath(bs, path)
+	return err
 }
 
 // ActivateFile

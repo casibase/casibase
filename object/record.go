@@ -173,21 +173,19 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	return &record, nil
 }
 
-func AddRecord(record *Record) bool {
-	if logPostOnly {
-		if record.Method == "GET" {
-			return false
-		}
+func AddRecord(record *Record) (bool, error) {
+	if logPostOnly && record.Method == "GET" {
+		return false, nil
 	}
 
 	if strings.HasSuffix(record.Action, "-record") {
-		return false
+		return false, nil
 	}
 
 	if record.Provider == "" {
 		provider, err := getActiveBlockchainProvider("admin")
 		if err != nil {
-			panic(err)
+			return false, err
 		}
 
 		if provider != nil {
@@ -199,10 +197,10 @@ func AddRecord(record *Record) bool {
 
 	affected, err := adapter.engine.Insert(record)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
-	return affected != 0
+	return affected != 0, nil
 }
 
 func DeleteRecord(record *Record) (bool, error) {

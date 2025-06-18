@@ -48,7 +48,11 @@ func (c *ApiController) UpdateFile() {
 
 	res := object.UpdateFile(storeId, key, &file)
 	if res {
-		addRecordForFile(c, userName, "Update", storeId, key, "", true)
+		err = addRecordForFile(c, userName, "Update", storeId, key, "", true)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
 	}
 
 	c.ResponseOk(res)
@@ -93,8 +97,17 @@ func (c *ApiController) AddFile() {
 	}
 
 	if res {
-		addFileToCache(key, filename, bs)
-		addRecordForFile(c, userName, "Add", storeId, key, filename, isLeaf)
+		err = addFileToCache(key, filename, bs)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		err = addRecordForFile(c, userName, "Add", storeId, key, filename, isLeaf)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
 	}
 
 	c.ResponseOk(res)
@@ -126,7 +139,11 @@ func (c *ApiController) DeleteFile() {
 	}
 
 	if res {
-		addRecordForFile(c, userName, "Delete", storeId, key, "", isLeaf)
+		err = addRecordForFile(c, userName, "Delete", storeId, key, "", isLeaf)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
 	}
 
 	c.ResponseOk(res)
