@@ -39,7 +39,7 @@ func (p *SuggestionCarrier) GetQuestion(question string) (string, error) {
 		format += p.divider + "<Predicted question " + strconv.Itoa(i+1) + ">"
 	}
 
-	promptTemplate := `Please follow the steps below to optimize your answer:
+	promptTemplate := "\n\nYour response must be in the same language as my query." + `Please follow the steps below to optimize your answer:
 
 1. **Generate an answer**: Provide a clear, accurate, and helpful answer to the user's question.
 
