@@ -23,6 +23,7 @@ import moment from "moment";
 import i18next from "i18next";
 import * as Conf from "./Conf";
 import {DeleteOutlined} from "@ant-design/icons";
+import VectorTooltip from "./VectorTooltip";
 
 class MessageListPage extends BaseListPage {
   constructor(props) {
@@ -290,11 +291,13 @@ class MessageListPage extends BaseListPage {
         render: (text, record, index) => {
           return record.vectorScores?.map(vectorScore => {
             return (
-              <a key={vectorScore.vector} target="_blank" rel="noreferrer" href={`/vectors/${vectorScore.vector}`}>
-                <Tag style={{marginTop: "5px"}} color={"processing"}>
-                  {vectorScore.score}
-                </Tag>
-              </a>
+              <VectorTooltip key={vectorScore.vector} vectorScore={vectorScore}>
+                <a target="_blank" rel="noreferrer" href={`/vectors/${vectorScore.vector}`}>
+                  <Tag style={{marginTop: "5px"}} color={"processing"}>
+                    {vectorScore.score}
+                  </Tag>
+                </a>
+              </VectorTooltip>
             );
           });
         },
