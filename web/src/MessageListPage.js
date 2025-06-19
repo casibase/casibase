@@ -14,15 +14,68 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Switch, Table, Tag} from "antd";
+import {Button, Popconfirm, Switch, Table, Tag, Tooltip} from "antd";
 import BaseListPage from "./BaseListPage";
 import {ThemeDefault} from "./Conf";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
+import * as VectorBackend from "./backend/VectorBackend";
 import moment from "moment";
 import i18next from "i18next";
 import * as Conf from "./Conf";
 import {DeleteOutlined} from "@ant-design/icons";
+
+const VectorTooltip = ({vectorScore, children}) => {
+  const [vectorData, setVectorData] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
+
+  const fetchVectorInfo = async() => {
+    if (!loading) {
+      setLoading(true);
+      try {
+        const res = await VectorBackend.getVector("admin", vectorScore.vector);
+        if (res.status === "ok") {
+          setVectorData(res.data);
+        }
+      } catch (error) {
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const tooltipContent = () => {
+    if (!vectorData) {
+      return (
+        <div>
+          <div><strong>{i18next.t("general:Name")}:</strong> {vectorScore.vector}</div>
+          <div><strong>{i18next.t("video:Score")}:</strong> {vectorScore.score}</div>
+        </div>
+      );
+    }
+
+    return (
+      <div style={{maxWidth: 600, fontSize: "14px", padding: "5px", boxSizing: "border-box"}}>
+        <div><strong>{i18next.t("general:Name")}:</strong> {vectorScore.vector}</div>
+        <div><strong>{i18next.t("video:Score")}:</strong> {vectorScore.score}</div>
+        <div><strong>{i18next.t("store:File")}:</strong> {vectorData.file || "N/A"}</div>
+        <div style={{marginTop: 8, paddingTop: 8, borderTop: "1px solid #d9d9d9"}}>
+          <strong>{i18next.t("general:Text")}:</strong>
+          <div style={{maxHeight: "200px", overflow: "auto", fontSize: "13px", backgroundColor: "#f5f5f5", color: "#000000", padding: "8px", borderRadius: "4px", marginTop: "4px", whiteSpace: "pre-wrap", border: "3px solid #d9d9d9"}}>
+            {vectorData.text || "N/A"}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <Tooltip title={tooltipContent()} placement="left" mouseEnterDelay={0.5} onOpenChange={(open) => open && fetchVectorInfo()} overlayInnerStyle={{backgroundColor: "#ffffff", color: "#000000"}}>
+      {children}
+    </Tooltip>
+  );
+};
 
 class MessageListPage extends BaseListPage {
   constructor(props) {
@@ -290,11 +343,13 @@ class MessageListPage extends BaseListPage {
         render: (text, record, index) => {
           return record.vectorScores?.map(vectorScore => {
             return (
-              <a key={vectorScore.vector} target="_blank" rel="noreferrer" href={`/vectors/${vectorScore.vector}`}>
-                <Tag style={{marginTop: "5px"}} color={"processing"}>
-                  {vectorScore.score}
-                </Tag>
-              </a>
+              <VectorTooltip key={vectorScore.vector} vectorScore={vectorScore}>
+                <a target="_blank" rel="noreferrer" href={`/vectors/${vectorScore.vector}`}>
+                  <Tag style={{marginTop: "5px"}} color={"processing"}>
+                    {vectorScore.score}
+                  </Tag>
+                </a>
+              </VectorTooltip>
             );
           });
         },
