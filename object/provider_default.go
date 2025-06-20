@@ -20,7 +20,7 @@ import (
 	"github.com/casibase/casibase/model"
 )
 
-// GetProviderByProviderKey retrieves a provider using the API key
+// GetProviderByProviderKey retrieves a provider using the Provider key
 func GetProviderByProviderKey(providerKey string) (*Provider, error) {
 	if providerKey == "" {
 		return nil, fmt.Errorf("empty provider key")

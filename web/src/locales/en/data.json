@@ -438,6 +438,8 @@
     "Presence penalty": "Presence penalty",
     "Presence penalty - Tooltip": "Penalize repeated phrases",
     "Provider URL": "Provider URL",
+    "Provider key": "Provider key",
+    "Provider key - Tooltip": "Provider key - Tooltip",
     "Provider test": "Provider test",
     "Provider test - Tooltip": "Test text for TTS preview",
     "Refresh MCP tools": "Refresh MCP tools",

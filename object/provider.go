@@ -207,7 +207,7 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 	}
 
 	if provider.ProviderKey == "" && provider.Category == "Model" {
-		provider.ProviderKey = generateApiKey()
+		provider.ProviderKey = generateProviderKey()
 	}
 
 	if provider.Type == "Ollama" && provider.ProviderUrl != "" && !strings.HasPrefix(provider.ProviderUrl, "http") {
@@ -235,7 +235,7 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 
 func AddProvider(provider *Provider) (bool, error) {
 	if provider.ProviderKey == "" && provider.Category == "Model" {
-		provider.ProviderKey = generateApiKey()
+		provider.ProviderKey = generateProviderKey()
 	}
 
 	if providerAdapter != nil && provider.Category != "Storage" {

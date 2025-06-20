@@ -1,7 +1,7 @@
 {
   "account": {
-    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. 点击下方的\"我的账户\"按钮进入设置页面。",
-    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. 点击\"修改密码...\"按钮更改您的密码。然后关闭设置页面。",
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
     "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. 返回此页面，并按F5键刷新。这个警告信息会自行消失。",
     "4. If you encounter any issues, please contact your administrator.": "4. 如果还有任何问题，请联系管理员。",
     "My Account": "我的账户",
@@ -438,6 +438,8 @@
     "Presence penalty": "重复惩罚",
     "Presence penalty - Tooltip": "重复惩罚（-2~2，正值减少重复）",
     "Provider URL": "提供商URL",
+    "Provider key": "提供商密钥",
+    "Provider key - Tooltip": "提供商 OpenAI 兼容密钥",
     "Provider test": "语音合成测试",
     "Provider test - Tooltip": "语音合成测试文本（点击按钮试听）",
     "Refresh MCP tools": "刷新MCP工具",

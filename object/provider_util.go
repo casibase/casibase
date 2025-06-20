@@ -168,6 +168,6 @@ func getActiveBlockchainProvider(owner string) (*Provider, error) {
 	return nil, nil
 }
 
-func generateApiKey() string {
+func generateProviderKey() string {
 	return fmt.Sprintf("sk-%s", util.GetRandomString(24))
 }
