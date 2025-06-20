@@ -17,7 +17,7 @@ import {Affix, Avatar, Button, Card, Col, Input, Row, Segmented, Select, Switch,
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import {CheckOutlined, EditOutlined, LinkOutlined, SyncOutlined} from "@ant-design/icons";
+import {CheckOutlined, DownloadOutlined, EditOutlined, LinkOutlined, SyncOutlined} from "@ant-design/icons";
 import Video from "./Video";
 import LabelTable from "./table/LabelTable";
 import * as Papa from "papaparse";
@@ -712,6 +712,20 @@ class VideoEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        {
+          this.requireAdmin() ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Download"), i18next.t("general:Download"))} :
+              </Col>
+              <Col span={5} >
+                <a target="_blank" rel="noreferrer" href={this.state.video.downloadUrl}>
+                  <Button icon={<DownloadOutlined />} style={{marginRight: "10px"}} type="primary">{i18next.t("general:Download")}</Button>
+                </a>
+              </Col>
+            </Row>
+          )
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("video:Cover"), i18next.t("video:Cover - Tooltip"))} :
