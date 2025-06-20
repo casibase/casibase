@@ -20,23 +20,23 @@ import (
 	"github.com/casibase/casibase/model"
 )
 
-// GetProviderByApiKey retrieves a provider using the API key
-func GetProviderByApiKey(apiKey string) (*Provider, error) {
-	if apiKey == "" {
-		return nil, fmt.Errorf("empty API key")
+// GetProviderByProviderKey retrieves a provider using the API key
+func GetProviderByProviderKey(providerKey string) (*Provider, error) {
+	if providerKey == "" {
+		return nil, fmt.Errorf("empty provider key")
 	}
 
 	provider := &Provider{}
 
 	// Try to find in main database first
-	existed, err := adapter.engine.Where("api_key = ?", apiKey).Get(provider)
+	existed, err := adapter.engine.Where("provider_key = ?", providerKey).Get(provider)
 	if err != nil {
 		return nil, err
 	}
 
 	// If not found in main database, try provider adapter
 	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.Where("api_key = ?", apiKey).Get(provider)
+		existed, err = providerAdapter.engine.Where("provider_key = ?", providerKey).Get(provider)
 		if err != nil {
 			return nil, err
 		}
@@ -49,9 +49,9 @@ func GetProviderByApiKey(apiKey string) (*Provider, error) {
 	return nil, nil
 }
 
-// GetModelProviderByApiKey retrieves both the provider and its model provider by API key
-func GetModelProviderByApiKey(apiKey string) (model.ModelProvider, error) {
-	provider, err := GetProviderByApiKey(apiKey)
+// GetModelProviderByProviderKey retrieves both the provider and its model provider by API key
+func GetModelProviderByProviderKey(providerKey string) (model.ModelProvider, error) {
+	provider, err := GetProviderByProviderKey(providerKey)
 	if err != nil {
 		return nil, err
 	}

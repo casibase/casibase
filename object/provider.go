@@ -42,7 +42,7 @@ type Provider struct {
 	ClientId           string            `xorm:"varchar(100)" json:"clientId"`
 	ClientSecret       string            `xorm:"varchar(2000)" json:"clientSecret"`
 	Region             string            `xorm:"varchar(100)" json:"region"`
-	ApiKey             string            `xorm:"varchar(100)" json:"apiKey"`
+	ProviderKey        string            `xorm:"varchar(100)" json:"providerKey"`
 	ProviderUrl        string            `xorm:"varchar(200)" json:"providerUrl"`
 	ApiVersion         string            `xorm:"varchar(100)" json:"apiVersion"`
 	CompitableProvider string            `xorm:"varchar(100)" json:"compitableProvider"`
@@ -88,8 +88,8 @@ func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.
 	}
 
 	if !isAdmin(user) {
-		if provider.ApiKey != "" {
-			provider.ApiKey = "***"
+		if provider.ProviderKey != "" {
+			provider.ProviderKey = "***"
 		}
 		if provider.UserKey != "" {
 			provider.UserKey = "***"
@@ -206,8 +206,8 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 		provider.SignKey = p.SignKey
 	}
 
-	if provider.ApiKey == "" && provider.Category == "Model" {
-		provider.ApiKey = generateApiKey()
+	if provider.ProviderKey == "" && provider.Category == "Model" {
+		provider.ProviderKey = generateApiKey()
 	}
 
 	if provider.Type == "Ollama" && provider.ProviderUrl != "" && !strings.HasPrefix(provider.ProviderUrl, "http") {
@@ -234,8 +234,8 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 }
 
 func AddProvider(provider *Provider) (bool, error) {
-	if provider.ApiKey == "" && provider.Category == "Model" {
-		provider.ApiKey = generateApiKey()
+	if provider.ProviderKey == "" && provider.Category == "Model" {
+		provider.ProviderKey = generateApiKey()
 	}
 
 	if providerAdapter != nil && provider.Category != "Storage" {
