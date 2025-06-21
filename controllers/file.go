@@ -16,8 +16,11 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"mime/multipart"
+	"strings"
 
+	"github.com/beego/beego"
 	"github.com/casibase/casibase/object"
 )
 
@@ -90,7 +93,7 @@ func (c *ApiController) AddFile() {
 		defer file.Close()
 	}
 
-	res, bs, err := object.AddFile(storeId, userName, key, isLeaf, filename, file)
+	res, bs, fileUrl, err := object.AddFile(storeId, userName, key, isLeaf, filename, file)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -110,7 +113,21 @@ func (c *ApiController) AddFile() {
 		}
 	}
 
-	c.ResponseOk(res)
+	// Return URL for avatar uploads, boolean for FileTree compatibility
+	if key == "/casibase_avatars/" {
+		// Convert local file path to HTTP URL for avatar preview
+		httpUrl := fileUrl
+		if !strings.HasPrefix(fileUrl, "http") {
+			// For local file system, convert to /storage/ endpoint URL
+			normalizedPath := strings.ReplaceAll(fileUrl, "\\", "/")
+			httpUrl = fmt.Sprintf("http://localhost:%s/storage/%s",
+				beego.AppConfig.DefaultString("httpport", "14000"),
+				normalizedPath)
+		}
+		c.ResponseOk(httpUrl)
+	} else {
+		c.ResponseOk(res)
+	}
 }
 
 // DeleteFile
