@@ -57,6 +57,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewHuggingFaceModelProvider(subType, clientSecret, temperature)
 	} else if typ == "Claude" {
 		p, err = NewClaudeModelProvider(subType, clientSecret)
+	} else if typ == "Grok" {
+		p, err = NewGrokModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "OpenRouter" {
 		p, err = NewOpenRouterModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "Baidu Cloud" {

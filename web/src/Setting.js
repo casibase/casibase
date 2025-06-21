@@ -662,6 +662,10 @@ export const OtherProviderInfo = {
       logo: `${StaticBaseUrl}/img/social_claude.png`,
       url: "https://www.anthropic.com/claude",
     },
+    "Grok": {
+      logo: `${StaticBaseUrl}/img/social_xai.png`,
+      url: "https://x.ai/",
+    },
     "OpenRouter": {
       logo: `${StaticBaseUrl}/img/social_openrouter.png`,
       url: "https://openrouter.ai/",
@@ -1044,6 +1048,7 @@ export function getProviderTypeOptions(category) {
         {id: "Gemini", name: "Gemini"},
         {id: "Hugging Face", name: "Hugging Face"},
         {id: "Claude", name: "Claude"},
+        {id: "Grok", name: "Grok"},
         {id: "OpenRouter", name: "OpenRouter"},
         {id: "Baidu Cloud", name: "Baidu Cloud"},
         {id: "iFlytek", name: "iFlytek"},
@@ -1563,6 +1568,15 @@ export function getModelSubTypeOptions(type) {
       {id: "01-ai/Yi-1.5-9B-Chat-16K", name: "01-ai/Yi-1.5-9B-Chat-16K"},
       {id: "google/gemma-2-27b-it", name: "google/gemma-2-27b-it"},
       {id: "google/gemma-2-9b-it", name: "google/gemma-2-9b-it"},
+    ];
+  } else if (type === "Grok") {
+    return [
+      {id: "grok-3-latest", name: "grok-3-latest"},
+      {id: "grok-3-fast-latest", name: "grok-3-fast-latest"},
+      {id: "grok-3-mini-latest", name: "grok-3-mini-latest"},
+      {id: "grok-2-vision-latest", name: "grok-2-vision-latest"},
+      {id: "grok-2-latest", name: "grok-2-latest"},
+      {id: "grok-2-image-latest", name: "grok-2-image-latest"},
     ];
   } else if (type === "Dummy") {
     return [
