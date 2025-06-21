@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Card, Layout} from "antd";
+import {Card, Layout, Modal} from "antd";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import copy from "copy-to-clipboard";
@@ -41,6 +41,8 @@ class ChatBox extends React.Component {
       isLoadingTTS: false,
       isVoiceInput: false,
       rerenderErrorMessage: false,
+      promptModalVisible: false,
+      editingPrompt: this.props.promptValue,
     };
     this.synth = window.speechSynthesis;
     this.cursorPosition = undefined;
@@ -49,7 +51,18 @@ class ChatBox extends React.Component {
     this.ttsHelper = new TtsHelper(this);
     this.sttHelper = new SpeechToTextHelper(this);
   }
+  handlePromptClick = () => {
+    this.setState({promptModalVisible: true});
+  };
 
+  handlePromptCancel = () => {
+    this.setState({promptModalVisible: false});
+  };
+
+  handlePromptSave = (prompt) => {
+    this.props.onPromptChange(prompt);
+    this.setState({promptModalVisible: false});
+  };
   componentDidMount() {
     window.addEventListener("beforeunload", () => {
       this.synth.cancel();
@@ -59,6 +72,9 @@ class ChatBox extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     // clear old status when the name(chat) changes
+    if (prevProps.promptValue !== this.props.promptValue) {
+      this.setState({editingPrompt: this.props.promptValue});
+    }
     if (prevProps.name !== this.props.name) {
       inputStore.set(prevProps.name, this.state.value);
       this.clearOldStatus();
@@ -331,7 +347,6 @@ class ChatBox extends React.Component {
       <Layout style={{display: "flex", width: "100%", height: "100%", borderRadius: "6px"}}>
         <Card style={{display: "flex", width: "100%", height: "100%", flexDirection: "column", position: "relative", padding: "24px"}}>
           {messages.length === 0 && <WelcomeHeader store={this.props.store} />}
-
           <MessageList
             ref={this.messageListRef}
             messages={messages}
@@ -364,13 +379,46 @@ class ChatBox extends React.Component {
               disableInput={this.props.disableInput}
               messageError={this.props.messageError}
               onCancelMessage={this.props.onCancelMessage}
+              onPromptClick={this.handlePromptClick}
+              promptValue={this.props.promptValue}
               onVoiceInputStart={this.startVoiceInput}
               onVoiceInputEnd={this.stopVoiceInput}
               isVoiceInput={this.state.isVoiceInput}
             />
           )}
         </Card>
-
+        <Modal
+          title={i18next.t("chat:Custom Prompt")}
+          open={this.state.promptModalVisible}
+          onCancel={this.handlePromptCancel}
+          onOk={() => {
+            this.handlePromptSave(this.state.editingPrompt);
+          }}
+          okText={i18next.t("general:Save")}
+          cancelText={i18next.t("general:Cancel")}
+          width={520}
+        >
+          <textarea
+            value={this.state.editingPrompt || ""}
+            onChange={(e) => this.setState({editingPrompt: e.target.value})}
+            placeholder={i18next.t("chat:Set a custom prompt for this conversation")}
+            style={{
+              width: "90%",
+              minHeight: "40px",
+              padding: "12px",
+              borderRadius: "6px",
+              border: "1px solid #d9d9d9",
+              fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+              fontSize: "14px",
+              lineHeight: "1.5",
+              color: "rgba(0, 0, 0, 0.85)",
+              resize: "vertical",
+              boxShadow: "inset 0 1px 2px rgba(0,0,0,0.03)",
+              transition: "all 0.3s",
+            }}
+            disabled={this.props.disableInput || this.props.loading}
+          />
+        </Modal>
         {messages.length === 0 ? (
           <ChatPrompts
             sendMessage={this.props.sendMessage}
