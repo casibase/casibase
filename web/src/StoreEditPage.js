@@ -22,6 +22,7 @@ import i18next from "i18next";
 import FileTree from "./FileTree";
 import {ThemeDefault} from "./Conf";
 import PromptTable from "./table/PromptTable";
+import StoreAvatarUploader from "./AvatarUpload";
 
 const {Option} = Select;
 const {TextArea} = Input;
@@ -188,9 +189,12 @@ class StoreEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Avatar"), i18next.t("general:Avatar - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.store.avatar} onChange={e => {
-              this.updateStoreField("avatar", e.target.value);
-            }} />
+            <StoreAvatarUploader
+              store={this.state.store}
+              onUpdate={(newUrl) => {
+                this.updateStoreField("avatar", newUrl);
+              }}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

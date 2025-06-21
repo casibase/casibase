@@ -26,18 +26,18 @@ func UpdateFile(storeId string, key string, file *File) bool {
 	return true
 }
 
-func AddFile(storeId string, userName string, key string, isLeaf bool, filename string, file multipart.File) (bool, []byte, error) {
+func AddFile(storeId string, userName string, key string, isLeaf bool, filename string, file multipart.File) (bool, []byte, string, error) {
 	store, err := GetStore(storeId)
 	if err != nil {
-		return false, nil, err
+		return false, nil, "", err
 	}
 	if store == nil {
-		return false, nil, nil
+		return false, nil, "", nil
 	}
 
 	storageProviderObj, err := store.GetStorageProviderObj()
 	if err != nil {
-		return false, nil, err
+		return false, nil, "", err
 	}
 
 	var objectKey string
@@ -48,27 +48,27 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 		fileBuffer = bytes.NewBuffer(nil)
 		_, err = io.Copy(fileBuffer, file)
 		if err != nil {
-			return false, nil, err
+			return false, nil, "", err
 		}
 
 		bs := fileBuffer.Bytes()
-		_, err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
+		fileUrl, err := storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
 		if err != nil {
-			return false, nil, err
+			return false, nil, "", err
 		}
 
-		return true, bs, nil
+		return true, bs, fileUrl, nil
 	} else {
 		objectKey = fmt.Sprintf("%s/%s/_hidden.ini", key, filename)
 		objectKey = strings.TrimLeft(objectKey, "/")
 		fileBuffer = bytes.NewBuffer(nil)
 		bs := fileBuffer.Bytes()
-		_, err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
+		fileUrl, err := storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
 		if err != nil {
-			return false, nil, err
+			return false, nil, "", err
 		}
 
-		return true, bs, nil
+		return true, bs, fileUrl, nil
 	}
 }
 
