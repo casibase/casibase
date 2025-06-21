@@ -948,14 +948,14 @@ class ProviderEditPage extends React.Component {
           this.state.provider.category === "Model" ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"))} :
+                {Setting.getLabel(i18next.t("provider:Provider key"), i18next.t("provider:Provider key - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Input.Password
-                  value={this.state.provider.apiKey}
+                  value={this.state.provider.providerKey}
                   disabled={!this.state.isAdmin}
                   onChange={e => {
-                    this.updateProviderField("apiKey", e.target.value);
+                    this.updateProviderField("providerKey", e.target.value);
                   }}
                 />
               </Col>

@@ -438,6 +438,8 @@
     "Presence penalty": "重复惩罚",
     "Presence penalty - Tooltip": "重复惩罚（-2~2，正值减少重复）",
     "Provider URL": "提供商URL",
+    "Provider key": "提供商密钥",
+    "Provider key - Tooltip": "提供商 OpenAI 兼容密钥",
     "Provider test": "语音合成测试",
     "Provider test - Tooltip": "语音合成测试文本（点击按钮试听）",
     "Refresh MCP tools": "刷新MCP工具",
