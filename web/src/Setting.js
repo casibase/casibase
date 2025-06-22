@@ -750,6 +750,10 @@ export const OtherProviderInfo = {
       logo: `${StaticBaseUrl}/img/social_github.png`,
       url: "https://github.com/",
     },
+    "XAI": {
+      logo: `${StaticBaseUrl}/img/social_default.png`,
+      url: "https://x.ai/",
+    },
   },
   Embedding: {
     "OpenAI": {
@@ -1070,6 +1074,7 @@ export function getProviderTypeOptions(category) {
         {id: "Yi", name: "Yi"},
         {id: "Silicon Flow", name: "Silicon Flow"},
         {id: "GitHub", name: "GitHub"},
+        {id: "XAI", name: "XAI"},
       ]
     );
   } else if (category === "Embedding") {
@@ -1277,6 +1282,16 @@ export function getModelSubTypeOptions(type) {
       {id: "Cohere-command-r-08-2024", name: "Cohere-command-r-08-2024"},
       {id: "Cohere-command-r-plus-08-2024", name: "Cohere-command-r-plus-08-2024"},
       {id: "Llama-3.3-70B-Instruct", name: "Llama-3.3-70B-Instruct"},
+    ];
+  } else if (type === "XAI") {
+    return [
+      {id: "grok-3", name: "Grok-3"},
+      {id: "grok-3-fast", name: "Grok-3-Fast"},
+      {id: "grok-3-mini", name: "Grok-3-Mini"},
+      {id: "grok-3-mini-fast", name: "Grok-3-Mini-Fast"},
+      {id: "grok-2-vision-1212", name: "Grok-2-Vision-1212"},
+      {id: "grok-2-image-1212", name: "Grok-2-Image-1212"},
+      {id: "grok-2-1212", name: "Grok-2-1212"},
     ];
   } else if (type === "Hugging Face") {
     return [

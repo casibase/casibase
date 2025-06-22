@@ -93,6 +93,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewYiProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "Silicon Flow" {
 		p, err = NewSiliconFlowProvider(subType, clientSecret, temperature, topP)
+	} else if typ == "XAI" {
+		p, err = NewXaiModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "Dummy" {
 		p, err = NewDummyModelProvider(subType)
 	} else if typ == "GitHub" {
