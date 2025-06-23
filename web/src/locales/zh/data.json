@@ -381,8 +381,8 @@
     "Services - Tooltip": "节点运行的服务监控配置（端口/进程）"
   },
   "pod": {
-    "Edit Pod": "Edit Pod",
-    "New Pod": "New Pod"
+    "Edit Pod": "编辑Pod",
+    "New Pod": "新建Pod"
   },
   "provider": {
     "API key": "API密钥",

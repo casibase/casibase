@@ -89,13 +89,13 @@ Language models:
 
 Image models:
 
-| Models   | Quality | Resolution               | Price (per 100 images) |
-|----------|---------|--------------------------|------------------------|
-| Dall-E-3 | Standard| 1024 * 1024              | N/A                    |
-|          | Standard| 1024 * 1792, 1792 * 1024 | $8                     |
-| Dall-E-3 | HD      | 1024 * 1024              | N/A                    |
-|          | HD      | 1024 * 1792, 1792 * 1024 | N/A                    |
-| Dall-E-2 | Standard| 1024 * 1024              | N/A                    |
+| Models   | Quality | Resolution               | Price (per image) |
+|----------|---------|--------------------------|------------------|
+| Dall-E-3 | Standard| 1024 * 1024              | N/A              |
+|          | Standard| 1024 * 1792, 1792 * 1024 | $0.08            |
+| Dall-E-3 | HD      | 1024 * 1024              | N/A              |
+|          | HD      | 1024 * 1792, 1792 * 1024 | N/A              |
+| Dall-E-2 | Standard| 1024 * 1024              | N/A              |
 `
 }
 
