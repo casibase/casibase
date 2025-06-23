@@ -22,8 +22,8 @@ func NewDefaultSearchProvider(owner string) (*DefaultSearchProvider, error) {
 	return &DefaultSearchProvider{owner: owner}, nil
 }
 
-func (p *DefaultSearchProvider) Search(embeddingProviderName string, qVector []float32, knowledgeCount int) ([]Vector, error) {
-	vectors, err := getRelatedVectors(embeddingProviderName)
+func (p *DefaultSearchProvider) Search(storeName string, embeddingProviderName string, qVector []float32, knowledgeCount int) ([]Vector, error) {
+	vectors, err := getRelatedVectors(storeName, embeddingProviderName)
 	if err != nil {
 		return nil, err
 	}
