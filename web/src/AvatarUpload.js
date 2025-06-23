@@ -22,15 +22,23 @@ const StoreAvatarUploader = (props) => {
   const {store, onUpdate} = props;
   const [loading, setLoading] = useState(false);
 
-  const handleUpload = ({file}) => {
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  };
+
+  const handleUpload = async({file}) => {
     setLoading(true);
 
-    const storeId = `${store.owner}/${store.name}`;
-    const parentPath = "/casibase_avatars/";
     const fileExt = file.name.split(".").pop();
     const filename = `${store.owner}_${store.name}_${Date.now()}.${fileExt}`;
 
-    FileBackend.addFile(storeId, parentPath, true, filename, file)
+    const base64Data = await fileToBase64(file);
+    FileBackend.uploadFile(base64Data, filename, file.type)
       .then((res) => {
         if (res.status === "ok") {
           // Backend now returns URL directly for avatar uploads
@@ -61,7 +69,7 @@ const StoreAvatarUploader = (props) => {
     <div>
       <Row>
         <Col span={24}>
-          <Input value={store.avatar ? store.avatar.split("?")[0] : ""} onChange={e => onUpdate(e.target.value)} />
+          <Input value={store.avatar || ""} onChange={e => onUpdate(e.target.value)} />
         </Col>
       </Row>
 

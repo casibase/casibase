@@ -58,3 +58,18 @@ export function activateFile(key, filename) {
     },
   }).then(res => res.json());
 }
+
+export function uploadFile(base64, filename, filetype) {
+  const formData = new FormData();
+  formData.append("file", base64);
+  formData.append("name", filename);
+  formData.append("type", filetype);
+  return fetch(`${Setting.ServerUrl}/api/upload-file`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: formData,
+  }).then((res) => res.json());
+}
