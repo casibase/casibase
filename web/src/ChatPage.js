@@ -670,7 +670,7 @@ class ChatPage extends BaseListPage {
 
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative", display: "flex", flexDirection: "column"}}>
           {this.state.chat && this.state.paneCount === 1 && (
-            <div style={{display: "flex", alignItems: "center"}}>
+            <div style={{display: "flex", alignItems: "center", marginLeft: "15px"}}>
               {Setting.isMobile() && (
                 <Button type="text" icon={<BarsOutlined />} onClick={this.toggleChatMenu} style={{marginRight: "8px"}} />
               )}
