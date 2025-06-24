@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Button, Drawer, Modal, Spin} from "antd";
-import {BarsOutlined, CloseCircleFilled} from "@ant-design/icons";
+import {BarsOutlined, CloseCircleFilled, MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as StoreBackend from "./backend/StoreBackend";
 import ChatMenu from "./ChatMenu";
@@ -39,6 +39,10 @@ class ChatPage extends BaseListPage {
   }
 
   UNSAFE_componentWillMount() {
+    // Restore chat menu collapsed state from localStorage
+    const savedCollapsedState = localStorage.getItem("chatMenuCollapsed");
+    const chatMenuCollapsed = savedCollapsedState ? JSON.parse(savedCollapsedState) : false;
+
     this.setState({
       loading: true,
       disableInput: false,
@@ -47,6 +51,7 @@ class ChatPage extends BaseListPage {
       messageError: false,
       autoRead: false,
       chatMenuVisible: false,
+      chatMenuCollapsed: chatMenuCollapsed,
       defaultStore: null,
       filteredStores: [],
       paneCount: 1,
@@ -83,6 +88,14 @@ class ChatPage extends BaseListPage {
     this.setState({
       chatMenuVisible: false,
     });
+  };
+
+  toggleChatMenuCollapse = () => {
+    const newCollapsedState = !this.state.chatMenuCollapsed;
+    this.setState({
+      chatMenuCollapsed: newCollapsedState,
+    });
+    localStorage.setItem("chatMenuCollapsed", JSON.stringify(newCollapsedState));
   };
 
   getGlobalStores() {
@@ -642,7 +655,7 @@ class ChatPage extends BaseListPage {
           this.renderUnsafePasswordModal()
         }
         {
-          !(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && (
+          !(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && !this.state.chatMenuCollapsed && (
             <div style={{width: "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
               <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores} />
             </div>
@@ -661,6 +674,9 @@ class ChatPage extends BaseListPage {
             <div style={{display: "flex", alignItems: "center"}}>
               {Setting.isMobile() && (
                 <Button type="text" icon={<BarsOutlined />} onClick={this.toggleChatMenu} style={{marginRight: "8px"}} />
+              )}
+              {!(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && (
+                <Button type="text" icon={this.state.chatMenuCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={this.toggleChatMenuCollapse} style={{marginRight: "8px"}} />
               )}
               <div style={{flex: 1}}>
                 <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} />
