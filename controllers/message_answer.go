@@ -141,7 +141,7 @@ func (c *ApiController) GetMessageAnswer() {
 		modelProviderName = message.ModelProvider
 	}
 
-	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", modelProviderName)
+	modelProvider, modelProviderObj, err := object.GetModelProviderFromContext("admin", modelProviderName)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -205,7 +205,9 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	question, err = getQuestionWithCarriers(question, store.SuggestionCount, chat.NeedTitle)
+	if modelProvider.Type != "Dummy" {
+		question, err = getQuestionWithCarriers(question, store.SuggestionCount, chat.NeedTitle)
+	}
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
