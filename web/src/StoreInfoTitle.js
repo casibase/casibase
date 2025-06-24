@@ -318,7 +318,7 @@ const StoreInfoTitle = (props) => {
 
         {showPaneControls && canManagePanes && (
           <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-            <span style={{fontSize: "12px", color: "#666"}}>Panes: {paneCount}</span>
+            <span style={{fontSize: "12px", color: "#666", marginLeft: "20px", marginRight: "10px"}}>{i18next.t("chat:Panes")}: {paneCount}</span>
             <Button size="small" icon={<PlusOutlined />} onClick={addPane} />
             <Button size="small" icon={<MinusOutlined />} onClick={deletePane} disabled={paneCount <= 1} />
           </div>
