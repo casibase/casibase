@@ -39,7 +39,6 @@ class ChatPage extends BaseListPage {
   }
 
   UNSAFE_componentWillMount() {
-    // Restore chat menu collapsed state from localStorage
     const savedCollapsedState = localStorage.getItem("chatMenuCollapsed");
     const chatMenuCollapsed = savedCollapsedState ? JSON.parse(savedCollapsedState) : false;
 
