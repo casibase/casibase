@@ -58,7 +58,7 @@ func (c *ApiController) UploadFile() {
 		return
 	}
 
-	filePath := fmt.Sprintf("casibase/avatars/%s/%s.%s", userName, fileName, fileType)
+	filePath := fmt.Sprintf("casibase/avatars/%s/%s", userName, fileName)
 
 	fileUrl, err := object.UploadFileToStorageSafe(userName, "file", "UploadFile", filePath, fileBytes)
 	if err != nil {

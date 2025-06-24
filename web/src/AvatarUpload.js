@@ -19,7 +19,7 @@ import i18next from "i18next";
 import * as FileBackend from "./backend/FileBackend";
 
 const StoreAvatarUploader = (props) => {
-  const {store, onUpdate} = props;
+  const {store, onUpdate, onUploadComplete} = props;
   const [loading, setLoading] = useState(false);
 
   const fileToBase64 = (file) => {
@@ -52,6 +52,9 @@ const StoreAvatarUploader = (props) => {
           // Add timestamp to avoid cache issues
           const finalUrl = `${newAvatarUrl}?t=${Date.now()}`;
           onUpdate(finalUrl);
+          if (onUploadComplete) {
+            onUploadComplete(finalUrl);
+          }
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);

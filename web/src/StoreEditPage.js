@@ -194,6 +194,9 @@ class StoreEditPage extends React.Component {
               onUpdate={(newUrl) => {
                 this.updateStoreField("avatar", newUrl);
               }}
+              onUploadComplete={(newUrl) => {
+                this.submitStoreEdit(false, undefined);
+              }}
             />
           </Col>
         </Row>
