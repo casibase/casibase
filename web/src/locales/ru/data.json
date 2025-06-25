@@ -1,7 +1,7 @@
 {
   "account": {
-    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Нажмите кнопку «Мой аккаунт» ниже, чтобы перейти на страницу настроек.",
-    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Нажмите кнопку «Изменить пароль...», чтобы изменить ваш пароль. Затем закройте страницу настроек.",
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
     "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. Вернитесь на эту страницу и обновите ее, нажав клавишу F5. Это предупреждение должно исчезнуть.",
     "4. If you encounter any issues, please contact your administrator.": "4. Если встретите какие-либо проблемы, свяжитесь с администратором.",
     "My Account": "Мой аккаунт",
@@ -117,6 +117,7 @@
     "Containers": "Контейнеры",
     "Copied to clipboard successfully": "Успешно скопировано в буфер обмена",
     "Copy": "Копировать",
+    "Copy Link": "Копировать ссылку",
     "Created time": "Время создания",
     "Created time - Tooltip": "Время создания",
     "Data": "Данные",
@@ -284,6 +285,7 @@
     "Unknown category": "Неизвестная категория",
     "Up": "Вверх",
     "Updated time": "Время обновления",
+    "Upload": "Загрузить",
     "Usages": "Статистика использования",
     "User": "Пользователь",
     "User - Tooltip": "Имя пользователя или ID владельца",
@@ -519,6 +521,7 @@
     "Model providers - Tooltip": "Список резервных сервисов моделей (используется для балансировки нагрузки или сбоя)",
     "Move": "Переместить",
     "New folder": "Новая папка",
+    "Open Chat": "Открыть чат",
     "Other": "Прочее",
     "Physics": "Физика",
     "Please choose the type of your data": "Пожалуйста, выберите тип ваших данных",
