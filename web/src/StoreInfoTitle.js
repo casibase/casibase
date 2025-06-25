@@ -22,7 +22,7 @@ import * as StoreBackend from "./backend/StoreBackend";
 import i18next from "i18next";
 
 const StoreInfoTitle = (props) => {
-  const {chat, stores, onChatUpdated, onStoreUpdated, autoRead, onUpdateAutoRead, account, paneCount = 1, onPaneCountChange, showPaneControls = false} = props;
+  const {chat, stores, onChatUpdated, onStoreUpdated, onStoreChange, autoRead, onUpdateAutoRead, account, paneCount = 1, onPaneCountChange, showPaneControls = false} = props;
 
   const [modelProviders, setModelProviders] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
@@ -218,6 +218,13 @@ const StoreInfoTitle = (props) => {
 
       // Trigger the combined update
       updateStoreAndChat(newStore, newStore.modelProvider);
+
+      if (onStoreChange) {
+        const updatedChat = onStoreChange(newStore);
+        if (updatedChat) {
+          chatRef.current = updatedChat;
+        }
+      }
     }
   };
 

@@ -29,6 +29,7 @@ import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import * as Conf from "./Conf";
 import {MessageCarrier} from "./chat/MessageCarrier";
+import ChatRouterUtils from "./chat/ChatRouterUtils";
 
 class ChatPage extends BaseListPage {
   constructor(props) {
@@ -89,12 +90,28 @@ class ChatPage extends BaseListPage {
     });
   };
 
+  isNewChatRoute() {
+    return ChatRouterUtils.isNewChatRoute(this.props.match);
+  }
+
   toggleChatMenuCollapse = () => {
     const newCollapsedState = !this.state.chatMenuCollapsed;
     this.setState({
       chatMenuCollapsed: newCollapsedState,
     });
     localStorage.setItem("chatMenuCollapsed", JSON.stringify(newCollapsedState));
+  };
+
+  generateChatUrl(chatName, storeName) {
+    return ChatRouterUtils.generateChatUrl(chatName, storeName);
+  }
+
+  updateStoreAndUrl = (newStore) => {
+    const chat = ChatRouterUtils.updateStoreAndUrl(this.state.chat, newStore, this.goToLinkSoft.bind(this), this.generateChatUrl.bind(this));
+    if (chat) {
+      this.setState({chat: chat});
+    }
+    return chat;
   };
 
   getGlobalStores() {
@@ -114,6 +131,8 @@ class ChatPage extends BaseListPage {
           defaultStore: defaultStore,
           filteredStores: filteredStores,
         });
+
+        ChatRouterUtils.handleStoreUrlMismatch(stores, this.getStore.bind(this), this.state.chat, ChatBackend, this.setState.bind(this));
       } else {
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
       }
@@ -121,11 +140,17 @@ class ChatPage extends BaseListPage {
   }
 
   getChat() {
-    if (this.props.match) {
+    if (this.props.match && this.props.match.params.chatName) {
       return this.props.match.params.chatName;
-    } else {
-      return undefined;
     }
+    return undefined;
+  }
+
+  getStore() {
+    if (this.props.match && this.props.match.params.storeName) {
+      return this.props.match.params.storeName;
+    }
+    return undefined;
   }
 
   goToLinkSoft(path) {
@@ -460,7 +485,7 @@ class ChatPage extends BaseListPage {
 
   addChat(chat, selectStore) {
     const newChat = this.newChat(chat, selectStore);
-    this.goToLinkSoft(`/chat/${newChat.name}`);
+    this.goToLinkSoft(this.generateChatUrl(newChat.name, newChat.store));
     ChatBackend.addChat(newChat)
       .then((res) => {
         if (res.status === "ok") {
@@ -504,7 +529,7 @@ class ChatPage extends BaseListPage {
               data: data,
             });
             this.getMessages(focusedChat);
-            this.goToLinkSoft(`/chat/${focusedChat.name}`);
+            this.goToLinkSoft(this.generateChatUrl(focusedChat.name, focusedChat.store));
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
@@ -619,7 +644,7 @@ class ChatPage extends BaseListPage {
         chatMenuVisible: false,
       });
       this.getMessages(chat);
-      this.goToLinkSoft(`/chat/${chat.name}`);
+      this.goToLinkSoft(this.generateChatUrl(chat.name, chat.store));
     };
 
     const onAddChat = (selectStore = {}) => {
@@ -678,7 +703,7 @@ class ChatPage extends BaseListPage {
                 <Button type="text" icon={this.state.chatMenuCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={this.toggleChatMenuCollapse} style={{marginRight: "8px"}} />
               )}
               <div style={{flex: 1}}>
-                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} />
+                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} onStoreChange={this.updateStoreAndUrl} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} />
               </div>
             </div>
           )}
@@ -729,6 +754,10 @@ class ChatPage extends BaseListPage {
   }
 
   fetch = (params = {}, setLoading = true) => {
+    if (ChatRouterUtils.isNewChatRoute(this.props.match)) {
+      ChatRouterUtils.handleNewChatRoute(this.getStore.bind(this), this.newChat.bind(this), ChatBackend, this.goToLinkSoft.bind(this), this.generateChatUrl.bind(this), this.setState.bind(this), this.getMessages.bind(this), this.getGlobalStores.bind(this), Setting.showMessage, i18next, this.state.data);
+      return;
+    }
     const field = "user";
     const value = this.props.account.name;
     const sortField = params.sortField, sortOrder = params.sortOrder;

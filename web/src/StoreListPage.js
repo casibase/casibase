@@ -78,6 +78,27 @@ class StoreListPage extends BaseListPage {
     });
   }
 
+  copyStoreLink = (store) => {
+    const shareUrl = `${window.location.origin}/${store.owner}/${store.name}/chat`;
+
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      Setting.showMessage("success", i18next.t("general:Successfully copied"));
+    }).catch(() => {
+      const textArea = document.createElement("textarea");
+      textArea.value = shareUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      Setting.showMessage("success", i18next.t("general:Successfully copied"));
+    });
+  };
+
+  openStoreChat = (store) => {
+    const chatUrl = `${window.location.origin}/${store.owner}/${store.name}/chat`;
+    window.open(chatUrl, "_blank");
+  };
+
   renderProviderInfo(text) {
     const provider = this.state.providers[text];
     if (!provider) {
@@ -354,12 +375,15 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "400px",
+        width: "300px",
         fixed: "right",
         render: (text, record, index) => {
           return (
             <div>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}/view`)}>{i18next.t("general:View")}</Button>
+              <Button style={{marginBottom: "10px", marginRight: "10px"}} onClick={() => this.copyStoreLink(record)}>{i18next.t("general:Copy Link")}</Button>
+              <Button style={{marginBottom: "10px", marginRight: "10px"}} onClick={() => this.openStoreChat(record)}>{i18next.t("store:Open Chat")}</Button>
+
               {
                 !Setting.isLocalAdminUser(this.props.account) ? null : (
                   <React.Fragment>
