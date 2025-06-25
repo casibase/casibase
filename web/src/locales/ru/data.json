@@ -1,7 +1,7 @@
 {
   "account": {
-    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
-    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Нажмите кнопку «Мой аккаунт» ниже, чтобы перейти на страницу настроек.",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Нажмите кнопку «Изменить пароль...», чтобы изменить ваш пароль. Затем закройте страницу настроек.",
     "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. Вернитесь на эту страницу и обновите ее, нажав клавишу F5. Это предупреждение должно исчезнуть.",
     "4. If you encounter any issues, please contact your administrator.": "4. Если встретите какие-либо проблемы, свяжитесь с администратором.",
     "My Account": "Мой аккаунт",
