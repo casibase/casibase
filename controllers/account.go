@@ -112,13 +112,26 @@ func (c *ApiController) Signout() {
 	c.ResponseOk()
 }
 
-func (c *ApiController) addInitialChat(organization string, userName string) (*object.Chat, error) {
-	store, err := object.GetDefaultStore("admin")
-	if err != nil {
-		return nil, err
-	}
-	if store == nil {
-		return nil, fmt.Errorf("The default store is not found")
+func (c *ApiController) addInitialChat(organization string, userName string, storeName ...string) (*object.Chat, error) {
+	var store *object.Store
+	var err error
+
+	if len(storeName) > 0 && storeName[0] != "" {
+		store, err = object.GetStore(util.GetId("admin", storeName[0]))
+		if err != nil {
+			return nil, err
+		}
+		if store == nil {
+			return nil, fmt.Errorf("The store: %s is not found", storeName[0])
+		}
+	} else {
+		store, err = object.GetDefaultStore("admin")
+		if err != nil {
+			return nil, err
+		}
+		if store == nil {
+			return nil, fmt.Errorf("The default store is not found")
+		}
 	}
 
 	currentTime := util.GetCurrentTime()

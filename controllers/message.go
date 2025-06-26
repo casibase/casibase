@@ -246,7 +246,11 @@ func (c *ApiController) AddMessage() {
 	}
 	var chat *object.Chat
 	if message.Chat == "" {
-		chat, err = c.addInitialChat(message.Organization, message.User)
+		if message.Store != "" {
+			chat, err = c.addInitialChat(message.Organization, message.User, message.Store)
+		} else {
+			chat, err = c.addInitialChat(message.Organization, message.User)
+		}
 		if err != nil {
 			c.ResponseError(err.Error())
 			return

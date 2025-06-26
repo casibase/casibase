@@ -23,7 +23,8 @@ import i18next from "i18next";
 import {ThemeDefault} from "./Conf";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
-import {DeleteOutlined} from "@ant-design/icons";
+import {CopyOutlined, DeleteOutlined} from "@ant-design/icons";
+import copy from "copy-to-clipboard";
 
 const defaultPrompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems.";
 
@@ -77,27 +78,6 @@ class StoreListPage extends BaseListPage {
       this.setState({loading: false});
     });
   }
-
-  copyStoreLink = (store) => {
-    const shareUrl = `${window.location.origin}/${store.owner}/${store.name}/chat`;
-
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      Setting.showMessage("success", i18next.t("general:Successfully copied"));
-    }).catch(() => {
-      const textArea = document.createElement("textarea");
-      textArea.value = shareUrl;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
-      Setting.showMessage("success", i18next.t("general:Successfully copied"));
-    });
-  };
-
-  openStoreChat = (store) => {
-    const chatUrl = `${window.location.origin}/${store.owner}/${store.name}/chat`;
-    window.open(chatUrl, "_blank");
-  };
 
   renderProviderInfo(text) {
     const provider = this.state.providers[text];
@@ -375,14 +355,14 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "300px",
+        width: "350px",
         fixed: "right",
         render: (text, record, index) => {
           return (
             <div>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}/view`)}>{i18next.t("general:View")}</Button>
-              <Button style={{marginBottom: "10px", marginRight: "10px"}} onClick={() => this.copyStoreLink(record)}>{i18next.t("general:Copy Link")}</Button>
-              <Button style={{marginBottom: "10px", marginRight: "10px"}} onClick={() => this.openStoreChat(record)}>{i18next.t("store:Open Chat")}</Button>
+              <Button style={{marginBottom: "10px", marginRight: "10px"}} icon={<CopyOutlined />} onClick={() => {copy(`${window.location.origin}/${record.owner}/${record.name}/chat`);Setting.showMessage("success", i18next.t("general:Successfully copied"));}}>{i18next.t("general:Copy Link")}</Button>
+              <Button style={{marginBottom: "10px", marginRight: "10px"}} onClick={() => window.open(`${window.location.origin}/${record.owner}/${record.name}/chat`, "_blank")}>{i18next.t("store:Open Chat")}</Button>
 
               {
                 !Setting.isLocalAdminUser(this.props.account) ? null : (

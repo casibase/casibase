@@ -29,7 +29,6 @@ import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import * as Conf from "./Conf";
 import {MessageCarrier} from "./chat/MessageCarrier";
-import ChatRouterUtils from "./chat/ChatRouterUtils";
 
 class ChatPage extends BaseListPage {
   constructor(props) {
@@ -90,10 +89,6 @@ class ChatPage extends BaseListPage {
     });
   };
 
-  isNewChatRoute() {
-    return ChatRouterUtils.isNewChatRoute(this.props.match);
-  }
-
   toggleChatMenuCollapse = () => {
     const newCollapsedState = !this.state.chatMenuCollapsed;
     this.setState({
@@ -102,16 +97,21 @@ class ChatPage extends BaseListPage {
     localStorage.setItem("chatMenuCollapsed", JSON.stringify(newCollapsedState));
   };
 
-  generateChatUrl(chatName, storeName) {
-    return ChatRouterUtils.generateChatUrl(chatName, storeName);
+  generateChatUrl(chatName, storeName, owner = "admin") {
+    if (chatName) {
+      return `/${owner}/${storeName}/chat/${chatName}`;
+    }
+    return `/${owner}/${storeName}/chat`;
   }
 
   updateStoreAndUrl = (newStore) => {
-    const chat = ChatRouterUtils.updateStoreAndUrl(this.state.chat, newStore, this.goToLinkSoft.bind(this), this.generateChatUrl.bind(this));
-    if (chat) {
-      this.setState({chat: chat});
+    if (!this.state.chat) {
+      return null;
     }
-    return chat;
+    const updatedChat = {...this.state.chat, store: newStore.name};
+    this.goToLinkSoft(this.generateChatUrl(updatedChat.name, updatedChat.store));
+    this.setState({chat: updatedChat});
+    return updatedChat;
   };
 
   getGlobalStores() {
@@ -131,8 +131,6 @@ class ChatPage extends BaseListPage {
           defaultStore: defaultStore,
           filteredStores: filteredStores,
         });
-
-        ChatRouterUtils.handleStoreUrlMismatch(stores, this.getStore.bind(this), this.state.chat, ChatBackend, this.setState.bind(this));
       } else {
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
       }
@@ -204,7 +202,7 @@ class ChatPage extends BaseListPage {
 
   newMessage(text, fileName, isHidden, isRegenerated) {
     const randomName = Setting.getRandomName();
-    return {
+    const message = {
       owner: "admin",
       name: `message_${randomName}`,
       createdTime: moment().format(),
@@ -220,6 +218,15 @@ class ChatPage extends BaseListPage {
       isRegenerated: isRegenerated,
       fileName: fileName,
     };
+
+    if (!this.state.chat) {
+      const urlStoreName = this.getStore();
+      if (urlStoreName) {
+        message.store = urlStoreName;
+      }
+    }
+
+    return message;
   }
 
   cancelMessage = () => {
@@ -754,10 +761,6 @@ class ChatPage extends BaseListPage {
   }
 
   fetch = (params = {}, setLoading = true) => {
-    if (ChatRouterUtils.isNewChatRoute(this.props.match)) {
-      ChatRouterUtils.handleNewChatRoute(this.getStore.bind(this), this.newChat.bind(this), ChatBackend, this.goToLinkSoft.bind(this), this.generateChatUrl.bind(this), this.setState.bind(this), this.getMessages.bind(this), this.getGlobalStores.bind(this), Setting.showMessage, i18next, this.state.data);
-      return;
-    }
     const field = "user";
     const value = this.props.account.name;
     const sortField = params.sortField, sortOrder = params.sortOrder;
