@@ -64,6 +64,12 @@ func (c *ApiController) GetGlobalStores() {
 			return stores[i].IsDefault && !stores[j].IsDefault
 		})
 
+		err = object.PopulateStoreCounts(stores)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
 		c.ResponseOk(stores, paginator.Nums())
 	}
 }

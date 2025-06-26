@@ -42,6 +42,7 @@ type Message struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
 	Organization      string        `xorm:"varchar(100)" json:"organization"`
+	Store             string        `xorm:"varchar(100)" json:"store"`
 	User              string        `xorm:"varchar(100) index" json:"user"`
 	Chat              string        `xorm:"varchar(100) index" json:"chat"`
 	ReplyTo           string        `xorm:"varchar(100) index" json:"replyTo"`
@@ -66,8 +67,6 @@ type Message struct {
 	LikeUsers         []string      `json:"likeUsers"`
 	DisLikeUsers      []string      `json:"dislikeUsers"`
 	Suggestions       []Suggestion  `json:"suggestions"`
-
-	Store string `xorm:"-" json:"store,omitempty"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {
