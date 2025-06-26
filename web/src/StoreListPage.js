@@ -79,6 +79,32 @@ class StoreListPage extends BaseListPage {
     });
   }
 
+  getChatCount(store) {
+    if (!store.propertiesMap || !store.propertiesMap.counts) {
+      return 0;
+    }
+
+    try {
+      const countsData = JSON.parse(store.propertiesMap.counts.subject);
+      return countsData.chatCount;
+    } catch (error) {
+      return 0;
+    }
+  }
+
+  getMessageCount(store) {
+    if (!store.propertiesMap || !store.propertiesMap.counts) {
+      return 0;
+    }
+
+    try {
+      const countsData = JSON.parse(store.propertiesMap.counts.subject);
+      return countsData.messageCount;
+    } catch (error) {
+      return 0;
+    }
+  }
+
   renderProviderInfo(text) {
     const provider = this.state.providers[text];
     if (!provider) {
@@ -254,6 +280,42 @@ class StoreListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+          );
+        },
+      },
+      {
+        title: i18next.t("store:Chat count"),
+        key: "chatCount",
+        width: "120px",
+        sorter: (a, b) => {
+          const aCount = this.getChatCount(a);
+          const bCount = this.getChatCount(b);
+          return aCount - bCount;
+        },
+        render: (text, record, index) => {
+          const count = this.getChatCount(record);
+          return (
+            <Link to={`/stores/${record.owner}/${record.name}/chats`}>
+              {count}
+            </Link>
+          );
+        },
+      },
+      {
+        title: i18next.t("store:Message count"),
+        key: "messageCount",
+        width: "150px",
+        sorter: (a, b) => {
+          const aCount = this.getMessageCount(a);
+          const bCount = this.getMessageCount(b);
+          return aCount - bCount;
+        },
+        render: (text, record, index) => {
+          const count = this.getMessageCount(record);
+          return (
+            <Link to={`/stores/${record.owner}/${record.name}/messages`}>
+              {count}
+            </Link>
           );
         },
       },

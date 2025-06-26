@@ -14,6 +14,12 @@
 
 package object
 
+import (
+	"encoding/json"
+
+	"github.com/casibase/casibase/util"
+)
+
 func InitStoreCount() {
 	randomMessage, err := getMessage("admin", "")
 	if err != nil {
@@ -46,10 +52,62 @@ func InitStoreCount() {
 			continue
 		}
 
-		// XXX
+		// get chat from chatMap and give chat.store to message
+		chat, exists := chatMap[message.Chat]
+		if !exists || chat.Store == "" {
+			continue
+		}
+
+		message.Store = chat.Store
+		_, err = UpdateMessage(message.GetId(), message, false)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
 func PopulateStoreCounts(stores []*Store) error {
+	// Set the count information directly on each store object
+	for _, store := range stores {
+		// Calculate the number of associated chats
+		chatCount, err := adapter.engine.Count(&Chat{Store: store.Name})
+		if err != nil {
+			return err
+		}
+
+		// Calculate the number of associated messages
+		messageCount, err := adapter.engine.Count(&Message{Store: store.Name})
+		if err != nil {
+			return err
+		}
+
+		// Add the count info to the store.PropertiesMap
+		if store.PropertiesMap == nil {
+			store.PropertiesMap = make(map[string]*Properties)
+		}
+
+		// Create a Properties object to store the count info
+		countProperties := &Properties{
+			CollectedTime: util.GetCurrentTime(),
+			Subject:       "counts",
+		}
+
+		// Convert the count info into a JSON string
+		countInfo := map[string]int{
+			"chatCount":    int(chatCount),
+			"messageCount": int(messageCount),
+		}
+		countInfoJson, err := json.Marshal(countInfo)
+		if err != nil {
+			return err
+		}
+
+		// Store the JSON string in the "Subject" field
+		countProperties.Subject = string(countInfoJson)
+
+		// Store the count info in the PropertiesMap
+		store.PropertiesMap["counts"] = countProperties
+	}
+
 	return nil
 }
