@@ -767,6 +767,7 @@ class ChatPage extends BaseListPage {
     const value = this.props.account.name;
     const sortField = params.sortField, sortOrder = params.sortOrder;
     const chatName = this.getChat();
+    const storeName = this.getStore();
 
     if (setLoading) {
       this.setState({loading: true});
@@ -774,15 +775,18 @@ class ChatPage extends BaseListPage {
     ChatBackend.getChats(value, -1, -1, field, value, sortField, sortOrder)
       .then((res) => {
         if (res.status === "ok") {
+          let chats = res.data;
+          if (storeName) {
+            chats = chats.filter(chat => chat.store === storeName);
+          }
           this.setState({
             loading: false,
-            data: res.data,
+            data: chats,
             messages: [],
             searchText: params.searchText,
             searchedColumn: params.searchedColumn,
           });
 
-          const chats = res.data;
           if (chatName !== undefined && chats.length > 0) {
             const chat = chats.find(chat => chat.name === chatName);
             this.getMessages(chat);
