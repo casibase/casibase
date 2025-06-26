@@ -51,6 +51,7 @@ type Message struct {
 	ErrorText         string        `xorm:"mediumtext" json:"errorText"`
 	FileName          string        `xorm:"varchar(100)" json:"fileName"`
 	Comment           string        `xorm:"mediumtext" json:"comment"`
+	CustomPrompt      string        `xorm:"mediumtext" json:"customPrompt"`
 	TokenCount        int           `json:"tokenCount"`
 	TextTokenCount    int           `json:"textTokenCount"`
 	Price             float64       `json:"price"`
