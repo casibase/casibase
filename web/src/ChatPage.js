@@ -138,17 +138,19 @@ class ChatPage extends BaseListPage {
   }
 
   getChat() {
-    if (this.props.match && this.props.match.params.chatName) {
+    if (this.props.match) {
       return this.props.match.params.chatName;
+    } else {
+      return undefined;
     }
-    return undefined;
   }
 
   getStore() {
-    if (this.props.match && this.props.match.params.storeName) {
+    if (this.props.match) {
       return this.props.match.params.storeName;
+    } else {
+      return undefined;
     }
-    return undefined;
   }
 
   goToLinkSoft(path) {
