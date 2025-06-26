@@ -66,6 +66,8 @@ type Message struct {
 	LikeUsers         []string      `json:"likeUsers"`
 	DisLikeUsers      []string      `json:"dislikeUsers"`
 	Suggestions       []Suggestion  `json:"suggestions"`
+
+	Store string `xorm:"-" json:"store,omitempty"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {

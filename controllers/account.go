@@ -112,13 +112,26 @@ func (c *ApiController) Signout() {
 	c.ResponseOk()
 }
 
-func (c *ApiController) addInitialChat(organization string, userName string) (*object.Chat, error) {
-	store, err := object.GetDefaultStore("admin")
-	if err != nil {
-		return nil, err
-	}
-	if store == nil {
-		return nil, fmt.Errorf("The default store is not found")
+func (c *ApiController) addInitialChat(organization string, userName string, storeName string) (*object.Chat, error) {
+	var store *object.Store
+	var err error
+
+	if storeName != "" {
+		store, err = object.GetStore(util.GetId("admin", storeName))
+		if err != nil {
+			return nil, err
+		}
+		if store == nil {
+			return nil, fmt.Errorf("The store: %s is not found", storeName)
+		}
+	} else {
+		store, err = object.GetDefaultStore("admin")
+		if err != nil {
+			return nil, err
+		}
+		if store == nil {
+			return nil, fmt.Errorf("The default store is not found")
+		}
 	}
 
 	currentTime := util.GetCurrentTime()
@@ -171,7 +184,7 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 	organizationName := user.Owner
 	userName := user.Name
 
-	chat, err := c.addInitialChat(organizationName, userName)
+	chat, err := c.addInitialChat(organizationName, userName, "")
 	if err != nil {
 		return err
 	}

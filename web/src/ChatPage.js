@@ -97,6 +97,23 @@ class ChatPage extends BaseListPage {
     localStorage.setItem("chatMenuCollapsed", JSON.stringify(newCollapsedState));
   };
 
+  generateChatUrl(chatName, storeName, owner = "admin") {
+    if (chatName) {
+      return `/${owner}/${storeName}/chat/${chatName}`;
+    }
+    return `/${owner}/${storeName}/chat`;
+  }
+
+  updateStoreAndUrl = (newStore) => {
+    if (!this.state.chat) {
+      return null;
+    }
+    const updatedChat = {...this.state.chat, store: newStore.name};
+    this.goToLinkSoft(this.generateChatUrl(updatedChat.name, updatedChat.store));
+    this.setState({chat: updatedChat});
+    return updatedChat;
+  };
+
   getGlobalStores() {
     StoreBackend.getGlobalStores("", "", "", "", "", "").then((res) => {
       if (res.status === "ok") {
@@ -123,6 +140,14 @@ class ChatPage extends BaseListPage {
   getChat() {
     if (this.props.match) {
       return this.props.match.params.chatName;
+    } else {
+      return undefined;
+    }
+  }
+
+  getStore() {
+    if (this.props.match) {
+      return this.props.match.params.storeName;
     } else {
       return undefined;
     }
@@ -179,7 +204,7 @@ class ChatPage extends BaseListPage {
 
   newMessage(text, fileName, isHidden, isRegenerated) {
     const randomName = Setting.getRandomName();
-    return {
+    const message = {
       owner: "admin",
       name: `message_${randomName}`,
       createdTime: moment().format(),
@@ -195,6 +220,15 @@ class ChatPage extends BaseListPage {
       isRegenerated: isRegenerated,
       fileName: fileName,
     };
+
+    if (!this.state.chat) {
+      const urlStoreName = this.getStore();
+      if (urlStoreName) {
+        message.store = urlStoreName;
+      }
+    }
+
+    return message;
   }
 
   cancelMessage = () => {
@@ -460,7 +494,7 @@ class ChatPage extends BaseListPage {
 
   addChat(chat, selectStore) {
     const newChat = this.newChat(chat, selectStore);
-    this.goToLinkSoft(`/chat/${newChat.name}`);
+    this.goToLinkSoft(this.generateChatUrl(newChat.name, newChat.store));
     ChatBackend.addChat(newChat)
       .then((res) => {
         if (res.status === "ok") {
@@ -504,7 +538,7 @@ class ChatPage extends BaseListPage {
               data: data,
             });
             this.getMessages(focusedChat);
-            this.goToLinkSoft(`/chat/${focusedChat.name}`);
+            this.goToLinkSoft(this.generateChatUrl(focusedChat.name, focusedChat.store));
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
@@ -619,7 +653,7 @@ class ChatPage extends BaseListPage {
         chatMenuVisible: false,
       });
       this.getMessages(chat);
-      this.goToLinkSoft(`/chat/${chat.name}`);
+      this.goToLinkSoft(this.generateChatUrl(chat.name, chat.store));
     };
 
     const onAddChat = (selectStore = {}) => {
@@ -678,7 +712,7 @@ class ChatPage extends BaseListPage {
                 <Button type="text" icon={this.state.chatMenuCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={this.toggleChatMenuCollapse} style={{marginRight: "8px"}} />
               )}
               <div style={{flex: 1}}>
-                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} />
+                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} onStoreChange={this.updateStoreAndUrl} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} />
               </div>
             </div>
           )}
