@@ -740,7 +740,7 @@ class ChatPage extends BaseListPage {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  backgroundImage: `url(${Setting.StaticBaseUrl}/img/casibase-logo_1200x256.png)`,
+                  backgroundImage: `url(${Conf.StaticBaseUrl}/img/casibase-logo_1200x256.png)`,
                   backgroundPosition: "center",
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "200px auto",

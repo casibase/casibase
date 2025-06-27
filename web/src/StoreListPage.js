@@ -116,7 +116,7 @@ class StoreListPage extends BaseListPage {
       displayName: `New Store - ${randomName}`,
       createdTime: moment().format(),
       title: `Title - ${randomName}`,
-      avatar: Setting.AiAvatar,
+      avatar: Setting.getDefaultAiAvatar(),
       storageProvider: "provider-storage-built-in",
       storageSubpath: `store_${randomName}`,
       imageProvider: "",

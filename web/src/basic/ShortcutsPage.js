@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import React from "react";
-import * as Setting from "../Setting";
 import GridCards from "./GridCards";
 import * as Conf from "../Conf";
 
@@ -21,7 +20,7 @@ const ShortcutsPage = () => {
   const getItems = () => {
     return Conf.ShortcutPageItems.map((item, i) => {
       const name = ["/organizations", "/users", "/providers", "/applications"][i % 4];
-      item.logo = `${Setting.StaticBaseUrl}/img${name}.png`;
+      item.logo = `${Conf.StaticBaseUrl}/img${name}.png`;
       item.createdTime = "";
       return item;
     });

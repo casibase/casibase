@@ -38,7 +38,7 @@ class MessageList extends React.Component {
       files,
     } = this.props;
 
-    const avatarSrc = store?.avatar || Setting.AiAvatar;
+    const avatarSrc = store?.avatar || Setting.getDefaultAiAvatar();
     const filteredMessages = messages.filter(message => message.isHidden === false);
 
     return (

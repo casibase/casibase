@@ -13,13 +13,14 @@
 // limitations under the License.
 
 import React from "react";
-import * as Setting from "./Setting";
 import {Dropdown} from "antd";
 import {GlobalOutlined} from "@ant-design/icons";
+import * as Setting from "./Setting";
+import * as Conf from "./Conf";
 
 function flagIcon(country, alt) {
   return (
-    <img className="language-icon" width={24} alt={alt} src={`${Setting.StaticBaseUrl}/flag-icons/${country}.svg`} />
+    <img className="language-icon" width={24} alt={alt} src={`${Conf.StaticBaseUrl}/flag-icons/${country}.svg`} />
   );
 }
 
@@ -31,7 +32,7 @@ class LanguageSelect extends React.Component {
     };
 
     Setting.Countries.forEach((country) => {
-      new Image().src = `${Setting.StaticBaseUrl}/flag-icons/${country.country}.svg`;
+      new Image().src = `${Conf.StaticBaseUrl}/flag-icons/${country.country}.svg`;
     });
   }
 

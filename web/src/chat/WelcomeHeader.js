@@ -18,7 +18,7 @@ import * as Setting from "../Setting";
 import i18next from "i18next";
 
 const WelcomeHeader = ({store}) => {
-  const avatar = (store === undefined) ? null : store.avatar || Setting.AiAvatar;
+  const avatar = (store === undefined) ? null : store.avatar || Setting.getDefaultAiAvatar();
 
   return (
     <Welcome
