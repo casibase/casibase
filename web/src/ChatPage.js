@@ -98,18 +98,19 @@ class ChatPage extends BaseListPage {
   };
 
   generateChatUrl(chatName, storeName, owner = "admin") {
-    const currentStoreName = storeName || this.getStore();
-    if (currentStoreName) {
-      if (chatName) {
-        return `/${owner}/${currentStoreName}/chat/${chatName}`;
-      }
-      return `/${owner}/${currentStoreName}/chat`;
-    } else {
+    const currentStoreName = this.getStore();
+    if (!currentStoreName) {
       if (chatName) {
         return `/chat/${chatName}`;
       }
       return "/chat";
     }
+    const targetStoreName = storeName || currentStoreName;
+
+    if (chatName) {
+      return `/${owner}/${targetStoreName}/chat/${chatName}`;
+    }
+    return `/${owner}/${targetStoreName}/chat`;
   }
 
   updateStoreAndUrl = (newStore) => {
