@@ -49,6 +49,7 @@ type Provider struct {
 	McpTools           []*agent.McpTools `xorm:"text" json:"mcpTools"`
 	Text               string            `xorm:"mediumtext" json:"text"`
 
+	EnableThinking   bool    `json:"enableThinking"`
 	Temperature      float32 `xorm:"float" json:"temperature"`
 	TopP             float32 `xorm:"float" json:"topP"`
 	TopK             int     `xorm:"int" json:"topK"`
@@ -291,7 +292,7 @@ func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompitableProvider, p.InputPricePerThousandTokens, p.OutputPricePerThousandTokens, p.Currency)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompitableProvider, p.InputPricePerThousandTokens, p.OutputPricePerThousandTokens, p.Currency, p.EnableThinking)
 	if err != nil {
 		return nil, err
 	}

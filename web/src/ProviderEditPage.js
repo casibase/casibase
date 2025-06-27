@@ -578,6 +578,36 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
+          (this.state.provider.category === "Model" && this.state.provider.type === "Claude" && Setting.getThinkingModelMaxTokens(this.state.provider.subType) !== 0) ? (
+            <>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("provider:Enable thinking"), i18next.t("provider:Enable thinking - Tooltip"))} :
+                </Col>
+                <Col span={22} >
+                  <Switch checked={this.state.provider.enableThinking} onChange={checked => {
+                    this.updateProviderField("enableThinking", checked);
+                  }} />
+                </Col>
+              </Row>
+              {
+                this.state.provider.enableThinking && (
+                  <Row style={{marginTop: "20px"}} >
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:Thinking tokens"), i18next.t("provider:Thinking tokens - Tooltip"))} :
+                    </Col>
+                    <Col span={22} >
+                      <InputNumber min={1024} max={Setting.getThinkingModelMaxTokens(this.state.provider.subType) - 1} value={this.state.provider.topK || 1024} onChange={value => {
+                        this.updateProviderField("topK", value);
+                      }} />
+                    </Col>
+                  </Row>
+                )
+              }
+            </>
+          ) : null
+        }
+        {
           !["Agent"].includes(this.state.provider.category) ? null : (
             <>
               <Row style={{marginTop: "20px"}} >

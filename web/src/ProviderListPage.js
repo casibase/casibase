@@ -41,6 +41,7 @@ class ProviderListPage extends BaseListPage {
       clientId: "",
       clientSecret: "",
       mcpTools: [],
+      enableThinking: false,
       temperature: 1,
       topP: 1,
       topK: 4,

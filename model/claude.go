@@ -27,12 +27,14 @@ import (
 )
 
 type ClaudeModelProvider struct {
-	subType   string
-	secretKey string
+	subType        string
+	secretKey      string
+	budgetTokens   int
+	enableThinking bool
 }
 
-func NewClaudeModelProvider(subType string, secretKey string) (*ClaudeModelProvider, error) {
-	return &ClaudeModelProvider{subType: subType, secretKey: secretKey}, nil
+func NewClaudeModelProvider(subType string, secretKey string, enableThinking bool, budgetTokens int) (*ClaudeModelProvider, error) {
+	return &ClaudeModelProvider{subType: subType, secretKey: secretKey, enableThinking: enableThinking, budgetTokens: budgetTokens}, nil
 }
 
 func (p *ClaudeModelProvider) GetPricing() string {
@@ -106,14 +108,23 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 	}
 
 	maxTokens := getContextLength(p.subType)
-	stream := client.Messages.NewStreaming(context.TODO(), anthropic.MessageNewParams{
+
+	messageParams := anthropic.MessageNewParams{
 		MaxTokens: int64(maxTokens),
 		Messages: []anthropic.MessageParam{
 			anthropic.NewUserMessage(anthropic.NewTextBlock(question)),
 		},
 		Model:         anthropic.Model(p.subType),
 		StopSequences: []string{"```\n"},
-	})
+	}
+	if p.enableThinking {
+		messageParams.Thinking = anthropic.ThinkingConfigParamUnion{
+			OfEnabled: &anthropic.ThinkingConfigEnabledParam{
+				BudgetTokens: int64(p.budgetTokens),
+			},
+		}
+	}
+	stream := client.Messages.NewStreaming(context.TODO(), messageParams)
 
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
@@ -121,7 +132,7 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 	}
 
 	flushData := func(event string, data string) error {
-		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
+		if _, err := fmt.Fprintf(writer, "event: %s\ndata: %s\n\n", event, data); err != nil {
 			return err
 		}
 		flusher.Flush()
@@ -138,11 +149,15 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 			modelResult.PromptTokenCount = inputTokens
 		case anthropic.ContentBlockDeltaEvent:
 			switch deltaVariant := eventVariant.Delta.AsAny().(type) {
+			case anthropic.ThinkingDelta:
+				err := flushData("reason", deltaVariant.Thinking)
+				if err != nil {
+					return nil, err
+				}
 			case anthropic.TextDelta:
-				if deltaVariant.Type == "thinking_delta" {
-					flushData("thinking", deltaVariant.Text)
-				} else if deltaVariant.Type == "text_delta" {
-					flushData("message", deltaVariant.Text)
+				err := flushData("message", deltaVariant.Text)
+				if err != nil {
+					return nil, err
 				}
 			}
 		case anthropic.MessageDeltaEvent:
