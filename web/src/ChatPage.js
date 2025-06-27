@@ -54,6 +54,8 @@ class ChatPage extends BaseListPage {
       defaultStore: null,
       filteredStores: [],
       paneCount: 1,
+      isStoreLoading: true,
+      isStoreLoadingError: false,
     });
 
     this.fetch();
@@ -115,6 +117,7 @@ class ChatPage extends BaseListPage {
   };
 
   getGlobalStores() {
+    this.state.isStoreLoading = true;
     StoreBackend.getGlobalStores("", "", "", "", "", "").then((res) => {
       if (res.status === "ok") {
         const stores = res?.data;
@@ -130,9 +133,13 @@ class ChatPage extends BaseListPage {
           stores: stores,
           defaultStore: defaultStore,
           filteredStores: filteredStores,
+          isStoreLoading: false,
         });
       } else {
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        this.setState({
+          isStoreLoadingError: true,
+        });
       }
     });
   }
@@ -754,6 +761,8 @@ class ChatPage extends BaseListPage {
                 name={this.state.chat?.name}
                 displayName={this.state.chat?.displayName}
                 store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : this.state.stores?.find(store => store.isDefault === true)}
+                isStoreLoading={this.state.isStoreLoading}
+                isStoreLoadingError={this.state.isStoreLoadingError}
               />
             </div>
           )}

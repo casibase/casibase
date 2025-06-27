@@ -17,15 +17,48 @@ import {Welcome} from "@ant-design/x";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 
-const WelcomeHeader = ({store}) => {
-  const avatar = store?.avatar || Setting.AiAvatar;
+const WelcomeHeader = ({store, isStoreLoading, isStoreLoadingError}) => {
+
+  const getTitle = () => {
+    if (isStoreLoading) {
+      return null;
+    }
+    if (isStoreLoadingError) {
+      return i18next.t("chat:Hello, I'm Casibase AI Assistant");
+    }
+    return store?.welcomeTitle || i18next.t("chat:Hello, I'm Casibase AI Assistant");
+  };
+
+  const getDescription = () => {
+    if (isStoreLoading) {
+      return null;
+    }
+    if (isStoreLoadingError) {
+      return i18next.t("chat:I'm here to help answer your questions");
+    }
+    return store?.welcomeText || i18next.t("chat:I'm here to help answer your questions");
+  };
+
+  const getAvatar = () => {
+    if (isStoreLoading) {
+      return null;
+    }
+    if (isStoreLoadingError) {
+      return Setting.AiAvatar;
+    }
+    return store?.avatar || Setting.AiAvatar;
+  };
+
+  const avatar = getAvatar();
+  const title = getTitle();
+  const description = getDescription();
 
   return (
     <Welcome
       variant="borderless"
       icon={avatar}
-      title={store?.welcomeTitle || i18next.t("chat:Hello, I'm Casibase AI Assistant")}
-      description={store?.welcomeText || i18next.t("chat:I'm here to help answer your questions")}
+      title={title}
+      description={description}
     />
   );
 };
