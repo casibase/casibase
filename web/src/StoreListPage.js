@@ -258,6 +258,34 @@ class StoreListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("store:Chat count"),
+        dataIndex: "chatCount",
+        key: "chatCount",
+        width: "150px",
+        sorter: (a, b) => a.chatCount - b.chatCount,
+        render: (text, record, index) => {
+          return (
+            <Link to={`/stores/${record.owner}/${record.name}/chats`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
+        title: i18next.t("store:Message count"),
+        dataIndex: "messageCount",
+        key: "messageCount",
+        width: "150px",
+        sorter: (a, b) => a.messageCount - b.messageCount,
+        render: (text, record, index) => {
+          return (
+            <Link to={`/stores/${record.owner}/${record.name}/messages`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
         title: i18next.t("store:Storage provider"),
         dataIndex: "storageProvider",
         key: "storageProvider",

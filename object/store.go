@@ -89,6 +89,9 @@ type Store struct {
 	IsDefault           bool     `json:"isDefault"`
 	State               string   `xorm:"varchar(100)" json:"state"`
 
+	ChatCount    int `xorm:"-" json:"chatCount"`
+	MessageCount int `xorm:"-" json:"messageCount"`
+
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
 }

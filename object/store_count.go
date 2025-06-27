@@ -46,10 +46,34 @@ func InitStoreCount() {
 			continue
 		}
 
-		// XXX
+		chat, ok := chatMap[message.Chat]
+		if !ok || chat.Store == "" {
+			continue
+		}
+
+		message.Store = chat.Store
+		_, err = UpdateMessage(message.GetId(), message, false)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
 func PopulateStoreCounts(stores []*Store) error {
+	for _, store := range stores {
+		chatCount, err := adapter.engine.Count(&Chat{Store: store.Name})
+		if err != nil {
+			return err
+		}
+
+		messageCount, err := adapter.engine.Count(&Message{Store: store.Name})
+		if err != nil {
+			return err
+		}
+
+		store.ChatCount = int(chatCount)
+		store.MessageCount = int(messageCount)
+	}
+
 	return nil
 }
