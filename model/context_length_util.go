@@ -25,7 +25,8 @@ import "strings"
 // step     https://platform.stepfun.com/docs/llm/text
 // Gemini   https://firebase.google.com/docs/vertex-ai/models
 // hunyuan  https://cloud.tencent.com/document/product/1729/104753
-// chatGLM   https://open.bigmodel.cn/pricing
+// chatGLM  https://open.bigmodel.cn/pricing
+// claude   https://docs.anthropic.com/zh-CN/docs/about-claude/models/overview
 
 func getContextLength(typ string) int {
 	typ = strings.ToLower(typ)
@@ -121,16 +122,24 @@ func getContextLength(typ string) int {
 			return 1048576
 		}
 	} else if strings.Contains(typ, "claude") {
-		if strings.Contains(typ, "3") {
-			if strings.Contains(typ, "sonnet") || strings.Contains(typ, "opus") || strings.Contains(typ, "haiku") {
-				return 204800
+		if strings.Contains(typ, "4") {
+			if strings.Contains(typ, "sonnet") {
+				return 64000
+			} else if strings.Contains(typ, "opus") {
+				return 32000
 			}
-		} else if strings.Contains(typ, "2.0") || strings.Contains(typ, "2.1") {
-			return 102400
-		} else if strings.Contains(typ, "instant") {
-			if strings.Contains(typ, "1.2") {
-				return 102400
-			} else {
+		} else if strings.Contains(typ, "3-7") {
+			if strings.Contains(typ, "sonnet") {
+				return 64000
+			}
+		} else if strings.Contains(typ, "3-5") {
+			if strings.Contains(typ, "sonnet") || strings.Contains(typ, "haiku") {
+				return 8192
+			}
+		} else if strings.Contains(typ, "3") {
+			if strings.Contains(typ, "haiku") || strings.Contains(typ, "opus") {
+				return 4096
+			} else if strings.Contains(typ, "sonnet") {
 				return 4096
 			}
 		} else {

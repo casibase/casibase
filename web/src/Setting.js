@@ -1289,13 +1289,23 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "Claude") {
     return [
-      {id: "claude-2.0", name: "claude-2.0"},
-      {id: "claude-2.1", name: "claude-2.1"},
-      {id: "claude-instant-1.2", name: "claude-instant-1.2"},
-      {id: "claude-3-sonnet-20240229", name: "claude-3-sonnet-20240229"},
-      {id: "claude-3-opus-20240229", name: "claude-3-opus-20240229"},
-      {id: "claude-3-haiku-20240307", name: "claude-3-haiku-20240307"},
+      {id: "claude-opus-4-0", name: "claude-opus-4-0"},
+      {id: "claude-opus-4-20250514", name: "claude-opus-4-20250514"},
+      {id: "claude-4-opus-20250514", name: "claude-4-opus-20250514"},
+      {id: "claude-sonnet-4-0", name: "claude-sonnet-4-0"},
+      {id: "claude-sonnet-4-20250514", name: "claude-sonnet-4-20250514"},
+      {id: "claude-4-sonnet-20250514", name: "claude-4-sonnet-20250514"},
+      {id: "claude-3-7-sonnet-latest", name: "claude-3-7-sonnet-latest"},
       {id: "claude-3-7-sonnet-20250219", name: "claude-3-7-sonnet-20250219"},
+      {id: "claude-3-5-haiku-latest", name: "claude-3-5-haiku-latest"},
+      {id: "claude-3-5-haiku-20241022", name: "claude-3-5-haiku-20241022"},
+      {id: "claude-3-5-sonnet-latest", name: "claude-3-5-sonnet-latest"},
+      {id: "claude-3-5-sonnet-20241022", name: "claude-3-5-sonnet-20241022"},
+      {id: "claude-3-5-sonnet-20240620", name: "claude-3-5-sonnet-20240620"},
+      {id: "claude-3-opus-latest", name: "claude-3-opus-latest"},
+      {id: "claude-3-opus-20240229", name: "claude-3-opus-20240229"},
+      {id: "claude-3-sonnet-20240229", name: "claude-3-sonnet-20240229"},
+      {id: "claude-3-haiku-20240307", name: "claude-3-haiku-20240307"},
     ];
   } else if (type === "OpenRouter") {
     return [
