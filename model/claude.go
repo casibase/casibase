@@ -23,6 +23,7 @@ import (
 
 	"github.com/anthropics/anthropic-sdk-go"
 	"github.com/anthropics/anthropic-sdk-go/option"
+	"github.com/casibase/casibase/proxy"
 )
 
 type ClaudeModelProvider struct {
@@ -89,6 +90,7 @@ func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
 func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
 	client := anthropic.NewClient(
 		option.WithAPIKey(p.secretKey),
+		option.WithHTTPClient(proxy.ProxyHttpClient),
 	)
 
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
