@@ -2008,3 +2008,18 @@ export function formatJsonString(s) {
     return s;
   }
 }
+
+export function getThinkingModelMaxTokens(subType) {
+  if (subType.includes("claude")) {
+    if (subType.includes("4")) {
+      if (subType.includes("sonnet")) {
+        return 64000;
+      } else if (subType.includes("opus")) {
+        return 32000;
+      }
+    } else if (subType.includes("3-7") || subType.includes("sonnet")) {
+      return 64000;
+    }
+  }
+  return 0;
+}
