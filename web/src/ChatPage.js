@@ -98,10 +98,19 @@ class ChatPage extends BaseListPage {
   };
 
   generateChatUrl(chatName, storeName, owner = "admin") {
-    if (chatName) {
-      return `/${owner}/${storeName}/chat/${chatName}`;
+    const currentStoreName = this.getStore();
+    if (!currentStoreName) {
+      if (chatName) {
+        return `/chat/${chatName}`;
+      }
+      return "/chat";
     }
-    return `/${owner}/${storeName}/chat`;
+    const targetStoreName = storeName || currentStoreName;
+
+    if (chatName) {
+      return `/${owner}/${targetStoreName}/chat/${chatName}`;
+    }
+    return `/${owner}/${targetStoreName}/chat`;
   }
 
   updateStoreAndUrl = (newStore) => {
@@ -267,14 +276,17 @@ class ChatPage extends BaseListPage {
           const field = "user";
           const value = this.props.account.name;
           const sortField = "", sortOrder = "";
+          const storeName = this.getStore();
           ChatBackend.getChats(value, -1, -1, field, value, sortField, sortOrder)
             .then((res) => {
               if (res.status === "ok") {
+                let chats = res.data;
+                if (storeName) {
+                  chats = chats.filter(chat => chat.store === storeName);
+                }
                 this.setState({
-                  data: res.data,
+                  data: chats,
                 });
-
-                const chats = res.data;
                 if (this.menu && this.menu.current) {
                   this.menu.current.setSelectedKeyToNewChat(chats);
                 }

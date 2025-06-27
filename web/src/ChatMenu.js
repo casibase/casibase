@@ -277,7 +277,7 @@ class ChatMenu extends React.Component {
           }}
           onClick={() => {
             if (!hasChildStores) {
-              this.props.onAddChat("");
+              this.props.onAddChat(defaultStore);
             }
           }}
         >
