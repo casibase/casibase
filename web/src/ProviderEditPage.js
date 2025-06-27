@@ -292,7 +292,7 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "MiniMax") {
                   this.updateProviderField("subType", "abab5-chat");
                 } else if (value === "Claude") {
-                  this.updateProviderField("subType", "claude-2");
+                  this.updateProviderField("subType", "claude-opus-4-0");
                 } else if (value === "Hugging Face") {
                   this.updateProviderField("subType", "gpt2");
                 } else if (value === "ChatGLM") {
