@@ -301,12 +301,7 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 		return false, err
 	}
 
-	limit := 100000
-	if embeddingProvider.Type == "OpenAI" {
-		limit = 3
-	}
-
-	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, limit)
+	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType)
 	return ok, err
 }
 

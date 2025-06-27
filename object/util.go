@@ -21,6 +21,7 @@ import (
 
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/util"
+	"github.com/sashabaranov/go-openai"
 	"xorm.io/xorm"
 )
 
@@ -66,4 +67,21 @@ func isAdmin(user *casdoorsdk.User) bool {
 
 	res := user.IsAdmin || user.Type == "chat-admin"
 	return res
+}
+
+func isRetryableError(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	retryableErrors := []string{
+		string(openai.RunErrorRateLimitExceeded),
+	}
+
+	for _, retryableErr := range retryableErrors {
+		if strings.Contains(err.Error(), retryableErr) {
+			return true
+		}
+	}
+	return false
 }

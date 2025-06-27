@@ -22,6 +22,7 @@ require (
 	github.com/casdoor/casdoor-go-sdk v0.37.0
 	github.com/casibase/dashscope-go-sdk v0.0.2
 	github.com/casibase/go-openrouter v1.0.0
+	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/cohere-ai/cohere-go/v2 v2.5.2
 	github.com/denisenkom/go-mssqldb v0.10.0
 	github.com/digitalocean/go-libvirt v0.0.0-20250207191401-950a7b2d7eaf
@@ -57,7 +58,6 @@ require (
 	github.com/wangbin/jiebago v0.3.2
 	golang.org/x/net v0.38.0
 	golang.org/x/text v0.25.0
-	golang.org/x/time v0.9.0
 	google.golang.org/genai v1.10.0
 	google.golang.org/grpc v1.71.0
 	k8s.io/api v0.28.0
@@ -76,6 +76,7 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
 	golang.org/x/image v0.27.0 // indirect
+	golang.org/x/time v0.9.0 // indirect
 )
 
 require (
