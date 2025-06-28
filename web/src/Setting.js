@@ -751,6 +751,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_github.png`,
         url: "https://github.com/",
       },
+      "Writer": {
+        logo: `${StaticBaseUrl}/img/social_writer.png`,
+        url: "https://writer.com/",
+      },
     },
     Embedding: {
       "OpenAI": {
@@ -1075,6 +1079,7 @@ export function getProviderTypeOptions(category) {
         {id: "Yi", name: "Yi"},
         {id: "Silicon Flow", name: "Silicon Flow"},
         {id: "GitHub", name: "GitHub"},
+        {id: "Writer", name: "Writer"},
       ]
     );
   } else if (category === "Embedding") {
@@ -1592,6 +1597,14 @@ export function getModelSubTypeOptions(type) {
       {id: "grok-2-vision-latest", name: "grok-2-vision-latest"},
       {id: "grok-2-latest", name: "grok-2-latest"},
       {id: "grok-2-image-latest", name: "grok-2-image-latest"},
+    ];
+  } else if (type === "Writer") {
+    return [
+      {id: "palmyra-x5", name: "Palmyra X5"},
+      {id: "palmyra-x4", name: "Palmyra X4"},
+      {id: "palmyra-med", name: "Palmyra Med"},
+      {id: "palmyra-fin", name: "Palmyra Fin"},
+      {id: "palmyra-creative", name: "Palmyra Creative"},
     ];
   } else if (type === "Dummy") {
     return [
