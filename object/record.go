@@ -184,7 +184,7 @@ func AddRecord(record *Record) (bool, error) {
 	}
 
 	if record.Provider == "" {
-		provider, err := getActiveBlockchainProvider("admin")
+		provider, err := GetActiveBlockchainProvider("admin")
 		if err != nil {
 			return false, err
 		}

@@ -154,10 +154,16 @@ func getActiveCloudProviders(owner string) ([]*Provider, error) {
 	return res, nil
 }
 
-func getActiveBlockchainProvider(owner string) (*Provider, error) {
+func GetActiveBlockchainProvider(owner string) (*Provider, error) {
 	providers, err := GetProviders(owner)
 	if err != nil {
 		return nil, err
+	}
+
+	for _, provider := range providers {
+		if provider.Category == "Blockchain" && provider.IsDefault {
+			return provider, nil
+		}
 	}
 
 	for _, provider := range providers {

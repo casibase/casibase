@@ -39,7 +39,7 @@ func (record *Record) getRecordProvider() (*Provider, error) {
 		}
 	}
 
-	provider, err := getActiveBlockchainProvider("admin")
+	provider, err := GetActiveBlockchainProvider("admin")
 	if err != nil {
 		return nil, err
 	}

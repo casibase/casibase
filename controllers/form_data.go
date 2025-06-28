@@ -54,7 +54,7 @@ func (c *ApiController) GetFormData() {
 		return
 	}
 
-	blockchainProvider, err := object.GetDefaultBlockchainProvider()
+	blockchainProvider, err := object.GetActiveBlockchainProvider("admin")
 	if blockchainProvider == nil {
 		c.ResponseError("The default blockchain provider is not found")
 		return
