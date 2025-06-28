@@ -53,7 +53,7 @@ func (c *ApiController) GetGlobalMessages() {
 			return
 		}
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		messages, err := object.GetPaginationMessage(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		messages, err := object.GetPaginationMessages(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return

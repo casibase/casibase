@@ -52,7 +52,7 @@ func (c *ApiController) GetGlobalChats() {
 			return
 		}
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		chats, err := object.GetPaginationChat("", paginator.Offset(), limit, field, value, sortField, sortOrder)
+		chats, err := object.GetPaginationChats("", paginator.Offset(), limit, field, value, sortField, sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return

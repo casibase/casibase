@@ -145,7 +145,7 @@ func GetChatCount(owner string, field string, value string) (int64, error) {
 	return session.Count(&Chat{})
 }
 
-func GetPaginationChat(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Chat, error) {
+func GetPaginationChats(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Chat, error) {
 	chats := []*Chat{}
 	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&chats)

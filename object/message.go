@@ -363,7 +363,7 @@ func GetMessageCount(owner string, field string, value string) (int64, error) {
 	return session.Count(&Message{})
 }
 
-func GetPaginationMessage(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Message, error) {
+func GetPaginationMessages(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Message, error) {
 	messages := []*Message{}
 	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&messages)
