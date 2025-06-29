@@ -37,6 +37,7 @@ func (c *ApiController) GetGlobalMessages() {
 	value := c.Input().Get("value")
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
+	store := c.Input().Get("store")
 
 	if limit == "" || page == "" {
 		messages, err := object.GetGlobalMessages()
@@ -47,13 +48,13 @@ func (c *ApiController) GetGlobalMessages() {
 		c.ResponseOk(messages)
 	} else {
 		limit := util.ParseInt(limit)
-		count, err := object.GetMessageCount(owner, field, value)
+		count, err := object.GetMessageCount(owner, field, value, store)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		messages, err := object.GetPaginationMessages(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		messages, err := object.GetPaginationMessages(owner, paginator.Offset(), limit, field, value, sortField, sortOrder, store)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return

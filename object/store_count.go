@@ -15,14 +15,13 @@
 package object
 
 func InitStoreCount() {
-	randomMessage, err := getMessage("admin", "")
+	emptyStoreMessage := &Message{}
+	has, err := adapter.engine.Where("store = ?", "").Or("store IS NULL").Get(emptyStoreMessage)
 	if err != nil {
 		panic(err)
 	}
-	if randomMessage == nil {
-		return
-	}
-	if randomMessage.Store != "" {
+
+	if !has {
 		return
 	}
 

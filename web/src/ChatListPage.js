@@ -36,6 +36,14 @@ class ChatListPage extends BaseListPage {
     };
   }
 
+  getStore() {
+    if (this.props.match) {
+      return this.props.match.params.storeName;
+    } else {
+      return undefined;
+    }
+  }
+
   getMessages(chatName) {
     MessageBackend.getChatMessages("admin", chatName)
       .then((res) => {
@@ -498,8 +506,11 @@ class ChatListPage extends BaseListPage {
       field = "type";
       value = params.type;
     }
+
+    const store = this.getStore();
+
     this.setState({loading: true});
-    ChatBackend.getGlobalChats(params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    ChatBackend.getGlobalChats(params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder, store)
       .then((res) => {
         this.setState({
           loading: false,
