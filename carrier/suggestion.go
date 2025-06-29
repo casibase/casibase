@@ -31,6 +31,10 @@ func NewSuggestionCarrier(suggestionCount int) (*SuggestionCarrier, error) {
 
 func (p *SuggestionCarrier) GetQuestion(question string) (string, error) {
 	if p.suggestionCount <= 0 {
+		promptTemplate := `Your reasoning and response must be in the same language as user's question.
+
+Here is the user's question: %s`
+		question = fmt.Sprintf(promptTemplate, question)
 		return question, nil
 	}
 
@@ -39,7 +43,7 @@ func (p *SuggestionCarrier) GetQuestion(question string) (string, error) {
 		format += p.divider + "<Predicted question " + strconv.Itoa(i+1) + ">"
 	}
 
-	promptTemplate := "\n\nYour response must be in the same language as my query." + `Please follow the steps below to optimize your answer:
+	promptTemplate := `\n\nPlease follow the steps below to optimize your answer:
 
 1. **Generate an answer**: Provide a clear, accurate, and helpful answer to the user's question.
 
@@ -60,6 +64,8 @@ Please note, the separator for each part is "%s", make sure not to use this sepa
 Examples of generated predicted questions:
 1. Do you know the weather today?
 2. Do you have any news to share?
+
+Your reasoning and response must be in the same language as user's question.
 
 Here is the user's question: %s`
 
