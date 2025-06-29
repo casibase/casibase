@@ -47,13 +47,11 @@ func (c *ApiController) GetGlobalChats() {
 		c.ResponseOk(chats)
 	} else {
 		limit := util.ParseInt(limit)
-
 		count, err := object.GetChatCount("", field, value, store)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
-
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
 		chats, err := object.GetPaginationChats("", paginator.Offset(), limit, field, value, sortField, sortOrder, store)
 		if err != nil {
