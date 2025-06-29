@@ -140,14 +140,20 @@ func (chat *Chat) GetId() string {
 	return fmt.Sprintf("%s/%s", chat.Owner, chat.Name)
 }
 
-func GetChatCount(owner string, field string, value string) (int64, error) {
+func GetChatCount(owner string, field string, value string, store string) (int64, error) {
 	session := GetSession(owner, -1, -1, field, value, "", "")
+	if store != "" {
+		session = session.And("store = ?", store)
+	}
 	return session.Count(&Chat{})
 }
 
-func GetPaginationChats(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Chat, error) {
+func GetPaginationChats(owner string, offset, limit int, field, value, sortField, sortOrder string, store string) ([]*Chat, error) {
 	chats := []*Chat{}
 	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	if store != "" {
+		session = session.And("store = ?", store)
+	}
 	err := session.Find(&chats)
 	if err != nil {
 		return chats, err

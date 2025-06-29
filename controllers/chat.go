@@ -35,6 +35,7 @@ func (c *ApiController) GetGlobalChats() {
 	value := c.Input().Get("value")
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
+	store := c.Input().Get("store")
 
 	if limit == "" || page == "" {
 		chats, err := object.GetGlobalChats()
@@ -46,13 +47,13 @@ func (c *ApiController) GetGlobalChats() {
 		c.ResponseOk(chats)
 	} else {
 		limit := util.ParseInt(limit)
-		count, err := object.GetChatCount("", field, value)
+		count, err := object.GetChatCount("", field, value, store)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		chats, err := object.GetPaginationChats("", paginator.Offset(), limit, field, value, sortField, sortOrder)
+		chats, err := object.GetPaginationChats("", paginator.Offset(), limit, field, value, sortField, sortOrder, store)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return

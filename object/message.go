@@ -358,14 +358,20 @@ func GetAnswer(provider string, question string) (string, *model.ModelResult, er
 	return res, modelResult, nil
 }
 
-func GetMessageCount(owner string, field string, value string) (int64, error) {
+func GetMessageCount(owner string, field string, value string, store string) (int64, error) {
 	session := GetSession(owner, -1, -1, field, value, "", "")
+	if store != "" {
+		session = session.And("store = ?", store)
+	}
 	return session.Count(&Message{})
 }
 
-func GetPaginationMessages(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Message, error) {
+func GetPaginationMessages(owner string, offset, limit int, field, value, sortField, sortOrder, store string) ([]*Message, error) {
 	messages := []*Message{}
 	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	if store != "" {
+		session = session.And("store = ?", store)
+	}
 	err := session.Find(&messages)
 	if err != nil {
 		return messages, err
