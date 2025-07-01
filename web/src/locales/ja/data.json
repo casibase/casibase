@@ -95,6 +95,8 @@
   },
   "general": {
     "AI Setting": "AI設定",
+    "Access secret": "アクセスシークレット",
+    "Access secret - Tooltip": "アクセスシークレット",
     "Action": "アクション",
     "Action - Tooltip": "業務操作タイプコード",
     "Add": "追加",
@@ -438,7 +440,6 @@
     "Output price / 1k tokens": "出力価格 / 千tokens",
     "Output price / 1k tokens - Tooltip": "出力tokenコスト",
     "Path": "パス",
-    "Path - Tooltip": "百度雲APIパス",
     "Presence penalty": "重複ペナルティ",
     "Presence penalty - Tooltip": "重複ペナルティ（-2~2、正值は重複を減少）",
     "Provider URL": "プロバイダURL",

@@ -95,6 +95,8 @@
   },
   "general": {
     "AI Setting": "AI 설정",
+    "Access secret": "액세스 시크릿",
+    "Access secret - Tooltip": "액세스 시크릿",
     "Action": "조작",
     "Action - Tooltip": "비즈니스 조작 유형 코드",
     "Add": "추가",
@@ -437,7 +439,6 @@
     "Output price / 1k tokens": "출력 가격 / 1k 토큰",
     "Output price / 1k tokens - Tooltip": "출력 토큰 비용",
     "Path": "경로",
-    "Path - Tooltip": "Baidu Cloud API 경로",
     "Presence penalty": "반복 벌칙",
     "Presence penalty - Tooltip": "반복 벌칙(-2~2, 양수는 반복을 감소시킴)",
     "Provider URL": "공급자 URL",

@@ -95,6 +95,8 @@
   },
   "general": {
     "AI Setting": "Configuración de IA",
+    "Access secret": "Clave de acceso",
+    "Access secret - Tooltip": "Clave de acceso",
     "Action": "Acción",
     "Action - Tooltip": "Código de tipo de acción comercial",
     "Add": "Agregar",
@@ -438,7 +440,6 @@
     "Output price / 1k tokens": "Precio de salida / 1k tokens",
     "Output price / 1k tokens - Tooltip": "Costo de token de salida",
     "Path": "Ruta",
-    "Path - Tooltip": "Ruta de API de Baidu Cloud",
     "Presence penalty": "Penalización de presencia",
     "Presence penalty - Tooltip": "Penalización de repetición (-2~2, valores positivos reducen repeticiones)",
     "Provider URL": "URL del proveedor",

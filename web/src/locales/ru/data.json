@@ -95,6 +95,8 @@
   },
   "general": {
     "AI Setting": "Настройки ИИ",
+    "Access secret": "Секретный ключ",
+    "Access secret - Tooltip": "Секретный ключ",
     "Action": "Действие",
     "Action - Tooltip": "Код типа бизнес-действия",
     "Add": "Добавить",
@@ -438,7 +440,6 @@
     "Output price / 1k tokens": "Цена вывода / 1к токенов",
     "Output price / 1k tokens - Tooltip": "Стоимость вывода токенов",
     "Path": "Путь",
-    "Path - Tooltip": "Путь API Baidu Cloud",
     "Presence penalty": "Штраф за повтор",
     "Presence penalty - Tooltip": "Штраф за повтор (-2~2, положительное значение уменьшает повторения)",
     "Provider URL": "URL провайдера",

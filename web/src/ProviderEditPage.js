@@ -68,7 +68,7 @@ class ProviderEditPage extends React.Component {
       if (provider.type === "Tencent Cloud") {
         return Setting.getLabel(i18next.t("general:Secret ID"), i18next.t("general:Secret ID - Tooltip"));
       } else if (provider.type === "Baidu Cloud") {
-        return Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path - Tooltip"));
+        return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
       } else if (provider.type === "Azure") {
         return Setting.getLabel(i18next.t("provider:Deployment name"), i18next.t("provider:Deployment name - Tooltip"));
       } else if (provider.type === "MiniMax") {
@@ -112,9 +112,12 @@ class ProviderEditPage extends React.Component {
 
   getClientSecretLabel(provider) {
     if (["Storage", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(provider.category)) {
+      if (provider.type === "Baidu Cloud") {
+        return Setting.getLabel(i18next.t("general:Access secret"), i18next.t("general:Access secret - Tooltip"));
+      }
       return Setting.getLabel(i18next.t("general:Secret key"), i18next.t("general:Secret key - Tooltip"));
     } else if (provider.category === "Model") {
-      if (provider.type === "Tencent Cloud") {
+      if (provider.type === "Baidu Cloud" || provider.type === "Tencent Cloud") {
         return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
       }
     }
@@ -432,7 +435,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.type === "Baidu Cloud" || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
+          ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
           (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
           (this.state.provider.category === "Blockchain" && this.state.provider.type !== "ChainMaker") ||
           ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
@@ -566,7 +569,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") || (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker")) ? null : (
+          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") || (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker")) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {this.getClientSecretLabel(this.state.provider)} :
