@@ -68,7 +68,7 @@ class ProviderEditPage extends React.Component {
       if (provider.type === "Tencent Cloud") {
         return Setting.getLabel(i18next.t("general:Secret ID"), i18next.t("general:Secret ID - Tooltip"));
       } else if (provider.type === "Baidu Cloud") {
-        return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
+        return Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path - Tooltip"));
       } else if (provider.type === "Azure") {
         return Setting.getLabel(i18next.t("provider:Deployment name"), i18next.t("provider:Deployment name - Tooltip"));
       } else if (provider.type === "MiniMax") {
@@ -112,12 +112,9 @@ class ProviderEditPage extends React.Component {
 
   getClientSecretLabel(provider) {
     if (["Storage", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(provider.category)) {
-      if (provider.type === "Baidu Cloud") {
-        return Setting.getLabel(i18next.t("general:Access secret"), i18next.t("general:Access secret - Tooltip"));
-      }
       return Setting.getLabel(i18next.t("general:Secret key"), i18next.t("general:Secret key - Tooltip"));
     } else if (provider.category === "Model") {
-      if (provider.type === "Baidu Cloud" || provider.type === "Tencent Cloud") {
+      if (provider.type === "Tencent Cloud") {
         return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
       }
     }
@@ -295,7 +292,7 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "MiniMax") {
                   this.updateProviderField("subType", "abab5-chat");
                 } else if (value === "Claude") {
-                  this.updateProviderField("subType", "claude-opus-4-0");
+                  this.updateProviderField("subType", "claude-2");
                 } else if (value === "Hugging Face") {
                   this.updateProviderField("subType", "gpt2");
                 } else if (value === "ChatGLM") {
@@ -332,8 +329,6 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "deepseek-ai/DeepSeek-R1");
                 } else if (value === "GitHub") {
                   this.updateProviderField("subType", "gpt-4o");
-                } else if (value === "Writer") {
-                  this.updateProviderField("subType", "palmyra-x5");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
@@ -435,7 +430,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
+          (this.state.provider.type === "Baidu Cloud" || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
           (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
           (this.state.provider.category === "Blockchain" && this.state.provider.type !== "ChainMaker") ||
           ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
@@ -569,7 +564,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") || (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker")) ? null : (
+          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") || (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker")) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {this.getClientSecretLabel(this.state.provider)} :
@@ -581,36 +576,6 @@ class ProviderEditPage extends React.Component {
               </Col>
             </Row>
           )
-        }
-        {
-          (this.state.provider.category === "Model" && this.state.provider.type === "Claude" && Setting.getThinkingModelMaxTokens(this.state.provider.subType) !== 0) ? (
-            <>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("provider:Enable thinking"), i18next.t("provider:Enable thinking - Tooltip"))} :
-                </Col>
-                <Col span={22} >
-                  <Switch checked={this.state.provider.enableThinking} onChange={checked => {
-                    this.updateProviderField("enableThinking", checked);
-                  }} />
-                </Col>
-              </Row>
-              {
-                this.state.provider.enableThinking && (
-                  <Row style={{marginTop: "20px"}} >
-                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {Setting.getLabel(i18next.t("provider:Thinking tokens"), i18next.t("provider:Thinking tokens - Tooltip"))} :
-                    </Col>
-                    <Col span={22} >
-                      <InputNumber min={1024} max={Setting.getThinkingModelMaxTokens(this.state.provider.subType) - 1} value={this.state.provider.topK || 1024} onChange={value => {
-                        this.updateProviderField("topK", value);
-                      }} />
-                    </Col>
-                  </Row>
-                )
-              }
-            </>
-          ) : null
         }
         {
           !["Agent"].includes(this.state.provider.category) ? null : (
@@ -845,7 +810,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama", "Writer"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -853,7 +818,7 @@ class ProviderEditPage extends React.Component {
                 </Col>
                 <this.InputSlider
                   min={0}
-                  max={["Alibaba Cloud", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Ollama", "Writer"].includes(this.state.provider.type) ? 2 : 1}
+                  max={["Alibaba Cloud", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Ollama"].includes(this.state.provider.type) ? 2 : 1}
                   step={0.01}
                   value={this.state.provider.temperature}
                   onChange={(value) => {
@@ -866,7 +831,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Baidu Cloud", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama", "Writer"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Baidu Cloud", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>

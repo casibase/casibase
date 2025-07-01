@@ -21,7 +21,7 @@ import xlsx from "xlsx";
 import FileSaver from "file-saver";
 import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
-import {DisablePreviewMode, StaticBaseUrl, ThemeDefault} from "./Conf";
+import {DisablePreviewMode, ThemeDefault} from "./Conf";
 import Identicon from "identicon.js";
 import md5 from "md5";
 import React from "react";
@@ -82,7 +82,7 @@ export function getMyProfileUrl(account) {
 
 export function getUserAvatar(message, account) {
   if (message.author === "AI") {
-    return getDefaultAiAvatar();
+    return AiAvatar;
   }
 
   // If account exists and has an avatar, construct URL for other users
@@ -629,9 +629,9 @@ export function submitStoreEdit(storeObj) {
     });
 }
 
-export function getDefaultAiAvatar() {
-  return `${StaticBaseUrl}/img/casibase.png`;
-}
+export const StaticBaseUrl = "https://cdn.casibase.org";
+
+export const AiAvatar = `${StaticBaseUrl}/img/casibase.png`;
 
 export const Countries = [{label: "English", key: "en", country: "US", alt: "English"},
   {label: "中文", key: "zh", country: "CN", alt: "中文"},
@@ -644,320 +644,312 @@ export const Countries = [{label: "English", key: "en", country: "US", alt: "Eng
   {label: "Русский", key: "ru", country: "RU", alt: "Русский"},
 ];
 
-export function getOtherProviderInfo() {
-  const res = {
-    Model: {
-      "OpenAI": {
-        logo: `${StaticBaseUrl}/img/social_openai.svg`,
-        url: "https://platform.openai.com",
-      },
-      "Gemini": {
-        logo: `${StaticBaseUrl}/img/social_gemini.png`,
-        url: "https://gemini.google.com/",
-      },
-      "Hugging Face": {
-        logo: `${StaticBaseUrl}/img/social_huggingface.png`,
-        url: "https://huggingface.co/",
-      },
-      "Claude": {
-        logo: `${StaticBaseUrl}/img/social_claude.png`,
-        url: "https://www.anthropic.com/claude",
-      },
-      "Grok": {
-        logo: `${StaticBaseUrl}/img/social_xai.png`,
-        url: "https://x.ai/",
-      },
-      "OpenRouter": {
-        logo: `${StaticBaseUrl}/img/social_openrouter.png`,
-        url: "https://openrouter.ai/",
-      },
-      "Baidu Cloud": {
-        logo: `${StaticBaseUrl}/img/social_baidu_cloud.png`,
-        url: "https://cloud.baidu.com/",
-      },
-      "iFlytek": {
-        logo: `${StaticBaseUrl}/img/social_iflytek.png`,
-        url: "https://www.iflytek.com/",
-      },
-      "ChatGLM": {
-        logo: `${StaticBaseUrl}/img/social_chatglm.png`,
-        url: "https://chatglm.cn/",
-      },
-      "MiniMax": {
-        logo: `${StaticBaseUrl}/img/social_minimax.png`,
-        url: "https://www.minimax.dev/",
-      },
-      "Ollama": {
-        logo: `${StaticBaseUrl}/img/social_ollama.png`,
-        url: "https://ollama.ai/",
-      },
-      "Local": {
-        logo: `${StaticBaseUrl}/img/social_local.jpg`,
-        url: "",
-      },
-      "Azure": {
-        logo: `${StaticBaseUrl}/img/social_azure.png`,
-        url: "https://azure.microsoft.com/",
-      },
-      "Cohere": {
-        logo: `${StaticBaseUrl}/img/social_cohere.png`,
-        url: "https://cohere.ai/",
-      },
-      "Moonshot": {
-        logo: `${StaticBaseUrl}/img/social_moonshot.png`,
-        url: "https://www.moonshot.cn/",
-      },
-      "Amazon Bedrock": {
-        logo: `${StaticBaseUrl}/img/social_aws.png`,
-        url: "https://aws.amazon.com/bedrock/",
-      },
-      "Dummy": {
-        logo: `${StaticBaseUrl}/img/social_default.png`,
-        url: "",
-      },
-      "Alibaba Cloud": {
-        logo: `${StaticBaseUrl}/img/social_aliyun.png`,
-        url: "https://www.alibabacloud.com/",
-      },
-      "Baichuan": {
-        logo: `${StaticBaseUrl}/img/social_baichuan-color.png`,
-        url: "https://www.baichuan-ai.com/",
-      },
-      "Volcano Engine": {
-        logo: `${StaticBaseUrl}/img/social_volc_engine.jpg`,
-        url: "https://www.volcengine.com/",
-      },
-      "DeepSeek": {
-        logo: `${StaticBaseUrl}/img/social_deepseek.png`,
-        url: "https://www.deepseek.com/",
-      },
-      "StepFun": {
-        logo: `${StaticBaseUrl}/img/social_stepfun.png`,
-        url: "https://www.stepfun.com/",
-      },
-      "Tencent Cloud": {
-        logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
-        url: "https://cloud.tencent.com/",
-      },
-      "Yi": {
-        logo: `${StaticBaseUrl}/img/social_yi.png`,
-        url: "https://01.ai/",
-      },
-      "Silicon Flow": {
-        logo: `${StaticBaseUrl}/img/social_silicon_flow.png`,
-        url: "https://www.siliconflow.com/",
-      },
-      "GitHub": {
-        logo: `${StaticBaseUrl}/img/social_github.png`,
-        url: "https://github.com/",
-      },
-      "Writer": {
-        logo: `${StaticBaseUrl}/img/social_writer.png`,
-        url: "https://writer.com/",
-      },
+export const OtherProviderInfo = {
+  Model: {
+    "OpenAI": {
+      logo: `${StaticBaseUrl}/img/social_openai.svg`,
+      url: "https://platform.openai.com",
     },
-    Embedding: {
-      "OpenAI": {
-        logo: `${StaticBaseUrl}/img/social_openai.svg`,
-        url: "https://platform.openai.com",
-      },
-      "Gemini": {
-        logo: `${StaticBaseUrl}/img/social_gemini.png`,
-        url: "https://gemini.google.com/",
-      },
-      "Hugging Face": {
-        logo: `${StaticBaseUrl}/img/social_huggingface.png`,
-        url: "https://huggingface.co/",
-      },
-      "Cohere": {
-        logo: `${StaticBaseUrl}/img/social_cohere.png`,
-        url: "https://cohere.ai/",
-      },
-      "Baidu Cloud": {
-        logo: `${StaticBaseUrl}/img/social_baidu_cloud.png`,
-        url: "https://cloud.baidu.com/",
-      },
-      "Ollama": {
-        logo: `${StaticBaseUrl}/img/social_ollama.png`,
-        url: "https://ollama.ai/",
-      },
-      "Local": {
-        logo: `${StaticBaseUrl}/img/social_local.jpg`,
-        url: "",
-      },
-      "Azure": {
-        logo: `${StaticBaseUrl}/img/social_azure.png`,
-        url: "https://azure.microsoft.com/",
-      },
-      "MiniMax": {
-        logo: `${StaticBaseUrl}/img/social_minimax.png`,
-        url: "https://www.minimax.dev/",
-      },
-      "Alibaba Cloud": {
-        logo: `${StaticBaseUrl}/img/social_aliyun.png`,
-        url: "https://www.alibabacloud.com/",
-      },
-      "Tencent Cloud": {
-        logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
-        url: "https://cloud.tencent.com/",
-      },
-      "Jina": {
-        logo: `${StaticBaseUrl}/img/social_jina.png`,
-        url: "https://jina.ai/",
-      },
-      "Word2Vec": {
-        logo: `${StaticBaseUrl}/img/social_local.jpg`,
-        url: "",
-      },
-      "Dummy": {
-        logo: `${StaticBaseUrl}/img/social_default.png`,
-        url: "",
-      },
+    "Gemini": {
+      logo: `${StaticBaseUrl}/img/social_gemini.png`,
+      url: "https://gemini.google.com/",
     },
-    Storage: {
-      "Local File System": {
-        logo: `${StaticBaseUrl}/img/social_file.png`,
-        url: "",
-      },
-      "AWS S3": {
-        logo: `${StaticBaseUrl}/img/social_aws.png`,
-        url: "https://aws.amazon.com/s3",
-      },
-      "MinIO": {
-        logo: "https://min.io/resources/img/logo.svg",
-        url: "https://min.io/",
-      },
-      "Aliyun OSS": {
-        logo: `${StaticBaseUrl}/img/social_aliyun.png`,
-        url: "https://aliyun.com/product/oss",
-      },
-      "Tencent Cloud COS": {
-        logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
-        url: "https://cloud.tencent.com/product/cos",
-      },
-      "Azure Blob": {
-        logo: `${StaticBaseUrl}/img/social_azure.png`,
-        url: "https://azure.microsoft.com/en-us/services/storage/blobs/",
-      },
-      "Qiniu Cloud Kodo": {
-        logo: `${StaticBaseUrl}/img/social_qiniu_cloud.png`,
-        url: "https://www.qiniu.com/solutions/storage",
-      },
-      "Google Cloud Storage": {
-        logo: `${StaticBaseUrl}/img/social_google_cloud.png`,
-        url: "https://cloud.google.com/storage",
-      },
-      "Synology": {
-        logo: `${StaticBaseUrl}/img/social_synology.png`,
-        url: "https://www.synology.com/en-global/dsm/feature/file_sharing",
-      },
-      "Casdoor": {
-        logo: `${StaticBaseUrl}/img/casdoor.png`,
-        url: "https://casdoor.org/docs/provider/storage/overview",
-      },
-      "CUCloud OSS": {
-        logo: `${StaticBaseUrl}/img/social_cucloud.png`,
-        url: "https://www.cucloud.cn/product/oss.html",
-      },
+    "Hugging Face": {
+      logo: `${StaticBaseUrl}/img/social_huggingface.png`,
+      url: "https://huggingface.co/",
     },
-    Blockchain: {
-      "Hyperledger Fabric": {
-        logo: `${StaticBaseUrl}/img/social_hyperledger.png`,
-        url: "https://www.hyperledger.org/use/fabric",
-      },
-      "ChainMaker": {
-        logo: `${StaticBaseUrl}/img/social_chainmaker.jpg`,
-        url: "https://chainmaker.org.cn/",
-      },
-      "Tencent ChainMaker": {
-        logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
-        url: "https://cloud.tencent.com/product/tcm",
-      },
-      "Tencent ChainMaker (Demo Network)": {
-        logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
-        url: "https://cloud.tencent.com/product/tcm",
-      },
+    "Claude": {
+      logo: `${StaticBaseUrl}/img/social_claude.png`,
+      url: "https://www.anthropic.com/claude",
     },
-    Video: {
-      "AWS": {
-        logo: `${StaticBaseUrl}/img/social_aws.png`,
-        url: "https://aws.amazon.com/",
-      },
-      "Azure": {
-        logo: `${StaticBaseUrl}/img/social_azure.png`,
-        url: "https://azure.microsoft.com/",
-      },
-      "Alibaba Cloud": {
-        logo: `${StaticBaseUrl}/img/social_aliyun.png`,
-        url: "https://www.alibabacloud.com/",
-      },
+    "Grok": {
+      logo: `${StaticBaseUrl}/img/social_xai.png`,
+      url: "https://x.ai/",
     },
-    Agent: {
-      "MCP": {
-        logo: `${StaticBaseUrl}/img/social_mcp.png`,
-        url: "https://modelcontextprotocol.io/",
-      },
-      "A2A": {
-        logo: `${StaticBaseUrl}/img/social_a2a.png`,
-        url: "https://agent2agent.info/",
-      },
+    "OpenRouter": {
+      logo: `${StaticBaseUrl}/img/social_openrouter.png`,
+      url: "https://openrouter.ai/",
     },
-    "Public Cloud": {
-      "Aliyun": {
-        logo: `${StaticBaseUrl}/img/social_aliyun.png`,
-        url: "https://www.alibabacloud.com/",
-      },
-      "Amazon Web Services": {
-        logo: `${StaticBaseUrl}/img/social_aws.png`,
-        url: "https://aws.amazon.com/",
-      },
-      "Azure": {
-        logo: `${StaticBaseUrl}/img/social_azure.png`,
-        url: "https://azure.microsoft.com/",
-      },
-      "Google Cloud": {
-        logo: `${StaticBaseUrl}/img/social_google_cloud.png`,
-        url: "https://cloud.google.com/",
-      },
-      "Tencent Cloud": {
-        logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
-        url: "https://cloud.tencent.com/",
-      },
+    "Baidu Cloud": {
+      logo: `${StaticBaseUrl}/img/social_baidu_cloud.png`,
+      url: "https://cloud.baidu.com/",
     },
-    "Private Cloud": {
-      "KVM": {
-        logo: `${StaticBaseUrl}/img/social_kvm.png`,
-        url: "https://www.linux-kvm.org/",
-      },
-      "Xen": {
-        logo: `${StaticBaseUrl}/img/social_xen.png`,
-        url: "https://xenproject.org/",
-      },
-      "VMware": {
-        logo: `${StaticBaseUrl}/img/social_vmware.png`,
-        url: "https://www.vmware.com/",
-      },
-      "PVE": {
-        logo: `${StaticBaseUrl}/img/social_pve.png`,
-        url: "https://www.proxmox.com/",
-      },
+    "iFlytek": {
+      logo: `${StaticBaseUrl}/img/social_iflytek.png`,
+      url: "https://www.iflytek.com/",
     },
-    "Text-to-Speech": {
-      "Alibaba Cloud": {
-        logo: `${StaticBaseUrl}/img/social_aliyun.png`,
-        url: "https://www.alibabacloud.com/",
-      },
+    "ChatGLM": {
+      logo: `${StaticBaseUrl}/img/social_chatglm.png`,
+      url: "https://chatglm.cn/",
     },
-    "Speech-to-Text": {
-      "Alibaba Cloud": {
-        logo: `${StaticBaseUrl}/img/social_aliyun.png`,
-        url: "https://www.alibabacloud.com/",
-      },
+    "MiniMax": {
+      logo: `${StaticBaseUrl}/img/social_minimax.png`,
+      url: "https://www.minimax.dev/",
     },
-  };
-
-  return res;
-}
+    "Ollama": {
+      logo: `${StaticBaseUrl}/img/social_ollama.png`,
+      url: "https://ollama.ai/",
+    },
+    "Local": {
+      logo: `${StaticBaseUrl}/img/social_local.jpg`,
+      url: "",
+    },
+    "Azure": {
+      logo: `${StaticBaseUrl}/img/social_azure.png`,
+      url: "https://azure.microsoft.com/",
+    },
+    "Cohere": {
+      logo: `${StaticBaseUrl}/img/social_cohere.png`,
+      url: "https://cohere.ai/",
+    },
+    "Moonshot": {
+      logo: `${StaticBaseUrl}/img/social_moonshot.png`,
+      url: "https://www.moonshot.cn/",
+    },
+    "Amazon Bedrock": {
+      logo: `${StaticBaseUrl}/img/social_aws.png`,
+      url: "https://aws.amazon.com/bedrock/",
+    },
+    "Dummy": {
+      logo: `${StaticBaseUrl}/img/social_default.png`,
+      url: "",
+    },
+    "Alibaba Cloud": {
+      logo: `${StaticBaseUrl}/img/social_aliyun.png`,
+      url: "https://www.alibabacloud.com/",
+    },
+    "Baichuan": {
+      logo: `${StaticBaseUrl}/img/social_baichuan-color.png`,
+      url: "https://www.baichuan-ai.com/",
+    },
+    "Volcano Engine": {
+      logo: `${StaticBaseUrl}/img/social_volc_engine.jpg`,
+      url: "https://www.volcengine.com/",
+    },
+    "DeepSeek": {
+      logo: `${StaticBaseUrl}/img/social_deepseek.png`,
+      url: "https://www.deepseek.com/",
+    },
+    "StepFun": {
+      logo: `${StaticBaseUrl}/img/social_stepfun.png`,
+      url: "https://www.stepfun.com/",
+    },
+    "Tencent Cloud": {
+      logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
+      url: "https://cloud.tencent.com/",
+    },
+    "Yi": {
+      logo: `${StaticBaseUrl}/img/social_yi.png`,
+      url: "https://01.ai/",
+    },
+    "Silicon Flow": {
+      logo: `${StaticBaseUrl}/img/social_silicon_flow.png`,
+      url: "https://www.siliconflow.com/",
+    },
+    "GitHub": {
+      logo: `${StaticBaseUrl}/img/social_github.png`,
+      url: "https://github.com/",
+    },
+  },
+  Embedding: {
+    "OpenAI": {
+      logo: `${StaticBaseUrl}/img/social_openai.svg`,
+      url: "https://platform.openai.com",
+    },
+    "Gemini": {
+      logo: `${StaticBaseUrl}/img/social_gemini.png`,
+      url: "https://gemini.google.com/",
+    },
+    "Hugging Face": {
+      logo: `${StaticBaseUrl}/img/social_huggingface.png`,
+      url: "https://huggingface.co/",
+    },
+    "Cohere": {
+      logo: `${StaticBaseUrl}/img/social_cohere.png`,
+      url: "https://cohere.ai/",
+    },
+    "Baidu Cloud": {
+      logo: `${StaticBaseUrl}/img/social_baidu_cloud.png`,
+      url: "https://cloud.baidu.com/",
+    },
+    "Ollama": {
+      logo: `${StaticBaseUrl}/img/social_ollama.png`,
+      url: "https://ollama.ai/",
+    },
+    "Local": {
+      logo: `${StaticBaseUrl}/img/social_local.jpg`,
+      url: "",
+    },
+    "Azure": {
+      logo: `${StaticBaseUrl}/img/social_azure.png`,
+      url: "https://azure.microsoft.com/",
+    },
+    "MiniMax": {
+      logo: `${StaticBaseUrl}/img/social_minimax.png`,
+      url: "https://www.minimax.dev/",
+    },
+    "Alibaba Cloud": {
+      logo: `${StaticBaseUrl}/img/social_aliyun.png`,
+      url: "https://www.alibabacloud.com/",
+    },
+    "Tencent Cloud": {
+      logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
+      url: "https://cloud.tencent.com/",
+    },
+    "Jina": {
+      logo: `${StaticBaseUrl}/img/social_jina.png`,
+      url: "https://jina.ai/",
+    },
+    "Word2Vec": {
+      logo: `${StaticBaseUrl}/img/social_local.jpg`,
+      url: "",
+    },
+    "Dummy": {
+      logo: `${StaticBaseUrl}/img/social_default.png`,
+      url: "",
+    },
+  },
+  Storage: {
+    "Local File System": {
+      logo: `${StaticBaseUrl}/img/social_file.png`,
+      url: "",
+    },
+    "AWS S3": {
+      logo: `${StaticBaseUrl}/img/social_aws.png`,
+      url: "https://aws.amazon.com/s3",
+    },
+    "MinIO": {
+      logo: "https://min.io/resources/img/logo.svg",
+      url: "https://min.io/",
+    },
+    "Aliyun OSS": {
+      logo: `${StaticBaseUrl}/img/social_aliyun.png`,
+      url: "https://aliyun.com/product/oss",
+    },
+    "Tencent Cloud COS": {
+      logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
+      url: "https://cloud.tencent.com/product/cos",
+    },
+    "Azure Blob": {
+      logo: `${StaticBaseUrl}/img/social_azure.png`,
+      url: "https://azure.microsoft.com/en-us/services/storage/blobs/",
+    },
+    "Qiniu Cloud Kodo": {
+      logo: `${StaticBaseUrl}/img/social_qiniu_cloud.png`,
+      url: "https://www.qiniu.com/solutions/storage",
+    },
+    "Google Cloud Storage": {
+      logo: `${StaticBaseUrl}/img/social_google_cloud.png`,
+      url: "https://cloud.google.com/storage",
+    },
+    "Synology": {
+      logo: `${StaticBaseUrl}/img/social_synology.png`,
+      url: "https://www.synology.com/en-global/dsm/feature/file_sharing",
+    },
+    "Casdoor": {
+      logo: `${StaticBaseUrl}/img/casdoor.png`,
+      url: "https://casdoor.org/docs/provider/storage/overview",
+    },
+    "CUCloud OSS": {
+      logo: `${StaticBaseUrl}/img/social_cucloud.png`,
+      url: "https://www.cucloud.cn/product/oss.html",
+    },
+  },
+  Blockchain: {
+    "Hyperledger Fabric": {
+      logo: `${StaticBaseUrl}/img/social_hyperledger.png`,
+      url: "https://www.hyperledger.org/use/fabric",
+    },
+    "ChainMaker": {
+      logo: `${StaticBaseUrl}/img/social_chainmaker.jpg`,
+      url: "https://chainmaker.org.cn/",
+    },
+    "Tencent ChainMaker": {
+      logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
+      url: "https://cloud.tencent.com/product/tcm",
+    },
+    "Tencent ChainMaker (Demo Network)": {
+      logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
+      url: "https://cloud.tencent.com/product/tcm",
+    },
+  },
+  Video: {
+    "AWS": {
+      logo: `${StaticBaseUrl}/img/social_aws.png`,
+      url: "https://aws.amazon.com/",
+    },
+    "Azure": {
+      logo: `${StaticBaseUrl}/img/social_azure.png`,
+      url: "https://azure.microsoft.com/",
+    },
+    "Alibaba Cloud": {
+      logo: `${StaticBaseUrl}/img/social_aliyun.png`,
+      url: "https://www.alibabacloud.com/",
+    },
+  },
+  Agent: {
+    "MCP": {
+      logo: `${StaticBaseUrl}/img/social_mcp.png`,
+      url: "https://modelcontextprotocol.io/",
+    },
+    "A2A": {
+      logo: `${StaticBaseUrl}/img/social_a2a.png`,
+      url: "https://agent2agent.info/",
+    },
+  },
+  "Public Cloud": {
+    "Aliyun": {
+      logo: `${StaticBaseUrl}/img/social_aliyun.png`,
+      url: "https://www.alibabacloud.com/",
+    },
+    "Amazon Web Services": {
+      logo: `${StaticBaseUrl}/img/social_aws.png`,
+      url: "https://aws.amazon.com/",
+    },
+    "Azure": {
+      logo: `${StaticBaseUrl}/img/social_azure.png`,
+      url: "https://azure.microsoft.com/",
+    },
+    "Google Cloud": {
+      logo: `${StaticBaseUrl}/img/social_google_cloud.png`,
+      url: "https://cloud.google.com/",
+    },
+    "Tencent Cloud": {
+      logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
+      url: "https://cloud.tencent.com/",
+    },
+  },
+  "Private Cloud": {
+    "KVM": {
+      logo: `${StaticBaseUrl}/img/social_kvm.png`,
+      url: "https://www.linux-kvm.org/",
+    },
+    "Xen": {
+      logo: `${StaticBaseUrl}/img/social_xen.png`,
+      url: "https://xenproject.org/",
+    },
+    "VMware": {
+      logo: `${StaticBaseUrl}/img/social_vmware.png`,
+      url: "https://www.vmware.com/",
+    },
+    "PVE": {
+      logo: `${StaticBaseUrl}/img/social_pve.png`,
+      url: "https://www.proxmox.com/",
+    },
+  },
+  "Text-to-Speech": {
+    "Alibaba Cloud": {
+      logo: `${StaticBaseUrl}/img/social_aliyun.png`,
+      url: "https://www.alibabacloud.com/",
+    },
+  },
+  "Speech-to-Text": {
+    "Alibaba Cloud": {
+      logo: `${StaticBaseUrl}/img/social_aliyun.png`,
+      url: "https://www.alibabacloud.com/",
+    },
+  },
+};
 
 export function getItem(label, key, icon, children, type) {
   return {
@@ -1035,12 +1027,11 @@ export function getCompitableProviderOptions(category) {
 }
 
 export function getProviderLogoURL(provider) {
-  const otherProviderInfo = getOtherProviderInfo();
-  if (!provider || !otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {
+  if (!provider || !OtherProviderInfo[provider.category] || !OtherProviderInfo[provider.category][provider.type]) {
     return "";
   }
 
-  return otherProviderInfo[provider.category][provider.type].logo;
+  return OtherProviderInfo[provider.category][provider.type].logo;
 }
 
 export function getProviderTypeOptions(category) {
@@ -1079,7 +1070,6 @@ export function getProviderTypeOptions(category) {
         {id: "Yi", name: "Yi"},
         {id: "Silicon Flow", name: "Silicon Flow"},
         {id: "GitHub", name: "GitHub"},
-        {id: "Writer", name: "Writer"},
       ]
     );
   } else if (category === "Embedding") {
@@ -1299,23 +1289,13 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "Claude") {
     return [
-      {id: "claude-opus-4-0", name: "claude-opus-4-0"},
-      {id: "claude-opus-4-20250514", name: "claude-opus-4-20250514"},
-      {id: "claude-4-opus-20250514", name: "claude-4-opus-20250514"},
-      {id: "claude-sonnet-4-0", name: "claude-sonnet-4-0"},
-      {id: "claude-sonnet-4-20250514", name: "claude-sonnet-4-20250514"},
-      {id: "claude-4-sonnet-20250514", name: "claude-4-sonnet-20250514"},
-      {id: "claude-3-7-sonnet-latest", name: "claude-3-7-sonnet-latest"},
-      {id: "claude-3-7-sonnet-20250219", name: "claude-3-7-sonnet-20250219"},
-      {id: "claude-3-5-haiku-latest", name: "claude-3-5-haiku-latest"},
-      {id: "claude-3-5-haiku-20241022", name: "claude-3-5-haiku-20241022"},
-      {id: "claude-3-5-sonnet-latest", name: "claude-3-5-sonnet-latest"},
-      {id: "claude-3-5-sonnet-20241022", name: "claude-3-5-sonnet-20241022"},
-      {id: "claude-3-5-sonnet-20240620", name: "claude-3-5-sonnet-20240620"},
-      {id: "claude-3-opus-latest", name: "claude-3-opus-latest"},
-      {id: "claude-3-opus-20240229", name: "claude-3-opus-20240229"},
+      {id: "claude-2.0", name: "claude-2.0"},
+      {id: "claude-2.1", name: "claude-2.1"},
+      {id: "claude-instant-1.2", name: "claude-instant-1.2"},
       {id: "claude-3-sonnet-20240229", name: "claude-3-sonnet-20240229"},
+      {id: "claude-3-opus-20240229", name: "claude-3-opus-20240229"},
       {id: "claude-3-haiku-20240307", name: "claude-3-haiku-20240307"},
+      {id: "claude-3-7-sonnet-20250219", name: "claude-3-7-sonnet-20250219"},
     ];
   } else if (type === "OpenRouter") {
     return [
@@ -1421,6 +1401,7 @@ export function getModelSubTypeOptions(type) {
       {id: "moonshot-v1-8k", name: "moonshot-v1-8k"},
       {id: "moonshot-v1-32k", name: "moonshot-v1-32k"},
       {id: "moonshot-v1-128k", name: "moonshot-v1-128k"},
+      {id: "kimi-thinking-preview", name: "kimi-thinking-preview"},
     ];
   } else if (type === "Amazon Bedrock") {
     return [
@@ -1597,14 +1578,6 @@ export function getModelSubTypeOptions(type) {
       {id: "grok-2-vision-latest", name: "grok-2-vision-latest"},
       {id: "grok-2-latest", name: "grok-2-latest"},
       {id: "grok-2-image-latest", name: "grok-2-image-latest"},
-    ];
-  } else if (type === "Writer") {
-    return [
-      {id: "palmyra-x5", name: "Palmyra X5"},
-      {id: "palmyra-x4", name: "Palmyra X4"},
-      {id: "palmyra-med", name: "Palmyra Med"},
-      {id: "palmyra-fin", name: "Palmyra Fin"},
-      {id: "palmyra-creative", name: "Palmyra Creative"},
     ];
   } else if (type === "Dummy") {
     return [
@@ -2025,19 +1998,4 @@ export function formatJsonString(s) {
   } catch (error) {
     return s;
   }
-}
-
-export function getThinkingModelMaxTokens(subType) {
-  if (subType.includes("claude")) {
-    if (subType.includes("4")) {
-      if (subType.includes("sonnet")) {
-        return 64000;
-      } else if (subType.includes("opus")) {
-        return 32000;
-      }
-    } else if (subType.includes("3-7") || subType.includes("sonnet")) {
-      return 64000;
-    }
-  }
-  return 0;
 }

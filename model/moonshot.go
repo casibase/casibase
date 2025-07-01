@@ -46,11 +46,12 @@ func (p *MoonshotModelProvider) GetPricing() string {
 
 Model
 
-| Model           | Unit Of Charge | Price  |
-|-----------------|----------------|--------|
-| moonshot-v1-8k  | 1M tokens      | 12yuan |
-| moonshot-v1-32k | 1M tokens      | 24yuan |
-| moonshot-v1-128k| 1M tokens      | 60yuan |
+| Model                 | Unit Of Charge | Price  |
+|-----------------------|----------------|--------|
+| moonshot-v1-8k        | 1M tokens      | 12yuan |
+| moonshot-v1-32k       | 1M tokens      | 24yuan |
+| moonshot-v1-128k      | 1M tokens      | 60yuan |
+| kimi-thinking-preview | 1M tokens      | 400yuan |
 `
 }
 
@@ -63,6 +64,8 @@ func (p *MoonshotModelProvider) calculatePrice(modelResult *ModelResult) error {
 		price = getPrice(modelResult.TotalTokenCount, 0.024)
 	case "moonshot-v1-128k":
 		price = getPrice(modelResult.TotalTokenCount, 0.06)
+	case "kimi-thinking-preview":
+		price = getPrice(modelResult.TotalTokenCount, 0.4)
 	default:
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}
