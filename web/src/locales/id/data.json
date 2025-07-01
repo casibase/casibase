@@ -95,6 +95,8 @@
   },
   "general": {
     "AI Setting": "Pengaturan AI",
+    "Access secret": "Kunci akses",
+    "Access secret - Tooltip": "Kunci akses",
     "Action": "Aksi",
     "Action - Tooltip": "Kode tipe aksi bisnis",
     "Add": "Tambahkan",
@@ -438,7 +440,6 @@
     "Output price / 1k tokens": "Harga output / 1k token",
     "Output price / 1k tokens - Tooltip": "Biaya token output",
     "Path": "Path",
-    "Path - Tooltip": "Path API Baidu Cloud",
     "Presence penalty": "Penyidikan keberadaan",
     "Presence penalty - Tooltip": "Penyidikan pengulangan (-2~2, nilai positif mengurangi pengulangan)",
     "Provider URL": "URL penyedia",

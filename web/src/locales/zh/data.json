@@ -95,6 +95,8 @@
   },
   "general": {
     "AI Setting": "AI设置",
+    "Access secret": "访问密钥",
+    "Access secret - Tooltip": "访问密钥",
     "Action": "操作",
     "Action - Tooltip": "业务操作类型代码",
     "Add": "添加",
@@ -438,7 +440,6 @@
     "Output price / 1k tokens": "输出价格 / 千tokens",
     "Output price / 1k tokens - Tooltip": "输出token成本",
     "Path": "路径",
-    "Path - Tooltip": "百度云API路径",
     "Presence penalty": "重复惩罚",
     "Presence penalty - Tooltip": "重复惩罚（-2~2，正值减少重复）",
     "Provider URL": "提供商URL",

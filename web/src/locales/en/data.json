@@ -95,6 +95,8 @@
   },
   "general": {
     "AI Setting": "AI Setting",
+    "Access secret": "Access secret",
+    "Access secret - Tooltip": "Access secret - Tooltip",
     "Action": "Action",
     "Action - Tooltip": "Business action code",
     "Add": "Add",
@@ -438,7 +440,6 @@
     "Output price / 1k tokens": "Output price / 1k tokens",
     "Output price / 1k tokens - Tooltip": "Cost per 1k output tokens",
     "Path": "Path",
-    "Path - Tooltip": "Baidu Cloud API endpoint path",
     "Presence penalty": "Presence penalty",
     "Presence penalty - Tooltip": "Penalize repeated phrases",
     "Provider URL": "Provider URL",

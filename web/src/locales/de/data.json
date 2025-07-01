@@ -95,6 +95,8 @@
   },
   "general": {
     "AI Setting": "KI-Einstellung",
+    "Access secret": "Access secret",
+    "Access secret - Tooltip": "Access secret - Tooltip",
     "Action": "Aktion",
     "Action - Tooltip": " Geschäftsaktionscode",
     "Add": "Hinzufügen",
@@ -438,7 +440,6 @@
     "Output price / 1k tokens": "Ausgabepreis / 1k Token",
     "Output price / 1k tokens - Tooltip": "Ausgabe-Token-Kosten",
     "Path": "Pfad",
-    "Path - Tooltip": "Baidu Cloud-API-Pfad",
     "Presence penalty": "Wiederholungsstraf",
     "Presence penalty - Tooltip": "Wiederholungsstraf (-2~2, positive Werte reduzieren Wiederholungen)",
     "Provider URL": "Anbieter-URL",
