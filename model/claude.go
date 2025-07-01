@@ -109,13 +109,31 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 
 	maxTokens := getContextLength(p.subType)
 
+	var textBlockList []anthropic.TextBlockParam
+	textBlockList = append(textBlockList, anthropic.TextBlockParam{
+		Text: prompt,
+		Type: "text",
+	})
+	for _, knowledgeMessage := range knowledgeMessages {
+		textBlockList = append(textBlockList, anthropic.TextBlockParam{
+			Text: knowledgeMessage.Text,
+			Type: "text",
+		})
+	}
+
+	messages := []anthropic.MessageParam{}
+	for i := len(history) - 1; i >= 0; i-- {
+		historyMessage := history[i]
+		messages = append(messages, anthropic.NewAssistantMessage(anthropic.NewTextBlock(historyMessage.Text)))
+	}
+	messages = append(messages, anthropic.NewUserMessage(anthropic.NewTextBlock(question)))
+
 	messageParams := anthropic.MessageNewParams{
-		MaxTokens: int64(maxTokens),
-		Messages: []anthropic.MessageParam{
-			anthropic.NewUserMessage(anthropic.NewTextBlock(question)),
-		},
+		MaxTokens:     int64(maxTokens),
+		Messages:      messages,
 		Model:         anthropic.Model(p.subType),
 		StopSequences: []string{"```\n"},
+		System:        textBlockList,
 	}
 	if p.enableThinking {
 		messageParams.Thinking = anthropic.ThinkingConfigParamUnion{
