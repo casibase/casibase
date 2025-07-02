@@ -218,6 +218,7 @@ class ChatPage extends BaseListPage {
       name: `message_${randomName}`,
       createdTime: moment().format(),
       organization: this.props.account.owner,
+      store: this.state.chat?.store,
       user: this.props.account.name,
       chat: this.state.chat?.name,
       replyTo: "",

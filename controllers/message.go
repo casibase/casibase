@@ -303,6 +303,7 @@ func (c *ApiController) AddMessage() {
 				Name:          fmt.Sprintf("message_%s", util.GetRandomName()),
 				CreatedTime:   util.GetCurrentTimeEx(message.CreatedTime),
 				Organization:  message.Organization,
+				Store:         chat.Store,
 				User:          message.User,
 				Chat:          message.Chat,
 				ReplyTo:       message.Name,

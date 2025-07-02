@@ -296,6 +296,7 @@ class ChatBox extends React.Component {
     const editedMessage = {
       ...message,
       createdTime: moment().format(),
+      store: this.props.store?.name,
     };
     MessageBackend.addMessage(editedMessage)
       .then((res) => {
