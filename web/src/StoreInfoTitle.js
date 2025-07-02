@@ -21,8 +21,7 @@ import * as ChatBackend from "./backend/ChatBackend";
 import i18next from "i18next";
 
 const StoreInfoTitle = (props) => {
-  const {chat, stores, onChatUpdated,
-    onStoreChange, autoRead, onUpdateAutoRead, account, paneCount = 1, onPaneCountChange, showPaneControls = false} = props;
+  const {chat, stores, onChatUpdated, onStoreChange, autoRead, onUpdateAutoRead, account, paneCount = 1, onPaneCountChange, showPaneControls = false} = props;
 
   const [modelProviders, setModelProviders] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
