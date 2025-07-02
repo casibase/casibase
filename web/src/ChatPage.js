@@ -683,6 +683,8 @@ class ChatPage extends BaseListPage {
       this.updateChatName(chats, i, chat, newName);
     };
 
+    const currentStoreName = this.getStore();
+
     if (this.state.loading) {
       return (
         <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
@@ -702,7 +704,7 @@ class ChatPage extends BaseListPage {
         {
           !(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && !this.state.chatMenuCollapsed && (
             <div style={{width: "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
-              <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores} />
+              <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores} currentStoreName={currentStoreName} />
             </div>
           )
         }
