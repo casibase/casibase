@@ -137,8 +137,8 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 
 	modelProviderName := store.ModelProvider
-	if message.ModelProvider != "" {
-		modelProviderName = message.ModelProvider
+	if chat.ModelProvider != "" {
+		modelProviderName = chat.ModelProvider
 	}
 
 	modelProvider, modelProviderObj, err := object.GetModelProviderFromContext("admin", modelProviderName)

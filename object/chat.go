@@ -30,6 +30,7 @@ type Chat struct {
 	Organization  string   `xorm:"varchar(100)" json:"organization"`
 	DisplayName   string   `xorm:"varchar(100)" json:"displayName"`
 	Store         string   `xorm:"varchar(100)" json:"store"`
+	ModelProvider string   `xorm:"varchar(100)" json:"modelProvider"`
 	Category      string   `xorm:"varchar(100)" json:"category"`
 	Type          string   `xorm:"varchar(100)" json:"type"`
 	User          string   `xorm:"varchar(100) index" json:"user"`
