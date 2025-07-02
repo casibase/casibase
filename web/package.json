@@ -25,7 +25,6 @@
     "echarts": "^5.4.2",
     "echarts-for-react": "^3.0.2",
     "echarts-wordcloud": "^2.1.0",
-    "eslint-plugin-unused-imports": "^2.0.0",
     "file-saver": "^2.0.2",
     "guacamole-common-js": "^1.5.0",
     "highlight.js": "^11.9.0",
@@ -63,14 +62,7 @@
     "test": "craco test",
     "eject": "craco eject",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "preinstall": "node -e \"if (process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('Use yarn for installing: https://yarnpkg.com/en/docs/install')\"",
-    "fix": "eslint --fix src/ --ext .js",
-    "lint:js": "eslint --fix src/ --ext .js",
-    "lint:css": "stylelint src/**/*.{css,less} --fix",
-    "lint": "yarn lint:js && yarn lint:css"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "preinstall": "node -e \"if (process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('Use yarn for installing: https://yarnpkg.com/en/docs/install')\""
   },
   "browserslist": {
     "production": [
@@ -88,25 +80,13 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
-    "@babel/eslint-parser": "^7.18.9",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-react": "^7.18.6",
     "cross-env": "^7.0.3",
-    "eslint": "8.22.0",
-    "eslint-plugin-react": "^7.31.1",
-    "husky": "^4.3.8",
     "lint-staged": "^13.0.3",
     "stylelint": "^14.11.0",
     "stylelint-config-recommended-less": "^1.0.4",
     "stylelint-config-standard": "^28.0.0"
-  },
-  "lint-staged": {
-    "src/**/*.{css,less}": [
-      "stylelint --fix"
-    ],
-    "src/**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix"
-    ]
   },
   "husky": {
     "hooks": {
