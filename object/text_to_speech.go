@@ -33,6 +33,7 @@ func addProviderMessage(providerId, text string) (*Message, *Chat, *Provider, er
 		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
 		CreatedTime:  util.GetCurrentTimeEx(chat.CreatedTime),
 		Organization: chat.Organization,
+		Store:        chat.Store,
 		User:         "admin",
 		Chat:         chat.Name,
 		ReplyTo:      "",
