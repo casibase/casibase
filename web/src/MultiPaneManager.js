@@ -333,6 +333,7 @@ const MultiPaneManager = ({
       createdTime: moment().format(),
       organization: account.owner,
       user: account.name,
+      store: chat.store,
       chat: chat.name,
       replyTo: "",
       author: account.name,
