@@ -93,6 +93,7 @@ class App extends Component {
       themeData: Conf.ThemeDefault,
       menuVisible: false,
       forms: [],
+      themeLoaded: false,
     };
     this.initConfig();
   }
@@ -110,8 +111,11 @@ class App extends Component {
   UNSAFE_componentWillMount() {
     this.updateMenuKey();
     this.getAccount();
-    this.setTheme();
     this.getForms();
+  }
+
+  componentDidMount() {
+    this.setTheme();
   }
 
   setTheme() {
@@ -123,6 +127,7 @@ class App extends Component {
         Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
       }
+      this.setState({themeLoaded: true});
     });
   }
 
@@ -824,6 +829,9 @@ class App extends Component {
   }
 
   render() {
+    if (!this.state.themeLoaded) {
+      return null;
+    }
     return (
       <React.Fragment>
         <Helmet>
