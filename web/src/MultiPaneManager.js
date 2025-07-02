@@ -90,6 +90,7 @@ const MultiPaneManager = ({
       userAgent: account.education,
       messageCount: 0,
       needTitle: true,
+      modelProvider: baseChat?.modelProvider || selectStore?.modelProvider || null,
     };
   }, [account]);
 
@@ -239,7 +240,6 @@ const MultiPaneManager = ({
         store: originalStore,
         chat: null,
         messages: null,
-        provider: originalStore?.modelProvider || null,
       };
 
       // Keep existing pane data if not a new chat
@@ -256,7 +256,7 @@ const MultiPaneManager = ({
         paneData.chat = panes[i].chat;
       } else {
         // Create new chat for additional panes
-        const chat = createNewChat(initialChat, {name: originalStore?.name});
+        const chat = createNewChat(initialChat, {name: originalStore?.name, modelProvider: originalStore?.modelProvider});
         paneData.chat = chat;
         chatsToAdd.push(chat);
       }
@@ -307,15 +307,24 @@ const MultiPaneManager = ({
     }
   }, [panes, onChatUpdate]);
 
-  const updatePaneProvider = useCallback((paneIndex, provider) => {
-    setPanes(prev => prev.map((pane, i) =>
-      i === paneIndex ? {...pane, provider} : pane
-    ));
-  }, []);
+  const updatePaneProvider = useCallback((paneIndex, providerName) => {
+    const currentChat = panes[paneIndex]?.chat;
+    if (currentChat && currentChat.modelProvider !== providerName) {
+      const updatedChat = {...currentChat, modelProvider: providerName};
+      setPanes(prev => prev.map((pane, i) =>
+        i === paneIndex ? {...pane, chat: updatedChat} : pane
+      ));
+
+      if (paneIndex === 0) {onChatUpdate?.(updatedChat);}
+
+      ChatBackend.updateChat(updatedChat.owner, updatedChat.name, updatedChat).catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
+      });
+    }
+  }, [panes, onChatUpdate]);
 
   const sendMessage = useCallback((paneIndex, text, fileName, isHidden, isRegenerated) => {
     const chat = panes[paneIndex]?.chat;
-    const modelProvider = panes[paneIndex]?.provider;
     if (!chat) {return;}
 
     const newMessage = {
@@ -333,7 +342,6 @@ const MultiPaneManager = ({
       isAlerted: false,
       isRegenerated,
       fileName,
-      modelProvider: modelProvider,
     };
 
     MessageBackend.addMessage(newMessage).then((res) => {
@@ -378,7 +386,7 @@ const MultiPaneManager = ({
 
         {modelProviders.length > 0 && (
           <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
-            <Select size="small" style={{minWidth: "120px"}} value={panes[index]?.provider || modelProviders[0]?.name || ""} onChange={(value) => updatePaneProvider(index, value)} placeholder="Select model" optionLabelProp="children">
+            <Select size="small" style={{minWidth: "120px"}} value={panes[index]?.chat?.modelProvider || panes[index]?.store?.modelProvider || modelProviders[0]?.name || ""} onChange={(value) => updatePaneProvider(index, value)} placeholder="Select model" optionLabelProp="children">
               {modelProviders.map(provider => (
                 <Select.Option key={provider.name} value={provider.name}>
                   <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
