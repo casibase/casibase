@@ -16,6 +16,9 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
+
+	"github.com/casibase/casibase/conf"
 
 	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
@@ -141,6 +144,21 @@ func (c *ApiController) UpdateChat() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	if conf.IsDemoMode() {
+		originalChat, err := object.GetChat(id)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		if originalChat == nil {
+			c.ResponseError(fmt.Sprintf("The chat: %s is not found", id))
+			return
+		}
+
+		originalChat.ModelProvider = chat.ModelProvider
+		chat = *originalChat
 	}
 
 	success, err := object.UpdateChat(id, &chat)
