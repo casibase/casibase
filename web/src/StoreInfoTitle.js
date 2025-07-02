@@ -138,7 +138,7 @@ const StoreInfoTitle = (props) => {
 
       // Update provider in chat (not in store!)
       if (newProvider !== undefined && newProvider !== updatedChat.modelProvider) {
-        updatedChat.modelProvider = newProvider; // 保存到 chat 中
+        updatedChat.modelProvider = newProvider;
         providerChanged = true;
       }
 
@@ -159,6 +159,7 @@ const StoreInfoTitle = (props) => {
         chatRef.current = updatedChat;
         if (newProvider !== undefined) {
           providerRef.current = newProvider;
+          setSelectedProvider(newProvider); // Sync UI state after successful update
         }
       }
     } catch (error) {
@@ -200,8 +201,6 @@ const StoreInfoTitle = (props) => {
     // Find the provider object
     const newProvider = modelProviders.find(provider => provider.name === value);
     if (newProvider && storeInfo) {
-      // Update local state immediately for UI responsiveness
-      setSelectedProvider(newProvider.name);
 
       // Trigger the combined update
       updateStoreAndChat(null, newProvider.name);
@@ -258,7 +257,7 @@ const StoreInfoTitle = (props) => {
         {modelProviders.length > 0 && (
           <div>
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Model")}:</span>}
-            <Select value={chat?.modelProvider || selectedProvider || storeInfo?.modelProvider || (modelProviders[0]?.name)} style={{width: isMobile ? "35vw" : "15rem"}} onChange={handleProviderChange} disabled={isUpdating} popupMatchSelectWidth={false} optionLabelProp="children" suffixIcon={<div />}>
+            <Select value={selectedProvider || chat?.modelProvider || storeInfo?.modelProvider || (modelProviders[0]?.name)} style={{width: isMobile ? "35vw" : "15rem"}} onChange={handleProviderChange} disabled={isUpdating} popupMatchSelectWidth={false} optionLabelProp="children" suffixIcon={<div />}>
               {modelProviders.map(provider => {
                 const displayName = provider.displayName || provider.name;
                 return (
