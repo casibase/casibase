@@ -217,7 +217,7 @@ class ChatMenu extends React.Component {
     }
   };
 
-  renderAddChatButton(stores = []) {
+  renderAddChatButton(stores = [], currentStoreName = null) {
     if (!stores) {
       stores = [];
     }
@@ -225,7 +225,13 @@ class ChatMenu extends React.Component {
     const defaultStore = stores.find(store => store.isDefault);
     let hasChildStores = false;
 
-    if (defaultStore) {
+    if (currentStoreName) {
+      const currentStore = stores.find(store => store.name === currentStoreName);
+      if (currentStore) {
+        stores = [];
+        hasChildStores = false;
+      }
+    } else if (defaultStore) {
       if (!defaultStore.childStores || defaultStore.childStores.length === 0) {
         stores = [];
       } else {
@@ -276,7 +282,10 @@ class ChatMenu extends React.Component {
             e.currentTarget.style.opacity = 0.6;
           }}
           onClick={() => {
-            if (!hasChildStores) {
+            if (currentStoreName) {
+              const currentStore = this.props.stores.find(store => store.name === currentStoreName);
+              this.props.onAddChat(currentStore);
+            } else if (!hasChildStores) {
               this.props.onAddChat(defaultStore);
             }
           }}
@@ -298,11 +307,11 @@ class ChatMenu extends React.Component {
   }
 
   render() {
-    const items = this.chatsToItems(this.props.chats);
+    const items = this.chatsToItems(this.props.chats, this.props.currentStoreName);
 
     return (
       <div>
-        {this.renderAddChatButton(this.props.stores)}
+        {this.renderAddChatButton(this.props.stores, this.props.currentStoreName)}
         <div style={{marginRight: "4px"}}>
           <Menu
             style={{maxHeight: "calc(100vh - 140px - 40px - 8px)", overflowY: "auto"}}
