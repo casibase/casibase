@@ -589,6 +589,13 @@ class ChatPage extends BaseListPage {
     return this.state.data.filter(chat => chat.name === this.state.chat?.name)[0];
   }
 
+  handleChatUpdate = (updatedChat) => {
+    this.setState(prevState => ({
+      data: prevState.data.map(c => (c.name === updatedChat.name ? updatedChat : c)),
+      chat: updatedChat,
+    }));
+  };
+
   renderModal() {
     if (Conf.IframeUrl === "" || this.state.messages === null) {
       return null;
@@ -726,7 +733,7 @@ class ChatPage extends BaseListPage {
                 <Button type="text" icon={this.state.chatMenuCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={this.toggleChatMenuCollapse} style={{marginRight: "8px"}} />
               )}
               <div style={{flex: 1}}>
-                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} onStoreChange={this.updateStoreAndUrl} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} />
+                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} onChatUpdated={this.handleChatUpdate} onStoreChange={this.updateStoreAndUrl} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} />
               </div>
             </div>
           )}
