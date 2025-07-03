@@ -505,7 +505,7 @@ class App extends Component {
       }
     } else {
       const textColor = "black";
-      const twoToneColor = "rgb(89,54,213)";
+      const twoToneColor = this.state.themeData.colorPrimary;
 
       res.pop();
 
