@@ -665,7 +665,7 @@ class UsagePage extends BaseListPage {
                 }}
                 showLoading={this.state.usages === null}
                 loadingOption={{
-                  color: "#4b0082",
+                  color: localStorage.getItem("themeColor"),
                   textColor: "#000",
                   maskColor: "rgba(255, 255, 255, 0.8)",
                   fontSize: "16px",
@@ -687,7 +687,7 @@ class UsagePage extends BaseListPage {
                 }}
                 showLoading={this.state.usages === null}
                 loadingOption={{
-                  color: "#4b0082",
+                  color: localStorage.getItem("themeColor"),
                   textColor: "#000",
                   maskColor: "rgba(255, 255, 255, 0.8)",
                   fontSize: "16px",
@@ -718,7 +718,7 @@ class UsagePage extends BaseListPage {
             }}
             showLoading={rangeUsages === null}
             loadingOption={{
-              color: "#4b0082",
+              color: localStorage.getItem("themeColor"),
               textColor: "#000",
               maskColor: "rgba(255, 255, 255, 0.8)",
               fontSize: "16px",
@@ -738,7 +738,7 @@ class UsagePage extends BaseListPage {
             }}
             showLoading={rangeUsages === null}
             loadingOption={{
-              color: "#4b0082",
+              color: localStorage.getItem("themeColor"),
               textColor: "#000",
               maskColor: "rgba(255, 255, 255, 0.8)",
               fontSize: "16px",
