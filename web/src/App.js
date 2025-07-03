@@ -100,6 +100,12 @@ class App extends Component {
   initConfig() {
     Setting.initServerUrl();
     Setting.initWebConfig();
+
+    const cachedThemeColor = localStorage.getItem("themeColor");
+    if (cachedThemeColor) {
+      Setting.setThemeColor(cachedThemeColor);
+    }
+
     FetchFilter.initDemoMode();
     Setting.initCasdoorSdk(Conf.AuthConfig);
     if (!Conf.DisablePreviewMode) {
@@ -118,7 +124,11 @@ class App extends Component {
     StoreBackend.getStore("admin", "_casibase_default_store_").then((res) => {
       if (res.status === "ok" && res.data) {
         const color = res.data.themeColor ? res.data.themeColor : Conf.ThemeDefault.colorPrimary;
-        Setting.setThemeColor(color);
+        const currentColor = localStorage.getItem("themeColor");
+        if (currentColor !== color) {
+          Setting.setThemeColor(color);
+          localStorage.setItem("themeColor", color);
+        }
       } else {
         Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
