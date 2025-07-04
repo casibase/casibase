@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, {Component} from "react";
-import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
-import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
-import {Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu, Result} from "antd";
-import {AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone} from "@ant-design/icons";
+import React, { Component } from "react";
+import { Link, Redirect, Route, Switch, withRouter } from "react-router-dom";
+import { StyleProvider, legacyLogicalPropertiesTransformer } from "@ant-design/cssinjs";
+import { Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu, Result } from "antd";
+import { AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone } from "@ant-design/icons";
 import "./App.less";
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
 import AuthCallback from "./AuthCallback";
@@ -37,7 +37,7 @@ import VectorListPage from "./VectorListPage";
 import VectorEditPage from "./VectorEditPage";
 import SigninPage from "./SigninPage";
 import i18next from "i18next";
-import {withTranslation} from "react-i18next";
+import { withTranslation } from "react-i18next";
 import LanguageSelect from "./LanguageSelect";
 import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
@@ -69,14 +69,14 @@ import UsagePage from "./UsagePage";
 import * as StoreBackend from "./backend/StoreBackend";
 import NodeWorkbench from "./NodeWorkbench";
 import AccessPage from "./component/access/AccessPage";
-import {PreviewInterceptor} from "./PreviewInterceptor";
+import { PreviewInterceptor } from "./PreviewInterceptor";
 import AuditPage from "./frame/AuditPage";
 import PythonYolov8miPage from "./frame/PythonYolov8miPage";
 import PythonSrPage from "./frame/PythonSrPage";
 import SystemInfo from "./SystemInfo";
 import * as FetchFilter from "./backend/FetchFilter";
 
-const {Header, Footer, Content} = Layout;
+const { Header, Footer, Content, Sider } = Layout;
 
 class App extends Component {
   constructor(props) {
@@ -135,57 +135,57 @@ class App extends Component {
       uri: uri,
     });
     if (uri === "/" || uri === "/home") {
-      this.setState({selectedMenuKey: "/"});
+      this.setState({ selectedMenuKey: "/" });
     } else if (uri.includes("/stores")) {
-      this.setState({selectedMenuKey: "/stores"});
+      this.setState({ selectedMenuKey: "/stores" });
     } else if (uri.includes("/providers")) {
-      this.setState({selectedMenuKey: "/providers"});
+      this.setState({ selectedMenuKey: "/providers" });
     } else if (uri.includes("/vectors")) {
-      this.setState({selectedMenuKey: "/vectors"});
+      this.setState({ selectedMenuKey: "/vectors" });
     } else if (uri.includes("/chats")) {
-      this.setState({selectedMenuKey: "/chats"});
+      this.setState({ selectedMenuKey: "/chats" });
     } else if (uri.includes("/messages")) {
-      this.setState({selectedMenuKey: "/messages"});
+      this.setState({ selectedMenuKey: "/messages" });
     } else if (uri.includes("/usages")) {
-      this.setState({selectedMenuKey: "/usages"});
+      this.setState({ selectedMenuKey: "/usages" });
     } else if (uri.includes("/nodes")) {
-      this.setState({selectedMenuKey: "/nodes"});
+      this.setState({ selectedMenuKey: "/nodes" });
     } else if (uri.includes("/machines")) {
-      this.setState({selectedMenuKey: "/machines"});
+      this.setState({ selectedMenuKey: "/machines" });
     } else if (uri.includes("/images")) {
-      this.setState({selectedMenuKey: "/images"});
+      this.setState({ selectedMenuKey: "/images" });
     } else if (uri.includes("/containers")) {
-      this.setState({selectedMenuKey: "/containers"});
+      this.setState({ selectedMenuKey: "/containers" });
     } else if (uri.includes("/pods")) {
-      this.setState({selectedMenuKey: "/pods"});
+      this.setState({ selectedMenuKey: "/pods" });
     } else if (uri.includes("/sessions")) {
-      this.setState({selectedMenuKey: "/sessions"});
+      this.setState({ selectedMenuKey: "/sessions" });
     } else if (uri.includes("/records")) {
-      this.setState({selectedMenuKey: "/records"});
+      this.setState({ selectedMenuKey: "/records" });
     } else if (uri.includes("/workflows")) {
-      this.setState({selectedMenuKey: "/workflows"});
+      this.setState({ selectedMenuKey: "/workflows" });
     } else if (uri.includes("/audit")) {
-      this.setState({selectedMenuKey: "/audit"});
+      this.setState({ selectedMenuKey: "/audit" });
     } else if (uri.includes("/yolov8mi")) {
-      this.setState({selectedMenuKey: "/yolov8mi"});
+      this.setState({ selectedMenuKey: "/yolov8mi" });
     } else if (uri.includes("/sr")) {
-      this.setState({selectedMenuKey: "/sr"});
+      this.setState({ selectedMenuKey: "/sr" });
     } else if (uri.includes("/tasks")) {
-      this.setState({selectedMenuKey: "/tasks"});
+      this.setState({ selectedMenuKey: "/tasks" });
     } else if (uri.includes("/articles")) {
-      this.setState({selectedMenuKey: "/articles"});
+      this.setState({ selectedMenuKey: "/articles" });
     } else if (uri.includes("/public-videos")) {
-      this.setState({selectedMenuKey: "/public-videos"});
+      this.setState({ selectedMenuKey: "/public-videos" });
     } else if (uri.includes("/videos")) {
-      this.setState({selectedMenuKey: "/videos"});
+      this.setState({ selectedMenuKey: "/videos" });
     } else if (uri.includes("/chat")) {
-      this.setState({selectedMenuKey: "/chat"});
+      this.setState({ selectedMenuKey: "/chat" });
     } else if (uri.includes("/sysinfo")) {
-      this.setState({selectedMenuKey: "/sysinfo"});
+      this.setState({ selectedMenuKey: "/sysinfo" });
     } else if (uri.includes("/swagger")) {
-      this.setState({selectedMenuKey: "/swagger"});
+      this.setState({ selectedMenuKey: "/swagger" });
     } else {
-      this.setState({selectedMenuKey: "null"});
+      this.setState({ selectedMenuKey: "null" });
     }
   }
 
@@ -258,13 +258,13 @@ class App extends Component {
   renderAvatar() {
     if (this.state.account.avatar === "") {
       return (
-        <Avatar style={{backgroundColor: Setting.getAvatarColor(this.state.account.name), verticalAlign: "middle"}} size="large">
+        <Avatar style={{ backgroundColor: Setting.getAvatarColor(this.state.account.name), verticalAlign: "middle" }} size="large">
           {Setting.getShortName(this.state.account.name)}
         </Avatar>
       );
     } else {
       return (
-        <Avatar src={this.state.account.avatar} style={{verticalAlign: "middle"}} size="large">
+        <Avatar src={this.state.account.avatar} style={{ verticalAlign: "middle" }} size="large">
           {Setting.getShortName(this.state.account.name)}
         </Avatar>
       );
@@ -318,7 +318,7 @@ class App extends Component {
     };
 
     return (
-      <Dropdown key="/rightDropDown" menu={{items, onClick}} >
+      <Dropdown key="/rightDropDown" menu={{ items, onClick }} >
         <div className="rightDropDown">
           {
             this.renderAvatar()
@@ -340,17 +340,17 @@ class App extends Component {
     } else if (this.state.account === null) {
       return (
         <React.Fragment>
-          <div key="/signup" style={{float: "right", marginRight: "20px"}}>
+          <div key="/signup" style={{ float: "right", marginRight: "20px" }}>
             <a href={Setting.getSignupUrl()}>
               {i18next.t("account:Sign Up")}
             </a>
           </div>
-          <div key="/signin" style={{float: "right"}}>
+          <div key="/signin" style={{ float: "right" }}>
             <a href={Setting.getSigninUrl()}>
               {i18next.t("account:Sign In")}
             </a>
           </div>
-          <div style={{float: "right", margin: "0px", padding: "0px"}}>
+          <div style={{ float: "right", margin: "0px", padding: "0px" }}>
             <LanguageSelect />
           </div>
         </React.Fragment>
@@ -360,8 +360,8 @@ class App extends Component {
         <React.Fragment>
           {this.renderRightDropdown()}
           <LanguageSelect />
-          <div style={{float: "right", marginRight: "20px", padding: "0px"}}>
-            <div dangerouslySetInnerHTML={{__html: Conf.NavbarHtml}} />
+          <div style={{ float: "right", marginRight: "20px", padding: "0px" }}>
+            <div dangerouslySetInnerHTML={{ __html: Conf.NavbarHtml }} />
           </div>
         </React.Fragment>
       );
@@ -476,7 +476,7 @@ class App extends Component {
 
       const textColor = "black";
       const twoToneColor = "rgb(89,54,213)";
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
             {i18next.t("general:Users")}
@@ -494,7 +494,7 @@ class App extends Component {
           </a>, "/permissions"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
@@ -507,23 +507,23 @@ class App extends Component {
 
       res.pop();
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/chat">{i18next.t("general:Home")}</Link>, "/home", <HomeTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/chat">{i18next.t("general:Home")}</Link>, "/home", <HomeTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/Chat"),
         Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/chats">{i18next.t("general:Chats & Messages")}</Link>, "/ai-chat", <BulbTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/chats">{i18next.t("general:Chats & Messages")}</Link>, "/ai-chat", <BulbTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"),
         Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:AI Setting")}</Link>, "/ai-setting", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/stores">{i18next.t("general:AI Setting")}</Link>, "/ai-setting", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"),
         Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"),
         Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/nodes">{i18next.t("general:Cloud Resources")}</Link>, "/cloud", <CloudTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/nodes">{i18next.t("general:Cloud Resources")}</Link>, "/cloud", <CloudTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"),
         Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines"),
         Setting.getItem(<Link to="/images">{i18next.t("general:Images")}</Link>, "/images"),
@@ -532,7 +532,7 @@ class App extends Component {
         Setting.getItem(<Link to="/workbench" target="_blank">{i18next.t("general:Workbench")}</Link>, "workbench"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/videos">{i18next.t("general:Multimedia")}</Link>, "/multimedia", <VideoCameraTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/videos">{i18next.t("general:Multimedia")}</Link>, "/multimedia", <VideoCameraTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"),
         Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"),
         Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"),
@@ -540,12 +540,12 @@ class App extends Component {
         Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"),
         Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
             {i18next.t("general:Users")}
@@ -563,7 +563,7 @@ class App extends Component {
           </a>, "/permissions"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
@@ -687,15 +687,30 @@ class App extends Component {
 
     return (
       <Layout id="parent-area">
+        {/* Header 只保留 logo 和右侧按钮 */}
         {this.renderHeader()}
-        <Content style={{display: "flex", flexDirection: "column"}}>
-          {this.isWithoutCard() ?
-            this.renderRouter() :
-            <Card className="content-warp-card">
-              {this.renderRouter()}
-            </Card>
-          }
-        </Content>
+        <Layout>
+          {/* 左侧菜单栏 */}
+          <Sider width={200} style={{ background: "#fff" }}>
+            <Menu
+              mode="inline"
+              selectedKeys={[this.state.selectedMenuKey]}
+              style={{ height: "100%", borderRight: 0 }}
+              items={this.getMenuItems()}
+              onClick={({ key }) => {
+                this.setState({ selectedMenuKey: key });
+              }}
+            />
+          </Sider>
+          <Content style={{ display: "flex", flexDirection: "column" }}>
+            {this.isWithoutCard() ?
+              this.renderRouter() :
+              <Card className="content-warp-card">
+                {this.renderRouter()}
+              </Card>
+            }
+          </Content>
+        </Layout>
         {this.renderFooter()}
       </Layout>
     );
@@ -712,7 +727,7 @@ class App extends Component {
       });
     };
 
-    const onClick = ({key}) => {
+    const onClick = ({ key }) => {
       if (Setting.isMobile()) {
         this.setState({
           menuVisible: false,
@@ -726,36 +741,13 @@ class App extends Component {
     };
 
     return (
-      <Header style={{padding: "0", marginBottom: "3px", backgroundColor: "white", display: "flex", justifyContent: "space-between"}}>
-        <div style={{display: "flex", alignItems: "center", flex: 1, overflow: "hidden"}}>
-          {Setting.isMobile() ? null : (
-            <Link to={"/"}>
-              <img className="logo" src={Conf.LogoUrl} alt="logo" />
-            </Link>
-          )}
-          {Setting.isMobile() ? (
-            <React.Fragment>
-              <Drawer title={i18next.t("general:Close")} placement="left" open={this.state.menuVisible} onClose={this.onClose}>
-                <Menu
-                  items={this.getMenuItems()}
-                  mode={"inline"}
-                  selectedKeys={[this.state.selectedMenuKey]}
-                  style={{lineHeight: "64px"}}
-                  onClick={onClick}
-                >
-                </Menu>
-              </Drawer>
-              <Button icon={<BarsOutlined />} onClick={showMenu} type="text">
-                {i18next.t("general:Menu")}
-              </Button>
-            </React.Fragment>
-          ) : (
-            <div style={{display: "flex", marginLeft: "10px", flex: 1, minWidth: 0, overflow: "auto", paddingRight: "20px"}}>
-              <Menu style={{minWidth: 0, width: "100%"}} onClick={onClick} items={this.getMenuItems()} mode={"horizontal"} selectedKeys={[this.state.selectedMenuKey]} />
-            </div>
-          )}
+      <Header style={{ padding: "0 24px", marginBottom: "3px", backgroundColor: "white", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Link to={"/"}>
+            <img className="logo" src={Conf.LogoUrl} alt="logo" />
+          </Link>
         </div>
-        <div style={{flexShrink: 0}}>
+        <div>
           {this.renderAccountMenu()}
         </div>
       </Header>
@@ -779,7 +771,7 @@ class App extends Component {
             height: "67px",
           }
         }>
-          <div dangerouslySetInnerHTML={{__html: Conf.FooterHtml}} />
+          <div dangerouslySetInnerHTML={{ __html: Conf.FooterHtml }} />
         </Footer>
       </React.Fragment>
     );
