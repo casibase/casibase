@@ -462,10 +462,10 @@ class App extends Component {
         // res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
       }
 
-      if (window.location.pathname === "/") {
+      if (window.location.pathname === "/" && false) {
         Setting.goToLinkSoft(this, "/videos");
       }
-    } else if (domain === "med") {
+    } else if (domain === "med" || true) {
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
       res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows"));
       res.push(Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"));
