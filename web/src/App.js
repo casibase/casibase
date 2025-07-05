@@ -350,16 +350,16 @@ class App extends Component {
               {i18next.t("account:Sign In")}
             </a>
           </div>
-          <div style={{ float: "right", margin: "0px", padding: "0px" }}>
+          {/* <div style={{ float: "right", margin: "0px", padding: "0px" }}>
             <LanguageSelect />
-          </div>
+          </div> */}
         </React.Fragment>
       );
     } else {
       return (
         <React.Fragment>
           {this.renderRightDropdown()}
-          <LanguageSelect />
+          {/* <LanguageSelect /> */}
           <div style={{ float: "right", marginRight: "20px", padding: "0px" }}>
             <div dangerouslySetInnerHTML={{ __html: Conf.NavbarHtml }} />
           </div>
@@ -471,12 +471,11 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
       res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows", <BuildTwoTone twoToneColor={twoToneColor} />));
       res.push(Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />));
-      res.push(Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Image Operation")}</Link>, "/yolov8mi", <CameraTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:Image Operation")}</Link>, "/img", <CameraTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
         Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr")
       ]));
-      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
-      res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"));
+
 
 
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
@@ -497,13 +496,18 @@ class App extends Component {
           </a>, "/permissions"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
-        Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
-        Setting.getItem(
-          <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
-            {i18next.t("general:Swagger")}
-            {Setting.renderExternalLink()}
-          </a>, "/swagger")]));
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />,
+        [
+          Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
+          Setting.getItem(
+            <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
+              {i18next.t("general:Swagger")}
+              {Setting.renderExternalLink()}
+            </a>, "/swagger"),
+          Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"),
+          Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records")
+
+        ]));
     } else {
       const textColor = "black";
       const twoToneColor = "rgb(89,54,213)";
@@ -689,12 +693,10 @@ class App extends Component {
     }
 
     return (
-      <Layout id="parent-area">
-        {/* Header 只保留 logo 和右侧按钮 */}
+      <Layout id="parent-area" style={{ minHeight: "100vh" }}>
         {this.renderHeader()}
         <Layout>
-          {/* 左侧菜单栏 */}
-          <Sider width={200} style={{ background: "#fff" }}>
+          <Sider width={200} style={{ background: "#fff", minHeight: "calc(100vh - 64px)" }}>
             <Menu
               mode="inline"
               selectedKeys={[this.state.selectedMenuKey]}
@@ -705,7 +707,18 @@ class App extends Component {
               }}
             />
           </Sider>
-          <Content style={{ display: "flex", flexDirection: "column" }}>
+          <Content
+            style={{
+              padding: "24px 32px",
+              margin: "24px 32px",
+              borderRadius: "8px",
+              overflow: "auto",
+              minHeight: "calc(100vh - 64px)", // 64px为Header高度，如有不同请调整
+              // background: "#f5f5f5",
+              background: "white",
+              boxShadow: "0 4px 16px 4px rgba(188, 152, 249, .08)",
+            }}
+          >
             {this.isWithoutCard() ?
               this.renderRouter() :
               <Card className="content-warp-card">
@@ -715,8 +728,38 @@ class App extends Component {
           </Content>
         </Layout>
         {this.renderFooter()}
-      </Layout>
+      </Layout >
     );
+
+    // return (
+    //   <Layout id="parent-area">
+    //     {/* Header 只保留 logo 和右侧按钮 */}
+    //     {this.renderHeader()}
+    //     <Layout>
+    //       {/* 左侧菜单栏 */}
+    //       <Sider width={200} style={{ background: "#fff" }}>
+    //         <Menu
+    //           mode="inline"
+    //           selectedKeys={[this.state.selectedMenuKey]}
+    //           style={{ height: "100%", borderRight: 0 }}
+    //           items={this.getMenuItems()}
+    //           onClick={({ key }) => {
+    //             this.setState({ selectedMenuKey: key });
+    //           }}
+    //         />
+    //       </Sider>
+    //       <Content style={{ display: "flex", flexDirection: "column" }}>
+    //         {this.isWithoutCard() ?
+    //           this.renderRouter() :
+    //           <Card className="content-warp-card">
+    //             {this.renderRouter()}
+    //           </Card>
+    //         }
+    //       </Content>
+    //     </Layout>
+    //     {this.renderFooter()}
+    //   </Layout>
+    // );
   }
 
   renderHeader() {

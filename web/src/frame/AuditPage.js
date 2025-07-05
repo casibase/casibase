@@ -24,7 +24,7 @@ class AuditPage extends React.Component {
 
   render() {
     return (
-      <iframe id="iframe" title={"iframe"} src={`https://47.113.204.64:23554/?userId=${this.props.account.name}`} width="100%" height={window.innerHeight - 195} scrolling="no" frameBorder="no" />
+      <iframe id="iframe" title={"iframe"} src={`https://47.113.204.64:23554/?userId=${this.props.account.name}`} width="100%" height={window.innerHeight - 180} scrolling="yes" frameBorder="no" />
     );
   }
 }
