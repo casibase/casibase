@@ -16,7 +16,7 @@ import React, { Component } from "react";
 import { Link, Redirect, Route, Switch, withRouter } from "react-router-dom";
 import { StyleProvider, legacyLogicalPropertiesTransformer } from "@ant-design/cssinjs";
 import { Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu, Result } from "antd";
-import { AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone } from "@ant-design/icons";
+import { AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone, BuildTwoTone, CameraTwoTone, SecurityScanTwoTone } from "@ant-design/icons";
 import "./App.less";
 import { Helmet } from "react-helmet";
 import * as Setting from "./Setting";
@@ -369,9 +369,11 @@ class App extends Component {
   }
 
   getMenuItems() {
+    const textColor = "black";
+    const twoToneColor = "rgb(89,54,213)";
     const res = [];
 
-    res.push(Setting.getItem(<Link to="/">{i18next.t("general:Home")}</Link>, "/"));
+    res.push(Setting.getItem(<Link to="/">{i18next.t("general:Home")}</Link>, "/", <HomeTwoTone twoToneColor={twoToneColor} />));
 
     if (this.state.account === null || this.state.account === undefined) {
       return [];
@@ -467,15 +469,16 @@ class App extends Component {
       }
     } else if (domain === "med" || true) {
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
-      res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows"));
-      res.push(Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"));
-      res.push(Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"));
-      res.push(Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"));
+      res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows", <BuildTwoTone twoToneColor={twoToneColor} />));
+      res.push(Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />));
+      res.push(Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Image Operation")}</Link>, "/yolov8mi", <CameraTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
+        Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr")
+      ]));
       res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
       res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"));
 
-      const textColor = "black";
-      const twoToneColor = "rgb(89,54,213)";
+
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
@@ -755,6 +758,7 @@ class App extends Component {
   }
 
   renderFooter() {
+    return null;
     if (this.isHiddenHeaderAndFooter()) {
       return null;
     }

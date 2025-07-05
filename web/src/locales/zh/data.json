@@ -307,7 +307,8 @@
   "med": {
     "Audit": "审计",
     "Medical Image Analysis": "医学影像分析",
-    "Super Resolution": "图像超分"
+    "Super Resolution": "图像超分",
+    "Image Operation": "图像处理"
   },
   "message": {
     "Author": "作者",
