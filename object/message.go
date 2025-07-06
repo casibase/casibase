@@ -334,6 +334,8 @@ func (w *MyWriter) Write(p []byte) (n int, err error) {
 	if strings.HasPrefix(s, "event: message\ndata: ") && strings.HasSuffix(s, "\n\n") {
 		data := strings.TrimSuffix(strings.TrimPrefix(s, "event: message\ndata: "), "\n\n")
 		return w.Buffer.WriteString(data)
+	} else if strings.HasPrefix(s, "event: reason\ndata: ") && strings.HasSuffix(s, "\n\n") {
+		return w.Buffer.WriteString("")
 	}
 	return w.Buffer.Write(p)
 }
