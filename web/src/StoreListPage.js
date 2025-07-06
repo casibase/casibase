@@ -121,6 +121,7 @@ class StoreListPage extends BaseListPage {
       storageSubpath: `store_${randomName}`,
       imageProvider: "",
       splitProvider: "Default",
+      searchProvider: "Default",
       modelProvider: "",
       embeddingProvider: "",
       textToSpeechProvider: "Browser Built-In",
