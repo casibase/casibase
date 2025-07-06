@@ -167,7 +167,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	knowledgeCount := store.KnowledgeCount
 	if knowledgeCount <= 0 {
-		knowledgeCount = 5
+		knowledgeCount = 10
 	}
 
 	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(store.Name, embeddingProvider, embeddingProviderObj, "admin", question, knowledgeCount)
