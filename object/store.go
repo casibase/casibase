@@ -62,6 +62,7 @@ type Store struct {
 	StorageSubpath       string `xorm:"varchar(100)" json:"storageSubpath"`
 	ImageProvider        string `xorm:"varchar(100)" json:"imageProvider"`
 	SplitProvider        string `xorm:"varchar(100)" json:"splitProvider"`
+	SearchProvider       string `xorm:"varchar(100)" json:"searchProvider"`
 	ModelProvider        string `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider    string `xorm:"varchar(100)" json:"embeddingProvider"`
 	TextToSpeechProvider string `xorm:"varchar(100)" json:"textToSpeechProvider"`
