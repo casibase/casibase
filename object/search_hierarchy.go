@@ -87,7 +87,9 @@ func getEnhancedQuestionByModel(modelProviderName string, text string, titleCand
 
 	question := fmt.Sprintf("Please select the titles most relevant to the following question and choose the %v most relevant items. Just return the title list. No other content.\nquestion:\n %s \n\nTitles: \n%s", candidateTitlesNum, text, "• "+strings.Join(titleCandidates, "\n• "))
 
-	res, modelResult, err := GetAnswerWithPrompt(modelProviderName, question, prompt)
+	history := []*model.RawMessage{}
+	knowledge := []*model.RawMessage{}
+	res, modelResult, err := GetAnswerWithContext(modelProviderName, question, history, knowledge, prompt)
 	if err != nil {
 		return "", nil, err
 	}
