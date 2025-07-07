@@ -15,7 +15,12 @@
 package controllers
 
 import (
+	"fmt"
+	"strings"
+	"sync"
+
 	"github.com/casibase/casibase/carrier"
+	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
 )
 
@@ -71,4 +76,99 @@ func parseAnswerWithCarriers(answer string, suggestionCount int, needTitle bool)
 	}
 
 	return parsedAnswer, suggestions, title, nil
+}
+
+func isReasonModel(typ string) bool {
+	typ = strings.ToLower(typ)
+	if strings.Contains(typ, "r1") {
+		return true
+	} else if strings.Contains(typ, "reasoner") {
+		return true
+	}
+	return false
+}
+
+func getResultWithSuggestionsAndTitle(writer *CarrierWriter, question string, modelProviderObj model.ModelProvider, needTitle bool, suggestionCount int) (*model.ModelResult, error) {
+	var fullPrompt strings.Builder
+
+	fullPrompt.WriteString(fmt.Sprintf("User question: %s\n\n", question))
+	if suggestionCount > 0 {
+		divider := "|||"
+		suggestionPrompt := fmt.Sprintf(`**Based on the user question, generate %d possible follow-up questions. No need to answer user question. 
+They must:
+- Be in the same language as the original question.
+- Start with the separator "%s".
+- Be separated by "%s" without any other formatting or explanation.
+- Do not include any explanation, analysis, or answers—only output the %d questions.
+
+`, suggestionCount, divider, divider, suggestionCount)
+		fullPrompt.WriteString(suggestionPrompt)
+	}
+	if needTitle {
+		fullPrompt.WriteString(`
+**Finally, generate a concise and meaningful title for the original question. No need to answer user question. 
+
+- The title must be in the same language.
+- The title must start with "=====" (five equals signs, no space).
+- Do not include the divider or title if a meaningful title cannot be generated.
+- Do NOT include any explanations or extra text—just output the title.`)
+	}
+
+	carrierResult, err := modelProviderObj.QueryText(fullPrompt.String(), writer, nil, "", nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return carrierResult, nil
+}
+
+func QueryCarrierText(question string, writer *RefinedWriter, history []*model.RawMessage, prompt string, knowledge []*model.RawMessage, modelProviderObj model.ModelProvider, needTitle bool, suggestionCount int) (*model.ModelResult, error) {
+	var (
+		wg         sync.WaitGroup
+		mainErr    error
+		carrierErr error
+	)
+
+	var modelResult *model.ModelResult
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		var err error
+		modelResult, err = modelProviderObj.QueryText(question, writer, history, prompt, knowledge, nil)
+		if err != nil {
+			mainErr = err
+		}
+	}()
+
+	CarrierWriter := &CarrierWriter{*NewCleaner(6), []byte{}}
+	var carrierResult *model.ModelResult
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		var err error
+		carrierResult, err = getResultWithSuggestionsAndTitle(CarrierWriter, question, modelProviderObj, needTitle, suggestionCount)
+		if err != nil {
+			carrierErr = err
+		}
+	}()
+
+	wg.Wait()
+
+	if mainErr != nil {
+		return nil, mainErr
+	}
+	if carrierErr != nil {
+		return nil, carrierErr
+	}
+
+	modelResult.PromptTokenCount += carrierResult.PromptTokenCount
+	modelResult.ResponseTokenCount += carrierResult.ResponseTokenCount
+	modelResult.TotalPrice += carrierResult.TotalPrice
+	modelResult.TotalTokenCount += carrierResult.TotalTokenCount
+
+	writer.Write(CarrierWriter.messageBuf)
+
+	return modelResult, nil
 }
