@@ -341,19 +341,18 @@ func (w *MyWriter) Write(p []byte) (n int, err error) {
 }
 
 func GetAnswer(provider string, question string) (string, *model.ModelResult, error) {
-	return GetAnswerWithPrompt(provider, question, "")
+	history := []*model.RawMessage{}
+	knowledge := []*model.RawMessage{}
+	return GetAnswerWithContext(provider, question, history, knowledge, "")
 }
 
-func GetAnswerWithPrompt(provider string, question string, prompt string) (string, *model.ModelResult, error) {
+func GetAnswerWithContext(provider string, question string, history []*model.RawMessage, knowledge []*model.RawMessage, prompt string) (string, *model.ModelResult, error) {
 	_, modelProviderObj, err := GetModelProviderFromContext("admin", provider)
 	if err != nil {
 		return "", nil, err
 	}
 
-	history := []*model.RawMessage{}
-	knowledge := []*model.RawMessage{}
 	var writer MyWriter
-
 	modelResult, err := modelProviderObj.QueryText(question, &writer, history, prompt, knowledge, nil)
 	if err != nil {
 		return "", nil, err
