@@ -1,0 +1,212 @@
+.os-desktop {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f2f5;
+  overflow: hidden;
+  position: relative;
+}
+
+.desktop-taskbar {
+  height: 40px;
+  background-color: #001529;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  color: white;
+  z-index: 1000;
+}
+
+.taskbar-start {
+  margin-right: 20px;
+}
+
+.taskbar-apps {
+  display: flex;
+  flex-grow: 1;
+  overflow-x: auto;
+}
+
+.taskbar-app {
+  padding: 0 10px;
+  height: 30px;
+  line-height: 30px;
+  margin-right: 5px;
+  background-color: #1a2d3e;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.taskbar-app.active {
+  background-color: #2a3f50;
+}
+
+.desktop-content {
+  flex-grow: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 24vh;
+  padding-left: 15vw;
+  padding-right: 15vw;
+}
+
+.desktop-icons {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 20px;
+  gap: 40px;
+  width: 100%;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+}
+
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  width: 120px;
+  transition: all 0.2s ease;
+  user-select: none;
+  user-select: none;
+}
+
+.desktop-icon:hover,
+.desktop-icon.hovered {
+  transform: scale(1.05);
+}
+
+.desktop-icon.clicked {
+  transform: scale(0.95);
+}
+
+.desktop-icon .icon {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  border-radius: 20px;
+  padding: 12px;
+  transition: all 0.2s ease;
+  position: relative;
+  background: var(--icon-gradient);
+  box-shadow:
+    0 8px 32px rgb(0 0 0 / 15%),
+    0 4px 16px rgb(0 0 0 / 10%),
+    inset 0 1px 0 rgb(255 255 255 / 30%);
+}
+
+.desktop-icon:hover .icon,
+.desktop-icon.hovered .icon {
+  box-shadow:
+    0 12px 40px rgb(0 0 0 / 20%),
+    0 6px 20px rgb(0 0 0 / 15%),
+    inset 0 1px 0 rgb(255 255 255 / 40%);
+  transform: translateY(-2px);
+}
+
+.desktop-icon.clicked .icon {
+  box-shadow:
+    0 4px 16px rgb(0 0 0 / 15%),
+    0 2px 8px rgb(0 0 0 / 10%),
+    inset 0 1px 0 rgb(255 255 255 / 20%);
+  transform: translateY(1px);
+}
+
+.desktop-icon .icon img {
+  width: 72px;
+  height: 72px;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 30%));
+  transition: all 0.2s ease;
+}
+
+.desktop-icon:hover .icon img,
+.desktop-icon.hovered .icon img {
+  filter: drop-shadow(0 3px 6px rgb(0 0 0 / 40%));
+}
+
+.desktop-icon .icon-name {
+  text-align: center;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 6px;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.2s ease;
+  text-shadow: 0 1px 2px rgb(255 255 255 / 80%);
+  background: transparent;
+}
+
+.desktop-icon:hover .icon-name,
+.desktop-icon.hovered .icon-name {
+  color: #222;
+  text-shadow: 0 1px 3px rgb(255 255 255 / 90%);
+}
+
+.desktop-window {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 20%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition:
+    left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.desktop-window.dragging {
+  transition: none;
+}
+
+.window-header {
+  height: 30px;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  cursor: move;
+  user-select: none;
+}
+
+.window-navigation {
+  display: flex;
+  gap: 5px;
+  margin-right: 10px;
+}
+
+.window-title {
+  flex-grow: 1;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.window-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.window-content {
+  flex-grow: 1;
+  overflow: auto;
+  background-color: white;
+}
