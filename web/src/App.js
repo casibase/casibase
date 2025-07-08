@@ -716,7 +716,6 @@ class App extends Component {
           <Content
             style={{
               padding: "24px 32px",
-              margin: "24px 32px",
               borderRadius: "8px",
               overflow: "auto",
               minHeight: "calc(100vh - 64px)",
