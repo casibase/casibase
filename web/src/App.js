@@ -23,7 +23,7 @@ import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
 import AuthCallback from "./AuthCallback";
 import * as Conf from "./Conf";
-import HomePage from "./HomePage";
+import HomePageMedGuide from "./HomePageMedGuide";
 import StoreListPage from "./StoreListPage";
 import StoreEditPage from "./StoreEditPage";
 import FileTreePage from "./FileTreePage";
@@ -615,8 +615,8 @@ class App extends Component {
         <Route exact path="/access/:owner/:name" render={(props) => this.renderSigninIfNotSignedIn(<AccessPage account={this.state.account} {...props} />)} />
         <Route exact path="/callback" component={AuthCallback} />
         <Route exact path="/signin" render={(props) => this.renderHomeIfSignedIn(<SigninPage {...props} />)} />
-        <Route exact path="/" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
-        <Route exact path="/home" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
+        <Route exact path="/" render={(props) => this.renderSigninIfNotSignedIn(<HomePageMedGuide account={this.state.account} {...props} />)} />
+        <Route exact path="/home" render={(props) => this.renderSigninIfNotSignedIn(<HomePageMedGuide account={this.state.account} {...props} />)} />
         <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName/view" render={(props) => this.renderSigninIfNotSignedIn(<FileTreePage account={this.state.account} {...props} />)} />
@@ -684,7 +684,7 @@ class App extends Component {
   renderContent() {
     if (Setting.getUrlParam("isRaw") !== null) {
       return (
-        <HomePage account={this.state.account} />
+        <HomePageMedGuide account={this.state.account} />
       );
     } else if (Setting.getSubdomain() === "portal") {
       return (
@@ -715,7 +715,7 @@ class App extends Component {
           )}
           <Content
             style={{
-              padding: "24px 32px",
+              // padding: "24px 32px",
               borderRadius: "8px",
               overflow: "auto",
               minHeight: "calc(100vh - 64px)",
