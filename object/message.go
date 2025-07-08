@@ -352,6 +352,9 @@ func GetAnswerWithContext(provider string, question string, history []*model.Raw
 		return "", nil, err
 	}
 
+	if prompt == "" {
+		prompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems."
+	}
 	var writer MyWriter
 	modelResult, err := modelProviderObj.QueryText(question, &writer, history, prompt, knowledge, nil)
 	if err != nil {
