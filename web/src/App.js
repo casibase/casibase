@@ -692,29 +692,34 @@ class App extends Component {
       );
     }
 
+    // 判断是否首页
+    const isHome = window.location.pathname === "/" || window.location.pathname === "/home";
+
     return (
       <Layout id="parent-area" style={{ minHeight: "100vh" }}>
         {this.renderHeader()}
         <Layout>
-          <Sider width={200} style={{ background: "#fff", minHeight: "calc(100vh - 64px)" }}>
-            <Menu
-              mode="inline"
-              selectedKeys={[this.state.selectedMenuKey]}
-              style={{ height: "100%", borderRight: 0 }}
-              items={this.getMenuItems()}
-              onClick={({ key }) => {
-                this.setState({ selectedMenuKey: key });
-              }}
-            />
-          </Sider>
+          {/* 只有非首页才显示 Sider */}
+          {!isHome && (
+            <Sider width={200} style={{ background: "#fff", minHeight: "calc(100vh - 64px)", boxShadow: "2px 0 8px rgba(0,0,0,0.08)" }}>
+              <Menu
+                mode="inline"
+                selectedKeys={[this.state.selectedMenuKey]}
+                style={{ height: "100%", borderRight: 0 }}
+                items={this.getMenuItems()}
+                onClick={({ key }) => {
+                  this.setState({ selectedMenuKey: key });
+                }}
+              />
+            </Sider>
+          )}
           <Content
             style={{
               padding: "24px 32px",
               margin: "24px 32px",
               borderRadius: "8px",
               overflow: "auto",
-              minHeight: "calc(100vh - 64px)", // 64px为Header高度，如有不同请调整
-              // background: "#f5f5f5",
+              minHeight: "calc(100vh - 64px)",
               background: "white",
               boxShadow: "0 4px 16px 4px rgba(188, 152, 249, .08)",
             }}
@@ -728,7 +733,7 @@ class App extends Component {
           </Content>
         </Layout>
         {this.renderFooter()}
-      </Layout >
+      </Layout>
     );
 
     // return (
