@@ -6,6 +6,7 @@ import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 import ChatPage from "./ChatPage";
 import UsagePage from "./UsagePage";
+import MedGuideCardGrid from "./MedGuideCardGrid";
 import i18next from "i18next";
 import { calc } from "antd/es/theme/internal";
 
@@ -80,7 +81,8 @@ class HomePageMedGuide extends React.Component {
               <div style={{ fontSize: 48, fontWeight: 700, marginTop: 50 }}>👋 {greeting}，欢迎访问本系统</div>
               <div style={{ fontSize: 24, fontWeight: 400, marginTop: 15, color: "#8c8c8c" }}> 请点击卡片进入各子功能  </div>
             </div>
-
+            {/* 卡片区域 */}
+            <MedGuideCardGrid />
           </div>
         );
       }
