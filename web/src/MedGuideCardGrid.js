@@ -3,8 +3,8 @@ import React from "react";
 const cardList = [
     { title: "上链", icon: "🔗", router: "/chain" },
     { title: "数据使用控制", icon: "🛡️", router: "/data-control" },
-    { title: "临床路径", desc: "思宇", icon: "🩺", router: "/clinical-path" },
-    { title: "联邦学习", desc: "志轩", icon: "🤝", router: "/federated-learning" },
+    { title: "临床路径", icon: "🩺", router: "/clinical-path" },
+    { title: "联邦学习", icon: "🤝", router: "/federated-learning" },
     { title: "复杂查询与审计", icon: "🔍", router: "/audit" },
     { title: "数据质量控制", icon: "📊", router: "/data-quality" },
     { title: "密文计算", icon: "🔒", router: "/crypto" },
