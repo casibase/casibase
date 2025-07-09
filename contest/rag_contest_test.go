@@ -96,19 +96,20 @@ func TestProcessPapers(t *testing.T) {
 				fmt.Printf("received answer: %s\n", correctAnswer)
 				questionsData[i]["correct_answer"] = correctAnswer
 				processedQuestions[generateQuestionKey(question)] = true
+
+				outputBytes, err := json.MarshalIndent(questionsData, "", "    ")
+				if err != nil {
+					panic(err)
+				}
+
+				err = os.WriteFile(answeredQuestionsFile, outputBytes, 0o644)
+				if err != nil {
+					panic(err)
+				}
+				fmt.Printf("saved answer to file\n")
 			}
 		}
 		filesProcessed++
-	}
-
-	outputBytes, err := json.MarshalIndent(questionsData, "", "    ")
-	if err != nil {
-		panic(err)
-	}
-
-	err = os.WriteFile(answeredQuestionsFile, outputBytes, 0o644)
-	if err != nil {
-		panic(err)
 	}
 
 	fmt.Printf("processed %d markdown files, answered %d questions\n", filesProcessed, len(processedQuestions))
