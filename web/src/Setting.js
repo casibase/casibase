@@ -877,6 +877,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
         url: "https://cloud.tencent.com/product/tcm",
       },
+      "Ethereum": {
+        logo: `${StaticBaseUrl}/img/social_ethereum.png`,
+        url: "https://ethereum.org/en/",
+      },
     },
     Video: {
       "AWS": {
@@ -1127,6 +1131,7 @@ export function getProviderTypeOptions(category) {
       {id: "ChainMaker", name: "ChainMaker"},
       {id: "Tencent ChainMaker", name: "Tencent ChainMaker"},
       {id: "Tencent ChainMaker (Demo Network)", name: "Tencent ChainMaker (Demo Network)"},
+      {id: "Ethereum", name: "Ethereum"},
     ]);
   } else if (category === "Video") {
     return (
