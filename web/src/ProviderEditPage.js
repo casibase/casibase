@@ -1007,6 +1007,20 @@ class ProviderEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        {
+          this.state.provider.category === "Model" && this.state.provider.type === "Local" ? (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("provider:Skip SSL verify"), i18next.t("provider:Skip SSL verify - Tooltip"))} :
+              </Col>
+              <Col span={1}>
+                <Switch checked={this.state.provider.skipSslVerify} onChange={checked => {
+                  this.updateProviderField("skipSslVerify", checked);
+                }} />
+              </Col>
+            </Row>
+          ) : null
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Is default"), i18next.t("store:Is default - Tooltip"))} :

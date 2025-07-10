@@ -16,6 +16,7 @@ package model
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"io"
 	"math/rand"
@@ -42,9 +43,10 @@ type LocalModelProvider struct {
 	inputPricePerThousandTokens  float64
 	outputPricePerThousandTokens float64
 	currency                     string
+	skipSslVerify                bool
 }
 
-func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, compitableProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string) (*LocalModelProvider, error) {
+func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, compitableProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string, skipSslVerify bool) (*LocalModelProvider, error) {
 	p := &LocalModelProvider{
 		typ:                          typ,
 		subType:                      subType,
@@ -58,16 +60,29 @@ func NewLocalModelProvider(typ string, subType string, secretKey string, tempera
 		inputPricePerThousandTokens:  inputPricePerThousandTokens,
 		outputPricePerThousandTokens: outputPricePerThousandTokens,
 		currency:                     Currency,
+		skipSslVerify:                skipSslVerify,
 	}
 	return p, nil
 }
 
-func getLocalClientFromUrl(authToken string, url string) *openai.Client {
+func getLocalClientFromUrl(authToken string, url string, skipSslVerify bool) *openai.Client {
 	config := openai.DefaultConfig(authToken)
 	config.BaseURL = url
 
+	if skipSslVerify {
+		// Create HTTP client with SSL verification disabled
+		tr := &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+		config.HTTPClient = &http.Client{Transport: tr}
+	}
+
 	c := openai.NewClientWithConfig(config)
 	return c
+}
+
+func (p *LocalModelProvider) GetSkipSslVerify() bool {
+	return p.skipSslVerify
 }
 
 func (p *LocalModelProvider) GetPricing() string {
@@ -273,7 +288,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	var flushData interface{} // Can be either flushData or flushDataThink
 
 	if p.typ == "Local" {
-		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+		client = getLocalClientFromUrl(p.secretKey, p.providerUrl, p.skipSslVerify)
 		flushData = flushDataOpenai
 	} else if p.typ == "Azure" {
 		client = getAzureClientFromToken(p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
@@ -285,10 +300,10 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		client = getGitHubClientFromToken(p.secretKey, p.providerUrl)
 		flushData = flushDataOpenai
 	} else if p.typ == "Custom" {
-		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+		client = getLocalClientFromUrl(p.secretKey, p.providerUrl, p.skipSslVerify)
 		flushData = flushDataOpenai
 	} else if p.typ == "Custom-think" {
-		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+		client = getLocalClientFromUrl(p.secretKey, p.providerUrl, p.skipSslVerify)
 		flushData = flushDataThink
 	}
 

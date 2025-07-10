@@ -450,6 +450,8 @@
     "Refresh MCP tools": "刷新MCP工具",
     "Secret key": "密钥",
     "Server name": "服务器名称",
+    "Skip SSL verify": "跳过SSL验证",
+    "Skip SSL verify - Tooltip": "跳过SSL证书验证（适用于自签名证书，请谨慎使用）",
     "Speech recognition completed": "语音识别完成",
     "Sub type": "子类型",
     "Sub type - Tooltip": "子类型",

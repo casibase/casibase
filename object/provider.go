@@ -55,6 +55,7 @@ type Provider struct {
 	TopK             int     `xorm:"int" json:"topK"`
 	FrequencyPenalty float32 `xorm:"float" json:"frequencyPenalty"`
 	PresencePenalty  float32 `xorm:"float" json:"presencePenalty"`
+	SkipSslVerify    bool    `xorm:"bool" json:"skipSslVerify"`
 
 	InputPricePerThousandTokens  float64 `xorm:"DECIMAL(10, 4)" json:"inputPricePerThousandTokens"`
 	OutputPricePerThousandTokens float64 `xorm:"DECIMAL(10, 4)" json:"outputPricePerThousandTokens"`
@@ -292,7 +293,7 @@ func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompitableProvider, p.InputPricePerThousandTokens, p.OutputPricePerThousandTokens, p.Currency, p.EnableThinking)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompitableProvider, p.InputPricePerThousandTokens, p.OutputPricePerThousandTokens, p.Currency, p.EnableThinking, p.SkipSslVerify)
 	if err != nil {
 		return nil, err
 	}

@@ -78,7 +78,7 @@ func (p *WriterModelProvider) QueryText(question string, writer io.Writer, histo
 	const BaseUrl = "https://api.writer.com/v1"
 
 	// Create a LocalModelProvider to handle the OpenAI-compatible API
-	localProvider, err := NewLocalModelProvider("Custom", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "USD")
+	localProvider, err := NewLocalModelProvider("Custom", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "USD", false)
 	if err != nil {
 		return nil, err
 	}

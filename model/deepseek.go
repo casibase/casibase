@@ -74,7 +74,8 @@ func (p *DeepSeekProvider) QueryText(question string, writer io.Writer, history 
 	} else if p.subType == "deepseek-chat" {
 		localType = "Custom"
 	}
-	localProvider, err := NewLocalModelProvider(localType, "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
+
+	localProvider, err := NewLocalModelProvider(localType, "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY", false)
 	if err != nil {
 		return nil, err
 	}
