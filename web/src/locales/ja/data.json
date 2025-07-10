@@ -450,6 +450,8 @@
     "Refresh MCP tools": "MCPツールを更新",
     "Secret key": "シークレットキー",
     "Server name": "サーバー名",
+    "Skip SSL verify": "SSL検証をスキップ",
+    "Skip SSL verify - Tooltip": "SSL証明書検証をスキップ（自己署名証明書用、注意して使用）",
     "Speech recognition completed": "音声認識完了",
     "Sub type": "サブタイプ",
     "Sub type - Tooltip": "サブタイプ",

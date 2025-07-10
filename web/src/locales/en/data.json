@@ -450,6 +450,8 @@
     "Refresh MCP tools": "Refresh MCP tools",
     "Secret key": "Secret key",
     "Server name": "Server name",
+    "Skip SSL verify": "Skip SSL verify",
+    "Skip SSL verify - Tooltip": "Skip SSL certificate verification for self-signed certificates (use with caution)",
     "Speech recognition completed": "Speech recognition completed",
     "Sub type": "Sub type",
     "Sub type - Tooltip": "Sub type",
