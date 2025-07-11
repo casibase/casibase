@@ -209,7 +209,7 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	if modelProvider.Type != "Dummy" {
+	if modelProvider.Type != "Dummy" && !isReasonModel(modelProvider.SubType) {
 		question, err = getQuestionWithCarriers(question, store.SuggestionCount, chat.NeedTitle)
 	}
 	if err != nil {
@@ -228,7 +228,11 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, store.Prompt, knowledge, agentInfo)
 	} else {
-		modelResult, err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge, nil)
+		if isReasonModel(modelProvider.SubType) {
+			modelResult, err = QueryCarrierText(question, writer, history, store.Prompt, knowledge, modelProviderObj, chat.NeedTitle, store.SuggestionCount)
+		} else {
+			modelResult, err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge, nil)
+		}
 	}
 	if err != nil {
 		if strings.Contains(err.Error(), "write tcp") {
