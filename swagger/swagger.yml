@@ -3004,7 +3004,7 @@ definitions:
         type: string
       clientSecret:
         type: string
-      compitableProvider:
+      compatibleProvider:
         type: string
       contractMethod:
         type: string

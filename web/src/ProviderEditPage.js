@@ -457,14 +457,14 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("provider:Compitable Provider"), i18next.t("provider:Compitable Provider - Tooltip"))} :
+                  {Setting.getLabel(i18next.t("provider:Compatible Provider"), i18next.t("provider:Compatible Provider - Tooltip"))} :
                 </Col>
                 <Col span={22} >
-                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.compitableProvider} onChange={(value => {
-                    this.updateProviderField("compitableProvider", value);
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.compatibleProvider} onChange={(value => {
+                    this.updateProviderField("compatibleProvider", value);
                   })}>
                     {
-                      Setting.getCompitableProviderOptions(this.state.provider.category)
+                      Setting.getCompatibleProviderOptions(this.state.provider.category)
                       // .sort((a, b) => a.name.localeCompare(b.name))
                         .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
                     }

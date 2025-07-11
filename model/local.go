@@ -39,13 +39,13 @@ type LocalModelProvider struct {
 	presencePenalty              float32
 	providerUrl                  string
 	apiVersion                   string
-	compitableProvider           string
+	compatibleProvider           string
 	inputPricePerThousandTokens  float64
 	outputPricePerThousandTokens float64
 	currency                     string
 }
 
-func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, compitableProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string) (*LocalModelProvider, error) {
+func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, compatibleProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string) (*LocalModelProvider, error) {
 	p := &LocalModelProvider{
 		typ:                          typ,
 		subType:                      subType,
@@ -55,7 +55,7 @@ func NewLocalModelProvider(typ string, subType string, secretKey string, tempera
 		frequencyPenalty:             frequencyPenalty,
 		presencePenalty:              presencePenalty,
 		providerUrl:                  providerUrl,
-		compitableProvider:           compitableProvider,
+		compatibleProvider:           compatibleProvider,
 		inputPricePerThousandTokens:  inputPricePerThousandTokens,
 		outputPricePerThousandTokens: outputPricePerThousandTokens,
 		currency:                     Currency,
@@ -304,9 +304,9 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	}
 
 	model := p.subType
-	if model == "custom-model" && p.compitableProvider != "" {
-		model = p.compitableProvider
-	} else if model == "custom-model" && p.compitableProvider == "" {
+	if model == "custom-model" && p.compatibleProvider != "" {
+		model = p.compatibleProvider
+	} else if model == "custom-model" && p.compatibleProvider == "" {
 		model = "gpt-3.5-turbo"
 	}
 

@@ -58,6 +58,7 @@ class ProviderListPage extends BaseListPage {
       userCert: "",
       signKey: "",
       signCert: "",
+      compatibleProvider: "",
       contractName: "",
       contractMethod: "",
       state: "Active",

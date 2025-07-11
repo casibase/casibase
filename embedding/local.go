@@ -30,13 +30,13 @@ type LocalEmbeddingProvider struct {
 	deploymentName         string
 	secretKey              string
 	providerUrl            string
-	compitableProvider     string
+	compatibleProvider     string
 	apiVersion             string
 	pricePerThousandTokens float64
 	currency               string
 }
 
-func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, providerUrl string, compitableProvider string, pricePerThousandTokens float64, currency string) (*LocalEmbeddingProvider, error) {
+func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, providerUrl string, compatibleProvider string, pricePerThousandTokens float64, currency string) (*LocalEmbeddingProvider, error) {
 	p := &LocalEmbeddingProvider{
 		typ:                    typ,
 		subType:                subType,
@@ -44,7 +44,7 @@ func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, pro
 		providerUrl:            providerUrl,
 		pricePerThousandTokens: pricePerThousandTokens,
 		currency:               currency,
-		compitableProvider:     compitableProvider,
+		compatibleProvider:     compatibleProvider,
 	}
 	return p, nil
 }
@@ -109,9 +109,9 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
 	}
 	model := p.subType
-	if model == "custom-embedding" && p.compitableProvider != "" {
-		model = p.compitableProvider
-	} else if model == "custom-embedding" && p.compitableProvider == "" {
+	if model == "custom-embedding" && p.compatibleProvider != "" {
+		model = p.compatibleProvider
+	} else if model == "custom-embedding" && p.compatibleProvider == "" {
 		return nil, nil, fmt.Errorf("no embedding provider specified")
 	}
 

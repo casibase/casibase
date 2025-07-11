@@ -34,7 +34,7 @@ func NewGitHubModelProvider(typ string, subType string, secretKey string, temper
 			frequencyPenalty:   frequencyPenalty,
 			presencePenalty:    presencePenalty,
 			providerUrl:        "https://models.github.ai/inference",
-			compitableProvider: subType,
+			compatibleProvider: subType,
 		},
 	}
 	return p, nil

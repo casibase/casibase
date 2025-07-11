@@ -998,7 +998,7 @@ export function isResponseDenied(data) {
   return data.msg === "Unauthorized operation" || data.msg === "this operation requires admin privilege";
 }
 
-export function getCompitableProviderOptions(category) {
+export function getCompatibleProviderOptions(category) {
   if (category === "Model") {
     return (
       [
