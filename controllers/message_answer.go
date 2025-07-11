@@ -19,6 +19,7 @@ import (
 	"strings"
 
 	"github.com/beego/beego"
+	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
@@ -174,6 +175,9 @@ func (c *ApiController) GetMessageAnswer() {
 	if err != nil && err.Error() != "no knowledge vectors found" {
 		c.ResponseErrorStream(message, err.Error())
 		return
+	}
+	if embeddingResult == nil {
+		embeddingResult = &embedding.EmbeddingResult{}
 	}
 
 	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}, []byte{}, []byte{}}
