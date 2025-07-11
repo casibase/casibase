@@ -16,6 +16,7 @@ package model
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"io"
 	"math/rand"
@@ -65,6 +66,10 @@ func NewLocalModelProvider(typ string, subType string, secretKey string, tempera
 func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	config := openai.DefaultConfig(authToken)
 	config.BaseURL = url
+
+	transport := &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
+	httpClient := http.Client{Transport: transport}
+	config.HTTPClient = &httpClient
 
 	c := openai.NewClientWithConfig(config)
 	return c

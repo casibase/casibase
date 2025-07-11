@@ -16,7 +16,9 @@ package embedding
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/sashabaranov/go-openai"
@@ -48,6 +50,10 @@ func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, pro
 func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	config := openai.DefaultConfig(authToken)
 	config.BaseURL = url
+
+	transport := &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
+	httpClient := http.Client{Transport: transport}
+	config.HTTPClient = &httpClient
 
 	c := openai.NewClientWithConfig(config)
 	return c
