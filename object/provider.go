@@ -45,7 +45,7 @@ type Provider struct {
 	ProviderKey        string            `xorm:"varchar(100)" json:"providerKey"`
 	ProviderUrl        string            `xorm:"varchar(200)" json:"providerUrl"`
 	ApiVersion         string            `xorm:"varchar(100)" json:"apiVersion"`
-	CompitableProvider string            `xorm:"varchar(100)" json:"compitableProvider"`
+	CompatibleProvider string            `xorm:"varchar(100)" json:"compatibleProvider"`
 	McpTools           []*agent.McpTools `xorm:"text" json:"mcpTools"`
 	Text               string            `xorm:"mediumtext" json:"text"`
 
@@ -292,7 +292,7 @@ func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompitableProvider, p.InputPricePerThousandTokens, p.OutputPricePerThousandTokens, p.Currency, p.EnableThinking)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompatibleProvider, p.InputPricePerThousandTokens, p.OutputPricePerThousandTokens, p.Currency, p.EnableThinking)
 	if err != nil {
 		return nil, err
 	}

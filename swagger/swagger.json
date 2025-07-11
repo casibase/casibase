@@ -4565,7 +4565,7 @@
                 "clientSecret": {
                     "type": "string"
                 },
-                "compitableProvider": {
+                "compatibleProvider": {
                     "type": "string"
                 },
                 "contractMethod": {
