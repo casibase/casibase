@@ -30,12 +30,13 @@ type LocalEmbeddingProvider struct {
 	deploymentName         string
 	secretKey              string
 	providerUrl            string
+	compitableProvider     string
 	apiVersion             string
 	pricePerThousandTokens float64
 	currency               string
 }
 
-func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, providerUrl string, pricePerThousandTokens float64, currency string) (*LocalEmbeddingProvider, error) {
+func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, providerUrl string, compitableProvider string, pricePerThousandTokens float64, currency string) (*LocalEmbeddingProvider, error) {
 	p := &LocalEmbeddingProvider{
 		typ:                    typ,
 		subType:                subType,
@@ -43,6 +44,7 @@ func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, pro
 		providerUrl:            providerUrl,
 		pricePerThousandTokens: pricePerThousandTokens,
 		currency:               currency,
+		compitableProvider:     compitableProvider,
 	}
 	return p, nil
 }
@@ -105,13 +107,17 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 		client = getProxyClientFromToken(p.secretKey)
 	} else if p.typ == "Custom" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
-	} else if p.typ == "Ollama" {
-		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+	}
+	model := p.subType
+	if model == "custom-embedding" && p.compitableProvider != "" {
+		model = p.compitableProvider
+	} else if model == "custom-embedding" && p.compitableProvider == "" {
+		return nil, nil, fmt.Errorf("no embedding provider specified")
 	}
 
 	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
 		Input: []string{text},
-		Model: openai.EmbeddingModel(p.subType),
+		Model: openai.EmbeddingModel(model),
 	})
 	if err != nil {
 		return nil, nil, err

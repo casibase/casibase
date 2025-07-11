@@ -45,9 +45,9 @@ func GetEmbeddingProvider(typ string, subType string, clientId string, clientSec
 	} else if typ == "Baidu Cloud" {
 		p, err = NewBaiduCloudEmbeddingProvider(subType, clientId, clientSecret)
 	} else if typ == "Ollama" {
-		p, err = NewLocalEmbeddingProvider(typ, subType, "randomString", providerUrl, pricePerThousandTokens, currency)
+		p, err = NewLocalEmbeddingProvider("Custom", "custom-embedding", "randomString", providerUrl, subType, pricePerThousandTokens, currency)
 	} else if typ == "Local" {
-		p, err = NewLocalEmbeddingProvider(typ, subType, clientSecret, providerUrl, pricePerThousandTokens, currency)
+		p, err = NewLocalEmbeddingProvider(typ, subType, clientSecret, providerUrl, subType, pricePerThousandTokens, currency)
 	} else if typ == "Azure" {
 		p, err = NewAzureEmbeddingProvider(typ, subType, clientId, clientSecret, providerUrl, apiVersion)
 	} else if typ == "MiniMax" {
