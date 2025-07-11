@@ -64,12 +64,12 @@ func (p *HierarchySearchProvider) Search(storeName string, embeddingProviderName
 		return nil, nil, err
 	}
 	if qVector == nil || len(qVector) == 0 {
-		return nil, nil, fmt.Errorf("no qVector found")
+		return nil, embeddingResult, fmt.Errorf("no qVector found")
 	}
 
 	similarities, err := getNearestVectors(qVector, vectorData, knowledgeCount)
 	if err != nil {
-		return nil, nil, err
+		return nil, embeddingResult, err
 	}
 
 	res := []Vector{}
