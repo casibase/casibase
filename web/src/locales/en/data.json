@@ -307,7 +307,8 @@
     "Zone - Tooltip": "Availability zone",
     "empty": "empty",
     "items": "items",
-    "{total} in total": "{total} in total"
+    "{total} in total": "{total} in total",
+    "Web Desktop": "Web Desktop"
   },
   "image": {
     "Arch": "Arch",
