@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 
 const cardGroups = [
@@ -6,33 +6,33 @@ const cardGroups = [
         groupTitle: "数据与链",
         color: "#0984e3",
         cards: [
-            { title: "上链", icon: "🔗", router: "/chain" },
-            { title: "数据使用控制", icon: "🛡️", router: "/data-control" },
+            { title: "上链", icon: "🔗", router: "/chain", desc: "可信存证" },
+            { title: "数据使用控制", icon: "🛡️", router: "/data-control", desc: "权限与追踪" },
         ]
     },
     {
         groupTitle: "医疗智能",
         color: "#6242d5",
         cards: [
-            { title: "临床路径", icon: "🩺", router: "/clinical-path" },
-            { title: "联邦学习", icon: "🤝", router: "/federated-learning" },
+            { title: "临床路径", icon: "🩺", router: "/clinical-path", desc: "智能诊疗" },
+            { title: "联邦学习", icon: "🤝", router: "/federated-learning", desc: "多方协作" },
         ]
     },
     {
         groupTitle: "数据治理",
         color: "#40739e",
         cards: [
-            { title: "复杂查询与审计", icon: "🔍", router: "/audit" },
-            { title: "数据质量控制", icon: "📊", router: "/data-quality" },
+            { title: "复杂查询审计", icon: "🔍", router: "/audit", desc: "灵活分析" },
+            { title: "数据质量控制", icon: "📊", router: "/data-quality", desc: "数据治理" },
         ]
     },
     {
         groupTitle: "安全与扩展",
         color: "#00b894",
         cards: [
-            { title: "密文计算", icon: "🔒", router: "/crypto" },
-            { title: "工作流", icon: "🛠️", router: "/workflow" },
-            { title: "其他", icon: "✨", router: "/other" }
+            { title: "密文计算", icon: "🔒", router: "/crypto", desc: "隐私保护" },
+            { title: "工作流", icon: "🛠️", router: "/workflow", desc: "流程自动化" },
+            { title: "其他", icon: "✨", router: "/other", desc: "更多功能" }
         ]
     }
 ];
@@ -41,8 +41,45 @@ const cardGroups = [
 
 import { useHistory } from "react-router-dom";
 
+
+const cardClassName = "med-guide-card-grid-card";
+
+
 const MedGuideCardGrid = () => {
     const history = useHistory();
+
+    // 动态插入CSS
+    useEffect(() => {
+        const style = document.createElement("style");
+        style.innerHTML = `
+            .${cardClassName} {
+                position: relative;
+                overflow: visible;
+            }
+            .${cardClassName}:hover {
+                font-weight: 700 !important;
+            }
+            .${cardClassName}:hover::before {
+                content: "";
+                inset: 0;
+                position: absolute;
+                background: linear-gradient(180deg, #998dff 0, #576dff 50%, #3370ff 100%);
+                padding: 1px;
+                border-radius: 16px;
+                -webkit-mask-image: linear-gradient(#fff 0 0), linear-gradient(#fff 0 0);
+                -webkit-mask-clip: content-box, border-box;
+                -webkit-mask-composite: xor;
+                mask-composite: exclude;
+                pointer-events: none;
+                z-index: 1;
+            }
+            .desc-span {
+                font-weight: 400 !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }, []);
+
     return (
         <div style={{
             display: "grid",
@@ -54,53 +91,67 @@ const MedGuideCardGrid = () => {
             padding: "0 150px"
         }}>
             {cardGroups.map((group, groupIdx) => (
-                <div key={groupIdx} style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    borderRadius: 18,
-                    // padding: "28px 24px 18px 24px",
-                    // minWidth: 320,
-                    minHeight: 160
-                }}>
-                    <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 18, color: group.color }}>
+                <div
+                    key={groupIdx}
+
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "flex-start",
+                        borderRadius: 18,
+                        background: "#fff",
+                        boxShadow: "0 4px 18px rgba(0,0,0,0.08)",
+                        padding: "18px 24px 12px 24px",
+                        minHeight: 160,
+                        transition: "all 0.2s",
+                        border: "2px solid rgba(0,0,0,0.05)"
+                    }}
+                // onMouseOver={e => {
+                //     e.currentTarget.style.boxShadow = "0 6px 24px 0 rgb(0 53 255 / 2%), 0 7px 35px 0 rgb(0 92 255 / 4%)";
+                //     e.currentTarget.style.border = "2px solid #747d8c"
+                // }}
+                // onMouseOut={e => {
+                //     e.currentTarget.style.boxShadow = "0 4px 18px rgba(0,0,0,0.08)";
+                //     e.currentTarget.style.border = "2px solid rgba(0,0,0,0.05)"
+                // }}
+                >
+                    <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 14, color: group.color, marginTop: 8 }}>
                         <span style={{ fontWeight: 400, color: "#a4b0be" }}>#{groupIdx + 1} </span>
                         {group.groupTitle}
                     </div>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "18px", justifyContent: "center" }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", justifyContent: "center" }}>
                         {group.cards.map((item, idx) => (
                             <div
                                 key={idx}
+                                className={cardClassName}
                                 style={{
-                                    width: 180,
-                                    height: 120,
-                                    borderRadius: 14,
+                                    width: 130,
+                                    height: 140,
+                                    borderRadius: 12,
                                     display: "flex",
                                     flexDirection: "column",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    fontSize: 20,
-                                    fontWeight: 600,
+                                    fontSize: 18,
+                                    fontWeight: 500,
                                     cursor: "pointer",
                                     border: "none",
-                                    transition: "transform 0.2s, box-shadow 0.2s",
-                                    position: "relative",
-                                    boxShadow: "0 6px 24px 0 rgb(0 53 255 / 2%), 0 7px 35px 0 rgb(0 92 255 / 4%)"
-
+                                    background: "none",
+                                    transition: "all 0.2s"
                                 }}
                                 onClick={() => item.router && history.push(item.router)}
                                 onMouseOver={e => {
-                                    e.currentTarget.style.transform = "scale(1.08)";
-                                    e.currentTarget.style.boxShadow = "0 8px 32px rgba(0,0,0,0.16)";
+                                    e.currentTarget.style.fontWeight = "700";
+                                    e.currentTarget.style.boxShadow = "0 3px 20px 0 rgba(66, 89, 153, .18)";
                                 }}
                                 onMouseOut={e => {
-                                    e.currentTarget.style.transform = "scale(1)";
-                                    e.currentTarget.style.boxShadow = "0 6px 24px 0 rgb(0 53 255 / 2%), 0 7px 35px 0 rgb(0 92 255 / 4%)";
+                                    e.currentTarget.style.fontWeight = "500";
+                                    e.currentTarget.style.boxShadow = "none";
                                 }}
                             >
-                                <span style={{ fontSize: 30, marginBottom: 6 }}>{item.icon}</span>
-                                <span>{item.title}</span>
-                                {item.desc && <span style={{ fontSize: 13, color: "#888", marginTop: 4 }}>{item.desc}</span>}
+                                <div style={{ fontSize: 38, marginBottom: 20 }}>{item.icon}</div>
+                                <div>{item.title}</div>
+                                {item.desc && <span style={{ fontSize: 13, color: "#888", marginTop: 4 }} className="desc-span">{item.desc}</span>}
                             </div>
                         ))}
                     </div>

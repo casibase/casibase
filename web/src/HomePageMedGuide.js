@@ -78,7 +78,7 @@ class HomePageMedGuide extends React.Component {
           <div style={{ backgroundImage: "url(https://awp-assets.meituan.net/xm/dx-static-page/src/images/downloadPage/download-bg-new.png)", backgroundSize: "cover", padding: 20, minHeight: "calc(100vh - 64px)", borderRadius: 12 }}>
             <div style={{ textAlign: "center", marginBottom: 24 }}>
 
-              <div style={{ fontSize: 48, fontWeight: 700, marginTop: 30 }}>👋 {greeting}，欢迎访问本系统</div>
+              <div style={{ fontSize: 48, fontWeight: 700, marginTop: 20 }}>👋 {greeting}，欢迎访问本系统</div>
               <div style={{ fontSize: 24, fontWeight: 400, marginTop: 15, color: "#8c8c8c" }}> 请点击卡片进入各子功能  </div>
             </div>
             {/* 卡片区域 */}
