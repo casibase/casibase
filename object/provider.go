@@ -189,7 +189,7 @@ func GetProvider(id string) (*Provider, error) {
 
 func UpdateProvider(id string, provider *Provider) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	p, err := getProvider(owner, name)
+	providerDb, err := getProvider(owner, name)
 	if err != nil {
 		return false, err
 	}
@@ -197,23 +197,7 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 		return false, nil
 	}
 
-	if provider.ClientSecret == "***" {
-		provider.ClientSecret = p.ClientSecret
-	}
-	if provider.UserKey == "***" {
-		provider.UserKey = p.UserKey
-	}
-	if provider.SignKey == "***" {
-		provider.SignKey = p.SignKey
-	}
-
-	if provider.ProviderKey == "" && provider.Category == "Model" {
-		provider.ProviderKey = generateProviderKey()
-	}
-
-	if provider.Type == "Ollama" && provider.ProviderUrl != "" && !strings.HasPrefix(provider.ProviderUrl, "http") {
-		provider.ProviderUrl = "http://" + provider.ProviderUrl
-	}
+	provider.processProviderParams(providerDb)
 
 	if providerAdapter != nil && provider.Category != "Storage" {
 		_, err = providerAdapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
@@ -441,4 +425,29 @@ func RefreshMcpTools(provider *Provider) error {
 
 	provider.McpTools = tools
 	return nil
+}
+
+func (p *Provider) processProviderParams(providerDb *Provider) {
+	if p.ClientSecret == "***" {
+		p.ClientSecret = providerDb.ClientSecret
+	}
+	if p.UserKey == "***" {
+		p.UserKey = providerDb.UserKey
+	}
+	if p.SignKey == "***" {
+		p.SignKey = providerDb.SignKey
+	}
+	if p.ProviderKey == "" && p.Category == "Model" {
+		p.ProviderKey = generateProviderKey()
+	}
+
+	if p.Type == "Ollama" && p.ProviderUrl != "" && !strings.HasPrefix(p.ProviderUrl, "http") {
+		p.ProviderUrl = "http://" + p.ProviderUrl
+	}
+	if p.Category == "Model" && p.Type == "OpenAI" && (strings.Contains(p.SubType, "o3") || strings.Contains(p.SubType, "o4-mini")) {
+		p.Temperature = 1
+		p.TopP = 1
+		p.FrequencyPenalty = 0
+		p.PresencePenalty = 0
+	}
 }

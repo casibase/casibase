@@ -81,7 +81,7 @@ https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-serv
 
 Language models:
 
-| Models                | Context | Input (Per 1,000 tokens) | Output (Per 1,000 tokens) |
+	| Models                | Context | Input (Per 1,000 tokens) | Output (Per 1,000 tokens) |
 |-----------------------|---------|--------------------------|--------------------------|
 | GPT-3.5-Turbo-0125    | 16K     | $0.0005                  | $0.0015                  |
 | GPT-3.5-Turbo-Instruct| 4K      | $0.0015                  | $0.002                   |
@@ -91,6 +91,11 @@ Language models:
 | GPT-4                 | 32K     | $0.06                    | $0.12                    |
 | GPT-4o                | 128K    | $0.0025                  | $0.0075                  |
 | GPT-4o-mini           | 128K    | $0.000075                | $0.0003                  |
+| GPT-4.1               | 100K    | $0.002                   | $0.008                  |
+| GPT-4.1-mini          | 100K    | $0.0004	                 | $0.0016                  |
+| GPT-4.1-nano          | 100K    | $0.0001                  | $0.0004                  |
+| o3                    | 200K    | $0.002                   | $0.008                  |
+| o4-mini               | 200K    | $0.0011                  | $0.0044                  |
 
 Image models:
 
@@ -161,6 +166,20 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 		}
 		modelResult.Currency = "USD"
 
+	// gpt 4.1 model
+	case strings.Contains(model, "gpt-4.1"):
+		if strings.Contains(model, "4.1-mini") {
+			inputPricePerThousandTokens = 0.0004
+			outputPricePerThousandTokens = 0.0016
+		} else if strings.Contains(model, "4.1-nano") {
+			inputPricePerThousandTokens = 0.0001
+			outputPricePerThousandTokens = 0.0004
+		} else {
+			inputPricePerThousandTokens = 0.002
+			outputPricePerThousandTokens = 0.008
+		}
+		modelResult.Currency = "USD"
+
 	// gpt 4.0 model
 	case strings.Contains(model, "gpt-4"):
 		if strings.Contains(model, "preview") {
@@ -178,6 +197,23 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 		} else {
 			inputPricePerThousandTokens = 0.03
 			outputPricePerThousandTokens = 0.06
+		}
+		modelResult.Currency = "USD"
+
+	// o3 model
+	case strings.Contains(model, "o3"):
+		inputPricePerThousandTokens = 0.002
+		outputPricePerThousandTokens = 0.008
+		modelResult.Currency = "USD"
+
+	// o4 model
+	case strings.Contains(model, "o4"):
+		if strings.Contains(model, "o4-mini") {
+			inputPricePerThousandTokens = 0.0011
+			outputPricePerThousandTokens = 0.0044
+		} else {
+			inputPricePerThousandTokens = 0.0011
+			outputPricePerThousandTokens = 0.0044
 		}
 		modelResult.Currency = "USD"
 
