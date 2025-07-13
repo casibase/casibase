@@ -1021,6 +1021,13 @@ export function getCompatibleProviderOptions(category) {
         {"id": "gpt-4o-2024-05-13", "name": "gpt-4o-2024-05-13"},
         {"id": "gpt-4o-mini", "name": "gpt-4o-mini"},
         {"id": "gpt-4o-mini-2024-07-18", "name": "gpt-4o-mini-2024-07-18"},
+        {"id": "gpt-4.1", "name": "gpt-4.1"},
+        {"id": "gpt-4.1-mini", "name": "gpt-4.1-mini"},
+        {"id": "gpt-4.1-nano", "name": "gpt-4.1-nano"},
+        {"id": "gpt-4.5-preview", "name": "gpt-4.5-preview"},
+        {"id": "gpt-4.5-preview-2025-02-27", "name": "gpt-4.5-preview-2025-02-27"},
+        {"id": "o3", "name": "o3"},
+        {"id": "o4-mini", "name": "o4-mini"},
       ]
     );
   } else if (category === "Embedding") {
@@ -1176,8 +1183,13 @@ const openaiModels = [
   {id: "gpt-4o-2024-05-13", name: "gpt-4o-2024-05-13"},
   {id: "gpt-4o-mini", name: "gpt-4o-mini"},
   {id: "gpt-4o-mini-2024-07-18", name: "gpt-4o-mini-2024-07-18"},
+  {id: "gpt-4.1", name: "gpt-4.1"},
+  {id: "gpt-4.1-mini", name: "gpt-4.1-mini"},
+  {id: "gpt-4.1-nano", name: "gpt-4.1-nano"},
   {id: "gpt-4.5-preview", name: "gpt-4.5-preview"},
   {id: "gpt-4.5-preview-2025-02-27", name: "gpt-4.5-preview-2025-02-27"},
+  {id: "o3", name: "o3"},
+  {id: "o4-mini", name: "o4-mini"},
 ];
 
 const openaiEmbeddings = [
