@@ -293,9 +293,9 @@ class App extends Component {
       items.push(Setting.getItem(<><SettingOutlined />&nbsp;&nbsp;{i18next.t("account:My Account")}</>,
         "/account"
       ));
-      items.push(Setting.getItem(<><CommentOutlined />&nbsp;&nbsp;{i18next.t("general:Chats & Messages")}</>,
-        "/chat"
-      ));
+      // items.push(Setting.getItem(<><CommentOutlined />&nbsp;&nbsp;{i18next.t("general:Chats & Messages")}</>,
+      //   "/chat"
+      // ));
       items.push(Setting.getItem(<><LogoutOutlined />&nbsp;&nbsp;{i18next.t("account:Sign Out")}</>,
         "/logout"
       ));
@@ -468,7 +468,7 @@ class App extends Component {
         Setting.goToLinkSoft(this, "/videos");
       }
     } else if (domain === "med" || true) {
-      res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
+      // res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
       res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows", <BuildTwoTone twoToneColor={twoToneColor} />));
       res.push(Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />));
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:Image Operation")}</Link>, "/img", <CameraTwoTone twoToneColor={twoToneColor} />, [
@@ -701,7 +701,7 @@ class App extends Component {
         <Layout>
           {/* 只有非首页才显示 Sider */}
           {!isHome && (
-            <Sider width={200} style={{ background: "#fff", minHeight: "calc(100vh - 64px)", boxShadow: "2px 0 8px rgba(0,0,0,0.08)" }}>
+            <Sider width={200} style={{ background: "#fff", minHeight: "calc(100vh - 64px)", boxShadow: "2px 8px 8px rgba(0,0,0,0.08)" }}>
               <Menu
                 mode="inline"
                 selectedKeys={[this.state.selectedMenuKey]}
