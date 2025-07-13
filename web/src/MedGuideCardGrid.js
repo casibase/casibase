@@ -14,7 +14,7 @@ const cardGroups = [
         groupTitle: "医疗智能",
         color: "#6242d5",
         cards: [
-            { title: "临床路径", icon: "🩺", router: "/clinical-path", desc: "智能诊疗" },
+            { title: "临床路径", icon: "🩺", router: "/workflows", desc: "智能诊疗" },
             { title: "联邦学习", icon: "🤝", router: "/federated-learning", desc: "多方协作" },
         ]
     },
@@ -31,7 +31,6 @@ const cardGroups = [
         color: "#00b894",
         cards: [
             { title: "密文计算", icon: "🔒", router: "/crypto", desc: "隐私保护" },
-            { title: "工作流", icon: "🛠️", router: "/workflow", desc: "流程自动化" },
             { title: "其他", icon: "✨", router: "/other", desc: "更多功能" }
         ]
     }
