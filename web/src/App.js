@@ -79,6 +79,7 @@ import PythonYolov8miPage from "./frame/PythonYolov8miPage";
 import PythonSrPage from "./frame/PythonSrPage";
 import SystemInfo from "./SystemInfo";
 import * as FetchFilter from "./backend/FetchFilter";
+import OsDesktop from "./OsDesktop";
 
 const {Header, Footer, Content} = Layout;
 
@@ -522,6 +523,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/chat">{i18next.t("general:Home")}</Link>, "/home", <HomeTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/Chat"),
         Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"),
+        Setting.getItem(<Link to="/desktop">{i18next.t("general:OS Desktop")}</Link>, "/desktop"),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/chats">{i18next.t("general:Chats & Messages")}</Link>, "/ai-chat", <BulbTwoTone twoToneColor={twoToneColor} />, [
@@ -653,6 +655,7 @@ class App extends Component {
         <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/usages" render={(props) => this.renderSigninIfNotSignedIn(<UsagePage account={this.state.account} {...props} />)} />
+        <Route exact path="/desktop" component={(props) => <OsDesktop account={this.state.account} {...props} />} />
         <Route exact path="/nodes" render={(props) => this.renderSigninIfNotSignedIn(<NodeListPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes/:nodeName" render={(props) => this.renderSigninIfNotSignedIn(<NodeEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/sessions" render={(props) => this.renderSigninIfNotSignedIn(<SessionListPage account={this.state.account} {...props} />)} />
