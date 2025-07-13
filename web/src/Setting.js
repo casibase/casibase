@@ -1002,23 +1002,11 @@ export function getCompatibleProviderOptions(category) {
   if (category === "Model") {
     return (
       [
-        {"id": "gpt-3.5-turbo-0125", "name": "gpt-3.5-turbo-0125"},
         {"id": "gpt-3.5-turbo", "name": "gpt-3.5-turbo"},
-        {"id": "gpt-3.5-turbo-1106", "name": "gpt-3.5-turbo-1106"},
-        {"id": "gpt-3.5-turbo-instruct", "name": "gpt-3.5-turbo-instruct"},
-        {"id": "gpt-3.5-turbo-16k-0613", "name": "gpt-3.5-turbo-16k-0613"},
-        {"id": "gpt-3.5-turbo-16k", "name": "gpt-3.5-turbo-16k"},
-        {"id": "gpt-4-0125-preview", "name": "gpt-4-0125-preview"},
-        {"id": "gpt-4-1106-preview", "name": "gpt-4-1106-preview"},
-        {"id": "gpt-4-turbo-preview", "name": "gpt-4-turbo-preview"},
-        {"id": "gpt-4-vision-preview", "name": "gpt-4-vision-preview"},
-        {"id": "gpt-4-1106-vision-preview", "name": "gpt-4-1106-vision-preview"},
         {"id": "gpt-4", "name": "gpt-4"},
-        {"id": "gpt-4-0613", "name": "gpt-4-0613"},
-        {"id": "gpt-4-32k", "name": "gpt-4-32k"},
-        {"id": "gpt-4-32k-0613", "name": "gpt-4-32k-0613"},
+        {"id": "gpt-4-turbo", "name": "gpt-4-turbo"},
         {"id": "gpt-4o", "name": "gpt-4o"},
-        {"id": "gpt-4o-2024-05-13", "name": "gpt-4o-2024-05-13"},
+        {"id": "gpt-4o-2024-08-06", "name": "gpt-4o-2024-08-06"},
         {"id": "gpt-4o-mini", "name": "gpt-4o-mini"},
         {"id": "gpt-4o-mini-2024-07-18", "name": "gpt-4o-mini-2024-07-18"},
         {"id": "gpt-4.1", "name": "gpt-4.1"},
@@ -1027,6 +1015,7 @@ export function getCompatibleProviderOptions(category) {
         {"id": "gpt-4.5-preview", "name": "gpt-4.5-preview"},
         {"id": "gpt-4.5-preview-2025-02-27", "name": "gpt-4.5-preview-2025-02-27"},
         {"id": "o3", "name": "o3"},
+        {"id": "o3-mini", "name": "o3-mini"},
         {"id": "o4-mini", "name": "o4-mini"},
       ]
     );
@@ -1164,23 +1153,11 @@ export function redirectToLogin() {
 
 const openaiModels = [
   {id: "dall-e-3", name: "dall-e-3"},
-  {id: "gpt-3.5-turbo-0125", name: "gpt-3.5-turbo-0125"},
   {id: "gpt-3.5-turbo", name: "gpt-3.5-turbo"},
-  {id: "gpt-3.5-turbo-1106", name: "gpt-3.5-turbo-1106"},
-  {id: "gpt-3.5-turbo-instruct", name: "gpt-3.5-turbo-instruct"},
-  {id: "gpt-3.5-turbo-16k-0613", name: "gpt-3.5-turbo-16k-0613"},
-  {id: "gpt-3.5-turbo-16k", name: "gpt-3.5-turbo-16k"},
-  {id: "gpt-4-0125-preview", name: "gpt-4-0125-preview"},
-  {id: "gpt-4-1106-preview", name: "gpt-4-1106-preview"},
-  {id: "gpt-4-turbo-preview", name: "gpt-4-turbo-preview"},
-  {id: "gpt-4-vision-preview", name: "gpt-4-vision-preview"},
-  {id: "gpt-4-1106-vision-preview", name: "gpt-4-1106-vision-preview"},
   {id: "gpt-4", name: "gpt-4"},
-  {id: "gpt-4-0613", name: "gpt-4-0613"},
-  {id: "gpt-4-32k", name: "gpt-4-32k"},
-  {id: "gpt-4-32k-0613", name: "gpt-4-32k-0613"},
+  {id: "gpt-4-turbo", name: "gpt-4-turbo"},
   {id: "gpt-4o", name: "gpt-4o"},
-  {id: "gpt-4o-2024-05-13", name: "gpt-4o-2024-05-13"},
+  {id: "gpt-4o-2024-08-06", name: "gpt-4o-2024-08-06"},
   {id: "gpt-4o-mini", name: "gpt-4o-mini"},
   {id: "gpt-4o-mini-2024-07-18", name: "gpt-4o-mini-2024-07-18"},
   {id: "gpt-4.1", name: "gpt-4.1"},
@@ -1189,6 +1166,7 @@ const openaiModels = [
   {id: "gpt-4.5-preview", name: "gpt-4.5-preview"},
   {id: "gpt-4.5-preview-2025-02-27", name: "gpt-4.5-preview-2025-02-27"},
   {id: "o3", name: "o3"},
+  {id: "o3-mini", name: "o3-mini"},
   {id: "o4-mini", name: "o4-mini"},
 ];
 

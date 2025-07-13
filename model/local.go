@@ -81,20 +81,19 @@ https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-serv
 
 Language models:
 
-	| Models                | Context | Input (Per 1,000 tokens) | Output (Per 1,000 tokens) |
+| Models                | Context | Input (Per 1,000 tokens) | Output (Per 1,000 tokens) |
 |-----------------------|---------|--------------------------|--------------------------|
-| GPT-3.5-Turbo-0125    | 16K     | $0.0005                  | $0.0015                  |
-| GPT-3.5-Turbo-Instruct| 4K      | $0.0015                  | $0.002                   |
-| GPT-4-Turbo           | 128K    | $0.01                    | $0.03                    |
-| GPT-4-Turbo-Vision    | 128K    | $0.01                    | $0.03                    |
+| GPT-3.5-Turbo         | 16K     | $0.0005                  | $0.0015                  |
 | GPT-4                 | 8K      | $0.03                    | $0.06                    |
 | GPT-4                 | 32K     | $0.06                    | $0.12                    |
+| GPT-4-Turbo           | 128K    | $0.01                    | $0.03                    |
 | GPT-4o                | 128K    | $0.0025                  | $0.0075                  |
 | GPT-4o-mini           | 128K    | $0.000075                | $0.0003                  |
-| GPT-4.1               | 100K    | $0.002                   | $0.008                  |
+| GPT-4.1               | 100K    | $0.002                   | $0.008                   |
 | GPT-4.1-mini          | 100K    | $0.0004	                 | $0.0016                  |
 | GPT-4.1-nano          | 100K    | $0.0001                  | $0.0004                  |
-| o3                    | 200K    | $0.002                   | $0.008                  |
+| o3                    | 200K    | $0.002                   | $0.008                   |
+| o3-mini               | 200K    | $0.0011                  | $0.0044                   |
 | o4-mini               | 200K    | $0.0011                  | $0.0044                  |
 
 Image models:
@@ -109,50 +108,14 @@ Image models:
 `
 }
 
-// calculatePrice calculates the total price for using a specific AI model based on the input and output token counts.
-// This function supports various models with different pricing strategies as outlined below:
-//
-// GPT-3.5 Turbo Models:
-// - "gpt-3.5-turbo-16k" and variants: $0.003 per 1,000 input tokens, $0.004 per 1,000 output tokens.
-// - "gpt-3.5-turbo-instruct": $0.0015 per 1,000 input tokens, $0.002 per 1,000 output tokens.
-// - "gpt-3.5-turbo-1106": $0.001 per 1,000 input tokens, $0.002 per 1,000 output tokens.
-// - Other GPT-3.5 Turbo models (default pricing): $0.0005 per 1,000 input tokens, $0.0015 per 1,000 output tokens.
-//
-// GPT-4.0 Models:
-// - Models with "preview" in their name: $0.01 per 1,000 input tokens, $0.03 per 1,000 output tokens.
-// - "gpt-4-32k" and variants: $0.06 per 1,000 input tokens, $0.12 per 1,000 output tokens.
-// - Other GPT-4 models (default pricing): $0.03 per 1,000 input tokens, $0.06 per 1,000 output tokens.
-//
-// DALL-E Models:
-// - "dall-e-3": Flat rate of $0.08 per image generated, regardless of token count.
-//
-// The function dynamically calculates the total price based on the specific model and the number of input/output tokens or images.
-// Prices are calculated in USD.
-//
-// Parameters:
-// - modelResult: A pointer to a ModelResult struct, which contains model details, including the token count and the number of images (if applicable).
-//
-// Returns:
-// - error: Returns an error if the model type is unknown, otherwise nil.
 func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 	model := p.subType
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	switch {
 	// gpt 3.5 turbo model Support:
 	case strings.Contains(model, "gpt-3.5"):
-		if strings.Contains(model, "16k") {
-			inputPricePerThousandTokens = 0.003
-			outputPricePerThousandTokens = 0.004
-		} else if strings.Contains(model, "instruct") {
-			inputPricePerThousandTokens = 0.0015
-			outputPricePerThousandTokens = 0.002
-		} else if strings.Contains(model, "1106") {
-			inputPricePerThousandTokens = 0.001
-			outputPricePerThousandTokens = 0.002
-		} else {
-			inputPricePerThousandTokens = 0.0005
-			outputPricePerThousandTokens = 0.0015
-		}
+		inputPricePerThousandTokens = 0.0005
+		outputPricePerThousandTokens = 0.0015
 		modelResult.Currency = "USD"
 
 	// gpt 4.5 model
@@ -182,12 +145,9 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 
 	// gpt 4.0 model
 	case strings.Contains(model, "gpt-4"):
-		if strings.Contains(model, "preview") {
+		if strings.Contains(model, "turbo") {
 			inputPricePerThousandTokens = 0.01
 			outputPricePerThousandTokens = 0.03
-		} else if strings.Contains(model, "32k") {
-			inputPricePerThousandTokens = 0.06
-			outputPricePerThousandTokens = 0.12
 		} else if strings.Contains(model, "4o-mini") {
 			inputPricePerThousandTokens = 0.000075
 			outputPricePerThousandTokens = 0.0003
@@ -202,8 +162,13 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 
 	// o3 model
 	case strings.Contains(model, "o3"):
-		inputPricePerThousandTokens = 0.002
-		outputPricePerThousandTokens = 0.008
+		if strings.Contains(model, "mini") {
+			inputPricePerThousandTokens = 0.0011
+			outputPricePerThousandTokens = 0.0044
+		} else {
+			inputPricePerThousandTokens = 0.002
+			outputPricePerThousandTokens = 0.008
+		}
 		modelResult.Currency = "USD"
 
 	// o4 model
