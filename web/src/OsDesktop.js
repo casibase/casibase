@@ -140,6 +140,10 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, onClose,
         className="window-header"
         {...attributes}
         {...listeners}
+        onDoubleClick={(e) => {
+          e.stopPropagation();
+          onMaximize();
+        }}
       >
         <div className="window-navigation">
           <Button
