@@ -22,6 +22,7 @@ import ChatPrompts from "./ChatPrompts";
 import MessageList from "./chat/MessageList";
 import ChatInput from "./chat/ChatInput";
 import WelcomeHeader from "./chat/WelcomeHeader";
+import PromptModal from "./chat/PromptModal";
 import * as MessageBackend from "./backend/MessageBackend";
 import TtsHelper from "./TextToSpeech";
 import SpeechToTextHelper from "./SpeechToText";
@@ -41,6 +42,7 @@ class ChatBox extends React.Component {
       isLoadingTTS: false,
       isVoiceInput: false,
       rerenderErrorMessage: false,
+      promptModalVisible: false,
     };
     this.synth = window.speechSynthesis;
     this.cursorPosition = undefined;
@@ -49,7 +51,18 @@ class ChatBox extends React.Component {
     this.ttsHelper = new TtsHelper(this);
     this.sttHelper = new SpeechToTextHelper(this);
   }
+  handlePromptClick = () => {
+    this.setState({promptModalVisible: true});
+  };
 
+  handlePromptCancel = () => {
+    this.setState({promptModalVisible: false});
+  };
+
+  handlePromptSave = (prompt) => {
+    this.props.onPromptChange(prompt);
+    this.setState({promptModalVisible: false});
+  };
   componentDidMount() {
     window.addEventListener("beforeunload", () => {
       this.synth.cancel();
@@ -58,7 +71,6 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    // clear old status when the name(chat) changes
     if (prevProps.name !== this.props.name) {
       inputStore.set(prevProps.name, this.state.value);
       this.clearOldStatus();
@@ -332,7 +344,6 @@ class ChatBox extends React.Component {
       <Layout style={{display: "flex", width: "100%", height: "100%", borderRadius: "6px"}}>
         <Card style={{display: "flex", width: "100%", height: "100%", flexDirection: "column", position: "relative", padding: "24px"}}>
           {messages.length === 0 && <WelcomeHeader store={this.props.store} />}
-
           <MessageList
             ref={this.messageListRef}
             messages={messages}
@@ -365,13 +376,22 @@ class ChatBox extends React.Component {
               disableInput={this.props.disableInput}
               messageError={this.props.messageError}
               onCancelMessage={this.props.onCancelMessage}
+              onPromptClick={this.handlePromptClick}
+              promptValue={this.props.promptValue}
               onVoiceInputStart={this.startVoiceInput}
               onVoiceInputEnd={this.stopVoiceInput}
               isVoiceInput={this.state.isVoiceInput}
             />
           )}
         </Card>
-
+        <PromptModal
+          visible={this.state.promptModalVisible}
+          initialValue={this.props.promptValue}
+          onSave={this.handlePromptSave}
+          onCancel={this.handlePromptCancel}
+          loading={this.props.loading}
+          disabled={this.props.disableInput}
+        />
         {messages.length === 0 ? (
           <ChatPrompts
             sendMessage={this.props.sendMessage}

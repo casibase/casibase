@@ -54,6 +54,7 @@ class ChatPage extends BaseListPage {
       defaultStore: null,
       filteredStores: [],
       paneCount: 1,
+      chatPrompt: "",
     });
 
     this.fetch();
@@ -208,9 +209,26 @@ class ChatPage extends BaseListPage {
       userAgent: this.props.account.education,
       messageCount: 0,
       needTitle: true,
+      prompt: "",
     };
   }
+  updateChatPrompt = (prompt) => {
+    if (!this.state.chat) {return;}
 
+    this.setState({chatPrompt: prompt});
+
+    const chatId = this.state.chat.owner + "/" + this.state.chat.name;
+    localStorage.setItem(`chatPrompt_${chatId}`, prompt);
+
+    Setting.showMessage("success", i18next.t("general:Successfully updated"));
+  };
+  loadChatPrompt = (chat) => {
+    if (!chat) {return;}
+
+    const chatId = chat.owner + "/" + chat.name;
+    const savedPrompt = localStorage.getItem(`chatPrompt_${chatId}`) || "";
+    this.setState({chatPrompt: savedPrompt});
+  };
   newMessage(text, fileName, isHidden, isRegenerated) {
     const randomName = Setting.getRandomName();
     const message = {
@@ -229,6 +247,7 @@ class ChatPage extends BaseListPage {
       isAlerted: false,
       isRegenerated: isRegenerated,
       fileName: fileName,
+      customPrompt: this.state.chatPrompt || "",
     };
 
     if (!this.state.chat) {
@@ -330,6 +349,7 @@ class ChatPage extends BaseListPage {
   }
 
   getMessages(chat) {
+    this.loadChatPrompt(chat);
     MessageBackend.getChatMessages("admin", chat.name)
       .then((res) => {
         if (this.getMessageAnswerFromURL(res.data)) {
@@ -776,7 +796,10 @@ class ChatPage extends BaseListPage {
                 name={this.state.chat?.name}
                 displayName={this.state.chat?.displayName}
                 store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : this.state.stores?.find(store => store.isDefault === true)}
+                promptValue={this.state.chatPrompt}
+                onPromptChange={this.updateChatPrompt}
               />
+
             </div>
           )}
         </div>
