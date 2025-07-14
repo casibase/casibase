@@ -28,6 +28,7 @@ import "./OsDesktop.css";
 import {LeftOutlined, RightOutlined} from "@ant-design/icons";
 import {useHistory} from "react-router-dom";
 import routeManager, {DynamicRouteComponent} from "./component/AppRouteManager";
+import {StaticBaseUrl} from "./Conf";
 
 const DesktopIcon = ({name, iconType, onClick}) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -62,7 +63,7 @@ const DesktopIcon = ({name, iconType, onClick}) => {
     >
       <div className="icon">
         <img
-          src={`https://cdn.casibase.org/apps/${iconType}.svg`}
+          src={`${StaticBaseUrl}/apps/${iconType}.svg`}
           alt={name}
         />
       </div>
@@ -165,7 +166,7 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, onClose,
             }}
           />
         </div>
-        <div className="window-title">{title}</div>
+        <div className="window-title">{i18next.t(`general:${title}`)}</div>
         <div className="window-controls">
           <Button size="small" onClick={(e) => {
             e.stopPropagation();
@@ -237,7 +238,7 @@ const OsDesktop = (props) => {
   const openWindow = (appType) => {
     const id = `window-${nextWindowId}`;
     const appConfig = routeManager.getAppConfig(appType);
-    const title = i18next.t(`general:${appConfig.title}`);
+    const title = appConfig.title;
     const initialRoute = `/${appType}s`;
 
     const offset = (windows.length * 30) % 150;
