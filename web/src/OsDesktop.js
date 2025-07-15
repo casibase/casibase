@@ -204,6 +204,13 @@ const OsDesktop = (props) => {
   const history = useHistory();
 
   useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "visible";
+    };
+  }, []);
+
+  useEffect(() => {
     const handleClickOutside = (e) => {
       if (desktopRef.current && e.target === desktopRef.current || e.target.className === "desktop-content") {
         setActiveWindowId(null);
