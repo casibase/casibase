@@ -72,7 +72,7 @@ const WindowContent = ({appType, account, history, match, location, isDesktopMod
   );
 };
 
-const Window = ({id, title, isMaximized, isMinimized, zIndex, position, onClose, onMaximize, onMinimize, onFocus, appType, account, history, match, location, onRouteChange, windowHistory, onGoBack, onGoForward, isDragging}) => {
+const Window = ({id, title, isMaximized, isMinimized, zIndex, position, onClose, onMaximize, onMinimize, onFocus, appType, appConfig, account, history, match, location, onRouteChange, windowHistory, onGoBack, onGoForward, isDragging}) => {
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id,
     disabled: isMaximized,
@@ -153,7 +153,7 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, onClose,
             }}
           />
         </div>
-        <div className="window-title">{i18next.t(`general:${title}`)}</div>
+        <div className="window-title">{i18next.t(`${appConfig?.i18nNamespace || "general"}:${title}`)}</div>
         <div className="window-controls">
           <Button size="small" onClick={(e) => {
             e.stopPropagation();
@@ -296,6 +296,7 @@ const OsDesktop = (props) => {
       id,
       title,
       appType,
+      appConfig,
       iconPath,
       gradient,
       isMaximized: false,
@@ -583,7 +584,7 @@ const OsDesktop = (props) => {
           {routeManager.getAllAppConfigs().map((app) => (
             <DesktopIcon
               key={app.appType}
-              name={i18next.t(`general:${app.title}`)}
+              name={i18next.t(`${app.i18nNamespace || "general"}:${app.title}`)}
               iconPath={app.iconPath}
               onClick={() => openWindow(app.appType)}
               gradient={app.gradient}
@@ -606,6 +607,7 @@ const OsDesktop = (props) => {
               zIndex={window.zIndex}
               position={window.position}
               appType={window.appType}
+              appConfig={window.appConfig}
               account={props.account}
               history={props.history || history}
               match={window.match}
