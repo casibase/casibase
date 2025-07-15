@@ -85,7 +85,7 @@ routeManager.registerApp("chat", {
 });
 
 routeManager.registerApp("usage", {
-  title: "Usage",
+  title: "Usages",
   iconPath: "usage.svg",
   gradient: "linear-gradient(135deg, #E25232 0%, #59BCF4 100%)",
   routes: [
@@ -368,6 +368,7 @@ routeManager.registerApp("audit", {
   title: "Audit",
   iconPath: "audit.svg",
   gradient: "linear-gradient(135deg, #8BD36E 0%, #94AAF8 100%)",
+  i18nNamespace: "med",
   routes: [
     {
       path: "/audit",
@@ -380,6 +381,7 @@ routeManager.registerApp("yolov8mi", {
   title: "Medical Image Analysis",
   iconPath: "medical.svg",
   gradient: "linear-gradient(135deg,rgb(151, 185, 219) 0%, #42579B 100%)",
+  i18nNamespace: "med",
   routes: [
     {
       path: "/yolov8mi",
@@ -408,6 +410,7 @@ routeManager.registerApp("sr", {
   title: "Super Resolution",
   iconPath: "super.svg",
   gradient: "linear-gradient(135deg, #303B68 0%, #65C37C 100%)",
+  i18nNamespace: "med",
   routes: [
     {
       path: "/sr",
