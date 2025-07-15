@@ -186,32 +186,125 @@
 }
 
 .window-header {
-  height: 30px;
+  height: 32px;
   background-color: #f0f0f0;
   display: flex;
   align-items: center;
-  padding: 0 10px;
+  justify-content: space-between;
+  padding-left: 12px;
+  padding-right: 0;
   cursor: move;
   user-select: none;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.window-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.window-app-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.window-app-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.window-title {
+  font-size: 14px;
+  font-weight: 400;
+  color: #323130;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .window-navigation {
   display: flex;
-  gap: 5px;
-  margin-right: 10px;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
-.window-title {
-  flex-grow: 1;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.window-navigation .ant-btn {
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+  color: #605e5c;
+  border-radius: 4px;
+  width: 32px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.window-controls .ant-btn {
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+  color: #605e5c;
+  border-radius: 0;
+  width: 46px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 12px;
+}
+
+.window-navigation .ant-btn:disabled {
+  color: #d2d0ce;
+  background-color: transparent;
+}
+
+.window-navigation .ant-btn:hover:not(:disabled) {
+  background-color: #f3f2f1;
+  color: #323130;
+}
+
+.window-navigation .ant-btn:active:not(:disabled) {
+  background-color: #edebe9;
 }
 
 .window-controls {
   display: flex;
-  gap: 5px;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.window-controls .ant-btn:hover:not(.ant-btn-dangerous) {
+  background-color: #f3f2f1;
+  color: #323130;
+}
+
+.window-controls .ant-btn:active:not(.ant-btn-dangerous) {
+  background-color: #edebe9;
+}
+
+.window-controls .ant-btn-dangerous:hover {
+  background-color: #e81123;
+  color: white;
+}
+
+.window-controls .ant-btn-dangerous:active {
+  background-color: #c50e1f;
+  color: white;
+}
+
+.window-controls .ant-btn .anticon {
+  font-size: 12px;
 }
 
 .window-content {
