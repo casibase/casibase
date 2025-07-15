@@ -30,22 +30,9 @@ import {useHistory} from "react-router-dom";
 import routeManager, {DynamicRouteComponent} from "./component/AppRouteManager";
 import {StaticBaseUrl} from "./Conf";
 
-const DesktopIcon = ({name, iconType, onClick}) => {
+const DesktopIcon = ({name, iconPath, onClick, gradient}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
-
-  const getIconGradient = (type) => {
-    const gradients = {
-      node: "linear-gradient(135deg,rgb(36, 93, 207) 0%,rgb(82, 136, 244) 100%)",
-      machine: "linear-gradient(135deg, #58B4D9 0%,rgb(50, 161, 241) 100%)",
-      image: "linear-gradient(135deg,rgb(156, 176, 230) 0%,rgb(151, 151, 151) 100%)",
-      container: "linear-gradient(135deg,rgb(66, 194, 236) 0%,rgb(20, 148, 190) 100%)",
-      pod: "linear-gradient(135deg,rgb(77, 131, 240) 0%,rgb(255, 255, 255) 100%)",
-      workflow: "linear-gradient(135deg,rgb(255, 228, 177) 0%, #71DF9E 100%)",
-      default: "linear-gradient(135deg, #d299c2 0%, #fef9d7 100%)",
-    };
-    return gradients[type] || gradients.default;
-  };
 
   const handleClick = () => {
     setIsClicked(true);
@@ -59,11 +46,11 @@ const DesktopIcon = ({name, iconType, onClick}) => {
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{"--icon-gradient": getIconGradient(iconType)}}
+      style={{"--icon-gradient": gradient}}
     >
       <div className="icon">
         <img
-          src={`${StaticBaseUrl}/apps/${iconType}.svg`}
+          src={`${StaticBaseUrl}/apps/${iconPath}`}
           alt={name}
         />
       </div>
@@ -238,8 +225,8 @@ const OsDesktop = (props) => {
   const openWindow = (appType) => {
     const id = `window-${nextWindowId}`;
     const appConfig = routeManager.getAppConfig(appType);
-    const title = appConfig.title;
-    const initialRoute = `/${appType}s`;
+    const {title} = appConfig;
+    const initialRoute = appConfig.routes[0].path;
 
     const offset = (windows.length * 30) % 150;
     const maxZIndex = windows.length > 0 ? Math.max(...windows.map(w => w.zIndex)) : 0;
@@ -522,36 +509,15 @@ const OsDesktop = (props) => {
     <div className="os-desktop">
       <div className="desktop-content" ref={desktopRef}>
         <div className="desktop-icons">
-          <DesktopIcon
-            name={i18next.t("general:Nodes")}
-            iconType="node"
-            onClick={() => openWindow("node")}
-          />
-          <DesktopIcon
-            name={i18next.t("general:Machines")}
-            iconType="machine"
-            onClick={() => openWindow("machine")}
-          />
-          <DesktopIcon
-            name={i18next.t("general:Images")}
-            iconType="image"
-            onClick={() => openWindow("image")}
-          />
-          <DesktopIcon
-            name={i18next.t("general:Containers")}
-            iconType="container"
-            onClick={() => openWindow("container")}
-          />
-          <DesktopIcon
-            name={i18next.t("general:Pods")}
-            iconType="pod"
-            onClick={() => openWindow("pod")}
-          />
-          <DesktopIcon
-            name={i18next.t("general:Workflows")}
-            iconType="workflow"
-            onClick={() => openWindow("workflow")}
-          />
+          {routeManager.getAllAppConfigs().map((app) => (
+            <DesktopIcon
+              key={app.appType}
+              name={i18next.t(`general:${app.title}`)}
+              iconPath={app.iconPath}
+              onClick={() => openWindow(app.appType)}
+              gradient={app.gradient}
+            />
+          ))}
         </div>
 
         <DndContext
