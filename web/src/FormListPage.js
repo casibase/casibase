@@ -35,6 +35,8 @@ class FormListPage extends BaseListPage {
       createdTime: moment().format(),
       displayName: `New Form - ${randomName}`,
       position: "1",
+      type: "Table",
+      url: "",
       formItems: [],
     };
   }
@@ -115,6 +117,27 @@ class FormListPage extends BaseListPage {
         key: "position",
         width: "90px",
         sorter: (a, b) => a.position.localeCompare(b.position),
+      },
+      {
+        title: i18next.t("general:Type"),
+        dataIndex: "type",
+        key: "type",
+        width: "90px",
+        sorter: (a, b) => a.type.localeCompare(b.type),
+      },
+      {
+        title: i18next.t("general:URL"),
+        dataIndex: "url",
+        key: "url",
+        width: "220px",
+        sorter: (a, b) => a.url.localeCompare(b.url),
+        render: (text, record, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={text}>
+              {text}
+            </a>
+          );
+        },
       },
       {
         title: i18next.t("form:Form items"),

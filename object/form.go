@@ -35,6 +35,8 @@ type Form struct {
 
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 	Position    string `xorm:"varchar(100)" json:"position"`
+	Type        string `xorm:"varchar(100)" json:"type"`
+	Url         string `xorm:"varchar(100)" json:"url"`
 
 	FormItems []*FormItem `xorm:"varchar(5000)" json:"formItems"`
 }
