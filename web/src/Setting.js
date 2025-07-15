@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Tag, Tooltip, message} from "antd";
+import {Tag, Tooltip, message, theme} from "antd";
 import {QuestionCircleTwoTone, SyncOutlined} from "@ant-design/icons";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
@@ -2030,4 +2030,24 @@ export function getThinkingModelMaxTokens(subType) {
     }
   }
   return 0;
+}
+
+export function getAlgorithm(themeAlgorithmNames) {
+  return themeAlgorithmNames.sort().reverse().map((algorithmName) => {
+    if (algorithmName === "dark") {
+      return theme.darkAlgorithm;
+    }
+    if (algorithmName === "compact") {
+      return theme.compactAlgorithm;
+    }
+    return theme.defaultAlgorithm;
+  });
+}
+
+export function getLogo(themes) {
+  if (themes.includes("dark")) {
+    return `${StaticBaseUrl}/img/casdoor-logo_1185x256_dark.png`;
+  } else {
+    return `${StaticBaseUrl}/img/casdoor-logo_1185x256.png`;
+  }
 }

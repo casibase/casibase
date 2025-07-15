@@ -407,7 +407,7 @@ class ArticleEditPage extends React.Component {
           {/* </Col>*/}
           <Col span={5} >
             <Affix offsetTop={0} style={{marginRight: "10px"}}>
-              <div style={{backgroundColor: "white", height: "100vh", overflowY: "auto", borderRight: 0}}>
+              <div style={{height: "100vh", overflowY: "auto", borderRight: 0}}>
                 <ArticleMenu table={blocks} onGoToRow={(table, i) => {
                   if (this.articleTableRef.current) {
                     this.articleTableRef.current.goToRow(table, i);

@@ -39,6 +39,7 @@ import SigninPage from "./SigninPage";
 import i18next from "i18next";
 import {withTranslation} from "react-i18next";
 import LanguageSelect from "./LanguageSelect";
+import ThemeSelect from "./ThemeSelect";
 import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
 import MessageListPage from "./MessageListPage";
@@ -86,12 +87,21 @@ const {Header, Footer, Content} = Layout;
 class App extends Component {
   constructor(props) {
     super(props);
+    this.setThemeAlgorithm();
+    let storageThemeAlgorithm = [];
+    try {
+      storageThemeAlgorithm = localStorage.getItem("themeAlgorithm") ? JSON.parse(localStorage.getItem("themeAlgorithm")) : ["default"];
+    } catch {
+      storageThemeAlgorithm = ["default"];
+    }
     this.state = {
       classes: props,
       selectedMenuKey: 0,
       account: undefined,
       uri: null,
+      themeAlgorithm: storageThemeAlgorithm,
       themeData: Conf.ThemeDefault,
+      logo: this.getLogo(storageThemeAlgorithm),
       menuVisible: false,
       forms: [],
     };
@@ -304,6 +314,27 @@ class App extends Component {
     });
   };
 
+  setThemeAlgorithm() {
+    const currentUrl = window.location.href;
+    const url = new URL(currentUrl);
+    const themeType = url.searchParams.get("theme");
+    if (themeType === "dark" || themeType === "default") {
+      localStorage.setItem("themeAlgorithm", JSON.stringify([themeType]));
+    }
+  }
+
+  setLogoAndThemeAlgorithm = (nextThemeAlgorithm) => {
+    this.setState({
+      themeAlgorithm: nextThemeAlgorithm,
+      logo: this.getLogo(nextThemeAlgorithm),
+    });
+    localStorage.setItem("themeAlgorithm", JSON.stringify(nextThemeAlgorithm));
+  };
+
+  getLogo(themes) {
+    return Setting.getLogo(themes);
+  }
+
   renderAvatar() {
     if (this.state.account.avatar === "") {
       return (
@@ -400,6 +431,9 @@ class App extends Component {
             </a>
           </div>
           <div style={{float: "right", margin: "0px", padding: "0px"}}>
+            <ThemeSelect themeAlgorithm={this.state.themeAlgorithm} onChange={this.setLogoAndThemeAlgorithm} />
+          </div>
+          <div style={{float: "right", margin: "0px", padding: "0px"}}>
             <LanguageSelect />
           </div>
         </React.Fragment>
@@ -408,6 +442,7 @@ class App extends Component {
       return (
         <React.Fragment>
           {this.renderRightDropdown()}
+          <ThemeSelect themeAlgorithm={this.state.themeAlgorithm} onChange={this.setLogoAndThemeAlgorithm} />
           <LanguageSelect />
           <div style={{float: "right", marginRight: "20px", padding: "0px"}}>
             <div dangerouslySetInnerHTML={{__html: Conf.NavbarHtml}} />
@@ -515,7 +550,7 @@ class App extends Component {
         Setting.goToLinkSoft(this, "/videos");
       }
     } else {
-      const textColor = "black";
+      const textColor = this.state.themeAlgorithm.includes("dark") ? "white" : "black";
       const twoToneColor = this.state.themeData.colorPrimary;
 
       res.pop();
@@ -713,7 +748,7 @@ class App extends Component {
   renderContent() {
     if (Setting.getUrlParam("isRaw") !== null) {
       return (
-        <HomePage account={this.state.account} />
+        <HomePage account={this.state.account} themeAlgorithm={this.state.themeAlgorithm} />
       );
     } else if (Setting.getSubdomain() === "portal") {
       return (
@@ -762,11 +797,11 @@ class App extends Component {
     };
 
     return (
-      <Header style={{padding: "0", marginBottom: "3px", backgroundColor: "white", display: "flex", justifyContent: "space-between"}}>
+      <Header style={{padding: "0", marginBottom: "3px", backgroundColor: this.state.themeAlgorithm.includes("dark") ? "black" : "white", display: "flex", justifyContent: "space-between"}}>
         <div style={{display: "flex", alignItems: "center", flex: 1, overflow: "hidden"}}>
           {Setting.isMobile() ? null : (
             <Link to={"/"}>
-              <img className="logo" src={Conf.LogoUrl} alt="logo" />
+              <img className="logo" src={this.state.themeAlgorithm.includes("dark") ? Conf.LogoWhiteUrl : Conf.LogoUrl} alt="logo" />
             </Link>
           )}
           {Setting.isMobile() ? (
@@ -809,8 +844,6 @@ class App extends Component {
       <React.Fragment>
         <Footer id="footer" style={
           {
-            borderTop: "1px solid #e8e8e8",
-            backgroundColor: "white",
             textAlign: "center",
             height: "67px",
           }
@@ -849,7 +882,7 @@ class App extends Component {
             colorInfo: this.state.themeData.colorPrimary,
             borderRadius: this.state.themeData.borderRadius,
           },
-          // algorithm: Setting.getAlgorithm(this.state.themeAlgorithm),
+          algorithm: Setting.getAlgorithm(this.state.themeAlgorithm),
         }}>
           <StyleProvider hashPriority="high" transformers={[legacyLogicalPropertiesTransformer]}>
             {

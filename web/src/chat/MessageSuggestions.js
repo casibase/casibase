@@ -41,9 +41,7 @@ const MessageSuggestions = ({message, sendMessage}) => {
   };
 
   const buttonStyle = {
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
     border: "1px solid " + ThemeDefault.colorPrimary,
-    color: ThemeDefault.colorPrimary,
     borderRadius: "4px",
     fontSize: fontSize,
     margin: "3px",

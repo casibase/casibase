@@ -25,7 +25,7 @@ import {
 import {Button} from "antd";
 import i18next from "i18next";
 import "./OsDesktop.css";
-import {LeftOutlined, RightOutlined} from "@ant-design/icons";
+import {CloseOutlined, LeftOutlined, MinusOutlined, RightOutlined} from "@ant-design/icons";
 import {useHistory} from "react-router-dom";
 import routeManager, {DynamicRouteComponent} from "./component/AppRouteManager";
 import {StaticBaseUrl} from "./Conf";
@@ -133,40 +133,49 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, onClose,
           onMaximize();
         }}
       >
-        <div className="window-navigation">
-          <Button
-            icon={<LeftOutlined />}
-            size="small"
-            disabled={!canGoBack}
-            onClick={(e) => {
-              e.stopPropagation();
-              onGoBack();
-            }}
-          />
-          <Button
-            icon={<RightOutlined />}
-            size="small"
-            disabled={!canGoForward}
-            onClick={(e) => {
-              e.stopPropagation();
-              onGoForward();
-            }}
-          />
+        <div className="window-header-left">
+          <div className="window-app-info">
+            <img
+              src={`${StaticBaseUrl}/apps/${appConfig?.iconPath}`}
+              alt={title}
+              className="window-app-icon"
+            />
+            <div className="window-title">{i18next.t(`${appConfig?.i18nNamespace || "general"}:${title}`)}</div>
+          </div>
+          <div className="window-navigation">
+            <Button
+              icon={<LeftOutlined />}
+              size="small"
+              disabled={!canGoBack}
+              onClick={(e) => {
+                e.stopPropagation();
+                onGoBack();
+              }}
+            />
+            <Button
+              icon={<RightOutlined />}
+              size="small"
+              disabled={!canGoForward}
+              onClick={(e) => {
+                e.stopPropagation();
+                onGoForward();
+              }}
+            />
+          </div>
         </div>
-        <div className="window-title">{i18next.t(`${appConfig?.i18nNamespace || "general"}:${title}`)}</div>
         <div className="window-controls">
-          <Button size="small" onClick={(e) => {
+          <Button size="small" danger icon={<MinusOutlined />} onClick={(e) => {
             e.stopPropagation();
             onMinimize();
-          }}>_</Button>
-          <Button size="small" onClick={(e) => {
-            e.stopPropagation();
-            onMaximize();
-          }}>{isMaximized ? "❐" : "□"}</Button>
+          }} />
           <Button size="small" danger onClick={(e) => {
             e.stopPropagation();
+            onMaximize();
+          }} >{isMaximized ? "❐" : "□"}</Button>
+          <Button size="small" danger icon={<CloseOutlined />} onClick={(e) => {
+            e.stopPropagation();
             onClose();
-          }}>×</Button>
+          }} />
         </div>
       </div>
       <div className="window-content">
@@ -189,7 +198,7 @@ const DockItem = ({window, onClick, isActive}) => {
       className={`dock-item ${isActive ? "active" : ""} ${window.isMinimized ? "minimized" : ""}`}
       onClick={() => onClick(window.id)}
       style={{"--icon-gradient": window.gradient}}
-      title={i18next.t(`general:${window.title}`)}
+      title={i18next.t(`${window.appConfig?.i18nNamespace || "general"}:${window.title}`)}
     >
       <img
         src={`${StaticBaseUrl}/apps/${window.iconPath}`}

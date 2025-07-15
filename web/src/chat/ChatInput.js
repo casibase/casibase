@@ -36,6 +36,13 @@ const ChatInput = ({
   isVoiceInput,
 }) => {
 
+  let storageThemeAlgorithm = [];
+  try {
+    storageThemeAlgorithm = localStorage.getItem("themeAlgorithm") ? JSON.parse(localStorage.getItem("themeAlgorithm")) : ["default"];
+  } catch {
+    storageThemeAlgorithm = ["default"];
+  }
+
   const sendButtonDisabled = messageError || (value === "" && files.length === 0) || disableInput;
 
   async function handleInputChange(file) {
@@ -129,7 +136,7 @@ const ChatInput = ({
           }
           loading={loading}
           disabled={disableInput}
-          style={{flex: 1, borderRadius: "8px", background: "#f5f5f5"}}
+          style={{flex: 1, borderRadius: "8px", background: storageThemeAlgorithm.includes("dark") ? "black" : "white"}}
           placeholder={messageError ? "" : i18next.t("chat:Type message here")}
           // if we have some files uploaded but no text was input (value === ""), Sender wont invoke onSubmit.
           value={(files.length > 0 && value === "") ? " " + value : value}
