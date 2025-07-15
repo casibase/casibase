@@ -302,7 +302,7 @@ routeManager.registerApp("videos", {
 
 routeManager.registerApp("public-videos", {
   title: "Public Videos",
-  iconPath: "/public_video.svg", // 完全自定义路径
+  iconPath: "/public_video.svg",
   gradient: "linear-gradient(135deg, #E25232 0%, #59BCF4 100%)",
   routes: [
     {
@@ -350,7 +350,7 @@ routeManager.registerApp("audit", {
 
 routeManager.registerApp("yolov8mi", {
   title: "Medical Image Analysis",
-  iconPath: "/medical.svg", // 医疗相关的专用图标目录
+  iconPath: "/medical.svg",
   gradient: "linear-gradient(135deg, #E25232 0%, #59BCF4 100%)",
   routes: [
     {
