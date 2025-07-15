@@ -122,6 +122,13 @@ func UpdateWorkflow(id string, workflow *Workflow) (bool, error) {
 }
 
 func AddWorkflow(workflow *Workflow) (bool, error) {
+	if workflow.Text != "" && workflow.Text2 != "" {
+		message := bpmn.ComparePath(workflow.Text, workflow.Text2)
+		workflow.Message = message
+	} else {
+		workflow.Message = ""
+	}
+
 	affected, err := adapter.engine.Insert(workflow)
 	if err != nil {
 		return false, err
