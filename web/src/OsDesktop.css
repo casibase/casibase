@@ -122,6 +122,17 @@
   transform: translateY(1px);
 }
 
+.dock-item img {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 30%));
+  transition: all 0.3s ease;
+}
+
+.dock-item:hover img {
+  filter: drop-shadow(0 3px 6px rgb(0 0 0 / 40%));
+}
+
 .desktop-icon .icon img {
   width: 64px;
   height: 64px;
@@ -207,4 +218,93 @@
   flex-grow: 1;
   overflow: auto;
   background-color: white;
+}
+
+.dock {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  background: rgb(255 255 255 / 90%);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 8px 16px;
+  box-shadow:
+    0 8px 32px rgb(0 0 0 / 15%),
+    0 4px 16px rgb(0 0 0 / 10%),
+    inset 0 1px 0 rgb(255 255 255 / 50%);
+  border: 1px solid rgb(255 255 255 / 30%);
+}
+
+.dock-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dock-item {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background: var(--icon-gradient);
+  box-shadow:
+    0 4px 16px rgb(0 0 0 / 15%),
+    0 2px 8px rgb(0 0 0 / 10%),
+    inset 0 1px 0 rgb(255 255 255 / 30%);
+  user-select: none;
+}
+
+.dock-item:hover {
+  transform: translateY(-4px) scale(1.1);
+  box-shadow:
+    0 8px 24px rgb(0 0 0 / 20%),
+    0 4px 12px rgb(0 0 0 / 15%),
+    inset 0 1px 0 rgb(255 255 255 / 40%);
+}
+
+.dock-item:active {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.dock-item.active {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  box-shadow:
+    0 6px 20px rgb(79 172 254 / 40%),
+    0 3px 10px rgb(79 172 254 / 20%),
+    inset 0 1px 0 rgb(255 255 255 / 40%);
+}
+
+.dock-item.active:hover {
+  transform: translateY(-4px) scale(1.1);
+  box-shadow:
+    0 8px 24px rgb(79 172 254 / 50%),
+    0 4px 12px rgb(79 172 254 / 30%),
+    inset 0 1px 0 rgb(255 255 255 / 50%);
+}
+
+.dock-item.minimized {
+  opacity: 0.7;
+}
+
+.dock-item.minimized:hover {
+  opacity: 1;
+}
+
+.dock-indicator {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background-color: #333;
+  border-radius: 50%;
+  opacity: 0.8;
 }

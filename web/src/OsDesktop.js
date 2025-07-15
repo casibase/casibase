@@ -183,6 +183,44 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, onClose,
   );
 };
 
+const DockItem = ({window, onClick, isActive}) => {
+  return (
+    <div
+      className={`dock-item ${isActive ? "active" : ""} ${window.isMinimized ? "minimized" : ""}`}
+      onClick={() => onClick(window.id)}
+      style={{"--icon-gradient": window.gradient}}
+      title={i18next.t(`general:${window.title}`)}
+    >
+      <img
+        src={`${StaticBaseUrl}/apps/${window.iconPath}`}
+        alt={window.title}
+      />
+      {!window.isMinimized && <div className="dock-indicator"></div>}
+    </div>
+  );
+};
+
+const Dock = ({windows, activeWindowId, onDockItemClick}) => {
+  if (windows.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="dock">
+      <div className="dock-container">
+        {windows.map(window => (
+          <DockItem
+            key={window.id}
+            window={window}
+            isActive={activeWindowId === window.id}
+            onClick={onDockItemClick}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const OsDesktop = (props) => {
   const [windows, setWindows] = useState([]);
   const [nextWindowId, setNextWindowId] = useState(1);
@@ -232,7 +270,7 @@ const OsDesktop = (props) => {
   const openWindow = (appType) => {
     const id = `window-${nextWindowId}`;
     const appConfig = routeManager.getAppConfig(appType);
-    const {title} = appConfig;
+    const {title, iconPath, gradient} = appConfig;
     const initialRoute = appConfig.routes[0].path;
 
     const offset = (windows.length * 30) % 150;
@@ -258,6 +296,8 @@ const OsDesktop = (props) => {
       id,
       title,
       appType,
+      iconPath,
+      gradient,
       isMaximized: false,
       isMinimized: false,
       zIndex: maxZIndex + 1,
@@ -512,6 +552,30 @@ const OsDesktop = (props) => {
     ));
   };
 
+  const restoreWindow = (id) => {
+    const maxZIndex = windows.length > 0 ? Math.max(...windows.map(w => w.zIndex)) : 0;
+
+    setWindows(windows.map(window =>
+      window.id === id
+        ? {...window, isMinimized: false, zIndex: maxZIndex + 1}
+        : window
+    ));
+    setActiveWindowId(id);
+  };
+
+  const handleDockItemClick = (id) => {
+    const window = windows.find(w => w.id === id);
+    if (!window) {return;}
+
+    if (window.isMinimized) {
+      restoreWindow(id);
+    } else if (activeWindowId === id) {
+      minimizeWindow(id);
+    } else {
+      focusWindow(id);
+    }
+  };
+
   return (
     <div className="os-desktop">
       <div className="desktop-content" ref={desktopRef}>
@@ -559,6 +623,12 @@ const OsDesktop = (props) => {
           ))}
         </DndContext>
       </div>
+
+      <Dock
+        windows={windows}
+        activeWindowId={activeWindowId}
+        onDockItemClick={handleDockItemClick}
+      />
     </div>
   );
 };
