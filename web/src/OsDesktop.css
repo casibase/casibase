@@ -53,7 +53,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 24vh;
+  padding-top: 5vh;
   padding-left: 15vw;
   padding-right: 15vw;
 }
@@ -77,7 +77,6 @@
   width: 120px;
   transition: all 0.2s ease;
   user-select: none;
-  user-select: none;
 }
 
 .desktop-icon:hover,
@@ -90,14 +89,14 @@
 }
 
 .desktop-icon .icon {
-  width: 96px;
-  height: 96px;
+  width: 78px;
+  height: 78px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
-  border-radius: 20px;
-  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 16px;
+  padding: 8px;
   transition: all 0.2s ease;
   position: relative;
   background: var(--icon-gradient);
@@ -125,8 +124,8 @@
 }
 
 .desktop-icon .icon img {
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
   filter: drop-shadow(0 2px 4px rgb(0 0 0 / 30%));
   transition: all 0.2s ease;
 }
