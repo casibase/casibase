@@ -1,11 +1,10 @@
 .os-desktop {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 64px);
   display: flex;
   flex-direction: column;
   background-color: #f0f2f5;
   overflow: hidden;
-  position: relative;
 }
 
 .desktop-taskbar {
