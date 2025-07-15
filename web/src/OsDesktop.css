@@ -52,7 +52,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 5vh;
+  padding-top: 3vh;
   padding-left: 15vw;
   padding-right: 15vw;
 }
@@ -61,7 +61,7 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   padding: 20px;
-  gap: 40px;
+  grid-gap: 20px 40px;
   width: 100%;
   justify-content: center;
   justify-items: center;
@@ -141,7 +141,7 @@
   font-weight: 500;
   padding: 4px 8px;
   border-radius: 6px;
-  max-width: 120px;
+  max-width: 175px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
