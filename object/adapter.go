@@ -205,6 +205,11 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
+	err = a.engine.Sync2(new(ApplicationTemplate))
+	if err != nil {
+		panic(err)
+	}
+
 	err = a.engine.Sync2(new(Node))
 	if err != nil {
 		panic(err)
