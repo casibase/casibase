@@ -72,7 +72,7 @@ const WindowContent = ({appType, account, history, match, location, isDesktopMod
   );
 };
 
-const Window = ({id, title, isMaximized, isMinimized, zIndex, position, onClose, onMaximize, onMinimize, onFocus, appType, appConfig, account, history, match, location, onRouteChange, windowHistory, onGoBack, onGoForward, isDragging}) => {
+const Window = ({id, title, isMaximized, isMinimized, zIndex, position, size, onClose, onMaximize, onMinimize, onFocus, onResizeStart, appType, appConfig, account, history, match, location, onRouteChange, windowHistory, onGoBack, onGoForward, isDragging, isResizing}) => {
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id,
     disabled: isMaximized,
@@ -106,8 +106,8 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, onClose,
     top: isMaximized ? 0 : transform ? position.y + transform.y : position.y,
     zIndex,
     display: isMinimized ? "none" : "flex",
-    width: isMaximized ? "100%" : "800px",
-    height: isMaximized ? "calc(100vh - 40px)" : "600px",
+    width: isMaximized ? "100%" : `${size.width}px`,
+    height: isMaximized ? "calc(100vh - 40px)" : `${size.height}px`,
     position: "absolute",
   };
 
@@ -118,12 +118,24 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, onClose,
     <div
       ref={setNodeRef}
       style={style}
-      className={`desktop-window ${isDragging ? "dragging" : ""}`}
+      className={`desktop-window ${isDragging ? "dragging" : ""} ${isResizing ? "resizing" : ""}`}
       onClick={(e) => {
         e.stopPropagation();
         onFocus();
       }}
     >
+      {!isMaximized && (
+        <>
+          <div className="window-resize-handle resize-handle-top" onMouseDown={(e) => onResizeStart(e, "n")}></div>
+          <div className="window-resize-handle resize-handle-bottom" onMouseDown={(e) => onResizeStart(e, "s")}></div>
+          <div className="window-resize-handle resize-handle-left" onMouseDown={(e) => onResizeStart(e, "w")}></div>
+          <div className="window-resize-handle resize-handle-right" onMouseDown={(e) => onResizeStart(e, "e")}></div>
+          <div className="window-resize-handle resize-handle-top-left" onMouseDown={(e) => onResizeStart(e, "nw")}></div>
+          <div className="window-resize-handle resize-handle-top-right" onMouseDown={(e) => onResizeStart(e, "ne")}></div>
+          <div className="window-resize-handle resize-handle-bottom-left" onMouseDown={(e) => onResizeStart(e, "sw")}></div>
+          <div className="window-resize-handle resize-handle-bottom-right" onMouseDown={(e) => onResizeStart(e, "se")}></div>
+        </>
+      )}
       <div
         className="window-header"
         {...attributes}
@@ -236,6 +248,7 @@ const OsDesktop = (props) => {
   const [activeWindowId, setActiveWindowId] = useState(null);
   const desktopRef = useRef(null);
   const history = useHistory();
+  const resizingState = useRef(null);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -254,6 +267,74 @@ const OsDesktop = (props) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleResizeMove = (e) => {
+    if (!resizingState.current) {return;}
+
+    const {id, direction, startPos, startSize, startPosition} = resizingState.current;
+    const dx = e.clientX - startPos.x;
+    const dy = e.clientY - startPos.y;
+
+    setWindows(prevWindows => prevWindows.map(w => {
+      if (w.id === id) {
+        const newSize = {...w.size};
+        const newPosition = {...w.position};
+
+        if (direction.includes("e")) {
+          newSize.width = Math.max(w.minSize.width, startSize.width + dx);
+        }
+        if (direction.includes("s")) {
+          newSize.height = Math.max(w.minSize.height, startSize.height + dy);
+        }
+        if (direction.includes("w")) {
+          const newWidth = startSize.width - dx;
+          if (newWidth >= w.minSize.width) {
+            newSize.width = newWidth;
+            newPosition.x = startPosition.x + dx;
+          }
+        }
+        if (direction.includes("n")) {
+          const newHeight = startSize.height - dy;
+          if (newHeight >= w.minSize.height) {
+            newSize.height = newHeight;
+            newPosition.y = startPosition.y + dy;
+          }
+        }
+
+        return {...w, size: newSize, position: newPosition};
+      }
+      return w;
+    }));
+  };
+
+  const handleResizeEnd = () => {
+    if (!resizingState.current) {return;}
+    const {id} = resizingState.current;
+    resizingState.current = null;
+    setWindows(prevWindows => prevWindows.map(w =>
+      w.id === id ? {...w, isResizing: false} : w
+    ));
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!resizingState.current) {return;}
+      handleResizeMove(e);
+    };
+
+    const handleMouseUp = () => {
+      if (!resizingState.current) {return;}
+      handleResizeEnd();
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
   }, []);
 
@@ -315,6 +396,8 @@ const OsDesktop = (props) => {
         x: 100 + offset,
         y: 100 + offset,
       },
+      size: {width: 800, height: 600},
+      minSize: {width: 400, height: 300},
       history: {
         entries: [initialRoute],
         currentIndex: 0,
@@ -323,6 +406,7 @@ const OsDesktop = (props) => {
       location,
       account: props.account,
       isDragging: false,
+      isResizing: false,
     };
 
     setWindows([...windows, newWindow]);
@@ -341,7 +425,7 @@ const OsDesktop = (props) => {
   const toggleMaximize = (id) => {
     setWindows(windows.map(window =>
       window.id === id
-        ? {...window, isMaximized: !window.isMaximized, isMinimized: false}
+        ? {...window, isMaximized: !window.isMaximized, isMinimized: false, isResizing: false}
         : window
     ));
     setActiveWindowId(id);
@@ -562,6 +646,26 @@ const OsDesktop = (props) => {
     ));
   };
 
+  const handleResizeStart = (e, id, direction) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const windowToResize = windows.find(w => w.id === id);
+    if (!windowToResize || windowToResize.isMaximized) {return;}
+
+    resizingState.current = {
+      id,
+      direction,
+      startPos: {x: e.clientX, y: e.clientY},
+      startSize: {...windowToResize.size},
+      startPosition: {...windowToResize.position},
+    };
+
+    setWindows(prevWindows => prevWindows.map(w =>
+      w.id === id ? {...w, isResizing: true} : w
+    ));
+  };
+
   const restoreWindow = (id) => {
     const maxZIndex = windows.length > 0 ? Math.max(...windows.map(w => w.zIndex)) : 0;
 
@@ -615,6 +719,7 @@ const OsDesktop = (props) => {
               isMinimized={window.isMinimized}
               zIndex={window.zIndex}
               position={window.position}
+              size={window.size}
               appType={window.appType}
               appConfig={window.appConfig}
               account={props.account}
@@ -626,10 +731,12 @@ const OsDesktop = (props) => {
               onMaximize={() => toggleMaximize(window.id)}
               onMinimize={() => minimizeWindow(window.id)}
               onFocus={() => focusWindow(window.id)}
+              onResizeStart={(e, direction) => handleResizeStart(e, window.id, direction)}
               onRouteChange={(newRoute) => updateWindowRoute(window.id, newRoute)}
               onGoBack={() => goBack(window.id)}
               onGoForward={() => goForward(window.id)}
               isDragging={window.isDragging}
+              isResizing={window.isResizing}
             />
           ))}
         </DndContext>
