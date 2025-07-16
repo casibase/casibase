@@ -120,8 +120,21 @@ class ProviderEditPage extends React.Component {
       if (provider.type === "Baidu Cloud" || provider.type === "Tencent Cloud") {
         return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
       }
+    } else if (provider.category === "Blockchain") {
+      if (provider.type === "Ethereum") {
+        return Setting.getLabel(i18next.t("provider:Private key"), i18next.t("provider:Private key - Tooltip"));
+      }
     }
     return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret - Tooltip"));
+  }
+
+  getContractNameLabel(provider) {
+    if (provider.category === "Blockchain") {
+      if (provider.type === "Ethereum") {
+        return Setting.getLabel(i18next.t("provider:Contract Address"), i18next.t("provider:Contract Address - Tooltip"));
+      }
+    }
+    return Setting.getLabel(i18next.t("provider:Contract Name"), i18next.t("provider:Contract Name - Tooltip"));
   }
 
   parseProviderField(key, value) {
@@ -467,7 +480,7 @@ class ProviderEditPage extends React.Component {
         {
           ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
           (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
-          (this.state.provider.category === "Blockchain" && this.state.provider.type !== "ChainMaker") ||
+          (this.state.provider.category === "Blockchain" && !["ChainMaker", "Ethereum"].includes(this.state.provider.type)) ||
           ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
           (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent", "Blockchain"].includes(this.state.provider.category))) ? (
               <Row style={{marginTop: "20px"}} >
@@ -686,7 +699,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) ? null : (
+          ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) || (this.state.provider.category === "Blockchain" && this.state.provider.type === "Ethereum") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {this.getRegionLabel(this.state.provider)} :
@@ -702,26 +715,30 @@ class ProviderEditPage extends React.Component {
         {
           this.state.provider.category === "Blockchain" && (
             <>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("provider:Chain"), i18next.t("provider:Chain - Tooltip"))} :
-                </Col>
-                <Col span={22}>
-                  <Input value={this.state.provider.chain} onChange={e => {
-                    this.updateProviderField("chain", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {this.getNetworkLabel(this.state.provider)} :
-                </Col>
-                <Col span={22}>
-                  <Input value={this.state.provider.network} onChange={e => {
-                    this.updateProviderField("network", e.target.value);
-                  }} />
-                </Col>
-              </Row>
+              {this.state.provider.type === "Ethereum" ? null : (
+                <>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:Chain"), i18next.t("provider:Chain - Tooltip"))} :
+                    </Col>
+                    <Col span={22}>
+                      <Input value={this.state.provider.chain} onChange={e => {
+                        this.updateProviderField("chain", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {this.getNetworkLabel(this.state.provider)} :
+                    </Col>
+                    <Col span={22}>
+                      <Input value={this.state.provider.network} onChange={e => {
+                        this.updateProviderField("network", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                </>
+              )}
               {this.state.provider.type === "ChainMaker" ? (
                 <>
                   <Row style={{marginTop: "20px"}}>
@@ -837,9 +854,13 @@ class ProviderEditPage extends React.Component {
                       }} />
                     </Col>
                   </Row>
+                </>
+              ) : null}
+              {["Ethereum", "ChainMaker"].includes(this.state.provider.type) ? (
+                <>
                   <Row style={{marginTop: "20px"}}>
                     <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                      {Setting.getLabel(i18next.t("provider:Contract name"), i18next.t("provider:Contract name - Tooltip"))} :
+                      {this.getContractNameLabel(this.state.provider)} :
                     </Col>
                     <Col span={22}>
                       <Input value={this.state.provider.contractName} onChange={e => {
