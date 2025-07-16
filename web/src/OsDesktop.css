@@ -185,6 +185,79 @@
   transition: none;
 }
 
+.desktop-window.resizing {
+  transition: none;
+}
+
+.window-resize-handle {
+  position: absolute;
+  z-index: 10;
+}
+
+.resize-handle-top {
+  top: -3px;
+  left: 5px;
+  right: 5px;
+  height: 6px;
+  cursor: n-resize;
+}
+
+.resize-handle-bottom {
+  bottom: -3px;
+  left: 5px;
+  right: 5px;
+  height: 6px;
+  cursor: s-resize;
+}
+
+.resize-handle-left {
+  top: 5px;
+  left: -3px;
+  bottom: 5px;
+  width: 6px;
+  cursor: w-resize;
+}
+
+.resize-handle-right {
+  top: 5px;
+  right: -3px;
+  bottom: 5px;
+  width: 6px;
+  cursor: e-resize;
+}
+
+.resize-handle-top-left {
+  top: -3px;
+  left: -3px;
+  width: 10px;
+  height: 10px;
+  cursor: nwse-resize;
+}
+
+.resize-handle-top-right {
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  cursor: nesw-resize;
+}
+
+.resize-handle-bottom-left {
+  bottom: -3px;
+  left: -3px;
+  width: 10px;
+  height: 10px;
+  cursor: nesw-resize;
+}
+
+.resize-handle-bottom-right {
+  bottom: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  cursor: nwse-resize;
+}
+
 .window-header {
   height: 32px;
   background-color: #f0f0f0;
