@@ -21,15 +21,17 @@ type ChainClientInterface interface {
 	Query(txId string, data string) (string, error)
 }
 
-func NewChainClient(providerType string, clientId string, clientSecret string, region string, networkId string, chainId string, chainmakerEndpoint string, text string, UserKey string, UserCert string, SignKey string, SignCert string, ContractName string, ContractMethod string) (ChainClientInterface, error) {
+func NewChainClient(providerType string, clientId string, clientSecret string, region string, networkId string, chainId string, endponit string, text string, UserKey string, UserCert string, SignKey string, SignCert string, ContractName string, ContractMethod string) (ChainClientInterface, error) {
 	var res ChainClientInterface
 	var err error
 	if providerType == "ChainMaker" {
-		res, err = newChainChainmakerClient(networkId, text, region, chainId, chainmakerEndpoint, UserKey, UserCert, SignKey, SignCert, ContractName, ContractMethod)
+		res, err = newChainChainmakerClient(networkId, text, region, chainId, endponit, UserKey, UserCert, SignKey, SignCert, ContractName, ContractMethod)
 	} else if providerType == "Tencent ChainMaker" {
 		res, err = newChainTencentChainmakerClient(clientId, clientSecret, region, networkId, chainId)
 	} else if providerType == "Tencent ChainMaker (Demo Network)" {
 		res, err = newChainTencentChainmakerDemoClient(clientId, clientSecret, region, networkId, chainId)
+	} else if providerType == "Ethereum" {
+		res, err = newEthereumClient(endponit, clientSecret, ContractName, ContractMethod)
 	} else {
 		return nil, fmt.Errorf("unsupported provider type: %s", providerType)
 	}
