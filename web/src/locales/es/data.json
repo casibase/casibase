@@ -604,6 +604,11 @@
     "Question": "Pregunta",
     "Question - Tooltip": "Indicador de tarea completo generado automáticamente"
   },
+  "theme": {
+    "Compact": "Compact",
+    "Dark": "Dark",
+    "Default": "Default"
+  },
   "usage": {
     "All": "Total",
     "Day": "Diario",

@@ -603,6 +603,11 @@
     "Question": "문제",
     "Question - Tooltip": "자동으로 생성된 완전한 태스크 프롬프트"
   },
+  "theme": {
+    "Compact": "Compact",
+    "Dark": "Dark",
+    "Default": "Default"
+  },
   "usage": {
     "All": "총계",
     "Day": "매일",

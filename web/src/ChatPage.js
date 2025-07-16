@@ -702,7 +702,7 @@ class ChatPage extends BaseListPage {
     }
 
     return (
-      <div style={{display: "flex", backgroundColor: "white", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : (window.location.pathname.startsWith("/chat")) ? "calc(100vh - 135px)" : Setting.isMobile() ? "calc(100vh - 136px)" : "calc(100vh - 186px)"}}>
+      <div style={{display: "flex", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : (window.location.pathname.startsWith("/chat")) ? "calc(100vh - 135px)" : Setting.isMobile() ? "calc(100vh - 136px)" : "calc(100vh - 186px)"}}>
         {
           this.renderModal()
         }
@@ -711,7 +711,7 @@ class ChatPage extends BaseListPage {
         }
         {
           !(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && !this.state.chatMenuCollapsed && (
-            <div style={{width: "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
+            <div style={{width: "250px", height: "100%", marginRight: "2px"}}>
               <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores} currentStoreName={currentStoreName} />
             </div>
           )
@@ -724,7 +724,7 @@ class ChatPage extends BaseListPage {
           </Drawer>
         )}
 
-        <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative", display: "flex", flexDirection: "column"}}>
+        <div style={{flex: 1, height: "100%", position: "relative", display: "flex", flexDirection: "column"}}>
           {this.state.chat && this.state.paneCount === 1 && (
             <div style={{display: "flex", alignItems: "center", marginLeft: "15px"}}>
               {Setting.isMobile() && (

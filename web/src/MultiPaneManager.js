@@ -425,7 +425,7 @@ const MultiPaneManager = ({
   );
 
   return (
-    <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative", display: "flex", flexDirection: "column"}}>
+    <div style={{flex: 1, height: "100%", position: "relative", display: "flex", flexDirection: "column"}}>
       <div style={{flex: 1, display: "grid", gridTemplateColumns: `repeat(${paneCount}, 1fr)`, gap: "2px", overflow: "hidden"}}>
         {Array.from({length: paneCount}, (_, index) => {
           const pane = panes[index] || {};

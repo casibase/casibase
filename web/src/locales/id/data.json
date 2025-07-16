@@ -604,6 +604,11 @@
     "Question": "Pertanyaan",
     "Question - Tooltip": "Pemicu tugas lengkap yang dihasilkan otomatis"
   },
+  "theme": {
+    "Compact": "Compact",
+    "Dark": "Dark",
+    "Default": "Default"
+  },
   "usage": {
     "All": "Total",
     "Day": "Harian",
