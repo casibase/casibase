@@ -53,6 +53,83 @@ img {
   align-items: stretch;
 }
 
+.left-navbar-layout {
+  height: 100vh;
+
+  .ant-layout-sider {
+    background: #fff;
+    border-right: 1px solid #f0f0f0;
+
+    .logo {
+      max-height: 40px;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .logo-container {
+      padding: 16px;
+      text-align: center;
+      border-bottom: 1px solid #f0f0f0;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .ant-layout {
+    background: #fff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ant-layout-header {
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 0 16px;
+    height: 64px;
+    line-height: 64px;
+    flex-shrink: 0;
+  }
+
+  .ant-layout-content {
+    background: #f5f5f5;
+    overflow: auto;
+    flex: 1;
+    min-height: 0;
+    position: relative;
+  }
+
+  .ant-menu-inline {
+    border-right: none;
+  }
+
+  .content-warp-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .ant-card-body {
+      flex: 1;
+      overflow: auto;
+      padding: 24px;
+    }
+  }
+
+  .ant-layout-content > div {
+    min-height: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .left-navbar-layout {
+    .ant-layout-sider {
+      display: none;
+    }
+  }
+}
+
 .ant-table-body {
   overflow-y: hidden !important;
 }

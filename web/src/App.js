@@ -80,7 +80,7 @@ import PythonSrPage from "./frame/PythonSrPage";
 import SystemInfo from "./SystemInfo";
 import * as FetchFilter from "./backend/FetchFilter";
 
-const {Header, Footer, Content} = Layout;
+const {Header, Footer, Content, Sider} = Layout;
 
 class App extends Component {
   constructor(props) {
@@ -93,6 +93,7 @@ class App extends Component {
       themeData: Conf.ThemeDefault,
       menuVisible: false,
       forms: [],
+      navbarLayout: "top",
     };
     this.initConfig();
   }
@@ -129,6 +130,11 @@ class App extends Component {
           Setting.setThemeColor(color);
           localStorage.setItem("themeColor", color);
         }
+
+        const navbarLayout = res.data.navbarLayout || "top";
+        this.setState({
+          navbarLayout: navbarLayout,
+        });
       } else {
         Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -692,7 +698,7 @@ class App extends Component {
   }
 
   isWithoutCard() {
-    return Setting.isMobile() || this.isHiddenHeaderAndFooter() || window.location.pathname.startsWith("/chat") || window.location.pathname.startsWith("/");
+    return Setting.isMobile() || this.isHiddenHeaderAndFooter() || window.location.pathname.startsWith("/chat") || window.location.pathname === "/";
   }
 
   isHiddenHeaderAndFooter(uri) {
@@ -718,6 +724,14 @@ class App extends Component {
       );
     }
 
+    if (this.state.navbarLayout === "left") {
+      return this.renderLeftNavbarLayout();
+    } else {
+      return this.renderTopNavbarLayout();
+    }
+  }
+
+  renderTopNavbarLayout() {
     return (
       <Layout id="parent-area">
         {this.renderHeader()}
@@ -730,6 +744,47 @@ class App extends Component {
           }
         </Content>
         {this.renderFooter()}
+      </Layout>
+    );
+  }
+
+  renderLeftNavbarLayout() {
+    return (
+      <Layout id="parent-area" style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "row",
+        width: "100%",
+      }}>
+        <div style={{width: "200px", flexShrink: 0}}>
+          {this.renderLeftSider()}
+        </div>
+        <Layout style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          minWidth: 0,
+          height: "100vh",
+        }}>
+          {this.renderLeftNavbarHeader()}
+          <Content style={{
+            margin: "16px",
+            flex: 1,
+            overflow: "auto",
+            display: "flex",
+            flexDirection: "column",
+          }}>
+            {this.isWithoutCard() ?
+              <div style={{flex: 1, backgroundColor: "white", padding: "24px", borderRadius: "6px"}}>
+                {this.renderRouter()}
+              </div> :
+              <Card className="content-warp-card" style={{flex: 1}}>
+                {this.renderRouter()}
+              </Card>
+            }
+          </Content>
+          {this.renderFooter()}
+        </Layout>
       </Layout>
     );
   }
@@ -791,6 +846,107 @@ class App extends Component {
         <div style={{flexShrink: 0}}>
           {this.renderAccountMenu()}
         </div>
+      </Header>
+    );
+  }
+
+  renderLeftSider() {
+    if (this.isHiddenHeaderAndFooter()) {
+      return null;
+    }
+
+    const onClick = ({key}) => {
+      if (Setting.isMobile()) {
+        this.setState({
+          menuVisible: false,
+        });
+      }
+
+      this.setState({
+        uri: location.pathname,
+        selectedMenuKey: key,
+      });
+    };
+
+    if (Setting.isMobile()) {
+      return null;
+    }
+
+    return (
+      <Sider
+        width={200}
+        style={{
+          background: "#fff",
+          borderRight: "1px solid #f0f0f0",
+        }}
+        collapsible={false}
+      >
+        <div className="logo-container">
+          <Link to={"/"}>
+            <img className="logo" src={Conf.LogoUrl} alt="logo" />
+          </Link>
+        </div>
+        <Menu
+          mode="inline"
+          selectedKeys={[this.state.selectedMenuKey]}
+          style={{height: "calc(100vh - 64px)", borderRight: 0}}
+          items={this.getMenuItems()}
+          onClick={onClick}
+        />
+      </Sider>
+    );
+  }
+
+  renderLeftNavbarHeader() {
+    if (this.isHiddenHeaderAndFooter()) {
+      return null;
+    }
+
+    const showMenu = () => {
+      this.setState({
+        menuVisible: true,
+      });
+    };
+
+    return (
+      <Header style={{
+        padding: "0 16px",
+        backgroundColor: "white",
+        display: "flex",
+        justifyContent: Setting.isMobile() ? "space-between" : "flex-end",
+        alignItems: "center",
+        borderBottom: "1px solid #f0f0f0",
+      }}>
+        {Setting.isMobile() && (
+          <div style={{display: "flex", alignItems: "center"}}>
+            <Button icon={<BarsOutlined />} onClick={showMenu} type="text" style={{marginRight: "8px"}}>
+              {i18next.t("general:Menu")}
+            </Button>
+            <Link to={"/"}>
+              <img className="logo" src={Conf.LogoUrl} alt="logo" style={{maxHeight: "32px"}} />
+            </Link>
+          </div>
+        )}
+        <div style={{flexShrink: 0}}>
+          {this.renderAccountMenu()}
+        </div>
+        {Setting.isMobile() && (
+          <Drawer title={i18next.t("general:Close")} placement="left" open={this.state.menuVisible} onClose={this.onClose}>
+            <Menu
+              items={this.getMenuItems()}
+              mode={"inline"}
+              selectedKeys={[this.state.selectedMenuKey]}
+              style={{lineHeight: "64px"}}
+              onClick={({key}) => {
+                this.setState({
+                  menuVisible: false,
+                  uri: location.pathname,
+                  selectedMenuKey: key,
+                });
+              }}
+            />
+          </Drawer>
+        )}
       </Header>
     );
   }
