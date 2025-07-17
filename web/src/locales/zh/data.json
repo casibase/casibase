@@ -604,6 +604,11 @@
     "Question": "问题",
     "Question - Tooltip": "自动生成的完整任务提示"
   },
+  "theme": {
+    "Compact": "紧凑",
+    "Dark": "深色",
+    "Default": "默认"
+  },
   "usage": {
     "All": "总计",
     "Day": "每日",

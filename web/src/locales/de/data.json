@@ -604,6 +604,11 @@
     "Question": "Frage",
     "Question - Tooltip": "Automatisch generierte vollständige Auftragsprompt"
   },
+  "theme": {
+    "Compact": "Compact",
+    "Dark": "Dark",
+    "Default": "Default"
+  },
   "usage": {
     "All": "Gesamt",
     "Day": "Täglich",

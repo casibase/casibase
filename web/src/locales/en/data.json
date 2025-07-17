@@ -604,6 +604,11 @@
     "Question": "Question",
     "Question - Tooltip": "Dynamically generated task prompt"
   },
+  "theme": {
+    "Compact": "Compact",
+    "Dark": "Dark",
+    "Default": "Default"
+  },
   "usage": {
     "All": "All",
     "Day": "Day",

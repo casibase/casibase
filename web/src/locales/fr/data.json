@@ -604,6 +604,11 @@
     "Question": "Question",
     "Question - Tooltip": "Invitation de tâche complète générée automatiquement"
   },
+  "theme": {
+    "Compact": "Compact",
+    "Dark": "Dark",
+    "Default": "Default"
+  },
   "usage": {
     "All": "Total",
     "Day": "Quotidien",

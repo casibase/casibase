@@ -18,7 +18,7 @@ import {Alert, Button, Col, Row} from "antd";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
-import {AvatarErrorUrl, ThemeDefault} from "../Conf";
+import {AvatarErrorUrl} from "../Conf";
 import {renderText} from "../ChatMessageRender";
 import MessageActions from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
@@ -128,7 +128,6 @@ const MessageItem = ({
           <div className="message-reason" style={{
             marginBottom: "15px",
             padding: "10px",
-            backgroundColor: "#f8f9fa",
             borderRadius: "5px",
             borderLeft: "3px solid #1890ff",
           }}>
@@ -168,7 +167,6 @@ const MessageItem = ({
             content={
               <div className="message-reason" style={{
                 padding: "10px",
-                backgroundColor: "#f8f9fa",
                 borderRadius: "5px",
                 borderLeft: "3px solid #1890ff",
               }}>
@@ -194,7 +192,6 @@ const MessageItem = ({
             }}
             styles={{
               content: {
-                backgroundColor: ThemeDefault.colorBackground,
                 borderRadius: "16px",
                 padding: "12px 16px",
               },
@@ -240,7 +237,6 @@ const MessageItem = ({
           }}
           styles={{
             content: {
-              backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
               borderRadius: "16px",
               padding: "12px 16px",
               minWidth: isEditing ? "300px" : "auto",

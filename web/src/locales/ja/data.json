@@ -606,6 +606,11 @@
     "Question": "問題",
     "Question - Tooltip": "自動生成された完全なタスクプロンプト"
   },
+  "theme": {
+    "Compact": "Compact",
+    "Dark": "Dark",
+    "Default": "Default"
+  },
   "usage": {
     "All": "合計",
     "Day": "毎日",

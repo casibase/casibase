@@ -604,6 +604,11 @@
     "Question": "Вопрос",
     "Question - Tooltip": "Автоматически сгенерированная полная подсказка задачи"
   },
+  "theme": {
+    "Compact": "Compact",
+    "Dark": "Dark",
+    "Default": "Default"
+  },
   "usage": {
     "All": "Всего",
     "Day": "Ежедневно",
