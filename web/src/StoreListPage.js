@@ -135,6 +135,7 @@ class StoreListPage extends BaseListPage {
       welcomeText: i18next.t("chat:I'm here to help answer your questions"),
       prompt: defaultPrompt,
       themeColor: ThemeDefault.colorPrimary,
+      navbarLayout: "Top",
       propertiesMap: {},
       knowledgeCount: 5,
       suggestionCount: 3,

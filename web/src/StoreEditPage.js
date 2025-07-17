@@ -488,6 +488,20 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("store:Navbar layout"), i18next.t("store:Navbar layout - Tooltip"))} :
+          </Col>
+          <Col span={5}>
+            <Select virtual={false} style={{width: "100%"}} value={this.state.store.navbarLayout} onChange={value => {
+              this.updateStoreField("navbarLayout", value);
+            }}
+            options={[
+              {value: "Top", label: i18next.t("store:Top")},
+              {value: "Left", label: i18next.t("store:Left")},
+            ].map(item => Setting.getOption(item.label, item.value))} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Child stores"), i18next.t("store:Child stores - Tooltip"))} :
           </Col>
           <Col span={22} >

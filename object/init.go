@@ -72,6 +72,7 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		KnowledgeCount:       5,
 		SuggestionCount:      3,
 		ThemeColor:           "#5734d3",
+		NavbarLayout:         "Top",
 		ChildStores:          []string{},
 		ChildModelProviders:  []string{},
 		IsDefault:            true,

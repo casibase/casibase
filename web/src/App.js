@@ -81,7 +81,7 @@ import SystemInfo from "./SystemInfo";
 import * as FetchFilter from "./backend/FetchFilter";
 import OsDesktop from "./OsDesktop";
 
-const {Header, Footer, Content} = Layout;
+const {Header, Footer, Content, Sider} = Layout;
 
 class App extends Component {
   constructor(props) {
@@ -130,6 +130,11 @@ class App extends Component {
           Setting.setThemeColor(color);
           localStorage.setItem("themeColor", color);
         }
+
+        const navbarLayout = res.data.navbarLayout;
+        this.setState({
+          navbarLayout: navbarLayout,
+        });
       } else {
         Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -721,6 +726,14 @@ class App extends Component {
       );
     }
 
+    if (this.state.navbarLayout === "Left") {
+      return this.renderLeftNavbarLayout();
+    } else {
+      return this.renderTopNavbarLayout();
+    }
+  }
+
+  renderTopNavbarLayout() {
     return (
       <Layout id="parent-area">
         {this.renderHeader()}
@@ -733,6 +746,44 @@ class App extends Component {
           }
         </Content>
         {this.renderFooter()}
+      </Layout>
+    );
+  }
+
+  renderLeftNavbarLayout() {
+    return (
+      <Layout id="parent-area" style={{display: "flex", flexDirection: "row"}}>
+        <Sider width={200} style={{background: "#fff"}}>
+          <div style={{padding: "16px", textAlign: "center", borderBottom: "1px solid #f0f0f0"}}>
+            <Link to={"/"}>
+              <img src={Conf.LogoUrl} alt="logo" style={{maxHeight: "40px", maxWidth: "100%"}} />
+            </Link>
+          </div>
+          <Menu
+            mode="inline"
+            selectedKeys={[this.state.selectedMenuKey]}
+            style={{height: "calc(100vh - 64px)", borderRight: 0}}
+            items={this.getMenuItems()}
+            onClick={({key}) => {
+              this.setState({
+                uri: location.pathname,
+                selectedMenuKey: key,
+              });
+            }}
+          />
+        </Sider>
+        <Layout>
+          {this.renderHeader()}
+          <Content style={{display: "flex", flexDirection: "column"}}>
+            {this.isWithoutCard() ?
+              this.renderRouter() :
+              <Card className="content-warp-card">
+                {this.renderRouter()}
+              </Card>
+            }
+          </Content>
+          {this.renderFooter()}
+        </Layout>
       </Layout>
     );
   }
