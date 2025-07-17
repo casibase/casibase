@@ -19,7 +19,7 @@ import (
 	"xorm.io/core"
 )
 
-type ApplicationTemplate struct {
+type Template struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
@@ -32,17 +32,17 @@ type ApplicationTemplate struct {
 	Manifests   string `xorm:"mediumtext" json:"manifests"`
 }
 
-func GetApplicationTemplates(owner string) ([]*ApplicationTemplate, error) {
-	templates := []*ApplicationTemplate{}
-	err := adapter.engine.Desc("created_time").Find(&templates, &ApplicationTemplate{Owner: owner})
+func GetTemplates(owner string) ([]*Template, error) {
+	templates := []*Template{}
+	err := adapter.engine.Desc("created_time").Find(&templates, &Template{Owner: owner})
 	if err != nil {
 		return templates, err
 	}
 	return templates, nil
 }
 
-func GetApplicationTemplate(owner, name string) (*ApplicationTemplate, error) {
-	template := ApplicationTemplate{Owner: owner, Name: name}
+func GetTemplate(owner, name string) (*Template, error) {
+	template := Template{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&template)
 	if err != nil {
 		return &template, err
@@ -55,7 +55,7 @@ func GetApplicationTemplate(owner, name string) (*ApplicationTemplate, error) {
 	}
 }
 
-func UpdateApplicationTemplate(id string, template *ApplicationTemplate) (bool, error) {
+func UpdateTemplate(id string, template *Template) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 
 	if template.Owner == "" {
@@ -74,7 +74,7 @@ func UpdateApplicationTemplate(id string, template *ApplicationTemplate) (bool, 
 	return affected != 0, nil
 }
 
-func AddApplicationTemplate(template *ApplicationTemplate) (bool, error) {
+func AddTemplate(template *Template) (bool, error) {
 	if template.CreatedTime == "" {
 		template.CreatedTime = util.GetCurrentTime()
 	}
@@ -90,8 +90,8 @@ func AddApplicationTemplate(template *ApplicationTemplate) (bool, error) {
 	return affected != 0, nil
 }
 
-func DeleteApplicationTemplate(owner, name string) (bool, error) {
-	affected, err := adapter.engine.Delete(&ApplicationTemplate{Owner: owner, Name: name})
+func DeleteTemplate(owner, name string) (bool, error) {
+	affected, err := adapter.engine.Delete(&Template{Owner: owner, Name: name})
 	if err != nil {
 		return false, err
 	}

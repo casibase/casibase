@@ -14,20 +14,20 @@
 
 import React from "react";
 import {Button, Card, Col, Divider, Input, Row, Space, Tag} from "antd";
-import * as ApplicationTemplateBackend from "./backend/ApplicationTemplateBackend";
+import * as TemplateBackend from "./backend/TemplateBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
 const {TextArea} = Input;
 
-class ApplicationTemplateEditPage extends React.Component {
+class TemplateEditPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      applicationTemplateOwner: props.match.params.organizationName,
-      applicationTemplateName: props.match.params.templateName,
-      applicationTemplate: null,
+      templateOwner: props.match.params.organizationName,
+      templateName: props.match.params.templateName,
+      template: null,
       organizations: [],
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
       deploymentStatus: null,
@@ -38,17 +38,17 @@ class ApplicationTemplateEditPage extends React.Component {
   }
 
   UNSAFE_componentWillMount() {
-    this.getApplicationTemplate();
+    this.getTemplate();
     this.getDeploymentStatus();
     this.getK8sConfig();
   }
 
-  getApplicationTemplate() {
-    ApplicationTemplateBackend.getApplicationTemplate(this.props.account.owner, this.state.applicationTemplateName)
+  getTemplate() {
+    TemplateBackend.getTemplate(this.props.account.owner, this.state.templateName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
-            applicationTemplate: res.data,
+            template: res.data,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")} : ${res.msg}`);
@@ -57,7 +57,7 @@ class ApplicationTemplateEditPage extends React.Component {
   }
 
   getK8sConfig() {
-    ApplicationTemplateBackend.getK8sConfig()
+    TemplateBackend.getK8sConfig()
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -68,7 +68,7 @@ class ApplicationTemplateEditPage extends React.Component {
   }
 
   testK8sConnection() {
-    ApplicationTemplateBackend.testK8sConnection()
+    TemplateBackend.testK8sConnection()
       .then((res) => {
         if (res.status === "ok") {
           if (res.data.status === "Connected") {
@@ -84,7 +84,7 @@ class ApplicationTemplateEditPage extends React.Component {
   }
 
   getDeploymentStatus() {
-    return ApplicationTemplateBackend.getDeploymentStatus(this.props.account.owner, this.state.applicationTemplateName)
+    return TemplateBackend.getDeploymentStatus(this.props.account.owner, this.state.templateName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -98,25 +98,25 @@ class ApplicationTemplateEditPage extends React.Component {
       });
   }
 
-  parseApplicationTemplateField(key, value) {
+  parseTemplateField(key, value) {
     if (["version"].includes(key)) {
       return value;
     }
     return value;
   }
 
-  updateApplicationTemplateField(key, value) {
-    value = this.parseApplicationTemplateField(key, value);
+  updateTemplateField(key, value) {
+    value = this.parseTemplateField(key, value);
 
-    const applicationTemplate = this.state.applicationTemplate;
-    applicationTemplate[key] = value;
+    const template = this.state.template;
+    template[key] = value;
     this.setState({
-      applicationTemplate: applicationTemplate,
+      template: template,
     });
   }
 
-  deployApplicationTemplate() {
-    if (!this.state.applicationTemplate.manifests) {
+  deployTemplate() {
+    if (!this.state.template.manifests) {
       Setting.showMessage("error", i18next.t("general:Please provide manifests content"));
       return;
     }
@@ -124,12 +124,12 @@ class ApplicationTemplateEditPage extends React.Component {
     this.setState({isDeploying: true});
 
     const deploymentData = {
-      owner: this.state.applicationTemplate.owner,
-      name: this.state.applicationTemplate.name,
-      manifests: this.state.applicationTemplate.manifests,
+      owner: this.state.template.owner,
+      name: this.state.template.name,
+      manifests: this.state.template.manifests,
     };
 
-    ApplicationTemplateBackend.deployApplicationTemplate(deploymentData)
+    TemplateBackend.deployTemplate(deploymentData)
       .then((res) => {
         this.setState({isDeploying: false});
         if (res.status === "ok") {
@@ -175,11 +175,11 @@ class ApplicationTemplateEditPage extends React.Component {
     this.setState({isDeleting: true});
 
     const deploymentData = {
-      owner: this.state.applicationTemplate.owner,
-      name: this.state.applicationTemplate.name,
+      owner: this.state.template.owner,
+      name: this.state.template.name,
     };
 
-    ApplicationTemplateBackend.deleteDeployment(deploymentData)
+    TemplateBackend.deleteDeployment(deploymentData)
       .then((res) => {
         this.setState({isDeleting: false});
         if (res.status === "ok") {
@@ -218,7 +218,7 @@ class ApplicationTemplateEditPage extends React.Component {
     );
   }
 
-  renderApplicationTemplate() {
+  renderTemplate() {
     const {deploymentStatus, isDeploying, isDeleting, k8sConfig} = this.state;
     const isDeployed = deploymentStatus && deploymentStatus.status !== "Not Deployed" && deploymentStatus.status !== "Unknown";
     const k8sEnabled = k8sConfig && k8sConfig.enabled;
@@ -227,10 +227,10 @@ class ApplicationTemplateEditPage extends React.Component {
     return (
       <Card size="small" title={
         <div>
-          {this.state.mode === "add" ? i18next.t("general:New Application Template") : i18next.t("general:Edit Application Template")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button onClick={() => this.submitApplicationTemplateEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitApplicationTemplateEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
-          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteApplicationTemplate()}>{i18next.t("general:Cancel")}</Button> : null}
+          {this.state.mode === "add" ? i18next.t("general:New Template") : i18next.t("general:Edit Template")}&nbsp;&nbsp;&nbsp;&nbsp;
+          <Button onClick={() => this.submitTemplateEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitTemplateEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteTemplate()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -238,8 +238,8 @@ class ApplicationTemplateEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Organization"), i18next.t("general:Organization - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.applicationTemplate.owner} onChange={e => {
-              this.updateApplicationTemplateField("owner", e.target.value);
+            <Input value={this.state.template.owner} onChange={e => {
+              this.updateTemplateField("owner", e.target.value);
             }} />
           </Col>
         </Row>
@@ -248,8 +248,8 @@ class ApplicationTemplateEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.applicationTemplate.name} onChange={e => {
-              this.updateApplicationTemplateField("name", e.target.value);
+            <Input value={this.state.template.name} onChange={e => {
+              this.updateTemplateField("name", e.target.value);
             }} />
           </Col>
         </Row>
@@ -258,8 +258,8 @@ class ApplicationTemplateEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.applicationTemplate.displayName} onChange={e => {
-              this.updateApplicationTemplateField("displayName", e.target.value);
+            <Input value={this.state.template.displayName} onChange={e => {
+              this.updateTemplateField("displayName", e.target.value);
             }} />
           </Col>
         </Row>
@@ -268,8 +268,8 @@ class ApplicationTemplateEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Description"), i18next.t("general:Description - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <TextArea value={this.state.applicationTemplate.description} onChange={e => {
-              this.updateApplicationTemplateField("description", e.target.value);
+            <TextArea value={this.state.template.description} onChange={e => {
+              this.updateTemplateField("description", e.target.value);
             }} />
           </Col>
         </Row>
@@ -278,8 +278,8 @@ class ApplicationTemplateEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Version"), i18next.t("general:Version - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.applicationTemplate.version} onChange={e => {
-              this.updateApplicationTemplateField("version", e.target.value);
+            <Input value={this.state.template.version} onChange={e => {
+              this.updateTemplateField("version", e.target.value);
             }} />
           </Col>
         </Row>
@@ -288,8 +288,8 @@ class ApplicationTemplateEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Icon"), i18next.t("general:Icon - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.applicationTemplate.icon} onChange={e => {
-              this.updateApplicationTemplateField("icon", e.target.value);
+            <Input value={this.state.template.icon} onChange={e => {
+              this.updateTemplateField("icon", e.target.value);
             }} />
           </Col>
         </Row>
@@ -300,10 +300,10 @@ class ApplicationTemplateEditPage extends React.Component {
           <Col span={22} >
             <TextArea
               rows={10}
-              value={this.state.applicationTemplate.manifests || ""}
+              value={this.state.template.manifests || ""}
               placeholder="Enter Kubernetes manifests (YAML format)"
               onChange={e => {
-                this.updateApplicationTemplateField("manifests", e.target.value);
+                this.updateTemplateField("manifests", e.target.value);
               }}
             />
           </Col>
@@ -354,7 +354,7 @@ class ApplicationTemplateEditPage extends React.Component {
                     type="primary"
                     loading={isDeploying}
                     disabled={isDeleting || !k8sConnected}
-                    onClick={() => this.deployApplicationTemplate()}
+                    onClick={() => this.deployTemplate()}
                   >
                     {isDeployed ? "Redeploy" : "Deploy"}
                   </Button>
@@ -379,24 +379,24 @@ class ApplicationTemplateEditPage extends React.Component {
     );
   }
 
-  submitApplicationTemplateEdit(willExit) {
-    const applicationTemplate = Setting.deepCopy(this.state.applicationTemplate);
-    ApplicationTemplateBackend.updateApplicationTemplate(this.state.applicationTemplate.owner, this.state.applicationTemplateName, applicationTemplate)
+  submitTemplateEdit(willExit) {
+    const template = Setting.deepCopy(this.state.template);
+    TemplateBackend.updateTemplate(this.state.template.owner, this.state.templateName, template)
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
-              applicationTemplateName: this.state.applicationTemplate.name,
+              templateName: this.state.template.name,
             });
             if (willExit) {
-              this.props.history.push("/application-templates");
+              this.props.history.push("/templates");
             } else {
-              this.props.history.push(`/application-templates/${encodeURIComponent(this.state.applicationTemplate.name)}`);
+              this.props.history.push(`/templates/${encodeURIComponent(this.state.template.name)}`);
             }
           } else {
             Setting.showMessage("error", i18next.t("general:Failed to connect to server"));
-            this.updateApplicationTemplateField("name", this.state.applicationTemplateName);
+            this.updateTemplateField("name", this.state.templateName);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
@@ -407,11 +407,11 @@ class ApplicationTemplateEditPage extends React.Component {
       });
   }
 
-  deleteApplicationTemplate() {
-    ApplicationTemplateBackend.deleteApplicationTemplate(this.state.applicationTemplate)
+  deleteTemplate() {
+    TemplateBackend.deleteTemplate(this.state.template)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push("/application-templates");
+          this.props.history.push("/templates");
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
@@ -425,16 +425,16 @@ class ApplicationTemplateEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.applicationTemplate !== null ? this.renderApplicationTemplate() : null
+          this.state.template !== null ? this.renderTemplate() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button size="large" onClick={() => this.submitApplicationTemplateEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitApplicationTemplateEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
-          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.deleteApplicationTemplate()}>{i18next.t("general:Cancel")}</Button> : null}
+          <Button size="large" onClick={() => this.submitTemplateEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitTemplateEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.deleteTemplate()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       </div>
     );
   }
 }
 
-export default ApplicationTemplateEditPage;
+export default TemplateEditPage;

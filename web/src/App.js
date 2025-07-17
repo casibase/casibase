@@ -80,8 +80,8 @@ import PythonSrPage from "./frame/PythonSrPage";
 import SystemInfo from "./SystemInfo";
 import * as FetchFilter from "./backend/FetchFilter";
 import OsDesktop from "./OsDesktop";
-import ApplicationTemplateListPage from "./ApplicationTemplateListPage";
-import ApplicationTemplateEditPage from "./ApplicationTemplateEditPage";
+import TemplateListPage from "./TemplateListPage";
+import TemplateEditPage from "./TemplateEditPage";
 
 const {Header, Footer, Content} = Layout;
 
@@ -192,8 +192,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/containers"});
     } else if (uri.includes("/pods")) {
       this.setState({selectedMenuKey: "/pods"});
-    } else if (uri.includes("/application-templates")) {
-      this.setState({selectedMenuKey: "/application-templates"});
+    } else if (uri.includes("/templates")) {
+      this.setState({selectedMenuKey: "/templates"});
     } else if (uri.includes("/sessions")) {
       this.setState({selectedMenuKey: "/sessions"});
     } else if (uri.includes("/records")) {
@@ -542,7 +542,7 @@ class App extends Component {
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/nodes">{i18next.t("general:Cloud Resources")}</Link>, "/cloud", <CloudTwoTone twoToneColor={twoToneColor} />, [
-        Setting.getItem(<Link to="/application-templates">{i18next.t("general:Application Templates")}</Link>, "/application-templates"),
+        Setting.getItem(<Link to="/templates">{i18next.t("general:Templates")}</Link>, "/templates"),
         Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"),
         Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines"),
         Setting.getItem(<Link to="/images">{i18next.t("general:Images")}</Link>, "/images"),
@@ -661,8 +661,8 @@ class App extends Component {
         <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/usages" render={(props) => this.renderSigninIfNotSignedIn(<UsagePage account={this.state.account} {...props} />)} />
         <Route exact path="/desktop" render={(props) => <OsDesktop account={this.state.account} {...props} />} />
-        <Route exact path="/application-templates" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationTemplateListPage account={this.state.account} {...props} />)} />
-        <Route exact path="/application-templates/:templateName" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationTemplateEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/templates" render={(props) => this.renderSigninIfNotSignedIn(<TemplateListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/templates/:templateName" render={(props) => this.renderSigninIfNotSignedIn(<TemplateEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes" render={(props) => this.renderSigninIfNotSignedIn(<NodeListPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes/:nodeName" render={(props) => this.renderSigninIfNotSignedIn(<NodeEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/sessions" render={(props) => this.renderSigninIfNotSignedIn(<SessionListPage account={this.state.account} {...props} />)} />

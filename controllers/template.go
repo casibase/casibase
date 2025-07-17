@@ -18,7 +18,6 @@ import (
 	"encoding/json"
 
 	"github.com/casibase/casibase/conf"
-
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -29,10 +28,10 @@ type DeploymentRequest struct {
 	Manifests string `json:"manifests"`
 }
 
-func (c *ApiController) GetApplicationTemplates() {
+func (c *ApiController) GetTemplates() {
 	owner := c.Input().Get("owner")
 
-	res, err := object.GetApplicationTemplates(owner)
+	res, err := object.GetTemplates(owner)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -41,10 +40,10 @@ func (c *ApiController) GetApplicationTemplates() {
 	c.ResponseOk(res)
 }
 
-func (c *ApiController) GetApplicationTemplate() {
+func (c *ApiController) GetTemplate() {
 	id := c.Input().Get("id")
 
-	res, err := object.GetApplicationTemplate(util.GetOwnerAndNameFromId(id))
+	res, err := object.GetTemplate(util.GetOwnerAndNameFromId(id))
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -53,17 +52,17 @@ func (c *ApiController) GetApplicationTemplate() {
 	c.ResponseOk(res)
 }
 
-func (c *ApiController) UpdateApplicationTemplate() {
+func (c *ApiController) UpdateTemplate() {
 	id := c.Input().Get("id")
 
-	var template object.ApplicationTemplate
+	var template object.Template
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &template)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := object.UpdateApplicationTemplate(id, &template)
+	success, err := object.UpdateTemplate(id, &template)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -72,15 +71,15 @@ func (c *ApiController) UpdateApplicationTemplate() {
 	c.ResponseOk(success)
 }
 
-func (c *ApiController) AddApplicationTemplate() {
-	var template object.ApplicationTemplate
+func (c *ApiController) AddTemplate() {
+	var template object.Template
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &template)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := object.AddApplicationTemplate(&template)
+	success, err := object.AddTemplate(&template)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -89,15 +88,15 @@ func (c *ApiController) AddApplicationTemplate() {
 	c.ResponseOk(success)
 }
 
-func (c *ApiController) DeleteApplicationTemplate() {
-	var template object.ApplicationTemplate
+func (c *ApiController) DeleteTemplate() {
+	var template object.Template
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &template)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := object.DeleteApplicationTemplate(template.Owner, template.Name)
+	success, err := object.DeleteTemplate(template.Owner, template.Name)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -106,7 +105,7 @@ func (c *ApiController) DeleteApplicationTemplate() {
 	c.ResponseOk(success)
 }
 
-func (c *ApiController) DeployApplicationTemplate() {
+func (c *ApiController) DeployTemplate() {
 	var req DeploymentRequest
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &req)
 	if err != nil {

@@ -75,16 +75,16 @@ routeManager.registerApp("node", {
   ],
 });
 
-routeManager.registerApp("application-template", {
-  title: "Application Templates",
+routeManager.registerApp("template", {
+  title: "Templates",
   routes: [
     {
-      path: "/application-templates",
-      component: () => import("../ApplicationTemplateListPage"),
+      path: "/templates",
+      component: () => import("../TemplateListPage"),
     },
     {
-      path: "/application-templates/:applicationTemplateName",
-      component: () => import("../ApplicationTemplateEditPage"),
+      path: "/templates/:templateName",
+      component: () => import("../TemplateEditPage"),
     },
   ],
 });

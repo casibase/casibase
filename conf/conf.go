@@ -20,7 +20,6 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/beego/beego"
 )
@@ -56,17 +55,6 @@ type WebConfig struct {
 		IsCompact    bool   `json:"isCompact"`
 	} `json:"themeDefault"`
 	AvatarErrorUrl string `json:"avatarErrorUrl"`
-}
-
-// K8sConfig represents Kubernetes configuration
-type K8sConfig struct {
-	Enabled           bool          `json:"enabled"`
-	InCluster         bool          `json:"inCluster"`
-	KubeConfigPath    string        `json:"kubeConfigPath"`
-	NamespacePrefix   string        `json:"namespacePrefix"`
-	DefaultNamespace  string        `json:"defaultNamespace"`
-	ConnectionTimeout time.Duration `json:"connectionTimeout"`
-	DeploymentTimeout time.Duration `json:"deploymentTimeout"`
 }
 
 func init() {
@@ -158,11 +146,6 @@ func GetConfigInt(key string) int {
 	return num
 }
 
-func GetConfigDuration(key string) time.Duration {
-	value := GetConfigInt(key)
-	return time.Duration(value) * time.Second
-}
-
 func GetConfigDataSourceName() string {
 	dataSourceName := GetConfigString("dataSourceName")
 
@@ -215,35 +198,6 @@ func GetStringArray(key string) []string {
 	}
 
 	return strings.Split(strValue, ",")
-}
-
-// GetK8sConfig returns Kubernetes configuration from app.conf
-func GetK8sConfig() *K8sConfig {
-	config := &K8sConfig{}
-
-	config.Enabled = GetConfigBool("k8sEnabled")
-	config.InCluster = GetConfigBool("k8sInCluster")
-	config.KubeConfigPath = GetConfigString("k8sKubeConfigPath")
-	config.NamespacePrefix = GetConfigString("k8sNamespacePrefix")
-	config.DefaultNamespace = GetConfigString("k8sDefaultNamespace")
-	config.ConnectionTimeout = GetConfigDuration("k8sConnectionTimeout")
-	config.DeploymentTimeout = GetConfigDuration("k8sDeploymentTimeout")
-
-	// Set default values
-	if config.NamespacePrefix == "" {
-		config.NamespacePrefix = "casibase"
-	}
-	if config.DefaultNamespace == "" {
-		config.DefaultNamespace = "default"
-	}
-	if config.ConnectionTimeout == 0 {
-		config.ConnectionTimeout = 30 * time.Second
-	}
-	if config.DeploymentTimeout == 0 {
-		config.DeploymentTimeout = 300 * time.Second
-	}
-
-	return config
 }
 
 func GetWebConfig() *WebConfig {

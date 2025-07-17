@@ -18,23 +18,23 @@ import {Button, Popconfirm, Table} from "antd";
 import BaseListPage from "./BaseListPage";
 import moment from "moment";
 import * as Setting from "./Setting";
-import * as ApplicationTemplateBackend from "./backend/ApplicationTemplateBackend";
+import * as TemplateBackend from "./backend/TemplateBackend";
 import i18next from "i18next";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import {DeleteOutlined} from "@ant-design/icons";
 
-class ApplicationTemplateListPage extends BaseListPage {
+class TemplateListPage extends BaseListPage {
   constructor(props) {
     super(props);
   }
 
-  newApplicationTemplate() {
+  newTemplate() {
     return {
       owner: this.props.account.owner,
       name: `app-template-${Setting.getRandomName()}`,
       createdTime: moment().format(),
       updatedTime: moment().format(),
-      displayName: `New Application Template - ${Setting.getRandomName()}`,
+      displayName: `New Template - ${Setting.getRandomName()}`,
       description: "",
       version: "1.0.0",
       icon: "",
@@ -42,12 +42,12 @@ class ApplicationTemplateListPage extends BaseListPage {
     };
   }
 
-  addApplicationTemplate() {
-    const newApplicationTemplate = this.newApplicationTemplate();
-    ApplicationTemplateBackend.addApplicationTemplate(newApplicationTemplate)
+  addTemplate() {
+    const newTemplate = this.newTemplate();
+    TemplateBackend.addTemplate(newTemplate)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/application-templates/${newApplicationTemplate.name}`, mode: "add"});
+          this.props.history.push({pathname: `/templates/${newTemplate.name}`, mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
@@ -59,11 +59,11 @@ class ApplicationTemplateListPage extends BaseListPage {
   }
 
   deleteItem = async(i) => {
-    return ApplicationTemplateBackend.deleteApplicationTemplate(this.state.data[i]);
+    return TemplateBackend.deleteTemplate(this.state.data[i]);
   };
 
-  deleteApplicationTemplate(i) {
-    ApplicationTemplateBackend.deleteApplicationTemplate(this.state.data[i])
+  deleteTemplate(i) {
+    TemplateBackend.deleteTemplate(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deleted"));
@@ -83,7 +83,7 @@ class ApplicationTemplateListPage extends BaseListPage {
       });
   }
 
-  renderTable(applicationTemplates) {
+  renderTable(templates) {
     const columns = [
       {
         title: i18next.t("general:Organization"),
@@ -92,7 +92,7 @@ class ApplicationTemplateListPage extends BaseListPage {
         width: "110px",
         sorter: true,
         ...this.getColumnSearchProps("owner"),
-        render: (text, applicationTemplate, index) => {
+        render: (text, template, index) => {
           return (
             <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/organizations/${text}`)}>
               {text}
@@ -109,7 +109,7 @@ class ApplicationTemplateListPage extends BaseListPage {
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
-            <Link to={`/application-templates/${record.name}`}>{text}</Link>
+            <Link to={`/templates/${record.name}`}>{text}</Link>
           );
         },
       },
@@ -126,7 +126,7 @@ class ApplicationTemplateListPage extends BaseListPage {
         key: "createdTime",
         width: "160px",
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
-        render: (text, applicationTemplate, index) => {
+        render: (text, template, index) => {
           return Setting.getFormattedDate(text);
         },
       },
@@ -162,18 +162,18 @@ class ApplicationTemplateListPage extends BaseListPage {
         key: "action",
         width: "200px",
         fixed: (Setting.isMobile()) ? "false" : "right",
-        render: (text, applicationTemplate, index) => {
+        render: (text, template, index) => {
           return (
             <div>
               <Button
                 style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
-                onClick={() => this.props.history.push(`/application-templates/${applicationTemplate.name}`)}
+                onClick={() => this.props.history.push(`/templates/${template.name}`)}
               >{i18next.t("general:Edit")}
               </Button>
               <PopconfirmModal
-                disabled={applicationTemplate.owner !== this.props.account.owner}
-                title={i18next.t("general:Sure to delete") + `: ${applicationTemplate.name} ?`}
-                onConfirm={() => this.deleteApplicationTemplate(index)}
+                disabled={template.owner !== this.props.account.owner}
+                title={i18next.t("general:Sure to delete") + `: ${template.name} ?`}
+                onConfirm={() => this.deleteTemplate(index)}
               >
               </PopconfirmModal>
             </div>
@@ -193,11 +193,11 @@ class ApplicationTemplateListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={applicationTemplates} rowKey={(applicationTemplate) => `${applicationTemplate.owner}/${applicationTemplate.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={templates} rowKey={(template) => `${template.owner}/${template.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Application Templates")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button type="primary" size="small" onClick={this.addApplicationTemplate.bind(this)}>{i18next.t("general:Add")}</Button>
+              {i18next.t("general:Templates")}&nbsp;&nbsp;&nbsp;&nbsp;
+              <Button type="primary" size="small" onClick={this.addTemplate.bind(this)}>{i18next.t("general:Add")}</Button>
               {this.state.selectedRowKeys.length > 0 && (
                 <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
                   <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
@@ -216,7 +216,7 @@ class ApplicationTemplateListPage extends BaseListPage {
 
   fetch = (params = {}) => {
     this.setState({loading: true});
-    ApplicationTemplateBackend.getApplicationTemplates(this.props.account.owner)
+    TemplateBackend.getTemplates(this.props.account.owner)
       .then((res) => {
         this.setState({
           loading: false,
@@ -244,4 +244,4 @@ class ApplicationTemplateListPage extends BaseListPage {
   };
 }
 
-export default ApplicationTemplateListPage;
+export default TemplateListPage;

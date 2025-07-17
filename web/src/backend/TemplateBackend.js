@@ -14,8 +14,8 @@
 
 import * as Setting from "../Setting";
 
-export function getApplicationTemplates(owner) {
-  return fetch(`${Setting.ServerUrl}/api/get-application-templates?owner=${owner}`, {
+export function getTemplates(owner) {
+  return fetch(`${Setting.ServerUrl}/api/get-templates?owner=${owner}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -24,8 +24,8 @@ export function getApplicationTemplates(owner) {
   }).then(res => res.json());
 }
 
-export function getApplicationTemplate(owner, name) {
-  return fetch(`${Setting.ServerUrl}/api/get-application-template?id=${owner}/${encodeURIComponent(name)}`, {
+export function getTemplate(owner, name) {
+  return fetch(`${Setting.ServerUrl}/api/get-template?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -34,44 +34,44 @@ export function getApplicationTemplate(owner, name) {
   }).then(res => res.json());
 }
 
-export function updateApplicationTemplate(owner, name, applicationTemplate) {
-  const newApplicationTemplate = Setting.deepCopy(applicationTemplate);
-  return fetch(`${Setting.ServerUrl}/api/update-application-template?id=${owner}/${encodeURIComponent(name)}`, {
+export function updateTemplate(owner, name, template) {
+  const newTemplate = Setting.deepCopy(template);
+  return fetch(`${Setting.ServerUrl}/api/update-template?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(newApplicationTemplate),
+    body: JSON.stringify(newTemplate),
   }).then(res => res.json());
 }
 
-export function addApplicationTemplate(applicationTemplate) {
-  const newApplicationTemplate = Setting.deepCopy(applicationTemplate);
-  return fetch(`${Setting.ServerUrl}/api/add-application-template`, {
+export function addTemplate(template) {
+  const newTemplate = Setting.deepCopy(template);
+  return fetch(`${Setting.ServerUrl}/api/add-template`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(newApplicationTemplate),
+    body: JSON.stringify(newTemplate),
   }).then(res => res.json());
 }
 
-export function deleteApplicationTemplate(applicationTemplate) {
-  const newApplicationTemplate = Setting.deepCopy(applicationTemplate);
-  return fetch(`${Setting.ServerUrl}/api/delete-application-template`, {
+export function deleteTemplate(template) {
+  const newTemplate = Setting.deepCopy(template);
+  return fetch(`${Setting.ServerUrl}/api/delete-template`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(newApplicationTemplate),
+    body: JSON.stringify(newTemplate),
   }).then(res => res.json());
 }
 
-export function deployApplicationTemplate(deploymentData) {
-  return fetch(`${Setting.ServerUrl}/api/deploy-application-template`, {
+export function deployTemplate(deploymentData) {
+  return fetch(`${Setting.ServerUrl}/api/deploy-template`, {
     method: "POST",
     credentials: "include",
     headers: {

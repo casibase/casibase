@@ -54,20 +54,7 @@ var k8sClient *K8sClient
 
 func init() {
 	k8sConfig := conf.GetK8sConfig()
-
-	if !k8sConfig.Enabled {
-		fmt.Println("Kubernetes integration is disabled in configuration")
-		return
-	}
-
-	var err error
-	k8sClient, err = initK8sClient(k8sConfig)
-	if err != nil {
-		fmt.Printf("Warning: Failed to initialize k8s client: %v\n", err)
-		fmt.Printf("Kubernetes deployment features will be disabled\n")
-	} else {
-		fmt.Println("Kubernetes client initialized successfully")
-	}
+	k8sClient, _ = initK8sClient(k8sConfig)
 }
 
 func initK8sClient(k8sConfig *conf.K8sConfig) (*K8sClient, error) {
@@ -253,7 +240,7 @@ func GetDeploymentStatus(owner, name string) (*DeploymentStatus, error) {
 	}
 
 	if len(deployments.Items) == 0 {
-		return &DeploymentStatus{Status: "Running", Message: "No deployments found, but namespace exists"}, nil
+		return &DeploymentStatus{Status: "Not Deployed", Message: "No deployments found in namespace"}, nil
 	}
 
 	// Check if all deployments are ready
