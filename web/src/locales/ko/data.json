@@ -368,6 +368,7 @@
   "node": {
     "Auto query": "자동 조회",
     "Auto query - Tooltip": "자동 상태 폴링 활성화(노드 지표 3초마다 새로고침)",
+    "Cannot enable Remote App when Remote Apps are empty. Please add at least one Remote App in below table first, then enable again": "Cannot enable Remote App when Remote Apps are empty. Please add at least one Remote App in below table first, then enable again",
     "Connect": "연결",
     "Edit Node": "노드 편집",
     "Enable Remote App": "원격 애플리케이션 활성화",
