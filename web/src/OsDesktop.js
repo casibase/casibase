@@ -270,6 +270,28 @@ const OsDesktop = (props) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!props.account) {return;}
+
+    const userId = props.account.id;
+    const userDesktop = {
+      userId,
+      desktop: {
+        windows,
+      },
+    };
+    localStorage.setItem(`desktop-${userId}`, JSON.stringify(userDesktop));
+  }, [windows]);
+
+  useEffect(() => {
+    if (!props.account) {return;}
+    const userId = props.account.id;
+    const userDesktop = localStorage.getItem(`desktop-${userId}`);
+    if (!userDesktop) {return;}
+
+    setWindows(JSON.parse(userDesktop).desktop.windows);
+  }, [props.account]);
+
   const handleResizeMove = (e) => {
     if (!resizingState.current) {return;}
 
