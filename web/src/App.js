@@ -101,7 +101,6 @@ class App extends Component {
       uri: null,
       themeAlgorithm: storageThemeAlgorithm,
       themeData: Conf.ThemeDefault,
-      logo: this.getLogo(storageThemeAlgorithm),
       menuVisible: false,
       forms: [],
     };
@@ -801,7 +800,7 @@ class App extends Component {
         <div style={{display: "flex", alignItems: "center", flex: 1, overflow: "hidden"}}>
           {Setting.isMobile() ? null : (
             <Link to={"/"}>
-              <img className="logo" src={this.state.logo} alt="logo" />
+              <img className="logo" src={this.getLogo(this.state.themeAlgorithm)} alt="logo" />
             </Link>
           )}
           {Setting.isMobile() ? (
