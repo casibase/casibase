@@ -21,6 +21,13 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
+// GetTemplates
+// @Title GetTemplates
+// @Tag Template API
+// @Description get templates
+// @Param owner query string true "The owner of templates"
+// @Success 200 {array} object.Template The Response object
+// @router /get-templates [get]
 func (c *ApiController) GetTemplates() {
 	owner := c.Input().Get("owner")
 
@@ -33,6 +40,13 @@ func (c *ApiController) GetTemplates() {
 	c.ResponseOk(res)
 }
 
+// GetTemplate
+// @Title GetTemplate
+// @Tag Template API
+// @Description get template
+// @Param id query string true "The id of template"
+// @Success 200 {object} object.Template The Response object
+// @router /get-template [get]
 func (c *ApiController) GetTemplate() {
 	id := c.Input().Get("id")
 
@@ -45,6 +59,14 @@ func (c *ApiController) GetTemplate() {
 	c.ResponseOk(res)
 }
 
+// UpdateTemplate
+// @Title UpdateTemplate
+// @Tag Template API
+// @Description update template
+// @Param id query string true "The id (owner/name) of the template"
+// @Param body body object.Template true "The details of the template"
+// @Success 200 {object} controllers.Response The Response object
+// @router /update-template [post]
 func (c *ApiController) UpdateTemplate() {
 	id := c.Input().Get("id")
 
@@ -64,6 +86,13 @@ func (c *ApiController) UpdateTemplate() {
 	c.ResponseOk(success)
 }
 
+// AddTemplate
+// @Title AddTemplate
+// @Tag Template API
+// @Description add template
+// @Param body body object.Template true "The details of the template"
+// @Success 200 {object} controllers.Response The Response object
+// @router /add-template [post]
 func (c *ApiController) AddTemplate() {
 	var template object.Template
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &template)
@@ -81,6 +110,13 @@ func (c *ApiController) AddTemplate() {
 	c.ResponseOk(success)
 }
 
+// DeleteTemplate
+// @Title DeleteTemplate
+// @Tag Template API
+// @Description delete template
+// @Param body body object.Template true "The details of the template"
+// @Success 200 {object} controllers.Response The Response object
+// @router /delete-template [post]
 func (c *ApiController) DeleteTemplate() {
 	var template object.Template
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &template)

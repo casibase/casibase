@@ -27,6 +27,13 @@ type DeploymentRequest struct {
 	Manifests string `json:"manifests"`
 }
 
+// DeployTemplate
+// @Title DeployTemplate
+// @Tag Deployment API
+// @Description deploy application template
+// @Param body body DeploymentRequest true "The deployment request details"
+// @Success 200 {object} controllers.Response The Response object
+// @router /deploy-template [post]
 func (c *ApiController) DeployTemplate() {
 	var req DeploymentRequest
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &req)
@@ -49,6 +56,13 @@ func (c *ApiController) DeployTemplate() {
 	c.ResponseOk(true)
 }
 
+// DeleteDeployment
+// @Title DeleteDeployment
+// @Tag Deployment API
+// @Description delete deployment
+// @Param body body DeploymentRequest true "The deployment request details"
+// @Success 200 {object} controllers.Response The Response object
+// @router /delete-deployment [post]
 func (c *ApiController) DeleteDeployment() {
 	var req DeploymentRequest
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &req)
@@ -71,6 +85,13 @@ func (c *ApiController) DeleteDeployment() {
 	c.ResponseOk(true)
 }
 
+// GetDeploymentStatus
+// @Title GetDeploymentStatus
+// @Tag Deployment API
+// @Description get deployment status
+// @Param id query string true "The id (owner/name) of the deployment"
+// @Success 200 {object} object.DeploymentStatus The Response object
+// @router /get-deployment-status [get]
 func (c *ApiController) GetDeploymentStatus() {
 	id := c.Input().Get("id")
 	owner, name := util.GetOwnerAndNameFromId(id)
@@ -84,6 +105,12 @@ func (c *ApiController) GetDeploymentStatus() {
 	c.ResponseOk(status)
 }
 
+// GetK8sStatus
+// @Title GetK8sStatus
+// @Tag Deployment API
+// @Description get kubernetes cluster status
+// @Success 200 {object} object.K8sStatus The Response object
+// @router /get-k8s-status [get]
 func (c *ApiController) GetK8sStatus() {
 	status, err := object.GetK8sStatus()
 	if err != nil {
