@@ -1048,6 +1048,25 @@ class ProviderEditPage extends React.Component {
             </Row>
           ) : null
         }
+        {
+          this.state.provider.category === "Kubernetes" ? (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("provider:Config text"), i18next.t("provider:Config text - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input.TextArea
+                  rows={10}
+                  value={this.state.provider.configText}
+                  disabled={!this.state.isAdmin}
+                  onChange={e => {
+                    this.updateProviderField("configText", e.target.value);
+                  }}
+                />
+              </Col>
+            </Row>
+          ) : null
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {this.getProviderUrlLabel(this.state.provider)} :

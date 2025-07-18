@@ -204,6 +204,20 @@ routeManager.registerApp("node", {
   ],
 });
 
+routeManager.registerApp("template", {
+  title: "Templates",
+  routes: [
+    {
+      path: "/templates",
+      component: () => import("../TemplateListPage"),
+    },
+    {
+      path: "/templates/:templateName",
+      component: () => import("../TemplateEditPage"),
+    },
+  ],
+});
+
 routeManager.registerApp("machine", {
   title: "Machines",
   iconPath: "machine.svg",
