@@ -33,14 +33,14 @@ class TemplateEditPage extends React.Component {
       deploymentStatus: null,
       isDeploying: false,
       isDeleting: false,
-      k8sConfig: null,
+      k8sStatus: null,
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getTemplate();
     this.getDeploymentStatus();
-    this.getK8sConfig();
+    this.getK8sStatus();
   }
 
   getTemplate() {
@@ -56,29 +56,15 @@ class TemplateEditPage extends React.Component {
       });
   }
 
-  getK8sConfig() {
-    TemplateBackend.getK8sConfig()
+  getK8sStatus() {
+    TemplateBackend.getK8sStatus()
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
-            k8sConfig: res.data,
+            k8sStatus: res.data,
           });
-        }
-      });
-  }
-
-  testK8sConnection() {
-    TemplateBackend.testK8sConnection()
-      .then((res) => {
-        if (res.status === "ok") {
-          if (res.data.status === "Connected") {
-            Setting.showMessage("success", "K8s connection successful");
-          } else {
-            Setting.showMessage("error", `K8s connection failed: ${res.data.message}`);
-          }
-          this.getK8sConfig(); // Refresh config to update connection status
         } else {
-          Setting.showMessage("error", `K8s connection test failed: ${res.msg}`);
+          Setting.showMessage("error", i18next.t("general:Failed to connect to server"));
         }
       });
   }
@@ -219,10 +205,9 @@ class TemplateEditPage extends React.Component {
   }
 
   renderTemplate() {
-    const {deploymentStatus, isDeploying, isDeleting, k8sConfig} = this.state;
+    const {deploymentStatus, isDeploying, isDeleting, k8sStatus} = this.state;
     const isDeployed = deploymentStatus && deploymentStatus.status !== "Not Deployed" && deploymentStatus.status !== "Unknown";
-    const k8sEnabled = k8sConfig && k8sConfig.enabled;
-    const k8sConnected = k8sConfig && k8sConfig.connected;
+    const k8sConnected = k8sStatus && k8sStatus.status === "Connected";
 
     return (
       <Card size="small" title={
@@ -312,28 +297,26 @@ class TemplateEditPage extends React.Component {
 
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel("Kubernetes Config", "Kubernetes configuration status")} :
+            {Setting.getLabel("Kubernetes Status", "Kubernetes connection status")} :
           </Col>
           <Col span={22} >
             <Space>
-              <Tag color={k8sEnabled ? "success" : "default"}>
-                {k8sEnabled ? "Enabled" : "Disabled"}
+              <Tag color={k8sConnected ? "success" : "error"}>
+                {k8sStatus ? k8sStatus.status : "Loading..."}
               </Tag>
-              {k8sEnabled && (
-                <Tag color={k8sConnected ? "success" : "error"}>
-                  {k8sConnected ? "Connected" : "Disconnected"}
-                </Tag>
-              )}
-              {k8sEnabled && (
-                <Button size="small" onClick={() => this.testK8sConnection()}>
-                      Test Connection
-                </Button>
+              <Button size="small" onClick={() => this.getK8sStatus()}>
+                  Refresh Status
+              </Button>
+              {k8sStatus && k8sStatus.message && (
+                <span style={{color: "#666", fontSize: "12px"}}>
+                  {k8sStatus.message}
+                </span>
               )}
             </Space>
           </Col>
         </Row>
 
-        {k8sEnabled && (
+        {k8sConnected && (
           <>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -350,21 +333,11 @@ class TemplateEditPage extends React.Component {
               </Col>
               <Col span={22} >
                 <Space>
-                  <Button
-                    type="primary"
-                    loading={isDeploying}
-                    disabled={isDeleting || !k8sConnected}
-                    onClick={() => this.deployTemplate()}
-                  >
+                  <Button type="primary" loading={isDeploying} disabled={isDeleting || !k8sConnected} onClick={() => this.deployTemplate()}>
                     {isDeployed ? "Redeploy" : "Deploy"}
                   </Button>
                   {isDeployed && (
-                    <Button
-                      danger
-                      loading={isDeleting}
-                      disabled={isDeploying || !k8sConnected}
-                      onClick={() => this.deleteDeployment()}
-                    >
+                    <Button danger loading={isDeleting} disabled={isDeploying || !k8sConnected} onClick={() => this.deleteDeployment()}>
                             Delete Deployment
                     </Button>
                   )}

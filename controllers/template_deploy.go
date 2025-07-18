@@ -21,79 +21,75 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-func (c *ApiController) GetTemplates() {
-	owner := c.Input().Get("owner")
+type DeploymentRequest struct {
+	Owner     string `json:"owner"`
+	Name      string `json:"name"`
+	Manifests string `json:"manifests"`
+}
 
-	res, err := object.GetTemplates(owner)
+func (c *ApiController) DeployTemplate() {
+	var req DeploymentRequest
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(res)
+	if req.Owner == "" || req.Name == "" || req.Manifests == "" {
+		c.ResponseError("Missing required parameters")
+		return
+	}
+
+	err = object.DeployApplicationTemplate(req.Owner, req.Name, req.Manifests)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(true)
 }
 
-func (c *ApiController) GetTemplate() {
+func (c *ApiController) DeleteDeployment() {
+	var req DeploymentRequest
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &req)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	if req.Owner == "" || req.Name == "" {
+		c.ResponseError("Missing required parameters")
+		return
+	}
+
+	err = object.DeleteDeployment(req.Owner, req.Name)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(true)
+}
+
+func (c *ApiController) GetDeploymentStatus() {
 	id := c.Input().Get("id")
+	owner, name := util.GetOwnerAndNameFromId(id)
 
-	res, err := object.GetTemplate(util.GetOwnerAndNameFromId(id))
+	status, err := object.GetDeploymentStatus(owner, name)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(res)
+	c.ResponseOk(status)
 }
 
-func (c *ApiController) UpdateTemplate() {
-	id := c.Input().Get("id")
-
-	var template object.Template
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &template)
+func (c *ApiController) GetK8sStatus() {
+	status, err := object.GetK8sStatus()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := object.UpdateTemplate(id, &template)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	c.ResponseOk(success)
-}
-
-func (c *ApiController) AddTemplate() {
-	var template object.Template
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &template)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	success, err := object.AddTemplate(&template)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	c.ResponseOk(success)
-}
-
-func (c *ApiController) DeleteTemplate() {
-	var template object.Template
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &template)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	success, err := object.DeleteTemplate(template.Owner, template.Name)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	c.ResponseOk(success)
+	c.ResponseOk(status)
 }

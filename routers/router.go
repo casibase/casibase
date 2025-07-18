@@ -108,8 +108,7 @@ func initAPI() {
 	beego.Router("/api/deploy-template", &controllers.ApiController{}, "POST:DeployTemplate")
 	beego.Router("/api/delete-deployment", &controllers.ApiController{}, "POST:DeleteDeployment")
 	beego.Router("/api/get-deployment-status", &controllers.ApiController{}, "GET:GetDeploymentStatus")
-	beego.Router("/api/test-k8s-connection", &controllers.ApiController{}, "GET:TestK8sConnection")
-	beego.Router("/api/get-k8s-config", &controllers.ApiController{}, "GET:GetK8sConfig")
+	beego.Router("/api/get-k8s-status", &controllers.ApiController{}, "GET:GetK8sStatus")
 
 	beego.Router("/api/get-usages", &controllers.ApiController{}, "GET:GetUsages")
 	beego.Router("/api/get-range-usages", &controllers.ApiController{}, "GET:GetRangeUsages")

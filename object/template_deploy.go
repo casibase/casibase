@@ -17,11 +17,9 @@ package object
 import (
 	"context"
 	"fmt"
-	"os"
-	"path/filepath"
 	"strings"
+	"time"
 
-	"github.com/casibase/casibase/conf"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -47,53 +45,32 @@ type K8sClient struct {
 	restMapper    meta.RESTMapper
 	config        *rest.Config
 	connected     bool
-	k8sConfig     *conf.K8sConfig
+	configText    string
 }
 
 var k8sClient *K8sClient
 
 func init() {
-	k8sConfig := conf.GetK8sConfig()
-	k8sClient, _ = initK8sClient(k8sConfig)
+	k8sClient = nil
 }
 
-func initK8sClient(k8sConfig *conf.K8sConfig) (*K8sClient, error) {
-	var config *rest.Config
-	var err error
-
-	if k8sConfig.InCluster {
-		config, err = rest.InClusterConfig()
-		if err != nil {
-			return nil, fmt.Errorf("failed to load in-cluster config: %v", err)
-		}
-	} else {
-		kubeconfigPath := k8sConfig.KubeConfigPath
-		if kubeconfigPath == "" {
-			kubeconfigPath = os.Getenv("KUBECONFIG")
-			if kubeconfigPath == "" {
-				home, err := os.UserHomeDir()
-				if err != nil {
-					return nil, fmt.Errorf("failed to get home directory: %v", err)
-				}
-				kubeconfigPath = filepath.Join(home, ".kube", "config")
-			}
-		}
-
-		if _, err := os.Stat(kubeconfigPath); os.IsNotExist(err) {
-			return nil, fmt.Errorf("kubeconfig file not found at %s", kubeconfigPath)
-		}
-
-		config, err = clientcmd.BuildConfigFromFlags("", kubeconfigPath)
-		if err != nil {
-			return nil, fmt.Errorf("failed to load kubeconfig from %s: %v", kubeconfigPath, err)
-		}
+// Create K8s client from provider's ConfigText
+func createK8sClientFromProvider(provider *Provider) (*K8sClient, error) {
+	if provider.ConfigText == "" {
+		return nil, fmt.Errorf("provider kubeconfig content is empty")
 	}
 
-	return createK8sClient(config, k8sConfig)
+	// Parse kubeconfig from provider.ConfigText
+	config, err := clientcmd.RESTConfigFromKubeConfig([]byte(provider.ConfigText))
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse kubeconfig from provider: %v", err)
+	}
+
+	return createK8sClient(config, provider.ConfigText)
 }
 
-func createK8sClient(config *rest.Config, k8sConfig *conf.K8sConfig) (*K8sClient, error) {
-	config.Timeout = k8sConfig.ConnectionTimeout
+func createK8sClient(config *rest.Config, configText string) (*K8sClient, error) {
+	config.Timeout = 30 * time.Second // Default timeout
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
@@ -123,7 +100,7 @@ func createK8sClient(config *rest.Config, k8sConfig *conf.K8sConfig) (*K8sClient
 		restMapper:    restMapper,
 		config:        config,
 		connected:     false,
-		k8sConfig:     k8sConfig,
+		configText:    configText,
 	}
 
 	if err := client.testConnection(); err != nil {
@@ -135,20 +112,36 @@ func createK8sClient(config *rest.Config, k8sConfig *conf.K8sConfig) (*K8sClient
 }
 
 func (k *K8sClient) testConnection() error {
-	ctx, cancel := context.WithTimeout(context.Background(), k.k8sConfig.ConnectionTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	_, err := k.clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{Limit: 1})
 	return err
 }
 
-func IsK8sConnected() bool {
-	return k8sClient != nil && k8sClient.connected
+// Ensure k8s client is initialized, try to initialize if not
+func ensureK8sClient() error {
+	// Get current Kubernetes provider
+	provider, err := GetDefaultKubernetesProvider()
+	if err != nil {
+		return fmt.Errorf("failed to get default Kubernetes provider: %v", err)
+	}
+
+	// Check if client needs to be created or updated
+	if k8sClient == nil || k8sClient.configText != provider.ConfigText {
+		client, err := createK8sClientFromProvider(provider)
+		if err != nil {
+			return err
+		}
+		k8sClient = client
+	}
+
+	return nil
 }
 
 func DeployApplicationTemplate(owner, name, manifests string) error {
-	if k8sClient == nil {
-		return fmt.Errorf("k8s client not initialized")
+	if err := ensureK8sClient(); err != nil {
+		return fmt.Errorf("failed to initialize k8s client: %v", err)
 	}
 
 	if !k8sClient.connected {
@@ -158,7 +151,7 @@ func DeployApplicationTemplate(owner, name, manifests string) error {
 	// Split manifests by "---" separator
 	docs := strings.Split(manifests, "---")
 
-	namespace := fmt.Sprintf("%s-%s-%s", k8sClient.k8sConfig.NamespacePrefix, owner, name)
+	namespace := fmt.Sprintf("casibase-%s-%s", owner, name)
 
 	// Create namespace if it doesn't exist
 	err := k8sClient.createNamespaceIfNotExists(namespace)
@@ -182,15 +175,15 @@ func DeployApplicationTemplate(owner, name, manifests string) error {
 }
 
 func DeleteDeployment(owner, name string) error {
-	if k8sClient == nil {
-		return fmt.Errorf("k8s client not initialized")
+	if err := ensureK8sClient(); err != nil {
+		return fmt.Errorf("failed to initialize k8s client: %v", err)
 	}
 
 	if !k8sClient.connected {
 		return fmt.Errorf("k8s client not connected to cluster")
 	}
 
-	namespace := fmt.Sprintf("%s-%s-%s", k8sClient.k8sConfig.NamespacePrefix, owner, name)
+	namespace := fmt.Sprintf("casibase-%s-%s", owner, name)
 
 	// Delete the entire namespace
 	err := k8sClient.clientset.CoreV1().Namespaces().Delete(
@@ -207,15 +200,15 @@ func DeleteDeployment(owner, name string) error {
 }
 
 func GetDeploymentStatus(owner, name string) (*DeploymentStatus, error) {
-	if k8sClient == nil {
-		return &DeploymentStatus{Status: "Unknown", Message: "k8s client not initialized"}, nil
+	if err := ensureK8sClient(); err != nil {
+		return &DeploymentStatus{Status: "Unknown", Message: fmt.Sprintf("failed to initialize k8s client: %v", err)}, nil
 	}
 
 	if !k8sClient.connected {
 		return &DeploymentStatus{Status: "Unknown", Message: "k8s client not connected to cluster"}, nil
 	}
 
-	namespace := fmt.Sprintf("%s-%s-%s", k8sClient.k8sConfig.NamespacePrefix, owner, name)
+	namespace := fmt.Sprintf("casibase-%s-%s", owner, name)
 
 	// Check if namespace exists
 	_, err := k8sClient.clientset.CoreV1().Namespaces().Get(
@@ -257,9 +250,9 @@ func GetDeploymentStatus(owner, name string) (*DeploymentStatus, error) {
 	return &DeploymentStatus{Status: "Running", Message: "All deployments are ready"}, nil
 }
 
-func TestK8sConnection() (*DeploymentStatus, error) {
-	if k8sClient == nil {
-		return &DeploymentStatus{Status: "Disconnected", Message: "k8s client not initialized"}, nil
+func GetK8sStatus() (*DeploymentStatus, error) {
+	if err := ensureK8sClient(); err != nil {
+		return &DeploymentStatus{Status: "Disconnected", Message: fmt.Sprintf("failed to initialize k8s client: %v", err)}, nil
 	}
 
 	err := k8sClient.testConnection()

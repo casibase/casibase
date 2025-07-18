@@ -48,6 +48,7 @@ type Provider struct {
 	CompatibleProvider string            `xorm:"varchar(100)" json:"compatibleProvider"`
 	McpTools           []*agent.McpTools `xorm:"text" json:"mcpTools"`
 	Text               string            `xorm:"mediumtext" json:"text"`
+	ConfigText         string            `xorm:"mediumtext" json:"configText"`
 
 	EnableThinking   bool    `json:"enableThinking"`
 	Temperature      float32 `xorm:"float" json:"temperature"`
@@ -94,6 +95,9 @@ func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.
 		}
 		if provider.UserKey != "" {
 			provider.UserKey = "***"
+		}
+		if provider.ConfigText != "" {
+			provider.ConfigText = "***"
 		}
 		if provider.SignKey != "" {
 			provider.SignKey = "***"
@@ -260,6 +264,20 @@ func DeleteProvider(provider *Provider) (bool, error) {
 
 func (provider *Provider) GetId() string {
 	return fmt.Sprintf("%s/%s", provider.Owner, provider.Name)
+}
+
+func GetDefaultKubernetesProvider() (*Provider, error) {
+	providers, err := GetProviders("admin")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get providers: %v", err)
+	}
+
+	for _, provider := range providers {
+		if provider.Category == "Kubernetes" {
+			return provider, nil
+		}
+	}
+	return nil, fmt.Errorf("no Kubernetes provider found")
 }
 
 func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {

@@ -92,18 +92,8 @@ export function deleteDeployment(deploymentData) {
   }).then(res => res.json());
 }
 
-export function getK8sConfig() {
-  return fetch(`${Setting.ServerUrl}/api/get-k8s-config`, {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Accept-Language": Setting.getAcceptLanguage(),
-    },
-  }).then(res => res.json());
-}
-
-export function testK8sConnection() {
-  return fetch(`${Setting.ServerUrl}/api/test-k8s-connection`, {
+export function getK8sStatus() {
+  return fetch(`${Setting.ServerUrl}/api/get-k8s-status`, {
     method: "GET",
     credentials: "include",
     headers: {
