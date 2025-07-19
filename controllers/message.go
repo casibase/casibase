@@ -30,6 +30,11 @@ import (
 // @Success 200 {array} object.Message The Response object
 // @router /get-global-messages [get]
 func (c *ApiController) GetGlobalMessages() {
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
+
 	owner := "admin"
 	limit := c.Input().Get("pageSize")
 	page := c.Input().Get("p")
@@ -117,6 +122,11 @@ func (c *ApiController) GetMessages() {
 // @Success 200 {object} object.Message The Response object
 // @router /get-message [get]
 func (c *ApiController) GetMessage() {
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
+
 	id := c.Input().Get("id")
 
 	message, err := object.GetMessage(id)
@@ -137,6 +147,11 @@ func (c *ApiController) GetMessage() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-message [post]
 func (c *ApiController) UpdateMessage() {
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
+
 	id := c.Input().Get("id")
 	isHitOnly := c.Input().Get("isHitOnly")
 
@@ -174,6 +189,11 @@ func (c *ApiController) UpdateMessage() {
 // @Success 200 {object} object.Chat The Response object
 // @router /add-message [post]
 func (c *ApiController) AddMessage() {
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
+
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
 	if err != nil {

@@ -18,9 +18,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/casibase/casibase/conf"
-
 	"github.com/beego/beego/utils/pagination"
+	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -32,6 +31,11 @@ import (
 // @Success 200 {array} object.Chat The Response object
 // @router /get-global-chats [get]
 func (c *ApiController) GetGlobalChats() {
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
+
 	limit := c.Input().Get("pageSize")
 	page := c.Input().Get("p")
 	field := c.Input().Get("field")
@@ -117,6 +121,11 @@ func (c *ApiController) GetChats() {
 // @Success 200 {object} object.Chat The Response object
 // @router /get-chat [get]
 func (c *ApiController) GetChat() {
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
+
 	id := c.Input().Get("id")
 
 	chat, err := object.GetChat(id)
@@ -143,6 +152,11 @@ func (c *ApiController) UpdateChat() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &chat)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	ok := c.IsCurrentUser(chat.User)
+	if !ok {
 		return
 	}
 
@@ -182,6 +196,11 @@ func (c *ApiController) AddChat() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &chat)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	ok := c.IsCurrentUser(chat.User)
+	if !ok {
 		return
 	}
 
@@ -225,15 +244,15 @@ func (c *ApiController) AddChat() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /delete-chat [post]
 func (c *ApiController) DeleteChat() {
-	ok := c.RequireAdmin()
-	if !ok {
-		return
-	}
-
 	var chat object.Chat
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &chat)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	ok := c.IsCurrentUser(chat.User)
+	if !ok {
 		return
 	}
 
