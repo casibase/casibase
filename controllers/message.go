@@ -30,6 +30,11 @@ import (
 // @Success 200 {array} object.Message The Response object
 // @router /get-global-messages [get]
 func (c *ApiController) GetGlobalMessages() {
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
+
 	owner := "admin"
 	limit := c.Input().Get("pageSize")
 	page := c.Input().Get("p")
@@ -38,11 +43,6 @@ func (c *ApiController) GetGlobalMessages() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 	store := c.Input().Get("store")
-
-	ok := c.RequireAdmin()
-	if !ok {
-		return
-	}
 
 	if limit == "" || page == "" {
 		messages, err := object.GetGlobalMessages()
@@ -122,17 +122,19 @@ func (c *ApiController) GetMessages() {
 // @Success 200 {object} object.Message The Response object
 // @router /get-message [get]
 func (c *ApiController) GetMessage() {
-	id := c.Input().Get("id")
-
 	ok := c.RequireAdmin()
 	if !ok {
 		return
 	}
+
+	id := c.Input().Get("id")
+
 	message, err := object.GetMessage(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
+
 	c.ResponseOk(message)
 }
 
@@ -145,13 +147,14 @@ func (c *ApiController) GetMessage() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-message [post]
 func (c *ApiController) UpdateMessage() {
-	id := c.Input().Get("id")
-	isHitOnly := c.Input().Get("isHitOnly")
-
 	ok := c.RequireAdmin()
 	if !ok {
 		return
 	}
+
+	id := c.Input().Get("id")
+	isHitOnly := c.Input().Get("isHitOnly")
+
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
 	if err != nil {
@@ -186,16 +189,18 @@ func (c *ApiController) UpdateMessage() {
 // @Success 200 {object} object.Chat The Response object
 // @router /add-message [post]
 func (c *ApiController) AddMessage() {
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
+
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
-	ok := c.RequireAdmin()
-	if !ok {
-		return
-	}
+
 	id := util.GetIdFromOwnerAndName(message.Owner, message.Name)
 	originMessage, err := object.GetMessage(id)
 	if err != nil {
