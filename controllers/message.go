@@ -39,6 +39,11 @@ func (c *ApiController) GetGlobalMessages() {
 	sortOrder := c.Input().Get("sortOrder")
 	store := c.Input().Get("store")
 
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
+
 	if limit == "" || page == "" {
 		messages, err := object.GetGlobalMessages()
 		if err != nil {
@@ -119,12 +124,15 @@ func (c *ApiController) GetMessages() {
 func (c *ApiController) GetMessage() {
 	id := c.Input().Get("id")
 
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
 	message, err := object.GetMessage(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
-
 	c.ResponseOk(message)
 }
 
@@ -140,6 +148,10 @@ func (c *ApiController) UpdateMessage() {
 	id := c.Input().Get("id")
 	isHitOnly := c.Input().Get("isHitOnly")
 
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
 	if err != nil {
@@ -180,7 +192,10 @@ func (c *ApiController) AddMessage() {
 		c.ResponseError(err.Error())
 		return
 	}
-
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
 	id := util.GetIdFromOwnerAndName(message.Owner, message.Name)
 	originMessage, err := object.GetMessage(id)
 	if err != nil {

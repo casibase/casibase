@@ -201,3 +201,16 @@ func (c *ApiController) getUserAgent() string {
 	res := c.Ctx.Request.UserAgent()
 	return res
 }
+
+func (c *ApiController) IsCurrentUser(usernameInput string) bool {
+	username := c.GetSessionUsername()
+	if username == "" && c.getAnonymousUsername() == usernameInput {
+		username = c.getAnonymousUsername()
+	}
+
+	if !c.IsAdmin() && username != usernameInput {
+		c.ResponseError("Unauthorized operation")
+		return false
+	}
+	return true
+}
