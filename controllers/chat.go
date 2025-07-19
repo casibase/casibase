@@ -31,6 +31,11 @@ import (
 // @Success 200 {array} object.Chat The Response object
 // @router /get-global-chats [get]
 func (c *ApiController) GetGlobalChats() {
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
+
 	limit := c.Input().Get("pageSize")
 	page := c.Input().Get("p")
 	field := c.Input().Get("field")
@@ -38,11 +43,6 @@ func (c *ApiController) GetGlobalChats() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 	store := c.Input().Get("store")
-
-	ok := c.RequireAdmin()
-	if !ok {
-		return
-	}
 
 	if limit == "" || page == "" {
 		chats, err := object.GetGlobalChats()
@@ -121,16 +121,19 @@ func (c *ApiController) GetChats() {
 // @Success 200 {object} object.Chat The Response object
 // @router /get-chat [get]
 func (c *ApiController) GetChat() {
-	id := c.Input().Get("id")
 	ok := c.RequireAdmin()
 	if !ok {
 		return
 	}
+
+	id := c.Input().Get("id")
+
 	chat, err := object.GetChat(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
+
 	c.ResponseOk(chat)
 }
 
