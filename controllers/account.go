@@ -234,10 +234,7 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 }
 
 func (c *ApiController) anonymousSignin() {
-	clientIp := c.getClientIp()
-	userAgent := c.getUserAgent()
-	hash := getContentHash(fmt.Sprintf("%s|%s", clientIp, userAgent))
-	username := fmt.Sprintf("u-%s", hash)
+	username := c.getAnonymousUsername()
 
 	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
 	user := casdoorsdk.User{
@@ -268,6 +265,13 @@ func (c *ApiController) anonymousSignin() {
 	}
 
 	c.ResponseOk(user)
+}
+
+func (c *ApiController) getAnonymousUsername() string {
+	clientIp := c.getClientIp()
+	userAgent := c.getUserAgent()
+	hash := getContentHash(fmt.Sprintf("%s|%s", clientIp, userAgent))
+	return fmt.Sprintf("u-%s", hash)
 }
 
 func (c *ApiController) isPublicDomain() bool {
