@@ -95,7 +95,7 @@ const routeManager = new AppRouteManager();
 routeManager.registerApp("chat", {
   title: "Chat",
   iconPath: "chat.svg",
-  gradient: "linear-gradient(135deg, #427FF8 0%, #FCBE00 100%)",
+  gradient: "linear-gradient(135deg, #ffdc6f, #ffffff)",
   routes: [
     {
       path: "/chat",
@@ -111,7 +111,7 @@ routeManager.registerApp("chat", {
 routeManager.registerApp("usage", {
   title: "Usages",
   iconPath: "usage.svg",
-  gradient: "linear-gradient(135deg, #E25232 0%, #59BCF4 100%)",
+  gradient: "linear-gradient(135deg, #52abde 0%, #fbf5f1 100%)",
   routes: [
     {
       path: "/usage",
@@ -123,7 +123,7 @@ routeManager.registerApp("usage", {
 routeManager.registerApp("chats", {
   title: "Chats",
   iconPath: "chats.svg",
-  gradient: "linear-gradient(135deg, #427FF8 0%, #FCBE00 100%)",
+  gradient: "linear-gradient(135deg, #31b4ff 0%, #fbf5f1 100%)",
   routes: [
     {
       path: "/chats",
@@ -139,7 +139,7 @@ routeManager.registerApp("chats", {
 routeManager.registerApp("messages", {
   title: "Messages",
   iconPath: "message.svg",
-  gradient: "linear-gradient(135deg, #E25232 0%, #59BCF4 100%)",
+  gradient: "linear-gradient(135deg, #7db6d8 0%, #47a6dc 100%)",
   routes: [
     {
       path: "/messages",
@@ -155,7 +155,7 @@ routeManager.registerApp("messages", {
 routeManager.registerApp("stores", {
   title: "Stores",
   iconPath: "store.svg",
-  gradient: "linear-gradient(135deg, #427FF8 0%, #FCBE00 100%)",
+  gradient: "linear-gradient(135deg, #ade4a4 0%, #f1faff 100%)",
   routes: [
     {
       path: "/stores",
@@ -183,7 +183,7 @@ routeManager.registerApp("stores", {
 routeManager.registerApp("providers", {
   title: "Providers",
   iconPath: "provider.svg",
-  gradient: "linear-gradient(135deg, #E25232 0%, #59BCF4 100%)",
+  gradient: "linear-gradient(135deg, #6e91da 0%, #c0e8ff 100%)",
   routes: [
     {
       path: "/providers",
@@ -199,7 +199,7 @@ routeManager.registerApp("providers", {
 routeManager.registerApp("vectors", {
   title: "Vectors",
   iconPath: "vector.svg",
-  gradient: "linear-gradient(135deg, #E25232 0%, #59BCF4 100%)",
+  gradient: "linear-gradient(135deg, #a0bafa 0%, #f5ffe4 100%)",
   routes: [
     {
       path: "/vectors",
@@ -215,7 +215,7 @@ routeManager.registerApp("vectors", {
 routeManager.registerApp("node", {
   title: "Nodes",
   iconPath: "node.svg",
-  gradient: "linear-gradient(135deg,rgb(36, 93, 207) 0%,rgb(82, 136, 244) 100%)",
+  gradient: "linear-gradient(135deg, rgb(100 152 255) 0%, rgb(220 232 255) 100%)",
   routes: [
     {
       path: "/nodes",
@@ -245,7 +245,7 @@ routeManager.registerApp("template", {
 routeManager.registerApp("machine", {
   title: "Machines",
   iconPath: "machine.svg",
-  gradient: "linear-gradient(135deg, #58B4D9 0%,rgb(50, 161, 241) 100%)",
+  gradient: "linear-gradient(135deg, rgb(81 167 200) 0%, rgb(245 251 255) 100%)",
   routes: [
     {
       path: "/machines",
@@ -353,7 +353,7 @@ routeManager.registerApp("public-videos", {
 routeManager.registerApp("tasks", {
   title: "Tasks",
   iconPath: "task.svg",
-  gradient: "linear-gradient(135deg,rgb(255, 126, 126) 0%, #4393F6 100%)",
+  gradient: "linear-gradient(135deg, rgb(239 246 255) 0%, #4393f6 100%)",
   routes: [
     {
       path: "/tasks",
@@ -369,7 +369,7 @@ routeManager.registerApp("tasks", {
 routeManager.registerApp("workflows", {
   title: "Workflows",
   iconPath: "workflow.svg",
-  gradient: "linear-gradient(135deg, #F5C364 0%, #59BCF4 100%)",
+  gradient: "linear-gradient(135deg, #f8d187 0%, #fff8ea 100%)",
   routes: [
     {
       path: "/workflows",
@@ -385,7 +385,7 @@ routeManager.registerApp("workflows", {
 routeManager.registerApp("forms", {
   title: "Forms",
   iconPath: "form.svg",
-  gradient: "linear-gradient(135deg, #F8D27A 0%, #5186ED 100%)",
+  gradient: "linear-gradient(135deg, #f6e3b7 0%, #ffeaba 100%)",
   routes: [
     {
       path: "/forms",
@@ -405,7 +405,7 @@ routeManager.registerApp("forms", {
 routeManager.registerApp("audit", {
   title: "Audit",
   iconPath: "audit.svg",
-  gradient: "linear-gradient(135deg, #8BD36E 0%, #94AAF8 100%)",
+  gradient: "linear-gradient(135deg, #ffffff 0%, #aec0ff 100%)",
   i18nNamespace: "med",
   routes: [
     {
@@ -431,7 +431,7 @@ routeManager.registerApp("yolov8mi", {
 routeManager.registerApp("articles", {
   title: "Articles",
   iconPath: "article.svg",
-  gradient: "linear-gradient(135deg,rgb(59, 118, 177) 0%,rgb(120, 120, 120) 100%)",
+  gradient: "linear-gradient(135deg, rgb(156, 176, 230) 0%, rgb(214 214 214) 100%)",
   routes: [
     {
       path: "/articles",
