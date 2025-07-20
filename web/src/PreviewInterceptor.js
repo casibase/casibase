@@ -34,6 +34,9 @@ class PreviewInterceptor {
   handleButtonClick(event) {
     const button = event.target.closest("button");
     if (button) {
+      if (button.dataset.previewAllow) {
+        return;
+      }
       const buttonSpan = button.querySelector("span[aria-label]");
       if (buttonSpan && !this.bannedMessageActions.includes(buttonSpan.getAttribute("aria-label"))) {
         return;
@@ -43,7 +46,7 @@ class PreviewInterceptor {
       }
       const titleEl = button.querySelector("title");
       const titleText = titleEl?.textContent;
-      if (titleText === "Stop Loading") {
+      if (titleText === "Stop Loading" || titleText === "Speech Recording") {
         return;
       }
       if (button.innerText !== "" && !this.bannededButtonTexts.includes(button.innerText.replace(/\s+/g, ""))) {

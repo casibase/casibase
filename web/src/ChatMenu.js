@@ -134,8 +134,9 @@ class ChatMenu extends React.Component {
                             this.props.onDeleteChat(globalChatIndex);
                           }
                         }}
-                        okText={i18next.t("chat:OK")}
+                        okText={i18next.t("general:OK")}
                         cancelText={i18next.t("general:Cancel")}
+                        okButtonProps={{"data-preview-allow": true}}
                       >
                         <DeleteOutlined className="menu-item-icon"
                           onMouseEnter={handleIconMouseEnter}
