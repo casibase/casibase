@@ -46,6 +46,9 @@ func (c *ApiController) GetGlobalStores() {
 
 		c.ResponseOk(stores)
 	} else {
+		if !c.IsPreviewMode() && !c.RequireAdmin() {
+			return
+		}
 		limit := util.ParseInt(limit)
 		count, err := object.GetStoreCount(field, value)
 		if err != nil {
