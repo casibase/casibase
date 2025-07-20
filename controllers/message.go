@@ -147,11 +147,6 @@ func (c *ApiController) GetMessage() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-message [post]
 func (c *ApiController) UpdateMessage() {
-	ok := c.RequireAdmin()
-	if !ok {
-		return
-	}
-
 	id := c.Input().Get("id")
 	isHitOnly := c.Input().Get("isHitOnly")
 
@@ -159,6 +154,11 @@ func (c *ApiController) UpdateMessage() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	ok := c.IsCurrentUser(message.User)
+	if !ok {
 		return
 	}
 
@@ -189,15 +189,15 @@ func (c *ApiController) UpdateMessage() {
 // @Success 200 {object} object.Chat The Response object
 // @router /add-message [post]
 func (c *ApiController) AddMessage() {
-	ok := c.RequireAdmin()
-	if !ok {
-		return
-	}
-
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	ok := c.IsCurrentUser(message.User)
+	if !ok {
 		return
 	}
 
