@@ -134,7 +134,7 @@ class ChatMenu extends React.Component {
                             this.props.onDeleteChat(globalChatIndex);
                           }
                         }}
-                        okText={i18next.t("general:OK")}
+                        okText={i18next.t("chat:OK")}
                         cancelText={i18next.t("general:Cancel")}
                       >
                         <DeleteOutlined className="menu-item-icon"
