@@ -131,10 +131,10 @@ class ProviderEditPage extends React.Component {
   getContractNameLabel(provider) {
     if (provider.category === "Blockchain") {
       if (provider.type === "Ethereum") {
-        return Setting.getLabel(i18next.t("provider:Contract Address"), i18next.t("provider:Contract Address - Tooltip"));
+        return Setting.getLabel(i18next.t("provider:Contract address"), i18next.t("provider:Contract address - Tooltip"));
       }
     }
-    return Setting.getLabel(i18next.t("provider:Contract Name"), i18next.t("provider:Contract Name - Tooltip"));
+    return Setting.getLabel(i18next.t("provider:Contract name"), i18next.t("provider:Contract name - Tooltip"));
   }
 
   parseProviderField(key, value) {
@@ -500,7 +500,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("provider:Compatible Provider"), i18next.t("provider:Compatible Provider - Tooltip"))} :
+                  {Setting.getLabel(i18next.t("provider:Compatible provider"), i18next.t("provider:Compatible provider - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <Select virtual={false} style={{width: "100%"}} value={this.state.provider.compatibleProvider} onChange={(value => {
