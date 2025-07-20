@@ -50,8 +50,9 @@ const DesktopIcon = ({name, iconPath, onClick, gradient}) => {
     >
       <div className="icon">
         <img
-          src={`${StaticBaseUrl}/apps/${iconPath || routeManager.getDefaultIcon(name)}`}
+          src={`${StaticBaseUrl}/apps/${iconPath}`}
           alt={name}
+          onError={e => e.target.src = `${StaticBaseUrl}/apps/${routeManager.getDefaultIcon(name)}`}
         />
       </div>
       <div className="icon-name">{name}</div>
