@@ -18,6 +18,9 @@ import {Spin} from "antd";
 class AppRouteManager {
   constructor() {
     this.routes = new Map();
+    this.defaultIcons = [
+      "default-1.svg",
+    ];
   }
 
   registerApp(appType, config) {
