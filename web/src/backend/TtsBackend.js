@@ -15,7 +15,6 @@
 import * as Setting from "../Setting";
 
 export function generateTextToSpeechAudio(storeId, providerId, messageId, text) {
-  // Create a payload object
   const payload = {
     storeId: storeId,
     providerId: providerId,
@@ -31,7 +30,8 @@ export function generateTextToSpeechAudio(storeId, providerId, messageId, text) 
     },
     body: JSON.stringify(payload),
   }).then(response => {
-    if (!response.ok) {
+    const contentType = response.headers.get("Content-Type") || "";
+    if (!response.ok || contentType.includes("application/json")) {
       return response.json().then(data => {
         throw new Error(data.msg || "TTS request failed");
       });
