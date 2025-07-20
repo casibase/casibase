@@ -2050,9 +2050,11 @@ export function getAlgorithm(themeAlgorithmNames) {
 }
 
 export function getLogo(themes) {
+  let defaultLogoUrl = Conf.LogoUrl;
+  defaultLogoUrl = defaultLogoUrl.replace("https://cdn.casibase.org", Conf.StaticBaseUrl);
   if (themes.includes("dark")) {
-    return Conf.LogoUrl.replace(/\.png$/, "_white.png");
+    return defaultLogoUrl.replace(/\.png$/, "_white.png");
   } else {
-    return Conf.LogoUrl;
+    return defaultLogoUrl;
   }
 }
