@@ -13,24 +13,24 @@
 // limitations under the License.
 
 import React, {useEffect, useRef, useState} from "react";
-import {
-  DndContext,
-  MouseSensor,
-  PointerSensor,
-  TouchSensor,
-  useDraggable,
-  useSensor,
-  useSensors
-} from "@dnd-kit/core";
+import {useHistory} from "react-router-dom";
 import {Button} from "antd";
+import {CloseOutlined, LeftOutlined, MinusOutlined, RightOutlined} from "@ant-design/icons";
+import {DndContext, MouseSensor, PointerSensor, TouchSensor, useDraggable, useSensor, useSensors} from "@dnd-kit/core";
 import i18next from "i18next";
 import "./OsDesktop.css";
-import {CloseOutlined, LeftOutlined, MinusOutlined, RightOutlined} from "@ant-design/icons";
-import {useHistory} from "react-router-dom";
 import routeManager, {DynamicRouteComponent} from "./component/AppRouteManager";
 import {StaticBaseUrl} from "./Conf";
 
-const DesktopIcon = ({name, iconPath, onClick, gradient}) => {
+const getIconUrl = (iconPath) => {
+  return `${StaticBaseUrl}/apps/${iconPath}`;
+};
+
+const getDefaultIconUrl = (appType) => {
+  return `${StaticBaseUrl}/apps/${routeManager.getDefaultIcon(appType)}`;
+};
+
+const DesktopIcon = ({name, iconPath, onClick, gradient, appType}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
 
@@ -50,9 +50,9 @@ const DesktopIcon = ({name, iconPath, onClick, gradient}) => {
     >
       <div className="icon">
         <img
-          src={`${StaticBaseUrl}/apps/${iconPath}`}
+          src={getIconUrl(iconPath)}
           alt={name}
-          onError={e => e.target.src = `${StaticBaseUrl}/apps/${routeManager.getDefaultIcon(name)}`}
+          onError={e => e.target.src = getDefaultIconUrl(appType)}
         />
       </div>
       <div className="icon-name">{name}</div>
@@ -149,9 +149,10 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, size, on
         <div className="window-header-left">
           <div className="window-app-info">
             <img
-              src={`${StaticBaseUrl}/apps/${appConfig?.iconPath}`}
+              src={getIconUrl(appConfig?.iconPath)}
               alt={title}
               className="window-app-icon"
+              onError={e => e.target.src = getDefaultIconUrl(appType)}
             />
             <div className="window-title">{i18next.t(`${appConfig?.i18nNamespace || "general"}:${title}`)}</div>
           </div>
@@ -214,8 +215,9 @@ const DockItem = ({window, onClick, isActive}) => {
       title={i18next.t(`${window.appConfig?.i18nNamespace || "general"}:${window.title}`)}
     >
       <img
-        src={`${StaticBaseUrl}/apps/${window.iconPath}`}
+        src={getIconUrl(window.iconPath)}
         alt={window.title}
+        onError={e => e.target.src = getDefaultIconUrl(window.appType)}
       />
       {!window.isMinimized && <div className="dock-indicator"></div>}
     </div>
@@ -724,6 +726,7 @@ const OsDesktop = (props) => {
               iconPath={app.iconPath}
               onClick={() => openWindow(app.appType)}
               gradient={app.gradient}
+              appType={app.appType}
             />
           ))}
         </div>

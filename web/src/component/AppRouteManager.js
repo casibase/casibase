@@ -84,7 +84,7 @@ class AppRouteManager {
   }
 
   getDefaultIcon(appType) {
-    const app = this.getHashCode(appType);
+    const app = this.getHashCode(appType) + 3;
     const index = app % this.defaultIcons.length;
     return this.defaultIcons[index];
   }
