@@ -20,6 +20,11 @@ class AppRouteManager {
     this.routes = new Map();
     this.defaultIcons = [
       "default-1.svg",
+      "default-2.svg",
+      "default-3.svg",
+      "default-4.svg",
+      "default-5.svg",
+      "default-6.svg",
     ];
   }
 
@@ -66,6 +71,22 @@ class AppRouteManager {
       appType,
       ...config,
     }));
+  }
+
+  getHashCode(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  }
+
+  getDefaultIcon(appType) {
+    const app = this.getHashCode(appType);
+    const index = app % this.defaultIcons.length;
+    return this.defaultIcons[index];
   }
 }
 
