@@ -152,6 +152,7 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, size, on
               src={`${StaticBaseUrl}/apps/${appConfig?.iconPath}`}
               alt={title}
               className="window-app-icon"
+              onError={e => e.target.src = `${StaticBaseUrl}/apps/${routeManager.getDefaultIcon(appType)}`}
             />
             <div className="window-title">{i18next.t(`${appConfig?.i18nNamespace || "general"}:${title}`)}</div>
           </div>
@@ -216,6 +217,7 @@ const DockItem = ({window, onClick, isActive}) => {
       <img
         src={`${StaticBaseUrl}/apps/${window.iconPath}`}
         alt={window.title}
+        onError={e => e.target.src = `${StaticBaseUrl}/apps/${routeManager.getDefaultIcon(window.appType)}`}
       />
       {!window.isMinimized && <div className="dock-indicator"></div>}
     </div>
