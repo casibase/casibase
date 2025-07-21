@@ -64,12 +64,12 @@ func newEthereumClient(rpcURL, privateKeyHex, contractAddressHex, contractMethod
 
 	client, err := ethclient.Dial(rpcURL)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to connect to Ethereum RPC: %v", err)
 	}
 
 	privateKey, err := crypto.HexToECDSA(privateKeyHex)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to parse private key: %v", err)
 	}
 	fromAddr := crypto.PubkeyToAddress(privateKey.PublicKey)
 	return &EthereumClient{
@@ -85,11 +85,11 @@ func newEthereumClient(rpcURL, privateKeyHex, contractAddressHex, contractMethod
 func (client *EthereumClient) Commit(data string) (string, string, string, error) {
 	nonce, err := client.Client.PendingNonceAt(context.Background(), client.FromAddress)
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", fmt.Errorf("failed to get pending nonce: %v", err)
 	}
 	gasPrice, err := client.Client.SuggestGasPrice(context.Background())
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", fmt.Errorf("failed to suggest gas price: %v", err)
 	}
 	value := big.NewInt(0)
 
@@ -107,21 +107,21 @@ func (client *EthereumClient) Commit(data string) (string, string, string, error
 	}
 	gasLimit, err := client.Client.EstimateGas(context.Background(), msg)
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", fmt.Errorf("failed to estimate gas: %v", err)
 	}
 
 	tx := types.NewTransaction(nonce, client.ContractAddress, value, gasLimit, gasPrice, dataBytes)
 	chainID, err := client.Client.ChainID(context.Background())
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", fmt.Errorf("failed to get chain ID: %v", err)
 	}
 	signedTx, err := types.SignTx(tx, types.LatestSignerForChainID(chainID), client.PrivateKey)
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", fmt.Errorf("failed to sign transaction: %v", err)
 	}
 	err = client.Client.SendTransaction(context.Background(), signedTx)
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", fmt.Errorf("failed to send transaction: %v", err)
 	}
 
 	txHash := signedTx.Hash()
@@ -166,7 +166,7 @@ func (client *EthereumClient) Query(txHash string, data string) (string, error) 
 
 	receipt, err := client.Client.TransactionReceipt(context.Background(), hash)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to get transaction receipt: %v", err)
 	}
 	blockId := receipt.BlockNumber.String()
 
