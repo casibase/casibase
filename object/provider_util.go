@@ -167,7 +167,7 @@ func GetActiveBlockchainProvider(owner string) (*Provider, error) {
 	}
 
 	for _, provider := range providers {
-		if ((provider.ClientId != "" && provider.ClientSecret != "") || provider.Type == "ChainMaker") && provider.Category == "Blockchain" && provider.State == "Active" {
+		if ((provider.ClientId != "" && provider.ClientSecret != "") || (provider.ClientSecret != "" && provider.Type == "Ethereum") || provider.Type == "ChainMaker") && provider.Category == "Blockchain" && provider.State == "Active" {
 			return provider, nil
 		}
 	}
