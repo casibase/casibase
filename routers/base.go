@@ -15,8 +15,11 @@
 package routers
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/beego/beego/context"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -118,4 +121,37 @@ func getUsernameByClientIdSecret(ctx *context.Context) (string, error) {
 	}
 
 	return util.GetIdFromOwnerAndName("app", applicationName), nil
+}
+
+func getUsernameByAccessToken(accessTokenInput string) (string, error) {
+	applicationName := conf.GetConfigString("casdoorApplication")
+	clientSecret := conf.GetConfigString("clientSecret")
+	clientId := conf.GetConfigString("clientId")
+	accessToken := getMd5HexDigest(clientId + ":" + clientSecret)
+	if accessTokenInput != accessToken {
+		return "", fmt.Errorf("Incorrect access token for application: %s", applicationName)
+	}
+
+	return util.GetIdFromOwnerAndName("app", applicationName), nil
+}
+
+func parseBearerToken(ctx *context.Context) string {
+	header := ctx.Request.Header.Get("Authorization")
+	tokens := strings.Split(header, " ")
+	if len(tokens) != 2 {
+		return ""
+	}
+
+	prefix := tokens[0]
+	if prefix != "Bearer" {
+		return ""
+	}
+
+	return tokens[1]
+}
+
+func getMd5HexDigest(s string) string {
+	hash := md5.Sum([]byte(s))
+	res := hex.EncodeToString(hash[:])
+	return res
 }

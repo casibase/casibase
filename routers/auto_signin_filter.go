@@ -19,6 +19,28 @@ import (
 )
 
 func AutoSigninFilter(ctx *context.Context) {
+	// HTTP Bearer token like "Authorization: Bearer 123"
+	accessToken := ctx.Input.Query("accessToken")
+	if accessToken == "" {
+		accessToken = ctx.Input.Query("access_token")
+	}
+	if accessToken == "" {
+		accessToken = parseBearerToken(ctx)
+	}
+	if accessToken != "" {
+		userId, err := getUsernameByAccessToken(accessToken)
+		if err != nil {
+			responseError(ctx, err.Error())
+			return
+		}
+
+		if userId != "" {
+			setSessionUser(ctx, userId)
+			return
+		}
+	}
+
+	// HTTP Basic token like "Authorization: Basic 123"
 	userId, err := getUsernameByClientIdSecret(ctx)
 	if err != nil {
 		responseError(ctx, err.Error())
