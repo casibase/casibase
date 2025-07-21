@@ -207,7 +207,9 @@ func initAPI() {
 	beego.Router("/api/delete-record", &controllers.ApiController{}, "POST:DeleteRecord")
 
 	beego.Router("/api/commit-record", &controllers.ApiController{}, "POST:CommitRecord")
+	beego.Router("/api/commit-record-second", &controllers.ApiController{}, "POST:CommitRecordSecond")
 	beego.Router("/api/query-record", &controllers.ApiController{}, "GET:QueryRecord")
+	beego.Router("/api/query-record-second", &controllers.ApiController{}, "GET:QueryRecordSecond")
 
 	beego.Router("/api/get-system-info", &controllers.ApiController{}, "GET:GetSystemInfo")
 	beego.Router("/api/get-version-info", &controllers.ApiController{}, "GET:GetVersionInfo")

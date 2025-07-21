@@ -27,9 +27,9 @@ type Param struct {
 	Value string `json:"value"`
 }
 
-func (record *Record) getRecordProvider() (*Provider, error) {
+func (record *Record) getRecordProvider(chainProvider string) (*Provider, error) {
 	if record.Provider != "" {
-		provider, err := getProvider("admin", record.Provider)
+		provider, err := getProvider("admin", chainProvider)
 		if err != nil {
 			return nil, err
 		}
@@ -47,8 +47,8 @@ func (record *Record) getRecordProvider() (*Provider, error) {
 	return provider, nil
 }
 
-func (record *Record) getRecordChainClient() (chain.ChainClientInterface, *Provider, error) {
-	provider, err := record.getRecordProvider()
+func (record *Record) getRecordChainClient(chainProvider string) (chain.ChainClientInterface, *Provider, error) {
+	provider, err := record.getRecordProvider(chainProvider)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -95,6 +95,9 @@ func (record *Record) toParam() string {
 	record2.Block = ""
 	record2.Transaction = ""
 	record2.BlockHash = ""
+	record2.Block2 = ""
+	record2.Transaction2 = ""
+	record2.BlockHash2 = ""
 
 	res := Param{
 		Key:   record2.getId(),
@@ -109,7 +112,7 @@ func CommitRecord(record *Record) (bool, error) {
 		return false, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getId(), record.Block)
 	}
 
-	client, provider, err := record.getRecordChainClient()
+	client, provider, err := record.getRecordChainClient(record.Provider)
 	if err != nil {
 		return false, err
 	}
@@ -120,10 +123,36 @@ func CommitRecord(record *Record) (bool, error) {
 		return false, err
 	}
 
-	record.Block = blockId
-	record.Transaction = transactionId
-	record.BlockHash = blockHash
-	return UpdateRecord(record.getId(), record)
+	// Update the record fields to avoid concurrent update race conditions
+	return UpdateRecordFields(record.getId(), map[string]interface{}{
+		"block":       blockId,
+		"transaction": transactionId,
+		"block_hash":  blockHash,
+	})
+}
+
+func CommitRecordSecond(record *Record) (bool, error) {
+	if record.Block2 != "" {
+		return false, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getId(), record.Block2)
+	}
+
+	client, provider, err := record.getRecordChainClient(record.Provider2)
+	if err != nil {
+		return false, err
+	}
+	record.Provider2 = provider.Name
+
+	blockId, transactionId, blockHash, err := client.Commit(record.toParam())
+	if err != nil {
+		return false, err
+	}
+
+	// Update the record fields to avoid concurrent update race conditions
+	return UpdateRecordFields(record.getId(), map[string]interface{}{
+		"block2":       blockId,
+		"transaction2": transactionId,
+		"block_hash2":  blockHash,
+	})
 }
 
 func QueryRecord(id string) (string, error) {
@@ -139,12 +168,38 @@ func QueryRecord(id string) (string, error) {
 		return "", fmt.Errorf("the record: %s's block ID should not be empty", record.getId())
 	}
 
-	client, _, err := record.getRecordChainClient()
+	client, _, err := record.getRecordChainClient(record.Provider)
 	if err != nil {
 		return "", err
 	}
 
 	res, err := client.Query(record.Transaction, record.toParam())
+	if err != nil {
+		return "", err
+	}
+
+	return res, nil
+}
+
+func QueryRecordSecond(id string) (string, error) {
+	record, err := GetRecord(id)
+	if err != nil {
+		return "", err
+	}
+	if record == nil {
+		return "", fmt.Errorf("the record: %s does not exist", id)
+	}
+
+	if record.Block2 == "" {
+		return "", fmt.Errorf("the record: %s's block ID should not be empty", record.getId())
+	}
+
+	client, _, err := record.getRecordChainClient(record.Provider2)
+	if err != nil {
+		return "", err
+	}
+
+	res, err := client.Query(record.Transaction2, record.toParam())
 	if err != nil {
 		return "", err
 	}

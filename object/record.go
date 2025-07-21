@@ -54,8 +54,15 @@ type Record struct {
 	Block       string `xorm:"varchar(100)" json:"block"`
 	BlockHash   string `xorm:"varchar(500)" json:"blockHash"`
 	Transaction string `xorm:"varchar(500)" json:"transaction"`
-	IsTriggered bool   `json:"isTriggered"`
-	NeedCommit  bool   `json:"needCommit"`
+
+	Provider2    string `xorm:"varchar(100)" json:"provider2"`
+	Block2       string `xorm:"varchar(100)" json:"block2"`
+	BlockHash2   string `xorm:"varchar(500)" json:"blockHash2"`
+	Transaction2 string `xorm:"varchar(500)" json:"transaction2"`
+	// For cross-chain records
+
+	IsTriggered bool `json:"isTriggered"`
+	NeedCommit  bool `json:"needCommit"`
 }
 
 type Response struct {
@@ -128,6 +135,22 @@ func UpdateRecord(id string, record *Record) (bool, error) {
 	return affected != 0, nil
 }
 
+func UpdateRecordFields(id string, fields map[string]interface{}) (bool, error) {
+	owner, name := util.GetOwnerAndNameFromId(id)
+	if p, err := getRecord(owner, name); err != nil {
+		return false, err
+	} else if p == nil {
+		return false, nil
+	}
+
+	affected, err := adapter.engine.Table(&Record{}).Where("name = ?", name).Update(fields)
+	if err != nil {
+		return false, err
+	}
+
+	return affected != 0, nil
+}
+
 func NewRecord(ctx *context.Context) (*Record, error) {
 	ip := strings.Replace(util.GetIPFromRequest(ctx.Request), ": ", "", -1)
 	action := strings.Replace(ctx.Request.URL.Path, "/api/", "", -1)
@@ -183,14 +206,22 @@ func AddRecord(record *Record) (bool, error) {
 		return false, nil
 	}
 
+	if strings.HasSuffix(record.Action, "-record-second") {
+		return false, nil
+	}
+
 	if record.Provider == "" {
-		provider, err := GetActiveBlockchainProvider("admin")
+		providerFrist, providerSecend, err := GetTwoActiveBlockchainProvider("admin")
 		if err != nil {
 			return false, err
 		}
 
-		if provider != nil {
-			record.Provider = provider.Name
+		if providerFrist != nil {
+			record.Provider = providerFrist.Name
+		}
+
+		if providerSecend != nil {
+			record.Provider2 = providerSecend.Name
 		}
 	}
 

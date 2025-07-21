@@ -161,7 +161,7 @@ func GetActiveBlockchainProvider(owner string) (*Provider, error) {
 	}
 
 	for _, provider := range providers {
-		if provider.Category == "Blockchain" && provider.IsDefault {
+		if provider.Category == "Blockchain" && provider.IsDefault && provider.State == "Active" {
 			return provider, nil
 		}
 	}
@@ -172,6 +172,31 @@ func GetActiveBlockchainProvider(owner string) (*Provider, error) {
 		}
 	}
 	return nil, nil
+}
+
+func GetTwoActiveBlockchainProvider(owner string) (*Provider, *Provider, error) {
+	providers, err := GetProviders(owner)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var providerFirst, providerSecend *Provider
+	// Try to find the first blockchain provider
+	for _, provider := range providers {
+		if provider.Category == "Blockchain" && provider.IsDefault && provider.State == "Active" {
+			providerFirst = provider
+			break
+		}
+	}
+
+	// Try to find the second blockchain provider
+	for _, provider := range providers {
+		if ((provider.ClientId != "" && provider.ClientSecret != "") || (provider.ClientSecret != "" && provider.Type == "Ethereum") || provider.Type == "ChainMaker") && provider.Category == "Blockchain" && provider.State == "Active" && provider != providerFirst {
+			providerSecend = provider
+			break
+		}
+	}
+	return providerFirst, providerSecend, nil
 }
 
 func generateProviderKey() string {
