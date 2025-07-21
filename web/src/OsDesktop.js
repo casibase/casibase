@@ -15,7 +15,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useHistory} from "react-router-dom";
 import {Button} from "antd";
-import {CloseOutlined, LeftOutlined, MinusOutlined, RightOutlined} from "@ant-design/icons";
+import {LeftOutlined, RightOutlined} from "@ant-design/icons";
 import {DndContext, MouseSensor, PointerSensor, TouchSensor, useDraggable, useSensor, useSensors} from "@dnd-kit/core";
 import i18next from "i18next";
 import "./OsDesktop.css";
@@ -178,18 +178,36 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, size, on
           </div>
         </div>
         <div className="window-controls">
-          <Button size="small" danger icon={<MinusOutlined />} onClick={(e) => {
-            e.stopPropagation();
-            onMinimize();
-          }} />
-          <Button size="small" danger onClick={(e) => {
-            e.stopPropagation();
-            onMaximize();
-          }} >{isMaximized ? "❐" : "□"}</Button>
-          <Button size="small" danger icon={<CloseOutlined />} onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }} />
+          <Button
+            className="window-control window-minimize"
+            size="small"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMinimize();
+            }}
+          >
+            <span className="control-icon">−</span>
+          </Button>
+          <Button
+            className="window-control window-maximize"
+            size="small"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMaximize();
+            }}
+          >
+            <span className="control-icon">{isMaximized ? "❐" : "□"}</span>
+          </Button>
+          <Button
+            className="window-control window-close"
+            size="small"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+          >
+            <span className="control-icon">×</span>
+          </Button>
         </div>
       </div>
       <div className="window-content">
