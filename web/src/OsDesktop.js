@@ -252,6 +252,7 @@ const OsDesktop = (props) => {
   const desktopRef = useRef(null);
   const history = useHistory();
   const resizingState = useRef(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -275,6 +276,19 @@ const OsDesktop = (props) => {
 
   useEffect(() => {
     if (!props.account) {return;}
+    const userId = props.account.id;
+    const userDesktop = localStorage.getItem(`desktop-${userId}`);
+    if (!userDesktop) {
+      setIsInitialized(true);
+      return;
+    }
+
+    setWindows(JSON.parse(userDesktop).desktop.windows);
+    setIsInitialized(true);
+  }, [props.account]);
+
+  useEffect(() => {
+    if (!props.account || !isInitialized) {return;}
 
     const userId = props.account.id;
     const userDesktop = {
@@ -284,16 +298,7 @@ const OsDesktop = (props) => {
       },
     };
     localStorage.setItem(`desktop-${userId}`, JSON.stringify(userDesktop));
-  }, [windows]);
-
-  useEffect(() => {
-    if (!props.account) {return;}
-    const userId = props.account.id;
-    const userDesktop = localStorage.getItem(`desktop-${userId}`);
-    if (!userDesktop) {return;}
-
-    setWindows(JSON.parse(userDesktop).desktop.windows);
-  }, [props.account]);
+  }, [windows, isInitialized]);
 
   const handleResizeMove = (e) => {
     if (!resizingState.current) {return;}
