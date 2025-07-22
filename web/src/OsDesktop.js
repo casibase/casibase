@@ -22,15 +22,15 @@ import "./OsDesktop.css";
 import routeManager, {DynamicRouteComponent} from "./component/AppRouteManager";
 import {StaticBaseUrl} from "./Conf";
 
-const getIconUrl = (iconPath) => {
-  return `${StaticBaseUrl}/apps/${iconPath}`;
+const getIconUrl = (appType) => {
+  return `${StaticBaseUrl}/apps/${appType}.svg`;
 };
 
 const getDefaultIconUrl = (appType) => {
   return `${StaticBaseUrl}/apps/${routeManager.getDefaultIcon(appType)}`;
 };
 
-const DesktopIcon = ({name, iconPath, onClick, gradient, appType}) => {
+const DesktopIcon = ({name, onClick, gradient, appType}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
 
@@ -50,7 +50,7 @@ const DesktopIcon = ({name, iconPath, onClick, gradient, appType}) => {
     >
       <div className="icon">
         <img
-          src={getIconUrl(iconPath)}
+          src={getIconUrl(appType)}
           alt={name}
           onError={e => e.target.src = getDefaultIconUrl(appType)}
         />
@@ -149,7 +149,7 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, size, on
         <div className="window-header-left">
           <div className="window-app-info">
             <img
-              src={getIconUrl(appConfig?.iconPath)}
+              src={getIconUrl(appType)}
               alt={title}
               className="window-app-icon"
               onError={e => e.target.src = getDefaultIconUrl(appType)}
@@ -233,7 +233,7 @@ const DockItem = ({window, onClick, isActive}) => {
       title={i18next.t(`${window.appConfig?.i18nNamespace || "general"}:${window.title}`)}
     >
       <img
-        src={getIconUrl(window.iconPath)}
+        src={getIconUrl(window.appType)}
         alt={window.title}
         onError={e => e.target.src = getDefaultIconUrl(window.appType)}
       />
@@ -408,7 +408,7 @@ const OsDesktop = (props) => {
   const openWindow = (appType) => {
     const id = `window-${nextWindowId}`;
     const appConfig = routeManager.getAppConfig(appType);
-    const {title, iconPath, gradient} = appConfig;
+    const {title, gradient} = appConfig;
     const initialRoute = appConfig.routes[0].path;
 
     const offset = (windows.length * 30) % 150;
@@ -435,7 +435,6 @@ const OsDesktop = (props) => {
       title,
       appType,
       appConfig,
-      iconPath,
       gradient,
       isMaximized: false,
       isMinimized: false,
@@ -746,7 +745,6 @@ const OsDesktop = (props) => {
             <DesktopIcon
               key={app.appType}
               name={i18next.t(`${app.i18nNamespace || "general"}:${app.title}`)}
-              iconPath={app.iconPath}
               onClick={() => openWindow(app.appType)}
               gradient={app.gradient}
               appType={app.appType}
