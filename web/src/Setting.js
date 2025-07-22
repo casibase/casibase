@@ -1999,7 +1999,7 @@ export function getBlockBrowserUrl(providerMap, record, block, isFirst = true) {
   }
   let url;
   if (provider.type === "ChainMaker") {
-    url = provider.browserUrl.replace("{bh}", record.blockHash);
+    url = provider.browserUrl.replace("{bh}", isFirst ? record.blockHash : record.blockHash2);
   } else {
     url = provider.browserUrl.replace("{bh}", block).replace("{chainId}", 1).replace("{clusterId}", provider.network);
   }
