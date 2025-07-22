@@ -352,7 +352,7 @@ class RecordListPage extends BaseListPage {
         fixed: (Setting.isMobile()) ? "false" : "right",
         ...this.getColumnSearchProps("block"),
         render: (text, record, index) => {
-          return Setting.getBlockBrowserUrl(this.state.providerMap, record, text);
+          return Setting.getBlockBrowserUrl(this.state.providerMap, record, text, true);
         },
       },
       {
@@ -364,7 +364,7 @@ class RecordListPage extends BaseListPage {
         fixed: (Setting.isMobile()) ? "false" : "right",
         ...this.getColumnSearchProps("block2"),
         render: (text, record, index) => {
-          return Setting.getBlockBrowserUrl(this.state.providerMap, record, text);
+          return Setting.getBlockBrowserUrl(this.state.providerMap, record, text, false);
         },
       },
       {

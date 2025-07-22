@@ -125,6 +125,7 @@ func CommitRecord(record *Record) (bool, error) {
 
 	// Update the record fields to avoid concurrent update race conditions
 	return UpdateRecordFields(record.getId(), map[string]interface{}{
+		"provider":    record.Provider,
 		"block":       blockId,
 		"transaction": transactionId,
 		"block_hash":  blockHash,
@@ -149,6 +150,7 @@ func CommitRecordSecond(record *Record) (bool, error) {
 
 	// Update the record fields to avoid concurrent update race conditions
 	return UpdateRecordFields(record.getId(), map[string]interface{}{
+		"provider2":    record.Provider2,
 		"block2":       blockId,
 		"transaction2": transactionId,
 		"block_hash2":  blockHash,
