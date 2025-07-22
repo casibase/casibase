@@ -17,10 +17,11 @@ package object
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"sigs.k8s.io/kustomize/api/krusty"
 	"sigs.k8s.io/kustomize/api/types"
 	"sigs.k8s.io/kustomize/kyaml/filesys"
-	"strings"
 
 	"github.com/casibase/casibase/util"
 	"gopkg.in/yaml.v3"
