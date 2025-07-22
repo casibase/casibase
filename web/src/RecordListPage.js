@@ -111,8 +111,9 @@ class RecordListPage extends BaseListPage {
       });
   }
 
-  commitRecord(i) {
-    RecordBackend.commitRecord(this.state.data[i])
+  commitRecord(i, isFirst = true) {
+    const commitMethod = isFirst ? RecordBackend.commitRecord : RecordBackend.commitRecordSecond;
+    commitMethod(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully committed"));
@@ -128,8 +129,9 @@ class RecordListPage extends BaseListPage {
       });
   }
 
-  queryRecord(record) {
-    RecordBackend.queryRecord(record.owner, record.name)
+  queryRecord(record, isFirst = true) {
+    const queryMethod = isFirst ? RecordBackend.queryRecord : RecordBackend.queryRecordSecond;
+    queryMethod(record.owner, record.name)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage(res.data.includes("Mismatched") ? "error" : "success", `${i18next.t("record:Query")}: ${res.data}`);
@@ -217,9 +219,26 @@ class RecordListPage extends BaseListPage {
         title: i18next.t("vector:Provider"),
         dataIndex: "provider",
         key: "provider",
-        width: "100px",
+        width: "150px",
         sorter: true,
         ...this.getColumnSearchProps("provider"),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/providers/${text}`}>
+              {
+                Setting.getShortText(text, 25)
+              }
+            </Link>
+          );
+        },
+      },
+      {
+        title: i18next.t("vector:Provider") + " 2",
+        dataIndex: "provider2",
+        key: "provider2",
+        width: "150px",
+        sorter: true,
+        ...this.getColumnSearchProps("provider2"),
         render: (text, record, index) => {
           return (
             <Link to={`/providers/${text}`}>
@@ -328,41 +347,74 @@ class RecordListPage extends BaseListPage {
         title: i18next.t("general:Block"),
         dataIndex: "block",
         key: "block",
-        width: "90px",
+        width: "100px",
         sorter: true,
         fixed: (Setting.isMobile()) ? "false" : "right",
         ...this.getColumnSearchProps("block"),
         render: (text, record, index) => {
-          return Setting.getBlockBrowserUrl(this.state.providerMap, record, text);
+          return Setting.getBlockBrowserUrl(this.state.providerMap, record, text, true);
+        },
+      },
+      {
+        title: i18next.t("general:Block") + " 2",
+        dataIndex: "block2",
+        key: "block2",
+        width: "100px",
+        sorter: true,
+        fixed: (Setting.isMobile()) ? "false" : "right",
+        ...this.getColumnSearchProps("block2"),
+        render: (text, record, index) => {
+          return Setting.getBlockBrowserUrl(this.state.providerMap, record, text, false);
         },
       },
       {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "270px",
+        width: "360px",
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, record, index) => {
           return (
             <div>
               {
-                (record.block === "") ? (
-                  <Button
-                    disabled={record.block !== ""}
-                    style={{marginTop: "10px", marginRight: "10px"}}
-                    type="primary" danger
-                    onClick={() => this.commitRecord(index)}
-                  >{i18next.t("record:Commit")}
-                  </Button>
-                ) : (
-                  <Button
-                    disabled={record.block === ""}
-                    style={{marginTop: "10px", marginRight: "10px"}}
-                    type="primary"
-                    onClick={() => this.queryRecord(record)}
-                  >{i18next.t("record:Query")}
-                  </Button>
-                )
+                <>
+                  {(record.block === "") ? (
+                    <Button
+                      disabled={record.block !== ""}
+                      style={{marginTop: "10px", marginRight: "10px"}}
+                      type="primary" danger
+                      onClick={() => this.commitRecord(index, true)}
+                    >{i18next.t("record:Commit")}
+                    </Button>
+                  ) : (
+                    <Button
+                      disabled={record.block === ""}
+                      style={{marginTop: "10px", marginRight: "10px"}}
+                      type="primary"
+                      onClick={() => this.queryRecord(record, true)}
+                    >{i18next.t("record:Query")}
+                    </Button>
+                  )}
+                  {record.provider2 && record.provider2 !== "" && (
+                    (record.block2 === "") ? (
+                      <Button
+                        disabled={record.block2 !== ""}
+                        style={{marginTop: "10px", marginRight: "10px"}}
+                        type="primary" danger
+                        onClick={() => this.commitRecord(index, false)}
+                      >{i18next.t("record:Commit") + " 2"}
+                      </Button>
+                    ) : (
+                      <Button
+                        disabled={record.block2 === ""}
+                        style={{marginTop: "10px", marginRight: "10px"}}
+                        type="primary"
+                        onClick={() => this.queryRecord(record, false)}
+                      >{i18next.t("record:Query") + " 2"}
+                      </Button>
+                    )
+                  )}
+                </>
               }
               <Button
                 // disabled={record.owner !== this.props.account.owner}

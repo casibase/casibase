@@ -1991,8 +1991,8 @@ export function GenerateId() {
   return uuidv4();
 }
 
-export function getBlockBrowserUrl(providerMap, record, block) {
-  const providerName = record.provider;
+export function getBlockBrowserUrl(providerMap, record, block, isFirst = true) {
+  const providerName = isFirst ? record.provider : record.provider2;
   const provider = providerMap[providerName];
   if (!provider || provider.browserUrl === "") {
     return block;

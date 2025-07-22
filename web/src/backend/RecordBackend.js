@@ -64,8 +64,24 @@ export function commitRecord(record) {
   }).then(res => res.json());
 }
 
+export function commitRecordSecond(record) {
+  const newRecord = Setting.deepCopy(record);
+  return fetch(`${Setting.ServerUrl}/api/commit-record-second`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(newRecord),
+  }).then(res => res.json());
+}
+
 export function queryRecord(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/query-record?id=${owner}/${encodeURIComponent(name)}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
+export function queryRecordSecond(owner, name) {
+  return fetch(`${Setting.ServerUrl}/api/query-record-second?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
   }).then(res => res.json());
