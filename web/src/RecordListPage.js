@@ -219,7 +219,7 @@ class RecordListPage extends BaseListPage {
         title: i18next.t("vector:Provider"),
         dataIndex: "provider",
         key: "provider",
-        width: "100px",
+        width: "150px",
         sorter: true,
         ...this.getColumnSearchProps("provider"),
         render: (text, record, index) => {
@@ -233,10 +233,10 @@ class RecordListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("vector:Provider2"),
+        title: i18next.t("vector:Provider") + " 2",
         dataIndex: "provider2",
         key: "provider2",
-        width: "100px",
+        width: "150px",
         sorter: true,
         ...this.getColumnSearchProps("provider2"),
         render: (text, record, index) => {
@@ -347,7 +347,7 @@ class RecordListPage extends BaseListPage {
         title: i18next.t("general:Block"),
         dataIndex: "block",
         key: "block",
-        width: "90px",
+        width: "100px",
         sorter: true,
         fixed: (Setting.isMobile()) ? "false" : "right",
         ...this.getColumnSearchProps("block"),
@@ -356,10 +356,10 @@ class RecordListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Block2"),
+        title: i18next.t("general:Block") + " 2",
         dataIndex: "block2",
         key: "block2",
-        width: "90px",
+        width: "100px",
         sorter: true,
         fixed: (Setting.isMobile()) ? "false" : "right",
         ...this.getColumnSearchProps("block2"),
@@ -371,7 +371,7 @@ class RecordListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "270px",
+        width: "360px",
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, record, index) => {
           return (
@@ -402,7 +402,7 @@ class RecordListPage extends BaseListPage {
                         style={{marginTop: "10px", marginRight: "10px"}}
                         type="primary" danger
                         onClick={() => this.commitRecord(index, false)}
-                      >{i18next.t("record:Commit2")}
+                      >{i18next.t("record:Commit") + " 2"}
                       </Button>
                     ) : (
                       <Button
@@ -410,7 +410,7 @@ class RecordListPage extends BaseListPage {
                         style={{marginTop: "10px", marginRight: "10px"}}
                         type="primary"
                         onClick={() => this.queryRecord(record, false)}
-                      >{i18next.t("record:Query2")}
+                      >{i18next.t("record:Query") + " 2"}
                       </Button>
                     )
                   )}

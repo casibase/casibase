@@ -34,9 +34,11 @@ func (record *Record) getRecordProvider(chainProvider string) (*Provider, error)
 			return nil, err
 		}
 
-		if provider != nil {
-			return provider, nil
+		if provider == nil {
+			return nil, fmt.Errorf("The blockchain provider: %s is not found", chainProvider)
 		}
+
+		return provider, nil
 	}
 
 	provider, err := GetActiveBlockchainProvider("admin")
