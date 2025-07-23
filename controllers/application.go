@@ -142,12 +142,7 @@ func (c *ApiController) AddApplication() {
 		return
 	}
 
-	if !success {
-		c.ResponseError("Failed to create application")
-		return
-	}
-
-	c.ResponseOk(application)
+	c.ResponseOk(success)
 }
 
 // DeleteApplication
@@ -194,57 +189,41 @@ func (c *ApiController) DeployApplication() {
 		return
 	}
 
-	// Get or create the application
+	// Get the existing application
 	application, err := object.GetApplication(req.Owner, req.Name)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
+	// Application must exist before deployment
 	if application == nil {
-		// Create new application
-		application = &object.Application{
-			Owner:       req.Owner,
-			Name:        req.Name,
-			DisplayName: req.DisplayName,
-			Template:    req.Template,
-			Parameters:  req.Parameters,
-			Status:      "Not Deployed",
-		}
+		c.ResponseError("Application not found. Please create the application first.")
+		return
+	}
 
-		success, err := object.AddApplication(application)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-		if !success {
-			c.ResponseError("Failed to create application")
-			return
-		}
-	} else {
-		// Update existing application
-		application.Template = req.Template
-		application.Parameters = req.Parameters
+	// Update application with new template and parameters
+	application.Template = req.Template
+	application.Parameters = req.Parameters
 
-		success, err := object.UpdateApplication(req.Owner+"/"+req.Name, application)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-		if !success {
-			c.ResponseError("Failed to update application")
-			return
-		}
+	success, err := object.UpdateApplication(req.Owner+"/"+req.Name, application)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	if !success {
+		c.ResponseError("Failed to update application")
+		return
 	}
 
 	// Deploy the application
-	err = object.DeployApplication(application)
+	success, err = object.DeployApplication(application)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(true)
+	c.ResponseOk(success)
 }
 
 // UndeployApplication
@@ -267,13 +246,13 @@ func (c *ApiController) UndeployApplication() {
 		return
 	}
 
-	err = object.UndeployApplication(req.Owner, req.Name)
+	success, err := object.UndeployApplication(req.Owner, req.Name)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(true)
+	c.ResponseOk(success)
 }
 
 // GetApplicationStatus

@@ -122,7 +122,7 @@ func AddApplication(application *Application) (bool, error) {
 
 func DeleteApplication(owner, name string) (bool, error) {
 	// First, delete the deployment if it exists
-	err := UndeployApplication(owner, name)
+	_, err := UndeployApplication(owner, name)
 	if err != nil {
 		return false, fmt.Errorf("failed to delete deployment: %v", err)
 	}
@@ -210,40 +210,40 @@ func generateManifestsWithKustomize(baseManifests, parameters string) (string, e
 	return string(finalManifestsBytes), nil
 }
 
-func DeployApplication(application *Application) error {
+func DeployApplication(application *Application) (bool, error) {
 	if err := ensureK8sClient(); err != nil {
-		return fmt.Errorf("failed to initialize k8s client: %v", err)
+		return false, fmt.Errorf("failed to initialize k8s client: %v", err)
 	}
 
 	if !k8sClient.connected {
-		return fmt.Errorf("k8s client not connected to cluster")
+		return false, fmt.Errorf("k8s client not connected to cluster")
 	}
 
 	// Get the template
 	template, err := GetTemplate(application.Owner, application.Template)
 	if err != nil {
-		return fmt.Errorf("failed to get template: %v", err)
+		return false, fmt.Errorf("failed to get template: %v", err)
 	}
 	if template == nil {
-		return fmt.Errorf("template not found: %s", application.Template)
+		return false, fmt.Errorf("template not found: %s", application.Template)
 	}
 
 	// Generate final manifests using simple template replacement
 	finalManifests, err := generateManifestsWithKustomize(template.Manifests, application.Parameters)
 	if err != nil {
-		return fmt.Errorf("failed to generate manifests: %v", err)
+		return false, fmt.Errorf("failed to generate manifests: %v", err)
 	}
 
 	// Create namespace if it doesn't exist
 	err = k8sClient.createNamespaceIfNotExists(application.Namespace)
 	if err != nil {
-		return fmt.Errorf("failed to create namespace: %v", err)
+		return false, fmt.Errorf("failed to create namespace: %v", err)
 	}
 
 	// Deploy the manifests
 	err = deployManifests(finalManifests, application.Namespace)
 	if err != nil {
-		return fmt.Errorf("failed to deploy manifests: %v", err)
+		return false, fmt.Errorf("failed to deploy manifests: %v", err)
 	}
 
 	// Update application status
@@ -253,19 +253,19 @@ func DeployApplication(application *Application) error {
 
 	_, err = UpdateApplication(fmt.Sprintf("%s/%s", application.Owner, application.Name), application)
 	if err != nil {
-		return fmt.Errorf("failed to update application status: %v", err)
+		return false, fmt.Errorf("failed to update application status: %v", err)
 	}
 
-	return nil
+	return true, nil
 }
 
-func UndeployApplication(owner, name string) error {
+func UndeployApplication(owner, name string) (bool, error) {
 	if err := ensureK8sClient(); err != nil {
-		return fmt.Errorf("failed to initialize k8s client: %v", err)
+		return false, fmt.Errorf("failed to initialize k8s client: %v", err)
 	}
 
 	if !k8sClient.connected {
-		return fmt.Errorf("k8s client not connected to cluster")
+		return false, fmt.Errorf("k8s client not connected to cluster")
 	}
 
 	namespace := fmt.Sprintf(NamespaceFormat, owner, name)
@@ -278,7 +278,7 @@ func UndeployApplication(owner, name string) error {
 	)
 
 	if err != nil && !errors.IsNotFound(err) {
-		return fmt.Errorf("failed to delete namespace: %v", err)
+		return false, fmt.Errorf("failed to delete namespace: %v", err)
 	}
 
 	// Update application status if it exists
@@ -289,11 +289,11 @@ func UndeployApplication(owner, name string) error {
 		application.UpdatedTime = util.GetCurrentTime()
 		_, err := UpdateApplication(fmt.Sprintf("%s/%s", owner, name), application)
 		if err != nil {
-			return err
+			return false, err
 		}
 	}
 
-	return nil
+	return true, nil
 }
 
 func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
