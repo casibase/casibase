@@ -16,8 +16,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
-
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -123,7 +121,7 @@ func (c *ApiController) AddApplication() {
 	}
 
 	if template == nil {
-		c.ResponseError(fmt.Sprintf("The Template not found"))
+		c.ResponseError("The Template not found")
 		return
 	}
 
@@ -132,7 +130,6 @@ func (c *ApiController) AddApplication() {
 		Owner:       req.Owner,
 		Name:        req.Name,
 		DisplayName: req.DisplayName,
-		Description: "Application created from template: " + req.Template,
 		Template:    req.Template,
 		Parameters:  req.Parameters,
 		Status:      "Not Deployed",
@@ -209,7 +206,6 @@ func (c *ApiController) DeployApplication() {
 			Owner:       req.Owner,
 			Name:        req.Name,
 			DisplayName: req.DisplayName,
-			Description: "Application created from template: " + req.Template,
 			Template:    req.Template,
 			Parameters:  req.Parameters,
 			Status:      "Not Deployed",

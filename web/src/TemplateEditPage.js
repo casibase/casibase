@@ -18,8 +18,12 @@ import * as TemplateBackend from "./backend/TemplateBackend";
 import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import {CodeMirror, getYAMLEditorOptions} from "./CodeMirrorConfig";
 import moment from "moment/moment";
+
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+require("codemirror/theme/material-darker.css");
+require("codemirror/mode/yaml/yaml");
 
 const {TextArea} = Input;
 
@@ -117,11 +121,6 @@ class TemplateEditPage extends React.Component {
       });
   };
 
-  // CodeMirror configuration for YAML editing
-  getCodeMirrorOptions() {
-    return getYAMLEditorOptions();
-  }
-
   renderTemplate() {
     const {k8sStatus} = this.state;
     const k8sConnected = k8sStatus && k8sStatus.status === "Connected";
@@ -203,7 +202,7 @@ class TemplateEditPage extends React.Component {
             <div style={{border: "1px solid #d9d9d9", borderRadius: "6px", overflow: "hidden"}}>
               <CodeMirror
                 value={this.state.template.manifests || ""}
-                options={this.getCodeMirrorOptions()}
+                options={{mode: "yaml", theme: "material-darker"}}
                 onBeforeChange={(editor, data, value) => {
                   this.updateTemplateField("manifests", value);
                 }}

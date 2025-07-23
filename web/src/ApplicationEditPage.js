@@ -14,13 +14,15 @@
 
 import React from "react";
 import {Button, Card, Col, Divider, Input, Row, Select, Space, Tag} from "antd";
-import {Controlled as CodeMirror} from "react-codemirror2";
 import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as TemplateBackend from "./backend/TemplateBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
-import {getYAMLEditorOptions} from "./CodeMirrorConfig";
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+require("codemirror/theme/material-darker.css");
+require("codemirror/mode/yaml/yaml");
 
 const {TextArea} = Input;
 
@@ -242,11 +244,6 @@ class ApplicationEditPage extends React.Component {
     );
   }
 
-  // CodeMirror configuration for YAML editing
-  getCodeMirrorOptions() {
-    return getYAMLEditorOptions();
-  }
-
   renderApplication() {
     const {deploymentStatus, isDeploying, isDeleting, k8sStatus} = this.state;
     const isDeployed = deploymentStatus && deploymentStatus.status !== "Not Deployed" && deploymentStatus.status !== "Unknown";
@@ -330,7 +327,7 @@ class ApplicationEditPage extends React.Component {
             <div style={{border: "1px solid #d9d9d9", borderRadius: "6px", overflow: "hidden"}}>
               <CodeMirror
                 value={this.state.application.parameters || ""}
-                options={this.getCodeMirrorOptions()}
+                options={{mode: "yaml", theme: "material-darker"}}
                 onBeforeChange={(editor, data, value) => {
                   this.updateApplicationField("parameters", value);
                 }}

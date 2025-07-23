@@ -25,6 +25,7 @@ import (
 
 	"github.com/casibase/casibase/util"
 	"gopkg.in/yaml.v3"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"xorm.io/core"
@@ -44,6 +45,14 @@ type Application struct {
 	Message     string `xorm:"varchar(500)" json:"message"`   // Status message
 	Namespace   string `xorm:"varchar(100)" json:"namespace"` // Kubernetes namespace (auto-generated)
 }
+
+const (
+	StatusNotDeployed = "Not Deployed"
+	StatusPending     = string(v1.PodPending) // "Pending"
+	StatusRunning     = string(v1.PodRunning) // "Running"
+	StatusUnknown     = string(v1.PodUnknown) // "Unknown"
+	NamespaceFormat   = "casibase-%s-%s"
+)
 
 func GetApplications(owner string) ([]*Application, error) {
 	applications := []*Application{}
@@ -96,11 +105,11 @@ func AddApplication(application *Application) (bool, error) {
 	}
 
 	// Generate namespace name based on application owner and name
-	application.Namespace = fmt.Sprintf("casibase-%s-%s", application.Owner, application.Name)
+	application.Namespace = fmt.Sprintf(NamespaceFormat, application.Owner, application.Name)
 
 	// Set initial status
 	if application.Status == "" {
-		application.Status = "Not Deployed"
+		application.Status = StatusNotDeployed
 	}
 
 	affected, err := adapter.engine.Insert(application)
@@ -238,7 +247,7 @@ func DeployApplication(application *Application) error {
 	}
 
 	// Update application status
-	application.Status = "Pending"
+	application.Status = StatusPending
 	application.Message = "Deployment in progress..."
 	application.UpdatedTime = util.GetCurrentTime()
 
@@ -259,7 +268,7 @@ func UndeployApplication(owner, name string) error {
 		return fmt.Errorf("k8s client not connected to cluster")
 	}
 
-	namespace := fmt.Sprintf("casibase-%s-%s", owner, name)
+	namespace := fmt.Sprintf(NamespaceFormat, owner, name)
 
 	// Delete the entire namespace
 	err := k8sClient.clientset.CoreV1().Namespaces().Delete(
@@ -275,7 +284,7 @@ func UndeployApplication(owner, name string) error {
 	// Update application status if it exists
 	application, err := GetApplication(owner, name)
 	if err == nil && application != nil {
-		application.Status = "Not Deployed"
+		application.Status = StatusNotDeployed
 		application.Message = "Deployment deleted"
 		application.UpdatedTime = util.GetCurrentTime()
 		_, err := UpdateApplication(fmt.Sprintf("%s/%s", owner, name), application)
@@ -289,14 +298,14 @@ func UndeployApplication(owner, name string) error {
 
 func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 	if err := ensureK8sClient(); err != nil {
-		return &DeploymentStatus{Status: "Unknown", Message: fmt.Sprintf("failed to initialize k8s client: %v", err)}, nil
+		return &DeploymentStatus{Status: StatusUnknown, Message: fmt.Sprintf("failed to initialize k8s client: %v", err)}, nil
 	}
 
 	if !k8sClient.connected {
-		return &DeploymentStatus{Status: "Unknown", Message: "k8s client not connected to cluster"}, nil
+		return &DeploymentStatus{Status: StatusUnknown, Message: "k8s client not connected to cluster"}, nil
 	}
 
-	namespace := fmt.Sprintf("casibase-%s-%s", owner, name)
+	namespace := fmt.Sprintf(NamespaceFormat, owner, name)
 
 	// Check if namespace exists
 	_, err := k8sClient.clientset.CoreV1().Namespaces().Get(
@@ -309,16 +318,16 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 			// Update application status
 			application, appErr := GetApplication(owner, name)
 			if appErr == nil && application != nil {
-				application.Status = "Not Deployed"
+				application.Status = StatusNotDeployed
 				application.Message = "Namespace not found"
 				_, err := UpdateApplication(fmt.Sprintf("%s/%s", owner, name), application)
 				if err != nil {
 					return nil, err
 				}
 			}
-			return &DeploymentStatus{Status: "Not Deployed", Message: "Namespace not found"}, nil
+			return &DeploymentStatus{Status: StatusNotDeployed, Message: "Namespace not found"}, nil
 		}
-		return &DeploymentStatus{Status: "Unknown", Message: err.Error()}, nil
+		return &DeploymentStatus{Status: StatusUnknown, Message: err.Error()}, nil
 	}
 
 	// Check deployments in the namespace
@@ -327,28 +336,28 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 		metav1.ListOptions{},
 	)
 	if err != nil {
-		return &DeploymentStatus{Status: "Unknown", Message: err.Error()}, nil
+		return &DeploymentStatus{Status: StatusUnknown, Message: err.Error()}, nil
 	}
 
 	if len(deployments.Items) == 0 {
 		// Update application status
 		application, appErr := GetApplication(owner, name)
 		if appErr == nil && application != nil {
-			application.Status = "Not Deployed"
+			application.Status = StatusNotDeployed
 			application.Message = "No deployments found in namespace"
 			_, err := UpdateApplication(fmt.Sprintf("%s/%s", owner, name), application)
 			if err != nil {
 				return nil, err
 			}
 		}
-		return &DeploymentStatus{Status: "Not Deployed", Message: "No deployments found in namespace"}, nil
+		return &DeploymentStatus{Status: StatusNotDeployed, Message: "No deployments found in namespace"}, nil
 	}
 
 	// Check if all deployments are ready
 	for _, deployment := range deployments.Items {
 		if deployment.Status.ReadyReplicas < deployment.Status.Replicas {
 			status := &DeploymentStatus{
-				Status: "Pending",
+				Status: StatusPending,
 				Message: fmt.Sprintf("Deployment %s is not ready (%d/%d)",
 					deployment.Name, deployment.Status.ReadyReplicas, deployment.Status.Replicas),
 			}
@@ -369,7 +378,7 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 	}
 
 	// All deployments are ready
-	status := &DeploymentStatus{Status: "Running", Message: "All deployments are ready"}
+	status := &DeploymentStatus{Status: StatusRunning, Message: "All deployments are ready"}
 
 	// Update application status
 	application, appErr := GetApplication(owner, name)
