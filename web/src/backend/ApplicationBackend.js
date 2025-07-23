@@ -14,8 +14,8 @@
 
 import * as Setting from "../Setting";
 
-export function getTemplates(owner) {
-  return fetch(`${Setting.ServerUrl}/api/get-templates?owner=${owner}`, {
+export function getApplications(owner) {
+  return fetch(`${Setting.ServerUrl}/api/get-applications?owner=${owner}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -24,8 +24,8 @@ export function getTemplates(owner) {
   }).then(res => res.json());
 }
 
-export function getTemplate(owner, name) {
-  return fetch(`${Setting.ServerUrl}/api/get-template?id=${owner}/${encodeURIComponent(name)}`, {
+export function getApplication(owner, name) {
+  return fetch(`${Setting.ServerUrl}/api/get-application?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -34,44 +34,63 @@ export function getTemplate(owner, name) {
   }).then(res => res.json());
 }
 
-export function updateTemplate(owner, name, template) {
-  const newTemplate = Setting.deepCopy(template);
-  return fetch(`${Setting.ServerUrl}/api/update-template?id=${owner}/${encodeURIComponent(name)}`, {
+export function updateApplication(owner, name, application) {
+  return fetch(`${Setting.ServerUrl}/api/update-application?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(newTemplate),
+    body: JSON.stringify(application),
   }).then(res => res.json());
 }
 
-export function addTemplate(template) {
-  const newTemplate = Setting.deepCopy(template);
-  return fetch(`${Setting.ServerUrl}/api/add-template`, {
+export function addApplication(application) {
+  return fetch(`${Setting.ServerUrl}/api/add-application`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(newTemplate),
+    body: JSON.stringify(application),
   }).then(res => res.json());
 }
 
-export function deleteTemplate(template) {
-  const newTemplate = Setting.deepCopy(template);
-  return fetch(`${Setting.ServerUrl}/api/delete-template`, {
+export function deleteApplication(application) {
+  return fetch(`${Setting.ServerUrl}/api/delete-application`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(newTemplate),
+    body: JSON.stringify(application),
   }).then(res => res.json());
 }
 
-export function getK8sStatus() {
-  return fetch(`${Setting.ServerUrl}/api/get-k8s-status`, {
+export function deployApplication(deploymentRequest) {
+  return fetch(`${Setting.ServerUrl}/api/deploy-application`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: JSON.stringify(deploymentRequest),
+  }).then(res => res.json());
+}
+
+export function undeployApplication(deploymentRequest) {
+  return fetch(`${Setting.ServerUrl}/api/undeploy-application`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: JSON.stringify(deploymentRequest),
+  }).then(res => res.json());
+}
+
+export function getApplicationStatus(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-application-status?id=${encodeURIComponent(id)}`, {
     method: "GET",
     credentials: "include",
     headers: {

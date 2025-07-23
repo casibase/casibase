@@ -15,8 +15,15 @@
 import React from "react";
 import {Button, Card, Col, Divider, Input, Row, Space, Tag} from "antd";
 import * as TemplateBackend from "./backend/TemplateBackend";
+import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import moment from "moment/moment";
+
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+require("codemirror/theme/material-darker.css");
+require("codemirror/mode/yaml/yaml");
 
 const {TextArea} = Input;
 
@@ -30,16 +37,12 @@ class TemplateEditPage extends React.Component {
       template: null,
       organizations: [],
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
-      deploymentStatus: null,
-      isDeploying: false,
-      isDeleting: false,
       k8sStatus: null,
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getTemplate();
-    this.getDeploymentStatus();
     this.getK8sStatus();
   }
 
@@ -69,21 +72,6 @@ class TemplateEditPage extends React.Component {
       });
   }
 
-  getDeploymentStatus() {
-    return TemplateBackend.getDeploymentStatus(this.props.account.owner, this.state.templateName)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            deploymentStatus: res.data,
-          });
-        }
-        return res;
-      })
-      .catch(error => {
-        return {status: "error", msg: error.toString()};
-      });
-  }
-
   parseTemplateField(key, value) {
     if (["version"].includes(key)) {
       return value;
@@ -101,112 +89,38 @@ class TemplateEditPage extends React.Component {
     });
   }
 
-  deployTemplate() {
-    if (!this.state.template.manifests) {
-      Setting.showMessage("error", i18next.t("general:Please provide manifests content"));
-      return;
-    }
-
-    this.setState({isDeploying: true});
-
-    const deploymentData = {
-      owner: this.state.template.owner,
-      name: this.state.template.name,
-      manifests: this.state.template.manifests,
+  newApplication() {
+    const randomName = Setting.getRandomName();
+    return {
+      owner: this.props.account.owner,
+      name: `app-${randomName}`,
+      createdTime: moment().format(),
+      displayName: `New Application - ${randomName}`,
+      template: this.state.template.name,
+      parameters: "",
     };
+  }
 
-    TemplateBackend.deployTemplate(deploymentData)
+  // Application creation method
+  addApplicationFromTemplate = () => {
+    const newApp = this.newApplication();
+
+    ApplicationBackend.addApplication(newApp)
       .then((res) => {
-        this.setState({isDeploying: false});
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully deployed"));
-          this.setState({
-            deploymentStatus: {status: "Pending", message: "Deployment in progress..."},
-          });
-          setTimeout(() => {
-            this.getDeploymentStatus();
-            this.pollDeploymentStatus();
-          }, 1000);
+          Setting.showMessage("success", i18next.t("general:Successfully added"));
+          this.props.history.push(`/applications/${newApp.name}`);
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        this.setState({isDeploying: false});
-        Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
       });
-  }
-
-  pollDeploymentStatus(maxAttempts = 10, interval = 3000) {
-    let attempts = 0;
-
-    const poll = () => {
-      if (attempts >= maxAttempts) {
-        return;
-      }
-
-      attempts++;
-      this.getDeploymentStatus().then(() => {
-        const status = this.state.deploymentStatus?.status;
-        if (status === "Pending" && attempts < maxAttempts) {
-          setTimeout(poll, interval);
-        }
-      });
-    };
-
-    setTimeout(poll, interval);
-  }
-
-  deleteDeployment() {
-    this.setState({isDeleting: true});
-
-    const deploymentData = {
-      owner: this.state.template.owner,
-      name: this.state.template.name,
-    };
-
-    TemplateBackend.deleteDeployment(deploymentData)
-      .then((res) => {
-        this.setState({isDeleting: false});
-        if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully deleted"));
-          this.setState({
-            deploymentStatus: {status: "Not Deployed", message: "Deployment deleted"},
-          });
-          setTimeout(() => {
-            this.getDeploymentStatus();
-          }, 2000);
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
-        }
-      })
-      .catch(error => {
-        this.setState({isDeleting: false});
-        Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
-      });
-  }
-
-  renderDeploymentStatus() {
-    const {deploymentStatus} = this.state;
-
-    if (!deploymentStatus) {
-      return <Tag color="default">Loading...</Tag>;
-    }
-
-    return (
-      <div>
-        {deploymentStatus.message && (
-          <span style={{marginLeft: 8, color: "#666", fontSize: "12px"}}>
-            {deploymentStatus.message}
-          </span>
-        )}
-      </div>
-    );
-  }
+  };
 
   renderTemplate() {
-    const {deploymentStatus, isDeploying, isDeleting, k8sStatus} = this.state;
-    const isDeployed = deploymentStatus && deploymentStatus.status !== "Not Deployed" && deploymentStatus.status !== "Unknown";
+    const {k8sStatus} = this.state;
     const k8sConnected = k8sStatus && k8sStatus.status === "Connected";
 
     return (
@@ -253,7 +167,7 @@ class TemplateEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Description"), i18next.t("general:Description - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <TextArea value={this.state.template.description} onChange={e => {
+            <TextArea autoSize={{minRows: 1, maxRows: 5}} value={this.state.template.description} onChange={e => {
               this.updateTemplateField("description", e.target.value);
             }} />
           </Col>
@@ -283,14 +197,20 @@ class TemplateEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Manifests"), i18next.t("general:Manifests - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <TextArea
-              rows={10}
-              value={this.state.template.manifests || ""}
-              placeholder="Enter Kubernetes manifests (YAML format)"
-              onChange={e => {
-                this.updateTemplateField("manifests", e.target.value);
-              }}
-            />
+            <div style={{border: "1px solid #d9d9d9", borderRadius: "6px", overflow: "hidden"}}>
+              <CodeMirror
+                value={this.state.template.manifests || ""}
+                options={{mode: "yaml", theme: "material-darker"}}
+                onBeforeChange={(editor, data, value) => {
+                  this.updateTemplateField("manifests", value);
+                }}
+                editorDidMount={(editor) => {
+                  // Set editor height for manifests
+                  editor.setSize(null, "400px");
+                  editor.refresh();
+                }}
+              />
+            </div>
           </Col>
         </Row>
         <Divider />
@@ -305,7 +225,7 @@ class TemplateEditPage extends React.Component {
                 {k8sStatus ? k8sStatus.status : "Loading..."}
               </Tag>
               <Button size="small" onClick={() => this.getK8sStatus()}>
-                  Refresh Status
+                {i18next.t("general:Refresh Status")}
               </Button>
               {k8sStatus && k8sStatus.message && (
                 <span style={{color: "#666", fontSize: "12px"}}>
@@ -316,35 +236,22 @@ class TemplateEditPage extends React.Component {
           </Col>
         </Row>
 
-        {k8sConnected && (
-          <>
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel("Deployment Status", "Current deployment status")} :
-              </Col>
-              <Col span={22} >
-                {this.renderDeploymentStatus()}
-              </Col>
-            </Row>
-
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel("Deployment Actions", "Deploy or delete the application")} :
-              </Col>
-              <Col span={22} >
-                <Space>
-                  <Button type="primary" loading={isDeploying} disabled={isDeleting || !k8sConnected} onClick={() => this.deployTemplate()}>
-                    {isDeployed ? "Redeploy" : "Deploy"}
-                  </Button>
-                  {isDeployed && (
-                    <Button danger loading={isDeleting} disabled={isDeploying || !k8sConnected} onClick={() => this.deleteDeployment()}>
-                            Delete Deployment
-                    </Button>
-                  )}
-                </Space>
-              </Col>
-            </Row>
-          </>
+        {k8sConnected && this.state.template.manifests && (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              {Setting.getLabel("Application Actions")} :
+            </Col>
+            <Col span={22} >
+              <Space>
+                <Button type="primary" onClick={this.addApplicationFromTemplate} disabled={!k8sConnected}>
+                  {i18next.t("general:Add Application")}
+                </Button>
+                <Button onClick={() => this.props.history.push("/applications")}>
+                  {i18next.t("general:View Applications")}
+                </Button>
+              </Space>
+            </Col>
+          </Row>
         )}
 
         <Divider />

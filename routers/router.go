@@ -104,11 +104,17 @@ func initAPI() {
 	beego.Router("/api/update-template", &controllers.ApiController{}, "POST:UpdateTemplate")
 	beego.Router("/api/add-template", &controllers.ApiController{}, "POST:AddTemplate")
 	beego.Router("/api/delete-template", &controllers.ApiController{}, "POST:DeleteTemplate")
-
-	beego.Router("/api/deploy-template", &controllers.ApiController{}, "POST:DeployTemplate")
-	beego.Router("/api/delete-deployment", &controllers.ApiController{}, "POST:DeleteDeployment")
-	beego.Router("/api/get-deployment-status", &controllers.ApiController{}, "GET:GetDeploymentStatus")
 	beego.Router("/api/get-k8s-status", &controllers.ApiController{}, "GET:GetK8sStatus")
+
+	beego.Router("/api/get-applications", &controllers.ApiController{}, "GET:GetApplications")
+	beego.Router("/api/get-application", &controllers.ApiController{}, "GET:GetApplication")
+	beego.Router("/api/update-application", &controllers.ApiController{}, "POST:UpdateApplication")
+	beego.Router("/api/add-application", &controllers.ApiController{}, "POST:AddApplication")
+	beego.Router("/api/delete-application", &controllers.ApiController{}, "POST:DeleteApplication")
+
+	beego.Router("/api/deploy-application", &controllers.ApiController{}, "POST:DeployApplication")
+	beego.Router("/api/undeploy-application", &controllers.ApiController{}, "POST:UndeployApplication")
+	beego.Router("/api/get-application-status", &controllers.ApiController{}, "GET:GetApplicationStatus")
 
 	beego.Router("/api/get-usages", &controllers.ApiController{}, "GET:GetUsages")
 	beego.Router("/api/get-range-usages", &controllers.ApiController{}, "GET:GetRangeUsages")
