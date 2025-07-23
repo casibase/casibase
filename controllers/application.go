@@ -250,14 +250,14 @@ func (c *ApiController) DeployApplication() {
 	c.ResponseOk(true)
 }
 
-// DeleteApplicationDeployment
-// @Title DeleteApplicationDeployment
+// UndeployApplication
+// @Title UndeployApplication
 // @Tag Application API
 // @Description delete application deployment
 // @Param body body ApplicationDeploymentRequest true "The deployment request details"
 // @Success 200 {object} controllers.Response The Response object
-// @router /delete-application-deployment [post]
-func (c *ApiController) DeleteApplicationDeployment() {
+// @router /undeploy-application [post]
+func (c *ApiController) UndeployApplication() {
 	var req ApplicationDeploymentRequest
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &req)
 	if err != nil {
@@ -270,7 +270,7 @@ func (c *ApiController) DeleteApplicationDeployment() {
 		return
 	}
 
-	err = object.DeleteApplicationDeployment(req.Owner, req.Name)
+	err = object.UndeployApplication(req.Owner, req.Name)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

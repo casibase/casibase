@@ -113,7 +113,7 @@ func AddApplication(application *Application) (bool, error) {
 
 func DeleteApplication(owner, name string) (bool, error) {
 	// First, delete the deployment if it exists
-	err := DeleteApplicationDeployment(owner, name)
+	err := UndeployApplication(owner, name)
 	if err != nil {
 		return false, fmt.Errorf("failed to delete deployment: %v", err)
 	}
@@ -250,7 +250,7 @@ func DeployApplication(application *Application) error {
 	return nil
 }
 
-func DeleteApplicationDeployment(owner, name string) error {
+func UndeployApplication(owner, name string) error {
 	if err := ensureK8sClient(); err != nil {
 		return fmt.Errorf("failed to initialize k8s client: %v", err)
 	}

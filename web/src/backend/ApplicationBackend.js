@@ -78,8 +78,8 @@ export function deployApplication(deploymentRequest) {
   }).then(res => res.json());
 }
 
-export function deleteApplicationDeployment(deploymentRequest) {
-  return fetch(`${Setting.ServerUrl}/api/delete-application-deployment`, {
+export function undeployApplication(deploymentRequest) {
+  return fetch(`${Setting.ServerUrl}/api/undeploy-application`, {
     method: "POST",
     credentials: "include",
     headers: {

@@ -186,7 +186,7 @@ class ApplicationEditPage extends React.Component {
       name: this.state.application.name,
     };
 
-    ApplicationBackend.deleteApplicationDeployment(deploymentData)
+    ApplicationBackend.undeployApplication(deploymentData)
       .then((res) => {
         this.setState({isDeleting: false});
         if (res.status === "ok") {
@@ -402,7 +402,7 @@ class ApplicationEditPage extends React.Component {
                   </Button>
                   {isDeployed && (
                     <Button danger loading={isDeleting} disabled={isDeploying || !k8sConnected} onClick={() => this.deleteDeployment()}>
-                      {i18next.t("general:Delete")}
+                      {i18next.t("general:Undeploy")}
                     </Button>
                   )}
                 </Space>

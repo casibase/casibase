@@ -144,7 +144,7 @@ class ApplicationListPage extends BaseListPage {
   };
 
   deleteDeployment = (application) => {
-    ApplicationBackend.deleteApplicationDeployment({
+    ApplicationBackend.undeployApplication({
       owner: application.owner,
       name: application.name,
     })
