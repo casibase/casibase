@@ -95,9 +95,7 @@ class TemplateEditPage extends React.Component {
       owner: this.props.account.owner,
       name: `app-${randomName}`,
       createdTime: moment().format(),
-      updatedTime: moment().format(),
       displayName: `New Application - ${randomName}`,
-      description: `Application created from template: ${this.state.template.name}`,
       template: this.state.template.name,
       parameters: "",
     };

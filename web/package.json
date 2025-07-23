@@ -6,6 +6,7 @@
     "@ant-design/cssinjs": "^1.23.0",
     "@ant-design/icons": "^5.6.1",
     "@ant-design/x": "^1.0.5",
+    "@babel/runtime": "^7.27.6",
     "@bpmn-io/cm-theme": "0.1.0-alpha.2",
     "@bpmn-io/properties-panel": "^3.26.4",
     "@craco/craco": "6.4.5",

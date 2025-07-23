@@ -54,13 +54,10 @@ class ApplicationListPage extends BaseListPage {
       owner: this.props.account.owner,
       name: `app-${randomName}`,
       createdTime: moment().format(),
-      updatedTime: moment().format(),
       displayName: `New Application - ${randomName}`,
       template: this.state.templates[0].name || "",
       parameters: "",
       status: "Not Deployed",
-      message: "",
-      namespace: "",
     };
   }
 
