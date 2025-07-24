@@ -478,9 +478,10 @@ class RecordListPage extends BaseListPage {
             <div>
               {i18next.t("general:Records")}
               {Setting.isAdminUser(this.props.account) && (
-                <Button type={this.state.enableCrossChain ? "primary" : "default"} size="small" onClick={this.toggleEnableCrossChain} style={{marginLeft: 16}}>
-                  {this.state.enableCrossChain ? i18next.t("record:Disable cross-chain") : i18next.t("record:Enable cross-chain")}
-                </Button>
+                <span style={{marginLeft: 16}}>
+                  {i18next.t("record:Enable cross-chain")}:
+                  <Switch checked={this.state.enableCrossChain} checkedChildren="ON" unCheckedChildren="OFF" onChange={this.toggleEnableCrossChain} style={{marginLeft: 8}} />
+                </span>
               )}
               {this.state.selectedRowKeys.length > 0 && (
                 <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
