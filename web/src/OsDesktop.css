@@ -50,11 +50,13 @@
   position: relative;
   overflow: hidden;
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
   padding-top: 3vh;
   padding-left: 15vw;
   padding-right: 15vw;
+  height: 100%;
 }
 
 .desktop-icons {
@@ -174,15 +176,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition:
-    left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-    top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-    width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-    height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.desktop-window.dragging {
-  transition: none;
+  width: 100%;
+  height: 100%;
 }
 
 .desktop-window.resizing {
