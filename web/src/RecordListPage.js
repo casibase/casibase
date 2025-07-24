@@ -478,9 +478,9 @@ class RecordListPage extends BaseListPage {
             <div>
               {i18next.t("general:Records")}
               {Setting.isAdminUser(this.props.account) && (
-                <span style={{marginLeft: 16}}>
+                <span style={{marginLeft: 32}}>
                   {i18next.t("record:Enable cross-chain")}:
-                  <Switch checked={this.state.enableCrossChain} checkedChildren="ON" unCheckedChildren="OFF" onChange={this.toggleEnableCrossChain} style={{marginLeft: 8}} />
+                  <Switch checked={this.state.enableCrossChain} checkedChildren={i18next.t("general:ON")} unCheckedChildren={i18next.t("general:OFF")} onChange={this.toggleEnableCrossChain} style={{marginLeft: 8}} />
                 </span>
               )}
               {this.state.selectedRowKeys.length > 0 && (
