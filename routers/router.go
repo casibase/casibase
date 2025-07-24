@@ -121,6 +121,9 @@ func initAPI() {
 	beego.Router("/api/get-users", &controllers.ApiController{}, "GET:GetUsers")
 	beego.Router("/api/get-user-table-infos", &controllers.ApiController{}, "GET:GetUserTableInfos")
 
+	beego.Router("/api/get-activities", &controllers.ApiController{}, "GET:GetActivities")
+	// beego.Router("/api/get-range-activities", &controllers.ApiController{}, "GET:GetRangeActivities")
+
 	beego.Router("/api/get-global-workflows", &controllers.ApiController{}, "GET:GetGlobalWorkflows")
 	beego.Router("/api/get-workflows", &controllers.ApiController{}, "GET:GetWorkflows")
 	beego.Router("/api/get-workflow", &controllers.ApiController{}, "GET:GetWorkflow")
