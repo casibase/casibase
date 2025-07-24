@@ -15,6 +15,7 @@
 import React from "react";
 import {Button, Card, Col, Input, Row, Select, Switch} from "antd";
 import * as RecordBackend from "./backend/RecordBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
@@ -33,12 +34,14 @@ class RecordEditPage extends React.Component {
       recordOwner: props.match.params.organizationName,
       recordName: props.match.params.recordName,
       record: null,
+      blockchainProviders: [],
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getRecord();
+    this.getProviders();
   }
 
   getRecord() {
@@ -50,6 +53,19 @@ class RecordEditPage extends React.Component {
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getProviders() {
+    ProviderBackend.getProviders(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            blockchainProviders: res.data.filter(provider => provider.category === "Blockchain" && provider.state === "Active"),
+          });
+        } else {
+          Setting.showMessage("error", res.msg);
         }
       });
   }
@@ -113,9 +129,15 @@ class RecordEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Provider"), i18next.t("general:Provider - Tooltip"))} :
           </Col>
           <Col span={22}>
-            <Input disabled={false} value={this.state.record.provider} onChange={e => {
-              // this.updateRecordField("provider", e.target.value);
-            }} />
+            <Select disabled={false} virtual={false} style={{width: "100%"}} value={this.state.record.provider} onChange={(value => {
+              this.updateRecordField("provider", value);
+            })}>
+              {
+                this.state.blockchainProviders.map((provider, index) => (
+                  <Option key={index} value={provider.name}>{provider.name}</Option>
+                ))
+              }
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}}>
@@ -124,7 +146,33 @@ class RecordEditPage extends React.Component {
           </Col>
           <Col span={22}>
             <Input disabled={false} value={this.state.record.block} onChange={e => {
-              this.updateRecordField("block", e.target.value);
+              // this.updateRecordField("block", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Provider") + " 2", i18next.t("general:Provider - Tooltip"))} :
+          </Col>
+          <Col span={22}>
+            <Select disabled={false} virtual={false} style={{width: "100%"}} value={this.state.record.provider2} onChange={(value => {
+              this.updateRecordField("provider2", value);
+            })}>
+              {
+                this.state.blockchainProviders.map((provider, index) => (
+                  <Option key={index} value={provider.name}>{provider.name}</Option>
+                ))
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Block") + " 2", i18next.t("general:Block - Tooltip"))} :
+          </Col>
+          <Col span={22}>
+            <Input disabled={false} value={this.state.record.block2} onChange={e => {
+              // this.updateRecordField("block", e.target.value);
             }} />
           </Col>
         </Row>
