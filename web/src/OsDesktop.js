@@ -16,11 +16,13 @@ import React, {useEffect, useRef, useState} from "react";
 import {useHistory} from "react-router-dom";
 import {Button} from "antd";
 import {LeftOutlined, RightOutlined} from "@ant-design/icons";
-import {DndContext, MouseSensor, PointerSensor, TouchSensor, useDraggable, useSensor, useSensors} from "@dnd-kit/core";
+import {DndContext, MouseSensor, PointerSensor, TouchSensor, useSensor, useSensors} from "@dnd-kit/core";
 import i18next from "i18next";
 import "./OsDesktop.css";
 import routeManager, {DynamicRouteComponent} from "./component/AppRouteManager";
 import {StaticBaseUrl} from "./Conf";
+import {Draggable} from "./component/DragDrop/Draggable";
+import {Droppable} from "./component/DragDrop/Droppable";
 
 const getIconUrl = (appType) => {
   return `${StaticBaseUrl}/apps/${appType}.svg`;
@@ -73,12 +75,7 @@ const WindowContent = ({appType, account, history, match, location, isDesktopMod
   );
 };
 
-const Window = ({id, title, isMaximized, isMinimized, zIndex, position, size, onClose, onMaximize, onMinimize, onFocus, onResizeStart, appType, appConfig, account, history, match, location, onRouteChange, windowHistory, onGoBack, onGoForward, isDragging, isResizing}) => {
-  const {attributes, listeners, setNodeRef, transform} = useDraggable({
-    id,
-    disabled: isMaximized,
-  });
-
+const Window = ({id, title, isMaximized, zIndex, onClose, onMaximize, onMinimize, onFocus, onResizeStart, appType, appConfig, account, history, match, location, onRouteChange, windowHistory, onGoBack, onGoForward, isResizing}) => {
   const windowHistoryObj = {
     ...history,
     push: (path) => {
@@ -103,13 +100,7 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, size, on
   };
 
   const style = {
-    left: isMaximized ? 0 : transform ? position.x + transform.x : position.x,
-    top: isMaximized ? 0 : transform ? position.y + transform.y : position.y,
     zIndex,
-    display: isMinimized ? "none" : "flex",
-    width: isMaximized ? "100%" : `${size.width}px`,
-    height: isMaximized ? "calc(100vh - 40px)" : `${size.height}px`,
-    position: "absolute",
   };
 
   const canGoBack = windowHistory && windowHistory.currentIndex > 0;
@@ -117,9 +108,8 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, size, on
 
   return (
     <div
-      ref={setNodeRef}
       style={style}
-      className={`desktop-window ${isDragging ? "dragging" : ""} ${isResizing ? "resizing" : ""}`}
+      className={`desktop-window ${isResizing ? "resizing" : ""}`}
       onClick={(e) => {
         e.stopPropagation();
         onFocus();
@@ -139,8 +129,6 @@ const Window = ({id, title, isMaximized, isMinimized, zIndex, position, size, on
       )}
       <div
         className="window-header"
-        {...attributes}
-        {...listeners}
         onDoubleClick={(e) => {
           e.stopPropagation();
           onMaximize();
@@ -443,7 +431,7 @@ const OsDesktop = (props) => {
         x: 100 + offset,
         y: 100 + offset,
       },
-      size: {width: 800, height: 600},
+      size: {width: "100%", height: "100%"},
       minSize: {width: 400, height: 300},
       history: {
         entries: [initialRoute],
@@ -470,11 +458,23 @@ const OsDesktop = (props) => {
   };
 
   const toggleMaximize = (id) => {
-    setWindows(windows.map(window =>
-      window.id === id
-        ? {...window, isMaximized: !window.isMaximized, isMinimized: false, isResizing: false}
-        : window
-    ));
+    setWindows(windows.map(window => {
+      if (window.id === id) {
+        const updatedWindow = {
+          ...window,
+          isMaximized: !window.isMaximized,
+          isMinimized: false,
+          isResizing: false,
+        };
+
+        if (window.isMaximized) {
+          return updatedWindow;
+        }
+
+        return updatedWindow;
+      }
+      return window;
+    }));
     setActiveWindowId(id);
   };
 
@@ -757,35 +757,41 @@ const OsDesktop = (props) => {
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          {windows.map(window => (
-            <Window
-              key={window.id}
-              id={window.id}
-              title={window.title}
-              isMaximized={window.isMaximized}
-              isMinimized={window.isMinimized}
-              zIndex={window.zIndex}
-              position={window.position}
-              size={window.size}
-              appType={window.appType}
-              appConfig={window.appConfig}
-              account={props.account}
-              history={props.history || history}
-              match={window.match}
-              location={window.location}
-              windowHistory={window.history}
-              onClose={() => closeWindow(window.id)}
-              onMaximize={() => toggleMaximize(window.id)}
-              onMinimize={() => minimizeWindow(window.id)}
-              onFocus={() => focusWindow(window.id)}
-              onResizeStart={(e, direction) => handleResizeStart(e, window.id, direction)}
-              onRouteChange={(newRoute) => updateWindowRoute(window.id, newRoute)}
-              onGoBack={() => goBack(window.id)}
-              onGoForward={() => goForward(window.id)}
-              isDragging={window.isDragging}
-              isResizing={window.isResizing}
-            />
-          ))}
+          <Droppable id="desktop">
+            {windows.map(window => (
+              <Draggable id={window.id}
+                position={window.position}
+                isMaximized={window.isMaximized}
+                isDragging={window.isDragging}
+                key={window.id}>
+                <Window
+                  id={window.id}
+                  title={window.title}
+                  zIndex={window.zIndex}
+                  position={window.position}
+                  size={window.size}
+                  appType={window.appType}
+                  appConfig={window.appConfig}
+                  account={props.account}
+                  history={props.history || history}
+                  match={window.match}
+                  location={window.location}
+                  windowHistory={window.history}
+                  onClose={() => closeWindow(window.id)}
+                  onMaximize={() => toggleMaximize(window.id)}
+                  onMinimize={() => minimizeWindow(window.id)}
+                  onFocus={() => focusWindow(window.id)}
+                  onResizeStart={(e, direction) => handleResizeStart(e, window.id, direction)}
+                  onRouteChange={(newRoute) => updateWindowRoute(window.id, newRoute)}
+                  onGoBack={() => goBack(window.id)}
+                  onGoForward={() => goForward(window.id)}
+                  isResizing={window.isResizing}
+                  isMaximized={window.isMaximized}
+                  isMinimized={window.isMinimized}
+                />
+              </Draggable>
+            ))}
+          </Droppable>
         </DndContext>
       </div>
 
