@@ -28,14 +28,14 @@ type Param struct {
 }
 
 func (record *Record) getRecordProvider(chainProvider string) (*Provider, error) {
-	if record.Provider != "" {
+	if chainProvider != "" {
 		provider, err := getProvider("admin", chainProvider)
 		if err != nil {
 			return nil, err
 		}
 
 		if provider == nil {
-			return nil, fmt.Errorf("The blockchain provider: %s is not found", chainProvider)
+			return nil, fmt.Errorf("the blockchain provider: %s is not found", chainProvider)
 		}
 
 		return provider, nil
@@ -94,9 +94,11 @@ func (record *Record) toMap() map[string]string {
 
 func (record *Record) toParam() string {
 	record2 := *record
+	record2.Provider = ""
 	record2.Block = ""
 	record2.Transaction = ""
 	record2.BlockHash = ""
+	record2.Provider2 = ""
 	record2.Block2 = ""
 	record2.Transaction2 = ""
 	record2.BlockHash2 = ""

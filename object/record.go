@@ -121,10 +121,23 @@ func GetRecord(id string) (*Record, error) {
 
 func UpdateRecord(id string, record *Record) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	if p, err := getRecord(owner, name); err != nil {
+	p, err := getRecord(owner, name)
+	if err != nil {
 		return false, err
 	} else if p == nil {
 		return false, nil
+	}
+
+	// Update provider
+	if record.Provider != p.Provider {
+		record.Block = ""
+		record.BlockHash = ""
+		record.Transaction = ""
+	}
+	if record.Provider2 != p.Provider2 {
+		record.Block2 = ""
+		record.BlockHash2 = ""
+		record.Transaction2 = ""
 	}
 
 	affected, err := adapter.engine.Where("name = ?", name).AllCols().Update(record)

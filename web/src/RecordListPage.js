@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Switch, Table} from "antd";
+import {Button, Popconfirm, Switch, Table, Tooltip} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as RecordBackend from "./backend/RecordBackend";
@@ -30,12 +30,29 @@ class RecordListPage extends BaseListPage {
     this.state = {
       ...this.state,
       providerMap: {},
+      enableCrossChain: this.getEnableCrossChainFromStorage(),
     };
   }
 
   componentDidMount() {
     this.getProviders();
   }
+
+  getEnableCrossChainFromStorage() {
+    const saved = localStorage.getItem("enableCrossChain");
+    if (saved === null || saved === undefined) {
+      return false;
+    }
+    return JSON.parse(saved) === true;
+  }
+
+  toggleEnableCrossChain = () => {
+    const newValue = !this.state.enableCrossChain;
+    this.setState({
+      enableCrossChain: newValue,
+    });
+    localStorage.setItem("enableCrossChain", JSON.stringify(newValue));
+  };
 
   getProviders() {
     ProviderBackend.getProviders(this.props.account.owner)
@@ -232,7 +249,7 @@ class RecordListPage extends BaseListPage {
           );
         },
       },
-      {
+      (this.state.enableCrossChain ? {
         title: i18next.t("vector:Provider") + " 2",
         dataIndex: "provider2",
         key: "provider2",
@@ -248,7 +265,10 @@ class RecordListPage extends BaseListPage {
             </Link>
           );
         },
-      },
+      } : {
+        title: i18next.t("vector:Provider") + " 2",
+        hidden: true,
+      }),
       {
         title: i18next.t("general:User"),
         dataIndex: "user",
@@ -347,7 +367,7 @@ class RecordListPage extends BaseListPage {
         title: i18next.t("general:Block"),
         dataIndex: "block",
         key: "block",
-        width: "100px",
+        width: "110px",
         sorter: true,
         fixed: (Setting.isMobile()) ? "false" : "right",
         ...this.getColumnSearchProps("block"),
@@ -355,33 +375,42 @@ class RecordListPage extends BaseListPage {
           return Setting.getBlockBrowserUrl(this.state.providerMap, record, text, true);
         },
       },
-      {
+      (this.state.enableCrossChain ? {
         title: i18next.t("general:Block") + " 2",
         dataIndex: "block2",
         key: "block2",
-        width: "100px",
+        width: "110px",
         sorter: true,
         fixed: (Setting.isMobile()) ? "false" : "right",
         ...this.getColumnSearchProps("block2"),
         render: (text, record, index) => {
           return Setting.getBlockBrowserUrl(this.state.providerMap, record, text, false);
         },
-      },
+      } : {
+        title: i18next.t("general:Block") + " 2",
+        hidden: true,
+      }),
       {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "360px",
+        width: this.state.enableCrossChain ? "370px" : "270px",
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, record, index) => {
           return (
-            <div>
+            <div style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "10px",
+              alignItems: "center",
+              marginTop: "10px",
+              marginBottom: "10px",
+            }}>
               {
                 <>
                   {(record.block === "") ? (
                     <Button
                       disabled={record.block !== ""}
-                      style={{marginTop: "10px", marginRight: "10px"}}
                       type="primary" danger
                       onClick={() => this.commitRecord(index, true)}
                     >{i18next.t("record:Commit")}
@@ -389,25 +418,24 @@ class RecordListPage extends BaseListPage {
                   ) : (
                     <Button
                       disabled={record.block === ""}
-                      style={{marginTop: "10px", marginRight: "10px"}}
                       type="primary"
                       onClick={() => this.queryRecord(record, true)}
                     >{i18next.t("record:Query")}
                     </Button>
                   )}
-                  {record.provider2 && record.provider2 !== "" && (
+                  {this.state.enableCrossChain && (
                     (record.block2 === "") ? (
-                      <Button
-                        disabled={record.block2 !== ""}
-                        style={{marginTop: "10px", marginRight: "10px"}}
-                        type="primary" danger
-                        onClick={() => this.commitRecord(index, false)}
-                      >{i18next.t("record:Commit") + " 2"}
-                      </Button>
+                      <Tooltip title={record.provider2 === "" ? i18next.t("record:Need provider" + " 2") : ""}>
+                        <Button
+                          disabled={record.provider2 === ""}
+                          type="primary" danger
+                          onClick={() => this.commitRecord(index, false)}
+                        >{i18next.t("record:Commit") + " 2"}
+                        </Button>
+                      </Tooltip>
                     ) : (
                       <Button
                         disabled={record.block2 === ""}
-                        style={{marginTop: "10px", marginRight: "10px"}}
                         type="primary"
                         onClick={() => this.queryRecord(record, false)}
                       >{i18next.t("record:Query") + " 2"}
@@ -418,7 +446,6 @@ class RecordListPage extends BaseListPage {
               }
               <Button
                 // disabled={record.owner !== this.props.account.owner}
-                style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
                 onClick={() => this.props.history.push(`/records/${record.owner}/${record.name}`)}
               >{i18next.t("general:View")}
               </Button>
@@ -449,7 +476,12 @@ class RecordListPage extends BaseListPage {
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={records} rowKey={(record) => `${record.owner}/${record.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Records")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Records")}
+              {Setting.isAdminUser(this.props.account) && (
+                <Button type={this.state.enableCrossChain ? "primary" : "default"} size="small" onClick={this.toggleEnableCrossChain} style={{marginLeft: 16}}>
+                  {this.state.enableCrossChain ? i18next.t("record:Disable cross-chain") : i18next.t("record:Enable cross-chain")}
+                </Button>
+              )}
               {this.state.selectedRowKeys.length > 0 && (
                 <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
                   <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
