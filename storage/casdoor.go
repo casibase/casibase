@@ -62,7 +62,7 @@ func (p *CasdoorProvider) PutObject(user string, parent string, key string, file
 	return fileUrl, nil
 }
 
-func (p *CasdoorProvider) DeleteObject(key string) error {
+func (p *CasdoorProvider) DeleteObject(key string, fileId string) error {
 	resource := casdoorsdk.Resource{
 		Name: key,
 	}
