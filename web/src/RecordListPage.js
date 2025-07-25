@@ -425,7 +425,7 @@ class RecordListPage extends BaseListPage {
                   )}
                   {this.state.enableCrossChain && (
                     (record.block2 === "") ? (
-                      <Tooltip title={record.provider2 === "" ? i18next.t("record:Need provider" + " 2") : ""}>
+                      <Tooltip title={record.provider2 === "" ? "Provider 2 should not be empty" : ""}>
                         <Button
                           disabled={record.provider2 === ""}
                           type="primary" danger
@@ -480,7 +480,7 @@ class RecordListPage extends BaseListPage {
               {Setting.isAdminUser(this.props.account) && (
                 <span style={{marginLeft: 32}}>
                   {i18next.t("record:Enable cross-chain")}:
-                  <Switch checked={this.state.enableCrossChain} checkedChildren={i18next.t("general:ON")} unCheckedChildren={i18next.t("general:OFF")} onChange={this.toggleEnableCrossChain} style={{marginLeft: 8}} />
+                  <Switch checked={this.state.enableCrossChain} onChange={this.toggleEnableCrossChain} style={{marginLeft: 8}} />
                 </span>
               )}
               {this.state.selectedRowKeys.length > 0 && (

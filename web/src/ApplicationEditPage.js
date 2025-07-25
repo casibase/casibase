@@ -252,7 +252,7 @@ class ApplicationEditPage extends React.Component {
     return (
       <Card size="small" title={
         <div>
-          {this.state.mode === "add" ? i18next.t("general:New Application") : i18next.t("general:Edit Application")}&nbsp;&nbsp;&nbsp;&nbsp;
+          {this.state.mode === "add" ? i18next.t("application:New Application") : i18next.t("application:Edit Application")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitApplicationEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitApplicationEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
           {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteApplication()}>{i18next.t("general:Cancel")}</Button> : null}
@@ -366,7 +366,7 @@ class ApplicationEditPage extends React.Component {
                 </span>
               )}
               <Button size="small" onClick={() => this.getK8sStatus()}>
-                {i18next.t("general:Refresh Status")}
+                {i18next.t("store:Refresh")}
               </Button>
             </Space>
           </Col>
@@ -382,7 +382,7 @@ class ApplicationEditPage extends React.Component {
                 <Space>
                   {this.renderDeploymentStatus()}
                   <Button size="small" onClick={() => this.getDeploymentStatus()}>
-                    {i18next.t("general:Refresh Status")}
+                    {i18next.t("store:Refresh")}
                   </Button>
                 </Space>
               </Col>
@@ -395,11 +395,11 @@ class ApplicationEditPage extends React.Component {
               <Col span={22} >
                 <Space>
                   <Button type="primary" loading={isDeploying} disabled={isDeleting || !k8sConnected || !this.state.application.template} onClick={() => this.deployApplication()}>
-                    {isDeployed ? i18next.t("general:Redeploy") : i18next.t("general:Deploy")}
+                    {isDeployed ? i18next.t("application:Redeploy") : i18next.t("application:Deploy")}
                   </Button>
                   {isDeployed && (
                     <Button danger loading={isDeleting} disabled={isDeploying || !k8sConnected} onClick={() => this.deleteDeployment()}>
-                      {i18next.t("general:Undeploy")}
+                      {i18next.t("application:Undeploy")}
                     </Button>
                   )}
                 </Space>

@@ -288,12 +288,12 @@ class ApplicationListPage extends BaseListPage {
 
               {!isDeployed ? (
                 <Button type="primary" onClick={() => this.deployApplication(application)} disabled={!application.template}>
-                  {i18next.t("general:Deploy")}
+                  {i18next.t("application:Deploy")}
                 </Button>
               ) : (
                 <Space>
                   <Button type="primary" onClick={() => this.deployApplication(application)}>
-                    {i18next.t("general:Redeploy")}
+                    {i18next.t("application:Redeploy")}
                   </Button>
                   <Button danger onClick={() => this.deleteDeployment(application)}>
                     {i18next.t("general:Stop")}

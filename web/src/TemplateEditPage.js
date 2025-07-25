@@ -225,7 +225,7 @@ class TemplateEditPage extends React.Component {
                 {k8sStatus ? k8sStatus.status : "Loading..."}
               </Tag>
               <Button size="small" onClick={() => this.getK8sStatus()}>
-                {i18next.t("general:Refresh Status")}
+                {i18next.t("store:Refresh")}
               </Button>
               {k8sStatus && k8sStatus.message && (
                 <span style={{color: "#666", fontSize: "12px"}}>
@@ -244,10 +244,10 @@ class TemplateEditPage extends React.Component {
             <Col span={22} >
               <Space>
                 <Button type="primary" onClick={this.addApplicationFromTemplate} disabled={!k8sConnected}>
-                  {i18next.t("general:Add Application")}
+                  {i18next.t("general:Add")}
                 </Button>
                 <Button onClick={() => this.props.history.push("/applications")}>
-                  {i18next.t("general:View Applications")}
+                  {i18next.t("general:View")}
                 </Button>
               </Space>
             </Col>

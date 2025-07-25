@@ -76,7 +76,7 @@ class ProviderEditPage extends React.Component {
       }
     }
     if (provider.category === "Storage") {
-      return Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path - Tooltip"));
+      return Setting.getLabel(i18next.t("store:Storage subpath"), i18next.t("store:Storage subpath - Tooltip"));
     }
     return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID - Tooltip"));
   }
