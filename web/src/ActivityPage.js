@@ -411,9 +411,9 @@ class ActivityPage extends BaseListPage {
           <Col span={1} />
         </Row>
         <Row style={{marginTop: "20px"}} >
-          <Col span={1} key="left-spacer" />,
+          <Col span={1} key="left-spacer" />
           {this.renderSubPieCharts()}
-          <Col span={1} key="left-spacer" />,
+          <Col span={1} key="left-spacer" />
         </Row>
       </React.Fragment>
     );
