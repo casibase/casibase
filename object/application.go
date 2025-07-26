@@ -138,10 +138,11 @@ func AddApplication(application *Application) (bool, error) {
 
 func DeleteApplication(owner, name string) (bool, error) {
 	// First, delete the deployment if it exists
-	_, err := UndeployApplication(owner, name)
-	if err != nil {
-		return false, fmt.Errorf("failed to delete deployment: %v", err)
-	}
+	go func() {
+		if err := ensureK8sClient(); err == nil && k8sClient.connected {
+			_, err = UndeployApplication(owner, name)
+		}
+	}()
 
 	// Then delete the application record
 	affected, err := adapter.engine.Delete(&Application{Owner: owner, Name: name})
@@ -287,7 +288,7 @@ func UndeployApplication(owner, name string) (bool, error) {
 	namespace := fmt.Sprintf(NamespaceFormat, name)
 
 	// Delete the entire namespace
-	err := k8sClient.clientset.CoreV1().Namespaces().Delete(
+	err := k8sClient.clientSet.CoreV1().Namespaces().Delete(
 		context.TODO(),
 		namespace,
 		metav1.DeleteOptions{},
@@ -324,7 +325,7 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 	namespace := fmt.Sprintf(NamespaceFormat, name)
 
 	// Check if namespace exists
-	_, err := k8sClient.clientset.CoreV1().Namespaces().Get(
+	_, err := k8sClient.clientSet.CoreV1().Namespaces().Get(
 		context.TODO(),
 		namespace,
 		metav1.GetOptions{},
@@ -347,7 +348,7 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 	}
 
 	// Check deployments in the namespace
-	deployments, err := k8sClient.clientset.AppsV1().Deployments(namespace).List(
+	deployments, err := k8sClient.clientSet.AppsV1().Deployments(namespace).List(
 		context.TODO(),
 		metav1.ListOptions{},
 	)

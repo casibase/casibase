@@ -40,7 +40,7 @@ type DeploymentStatus struct {
 }
 
 type K8sClient struct {
-	clientset     *kubernetes.Clientset
+	clientSet     *kubernetes.Clientset
 	dynamicClient dynamic.Interface
 	restMapper    meta.RESTMapper
 	config        *rest.Config
@@ -74,7 +74,7 @@ func createK8sClient(config *rest.Config, configText string) (*K8sClient, error)
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create kubernetes clientset: %v", err)
+		return nil, fmt.Errorf("failed to create kubernetes clientSet: %v", err)
 	}
 
 	dynamicClient, err := dynamic.NewForConfig(config)
@@ -95,7 +95,7 @@ func createK8sClient(config *rest.Config, configText string) (*K8sClient, error)
 	restMapper := restmapper.NewDiscoveryRESTMapper(groupResources)
 
 	client := &K8sClient{
-		clientset:     clientset,
+		clientSet:     clientset,
 		dynamicClient: dynamicClient,
 		restMapper:    restMapper,
 		config:        config,
@@ -115,7 +115,7 @@ func (k *K8sClient) testConnection() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	_, err := k.clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{Limit: 1})
+	_, err := k.clientSet.CoreV1().Namespaces().List(ctx, metav1.ListOptions{Limit: 1})
 	return err
 }
 
@@ -155,7 +155,7 @@ func GetK8sStatus() (*DeploymentStatus, error) {
 }
 
 func (k *K8sClient) createNamespaceIfNotExists(name string) error {
-	_, err := k.clientset.CoreV1().Namespaces().Get(
+	_, err := k.clientSet.CoreV1().Namespaces().Get(
 		context.TODO(),
 		name,
 		metav1.GetOptions{},
