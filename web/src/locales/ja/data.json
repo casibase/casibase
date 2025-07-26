@@ -638,8 +638,8 @@
   },
   "template": {
     "Edit Template": "テンプレートの編集",
-    "Manifests": "マニフェスト",
-    "Manifests - Tooltip": "テンプレートのKubernetesマニフェスト",
+    "Manifest": "マニフェスト",
+    "Manifest - Tooltip": "テンプレートのKubernetesマニフェスト",
     "New Template": "新規テンプレート"
   },
   "theme": {

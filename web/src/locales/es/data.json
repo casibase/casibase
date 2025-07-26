@@ -638,8 +638,8 @@
   },
   "template": {
     "Edit Template": "Editar plantilla",
-    "Manifests": "Manifiestos",
-    "Manifests - Tooltip": "Manifiestos de Kubernetes para la plantilla",
+    "Manifest": "Manifiestos",
+    "Manifest - Tooltip": "Manifiestos de Kubernetes para la plantilla",
     "New Template": "Nueva plantilla"
   },
   "theme": {

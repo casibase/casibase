@@ -51,7 +51,7 @@ const (
 	StatusPending     = string(v1.PodPending) // "Pending"
 	StatusRunning     = string(v1.PodRunning) // "Running"
 	StatusUnknown     = string(v1.PodUnknown) // "Unknown"
-	NamespaceFormat   = "casibase-%s-%s"
+	NamespaceFormat   = "casibase-%s"
 )
 
 func GetApplications(owner string) ([]*Application, error) {
@@ -121,7 +121,7 @@ func AddApplication(application *Application) (bool, error) {
 	}
 
 	// Generate namespace name based on application owner and name
-	application.Namespace = fmt.Sprintf(NamespaceFormat, application.Owner, application.Name)
+	application.Namespace = fmt.Sprintf(NamespaceFormat, application.Name)
 
 	// Set initial status
 	if application.Status == "" {
@@ -152,10 +152,10 @@ func DeleteApplication(owner, name string) (bool, error) {
 	return affected != 0, nil
 }
 
-func generateManifestsWithKustomize(baseManifests, parameters string) (string, error) {
-	// If no parameters provided, return base manifests directly
+func generateManifestWithKustomize(baseManifest, parameters string) (string, error) {
+	// If no parameters provided, return base manifest directly
 	if parameters == "" {
-		return baseManifests, nil
+		return baseManifest, nil
 	}
 
 	// Create in-memory filesystem
@@ -168,7 +168,7 @@ func generateManifestsWithKustomize(baseManifests, parameters string) (string, e
 
 	// Split and write base resource files
 	resourceFiles := []string{}
-	baseFiles := strings.Split(baseManifests, "---")
+	baseFiles := strings.Split(baseManifest, "---")
 
 	for i, fileContent := range baseFiles {
 		trimmedContent := strings.TrimSpace(fileContent)
@@ -218,12 +218,12 @@ func generateManifestsWithKustomize(baseManifests, parameters string) (string, e
 	}
 
 	// Convert to final YAML
-	finalManifestsBytes, err := resMap.AsYaml()
+	finalManifestBytes, err := resMap.AsYaml()
 	if err != nil {
 		return "", fmt.Errorf("failed to convert result to yaml: %v", err)
 	}
 
-	return string(finalManifestsBytes), nil
+	return string(finalManifestBytes), nil
 }
 
 func DeployApplication(application *Application) (bool, error) {
@@ -244,10 +244,10 @@ func DeployApplication(application *Application) (bool, error) {
 		return false, fmt.Errorf("template not found: %s", application.Template)
 	}
 
-	// Generate final manifests using simple template replacement
-	finalManifests, err := generateManifestsWithKustomize(template.Manifests, application.Parameters)
+	// Generate final manifest using simple template replacement
+	finalManifest, err := generateManifestWithKustomize(template.Manifest, application.Parameters)
 	if err != nil {
-		return false, fmt.Errorf("failed to generate manifests: %v", err)
+		return false, fmt.Errorf("failed to generate manifest: %v", err)
 	}
 
 	// Create namespace if it doesn't exist
@@ -256,10 +256,10 @@ func DeployApplication(application *Application) (bool, error) {
 		return false, fmt.Errorf("failed to create namespace: %v", err)
 	}
 
-	// Deploy the manifests
-	err = deployManifests(finalManifests, application.Namespace)
+	// Deploy the manifest
+	err = deployManifest(finalManifest, application.Namespace)
 	if err != nil {
-		return false, fmt.Errorf("failed to deploy manifests: %v", err)
+		return false, fmt.Errorf("failed to deploy manifest: %v", err)
 	}
 
 	// Update application status
@@ -284,7 +284,7 @@ func UndeployApplication(owner, name string) (bool, error) {
 		return false, fmt.Errorf("k8s client not connected to cluster")
 	}
 
-	namespace := fmt.Sprintf(NamespaceFormat, owner, name)
+	namespace := fmt.Sprintf(NamespaceFormat, name)
 
 	// Delete the entire namespace
 	err := k8sClient.clientset.CoreV1().Namespaces().Delete(
@@ -321,7 +321,7 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 		return &DeploymentStatus{Status: StatusUnknown, Message: "k8s client not connected to cluster"}, nil
 	}
 
-	namespace := fmt.Sprintf(NamespaceFormat, owner, name)
+	namespace := fmt.Sprintf(NamespaceFormat, name)
 
 	// Check if namespace exists
 	_, err := k8sClient.clientset.CoreV1().Namespaces().Get(
@@ -410,10 +410,10 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 	return status, nil
 }
 
-// Helper function to deploy manifests (refactored from existing code)
-func deployManifests(manifests, namespace string) error {
-	// Split manifests by "---" separator
-	docs := strings.Split(manifests, "---")
+// Helper function to deploy manifest (refactored from existing code)
+func deployManifest(manifest, namespace string) error {
+	// Split manifest by "---" separator
+	docs := strings.Split(manifest, "---")
 
 	for _, doc := range docs {
 		doc = strings.TrimSpace(doc)

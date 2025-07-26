@@ -638,8 +638,8 @@
   },
   "template": {
     "Edit Template": "编辑模板",
-    "Manifests": "配置清单",
-    "Manifests - Tooltip": "模板的 Kubernetes 配置清单",
+    "Manifest": "配置清单",
+    "Manifest - Tooltip": "模板的 Kubernetes 配置清单",
     "New Template": "新建模板"
   },
   "theme": {

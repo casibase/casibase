@@ -49,14 +49,21 @@ class ApplicationListPage extends BaseListPage {
 
   newApplication() {
     const randomName = Setting.getRandomName();
+    const defaultParameters = `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 3`;
+
     return {
       owner: this.props.account.name,
       name: `application_${randomName}`,
       createdTime: moment().format(),
       displayName: `${i18next.t("application:New Application")} - ${randomName}`,
       description: "",
-      template: this.state.templates[0].name || "",
-      parameters: "",
+      template: this.state.templates[0]?.name || "",
+      parameters: defaultParameters,
       status: "Not Deployed",
       message: "",
     };
