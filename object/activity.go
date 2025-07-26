@@ -94,7 +94,7 @@ func GetActivities(days int, user string, fieldName string) ([]*Activity, error)
 		}
 		value, err := getTargetfieldValue(record, fieldName)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to parse record: name %s, field %s, error: %v", record.Name, fieldName, err)
 		}
 		activities[dayIndex].FieldCount[value] += 1
 	}
