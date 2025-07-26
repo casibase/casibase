@@ -63,6 +63,22 @@ func GetApplications(owner string) ([]*Application, error) {
 	return applications, nil
 }
 
+func GetApplicationCount(owner, field, value string) (int64, error) {
+	session := GetSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&Application{})
+}
+
+func GetPaginationApplications(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Application, error) {
+	applications := []*Application{}
+	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&applications)
+	if err != nil {
+		return applications, err
+	}
+
+	return applications, nil
+}
+
 func GetApplication(owner, name string) (*Application, error) {
 	application := Application{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&application)

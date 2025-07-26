@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/json"
 
+	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -38,14 +39,37 @@ type ApplicationDeploymentRequest struct {
 // @router /get-applications [get]
 func (c *ApiController) GetApplications() {
 	owner := c.Input().Get("owner")
+	limit := c.Input().Get("pageSize")
+	page := c.Input().Get("p")
+	field := c.Input().Get("field")
+	value := c.Input().Get("value")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
 
-	res, err := object.GetApplications(owner)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
+	if limit == "" || page == "" {
+		applications, err := object.GetApplications(owner)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		c.ResponseOk(applications)
+	} else {
+		limit := util.ParseInt(limit)
+		count, err := object.GetApplicationCount(owner, field, value)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		paginator := pagination.SetPaginator(c.Ctx, limit, count)
+		applications, err := object.GetPaginationApplications(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(applications, paginator.Nums())
 	}
-
-	c.ResponseOk(res)
 }
 
 // GetApplication

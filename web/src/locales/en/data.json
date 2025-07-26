@@ -14,11 +14,14 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions"
   },
   "application": {
-    "Deploy": "Deploy",
     "Edit Application": "Edit Application",
+    "Failed": "Failed",
     "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Not Deployed": "Not Deployed",
+    "Parameters": "Parameters",
+    "Parameters - Tooltip": "Application parameters",
+    "Pending": "Pending",
+    "Running": "Running"
   },
   "article": {
     "Abstract": "Abstract",
@@ -144,7 +147,6 @@
     "Down": "Down",
     "Download": "Download",
     "Edit": "Edit",
-    "Edit Template": "Edit Template",
     "Error": "Error",
     "Exit": "Exit",
     "Expire time": "Expire time",
@@ -156,7 +158,6 @@
     "Failed to connect to server": "Failed to connect to server",
     "Failed to decode audio data": "Failed to decode audio data",
     "Failed to delete": "Failed to delete",
-    "Failed to deploy": "Failed to deploy",
     "Failed to get": "Failed to get",
     "Failed to query record": "Failed to query record",
     "Failed to redirect": "Failed to redirect",
@@ -187,8 +188,6 @@
     "Loading...": "Loading...",
     "Logging & Auditing": "Logging & Auditing",
     "Machines": "Machines",
-    "Manifests": "Manifests",
-    "Manifests - Tooltip": "Kubernetes manifest files in YAML format for deployment configuration",
     "Menu": "Menu",
     "Message": "Message",
     "Message - Tooltip": "Notification template with HTML and variables",
@@ -204,7 +203,6 @@
     "Namespace - Tooltip": "Namespace identifier",
     "Network": "Network",
     "Network - Tooltip": "Blockchain network type",
-    "New Template": "New Template",
     "No audio data was captured. Please try again": "No audio data was captured. Please try again",
     "No.": "No.",
     "Node": "Node",
@@ -276,7 +274,6 @@
     "Successfully committed": "Successfully committed",
     "Successfully copied": "Successfully copied",
     "Successfully deleted": "Successfully deleted",
-    "Successfully deployed": "Successfully deployed",
     "Successfully disliked": "Successfully disliked",
     "Successfully downloaded": "Successfully downloaded",
     "Successfully liked": "Successfully liked",
@@ -294,6 +291,8 @@
     "Tag": "Tag",
     "Tag - Tooltip": "Classification tags (comma-separated)",
     "Tasks": "Tasks",
+    "Template": "Template",
+    "Template - Tooltip": "The template used by the application",
     "Templates": "Templates",
     "Text": "Text",
     "Text - Tooltip": "Text content",
@@ -636,6 +635,12 @@
     "Log - Tooltip": "Technical execution log",
     "Question": "Question",
     "Question - Tooltip": "Dynamically generated task prompt"
+  },
+  "template": {
+    "Edit Template": "Edit Template",
+    "Manifests": "Manifests",
+    "Manifests - Tooltip": "Kubernetes manifests for the template",
+    "New Template": "New Template"
   },
   "theme": {
     "Compact": "Compact",

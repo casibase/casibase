@@ -14,11 +14,14 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "系统检测到您正在使用默认密码，存在安全隐患。请立即修改您的密码。以下是具体操作"
   },
   "application": {
-    "Deploy": "部署",
     "Edit Application": "编辑应用",
+    "Failed": "失败",
     "New Application": "新建应用",
-    "Redeploy": "重新部署",
-    "Undeploy": "卸载"
+    "Not Deployed": "未部署",
+    "Parameters": "参数",
+    "Parameters - Tooltip": "应用参数",
+    "Pending": "部署中",
+    "Running": "运行中"
   },
   "article": {
     "Abstract": "摘要",
@@ -144,7 +147,6 @@
     "Down": "下移",
     "Download": "下载",
     "Edit": "编辑",
-    "Edit Template": "编辑模板",
     "Error": "错误",
     "Exit": "退出",
     "Expire time": "过期时间",
@@ -156,7 +158,6 @@
     "Failed to connect to server": "连接服务器失败",
     "Failed to decode audio data": "音频数据解码失败",
     "Failed to delete": "删除失败",
-    "Failed to deploy": "部署失败",
     "Failed to get": "获取失败",
     "Failed to query record": "查询记录失败",
     "Failed to redirect": "重定向失败",
@@ -187,8 +188,6 @@
     "Loading...": "加载中...",
     "Logging & Auditing": "日志 & 审计",
     "Machines": "主机",
-    "Manifests": "清单文件",
-    "Manifests - Tooltip": "Kubernetes清单文件（YAML格式）",
     "Menu": "菜单",
     "Message": "消息",
     "Message - Tooltip": "消息通知模板（HTML格式），支持变量如 ${taskName}",
@@ -204,7 +203,6 @@
     "Namespace - Tooltip": "命名空间",
     "Network": "网络",
     "Network - Tooltip": "区块链网络类型",
-    "New Template": "新建模板",
     "No audio data was captured. Please try again": "未捕获到音频数据。请重试",
     "No.": "序号",
     "Node": "节点",
@@ -276,7 +274,6 @@
     "Successfully committed": "提交成功",
     "Successfully copied": "复制成功",
     "Successfully deleted": "删除成功",
-    "Successfully deployed": "部署成功",
     "Successfully disliked": "点踩成功",
     "Successfully downloaded": "下载成功",
     "Successfully liked": "点赞成功",
@@ -294,6 +291,8 @@
     "Tag": "标签",
     "Tag - Tooltip": "节点分类标签，多个用逗号分隔",
     "Tasks": "任务",
+    "Template": "模板",
+    "Template - Tooltip": "应用所使用的模板",
     "Templates": "模板",
     "Text": "文本",
     "Text - Tooltip": "文本内容",
@@ -636,6 +635,12 @@
     "Log - Tooltip": "任务执行日志",
     "Question": "问题",
     "Question - Tooltip": "自动生成的完整任务提示"
+  },
+  "template": {
+    "Edit Template": "编辑模板",
+    "Manifests": "配置清单",
+    "Manifests - Tooltip": "模板的 Kubernetes 配置清单",
+    "New Template": "新建模板"
   },
   "theme": {
     "Compact": "紧凑",

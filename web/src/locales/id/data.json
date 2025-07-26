@@ -14,11 +14,14 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "Sistem telah mendeteksi bahwa Anda menggunakan kata sandi default, yang tidak aman. Anda perlu mengubah kata sandi Anda segera. Berikut adalah petunjuknya"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Edit Application": "Edit Aplikasi",
+    "Failed": "Gagal",
+    "New Application": "Aplikasi Baru",
+    "Not Deployed": "Tidak Diterapkan",
+    "Parameters": "Parameter",
+    "Parameters - Tooltip": "Parameter aplikasi",
+    "Pending": "Tertunda",
+    "Running": "Berjalan"
   },
   "article": {
     "Abstract": "Abstrak",
@@ -144,7 +147,6 @@
     "Down": "Turun",
     "Download": "Unduh",
     "Edit": "Sunting",
-    "Edit Template": "Sunting Template",
     "Error": "Error",
     "Exit": "Keluar",
     "Expire time": "Waktu kedaluwarsa",
@@ -156,7 +158,6 @@
     "Failed to connect to server": "Gagal terhubung ke server",
     "Failed to decode audio data": "Gagal mendekode data audio",
     "Failed to delete": "Gagal dihapus",
-    "Failed to deploy": "Gagal melakukan deployment",
     "Failed to get": "Gagal mendapatkan",
     "Failed to query record": "Gagal memquery catatan",
     "Failed to redirect": "Gagal dialihkan",
@@ -187,8 +188,6 @@
     "Loading...": "Sedang memuat...",
     "Logging & Auditing": "Pencatatan & audit",
     "Machines": "Host",
-    "Manifests": "Manifes",
-    "Manifests - Tooltip": "File manifes Kubernetes (format YAML)",
     "Menu": "Menu",
     "Message": "Pesan",
     "Message - Tooltip": "Template notifikasi pesan (format HTML), mendukung variabel seperti ${taskName}",
@@ -204,7 +203,6 @@
     "Namespace - Tooltip": "Ruang nama",
     "Network": "Jaringan",
     "Network - Tooltip": "Tipe jaringan blockchain",
-    "New Template": "Template Baru",
     "No audio data was captured. Please try again": "Tidak ada data audio yang tercapture. Coba lagi",
     "No.": "Nomor",
     "Node": "Node",
@@ -276,7 +274,6 @@
     "Successfully committed": "Berhasil diajukan",
     "Successfully copied": "Berhasil disalin",
     "Successfully deleted": "Berhasil dihapus",
-    "Successfully deployed": "Berhasil di-deploy",
     "Successfully disliked": "Berhasil memberi dislike",
     "Successfully downloaded": "Berhasil diunduh",
     "Successfully liked": "Berhasil memberi like",
@@ -294,6 +291,8 @@
     "Tag": "Label",
     "Tag - Tooltip": "Label kategori node, beberapa dipisahkan dengan koma",
     "Tasks": "Tugas",
+    "Template": "Templat",
+    "Template - Tooltip": "Templat yang digunakan oleh aplikasi",
     "Templates": "Template",
     "Text": "Teks",
     "Text - Tooltip": "Isi teks",
@@ -636,6 +635,12 @@
     "Log - Tooltip": "Catatan eksekusi tugas",
     "Question": "Pertanyaan",
     "Question - Tooltip": "Pemicu tugas lengkap yang dihasilkan otomatis"
+  },
+  "template": {
+    "Edit Template": "Edit Templat",
+    "Manifests": "Manifes",
+    "Manifests - Tooltip": "Manifes Kubernetes untuk templat",
+    "New Template": "Templat Baru"
   },
   "theme": {
     "Compact": "Compact",

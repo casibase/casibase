@@ -14,11 +14,14 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "시스템에서 기본 비밀번호를 사용하고 있다는 것을 감지했습니다. 이는 보안상 위험합니다. 즉시 비밀번호를 변경해야 합니다. 다음은 지침입니다"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Edit Application": "애플리케이션 편집",
+    "Failed": "실패",
+    "New Application": "새 애플리케이션",
+    "Not Deployed": "배포 안 됨",
+    "Parameters": "매개변수",
+    "Parameters - Tooltip": "애플리케이션 매개변수",
+    "Pending": "대기 중",
+    "Running": "실행 중"
   },
   "article": {
     "Abstract": "요약",
@@ -144,7 +147,6 @@
     "Down": "아래로",
     "Download": "다운로드",
     "Edit": "편집",
-    "Edit Template": "템플릿 편집",
     "Error": "Error",
     "Exit": "나가기",
     "Expire time": "만료 시간",
@@ -156,7 +158,6 @@
     "Failed to connect to server": "서버에 연결할 수 없습니다",
     "Failed to decode audio data": "오디오 데이터 디코딩 실패",
     "Failed to delete": "삭제 실패",
-    "Failed to deploy": "배포 실패",
     "Failed to get": "가져오기 실패",
     "Failed to query record": "기록 조회 실패",
     "Failed to redirect": "재디렉션 실패",
@@ -187,8 +188,6 @@
     "Loading...": "로딩 중...",
     "Logging & Auditing": "로깅 & 감사",
     "Machines": "호스트",
-    "Manifests": "매니페스트",
-    "Manifests - Tooltip": "Kubernetes 매니페스트 파일 (YAML 형식)",
     "Menu": "메뉴",
     "Message": "메시지",
     "Message - Tooltip": "메시지 알림 템플릿(HTML 형식), ${taskName}과 같은 변수를 지원함",
@@ -204,7 +203,6 @@
     "Namespace - Tooltip": "네임스페이스",
     "Network": "네트워크",
     "Network - Tooltip": "블록체인 네트워크 유형",
-    "New Template": "새 템플릿",
     "No audio data was captured. Please try again": "오디오 데이터가 캡처되지 않았습니다. 다시 시도하세요",
     "No.": "순번",
     "Node": "노드",
@@ -276,7 +274,6 @@
     "Successfully committed": "제출 성공",
     "Successfully copied": "복사 성공",
     "Successfully deleted": "삭제 성공",
-    "Successfully deployed": "배포 성공",
     "Successfully disliked": "싫어요 성공",
     "Successfully downloaded": "다운로드 성공",
     "Successfully liked": "좋아요 성공",
@@ -294,6 +291,8 @@
     "Tag": "태그",
     "Tag - Tooltip": "노드 분류 태그, 여러 개는 콤마로 구분",
     "Tasks": "태스크",
+    "Template": "템플릿",
+    "Template - Tooltip": "애플리케이션에서 사용하는 템플릿",
     "Templates": "템플릿",
     "Text": "텍스트",
     "Text - Tooltip": "텍스트 내용",
@@ -636,6 +635,12 @@
     "Log - Tooltip": "태스크 실행 로그",
     "Question": "문제",
     "Question - Tooltip": "자동으로 생성된 완전한 태스크 프롬프트"
+  },
+  "template": {
+    "Edit Template": "템플릿 편집",
+    "Manifests": "매니페스트",
+    "Manifests - Tooltip": "템플릿용 Kubernetes 매니페스트",
+    "New Template": "새 템플릿"
   },
   "theme": {
     "Compact": "Compact",
