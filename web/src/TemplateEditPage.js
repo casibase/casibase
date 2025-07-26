@@ -164,7 +164,7 @@ class TemplateEditPage extends React.Component {
               this.props.history.push(`/templates/${this.state.template.name}`);
             }
           } else {
-            Setting.showMessage("error", i18next.t("general:Failed to connect to server"));
+            Setting.showMessage("error", i18next.t("general:Failed to save"));
             this.updateTemplateField("name", this.state.templateName);
           }
         } else {

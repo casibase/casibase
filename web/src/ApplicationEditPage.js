@@ -225,7 +225,7 @@ class ApplicationEditPage extends React.Component {
               this.props.history.push(`/applications/${this.state.application.name}`);
             }
           } else {
-            Setting.showMessage("error", i18next.t("general:Failed to connect to server"));
+            Setting.showMessage("error", i18next.t("general:Failed to save"));
             this.updateApplicationField("name", this.state.applicationName);
           }
         } else {
