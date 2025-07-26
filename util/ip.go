@@ -60,17 +60,24 @@ func InitIpDb() {
 	}
 }
 
-// GetDescFromIP returns a string description of an IP address
-func GetDescFromIP(ip string) string {
+func GetInfoFromIP(ip string) (*LocationInfo, error) {
 	var info *LocationInfo
 	var err error
-
 	if IsMaxmindIpDb {
 		info, err = Find(ip)
 	} else {
 		info, err = FindMaxmind(ip)
 	}
+	if err != nil {
+		return nil, err
+	}
 
+	return info, nil
+}
+
+// GetDescFromIP returns a string description of an IP address
+func GetDescFromIP(ip string) string {
+	info, err := GetInfoFromIP(ip)
 	if err != nil {
 		return ""
 	}
