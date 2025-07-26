@@ -14,11 +14,14 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "Das System hat erkannt, dass Sie das Standardpasswort verwenden, das nicht sicher ist. Sie müssen Ihr Passwort sofort ändern. Hier sind die Anweisungen"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Edit Application": "Anwendung bearbeiten",
+    "Failed": "Fehlgeschlagen",
+    "New Application": "Neue Anwendung",
+    "Not Deployed": "Nicht bereitgestellt",
+    "Parameters": "Parameter",
+    "Parameters - Tooltip": "Anwendungsparameter",
+    "Pending": "Ausstehend",
+    "Running": "Wird ausgeführt"
   },
   "article": {
     "Abstract": "Abstrakt",
@@ -144,7 +147,6 @@
     "Down": "Nach unten",
     "Download": "Download",
     "Edit": "Bearbeiten",
-    "Edit Template": "Vorlage bearbeiten",
     "Error": "Error",
     "Exit": "Beenden",
     "Expire time": " Ablaufzeit",
@@ -156,7 +158,6 @@
     "Failed to connect to server": "Verbindung zum Server fehlgeschlagen",
     "Failed to decode audio data": "Audio-Daten decodieren fehlgeschlagen",
     "Failed to delete": "Löschen fehlgeschlagen",
-    "Failed to deploy": "Bereitstellung fehlgeschlagen",
     "Failed to get": "Abrufen fehlgeschlagen",
     "Failed to query record": "Abfrage von Aufzeichnungen fehlgeschlagen",
     "Failed to redirect": "Weiterleitung fehlgeschlagen",
@@ -187,8 +188,6 @@
     "Loading...": "Lade...",
     "Logging & Auditing": "Protokollierung & Auditing",
     "Machines": "Server",
-    "Manifests": "Manifeste",
-    "Manifests - Tooltip": "Kubernetes-Manifest-Dateien (YAML-Format)",
     "Menu": "Menü",
     "Message": "Nachricht",
     "Message - Tooltip": "Nachrichtenbenachrichtigungstemplate (HTML-Format), unterstützt Variablen wie ${taskName}",
@@ -204,7 +203,6 @@
     "Namespace - Tooltip": "Namespace",
     "Network": "Netzwerk",
     "Network - Tooltip": "Blockchain-Netzwerktyp",
-    "New Template": "Neue Vorlage",
     "No audio data was captured. Please try again": "Keine Audio-Daten erfasst. Bitte versuchen Sie es erneut",
     "No.": "Nr.",
     "Node": "Knoten",
@@ -276,7 +274,6 @@
     "Successfully committed": "Erfolgreich commit",
     "Successfully copied": "Erfolgreich kopiert",
     "Successfully deleted": "Erfolgreich gelöscht",
-    "Successfully deployed": "Erfolgreich bereitgestellt",
     "Successfully disliked": "Erfolgreich nicht gemocht",
     "Successfully downloaded": "Erfolgreich heruntergeladen",
     "Successfully liked": "Erfolgreich gemocht",
@@ -294,6 +291,8 @@
     "Tag": "Tag",
     "Tag - Tooltip": "Knoten-Kategorietags, getrennt durch Kommas",
     "Tasks": "Aufgaben",
+    "Template": "Vorlage",
+    "Template - Tooltip": "Die von der Anwendung verwendete Vorlage",
     "Templates": "Vorlagen",
     "Text": "Text",
     "Text - Tooltip": "Textinhalt",
@@ -636,6 +635,12 @@
     "Log - Tooltip": "Aufgabenerfüllungsprotokoll",
     "Question": "Frage",
     "Question - Tooltip": "Automatisch generierte vollständige Auftragsprompt"
+  },
+  "template": {
+    "Edit Template": "Vorlage bearbeiten",
+    "Manifests": "Manifeste",
+    "Manifests - Tooltip": "Kubernetes-Manifeste für die Vorlage",
+    "New Template": "Neue Vorlage"
   },
   "theme": {
     "Compact": "Compact",

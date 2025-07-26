@@ -1,7 +1,7 @@
 {
   "account": {
-    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Haz clic en el botón \"Mi Cuenta\" a continuación para acceder a tu página de configuración.",
-    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Haz clic en el botón \"Modificar contraseña...\" para cambiar tu contraseña. Luego cierra la página de configuración.",
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
     "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. Vuelve a esta página y actualízala presionando la tecla F5. Este mensaje de alerta debería desaparecer.",
     "4. If you encounter any issues, please contact your administrator.": "4. Si encuentras algún problema, comunícate con tu administrador.",
     "My Account": "Mi Cuenta",
@@ -14,11 +14,14 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "El sistema ha detectado que estás usando la contraseña predeterminada, que no es segura. Necesitas modificar tu contraseña inmediatamente. Aquí están las instrucciones"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Edit Application": "Editar aplicación",
+    "Failed": "Fallido",
+    "New Application": "Nueva aplicación",
+    "Not Deployed": "No desplegado",
+    "Parameters": "Parámetros",
+    "Parameters - Tooltip": "Parámetros de la aplicación",
+    "Pending": "Pendiente",
+    "Running": "En ejecución"
   },
   "article": {
     "Abstract": "Resumen",
@@ -144,7 +147,6 @@
     "Down": "Mover abajo",
     "Download": "Descargar",
     "Edit": "Editar",
-    "Edit Template": "Editar plantilla",
     "Error": "Error",
     "Exit": "Salir",
     "Expire time": "Tiempo de expiración",
@@ -156,7 +158,6 @@
     "Failed to connect to server": "Error al conectarse al servidor",
     "Failed to decode audio data": "Error al decodificar datos de audio",
     "Failed to delete": "Error al eliminar",
-    "Failed to deploy": "Error al implementar",
     "Failed to get": "Error al obtener",
     "Failed to query record": "Error al consultar registro",
     "Failed to redirect": "Error al redirigir",
@@ -187,8 +188,6 @@
     "Loading...": "Cargando...",
     "Logging & Auditing": "Registro & Auditoría",
     "Machines": "Hosts",
-    "Manifests": "Manifiestos",
-    "Manifests - Tooltip": "Archivos de manifiesto Kubernetes (formato YAML)",
     "Menu": "Menú",
     "Message": "Mensaje",
     "Message - Tooltip": "Plantilla de notificación de mensajes (formato HTML), soporta variables como ${taskName}",
@@ -204,7 +203,6 @@
     "Namespace - Tooltip": "Espacio de nombres",
     "Network": "Red",
     "Network - Tooltip": "Tipo de red blockchain",
-    "New Template": "Nueva plantilla",
     "No audio data was captured. Please try again": "No se capturaron datos de audio. Por favor, inténtalo de nuevo",
     "No.": "Núm.",
     "Node": "Nodo",
@@ -276,7 +274,6 @@
     "Successfully committed": "Confirmado con éxito",
     "Successfully copied": "Copiado con éxito",
     "Successfully deleted": "Eliminado con éxito",
-    "Successfully deployed": "Implementado con éxito",
     "Successfully disliked": "Dislike exitoso",
     "Successfully downloaded": "Descargado con éxito",
     "Successfully liked": "Like exitoso",
@@ -294,6 +291,8 @@
     "Tag": "Etiqueta",
     "Tag - Tooltip": "Etiquetas de clasificación de nodos, múltiples separadas por comas",
     "Tasks": "Tareas",
+    "Template": "Plantilla",
+    "Template - Tooltip": "La plantilla utilizada por la aplicación",
     "Templates": "Plantillas",
     "Text": "Texto",
     "Text - Tooltip": "Contenido de texto",
@@ -636,6 +635,12 @@
     "Log - Tooltip": "Registro de ejecución de tarea",
     "Question": "Pregunta",
     "Question - Tooltip": "Indicador de tarea completo generado automáticamente"
+  },
+  "template": {
+    "Edit Template": "Editar plantilla",
+    "Manifests": "Manifiestos",
+    "Manifests - Tooltip": "Manifiestos de Kubernetes para la plantilla",
+    "New Template": "Nueva plantilla"
   },
   "theme": {
     "Compact": "Compact",

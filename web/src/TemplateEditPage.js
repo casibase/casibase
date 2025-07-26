@@ -13,68 +13,47 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Divider, Input, Row, Space, Tag} from "antd";
+import {Button, Card, Col, Input, Row} from "antd";
 import * as TemplateBackend from "./backend/TemplateBackend";
-import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import moment from "moment/moment";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
+import TextArea from "antd/es/input/TextArea";
 require("codemirror/theme/material-darker.css");
-require("codemirror/mode/yaml/yaml");
-
-const {TextArea} = Input;
+require("codemirror/mode/javascript/javascript");
 
 class TemplateEditPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      templateOwner: props.match.params.organizationName,
       templateName: props.match.params.templateName,
       template: null,
-      organizations: [],
-      mode: props.location.mode !== undefined ? props.location.mode : "edit",
-      k8sStatus: null,
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getTemplate();
-    this.getK8sStatus();
   }
 
   getTemplate() {
-    TemplateBackend.getTemplate(this.props.account.owner, this.state.templateName)
+    TemplateBackend.getTemplate(this.props.account.name, this.state.templateName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
             template: res.data,
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get")} : ${res.msg}`);
-        }
-      });
-  }
-
-  getK8sStatus() {
-    TemplateBackend.getK8sStatus()
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            k8sStatus: res.data,
-          });
-        } else {
-          Setting.showMessage("error", i18next.t("general:Failed to connect to server"));
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
 
   parseTemplateField(key, value) {
-    if (["version"].includes(key)) {
-      return value;
+    if ([""].includes(key)) {
+      value = Setting.myParseInt(value);
     }
     return value;
   }
@@ -89,60 +68,16 @@ class TemplateEditPage extends React.Component {
     });
   }
 
-  newApplication() {
-    const randomName = Setting.getRandomName();
-    return {
-      owner: this.props.account.owner,
-      name: `app-${randomName}`,
-      createdTime: moment().format(),
-      displayName: `New Application - ${randomName}`,
-      template: this.state.template.name,
-      parameters: "",
-    };
-  }
-
-  // Application creation method
-  addApplicationFromTemplate = () => {
-    const newApp = this.newApplication();
-
-    ApplicationBackend.addApplication(newApp)
-      .then((res) => {
-        if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully added"));
-          this.props.history.push(`/applications/${newApp.name}`);
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
-        }
-      })
-      .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
-      });
-  };
-
   renderTemplate() {
-    const {k8sStatus} = this.state;
-    const k8sConnected = k8sStatus && k8sStatus.status === "Connected";
-
     return (
       <Card size="small" title={
         <div>
-          {this.state.mode === "add" ? i18next.t("general:New Template") : i18next.t("general:Edit Template")}&nbsp;&nbsp;&nbsp;&nbsp;
+          {i18next.t("template:Edit Template")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitTemplateEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitTemplateEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
-          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteTemplate()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Organization"), i18next.t("general:Organization - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.template.owner} onChange={e => {
-              this.updateTemplateField("owner", e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
@@ -194,72 +129,25 @@ class TemplateEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Manifests"), i18next.t("general:Manifests - Tooltip"))} :
+            {Setting.getLabel(i18next.t("template:Manifests"), i18next.t("template:Manifests - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <div style={{border: "1px solid #d9d9d9", borderRadius: "6px", overflow: "hidden"}}>
+            <div style={{height: "500px"}}>
               <CodeMirror
-                value={this.state.template.manifests || ""}
+                value={this.state.template.manifests}
                 options={{mode: "yaml", theme: "material-darker"}}
                 onBeforeChange={(editor, data, value) => {
                   this.updateTemplateField("manifests", value);
-                }}
-                editorDidMount={(editor) => {
-                  // Set editor height for manifests
-                  editor.setSize(null, "400px");
-                  editor.refresh();
                 }}
               />
             </div>
           </Col>
         </Row>
-        <Divider />
-
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel("Kubernetes Status", "Kubernetes connection status")} :
-          </Col>
-          <Col span={22} >
-            <Space>
-              <Tag color={k8sConnected ? "success" : "error"}>
-                {k8sStatus ? k8sStatus.status : "Loading..."}
-              </Tag>
-              <Button size="small" onClick={() => this.getK8sStatus()}>
-                {i18next.t("store:Refresh")}
-              </Button>
-              {k8sStatus && k8sStatus.message && (
-                <span style={{color: "#666", fontSize: "12px"}}>
-                  {k8sStatus.message}
-                </span>
-              )}
-            </Space>
-          </Col>
-        </Row>
-
-        {k8sConnected && this.state.template.manifests && (
-          <Row style={{marginTop: "20px"}} >
-            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-              {Setting.getLabel("Application Actions")} :
-            </Col>
-            <Col span={22} >
-              <Space>
-                <Button type="primary" onClick={this.addApplicationFromTemplate} disabled={!k8sConnected}>
-                  {i18next.t("general:Add")}
-                </Button>
-                <Button onClick={() => this.props.history.push("/applications")}>
-                  {i18next.t("general:View")}
-                </Button>
-              </Space>
-            </Col>
-          </Row>
-        )}
-
-        <Divider />
       </Card>
     );
   }
 
-  submitTemplateEdit(willExit) {
+  submitTemplateEdit(exitAfterSave) {
     const template = Setting.deepCopy(this.state.template);
     TemplateBackend.updateTemplate(this.state.template.owner, this.state.templateName, template)
       .then((res) => {
@@ -269,10 +157,11 @@ class TemplateEditPage extends React.Component {
             this.setState({
               templateName: this.state.template.name,
             });
-            if (willExit) {
+
+            if (exitAfterSave) {
               this.props.history.push("/templates");
             } else {
-              this.props.history.push(`/templates/${encodeURIComponent(this.state.template.name)}`);
+              this.props.history.push(`/templates/${this.state.template.name}`);
             }
           } else {
             Setting.showMessage("error", i18next.t("general:Failed to connect to server"));
@@ -287,20 +176,6 @@ class TemplateEditPage extends React.Component {
       });
   }
 
-  deleteTemplate() {
-    TemplateBackend.deleteTemplate(this.state.template)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.props.history.push("/templates");
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
-        }
-      })
-      .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
-      });
-  }
-
   render() {
     return (
       <div>
@@ -310,7 +185,6 @@ class TemplateEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitTemplateEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitTemplateEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
-          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.deleteTemplate()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       </div>
     );

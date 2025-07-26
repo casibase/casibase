@@ -14,14 +14,13 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table} from "antd";
-import BaseListPage from "./BaseListPage";
+import {Button, Popconfirm, Table, Tooltip} from "antd";
+import {DeleteOutlined} from "@ant-design/icons";
 import moment from "moment";
+import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as TemplateBackend from "./backend/TemplateBackend";
 import i18next from "i18next";
-import PopconfirmModal from "./modal/PopconfirmModal";
-import {DeleteOutlined} from "@ant-design/icons";
 
 class TemplateListPage extends BaseListPage {
   constructor(props) {
@@ -29,12 +28,12 @@ class TemplateListPage extends BaseListPage {
   }
 
   newTemplate() {
+    const randomName = Setting.getRandomName();
     return {
-      owner: this.props.account.owner,
-      name: `app-template-${Setting.getRandomName()}`,
+      owner: this.props.account.name,
+      name: `template_${randomName}`,
       createdTime: moment().format(),
-      updatedTime: moment().format(),
-      displayName: `New Template - ${Setting.getRandomName()}`,
+      displayName: `${i18next.t("template:New Template")} - ${randomName}`,
       description: "",
       version: "1.0.0",
       icon: "",
@@ -68,13 +67,13 @@ class TemplateListPage extends BaseListPage {
     return TemplateBackend.deleteTemplate(this.state.data[i]);
   };
 
-  deleteTemplate(i) {
-    TemplateBackend.deleteTemplate(this.state.data[i])
+  deleteTemplate(record) {
+    TemplateBackend.deleteTemplate(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deleted"));
           this.setState({
-            data: Setting.deleteRow(this.state.data, i),
+            data: this.state.data.filter((item) => item.name !== record.name),
             pagination: {
               ...this.state.pagination,
               total: this.state.pagination.total - 1,
@@ -92,30 +91,16 @@ class TemplateListPage extends BaseListPage {
   renderTable(templates) {
     const columns = [
       {
-        title: i18next.t("general:Organization"),
-        dataIndex: "owner",
-        key: "owner",
-        width: "110px",
-        sorter: true,
-        ...this.getColumnSearchProps("owner"),
-        render: (text, template, index) => {
-          return (
-            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/organizations/${text}`)}>
-              {text}
-            </a>
-          );
-        },
-      },
-      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "120px",
-        sorter: true,
-        ...this.getColumnSearchProps("name"),
+        width: "160px",
+        sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <Link to={`/templates/${record.name}`}>{text}</Link>
+            <Link to={`/templates/${text}`}>
+              {text}
+            </Link>
           );
         },
       },
@@ -123,7 +108,7 @@ class TemplateListPage extends BaseListPage {
         title: i18next.t("general:Display name"),
         dataIndex: "displayName",
         key: "displayName",
-        width: "150px",
+        width: "200px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
@@ -132,7 +117,7 @@ class TemplateListPage extends BaseListPage {
         key: "createdTime",
         width: "160px",
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
-        render: (text, template, index) => {
+        render: (text, record, index) => {
           return Setting.getFormattedDate(text);
         },
       },
@@ -140,25 +125,37 @@ class TemplateListPage extends BaseListPage {
         title: i18next.t("general:Description"),
         dataIndex: "description",
         key: "description",
+        width: "300px",
         sorter: (a, b) => a.description.localeCompare(b.description),
+        render: (text, record, index) => {
+          return (
+            <Tooltip placement="left" title={Setting.getShortText(text, 1000)}>
+              <div style={{maxWidth: "300px"}}>
+                {Setting.getShortText(text, 100)}
+              </div>
+            </Tooltip>
+          );
+        },
       },
       {
         title: i18next.t("general:Version"),
         dataIndex: "version",
         key: "version",
-        width: "80px",
+        width: "100px",
         sorter: (a, b) => a.version.localeCompare(b.version),
       },
       {
         title: i18next.t("general:Icon"),
         dataIndex: "icon",
         key: "icon",
-        width: "80px",
+        width: "100px",
+        sorter: (a, b) => a.icon.localeCompare(b.icon),
         render: (text, record, index) => {
-          return text ? (
-            <img src={text} alt="icon" style={{width: "20px", height: "20px"}} />
-          ) : (
-            <span>-</span>
+          if (text === "") {
+            return null;
+          }
+          return (
+            <img src={text} alt={text} style={{maxWidth: "50px", maxHeight: "50px"}} />
           );
         },
       },
@@ -166,22 +163,20 @@ class TemplateListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "200px",
+        width: "180px",
         fixed: (Setting.isMobile()) ? "false" : "right",
-        render: (text, template, index) => {
+        render: (text, record, index) => {
           return (
             <div>
-              <Button
-                style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
-                onClick={() => this.props.history.push(`/templates/${template.name}`)}
-              >{i18next.t("general:Edit")}
-              </Button>
-              <PopconfirmModal
-                disabled={template.owner !== this.props.account.owner}
-                title={i18next.t("general:Sure to delete") + `: ${template.name} ?`}
-                onConfirm={() => this.deleteTemplate(index)}
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/templates/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Popconfirm
+                title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
+                onConfirm={() => this.deleteTemplate(record)}
+                okText={i18next.t("general:OK")}
+                cancelText={i18next.t("general:Cancel")}
               >
-              </PopconfirmModal>
+                <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
+              </Popconfirm>
             </div>
           );
         },
@@ -189,7 +184,6 @@ class TemplateListPage extends BaseListPage {
     ];
 
     const paginationProps = {
-      pageSize: this.state.pagination.pageSize,
       total: this.state.pagination.total,
       showQuickJumper: true,
       showSizeChanger: true,
@@ -199,7 +193,7 @@ class TemplateListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={templates} rowKey={(template) => `${template.owner}/${template.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={templates} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Templates")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -221,8 +215,10 @@ class TemplateListPage extends BaseListPage {
   }
 
   fetch = (params = {}) => {
+    const field = params.searchedColumn, value = params.searchText;
+    const sortField = params.sortField, sortOrder = params.sortOrder;
     this.setState({loading: true});
-    TemplateBackend.getTemplates(this.props.account.owner)
+    TemplateBackend.getTemplates(this.props.account.name, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,
@@ -232,7 +228,7 @@ class TemplateListPage extends BaseListPage {
             data: res.data,
             pagination: {
               ...params.pagination,
-              total: res.data2 || res.data.length,
+              total: res.data2,
             },
             searchText: params.searchText,
             searchedColumn: params.searchedColumn,

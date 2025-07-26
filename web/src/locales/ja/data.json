@@ -14,11 +14,14 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "システムがデフォルトパスワードを使用していることを検出しました。これは安全ではありません。直ちにパスワードを変更する必要があります。以下は操作手順です"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Edit Application": "アプリケーションの編集",
+    "Failed": "失敗",
+    "New Application": "新規アプリケーション",
+    "Not Deployed": "未デプロイ",
+    "Parameters": "パラメーター",
+    "Parameters - Tooltip": "アプリケーションパラメーター",
+    "Pending": "保留中",
+    "Running": "実行中"
   },
   "article": {
     "Abstract": "概要",
@@ -144,7 +147,6 @@
     "Down": "下移動",
     "Download": "ダウンロード",
     "Edit": "編集",
-    "Edit Template": "テンプレートを編集",
     "Error": "Error",
     "Exit": "退出",
     "Expire time": "有効期限",
@@ -156,7 +158,6 @@
     "Failed to connect to server": "サーバーに接続できませんでした",
     "Failed to decode audio data": "オーディオデータのデコードに失敗しました",
     "Failed to delete": "削除に失敗しました",
-    "Failed to deploy": "デプロイに失敗しました",
     "Failed to get": "取得に失敗しました",
     "Failed to query record": "記録の照会に失敗しました",
     "Failed to redirect": "リダイレクトに失敗しました",
@@ -187,8 +188,6 @@
     "Loading...": "読み込み中...",
     "Logging & Auditing": "ログ & 監査",
     "Machines": "マシン",
-    "Manifests": "Manifests",
-    "Manifests - Tooltip": "Kubernetesマニフェストファイル（YAML形式）",
     "Menu": "メニュー",
     "Message": "メッセージ",
     "Message - Tooltip": "メッセージ通知テンプレート（HTML形式）、${taskName}のような変数をサポート",
@@ -204,7 +203,6 @@
     "Namespace - Tooltip": "名前空間",
     "Network": "ネットワーク",
     "Network - Tooltip": "ブロックチェーンネットワークタイプ",
-    "New Template": "新規テンプレート",
     "No audio data was captured. Please try again": "オーディオデータがキャプチャされませんでした。もう一度試してください",
     "No.": "番号",
     "Node": "ノード",
@@ -276,7 +274,6 @@
     "Successfully committed": "コミット成功",
     "Successfully copied": "コピー成功",
     "Successfully deleted": "削除成功",
-    "Successfully deployed": "デプロイに成功しました",
     "Successfully disliked": "不評価成功",
     "Successfully downloaded": "ダウンロード成功",
     "Successfully liked": "評価成功",
@@ -294,6 +291,8 @@
     "Tag": "タグ",
     "Tag - Tooltip": "ノード分類タグ、複数の場合はコンマで区切る",
     "Tasks": "タスク",
+    "Template": "テンプレート",
+    "Template - Tooltip": "アプリケーションが使用するテンプレート",
     "Templates": "テンプレート",
     "Text": "テキスト",
     "Text - Tooltip": "テキストコンテンツ",
@@ -636,6 +635,12 @@
     "Log - Tooltip": "タスク実行ログ",
     "Question": "問題",
     "Question - Tooltip": "自動生成された完全なタスクプロンプト"
+  },
+  "template": {
+    "Edit Template": "テンプレートの編集",
+    "Manifests": "マニフェスト",
+    "Manifests - Tooltip": "テンプレートのKubernetesマニフェスト",
+    "New Template": "新規テンプレート"
   },
   "theme": {
     "Compact": "Compact",

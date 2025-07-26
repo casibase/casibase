@@ -14,8 +14,8 @@
 
 import * as Setting from "../Setting";
 
-export function getTemplates(owner) {
-  return fetch(`${Setting.ServerUrl}/api/get-templates?owner=${owner}`, {
+export function getTemplates(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
+  return fetch(`${Setting.ServerUrl}/api/get-templates?owner=${owner}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
     method: "GET",
     credentials: "include",
     headers: {

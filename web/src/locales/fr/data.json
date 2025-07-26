@@ -1,7 +1,7 @@
 {
   "account": {
-    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Cliquez sur le bouton \"Mon Compte\" ci-dessous pour accéder à votre page de paramètres.",
-    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Cliquez sur le bouton \"Modifier le mot de passe...\" pour changer votre mot de passe. Puis fermez la page de paramètres.",
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
     "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. Revenez sur cette page et actualisez-la en appuyant sur la touche F5. Ce message d'alerte devrait disparaître.",
     "4. If you encounter any issues, please contact your administrator.": "4. Si vous rencontrez des problèmes, contactez votre administrateur.",
     "My Account": "Mon Compte",
@@ -14,11 +14,14 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "Le système a détecté que vous utilisez le mot de passe par défaut, qui n'est pas sécurisé. Vous devez modifier votre mot de passe immédiatement. Voici les instructions"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Edit Application": "Modifier l'application",
+    "Failed": "Échoué",
+    "New Application": "Nouvelle application",
+    "Not Deployed": "Non déployé",
+    "Parameters": "Paramètres",
+    "Parameters - Tooltip": "Paramètres de l'application",
+    "Pending": "En attente",
+    "Running": "En cours d'exécution"
   },
   "article": {
     "Abstract": "Résumé",
@@ -144,7 +147,6 @@
     "Down": "Descendre",
     "Download": "Télécharger",
     "Edit": "Éditer",
-    "Edit Template": "Éditer le modèle",
     "Error": "Error",
     "Exit": "Quitter",
     "Expire time": "Date d'expiration",
@@ -156,7 +158,6 @@
     "Failed to connect to server": "Échec de la connexion au serveur",
     "Failed to decode audio data": "Échec du décodage des données audio",
     "Failed to delete": "Échec de la suppression",
-    "Failed to deploy": "Échec du déploiement",
     "Failed to get": "Échec de la récupération",
     "Failed to query record": "Échec de la requête de l'enregistrement",
     "Failed to redirect": "Échec de la redirection",
@@ -187,8 +188,6 @@
     "Loading...": "Chargement...",
     "Logging & Auditing": "Journalisation & Audit",
     "Machines": "Hosts",
-    "Manifests": "Manifests",
-    "Manifests - Tooltip": "Fichiers de manifeste Kubernetes (format YAML)",
     "Menu": "Menu",
     "Message": "Message",
     "Message - Tooltip": "Modèle de notification (format HTML), prend en charge des variables comme ${taskName}",
@@ -204,7 +203,6 @@
     "Namespace - Tooltip": "Espace de noms",
     "Network": "Réseau",
     "Network - Tooltip": "Type de réseau blockchain",
-    "New Template": "Nouveau modèle",
     "No audio data was captured. Please try again": "Aucune donnée audio n'a été capturée. Veuillez réessayer",
     "No.": "N°",
     "Node": "Nœud",
@@ -276,7 +274,6 @@
     "Successfully committed": "Soumission réussie",
     "Successfully copied": "Copie réussie",
     "Successfully deleted": "Suppression réussie",
-    "Successfully deployed": "Déploiement réussi",
     "Successfully disliked": "Désagrément réussi",
     "Successfully downloaded": "Téléchargement réussi",
     "Successfully liked": "Agrément réussi",
@@ -294,6 +291,8 @@
     "Tag": "Étiquette",
     "Tag - Tooltip": "Étiquettes de classification des nœuds, séparées par des virgules",
     "Tasks": "Tâches",
+    "Template": "Modèle",
+    "Template - Tooltip": "Le modèle utilisé par l'application",
     "Templates": "Modèles",
     "Text": "Texte",
     "Text - Tooltip": "Contenu du texte",
@@ -636,6 +635,12 @@
     "Log - Tooltip": "Journal d'exécution de la tâche",
     "Question": "Question",
     "Question - Tooltip": "Invitation de tâche complète générée automatiquement"
+  },
+  "template": {
+    "Edit Template": "Modifier le modèle",
+    "Manifests": "Manifestes",
+    "Manifests - Tooltip": "Manifestes Kubernetes pour le modèle",
+    "New Template": "Nouveau modèle"
   },
   "theme": {
     "Compact": "Compact",
