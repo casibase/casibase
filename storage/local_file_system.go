@@ -86,6 +86,6 @@ func (p *LocalFileSystemStorageProvider) PutObject(user string, parent string, k
 	return fullPath, err
 }
 
-func (p *LocalFileSystemStorageProvider) DeleteObject(key string) error {
+func (p *LocalFileSystemStorageProvider) DeleteObject(key string, fileId string) error {
 	return os.Remove(filepath.Join(p.path, key))
 }

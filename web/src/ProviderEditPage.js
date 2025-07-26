@@ -478,7 +478,8 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
+          (this.state.provider.category === "Embedding" && ["Baidu Cloud", "Tencent Cloud"].includes(this.state.provider.type)) ||
+          (this.state.provider.category === "Storage" && this.state.provider.type !== "OpenAI File System") ||
           (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
           (this.state.provider.category === "Blockchain" && !["ChainMaker", "Ethereum"].includes(this.state.provider.type)) ||
           ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
@@ -612,18 +613,21 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") || (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker")) ? null : (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {this.getClientSecretLabel(this.state.provider)} :
-              </Col>
-              <Col span={22} >
-                <Input value={this.state.provider.clientSecret} onChange={e => {
-                  this.updateProviderField("clientSecret", e.target.value);
-                }} />
-              </Col>
-            </Row>
-          )
+          this.state.provider.type === "Dummy" ||
+          (this.state.provider.category === "Storage" && this.state.provider.type === "Local File System") ||
+          (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") ||
+          (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker") ? null : (
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {this.getClientSecretLabel(this.state.provider)} :
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.clientSecret} onChange={e => {
+                    this.updateProviderField("clientSecret", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+            )
         }
         {
           (this.state.provider.category === "Model" && this.state.provider.type === "Claude" && Setting.getThinkingModelMaxTokens(this.state.provider.subType) !== 0) ? (

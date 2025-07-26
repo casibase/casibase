@@ -72,7 +72,7 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 	}
 }
 
-func DeleteFile(storeId string, key string, isLeaf bool) (bool, error) {
+func DeleteFile(storeId string, key string, fileId string, isLeaf bool) (bool, error) {
 	store, err := GetStore(storeId)
 	if err != nil {
 		return false, err
@@ -87,7 +87,7 @@ func DeleteFile(storeId string, key string, isLeaf bool) (bool, error) {
 	}
 
 	if isLeaf {
-		err = storageProviderObj.DeleteObject(key)
+		err = storageProviderObj.DeleteObject(key, fileId)
 		if err != nil {
 			return false, err
 		}
@@ -98,7 +98,7 @@ func DeleteFile(storeId string, key string, isLeaf bool) (bool, error) {
 		}
 
 		for _, object := range objects {
-			err = storageProviderObj.DeleteObject(object.Key)
+			err = storageProviderObj.DeleteObject(object.Key, fileId)
 			if err != nil {
 				return false, err
 			}

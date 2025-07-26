@@ -119,6 +119,7 @@ func (c *ApiController) AddFile() {
 // @Description delete file
 // @Param store query string true "The store of the file"
 // @Param key query string true "The key of the file"
+// @Param fileId query string true "The file id"
 // @Param isLeaf query string true "if is leaf"
 // @Success 200 {object} controllers.Response The Response object
 // @router /delete-file [post]
@@ -130,9 +131,10 @@ func (c *ApiController) DeleteFile() {
 
 	storeId := c.Input().Get("store")
 	key := c.Input().Get("key")
+	fileId := c.Input().Get("fileId")
 	isLeaf := c.Input().Get("isLeaf") == "1"
 
-	res, err := object.DeleteFile(storeId, key, isLeaf)
+	res, err := object.DeleteFile(storeId, key, fileId, isLeaf)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

@@ -280,8 +280,16 @@ func GetDefaultKubernetesProvider() (*Provider, error) {
 	return nil, fmt.Errorf("no Kubernetes provider found")
 }
 
-func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
-	pProvider, err := storage.GetStorageProvider(p.Type, p.ClientId, p.Name)
+func (p *Provider) GetStorageProviderObj(mirrorProviderName string) (storage.StorageProvider, error) {
+	provider, err := getProvider(p.Owner, mirrorProviderName)
+	if err != nil {
+		return nil, err
+	}
+	mirrorProviderType := mirrorProviderName
+	if provider != nil {
+		mirrorProviderType = provider.Type
+	}
+	pProvider, err := storage.GetStorageProvider(p.Type, p.ClientId, p.ClientSecret, p.Name, mirrorProviderType)
 	if err != nil {
 		return nil, err
 	}
