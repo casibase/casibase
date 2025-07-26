@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -118,6 +119,8 @@ func GetRangeActivities(rangeType string, count int, user string, fieldName stri
 
 	var startDateTime time.Time
 
+	var failedLogs []string
+
 	switch rangeType {
 	case "Hour":
 		startDateTime = now.Truncate(time.Hour).Add(-time.Hour * time.Duration(count-1))
@@ -163,7 +166,8 @@ func GetRangeActivities(rangeType string, count int, user string, fieldName stri
 		if bucketIndex >= 0 && bucketIndex < count {
 			value, err := getTargetfieldValue(record, fieldName)
 			if err != nil {
-				return nil, err
+				failedLogs = append(failedLogs, fmt.Sprintf("name %s, field %s, error: %v", record.Name, fieldName, err))
+				continue
 			}
 			activities[bucketIndex].FieldCount[value] += 1
 		}
@@ -183,6 +187,10 @@ func GetRangeActivities(rangeType string, count int, user string, fieldName stri
 			dateLabel = startDateTime.AddDate(0, i, 0).Format("2006-01")
 		}
 		activity.Date = dateLabel
+	}
+
+	if len(failedLogs) > 0 {
+		return activities, fmt.Errorf("some logs failed to parse:\n%s", strings.Join(failedLogs, "\n"))
 	}
 
 	return activities, nil
