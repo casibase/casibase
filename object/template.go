@@ -29,7 +29,7 @@ type Template struct {
 	Description string `xorm:"varchar(255)" json:"description"`
 	Version     string `xorm:"varchar(50)" json:"version"`
 	Icon        string `xorm:"varchar(255)" json:"icon"`
-	Manifests   string `xorm:"mediumtext" json:"manifests"`
+	Manifest    string `xorm:"mediumtext" json:"manifest"`
 }
 
 func GetTemplates(owner string) ([]*Template, error) {

@@ -638,8 +638,8 @@
   },
   "template": {
     "Edit Template": "템플릿 편집",
-    "Manifests": "매니페스트",
-    "Manifests - Tooltip": "템플릿용 Kubernetes 매니페스트",
+    "Manifest": "매니페스트",
+    "Manifest - Tooltip": "템플릿용 Kubernetes 매니페스트",
     "New Template": "새 템플릿"
   },
   "theme": {

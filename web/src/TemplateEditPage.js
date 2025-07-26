@@ -15,8 +15,10 @@
 import React from "react";
 import {Button, Card, Col, Input, Row} from "antd";
 import * as TemplateBackend from "./backend/TemplateBackend";
+import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import StoreAvatarUploader from "./AvatarUpload";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -31,11 +33,13 @@ class TemplateEditPage extends React.Component {
       classes: props,
       templateName: props.match.params.templateName,
       template: null,
+      defaultStore: null,
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getTemplate();
+    this.getDefaultStore();
   }
 
   getTemplate() {
@@ -45,6 +49,22 @@ class TemplateEditPage extends React.Component {
           this.setState({
             template: res.data,
           });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getDefaultStore() {
+    StoreBackend.getStores(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          const defaultStore = res.data.find(store => store.isDefault);
+          if (defaultStore) {
+            this.setState({
+              defaultStore: defaultStore,
+            });
+          }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
@@ -122,22 +142,29 @@ class TemplateEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Icon"), i18next.t("general:Icon - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.template.icon} onChange={e => {
-              this.updateTemplateField("icon", e.target.value);
-            }} />
+            <StoreAvatarUploader
+              store={this.state.defaultStore}
+              imageUrl={this.state.template.icon}
+              onUpdate={(newUrl) => {
+                this.updateTemplateField("icon", newUrl);
+              }}
+              onUploadComplete={(newUrl) => {
+                this.submitTemplateEdit(false);
+              }}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("template:Manifests"), i18next.t("template:Manifests - Tooltip"))} :
+            {Setting.getLabel(i18next.t("template:Manifest"), i18next.t("template:Manifest - Tooltip"))} :
           </Col>
           <Col span={22} >
             <div style={{height: "500px"}}>
               <CodeMirror
-                value={this.state.template.manifests}
+                value={this.state.template.manifest}
                 options={{mode: "yaml", theme: "material-darker"}}
                 onBeforeChange={(editor, data, value) => {
-                  this.updateTemplateField("manifests", value);
+                  this.updateTemplateField("manifest", value);
                 }}
               />
             </div>

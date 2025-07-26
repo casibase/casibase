@@ -638,8 +638,8 @@
   },
   "template": {
     "Edit Template": "Edit Template",
-    "Manifests": "Manifests",
-    "Manifests - Tooltip": "Kubernetes manifests for the template",
+    "Manifest": "Manifests",
+    "Manifest - Tooltip": "Kubernetes manifests for the template",
     "New Template": "New Template"
   },
   "theme": {

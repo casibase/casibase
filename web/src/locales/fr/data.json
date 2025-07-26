@@ -638,8 +638,8 @@
   },
   "template": {
     "Edit Template": "Modifier le modèle",
-    "Manifests": "Manifestes",
-    "Manifests - Tooltip": "Manifestes Kubernetes pour le modèle",
+    "Manifest": "Manifestes",
+    "Manifest - Tooltip": "Manifestes Kubernetes pour le modèle",
     "New Template": "Nouveau modèle"
   },
   "theme": {

@@ -19,8 +19,12 @@ import i18next from "i18next";
 import * as FileBackend from "./backend/FileBackend";
 
 const StoreAvatarUploader = (props) => {
-  const {store, onUpdate, onUploadComplete} = props;
+  const {store, onUpdate, onUploadComplete, imageUrl} = props;
   const [loading, setLoading] = useState(false);
+  if (!store) {
+    return null;
+  }
+  const currentImageUrl = imageUrl || store.avatar;
 
   const fileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -72,7 +76,7 @@ const StoreAvatarUploader = (props) => {
     <div>
       <Row>
         <Col span={24}>
-          <Input value={store.avatar || ""} onChange={e => onUpdate(e.target.value)} />
+          <Input value={currentImageUrl || ""} onChange={e => onUpdate(e.target.value)} />
         </Col>
       </Row>
 
@@ -80,8 +84,8 @@ const StoreAvatarUploader = (props) => {
         <Col span={24}>
           <Space direction="vertical" align="center">
             {
-              store.avatar && (
-                <Image src={store.avatar} alt="avatar" width={150} height={150} style={{objectFit: "cover"}}
+              currentImageUrl && (
+                <Image src={currentImageUrl} alt="avatar" width={150} height={150} style={{objectFit: "cover"}}
                   preview={{
                     mask: i18next.t("general:Preview"),
                   }}

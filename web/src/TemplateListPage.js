@@ -29,6 +29,26 @@ class TemplateListPage extends BaseListPage {
 
   newTemplate() {
     const randomName = Setting.getRandomName();
+    const defaultManifest = `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80`;
+
     return {
       owner: this.props.account.name,
       name: `template_${randomName}`,
@@ -36,8 +56,8 @@ class TemplateListPage extends BaseListPage {
       displayName: `${i18next.t("template:New Template")} - ${randomName}`,
       description: "",
       version: "1.0.0",
-      icon: "",
-      manifests: "",
+      icon: Setting.getDefaultAiAvatar(),
+      manifest: defaultManifest,
     };
   }
 
@@ -148,6 +168,7 @@ class TemplateListPage extends BaseListPage {
         title: i18next.t("general:Icon"),
         dataIndex: "icon",
         key: "icon",
+        align: "center",
         width: "100px",
         sorter: (a, b) => a.icon.localeCompare(b.icon),
         render: (text, record, index) => {
