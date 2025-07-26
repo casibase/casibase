@@ -139,8 +139,9 @@ func AddApplication(application *Application) (bool, error) {
 func DeleteApplication(owner, name string) (bool, error) {
 	// First, delete the deployment if it exists
 	go func() {
-		if err := ensureK8sClient(); err == nil && k8sClient.connected {
-			_, err = UndeployApplication(owner, name)
+		_, err := UndeployApplication(owner, name)
+		if err != nil {
+			return
 		}
 	}()
 
