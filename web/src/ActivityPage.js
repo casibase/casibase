@@ -26,7 +26,7 @@ const {Option} = Select;
 class ActivityPage extends BaseListPage {
   constructor(props) {
     super(props);
-    this.subPieCharts = ["client_ip", "language", "response"],
+    this.subPieCharts = ["unit", "section", "response"],
     this.state = {
       classes: props,
       activities: null,

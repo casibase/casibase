@@ -63,6 +63,9 @@ type Record struct {
 
 	IsTriggered bool `json:"isTriggered"`
 	NeedCommit  bool `json:"needCommit"`
+
+	Unit    string `xorm:"varchar(100)" json:"unit"`
+	Section string `xorm:"varchar(100)" json:"section"`
 }
 
 type Response struct {
@@ -194,6 +197,12 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	}
 	languageCode := conf.GetLanguage(language)
 
+	// get location info from client ip
+	locationInfo, err := util.FindMaxmind(ip)
+	if err != nil {
+		return nil, err
+	}
+
 	record := Record{
 		Name:        util.GenerateId(),
 		CreatedTime: util.GetCurrentTime(),
@@ -206,6 +215,8 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 		Object:      object,
 		Response:    fmt.Sprintf("{\"status\":\"%s\",\"msg\":\"%s\"}", resp.Status, resp.Msg),
 		IsTriggered: false,
+		Unit:        locationInfo.Region,
+		Section:     locationInfo.City,
 	}
 	return &record, nil
 }
