@@ -14,11 +14,22 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "システムがデフォルトパスワードを使用していることを検出しました。これは安全ではありません。直ちにパスワードを変更する必要があります。以下は操作手順です"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Deploy": "デプロイ",
+    "Deployment Actions": "デプロイ操作",
+    "Deployment Actions - Tooltip": "アプリケーションをデプロイまたは削除します",
+    "Deployment Status": "デプロイ状況",
+    "Deployment Status - Tooltip": "現在のデプロイ状況",
+    "Deployment deleted": "デプロイは削除されました",
+    "Deployment in progress": "デプロイ中",
+    "Edit Application": "アプリケーションの編集",
+    "Kubernetes Status": "Kubernetes ステータス",
+    "Kubernetes Status - Tooltip": "アプリケーションがKubernetesクラスターに正常に接続されているかを示します。すべてのデプロイ操作には、正常な接続が必要です。",
+    "New Application": "新規アプリケーション",
+    "Parameters": "パラメーター",
+    "Parameters - Tooltip": "YAML形式のデプロイパラメーター",
+    "Please select a template": "テンプレートを選択してください",
+    "Redeploy": "再デプロイ",
+    "Undeploy": "アンデプロイ"
   },
   "article": {
     "Abstract": "概要",
@@ -295,6 +306,7 @@
     "Tag - Tooltip": "ノード分類タグ、複数の場合はコンマで区切る",
     "Tasks": "タスク",
     "Templates": "テンプレート",
+    "Templates - Tooltip": "アプリケーションに使用するテンプレート",
     "Text": "テキスト",
     "Text - Tooltip": "テキストコンテンツ",
     "Text2": "テキスト2",
@@ -636,6 +648,10 @@
     "Log - Tooltip": "タスク実行ログ",
     "Question": "問題",
     "Question - Tooltip": "自動生成された完全なタスクプロンプト"
+  },
+  "template": {
+    "Application Actions": "アプリケーション操作",
+    "Application Actions - Tooltip": "このテンプレートからアプリケーションを作成"
   },
   "theme": {
     "Compact": "Compact",

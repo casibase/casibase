@@ -14,11 +14,22 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "Das System hat erkannt, dass Sie das Standardpasswort verwenden, das nicht sicher ist. Sie müssen Ihr Passwort sofort ändern. Hier sind die Anweisungen"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Deploy": "Bereitstellen",
+    "Deployment Actions": "Bereitstellungsaktionen",
+    "Deployment Actions - Tooltip": "Die Anwendung bereitstellen oder löschen",
+    "Deployment Status": "Bereitstellungsstatus",
+    "Deployment Status - Tooltip": "Aktueller Bereitstellungsstatus",
+    "Deployment deleted": "Bereitstellung gelöscht",
+    "Deployment in progress": "Bereitstellung läuft",
+    "Edit Application": "Anwendung bearbeiten",
+    "Kubernetes Status": "Kubernetes-Status",
+    "Kubernetes Status - Tooltip": "Zeigt an, ob die Anwendung erfolgreich mit dem Kubernetes-Cluster verbunden ist. Eine erfolgreiche Verbindung ist für alle Bereitstellungsaktionen erforderlich.",
+    "New Application": "Neue Anwendung",
+    "Parameters": "Parameter",
+    "Parameters - Tooltip": "Bereitstellungsparameter im YAML-Format",
+    "Please select a template": "Bitte wählen Sie eine Vorlage aus",
+    "Redeploy": "Erneut bereitstellen",
+    "Undeploy": "Bereitstellung aufheben"
   },
   "article": {
     "Abstract": "Abstrakt",
@@ -295,6 +306,7 @@
     "Tag - Tooltip": "Knoten-Kategorietags, getrennt durch Kommas",
     "Tasks": "Aufgaben",
     "Templates": "Vorlagen",
+    "Templates - Tooltip": "Vorlage, die für die Anwendung verwendet werden soll",
     "Text": "Text",
     "Text - Tooltip": "Textinhalt",
     "Text2": "Text2",
@@ -636,6 +648,10 @@
     "Log - Tooltip": "Aufgabenerfüllungsprotokoll",
     "Question": "Frage",
     "Question - Tooltip": "Automatisch generierte vollständige Auftragsprompt"
+  },
+  "template": {
+    "Application Actions": "Anwendungsaktionen",
+    "Application Actions - Tooltip": "Anwendung aus dieser Vorlage erstellen"
   },
   "theme": {
     "Compact": "Compact",

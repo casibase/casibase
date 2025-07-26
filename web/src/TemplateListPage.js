@@ -29,12 +29,13 @@ class TemplateListPage extends BaseListPage {
   }
 
   newTemplate() {
+    const randomName = Setting.getRandomName();
     return {
       owner: this.props.account.owner,
-      name: `app-template-${Setting.getRandomName()}`,
+      name: `template-${randomName}`,
       createdTime: moment().format(),
       updatedTime: moment().format(),
-      displayName: `New Template - ${Setting.getRandomName()}`,
+      displayName: `New Template - ${randomName}`,
       description: "",
       version: "1.0.0",
       icon: "",
@@ -178,7 +179,7 @@ class TemplateListPage extends BaseListPage {
               </Button>
               <PopconfirmModal
                 disabled={template.owner !== this.props.account.owner}
-                title={i18next.t("general:Sure to delete") + `: ${template.name} ?`}
+                title={`${i18next.t("general:Sure to delete")}: ${template.name} ?`}
                 onConfirm={() => this.deleteTemplate(index)}
               >
               </PopconfirmModal>

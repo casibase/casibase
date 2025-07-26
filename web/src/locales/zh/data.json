@@ -15,10 +15,21 @@
   },
   "application": {
     "Deploy": "部署",
+    "Deployment Actions": "部署操作",
+    "Deployment Actions - Tooltip": "部署或删除此应用",
+    "Deployment Status": "部署状态",
+    "Deployment Status - Tooltip": "当前部署状态",
+    "Deployment deleted": "部署已删除",
+    "Deployment in progress": "部署进行中",
     "Edit Application": "编辑应用",
+    "Kubernetes Status": "Kubernetes 状态",
+    "Kubernetes Status - Tooltip": "显示应用与 Kubernetes 集群的连接状态。成功连接是所有部署操作的前提。",
     "New Application": "新建应用",
+    "Parameters": "参数",
+    "Parameters - Tooltip": "以 YAML 格式定义的部署参数",
+    "Please select a template": "请选择一个模板",
     "Redeploy": "重新部署",
-    "Undeploy": "卸载"
+    "Undeploy": "取消部署"
   },
   "article": {
     "Abstract": "摘要",
@@ -295,6 +306,7 @@
     "Tag - Tooltip": "节点分类标签，多个用逗号分隔",
     "Tasks": "任务",
     "Templates": "模板",
+    "Templates - Tooltip": "用于此应用的模板",
     "Text": "文本",
     "Text - Tooltip": "文本内容",
     "Text2": "文本2",
@@ -636,6 +648,10 @@
     "Log - Tooltip": "任务执行日志",
     "Question": "问题",
     "Question - Tooltip": "自动生成的完整任务提示"
+  },
+  "template": {
+    "Application Actions": "应用操作",
+    "Application Actions - Tooltip": "从此模板创建应用"
   },
   "theme": {
     "Compact": "紧凑",

@@ -14,11 +14,22 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "Sistem telah mendeteksi bahwa Anda menggunakan kata sandi default, yang tidak aman. Anda perlu mengubah kata sandi Anda segera. Berikut adalah petunjuknya"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Deploy": "Terapkan",
+    "Deployment Actions": "Tindakan Penerapan",
+    "Deployment Actions - Tooltip": "Terapkan atau hapus aplikasi",
+    "Deployment Status": "Status Penerapan",
+    "Deployment Status - Tooltip": "Status penerapan saat ini",
+    "Deployment deleted": "Penerapan dihapus",
+    "Deployment in progress": "Penerapan sedang berlangsung",
+    "Edit Application": "Edit Aplikasi",
+    "Kubernetes Status": "Status Kubernetes",
+    "Kubernetes Status - Tooltip": "Menunjukkan apakah aplikasi berhasil terhubung ke klaster Kubernetes. Koneksi yang sukses diperlukan untuk semua tindakan penerapan.",
+    "New Application": "Aplikasi Baru",
+    "Parameters": "Parameter",
+    "Parameters - Tooltip": "Parameter penerapan dalam format YAML",
+    "Please select a template": "Silakan pilih templat",
+    "Redeploy": "Terapkan Ulang",
+    "Undeploy": "Batalkan Penerapan"
   },
   "article": {
     "Abstract": "Abstrak",
@@ -295,6 +306,7 @@
     "Tag - Tooltip": "Label kategori node, beberapa dipisahkan dengan koma",
     "Tasks": "Tugas",
     "Templates": "Template",
+    "Templates - Tooltip": "Templat untuk digunakan pada aplikasi",
     "Text": "Teks",
     "Text - Tooltip": "Isi teks",
     "Text2": "Teks2",
@@ -636,6 +648,10 @@
     "Log - Tooltip": "Catatan eksekusi tugas",
     "Question": "Pertanyaan",
     "Question - Tooltip": "Pemicu tugas lengkap yang dihasilkan otomatis"
+  },
+  "template": {
+    "Application Actions": "Tindakan Aplikasi",
+    "Application Actions - Tooltip": "Buat aplikasi dari templat ini"
   },
   "theme": {
     "Compact": "Compact",

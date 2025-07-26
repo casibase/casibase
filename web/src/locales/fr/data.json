@@ -14,11 +14,22 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "Le système a détecté que vous utilisez le mot de passe par défaut, qui n'est pas sécurisé. Vous devez modifier votre mot de passe immédiatement. Voici les instructions"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Deploy": "Déployer",
+    "Deployment Actions": "Actions de déploiement",
+    "Deployment Actions - Tooltip": "Déployer ou supprimer l'application",
+    "Deployment Status": "État du déploiement",
+    "Deployment Status - Tooltip": "État actuel du déploiement",
+    "Deployment deleted": "Déploiement supprimé",
+    "Deployment in progress": "Déploiement en cours",
+    "Edit Application": "Modifier l'application",
+    "Kubernetes Status": "Statut Kubernetes",
+    "Kubernetes Status - Tooltip": "Indique si l'application est connectée avec succès au cluster Kubernetes. Une connexion réussie est nécessaire pour toutes les actions de déploiement.",
+    "New Application": "Nouvelle application",
+    "Parameters": "Paramètres",
+    "Parameters - Tooltip": "Paramètres de déploiement au format YAML",
+    "Please select a template": "Veuillez sélectionner un modèle",
+    "Redeploy": "Redéployer",
+    "Undeploy": "Annuler le déploiement"
   },
   "article": {
     "Abstract": "Résumé",
@@ -295,6 +306,7 @@
     "Tag - Tooltip": "Étiquettes de classification des nœuds, séparées par des virgules",
     "Tasks": "Tâches",
     "Templates": "Modèles",
+    "Templates - Tooltip": "Modèle à utiliser pour l'application",
     "Text": "Texte",
     "Text - Tooltip": "Contenu du texte",
     "Text2": "Texte2",
@@ -636,6 +648,10 @@
     "Log - Tooltip": "Journal d'exécution de la tâche",
     "Question": "Question",
     "Question - Tooltip": "Invitation de tâche complète générée automatiquement"
+  },
+  "template": {
+    "Application Actions": "Actions de l'application",
+    "Application Actions - Tooltip": "Créer une application à partir de ce modèle"
   },
   "theme": {
     "Compact": "Compact",

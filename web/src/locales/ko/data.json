@@ -14,11 +14,22 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "시스템에서 기본 비밀번호를 사용하고 있다는 것을 감지했습니다. 이는 보안상 위험합니다. 즉시 비밀번호를 변경해야 합니다. 다음은 지침입니다"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Deploy": "배포",
+    "Deployment Actions": "배포 작업",
+    "Deployment Actions - Tooltip": "애플리케이션 배포 또는 삭제",
+    "Deployment Status": "배포 상태",
+    "Deployment Status - Tooltip": "현재 배포 상태",
+    "Deployment deleted": "배포가 삭제됨",
+    "Deployment in progress": "배포 진행 중",
+    "Edit Application": "애플리케이션 편집",
+    "Kubernetes Status": "Kubernetes 상태",
+    "Kubernetes Status - Tooltip": "애플리케이션이 Kubernetes 클러스터에 성공적으로 연결되었는지 여부를 나타냅니다. 모든 배포 작업을 위해서는 성공적인 연결이 필요합니다.",
+    "New Application": "새 애플리케이션",
+    "Parameters": "매개변수",
+    "Parameters - Tooltip": "YAML 형식의 배포 매개변수",
+    "Please select a template": "템플릿을 선택하십시오",
+    "Redeploy": "재배포",
+    "Undeploy": "배포 취소"
   },
   "article": {
     "Abstract": "요약",
@@ -295,6 +306,7 @@
     "Tag - Tooltip": "노드 분류 태그, 여러 개는 콤마로 구분",
     "Tasks": "태스크",
     "Templates": "템플릿",
+    "Templates - Tooltip": "애플리케이션에 사용할 템플릿",
     "Text": "텍스트",
     "Text - Tooltip": "텍스트 내용",
     "Text2": "텍스트2",
@@ -636,6 +648,10 @@
     "Log - Tooltip": "태스크 실행 로그",
     "Question": "문제",
     "Question - Tooltip": "자동으로 생성된 완전한 태스크 프롬프트"
+  },
+  "template": {
+    "Application Actions": "애플리케이션 작업",
+    "Application Actions - Tooltip": "이 템플릿으로 애플리케이션 생성"
   },
   "theme": {
     "Compact": "Compact",

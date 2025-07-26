@@ -14,11 +14,22 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "Система обнаружила, что вы используете стандартный пароль, который небезопасен. Необходимо немедленно изменить пароль. Вот инструкции"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Deploy": "Развернуть",
+    "Deployment Actions": "Действия по развертыванию",
+    "Deployment Actions - Tooltip": "Развернуть или удалить приложение",
+    "Deployment Status": "Статус развертывания",
+    "Deployment Status - Tooltip": "Текущий статус развертывания",
+    "Deployment deleted": "Развертывание удалено",
+    "Deployment in progress": "Идет развертывание",
+    "Edit Application": "Редактировать приложение",
+    "Kubernetes Status": "Статус Kubernetes",
+    "Kubernetes Status - Tooltip": "Показывает, успешно ли приложение подключено к кластеру Kubernetes. Успешное подключение необходимо для всех действий по развертыванию.",
+    "New Application": "Новое приложение",
+    "Parameters": "Параметры",
+    "Parameters - Tooltip": "Параметры развертывания в формате YAML",
+    "Please select a template": "Пожалуйста, выберите шаблон",
+    "Redeploy": "Повторно развернуть",
+    "Undeploy": "Отменить развертывание"
   },
   "article": {
     "Abstract": "Аннотация",
@@ -295,6 +306,7 @@
     "Tag - Tooltip": "Метки классификации узлов, несколько разделяются запятой",
     "Tasks": "Задачи",
     "Templates": "Шаблоны",
+    "Templates - Tooltip": "Шаблон для использования в приложении",
     "Text": "Текст",
     "Text - Tooltip": "Содержание текста",
     "Text2": "Текст 2",
@@ -636,6 +648,10 @@
     "Log - Tooltip": "Журнал выполнения задачи",
     "Question": "Вопрос",
     "Question - Tooltip": "Автоматически сгенерированная полная подсказка задачи"
+  },
+  "template": {
+    "Application Actions": "Действия с приложением",
+    "Application Actions - Tooltip": "Создать приложение из этого шаблона"
   },
   "theme": {
     "Compact": "Compact",

@@ -15,8 +15,19 @@
   },
   "application": {
     "Deploy": "Deploy",
+    "Deployment Actions": "Deployment Actions",
+    "Deployment Actions - Tooltip": "Deploy or delete the application",
+    "Deployment Status": "Deployment Status",
+    "Deployment Status - Tooltip": "Current deployment status",
+    "Deployment deleted": "Deployment deleted",
+    "Deployment in progress": "Deployment in progress",
     "Edit Application": "Edit Application",
+    "Kubernetes Status": "Kubernetes Status",
+    "Kubernetes Status - Tooltip": "Kubernetes connection status",
     "New Application": "New Application",
+    "Parameters": "Parameters",
+    "Parameters - Tooltip": "Deployment parameters in YAML format",
+    "Please select a template": "Please select a template",
     "Redeploy": "Redeploy",
     "Undeploy": "Undeploy"
   },
@@ -295,6 +306,7 @@
     "Tag - Tooltip": "Classification tags (comma-separated)",
     "Tasks": "Tasks",
     "Templates": "Templates",
+    "Templates - Tooltip": "Template to use for application",
     "Text": "Text",
     "Text - Tooltip": "Text content",
     "Text2": "Text2",
@@ -636,6 +648,10 @@
     "Log - Tooltip": "Technical execution log",
     "Question": "Question",
     "Question - Tooltip": "Dynamically generated task prompt"
+  },
+  "template": {
+    "Application Actions": "Application Actions",
+    "Application Actions - Tooltip": "Create application from this template"
   },
   "theme": {
     "Compact": "Compact",

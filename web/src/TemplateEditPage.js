@@ -217,12 +217,12 @@ class TemplateEditPage extends React.Component {
 
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel("Kubernetes Status", "Kubernetes connection status")} :
+            {Setting.getLabel(i18next.t("application:Kubernetes Status"), i18next.t("application:Kubernetes Status - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Space>
               <Tag color={k8sConnected ? "success" : "error"}>
-                {k8sStatus ? k8sStatus.status : "Loading..."}
+                {k8sStatus ? k8sStatus.status : i18next.t("general:Loading...")}
               </Tag>
               <Button size="small" onClick={() => this.getK8sStatus()}>
                 {i18next.t("store:Refresh")}
@@ -239,7 +239,7 @@ class TemplateEditPage extends React.Component {
         {k8sConnected && this.state.template.manifests && (
           <Row style={{marginTop: "20px"}} >
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-              {Setting.getLabel("Application Actions")} :
+              {Setting.getLabel(i18next.t("template:Application Actions"), i18next.t("template:Application Actions - Tooltip"))} :
             </Col>
             <Col span={22} >
               <Space>

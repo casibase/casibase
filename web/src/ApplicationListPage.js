@@ -64,7 +64,7 @@ class ApplicationListPage extends BaseListPage {
   addApplication = () => {
     // Ensure we have templates available
     if (this.state.templates.length === 0) {
-      Setting.showMessage("error", "No templates available. Please create a template first.");
+      Setting.showMessage("error", i18next.t("application:Please select a template"));
       return;
     }
 
@@ -122,7 +122,7 @@ class ApplicationListPage extends BaseListPage {
           // Update the application status locally
           const updatedData = this.state.data.map(app =>
             app.owner === application.owner && app.name === application.name
-              ? {...app, status: "Pending", message: "Deployment in progress..."}
+              ? {...app, status: "Pending", message: i18next.t("application:Deployment in progress")}
               : app
           );
           this.setState({data: updatedData});
@@ -151,7 +151,7 @@ class ApplicationListPage extends BaseListPage {
           // Update the application status locally
           const updatedData = this.state.data.map(app =>
             app.owner === application.owner && app.name === application.name
-              ? {...app, status: "Not Deployed", message: "Deployment deleted"}
+              ? {...app, status: "Not Deployed", message: i18next.t("application:Deployment deleted")}
               : app
           );
           this.setState({data: updatedData});
@@ -228,7 +228,7 @@ class ApplicationListPage extends BaseListPage {
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
-        title: "Template",
+        title: i18next.t("general:Templates"),
         dataIndex: "template",
         key: "template",
         width: "120px",
@@ -240,7 +240,7 @@ class ApplicationListPage extends BaseListPage {
         },
       },
       {
-        title: "Status",
+        title: i18next.t("general:Status"),
         dataIndex: "status",
         key: "status",
         width: "120px",
@@ -254,7 +254,7 @@ class ApplicationListPage extends BaseListPage {
         },
       },
       {
-        title: "Message",
+        title: i18next.t("general:Message"),
         dataIndex: "message",
         key: "message",
         ellipsis: true,
@@ -301,7 +301,7 @@ class ApplicationListPage extends BaseListPage {
                 </Space>
               )}
 
-              <PopconfirmModal disabled={application.owner !== this.props.account.owner} title={i18next.t("general:Sure to delete") + `: ${application.name} ?`} onConfirm={() => this.deleteApplication(index)} />
+              <PopconfirmModal disabled={application.owner !== this.props.account.owner} title={`${i18next.t("general:Sure to delete")}: ${application.name} ?`} onConfirm={() => this.deleteApplication(index)} />
             </Space>
           );
         },
@@ -321,9 +321,9 @@ class ApplicationListPage extends BaseListPage {
       <div>
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={applications} rowKey={(application) => `${application.owner}/${application.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps} title={() => (
           <div>
-                    Applications&nbsp;&nbsp;&nbsp;&nbsp;
+            {i18next.t("general:Applications")}&nbsp;&nbsp;&nbsp;&nbsp;
             <Button type="primary" size="small" onClick={this.addApplication}>
-                      Add
+              {i18next.t("general:Add")}
             </Button>
             {this.state.selectedRowKeys.length > 0 && (
               <Popconfirm

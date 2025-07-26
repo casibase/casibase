@@ -121,7 +121,7 @@ class ApplicationEditPage extends React.Component {
 
   deployApplication() {
     if (!this.state.application.template) {
-      Setting.showMessage("error", "Please select a template");
+      Setting.showMessage("error", i18next.t("application:Please select a template"));
       return;
     }
 
@@ -140,11 +140,11 @@ class ApplicationEditPage extends React.Component {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deployed"));
           this.setState({
-            deploymentStatus: {status: "Pending", message: "Deployment in progress..."},
+            deploymentStatus: {status: "Pending", message: i18next.t("application:Deployment in progress")},
           });
           // Update application status
           this.updateApplicationField("status", "Pending");
-          this.updateApplicationField("message", "Deployment in progress...");
+          this.updateApplicationField("message", i18next.t("application:Deployment in progress"));
 
           setTimeout(() => {
             this.getDeploymentStatus();
@@ -194,11 +194,11 @@ class ApplicationEditPage extends React.Component {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deleted"));
           this.setState({
-            deploymentStatus: {status: "Not Deployed", message: "Deployment deleted"},
+            deploymentStatus: {status: "Not Deployed", message: i18next.t("application:Deployment deleted")},
           });
           // Update application status
           this.updateApplicationField("status", "Not Deployed");
-          this.updateApplicationField("message", "Deployment deleted");
+          this.updateApplicationField("message", i18next.t("application:Deployment deleted"));
 
           setTimeout(() => {
             this.getDeploymentStatus();
@@ -229,7 +229,7 @@ class ApplicationEditPage extends React.Component {
     const {deploymentStatus} = this.state;
 
     if (!deploymentStatus) {
-      return <Tag color="default">Loading...</Tag>;
+      return <Tag color="default">{i18next.t("general:Loading...")}</Tag>;
     }
 
     return (
@@ -300,7 +300,7 @@ class ApplicationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel("Template", "Template to use for deployment")} :
+            {Setting.getLabel(i18next.t("general:Templates"), i18next.t("general:Templates - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select
@@ -309,7 +309,6 @@ class ApplicationEditPage extends React.Component {
               onChange={value => {
                 this.updateApplicationField("template", value);
               }}
-              placeholder="Select a template"
             >
               {this.state.templates.map(template => (
                 <Select.Option key={template.name} value={template.name}>
@@ -321,7 +320,7 @@ class ApplicationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel("Parameters", "Deployment parameters in YAML/JSON format")} :
+            {Setting.getLabel(i18next.t("application:Parameters"), i18next.t("application:Parameters - Tooltip"))} :
           </Col>
           <Col span={22} >
             <div style={{border: "1px solid #d9d9d9", borderRadius: "6px", overflow: "hidden"}}>
@@ -342,7 +341,7 @@ class ApplicationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel("Namespace", "Kubernetes namespace")} :
+            {Setting.getLabel(i18next.t("general:Namespace"), i18next.t("general:Namespace - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.application.namespace} disabled />
@@ -353,12 +352,12 @@ class ApplicationEditPage extends React.Component {
 
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel("Kubernetes Status", "Kubernetes connection status")} :
+            {Setting.getLabel(i18next.t("application:Kubernetes Status"), i18next.t("application:Kubernetes Status - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Space>
               <Tag color={k8sConnected ? "success" : "error"}>
-                {k8sStatus ? k8sStatus.status : "Loading..."}
+                {k8sStatus ? k8sStatus.status : i18next.t("general:Loading...")}
               </Tag>
               {k8sStatus && k8sStatus.message && (
                 <span style={{color: "#666", fontSize: "12px"}}>
@@ -376,7 +375,7 @@ class ApplicationEditPage extends React.Component {
           <>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel("Deployment Status", "Current deployment status")} :
+                {Setting.getLabel(i18next.t("application:Deployment Status"), i18next.t("application:Deployment Status - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Space>
@@ -390,7 +389,7 @@ class ApplicationEditPage extends React.Component {
 
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel("Deployment Actions", "Deploy or delete the application")} :
+                {Setting.getLabel(i18next.t("application:Deployment Actions"), i18next.t("application:Deployment Actions - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Space>

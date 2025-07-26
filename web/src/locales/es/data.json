@@ -14,11 +14,22 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "El sistema ha detectado que estás usando la contraseña predeterminada, que no es segura. Necesitas modificar tu contraseña inmediatamente. Aquí están las instrucciones"
   },
   "application": {
-    "Deploy": "Deploy",
-    "Edit Application": "Edit Application",
-    "New Application": "New Application",
-    "Redeploy": "Redeploy",
-    "Undeploy": "Undeploy"
+    "Deploy": "Desplegar",
+    "Deployment Actions": "Acciones de despliegue",
+    "Deployment Actions - Tooltip": "Desplegar o eliminar la aplicación",
+    "Deployment Status": "Estado del despliegue",
+    "Deployment Status - Tooltip": "Estado actual del despliegue",
+    "Deployment deleted": "Despliegue eliminado",
+    "Deployment in progress": "Despliegue en curso",
+    "Edit Application": "Editar aplicación",
+    "Kubernetes Status": "Estado de Kubernetes",
+    "Kubernetes Status - Tooltip": "Indica si la aplicación está conectada correctamente al clúster de Kubernetes. Se requiere una conexión exitosa para todas las acciones de despliegue.",
+    "New Application": "Nueva aplicación",
+    "Parameters": "Parámetros",
+    "Parameters - Tooltip": "Parámetros de despliegue en formato YAML",
+    "Please select a template": "Por favor, seleccione una plantilla",
+    "Redeploy": "Redesplegar",
+    "Undeploy": "Anular despliegue"
   },
   "article": {
     "Abstract": "Resumen",
@@ -295,6 +306,7 @@
     "Tag - Tooltip": "Etiquetas de clasificación de nodos, múltiples separadas por comas",
     "Tasks": "Tareas",
     "Templates": "Plantillas",
+    "Templates - Tooltip": "Plantilla para usar en la aplicación",
     "Text": "Texto",
     "Text - Tooltip": "Contenido de texto",
     "Text2": "Texto2",
@@ -636,6 +648,10 @@
     "Log - Tooltip": "Registro de ejecución de tarea",
     "Question": "Pregunta",
     "Question - Tooltip": "Indicador de tarea completo generado automáticamente"
+  },
+  "template": {
+    "Application Actions": "Acciones de la aplicación",
+    "Application Actions - Tooltip": "Crear aplicación desde esta plantilla"
   },
   "theme": {
     "Compact": "Compact",
