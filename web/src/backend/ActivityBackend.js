@@ -14,12 +14,12 @@
 
 import * as Setting from "../Setting";
 
-export function getActivities(serverUrl, selectedUser, days, field) {
+export function getActivities(serverUrl, selectedUser, days, fields) {
   if (serverUrl === "") {
     serverUrl = Setting.ServerUrl;
   }
 
-  return fetch(`${serverUrl}/api/get-activities?days=${days}&selectedUser=${selectedUser}&field=${field}`, {
+  return fetch(`${serverUrl}/api/get-activities?days=${days}&selectedUser=${selectedUser}&field=${fields}`, {
     method: "GET",
     credentials: "include",
     headers: {

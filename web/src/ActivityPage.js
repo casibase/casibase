@@ -26,7 +26,7 @@ const {Option} = Select;
 class ActivityPage extends BaseListPage {
   constructor(props) {
     super(props);
-    this.subPieCharts = ["client_ip", "language", "response"],
+    this.subPieCharts = ["region", "city", "unit", "section"],
     this.state = {
       classes: props,
       activities: null,
@@ -58,26 +58,29 @@ class ActivityPage extends BaseListPage {
       return [];
     }
     const opsSet = new Set();
-    apiResponse.data.forEach(item => {
+    apiResponse.data.action.forEach(item => {
       Object.keys(item.FieldCount).forEach(op => opsSet.add(op));
     });
 
     return Array.from(opsSet);
   }
 
-  getActivities(serverUrl, fieldName) {
-    ActivityBackend.getActivities(serverUrl, this.state.selectedUser, 30, fieldName)
+  getActivities(serverUrl, fieldNames) {
+    ActivityBackend.getActivities(serverUrl, this.state.selectedUser, 30, fieldNames)
       .then((res) => {
         if (res.status === "ok") {
           const state = {};
-          const activityKey = `activities${fieldName}`;
-          state[activityKey] = res.data;
-          if (fieldName === "action") {
-            const allOps = this.extractAllOperations(res);
-            state["allOps"] = allOps;
-            state["selectedOps"] = allOps.slice(0, 3);
-          }
-          this.setState(state);
+          const fieldCount = res.data;
+          Object.entries(fieldCount).forEach(([fieldName, data]) => {
+            const activityKey = `activities${fieldName}`;
+            state[activityKey] = data;
+            if (fieldName === "action") {
+              const allOps = this.extractAllOperations(res);
+              state["allOps"] = allOps;
+              state["selectedOps"] = allOps.slice(0, 3);
+            }
+            this.setState(state);
+          });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
@@ -85,10 +88,9 @@ class ActivityPage extends BaseListPage {
   }
 
   getActivitiesAll(serverUrl) {
-    this.subPieCharts.forEach(s => {
-      this.getActivities(serverUrl, s);
-    });
-    this.getActivities(serverUrl, "action");
+    this.getActivities(serverUrl, this.subPieCharts);
+    this.getActivities(serverUrl, ["action"]);
+    this.getActivities(serverUrl, ["response"]);
   }
 
   getCountFromRangeType(rangeType) {
@@ -136,9 +138,15 @@ class ActivityPage extends BaseListPage {
         formatter: "{a} <br/>{b} : {c} ({d}%)",
       },
       legend: {
+        type: "scroll",
         orient: "vertical",
         left: "left",
-        data: Object.keys(FieldCount),
+        top: 20,
+        bottom: 20,
+        itemHeight: 12,
+        textStyle: {
+          fontSize: 12,
+        },
       },
       series: [
         {
@@ -183,23 +191,10 @@ class ActivityPage extends BaseListPage {
       error: 0,
     };
 
-    const isLoading = false;
+    const isLoading = activityResponse === undefined;
 
     return (
       <Row gutter={16}>
-        {
-          this.props.account.name !== "admin" ? <Col span={6} /> : (
-            <React.Fragment>
-              <Col span={3}>
-                <Statistic
-                  loading={isLoading}
-                  title={i18next.t("task:Application")}
-                  value={this.state.usageMetadata?.application}
-                />
-              </Col>
-            </React.Fragment>
-          )
-        }
         <Col span={3}>
           <Statistic
             loading={isLoading}
@@ -331,31 +326,46 @@ class ActivityPage extends BaseListPage {
   }
 
   renderSubPieCharts() {
+    // const count = this.subPieCharts?.length || 0;
     const count = this.subPieCharts?.length || 0;
-    const options = this.subPieCharts.map((dataName, index) => (
-      <Col span={21 / count} key={index}>
-        <ReactEcharts
-          option={this.renderPieChart(this.state["activities" + dataName] || [])}
-          style={{
-            height: "400px",
-            width: "100%",
-            display: "inline-block",
-          }}
-          showLoading={this.state["activities" + dataName] === null}
-          loadingOption={{
-            color: localStorage.getItem("themeColor"),
-            textColor: "#000",
-            maskColor: "rgba(255, 255, 255, 0.8)",
-            fontSize: "16px",
-            spinnerRadius: 6,
-            lineWidth: 3,
-            fontWeight: "bold",
-            text: "",
-          }}
-        />
+    const numChartsPerRow = 2;
+    const grouped = [];
+    for (let i = 0; i < count; i += numChartsPerRow) {
+      grouped.push(this.subPieCharts.slice(i, i + 2));
+    }
+    return (
+      <Col span={22} key="subPieChars">
+        {
+          grouped.map((r, rowIndex) => (
+            <Row key={`row-${rowIndex}`} style={{marginBottom: 16}}>
+              {r.map((dataName, colIndex) => (
+                <Col span={12} key={`col-${rowIndex}-${colIndex}`}>
+                  <ReactEcharts
+                    option={this.renderPieChart(this.state["activities" + dataName] || [])}
+                    style={{
+                      height: "400px",
+                      width: "100%",
+                      display: "inline-block",
+                    }}
+                    showLoading={this.state["activities" + dataName] === undefined}
+                    loadingOption={{
+                      color: localStorage.getItem("themeColor"),
+                      textColor: "#000",
+                      maskColor: "rgba(255, 255, 255, 0.8)",
+                      fontSize: "16px",
+                      spinnerRadius: 6,
+                      lineWidth: 3,
+                      fontWeight: "bold",
+                      text: "",
+                    }}
+                  />
+                </Col>
+              ))}
+            </Row>
+          ))
+        }
       </Col>
-    ));
-    return options;
+    );
   }
 
   renderChart() {
@@ -373,7 +383,7 @@ class ActivityPage extends BaseListPage {
                 width: "100%",
                 display: "inline-block",
               }}
-              showLoading={activitiesAction === null}
+              showLoading={activitiesAction === undefined}
               loadingOption={{
                 color: localStorage.getItem("themeColor"),
                 textColor: "#000",
@@ -395,7 +405,7 @@ class ActivityPage extends BaseListPage {
                 display: "inline-block",
               }}
               notMerge={true}
-              showLoading={activitiesAction === null}
+              showLoading={activitiesAction === undefined}
               loadingOption={{
                 color: localStorage.getItem("themeColor"),
                 textColor: "#000",
