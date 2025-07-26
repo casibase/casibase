@@ -52,6 +52,10 @@ func getTargetfieldValue(record *Record, fieldName string) (string, error) {
 		} else {
 			return "", err
 		}
+	case "unit":
+		return record.Unit, nil
+	case "section":
+		return record.Section, nil
 	}
 	return "", errors.New("no matched field")
 }

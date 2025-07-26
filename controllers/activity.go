@@ -37,7 +37,13 @@ func (c *ApiController) GetActivities() {
 		return
 	}
 
-	c.ResponseOk(activities)
+	usageMetadata, err := object.GetUsageMetadata()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(activities, usageMetadata)
 }
 
 // GetRangeActivities
