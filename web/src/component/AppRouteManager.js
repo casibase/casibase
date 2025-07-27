@@ -118,10 +118,9 @@ routeManager.registerApp("usages", {
   ],
 });
 
-routeManager.registerApp("activity", {
+routeManager.registerApp("activities", {
   title: "Activities",
-  iconPath: "usage.svg",
-  gradient: "linear-gradient(135deg, #52abde 0%, #fbf5f1 100%)",
+  gradient: "linear-gradient(135deg, #ade4a4 0%, #f1faff 100%)",
   routes: [
     {
       path: "/activity",
@@ -132,7 +131,7 @@ routeManager.registerApp("activity", {
 
 routeManager.registerApp("chats", {
   title: "Chats",
-  gradient: "linear-gradient(135deg, #31b4ff 0%, #fbf5f1 100%)",
+  gradient: "linear-gradient(135deg, #f8d187 0%, #fff8ea 100%)",
   routes: [
     {
       path: "/chats",
@@ -234,6 +233,7 @@ routeManager.registerApp("nodes", {
 
 routeManager.registerApp("templates", {
   title: "Templates",
+  gradient: "linear-gradient(135deg, #31b4ff 0%, #fbf5f1 100%)",
   routes: [
     {
       path: "/templates",
@@ -242,6 +242,21 @@ routeManager.registerApp("templates", {
     {
       path: "/templates/:templateName",
       component: () => import("../TemplateEditPage"),
+    },
+  ],
+});
+
+routeManager.registerApp("applications", {
+  title: "Applications",
+  gradient: "linear-gradient(135deg, #ffffff 0%, #aec0ff 100%)",
+  routes: [
+    {
+      path: "/applications",
+      component: () => import("../ApplicationListPage"),
+    },
+    {
+      path: "/applications/:applicationName",
+      component: () => import("../ApplicationEditPage"),
     },
   ],
 });
@@ -263,7 +278,7 @@ routeManager.registerApp("machines", {
 
 routeManager.registerApp("images", {
   title: "Images",
-  gradient: "linear-gradient(135deg,rgb(156, 176, 230) 0%,rgb(151, 151, 151) 100%)",
+  gradient: "linear-gradient(135deg,rgb(156, 176, 230) 90%,rgb(151, 151, 151) 100%)",
   routes: [
     {
       path: "/images",
