@@ -78,11 +78,11 @@ class ApplicationListPage extends BaseListPage {
             ),
           }));
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get status")}: ${statusRes?.msg || "Unknown error"}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${statusRes?.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to get status")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${error}`);
       });
   }
 
