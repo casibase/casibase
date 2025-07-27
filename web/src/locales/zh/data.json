@@ -14,14 +14,20 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "系统检测到您正在使用默认密码，存在安全隐患。请立即修改您的密码。以下是具体操作"
   },
   "application": {
+    "Deploy": "部署",
+    "DisConnect": "断开连接",
     "Edit Application": "编辑应用",
-    "Failed": "失败",
+    "Failed to deploy": "部署失败",
+    "Failed to undeploy": "取消部署失败",
+    "K8s Status": "K8s 状态",
     "New Application": "新建应用",
-    "Not Deployed": "未部署",
     "Parameters": "参数",
     "Parameters - Tooltip": "应用参数",
-    "Pending": "部署中",
-    "Running": "运行中"
+    "Refresh Status": "刷新状态",
+    "Successfully deployed": "部署成功",
+    "Successfully undeployed": "成功取消部署",
+    "Sure to undeploy": "确定要取消部署吗？",
+    "Undeploy": "取消部署"
   },
   "article": {
     "Abstract": "摘要",

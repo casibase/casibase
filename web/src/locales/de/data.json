@@ -14,14 +14,20 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "Das System hat erkannt, dass Sie das Standardpasswort verwenden, das nicht sicher ist. Sie müssen Ihr Passwort sofort ändern. Hier sind die Anweisungen"
   },
   "application": {
+    "Deploy": "Bereitstellen",
+    "DisConnect": "Verbindung trennen",
     "Edit Application": "Anwendung bearbeiten",
-    "Failed": "Fehlgeschlagen",
+    "Failed to deploy": "Bereitstellung fehlgeschlagen",
+    "Failed to undeploy": "Aufheben der Bereitstellung fehlgeschlagen",
+    "K8s Status": "K8s-Status",
     "New Application": "Neue Anwendung",
-    "Not Deployed": "Nicht bereitgestellt",
     "Parameters": "Parameter",
     "Parameters - Tooltip": "Anwendungsparameter",
-    "Pending": "Ausstehend",
-    "Running": "Wird ausgeführt"
+    "Refresh Status": "Status aktualisieren",
+    "Successfully deployed": "Erfolgreich bereitgestellt",
+    "Successfully undeployed": "Bereitstellung erfolgreich aufgehoben",
+    "Sure to undeploy": "Möchten Sie die Bereitstellung wirklich aufheben?",
+    "Undeploy": "Bereitstellung aufheben"
   },
   "article": {
     "Abstract": "Abstrakt",

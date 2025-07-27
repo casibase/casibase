@@ -14,14 +14,20 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "システムがデフォルトパスワードを使用していることを検出しました。これは安全ではありません。直ちにパスワードを変更する必要があります。以下は操作手順です"
   },
   "application": {
+    "Deploy": "デプロイ",
+    "DisConnect": "切断",
     "Edit Application": "アプリケーションの編集",
-    "Failed": "失敗",
+    "Failed to deploy": "デプロイに失敗しました",
+    "Failed to undeploy": "アンデプロイに失敗しました",
+    "K8s Status": "K8s ステータス",
     "New Application": "新規アプリケーション",
-    "Not Deployed": "未デプロイ",
     "Parameters": "パラメーター",
     "Parameters - Tooltip": "アプリケーションパラメーター",
-    "Pending": "保留中",
-    "Running": "実行中"
+    "Refresh Status": "状況を更新",
+    "Successfully deployed": "正常にデプロイされました",
+    "Successfully undeployed": "正常にアンデプロイされました",
+    "Sure to undeploy": "アンデプロイしてもよろしいですか？",
+    "Undeploy": "アンデプロイ"
   },
   "article": {
     "Abstract": "概要",

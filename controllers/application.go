@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
@@ -82,7 +83,7 @@ func (c *ApiController) GetApplications() {
 func (c *ApiController) GetApplication() {
 	id := c.Input().Get("id")
 
-	res, err := object.GetApplication(util.GetOwnerAndNameFromId(id))
+	res, err := object.GetApplication(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -184,7 +185,7 @@ func (c *ApiController) DeleteApplication() {
 		return
 	}
 
-	success, err := object.DeleteApplication(application.Owner, application.Name)
+	success, err := object.DeleteApplication(&application)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -201,36 +202,27 @@ func (c *ApiController) DeleteApplication() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /deploy-application [post]
 func (c *ApiController) DeployApplication() {
-	var req ApplicationDeploymentRequest
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &req)
+	id := c.Input().Get("id")
+
+	var application object.Application
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &application)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	if req.Owner == "" || req.Name == "" || req.Template == "" {
-		c.ResponseError("Missing required parameters")
-		return
-	}
-
-	// Get the existing application
-	application, err := object.GetApplication(req.Owner, req.Name)
+	originalApplication, err := object.GetApplication(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	// Application must exist before deployment
-	if application == nil {
-		c.ResponseError("Application not found. Please create the application first.")
+	if originalApplication == nil {
+		c.ResponseError(fmt.Sprintf("The application: %s is not found", id))
 		return
 	}
 
-	// Update application with new template and parameters
-	application.Template = req.Template
-	application.Parameters = req.Parameters
-
-	success, err := object.UpdateApplication(req.Owner+"/"+req.Name, application)
+	success, err := object.UpdateApplication(id, &application)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -241,7 +233,7 @@ func (c *ApiController) DeployApplication() {
 	}
 
 	// Deploy the application
-	success, err = object.DeployApplication(application)
+	success, err = object.DeployApplication(&application)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -258,19 +250,22 @@ func (c *ApiController) DeployApplication() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /undeploy-application [post]
 func (c *ApiController) UndeployApplication() {
-	var req ApplicationDeploymentRequest
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &req)
+	id := c.Input().Get("id")
+
+	application, err := object.GetApplication(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	if req.Owner == "" || req.Name == "" {
-		c.ResponseError("Missing required parameters")
+	if application == nil {
+		c.ResponseError(fmt.Sprintf("The application: %s is not found", id))
 		return
 	}
 
-	success, err := object.UndeployApplication(req.Owner, req.Name)
+	owner, name := util.GetOwnerAndNameFromId(id)
+
+	success, err := object.UndeployApplication(owner, name)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

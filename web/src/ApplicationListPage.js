@@ -29,11 +29,14 @@ class ApplicationListPage extends BaseListPage {
     this.state = {
       ...this.state,
       templates: [],
+      k8sStatus: null,
+      deploying: {},
     };
   }
 
   componentDidMount() {
     this.getTemplates();
+    this.getK8sStatus();
   }
 
   getTemplates() {
@@ -44,6 +47,88 @@ class ApplicationListPage extends BaseListPage {
             templates: res.data || [],
           });
         }
+      });
+  }
+
+  getK8sStatus() {
+    TemplateBackend.getK8sStatus()
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            k8sStatus: res.data.status,
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${error}`);
+      });
+  }
+
+  deployApplication(record, index) {
+    this.setState(prevState => ({
+      deploying: {
+        ...prevState.deploying,
+        [index]: true,
+      },
+    }));
+
+    ApplicationBackend.deployApplication(record)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", i18next.t("application:Successfully deployed"));
+        } else {
+          Setting.showMessage("error", `${i18next.t("application:Failed to deploy")}: ${res.msg}`);
+        }
+        this.setState(prevState => ({
+          deploying: {
+            ...prevState.deploying,
+            [index]: false,
+          },
+        }));
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("application:Failed to deploy")}: ${error}`);
+        this.setState(prevState => ({
+          deploying: {
+            ...prevState.deploying,
+            [index]: false,
+          },
+        }));
+      });
+  }
+
+  undeployApplication(record, index) {
+    this.setState(prevState => ({
+      deploying: {
+        ...prevState.deploying,
+        [index]: true,
+      },
+    }));
+
+    ApplicationBackend.undeployApplication(record.owner, record.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", i18next.t("application:Successfully undeployed"));
+        } else {
+          Setting.showMessage("error", `${i18next.t("application:Failed to undeploy")}: ${res.msg}`);
+        }
+        this.setState(prevState => ({
+          deploying: {
+            ...prevState.deploying,
+            [index]: false,
+          },
+        }));
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("application:Failed to undeploy")}: ${error}`);
+        this.setState(prevState => ({
+          deploying: {
+            ...prevState.deploying,
+            [index]: false,
+          },
+        }));
       });
   }
 
@@ -245,12 +330,25 @@ spec:
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "180px",
+        width: "280px",
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, record, index) => {
           return (
             <div>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/applications/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              {
+                record.status === "Not Deployed" ? (
+                  <Button style={{marginBottom: "10px", marginRight: "10px"}} loading={this.state.deploying[index]} onClick={() => this.deployApplication(record, index)}>
+                    {i18next.t("application:Deploy")}
+                  </Button>
+                ) : (
+                  <Popconfirm title={`${i18next.t("application:Sure to undeploy")}: ${record.name} ?`} onConfirm={() => this.undeployApplication(record, index)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                    <Button style={{marginBottom: "10px", marginRight: "10px"}} loading={this.state.deploying[index]} danger>
+                      {i18next.t("application:Undeploy")}
+                    </Button>
+                  </Popconfirm>
+                )
+              }
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteApplication(record)}
@@ -287,6 +385,13 @@ spec:
                   </Button>
                 </Popconfirm>
               )}
+                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("application:K8s Status")}:
+                       &nbsp;
+              {Setting.getDisplayTag(this.state.k8sStatus === "Connected" ? i18next.t("node:Connect") : i18next.t("application:DisConnect"))}
+              <Button loading={this.state.refreshing} style={{marginLeft: "10px"}} onClick={() => this.getK8sStatus()}>
+                {i18next.t("application:Refresh Status")}
+              </Button>
             </div>
           )}
           loading={this.state.loading}

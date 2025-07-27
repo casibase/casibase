@@ -79,7 +79,7 @@ func GetPaginationApplications(owner string, offset, limit int, field, value, so
 	return applications, nil
 }
 
-func GetApplication(owner, name string) (*Application, error) {
+func getApplication(owner, name string) (*Application, error) {
 	application := Application{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&application)
 	if err != nil {
@@ -91,6 +91,11 @@ func GetApplication(owner, name string) (*Application, error) {
 	} else {
 		return nil, nil
 	}
+}
+
+func GetApplication(id string) (*Application, error) {
+	owner, name := util.GetOwnerAndNameFromId(id)
+	return getApplication(owner, name)
 }
 
 func UpdateApplication(id string, application *Application) (bool, error) {
@@ -121,7 +126,7 @@ func AddApplication(application *Application) (bool, error) {
 	}
 
 	// Generate namespace name based on application owner and name
-	application.Namespace = fmt.Sprintf(NamespaceFormat, application.Name)
+	application.Namespace = fmt.Sprintf(NamespaceFormat, strings.ReplaceAll(application.Name, "_", "-"))
 
 	// Set initial status
 	if application.Status == "" {
@@ -136,7 +141,8 @@ func AddApplication(application *Application) (bool, error) {
 	return affected != 0, nil
 }
 
-func DeleteApplication(owner, name string) (bool, error) {
+func DeleteApplication(application *Application) (bool, error) {
+	owner, name := application.Owner, application.Name
 	// First, delete the deployment if it exists
 	go func() {
 		_, err := UndeployApplication(owner, name)
@@ -146,7 +152,7 @@ func DeleteApplication(owner, name string) (bool, error) {
 	}()
 
 	// Then delete the application record
-	affected, err := adapter.engine.Delete(&Application{Owner: owner, Name: name})
+	affected, err := adapter.engine.ID(core.PK{owner, name}).Delete(&Application{})
 	if err != nil {
 		return false, err
 	}
@@ -286,7 +292,7 @@ func UndeployApplication(owner, name string) (bool, error) {
 		return false, fmt.Errorf("k8s client not connected to cluster")
 	}
 
-	namespace := fmt.Sprintf(NamespaceFormat, name)
+	namespace := fmt.Sprintf(NamespaceFormat, strings.ReplaceAll(name, "_", "-"))
 
 	// Delete the entire namespace
 	err := k8sClient.clientSet.CoreV1().Namespaces().Delete(
@@ -300,7 +306,7 @@ func UndeployApplication(owner, name string) (bool, error) {
 	}
 
 	// Update application status if it exists
-	application, err := GetApplication(owner, name)
+	application, err := getApplication(owner, name)
 	if err == nil && application != nil {
 		application.Status = StatusNotDeployed
 		application.Message = "Deployment deleted"
@@ -323,7 +329,7 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 		return &DeploymentStatus{Status: StatusUnknown, Message: "k8s client not connected to cluster"}, nil
 	}
 
-	namespace := fmt.Sprintf(NamespaceFormat, name)
+	namespace := fmt.Sprintf(NamespaceFormat, strings.ReplaceAll(name, "_", "-"))
 
 	// Check if namespace exists
 	_, err := k8sClient.clientSet.CoreV1().Namespaces().Get(
@@ -334,7 +340,7 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 	if err != nil {
 		if errors.IsNotFound(err) {
 			// Update application status
-			application, appErr := GetApplication(owner, name)
+			application, appErr := getApplication(owner, name)
 			if appErr == nil && application != nil {
 				application.Status = StatusNotDeployed
 				application.Message = "Namespace not found"
@@ -359,7 +365,7 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 
 	if len(deployments.Items) == 0 {
 		// Update application status
-		application, appErr := GetApplication(owner, name)
+		application, appErr := getApplication(owner, name)
 		if appErr == nil && application != nil {
 			application.Status = StatusNotDeployed
 			application.Message = "No deployments found in namespace"
@@ -381,7 +387,7 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 			}
 
 			// Update application status
-			application, appErr := GetApplication(owner, name)
+			application, appErr := getApplication(owner, name)
 			if appErr == nil && application != nil {
 				application.Status = status.Status
 				application.Message = status.Message
@@ -399,7 +405,7 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 	status := &DeploymentStatus{Status: StatusRunning, Message: "All deployments are ready"}
 
 	// Update application status
-	application, appErr := GetApplication(owner, name)
+	application, appErr := getApplication(owner, name)
 	if appErr == nil && application != nil {
 		application.Status = status.Status
 		application.Message = status.Message

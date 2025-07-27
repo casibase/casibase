@@ -14,14 +14,20 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "Le système a détecté que vous utilisez le mot de passe par défaut, qui n'est pas sécurisé. Vous devez modifier votre mot de passe immédiatement. Voici les instructions"
   },
   "application": {
+    "Deploy": "Déployer",
+    "DisConnect": "Déconnecter",
     "Edit Application": "Modifier l'application",
-    "Failed": "Échoué",
+    "Failed to deploy": "Échec du déploiement",
+    "Failed to undeploy": "Échec de l'annulation du déploiement",
+    "K8s Status": "Statut K8s",
     "New Application": "Nouvelle application",
-    "Not Deployed": "Non déployé",
     "Parameters": "Paramètres",
     "Parameters - Tooltip": "Paramètres de l'application",
-    "Pending": "En attente",
-    "Running": "En cours d'exécution"
+    "Refresh Status": "Actualiser le statut",
+    "Successfully deployed": "Déployé avec succès",
+    "Successfully undeployed": "Déploiement annulé avec succès",
+    "Sure to undeploy": "Voulez-vous vraiment annuler le déploiement ?",
+    "Undeploy": "Annuler le déploiement"
   },
   "article": {
     "Abstract": "Résumé",

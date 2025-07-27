@@ -14,14 +14,20 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "Sistem telah mendeteksi bahwa Anda menggunakan kata sandi default, yang tidak aman. Anda perlu mengubah kata sandi Anda segera. Berikut adalah petunjuknya"
   },
   "application": {
+    "Deploy": "Terapkan",
+    "DisConnect": "Putuskan Sambungan",
     "Edit Application": "Edit Aplikasi",
-    "Failed": "Gagal",
+    "Failed to deploy": "Gagal menerapkan",
+    "Failed to undeploy": "Gagal membatalkan penerapan",
+    "K8s Status": "Status K8s",
     "New Application": "Aplikasi Baru",
-    "Not Deployed": "Tidak Diterapkan",
     "Parameters": "Parameter",
     "Parameters - Tooltip": "Parameter aplikasi",
-    "Pending": "Tertunda",
-    "Running": "Berjalan"
+    "Refresh Status": "Segarkan Status",
+    "Successfully deployed": "Berhasil diterapkan",
+    "Successfully undeployed": "Penerapan berhasil dibatalkan",
+    "Sure to undeploy": "Anda yakin ingin membatalkan penerapan?",
+    "Undeploy": "Batalkan Penerapan"
   },
   "article": {
     "Abstract": "Abstrak",

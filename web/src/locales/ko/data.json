@@ -14,14 +14,20 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "시스템에서 기본 비밀번호를 사용하고 있다는 것을 감지했습니다. 이는 보안상 위험합니다. 즉시 비밀번호를 변경해야 합니다. 다음은 지침입니다"
   },
   "application": {
+    "Deploy": "배포",
+    "DisConnect": "연결 끊기",
     "Edit Application": "애플리케이션 편집",
-    "Failed": "실패",
+    "Failed to deploy": "배포 실패",
+    "Failed to undeploy": "배포 취소 실패",
+    "K8s Status": "K8s 상태",
     "New Application": "새 애플리케이션",
-    "Not Deployed": "배포 안 됨",
     "Parameters": "매개변수",
     "Parameters - Tooltip": "애플리케이션 매개변수",
-    "Pending": "대기 중",
-    "Running": "실행 중"
+    "Refresh Status": "상태 새로 고침",
+    "Successfully deployed": "배포 성공",
+    "Successfully undeployed": "배포 취소 성공",
+    "Sure to undeploy": "배포를 취소하시겠습니까?",
+    "Undeploy": "배포 취소"
   },
   "article": {
     "Abstract": "요약",

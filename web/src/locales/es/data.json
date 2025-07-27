@@ -14,14 +14,20 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "El sistema ha detectado que estás usando la contraseña predeterminada, que no es segura. Necesitas modificar tu contraseña inmediatamente. Aquí están las instrucciones"
   },
   "application": {
+    "Deploy": "Desplegar",
+    "DisConnect": "Desconectar",
     "Edit Application": "Editar aplicación",
-    "Failed": "Fallido",
+    "Failed to deploy": "Error al desplegar",
+    "Failed to undeploy": "Error al anular el despliegue",
+    "K8s Status": "Estado de K8s",
     "New Application": "Nueva aplicación",
-    "Not Deployed": "No desplegado",
     "Parameters": "Parámetros",
     "Parameters - Tooltip": "Parámetros de la aplicación",
-    "Pending": "Pendiente",
-    "Running": "En ejecución"
+    "Refresh Status": "Actualizar estado",
+    "Successfully deployed": "Desplegado correctamente",
+    "Successfully undeployed": "Despliegue anulado correctamente",
+    "Sure to undeploy": "¿Seguro que quiere anular el despliegue?",
+    "Undeploy": "Anular despliegue"
   },
   "article": {
     "Abstract": "Resumen",

@@ -14,14 +14,20 @@
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "Система обнаружила, что вы используете стандартный пароль, который небезопасен. Необходимо немедленно изменить пароль. Вот инструкции"
   },
   "application": {
+    "Deploy": "Развернуть",
+    "DisConnect": "Отключить",
     "Edit Application": "Редактировать приложение",
-    "Failed": "Сбой",
+    "Failed to deploy": "Сбой развертывания",
+    "Failed to undeploy": "Сбой отмены развертывания",
+    "K8s Status": "Статус K8s",
     "New Application": "Новое приложение",
-    "Not Deployed": "Не развернуто",
     "Parameters": "Параметры",
     "Parameters - Tooltip": "Параметры приложения",
-    "Pending": "В ожидании",
-    "Running": "Работает"
+    "Refresh Status": "Обновить статус",
+    "Successfully deployed": "Успешно развернуто",
+    "Successfully undeployed": "Развертывание успешно отменено",
+    "Sure to undeploy": "Вы уверены, что хотите отменить развертывание?",
+    "Undeploy": "Отменить развертывание"
   },
   "article": {
     "Abstract": "Аннотация",
