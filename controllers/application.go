@@ -197,7 +197,7 @@ func (c *ApiController) DeleteApplication() {
 // DeployApplication
 // @Title DeployApplication
 // @Tag Application API
-// @Description deploy application
+// @Description deploy application synchronously
 // @Param body body ApplicationDeploymentRequest true "The deployment request details"
 // @Success 200 {object} controllers.Response The Response object
 // @router /deploy-application [post]
@@ -232,8 +232,8 @@ func (c *ApiController) DeployApplication() {
 		return
 	}
 
-	// Deploy the application
-	success, err = object.DeployApplication(&application)
+	// Deploy the application synchronously and wait for completion
+	success, err = object.DeployApplicationSync(&application)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -245,7 +245,7 @@ func (c *ApiController) DeployApplication() {
 // UndeployApplication
 // @Title UndeployApplication
 // @Tag Application API
-// @Description delete application deployment
+// @Description undeploy application synchronously
 // @Param body body ApplicationDeploymentRequest true "The deployment request details"
 // @Success 200 {object} controllers.Response The Response object
 // @router /undeploy-application [post]
@@ -265,7 +265,8 @@ func (c *ApiController) UndeployApplication() {
 
 	owner, name := util.GetOwnerAndNameFromId(id)
 
-	success, err := object.UndeployApplication(owner, name)
+	// Undeploy the application synchronously and wait for completion
+	success, err := object.UndeployApplicationSync(owner, name)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

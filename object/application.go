@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"sigs.k8s.io/kustomize/api/krusty"
 	"sigs.k8s.io/kustomize/api/types"
@@ -42,7 +43,6 @@ type Application struct {
 	Template    string `xorm:"varchar(100)" json:"template"` // Reference to Template.Name
 	Parameters  string `xorm:"mediumtext" json:"parameters"`
 	Status      string `xorm:"varchar(50)" json:"status"`     // Running, Pending, Failed, Not Deployed
-	Message     string `xorm:"varchar(500)" json:"message"`   // Status message
 	Namespace   string `xorm:"varchar(100)" json:"namespace"` // Kubernetes namespace (auto-generated)
 }
 
@@ -51,6 +51,7 @@ const (
 	StatusPending     = string(v1.PodPending) // "Pending"
 	StatusRunning     = string(v1.PodRunning) // "Running"
 	StatusUnknown     = string(v1.PodUnknown) // "Unknown"
+	StatusFailed      = string(v1.PodFailed)
 	StatusTerminating = "Terminating"
 	NamespaceFormat   = "casibase-%s"
 )
@@ -118,14 +119,13 @@ func UpdateApplication(id string, application *Application) (bool, error) {
 	return affected != 0, nil
 }
 
-func UpdateApplicationStatus(owner, name, status, message string) {
+func UpdateApplicationStatus(owner, name, status string) {
 	application, err := getApplication(owner, name)
 	if err != nil || application == nil {
 		return
 	}
 
 	application.Status = status
-	application.Message = message
 	application.UpdatedTime = util.GetCurrentTime()
 
 	_, err = UpdateApplication(fmt.Sprintf("%s/%s", owner, name), application)
@@ -287,7 +287,7 @@ func DeployApplication(application *Application) (bool, error) {
 		return false, fmt.Errorf("failed to deploy manifest: %v", err)
 	}
 
-	UpdateApplicationStatus(application.Owner, application.Name, StatusPending, "Deployment in progress...")
+	UpdateApplicationStatus(application.Owner, application.Name, StatusPending)
 	return true, nil
 }
 
@@ -313,17 +313,100 @@ func UndeployApplication(owner, name string) (bool, error) {
 		return false, fmt.Errorf("failed to delete namespace: %v", err)
 	}
 
-	UpdateApplicationStatus(owner, name, StatusTerminating, "Undeployment in progress...")
+	UpdateApplicationStatus(owner, name, StatusTerminating)
 	return true, nil
 }
 
-func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
+func DeployApplicationSync(application *Application) (bool, error) {
+	// First deploy the application
+	success, err := DeployApplication(application)
+	if err != nil {
+		return false, err
+	}
+	if !success {
+		return false, fmt.Errorf("failed to deploy application")
+	}
+
+	// Wait for deployment to be ready (with timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
+	defer cancel()
+
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			UpdateApplicationStatus(application.Owner, application.Name, "Failed")
+			return false, fmt.Errorf("deployment timeout: application did not become ready within 10 minutes")
+		case <-ticker.C:
+			status, err := GetApplicationStatus(application.Owner, application.Name)
+			if err != nil {
+				continue
+			}
+
+			switch status {
+			case StatusRunning:
+				return true, nil
+			case StatusNotDeployed:
+				return false, fmt.Errorf("deployment failed: application not deployed")
+			case StatusFailed:
+				return false, fmt.Errorf("deployment failed")
+			default:
+				continue
+			}
+		}
+	}
+}
+
+// UndeployApplicationSync undeploys application and waits for it to be completely removed
+func UndeployApplicationSync(owner, name string) (bool, error) {
+	// First undeploy the application
+	success, err := UndeployApplication(owner, name)
+	if err != nil {
+		return false, err
+	}
+	if !success {
+		return false, fmt.Errorf("failed to start undeployment")
+	}
+
+	// Wait for undeployment to complete (with timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
+	defer cancel()
+
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return false, fmt.Errorf("undeployment timeout: application did not undeploy within 10 minutes")
+		case <-ticker.C:
+			status, err := GetApplicationStatus(owner, name)
+			if err != nil {
+				continue
+			}
+
+			switch status {
+			case StatusNotDeployed:
+				return true, nil
+			case StatusTerminating:
+				continue
+			default:
+				continue
+			}
+		}
+	}
+}
+
+// GetApplicationStatus returns application status as string
+func GetApplicationStatus(owner, name string) (string, error) {
 	if err := ensureK8sClient(); err != nil {
-		return &DeploymentStatus{Status: StatusUnknown, Message: fmt.Sprintf("failed to initialize k8s client: %v", err)}, nil
+		return StatusUnknown, err
 	}
 
 	if !k8sClient.connected {
-		return &DeploymentStatus{Status: StatusUnknown, Message: "k8s client not connected to cluster"}, nil
+		return StatusUnknown, nil
 	}
 
 	namespace := fmt.Sprintf(NamespaceFormat, strings.ReplaceAll(name, "_", "-"))
@@ -335,10 +418,10 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 	)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			UpdateApplicationStatus(owner, name, StatusNotDeployed, "Namespace not found")
-			return &DeploymentStatus{Status: StatusNotDeployed, Message: "Namespace not found"}, nil
+			UpdateApplicationStatus(owner, name, StatusNotDeployed)
+			return StatusNotDeployed, nil
 		}
-		return &DeploymentStatus{Status: StatusUnknown, Message: err.Error()}, nil
+		return StatusUnknown, err
 	}
 
 	if ns.Status.Phase == v1.NamespaceTerminating {
@@ -347,12 +430,12 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 		deployments, _ := k8sClient.clientSet.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
 
 		if len(pods.Items) == 0 && len(services.Items) == 0 && len(deployments.Items) == 0 {
-			UpdateApplicationStatus(owner, name, StatusNotDeployed, "Application undeployed")
-			return &DeploymentStatus{Status: StatusNotDeployed, Message: "Application undeployed"}, nil
+			UpdateApplicationStatus(owner, name, StatusNotDeployed)
+			return StatusNotDeployed, nil
 		}
 
-		UpdateApplicationStatus(owner, name, StatusTerminating, "Namespace is terminating")
-		return &DeploymentStatus{Status: StatusTerminating, Message: "Namespace is terminating"}, nil
+		UpdateApplicationStatus(owner, name, StatusTerminating)
+		return StatusTerminating, nil
 	}
 
 	deployments, err := k8sClient.clientSet.AppsV1().Deployments(namespace).List(
@@ -360,30 +443,24 @@ func GetApplicationStatus(owner, name string) (*DeploymentStatus, error) {
 		metav1.ListOptions{},
 	)
 	if err != nil {
-		return &DeploymentStatus{Status: StatusUnknown, Message: err.Error()}, nil
+		return StatusUnknown, err
 	}
 
 	if len(deployments.Items) == 0 {
-		UpdateApplicationStatus(owner, name, StatusNotDeployed, "No deployments found in namespace")
-		return &DeploymentStatus{Status: StatusNotDeployed, Message: "No deployments found in namespace"}, nil
+		UpdateApplicationStatus(owner, name, StatusNotDeployed)
+		return StatusNotDeployed, nil
 	}
 
 	// Check if all deployments are ready
 	for _, deployment := range deployments.Items {
 		if deployment.Status.ReadyReplicas < deployment.Status.Replicas {
-			status := &DeploymentStatus{
-				Status: StatusPending,
-				Message: fmt.Sprintf("Deployment %s is not ready (%d/%d)",
-					deployment.Name, deployment.Status.ReadyReplicas, deployment.Status.Replicas),
-			}
-
-			UpdateApplicationStatus(owner, name, status.Status, status.Message)
-			return status, nil
+			UpdateApplicationStatus(owner, name, StatusPending)
+			return StatusPending, nil
 		}
 	}
 
-	UpdateApplicationStatus(owner, name, StatusRunning, "All deployments are ready")
-	return &DeploymentStatus{Status: StatusRunning, Message: "All deployments are ready"}, nil
+	UpdateApplicationStatus(owner, name, StatusRunning)
+	return StatusRunning, nil
 }
 
 // Helper function to deploy manifest (refactored from existing code)

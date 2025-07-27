@@ -35,7 +35,6 @@ class ApplicationEditPage extends React.Component {
       application: null,
       templates: [],
       deploying: false,
-      refreshing: false,
     };
   }
 
@@ -44,68 +43,17 @@ class ApplicationEditPage extends React.Component {
     this.getTemplates();
   }
 
-  componentWillUnmount() {
-    this.stopStatusPolling();
-  }
-
   getApplication() {
     ApplicationBackend.getApplication(this.props.account.name, this.state.applicationName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
             application: res.data,
-          }, () => {
-            this.refreshApplicationStatus();
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
-  }
-
-  refreshApplicationStatus() {
-    if (!this.state.application) {
-      return;
-    }
-
-    this.setState({refreshing: true});
-    const applicationId = `${this.state.application.owner}/${this.state.application.name}`;
-
-    ApplicationBackend.getApplicationStatus(applicationId)
-      .then((res) => {
-        if (res.status === "ok") {
-          const application = this.state.application;
-          application.status = res.data.status;
-          application.message = res.data.message;
-          this.setState({
-            application: application,
-          });
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
-        }
-        this.setState({refreshing: false});
-      })
-      .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${error}`);
-        this.setState({refreshing: false});
-      });
-  }
-
-  stopStatusPolling() {
-    if (this.statusRefreshTimer) {
-      clearInterval(this.statusRefreshTimer);
-      this.statusRefreshTimer = null;
-    }
-  }
-
-  startStatusPolling(stopCondition) {
-    this.stopStatusPolling();
-    this.statusRefreshTimer = setInterval(() => {
-      this.refreshApplicationStatus();
-      if (this.state.application && stopCondition(this.state.application.status)) {
-        this.stopStatusPolling();
-      }
-    }, 2500);
   }
 
   deployApplication() {
@@ -115,13 +63,7 @@ class ApplicationEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deployed"));
-          const application = this.state.application;
-          application.status = "Pending";
-          application.message = "Deployment in progress...";
-          this.setState({
-            application: application,
-          });
-          this.startStatusPolling((status) => status === "Running");
+          this.getApplication();
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${res.msg}`);
         }
@@ -140,13 +82,7 @@ class ApplicationEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully undeployed"));
-          const application = this.state.application;
-          application.status = "Terminating";
-          application.message = "Namespace is terminating";
-          this.setState({
-            application: application,
-          });
-          this.startStatusPolling((status) => status === "Not Deployed");
+          this.getApplication();
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${res.msg}`);
         }
@@ -277,14 +213,6 @@ class ApplicationEditPage extends React.Component {
                 <Button loading={this.state.deploying} style={{marginLeft: "10px"}} type="primary" onClick={() => this.deployApplication()}>
                   {i18next.t("application:Deploy")}
                 </Button>
-              ) : this.state.application.status === "Pending" ? (
-                <Button style={{marginBottom: "10px", marginRight: "10px"}} loading disabled>
-                  {i18next.t("application:Deploy")}
-                </Button>
-              ) : this.state.application.status === "Terminating" ? (
-                <Button style={{marginBottom: "10px", marginRight: "10px"}} loading disabled danger>
-                  {i18next.t("application:Undeploy")}
-                </Button>
               ) : (
                 <Popconfirm title={`${i18next.t("general:Sure to undeploy")}: ${this.state.application.name} ?`} onConfirm={() => this.undeployApplication()} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
                   <Button loading={this.state.deploying} style={{marginLeft: "10px"}} type="primary" danger>
@@ -293,16 +221,6 @@ class ApplicationEditPage extends React.Component {
                 </Popconfirm>
               )
             }
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Message"), i18next.t("general:Message - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <TextArea autoSize={{minRows: 1, maxRows: 5}} value={this.state.application.message} onChange={(e) => {
-              this.updateApplicationField("message", e.target.value);
-            }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
