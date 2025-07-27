@@ -91,15 +91,15 @@ class ApplicationEditPage extends React.Component {
     ApplicationBackend.deployApplication(this.state.application)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("application:Successfully deployed"));
+          Setting.showMessage("success", i18next.t("general:Successfully deployed"));
           this.refreshApplicationStatus();
         } else {
-          Setting.showMessage("error", `${i18next.t("application:Failed to deploy")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${res.msg}`);
         }
         this.setState({deploying: false});
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("application:Failed to deploy")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${error}`);
         this.setState({deploying: false});
       });
   }
@@ -110,15 +110,15 @@ class ApplicationEditPage extends React.Component {
     ApplicationBackend.undeployApplication(this.state.application.owner, this.state.application.name)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("application:Successfully undeployed"));
+          Setting.showMessage("success", i18next.t("general:Successfully undeployed"));
           this.refreshApplicationStatus();
         } else {
-          Setting.showMessage("error", `${i18next.t("application:Failed to undeploy")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${res.msg}`);
         }
         this.setState({deploying: false});
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("application:Failed to undeploy")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${error}`);
         this.setState({deploying: false});
       });
   }
@@ -235,7 +235,7 @@ class ApplicationEditPage extends React.Component {
           <Col span={22} >
             {this.renderStatus(this.state.application.status)}
             <Button loading={this.state.refreshing} style={{marginLeft: "10px"}} onClick={() => this.refreshApplicationStatus()}>
-              {i18next.t("application:Refresh Status")}
+              {i18next.t("store:Refresh")}
             </Button>
             {
               this.state.application.status === "Not Deployed" ? (
@@ -243,7 +243,7 @@ class ApplicationEditPage extends React.Component {
                   {i18next.t("application:Deploy")}
                 </Button>
               ) : (
-                <Popconfirm title={`${i18next.t("application:Sure to undeploy")}: ${this.state.application.name} ?`} onConfirm={() => this.undeployApplication()} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                <Popconfirm title={`${i18next.t("general:Sure to undeploy")}: ${this.state.application.name} ?`} onConfirm={() => this.undeployApplication()} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
                   <Button loading={this.state.deploying} style={{marginLeft: "10px"}} type="primary" danger>
                     {i18next.t("application:Undeploy")}
                   </Button>

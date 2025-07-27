@@ -1096,8 +1096,8 @@ class ProviderEditPage extends React.Component {
               this.updateProviderField("state", value);
             }}
             options={[
-              {value: "Active", label: "Active"},
-              {value: "Inactive", label: "Inactive"},
+              {value: "Active", label: i18next.t("general:Active")},
+              {value: "Inactive", label: i18next.t("general:Inactive")},
             ].map(item => Setting.getOption(item.label, item.value))} />
           </Col>
         </Row>

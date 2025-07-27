@@ -77,9 +77,9 @@ class ApplicationListPage extends BaseListPage {
     ApplicationBackend.deployApplication(record)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("application:Successfully deployed"));
+          Setting.showMessage("success", i18next.t("general:Successfully deployed"));
         } else {
-          Setting.showMessage("error", `${i18next.t("application:Failed to deploy")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${res.msg}`);
         }
         this.setState(prevState => ({
           deploying: {
@@ -89,7 +89,7 @@ class ApplicationListPage extends BaseListPage {
         }));
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("application:Failed to deploy")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${error}`);
         this.setState(prevState => ({
           deploying: {
             ...prevState.deploying,
@@ -110,9 +110,9 @@ class ApplicationListPage extends BaseListPage {
     ApplicationBackend.undeployApplication(record.owner, record.name)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("application:Successfully undeployed"));
+          Setting.showMessage("success", i18next.t("general:Successfully undeployed"));
         } else {
-          Setting.showMessage("error", `${i18next.t("application:Failed to undeploy")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${res.msg}`);
         }
         this.setState(prevState => ({
           deploying: {
@@ -122,7 +122,7 @@ class ApplicationListPage extends BaseListPage {
         }));
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("application:Failed to undeploy")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${error}`);
         this.setState(prevState => ({
           deploying: {
             ...prevState.deploying,
@@ -342,7 +342,7 @@ spec:
                     {i18next.t("application:Deploy")}
                   </Button>
                 ) : (
-                  <Popconfirm title={`${i18next.t("application:Sure to undeploy")}: ${record.name} ?`} onConfirm={() => this.undeployApplication(record, index)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                  <Popconfirm title={`${i18next.t("general:Sure to undeploy")}: ${record.name} ?`} onConfirm={() => this.undeployApplication(record, index)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
                     <Button style={{marginBottom: "10px", marginRight: "10px"}} loading={this.state.deploying[index]} danger>
                       {i18next.t("application:Undeploy")}
                     </Button>
@@ -386,11 +386,11 @@ spec:
                 </Popconfirm>
               )}
                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {i18next.t("application:K8s Status")}:
+              {i18next.t("general:Status")}:
                        &nbsp;
-              {Setting.getDisplayTag(this.state.k8sStatus === "Connected" ? i18next.t("node:Connect") : i18next.t("application:DisConnect"))}
+              {Setting.getDisplayTag(this.state.k8sStatus === "Connected" ? i18next.t("general:Active") : i18next.t("general:Inactive"))}
               <Button loading={this.state.refreshing} style={{marginLeft: "10px"}} onClick={() => this.getK8sStatus()}>
-                {i18next.t("application:Refresh Status")}
+                {i18next.t("store:Refresh")}
               </Button>
             </div>
           )}
