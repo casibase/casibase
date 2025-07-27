@@ -141,7 +141,6 @@ func ensureK8sClient() error {
 
 func GetK8sStatus() (*DeploymentStatus, error) {
 	if err := ensureK8sClient(); err != nil {
-		fmt.Println("Failed to ensure K8s client:", err)
 		return &DeploymentStatus{Status: "Disconnected", Message: fmt.Sprintf("failed to initialize k8s client: %v", err)}, nil
 	}
 
