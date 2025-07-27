@@ -329,8 +329,8 @@ class ChatBox extends React.Component {
     }
 
     return (
-      <Layout style={{display: "flex", width: "100%", height: "100%", borderRadius: "6px"}}>
-        <Card style={{display: "flex", width: "100%", height: "100%", flexDirection: "column", position: "relative", padding: "24px"}}>
+      <Layout style={{display: "flex", width: "100%", height: "100%", borderRadius: "6px", ...this.props.styles?.layout}}>
+        <Card style={{display: "flex", width: "100%", height: "100%", flexDirection: "column", position: "relative", padding: "24px", ...this.props.styles?.card}}>
           {messages.length === 0 && <WelcomeHeader store={this.props.store} />}
 
           <MessageList

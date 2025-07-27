@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Input, Popconfirm, Table, Tooltip} from "antd";
+import {Button, Input, Popconfirm, Popover, Table, Tooltip} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -22,6 +22,12 @@ import * as WorkflowBackend from "./backend/WorkflowBackend";
 import i18next from "i18next";
 import BpmnComponent from "./BpmnComponent";
 import {DeleteOutlined} from "@ant-design/icons";
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+require("codemirror/theme/material-darker.css");
+require("codemirror/mode/xml/xml");
+require("codemirror/mode/htmlmixed/htmlmixed");
+
 const {TextArea} = Input;
 class WorkflowListPage extends BaseListPage {
   constructor(props) {
@@ -34,8 +40,24 @@ class WorkflowListPage extends BaseListPage {
       name: `workflow_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Workflow - ${randomName}`,
+      questionTemplate: "Please compare two BPMN graphs (without mentioning the node ID) and provide an overall difference explanation based on path analysis:\n```xml\n#{{text}}```\n```xml\n#{{text2}}```\n```text\n#{{message}}```",
       text: "",
     };
+  }
+
+  renderQuestionTemplate(workflow) {
+    const questionTemplate = workflow?.questionTemplate;
+
+    if (!questionTemplate) {
+      return "";
+    }
+
+    // Render the question template with variables replaced
+    const renderedTemplate = questionTemplate.replace(/#\{\{(\w+)\}\}/g, (match, variableName) => {
+      return workflow[variableName] || `{{${variableName}}}`;
+    });
+
+    return renderedTemplate;
   }
 
   addWorkflow() {
@@ -181,6 +203,46 @@ class WorkflowListPage extends BaseListPage {
                 {Setting.getShortText(text, 100)}
               </div>
             </Tooltip>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Question template"),
+        dataIndex: "questionTemplate",
+        key: "questionTemplate",
+        // width: "160px",
+        sorter: (a, b) => a.questionTemplate.localeCompare(b.questionTemplate),
+        render: (text, record, index) => {
+          return (
+            <Popover
+              placement="left"
+              trigger="hover"
+              title={i18next.t("general:Question template")}
+              content={
+                <div style={{width: "500px", height: "600px"}}>
+                  <CodeMirror
+                    value={this.renderQuestionTemplate(record)}
+                    options={{
+                      mode: "xml",
+                      theme: "material-darker",
+                      lineNumbers: true,
+                      readOnly: true,
+                    }}
+                    editorDidMount={(editor) => {
+                      if (window.ResizeObserver) {
+                        const resizeObserver = new ResizeObserver(() => {
+                          editor.refresh();
+                        });
+                        resizeObserver.observe(editor.getWrapperElement().parentNode);
+                      }
+                    }}
+                  />
+                </div>
+              }>
+              <div style={{maxWidth: "300px"}}>
+                {Setting.getShortText(text, 100)}
+              </div>
+            </Popover>
           );
         },
       },

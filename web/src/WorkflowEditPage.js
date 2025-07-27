@@ -13,13 +13,14 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row} from "antd";
+import {Button, Card, Col, Input, Mentions, Popover, Row} from "antd";
 import * as WorkflowBackend from "./backend/WorkflowBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import BpmnComponent from "./BpmnComponent";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
+import ChatWidget from "./common/ChatWidget";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/xml/xml");
 require("codemirror/mode/htmlmixed/htmlmixed");
@@ -35,6 +36,11 @@ class WorkflowEditPage extends React.Component {
       chatPageObj: null,
       loading: false,
     };
+    this.questionTemplatesOptions = [
+      {value: "{{text}}", label: i18next.t("general:Text")},
+      {value: "{{text2}}", label: i18next.t("general:Text2")},
+      {value: "{{message}}", label: i18next.t("general:Message")},
+    ];
   }
 
   UNSAFE_componentWillMount() {
@@ -69,6 +75,21 @@ class WorkflowEditPage extends React.Component {
     this.setState({
       workflow: workflow,
     });
+  }
+
+  renderQuestionTemplate() {
+    const questionTemplate = this.state.workflow.questionTemplate;
+
+    if (!questionTemplate) {
+      return "";
+    }
+
+    // Render the question template with variables replaced
+    const renderedTemplate = questionTemplate.replace(/#\{\{(\w+)\}\}/g, (match, variableName) => {
+      return this.state.workflow[variableName] || `{{${variableName}}}`;
+    });
+
+    return renderedTemplate;
   }
 
   renderWorkflow() {
@@ -180,6 +201,90 @@ class WorkflowEditPage extends React.Component {
                 }}
               />
             </div>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Question Template"), i18next.t("general:Question Template - Tooltip"))} :
+          </Col>
+          <Col span={22}>
+            <Popover
+              placement="top"
+              trigger="click"
+              title={i18next.t("general:Question Template - Edit")}
+              content={
+                <Row gutter={[16, 8]} style={{width: "800px"}}>
+                  <Col span={12}>
+                    <div style={{marginBottom: "8px"}}>
+                      {i18next.t("general:Template Editor")}:
+                    </div>
+                    <Mentions
+                      value={this.state.workflow.questionTemplate}
+                      placeholder={i18next.t("general:Enter '#' to select variable")}
+                      onChange={(value) => this.updateWorkflowField("questionTemplate", value)}
+                      rows={10}
+                      prefix={"#"}
+                      options={this.questionTemplatesOptions}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <div style={{marginBottom: "8px"}}>
+                      {i18next.t("general:Preview")}:
+                    </div>
+                    <div style={{
+                      height: "240px",
+                      borderRadius: "4px",
+                    }}>
+                      <CodeMirror
+                        value={this.renderQuestionTemplate()}
+                        options={{
+                          mode: "markdown",
+                          theme: "material-darker",
+                          readOnly: true,
+                        }}
+                        editorDidMount={(editor) => {
+                          if (window.ResizeObserver) {
+                            const resizeObserver = new ResizeObserver(() => {
+                              editor.refresh();
+                            });
+                            resizeObserver.observe(editor.getWrapperElement().parentNode);
+                          }
+                        }}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+              }>
+              <Mentions
+                value={Setting.getShortText(this.state.workflow.questionTemplate, 60)}
+                placeholder={i18next.t("general:Enter '#' to select variable")}
+                onChange={(value) => this.updateWorkflowField("questionTemplate", value)}
+                rows={1}
+                prefix={"#"}
+                options={this.questionTemplatesOptions}
+              />
+            </Popover>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Answer"), i18next.t("general:Answer - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <ChatWidget
+              chatName={`workflow_chat_${this.state.workflowName}`}
+              displayName={`${i18next.t("workflow:Workflow Chat")} - ${this.state.workflowName}`}
+              category="Workflow"
+              account={this.props.account}
+              title={i18next.t("general:Chat")}
+              height="600px"
+              showNewChatButton={true}
+              prompts={[{
+                "title": i18next.t("general:Explain the workflow"),
+                "text": this.renderQuestionTemplate(),
+                "image": "",
+              }]}
+            />
           </Col>
         </Row>
       </Card>
