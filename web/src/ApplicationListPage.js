@@ -39,6 +39,34 @@ class ApplicationListPage extends BaseListPage {
     this.getK8sStatus();
   }
 
+  componentWillUnmount() {
+    this.stopStatusPolling();
+  }
+
+  stopStatusPolling() {
+    if (this.statusRefreshTimer) {
+      clearInterval(this.statusRefreshTimer);
+      this.statusRefreshTimer = null;
+    }
+  }
+
+  startStatusPolling() {
+    this.stopStatusPolling();
+    let pollCount = 0;
+    this.statusRefreshTimer = setInterval(() => {
+      this.fetch({
+        pagination: this.state.pagination,
+        searchText: this.state.searchText,
+        searchedColumn: this.state.searchedColumn,
+      });
+
+      pollCount++;
+      if (pollCount >= 5) {
+        this.stopStatusPolling();
+      }
+    }, 3000);
+  }
+
   getTemplates() {
     TemplateBackend.getTemplates(this.props.account.name)
       .then((res) => {
@@ -78,6 +106,7 @@ class ApplicationListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deployed"));
+          this.startStatusPolling();
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${res.msg}`);
         }
@@ -111,6 +140,7 @@ class ApplicationListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully undeployed"));
+          this.startStatusPolling();
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${res.msg}`);
         }
@@ -389,9 +419,6 @@ spec:
               {i18next.t("general:Status")}:
                        &nbsp;
               {Setting.getDisplayTag(this.state.k8sStatus === "Connected" ? i18next.t("general:Active") : i18next.t("general:Inactive"))}
-              <Button loading={this.state.refreshing} style={{marginLeft: "10px"}} onClick={() => this.getK8sStatus()}>
-                {i18next.t("store:Refresh")}
-              </Button>
             </div>
           )}
           loading={this.state.loading}

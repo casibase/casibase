@@ -42,6 +42,20 @@ class ApplicationEditPage extends React.Component {
   UNSAFE_componentWillMount() {
     this.getApplication();
     this.getTemplates();
+
+    setTimeout(() => {
+      if (this.state.application) {
+        this.startStatusPolling(() => false);
+      }
+    }, 1000);
+
+    setTimeout(() => {
+      this.stopStatusPolling();
+    }, 6000);
+  }
+
+  componentWillUnmount() {
+    this.stopStatusPolling();
   }
 
   getApplication() {
@@ -50,6 +64,8 @@ class ApplicationEditPage extends React.Component {
         if (res.status === "ok") {
           this.setState({
             application: res.data,
+          }, () => {
+            this.refreshApplicationStatus();
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -85,6 +101,24 @@ class ApplicationEditPage extends React.Component {
       });
   }
 
+  stopStatusPolling() {
+    if (this.statusRefreshTimer) {
+      clearInterval(this.statusRefreshTimer);
+      this.statusRefreshTimer = null;
+    }
+  }
+
+  startStatusPolling(stopCondition) {
+    this.stopStatusPolling();
+    this.refreshApplicationStatus();
+    this.statusRefreshTimer = setInterval(() => {
+      this.refreshApplicationStatus();
+      if (this.state.application && stopCondition(this.state.application.status)) {
+        this.stopStatusPolling();
+      }
+    }, 2500);
+  }
+
   deployApplication() {
     this.setState({deploying: true});
 
@@ -92,7 +126,9 @@ class ApplicationEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deployed"));
-          this.refreshApplicationStatus();
+          setTimeout(() => {
+            this.startStatusPolling((status) => status === "Running");
+          }, 1000);
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${res.msg}`);
         }
@@ -111,7 +147,7 @@ class ApplicationEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully undeployed"));
-          this.refreshApplicationStatus();
+          this.startStatusPolling((status) => status === "Not Deployed");
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${res.msg}`);
         }
@@ -234,9 +270,6 @@ class ApplicationEditPage extends React.Component {
           </Col>
           <Col span={22} >
             {this.renderStatus(this.state.application.status)}
-            <Button loading={this.state.refreshing} style={{marginLeft: "10px"}} onClick={() => this.refreshApplicationStatus()}>
-              {i18next.t("store:Refresh")}
-            </Button>
             {
               this.state.application.status === "Not Deployed" ? (
                 <Button loading={this.state.deploying} style={{marginLeft: "10px"}} type="primary" onClick={() => this.deployApplication()}>
