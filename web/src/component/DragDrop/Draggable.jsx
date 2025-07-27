@@ -1,7 +1,7 @@
 import {useDraggable} from "@dnd-kit/core";
 import {CSS} from "@dnd-kit/utilities";
 
-export const Draggable = ({id, position, children, isMaximized, isDragging}) => {
+export const Draggable = ({id, position, children, isMaximized, isMinimized, isDragging, isResizing, size, zIndex}) => {
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id,
   });
@@ -16,9 +16,12 @@ export const Draggable = ({id, position, children, isMaximized, isDragging}) => 
     touchAction: "none",
     userSelect: "none",
     pointerEvents: "auto",
-    minWidth: 400,
-    minHeight: 300,
-    transition: isDragging ? "none" : "transform 0.3s ease-in-out, width 0.3s ease-in-out, height 0.3s ease-in-out",
+    minWidth: size.minWidth,
+    minHeight: size.minHeight,
+    maxWidth: "100%",
+    maxHeight: "100%",
+    zIndex: zIndex || 0,
+    transition: isDragging ? "none" : isResizing ? "none" : "transform 0.3s ease-in-out, width 0.3s ease-in-out, height 0.3s ease-in-out",
   };
 
   const style = {
@@ -32,16 +35,40 @@ export const Draggable = ({id, position, children, isMaximized, isDragging}) => 
         width: "100%",
         height: "100%",
       }
-      : {
-        transform: CSS.Translate.toString(finalTransform),
-        width: 800,
-        height: 600,
-      }
+      : isMinimized
+        ? {
+          display: "none",
+        }
+        : {
+          transform: CSS.Translate.toString(finalTransform),
+          width: size.width ? size.width : 800,
+          height: size.height ? size.height : 600,
+        }
     ),
   };
 
+  // check if the event is from resize handle
+  const isResizeHandle = (event) => {
+    return event.target && event.target.closest && event.target.closest(".window-resize-handle");
+  };
+
+  // filter out the listeners from resize handle
+  const filteredListeners = isMaximized || isResizing ? {} : {
+    onMouseDown: (event) => {
+      if (isResizeHandle(event)) {
+        return;
+      }
+      listeners.onMouseDown?.(event);
+    },
+  };
+
   return (
-    <div ref={setNodeRef} {...(isMaximized ? {} : attributes)} {...(isMaximized ? {} : listeners)} style={style}>
+    <div
+      ref={setNodeRef}
+      {...(isMaximized ? {} : attributes)}
+      {...filteredListeners}
+      style={style}
+    >
       {children}
     </div>
   );

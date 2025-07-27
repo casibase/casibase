@@ -4,7 +4,7 @@ export const Droppable = ({id, children, style}) => {
   const {setNodeRef} = useDroppable({id});
 
   const containerStyle = {
-    position: "absolute",
+    position: "fixed",
     left: 0,
     top: 0,
     right: 0,
