@@ -31,7 +31,9 @@ class ApplicationListPage extends BaseListPage {
       templates: [],
       k8sStatus: null,
       deploying: {},
+      pollCounts: {},
     };
+    this.pollingTimers = {};
   }
 
   componentDidMount() {
@@ -40,31 +42,80 @@ class ApplicationListPage extends BaseListPage {
   }
 
   componentWillUnmount() {
-    this.stopStatusPolling();
+    this.stopAllPolling();
   }
 
-  stopStatusPolling() {
-    if (this.statusRefreshTimer) {
-      clearInterval(this.statusRefreshTimer);
-      this.statusRefreshTimer = null;
+  refreshApplicationStatus(owner, name) {
+    const applicationId = `${owner}/${name}`;
+    const currentApp = this.state.data.find(app => app.name === name);
+    const oldStatus = currentApp?.status;
+
+    ApplicationBackend.getApplicationStatus(applicationId)
+      .then((res) => {
+        if (res.status === "ok") {
+          const newStatus = res.data.status;
+
+          this.setState(prevState => ({
+            data: prevState.data.map(app =>
+              app.name === name ? {
+                ...app,
+                status: newStatus,
+                message: res.data.message,
+              } : app
+            ),
+            pollCounts: oldStatus !== newStatus ? {
+              ...prevState.pollCounts,
+              [name]: (prevState.pollCounts[name] || 0) + 5,
+            } : prevState.pollCounts,
+          }));
+          if (newStatus === "Running" || newStatus === "Not Deployed") {
+            this.stopStatusPolling(name);
+          }
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${error}`);
+        this.stopStatusPolling(name);
+      });
+  }
+
+  stopAllPolling() {
+    Object.keys(this.pollingTimers).forEach(appName => {
+      this.stopStatusPolling(appName);
+    });
+  }
+
+  stopStatusPolling(name) {
+    if (this.pollingTimers[name]) {
+      clearInterval(this.pollingTimers[name]);
+      delete this.pollingTimers[name];
     }
   }
 
-  startStatusPolling() {
-    this.stopStatusPolling();
-    let pollCount = 0;
-    this.statusRefreshTimer = setInterval(() => {
-      this.fetch({
-        pagination: this.state.pagination,
-        searchText: this.state.searchText,
-        searchedColumn: this.state.searchedColumn,
-      });
+  startStatusPolling(owner, name) {
+    this.stopStatusPolling(name);
 
-      pollCount++;
-      if (pollCount >= 5) {
-        this.stopStatusPolling();
+    this.setState(prevState => ({
+      pollCounts: {
+        ...prevState.pollCounts,
+        [name]: 5,
+      },
+    }));
+
+    this.pollingTimers[name] = setInterval(() => {
+      if (this.state.pollCounts[name] <= 0) {
+        this.stopStatusPolling(name);
+        return;
       }
-    }, 3000);
+      this.setState(prevState => ({
+        pollCounts: {
+          ...prevState.pollCounts,
+          [name]: prevState.pollCounts[name] - 1,
+        },
+      }));
+
+      this.refreshApplicationStatus(owner, name);
+    }, 5000);
   }
 
   getTemplates() {
@@ -106,7 +157,12 @@ class ApplicationListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deployed"));
-          this.startStatusPolling();
+          this.setState(prevState => ({
+            data: prevState.data.map(app =>
+              app.name === record.name ? {...app, status: "Pending", message: "Deployment in progress..."} : app
+            ),
+          }));
+          this.startStatusPolling(record.owner, record.name);
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${res.msg}`);
         }
@@ -140,7 +196,12 @@ class ApplicationListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully undeployed"));
-          this.startStatusPolling();
+          this.setState(prevState => ({
+            data: prevState.data.map(app =>
+              app.name === record.name ? {...app, status: "Terminating", message: "Namespace is terminating"} : app
+            ),
+          }));
+          this.startStatusPolling(record.owner, record.name);
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${res.msg}`);
         }
@@ -238,6 +299,9 @@ spec:
       color = "green";
       break;
     case "Pending":
+      color = "orange";
+      break;
+    case "Terminating":
       color = "orange";
       break;
     case "Failed":
@@ -370,6 +434,14 @@ spec:
                 record.status === "Not Deployed" ? (
                   <Button style={{marginBottom: "10px", marginRight: "10px"}} loading={this.state.deploying[index]} onClick={() => this.deployApplication(record, index)}>
                     {i18next.t("application:Deploy")}
+                  </Button>
+                ) : record.status === "Pending" ? (
+                  <Button style={{marginBottom: "10px", marginRight: "10px"}} loading disabled>
+                    {i18next.t("application:Deploy")}
+                  </Button>
+                ) : record.status === "Terminating" ? (
+                  <Button style={{marginBottom: "10px", marginRight: "10px"}} loading disabled danger>
+                    {i18next.t("application:Undeploy")}
                   </Button>
                 ) : (
                   <Popconfirm title={`${i18next.t("general:Sure to undeploy")}: ${record.name} ?`} onConfirm={() => this.undeployApplication(record, index)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>

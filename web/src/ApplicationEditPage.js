@@ -42,16 +42,6 @@ class ApplicationEditPage extends React.Component {
   UNSAFE_componentWillMount() {
     this.getApplication();
     this.getTemplates();
-
-    setTimeout(() => {
-      if (this.state.application) {
-        this.startStatusPolling(() => false);
-      }
-    }, 1000);
-
-    setTimeout(() => {
-      this.stopStatusPolling();
-    }, 6000);
   }
 
   componentWillUnmount() {
@@ -110,7 +100,6 @@ class ApplicationEditPage extends React.Component {
 
   startStatusPolling(stopCondition) {
     this.stopStatusPolling();
-    this.refreshApplicationStatus();
     this.statusRefreshTimer = setInterval(() => {
       this.refreshApplicationStatus();
       if (this.state.application && stopCondition(this.state.application.status)) {
@@ -126,9 +115,13 @@ class ApplicationEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deployed"));
-          setTimeout(() => {
-            this.startStatusPolling((status) => status === "Running");
-          }, 1000);
+          const application = this.state.application;
+          application.status = "Pending";
+          application.message = "Deployment in progress...";
+          this.setState({
+            application: application,
+          });
+          this.startStatusPolling((status) => status === "Running");
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${res.msg}`);
         }
@@ -147,6 +140,12 @@ class ApplicationEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully undeployed"));
+          const application = this.state.application;
+          application.status = "Terminating";
+          application.message = "Namespace is terminating";
+          this.setState({
+            application: application,
+          });
           this.startStatusPolling((status) => status === "Not Deployed");
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${res.msg}`);
@@ -166,6 +165,9 @@ class ApplicationEditPage extends React.Component {
       color = "green";
       break;
     case "Pending":
+      color = "orange";
+      break;
+    case "Terminating":
       color = "orange";
       break;
     case "Failed":
@@ -274,6 +276,14 @@ class ApplicationEditPage extends React.Component {
               this.state.application.status === "Not Deployed" ? (
                 <Button loading={this.state.deploying} style={{marginLeft: "10px"}} type="primary" onClick={() => this.deployApplication()}>
                   {i18next.t("application:Deploy")}
+                </Button>
+              ) : this.state.application.status === "Pending" ? (
+                <Button style={{marginBottom: "10px", marginRight: "10px"}} loading disabled>
+                  {i18next.t("application:Deploy")}
+                </Button>
+              ) : this.state.application.status === "Terminating" ? (
+                <Button style={{marginBottom: "10px", marginRight: "10px"}} loading disabled danger>
+                  {i18next.t("application:Undeploy")}
                 </Button>
               ) : (
                 <Popconfirm title={`${i18next.t("general:Sure to undeploy")}: ${this.state.application.name} ?`} onConfirm={() => this.undeployApplication()} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
