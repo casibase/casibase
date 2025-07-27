@@ -8,7 +8,7 @@ export const Draggable = ({id, position, children, isMaximized, isMinimized, isD
 
   const finalTransform = {
     x: (transform?.x || 0) + (position?.x || 0),
-    y: (transform?.y || 0) + (position?.y || 0),
+    y: Math.max(0, (transform?.y || 0) + (position?.y || 0)),
   };
 
   const commonStyle = {
@@ -52,10 +52,30 @@ export const Draggable = ({id, position, children, isMaximized, isMinimized, isD
     return event.target && event.target.closest && event.target.closest(".window-resize-handle");
   };
 
-  // filter out the listeners from resize handle
+  const isWindowHeader = (event) => {
+    return event.target && event.target.closest && event.target.closest(".window-header");
+  };
+
+  const isWindowControl = (event) => {
+    return event.target && event.target.closest && event.target.closest(".window-control");
+  };
+
+  const isWindowNavigation = (event) => {
+    return event.target && event.target.closest && event.target.closest(".window-navigation");
+  };
+
   const filteredListeners = isMaximized || isResizing ? {} : {
     onMouseDown: (event) => {
       if (isResizeHandle(event)) {
+        return;
+      }
+      if (!isWindowHeader(event)) {
+        return;
+      }
+      if (isWindowControl(event)) {
+        return;
+      }
+      if (isWindowNavigation(event)) {
         return;
       }
       listeners.onMouseDown?.(event);
