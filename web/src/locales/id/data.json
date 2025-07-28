@@ -69,6 +69,7 @@
     "Single": "obrolan pribadi",
     "Speech recognition not supported in this browser": "Pengenalan suara tidak didukung di browser ini",
     "Text token count": "Jumlah token teks",
+    "The chat is not found": "The chat is not found",
     "The response has been interrupted. Please do not refresh the page during responding.": "Respons telah terganggu. Jangan perbarui halaman saat merespons.",
     "Token count": "Jumlah token",
     "Type message here": "Tulis pesan Anda di sini",
@@ -504,7 +505,6 @@
     "New Record": "Catatan baru",
     "Object": "Objek",
     "Query": "Query",
-    "Response": "Respons",
     "View Record": "Lihat catatan"
   },
   "session": {

@@ -69,6 +69,7 @@
     "Single": "개인 채팅",
     "Speech recognition not supported in this browser": "이 브라우저에서는 음성 인식을 지원하지 않습니다",
     "Text token count": "텍스트 토큰 수",
+    "The chat is not found": "The chat is not found",
     "The response has been interrupted. Please do not refresh the page during responding.": "응답이 중단되었습니다. 응답하는 동안 페이지를 새로 고치지 마세요.",
     "Token count": "토큰 수",
     "Type message here": "여기에 메시지를 입력하세요",
@@ -504,7 +505,6 @@
     "New Record": "새 로그 생성",
     "Object": "객체",
     "Query": "조회",
-    "Response": "응답",
     "View Record": "로그 보기"
   },
   "session": {

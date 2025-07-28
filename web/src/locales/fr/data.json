@@ -69,6 +69,7 @@
     "Single": "Chat privé",
     "Speech recognition not supported in this browser": "La reconnaissance vocale n'est pas prise en charge dans ce navigateur",
     "Text token count": "Nombre de tokens de texte",
+    "The chat is not found": "The chat is not found",
     "The response has been interrupted. Please do not refresh the page during responding.": "La réponse a été interrompue. Veuillez ne pas actualiser la page pendant la réponse.",
     "Token count": "Nombre de tokens",
     "Type message here": "Tapez votre message ici",
@@ -504,7 +505,6 @@
     "New Record": "Créer un nouvel enregistrement",
     "Object": "Objet",
     "Query": "Requête",
-    "Response": "Réponse",
     "View Record": "Afficher l'enregistrement"
   },
   "session": {

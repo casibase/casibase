@@ -320,7 +320,7 @@ class RecordListPage extends BaseListPage {
         ...this.getColumnSearchProps("language"),
       },
       {
-        title: i18next.t("record:Response"),
+        title: i18next.t("general:Response"),
         dataIndex: "response",
         key: "response",
         width: "90px",

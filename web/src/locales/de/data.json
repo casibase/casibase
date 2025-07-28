@@ -69,6 +69,7 @@
     "Single": "Privatchat",
     "Speech recognition not supported in this browser": "In diesem Browser wird die Spracherkennung nicht unterstützt",
     "Text token count": "Anzahl der Text-Token",
+    "The chat is not found": "The chat is not found",
     "The response has been interrupted. Please do not refresh the page during responding.": "Die Antwort wurde unterbrochen. Bitte aktualisieren Sie die Seite nicht, während die Antwort erfolgt.",
     "Token count": "Token-Anzahl",
     "Type message here": "Nachricht hier eingeben",
@@ -504,7 +505,6 @@
     "New Record": "Neues Protokoll erstellen",
     "Object": "Objekt",
     "Query": "Abfrage",
-    "Response": "Antwort",
     "View Record": "Protokoll anzeigen"
   },
   "session": {

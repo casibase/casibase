@@ -28,9 +28,10 @@ type Workflow struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
-	Text    string `xorm:"mediumtext" json:"text"`
-	Text2   string `xorm:"mediumtext" json:"text2"`
-	Message string `xorm:"mediumtext" json:"message"`
+	Text             string `xorm:"mediumtext" json:"text"`
+	Text2            string `xorm:"mediumtext" json:"text2"`
+	Message          string `xorm:"mediumtext" json:"message"`
+	QuestionTemplate string `xorm:"mediumtext" json:"questionTemplate"`
 }
 
 func GetMaskedWorkflow(workflow *Workflow, isMaskEnabled bool) *Workflow {

@@ -69,6 +69,7 @@
     "Single": "单聊",
     "Speech recognition not supported in this browser": "此浏览器不支持语音识别",
     "Text token count": "文本Token数量",
+    "The chat is not found": "The chat is not found",
     "The response has been interrupted. Please do not refresh the page during responding.": "该回答已被中断。回答期间请不要刷新页面。",
     "Token count": "Token数量",
     "Type message here": "请输入您的问题",
@@ -504,7 +505,6 @@
     "New Record": "新建日志",
     "Object": "对象",
     "Query": "查询",
-    "Response": "响应",
     "View Record": "查看日志"
   },
   "session": {

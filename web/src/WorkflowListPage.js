@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Input, Popconfirm, Table, Tooltip} from "antd";
+import {Button, Input, Popconfirm, Popover, Table, Tooltip} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -22,6 +22,12 @@ import * as WorkflowBackend from "./backend/WorkflowBackend";
 import i18next from "i18next";
 import BpmnComponent from "./BpmnComponent";
 import {DeleteOutlined} from "@ant-design/icons";
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+require("codemirror/theme/material-darker.css");
+require("codemirror/mode/xml/xml");
+require("codemirror/mode/htmlmixed/htmlmixed");
+
 const {TextArea} = Input;
 class WorkflowListPage extends BaseListPage {
   constructor(props) {
@@ -34,8 +40,24 @@ class WorkflowListPage extends BaseListPage {
       name: `workflow_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Workflow - ${randomName}`,
+      questionTemplate: "You will play the role of a process comparison and analysis expert, helping users with non-technical backgrounds understand the differences between two processes. Work according to the following description:\n\nTask Description:\nPlease compare the following two flowcharts (without mentioning any node IDs or technical terms), and provide a concise and easy-to-understand overall difference description by analyzing the differences in each path of the process.\n\nRequirements:\n1. The answer must be in #{{language}} .\n2. Please avoid using any BPMN or professional process modeling-related terms, and keep the language simple and easy to understand.\n3. Focus only on the differences in process steps and paths to help non-technical personnel understand the differences between each process.\n4. The analysis should cover:\n   - Changes in the order of process steps,\n   - New or deleted sequence links,\n   - Changes in process complexity,\n   - Potential impacts or consequences of these differences.\n\nOutput Format:\nPlease organize your response clearly and logically, using numbered or bulleted lists where appropriate. Ensure the explanation flows well and is easy for non-technical readers to follow.\n\nInput Format:\nFlowchart 1:\n```xml\n#{{text}} \n```\n\nFlowchart 2:\n```xml\n#{{text2}} \n```\n\nAdditional Information:\n```text\n#{{message}} \n```\n\nPlease start the analysis based on the above content and provide a clear, structured, and easy-to-understand answer in #{{language}} .",
       text: "",
     };
+  }
+
+  renderQuestionTemplate(workflow) {
+    const questionTemplate = workflow?.questionTemplate;
+
+    if (!questionTemplate) {
+      return "";
+    }
+
+    // Render the question template with variables replaced
+    const renderedTemplate = questionTemplate.replace(/#\{\{(\w+)\}\}/g, (match, variableName) => {
+      return workflow[variableName] || `{{${variableName}}}`;
+    });
+
+    return renderedTemplate;
   }
 
   addWorkflow() {
@@ -185,6 +207,46 @@ class WorkflowListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("task:Question"),
+        dataIndex: "questionTemplate",
+        key: "questionTemplate",
+        // width: "160px",
+        sorter: (a, b) => a.questionTemplate.localeCompare(b.questionTemplate),
+        render: (text, record, index) => {
+          return (
+            <Popover
+              placement="left"
+              trigger="hover"
+              title={i18next.t("task:Question")}
+              content={
+                <div style={{width: "500px", height: "600px"}}>
+                  <CodeMirror
+                    value={this.renderQuestionTemplate(record)}
+                    options={{
+                      mode: "xml",
+                      theme: "material-darker",
+                      lineNumbers: true,
+                      readOnly: true,
+                    }}
+                    editorDidMount={(editor) => {
+                      if (window.ResizeObserver) {
+                        const resizeObserver = new ResizeObserver(() => {
+                          editor.refresh();
+                        });
+                        resizeObserver.observe(editor.getWrapperElement().parentNode);
+                      }
+                    }}
+                  />
+                </div>
+              }>
+              <div style={{maxWidth: "300px"}}>
+                {Setting.getShortText(text, 100)}
+              </div>
+            </Popover>
+          );
+        },
+      },
+      {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
@@ -195,6 +257,7 @@ class WorkflowListPage extends BaseListPage {
             <div>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/workflows/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
+                placement="topLeft"
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteWorkflow(record)}
                 okText={i18next.t("general:OK")}

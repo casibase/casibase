@@ -69,6 +69,7 @@
     "Single": "Chat individual",
     "Speech recognition not supported in this browser": "El reconocimiento de voz no es compatible con este navegador",
     "Text token count": "Cantidad de tokens de texto",
+    "The chat is not found": "The chat is not found",
     "The response has been interrupted. Please do not refresh the page during responding.": "La respuesta ha sido interrumpida. No actualices la página durante la respuesta.",
     "Token count": "Cantidad de tokens",
     "Type message here": "Escribe tu mensaje aquí",
@@ -504,7 +505,6 @@
     "New Record": "Nuevo registro",
     "Object": "Objeto",
     "Query": "Consulta",
-    "Response": "Respuesta",
     "View Record": "Ver registro"
   },
   "session": {

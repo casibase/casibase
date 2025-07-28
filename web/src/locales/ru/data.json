@@ -69,6 +69,7 @@
     "Single": "Ли einzelный чат",
     "Speech recognition not supported in this browser": "Распознавание речи в этом браузере не поддерживается",
     "Text token count": "Количество токенов текста",
+    "The chat is not found": "The chat is not found",
     "The response has been interrupted. Please do not refresh the page during responding.": "Ответ был прерван. Пожалуйста, не обновляйте страницу во время ответа.",
     "Token count": "Количество токенов",
     "Type message here": "Введите сообщение здесь",
@@ -504,7 +505,6 @@
     "New Record": "Новая запись",
     "Object": "Объект",
     "Query": "Запрос",
-    "Response": "Ответ",
     "View Record": "Посмотреть запись"
   },
   "session": {
