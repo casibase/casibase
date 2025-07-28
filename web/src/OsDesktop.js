@@ -23,6 +23,7 @@ import routeManager, {DynamicRouteComponent} from "./component/AppRouteManager";
 import {StaticBaseUrl} from "./Conf";
 import {Draggable} from "./component/DragDrop/Draggable";
 import {Droppable} from "./component/DragDrop/Droppable";
+import {getRandomName} from "./Setting";
 
 const getIconUrl = (appType) => {
   return `${StaticBaseUrl}/apps/${appType}.svg`;
@@ -236,7 +237,6 @@ const Dock = ({windows, activeWindowId, onDockItemClick}) => {
 
 const OsDesktop = (props) => {
   const [windows, setWindows] = useState([]);
-  const [nextWindowId, setNextWindowId] = useState(1);
   const [activeWindowId, setActiveWindowId] = useState(null);
   const desktopRef = useRef(null);
   const history = useHistory();
@@ -312,7 +312,7 @@ const OsDesktop = (props) => {
   );
 
   const openWindow = (appType) => {
-    const id = `window-${nextWindowId}`;
+    const id = `window-${getRandomName()}`;
     const appConfig = routeManager.getAppConfig(appType);
     const {title, gradient} = appConfig;
     const initialRoute = appConfig.routes[0].path;
@@ -362,7 +362,6 @@ const OsDesktop = (props) => {
     };
 
     setWindows([...windows, newWindow]);
-    setNextWindowId(nextWindowId + 1);
     setActiveWindowId(id);
     maxZindex.current += 1;
   };
