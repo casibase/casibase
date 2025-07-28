@@ -40,6 +40,7 @@ class WorkflowEditPage extends React.Component {
       {value: "{{text}}", label: i18next.t("general:Text")},
       {value: "{{text2}}", label: i18next.t("general:Text2")},
       {value: "{{message}}", label: i18next.t("general:Message")},
+      {value: "{{language}}", label: i18next.t("general:Language")},
     ];
   }
 
@@ -86,7 +87,10 @@ class WorkflowEditPage extends React.Component {
 
     // Render the question template with variables replaced
     const renderedTemplate = questionTemplate.replace(/#\{\{(\w+)\}\}/g, (match, variableName) => {
-      return this.state.workflow[variableName] || `{{${variableName}}}`;
+      if (variableName === "language") {
+        return Setting.getLanguage() || "en";
+      }
+      return this.state.workflow[variableName] || "";
     });
 
     return renderedTemplate;
@@ -255,13 +259,10 @@ class WorkflowEditPage extends React.Component {
                   </Col>
                 </Row>
               }>
-              <Mentions
+              <Input
                 value={Setting.getShortText(this.state.workflow.questionTemplate, 60)}
                 placeholder={i18next.t("general:Enter '#' to select variable")}
-                onChange={(value) => this.updateWorkflowField("questionTemplate", value)}
-                rows={1}
-                prefix={"#"}
-                options={this.questionTemplatesOptions}
+                readOnly
               />
             </Popover>
           </Col>

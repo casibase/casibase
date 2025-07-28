@@ -592,9 +592,7 @@ class ChatWidget extends React.Component {
 
       ChatBackend.updateChat(updatedChat.owner, updatedChat.name, updatedChat)
         .then((res) => {
-          if (res.status === "ok") {
-            Setting.showMessage("success", i18next.t("general:Successfully saved"));
-          } else {
+          if (res.status !== "ok") {
             Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
           }
         })
