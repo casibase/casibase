@@ -89,7 +89,8 @@ class WorkflowEditPage extends React.Component {
     // Render the question template with variables replaced
     const renderedTemplate = questionTemplate.replace(/#\{\{(\w+)\}\}/g, (match, variableName) => {
       if (variableName === "language") {
-        return Setting.getLanguage() || "en";
+        const lang = Setting.getLanguage();
+        return (!lang || lang === "null") ? "en" : lang;
       }
       return this.state.workflow[variableName] || "";
     });

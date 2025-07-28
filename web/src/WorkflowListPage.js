@@ -54,7 +54,11 @@ class WorkflowListPage extends BaseListPage {
 
     // Render the question template with variables replaced
     const renderedTemplate = questionTemplate.replace(/#\{\{(\w+)\}\}/g, (match, variableName) => {
-      return workflow[variableName] || `{{${variableName}}}`;
+      if (variableName === "language") {
+        const lang = Setting.getLanguage();
+        return (!lang || lang === "null") ? "en" : lang;
+      }
+      return workflow[variableName] || "";
     });
 
     return renderedTemplate;
@@ -138,7 +142,7 @@ class WorkflowListPage extends BaseListPage {
         sorter: (a, b) => a.text.localeCompare(b.text),
         render: (text, record, index) => {
           return (
-            <Tooltip placement="left" overlayInnerStyle={{width: "515px", height: "615px"}} title={
+            <Tooltip placement="left" styles={{body: {width: "515px", height: "615px"}}} title={
               <div style={{width: "500px", height: "600px", backgroundColor: "white"}}>
                 <BpmnComponent
                   diagramXML={text}
@@ -166,7 +170,7 @@ class WorkflowListPage extends BaseListPage {
         sorter: (a, b) => a.text2.localeCompare(b.text2),
         render: (text, record, index) => {
           return (
-            <Tooltip placement="left" overlayInnerStyle={{width: "515px", height: "615px"}} title={
+            <Tooltip placement="left" styles={{body: {width: "515px", height: "615px"}}} title={
               <div style={{width: "500px", height: "600px", backgroundColor: "white"}}>
                 <BpmnComponent
                   diagramXML={text}
@@ -194,10 +198,8 @@ class WorkflowListPage extends BaseListPage {
         sorter: (a, b) => a.text.localeCompare(b.text),
         render: (text, record, index) => {
           return (
-            <Tooltip placement="left" overlayInnerStyle={{width: "815px", height: "355px"}} title={
-              <div style={{width: "800px", height: "600px"}}>
-                <TextArea autoSize={{minRows: 1, maxRows: 15}} value={text} onChange={(e) => {}} />
-              </div>
+            <Tooltip placement="left" styles={{body: {width: "815px", maxHeight: "355px"}}} title={
+              <TextArea autoSize={{minRows: 1, maxRows: 15}} value={text} onChange={(e) => {}} />
             }>
               <div style={{maxWidth: "300px"}}>
                 {Setting.getShortText(text, 100)}
@@ -219,24 +221,31 @@ class WorkflowListPage extends BaseListPage {
               trigger="hover"
               title={i18next.t("task:Question")}
               content={
-                <div style={{width: "500px", height: "600px"}}>
-                  <CodeMirror
-                    value={this.renderQuestionTemplate(record)}
-                    options={{
-                      mode: "xml",
-                      theme: "material-darker",
-                      lineNumbers: true,
-                      readOnly: true,
-                    }}
-                    editorDidMount={(editor) => {
-                      if (window.ResizeObserver) {
-                        const resizeObserver = new ResizeObserver(() => {
-                          editor.refresh();
-                        });
-                        resizeObserver.observe(editor.getWrapperElement().parentNode);
-                      }
-                    }}
+                <div style={{display: "flex"}}>
+                  <TextArea
+                    style={{width: "400px", height: "400px"}}
+                    value={text}
+                    readOnly
                   />
+                  <div style={{width: "400px", height: "400px"}}>
+                    <CodeMirror
+                      value={this.renderQuestionTemplate(record)}
+                      options={{
+                        mode: "xml",
+                        theme: "material-darker",
+                        lineNumbers: true,
+                        readOnly: true,
+                      }}
+                      editorDidMount={(editor) => {
+                        if (window.ResizeObserver) {
+                          const resizeObserver = new ResizeObserver(() => {
+                            editor.refresh();
+                          });
+                          resizeObserver.observe(editor.getWrapperElement().parentNode);
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
               }>
               <div style={{maxWidth: "300px"}}>
