@@ -130,7 +130,7 @@ func (c *ApiController) AddRecord() {
 		record.UserAgent = c.getUserAgent()
 	}
 
-	c.Data["json"] = wrapActionResponse(object.AddRecord(&record))
+	c.Data["json"] = wrapActionResponse2(object.AddRecord(&record))
 	c.ServeJSON()
 }
 

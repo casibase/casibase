@@ -35,7 +35,7 @@ func (c *ApiController) CommitRecord() {
 		return
 	}
 
-	c.Data["json"] = wrapActionResponse(object.CommitRecord(&record))
+	c.Data["json"] = wrapActionResponse2(object.CommitRecord(&record))
 	c.ServeJSON()
 }
 

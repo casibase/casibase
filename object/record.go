@@ -245,23 +245,23 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	return &record, nil
 }
 
-func AddRecord(record *Record) (bool, error) {
+func AddRecord(record *Record) (bool, interface{}, error) {
 	if logPostOnly && record.Method == "GET" {
-		return false, nil
+		return false, nil, nil
 	}
 
 	if strings.HasSuffix(record.Action, "-record") {
-		return false, nil
+		return false, nil, nil
 	}
 
 	if strings.HasSuffix(record.Action, "-record-second") {
-		return false, nil
+		return false, nil, nil
 	}
 
 	if record.Provider == "" {
 		providerFrist, providerSecend, err := GetTwoActiveBlockchainProvider("admin")
 		if err != nil {
-			return false, err
+			return false, nil, err
 		}
 
 		if providerFrist != nil {
@@ -277,19 +277,19 @@ func AddRecord(record *Record) (bool, error) {
 
 	affected, err := adapter.engine.Insert(record)
 	if err != nil {
-		return false, err
+		return false, nil, err
 	}
 
 	if record.NeedCommit {
-		affected2, err := CommitRecord(record)
+		affected2, data, err := CommitRecord(record)
 		if err != nil {
-			return false, err
+			return false, nil, err
 		}
 
-		return affected2, nil
+		return affected2, data, nil
 	}
 
-	return affected != 0, nil
+	return affected != 0, nil, nil
 }
 
 func DeleteRecord(record *Record) (bool, error) {

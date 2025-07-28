@@ -35,7 +35,7 @@ func addRecord(c *ApiController, userName string, requestUri string) error {
 
 	record.Organization = conf.GetConfigString("casdoorOrganization")
 
-	_, err = object.AddRecord(record)
+	_, _, err = object.AddRecord(record)
 	return err
 }
 

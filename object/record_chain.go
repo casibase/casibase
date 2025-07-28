@@ -111,29 +111,32 @@ func (record *Record) toParam() string {
 	return util.StructToJson(res)
 }
 
-func CommitRecord(record *Record) (bool, error) {
+func CommitRecord(record *Record) (bool, interface{}, error) {
 	if record.Block != "" {
-		return false, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getId(), record.Block)
+		return false, nil, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getId(), record.Block)
 	}
 
 	client, provider, err := record.getRecordChainClient(record.Provider)
 	if err != nil {
-		return false, err
+		return false, nil, err
 	}
 	record.Provider = provider.Name
 
 	blockId, transactionId, blockHash, err := client.Commit(record.toParam())
 	if err != nil {
-		return false, err
+		return false, nil, err
 	}
 
-	// Update the record fields to avoid concurrent update race conditions
-	return UpdateRecordFields(record.getId(), map[string]interface{}{
+	data := map[string]interface{}{
 		"provider":    record.Provider,
 		"block":       blockId,
 		"transaction": transactionId,
 		"block_hash":  blockHash,
-	})
+	}
+
+	// Update the record fields to avoid concurrent update race conditions
+	affected, err := UpdateRecordFields(record.getId(), data)
+	return affected, data, err
 }
 
 func CommitRecordSecond(record *Record) (bool, error) {

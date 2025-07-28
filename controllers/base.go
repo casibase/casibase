@@ -100,6 +100,16 @@ func wrapActionResponse(affected bool, e ...error) *Response {
 	}
 }
 
+func wrapActionResponse2(affected bool, data interface{}, e ...error) *Response {
+	if len(e) != 0 && e[0] != nil {
+		return &Response{Status: "error", Msg: e[0].Error()}
+	} else if affected {
+		return &Response{Status: "ok", Msg: "", Data: "Affected", Data2: data}
+	} else {
+		return &Response{Status: "ok", Msg: "", Data: "Unaffected", Data2: data}
+	}
+}
+
 func (c *ApiController) Finish() {
 	if strings.HasPrefix(c.Ctx.Input.URL(), "/api") {
 		startTime := c.Ctx.Input.GetData("startTime")
