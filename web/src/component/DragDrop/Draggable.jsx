@@ -8,17 +8,24 @@ export const Draggable = ({id, position, children, isMaximized, isMinimized, isD
 
   const finalTransform = {
     x: (transform?.x || 0) + (position?.x || 0),
-    y: Math.max(0, (transform?.y || 0) + (position?.y || 0)),
+    y: Math.max(64, (transform?.y || 0) + (position?.y || 0)),
+  };
+
+  const maximizedTransform = {
+    x: 0,
+    y: 64,
   };
 
   const commonStyle = {
     position: "absolute",
+    top: 0,
     pointerEvents: "auto",
     minWidth: size.minWidth,
     minHeight: size.minHeight,
     maxWidth: "100%",
     maxHeight: "100%",
     zIndex: zIndex || 0,
+    willChange: "transform",
     transition: isDragging ? "none" : isResizing ? "none" : "transform 0.3s ease-in-out, width 0.3s ease-in-out, height 0.3s ease-in-out",
     userSelect: isResizing ? "none" : "auto",
   };
@@ -28,11 +35,11 @@ export const Draggable = ({id, position, children, isMaximized, isMinimized, isD
     ...(isMaximized
       ? {
         left: 0,
-        top: 0,
         right: 0,
         bottom: 0,
         width: "100%",
         height: "100%",
+        transform: CSS.Translate.toString(maximizedTransform),
       }
       : isMinimized
         ? {
