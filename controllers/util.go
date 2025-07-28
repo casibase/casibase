@@ -113,6 +113,11 @@ func (c *ApiController) CheckSignedIn() (string, bool) {
 }
 
 func (c *ApiController) RequireAdmin() bool {
+	disablePreviewMode, _ := beego.AppConfig.Bool("disablePreviewMode")
+	if !disablePreviewMode {
+		return true
+	}
+
 	if !c.IsAdmin() {
 		c.ResponseError("this operation requires admin privilege")
 		return false
@@ -129,15 +134,6 @@ func (c *ApiController) IsAdmin() bool {
 
 	res := user.IsAdmin || user.Type == "chat-admin"
 	return res
-}
-
-func (c *ApiController) IsPreviewMode() bool {
-	disablePreviewMode, _ := beego.AppConfig.Bool("disablePreviewMode")
-	if disablePreviewMode {
-		c.ResponseError("this operation requires admin privilege")
-		return false
-	}
-	return true
 }
 
 func DenyRequest(ctx *context.Context) {

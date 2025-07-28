@@ -65,7 +65,7 @@ func (c *ApiController) GetProviders() {
 		providers = object.GetMaskedProviders(providers, true, user)
 		c.ResponseOk(providers)
 	} else {
-		if !c.IsPreviewMode() && !c.RequireAdmin() {
+		if !c.RequireAdmin() {
 			return
 		}
 		limit := util.ParseInt(limit)
