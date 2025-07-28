@@ -27,15 +27,16 @@ import (
 
 func TestUpdateRecordsLocation(t *testing.T) {
 	InitConfig()
+	util.InitMaxmindFiles()
+	util.InitIpDb()
+
 	records, err := getAllRecords()
 	if err != nil {
 		panic(err)
 	}
 
 	bar := progressbar.Default(int64(len(records)))
-
 	var errorRecords []string
-
 	for _, r := range records {
 		bar.Add(1)
 		if r.Unit == "" || r.Section == "" {
@@ -44,11 +45,13 @@ func TestUpdateRecordsLocation(t *testing.T) {
 				parts := strings.Split(clientIp, " ->")
 				clientIp = strings.TrimSpace(parts[len(parts)-1])
 			}
+
 			locationInfo, err := util.GetInfoFromIP(clientIp)
 			if err != nil {
 				errorRecords = append(errorRecords, r.Name+": invalid client ip.")
 				continue
 			}
+
 			r.Region = locationInfo.Country
 			r.City = locationInfo.City
 			err = UpdateRecordInternal(r.Id, *r)

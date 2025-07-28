@@ -36,6 +36,10 @@ func InitAuthConfig() {
 	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
 	casdoorApplication := beego.AppConfig.String("casdoorApplication")
 
+	if casdoorEndpoint == "" {
+		return
+	}
+
 	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, "", casdoorOrganization, casdoorApplication)
 	application, err := casdoorsdk.GetApplication(casdoorApplication)
 	if err != nil {
