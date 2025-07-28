@@ -13,8 +13,6 @@ export const Draggable = ({id, position, children, isMaximized, isMinimized, isD
 
   const commonStyle = {
     position: "absolute",
-    touchAction: "none",
-    userSelect: "none",
     pointerEvents: "auto",
     minWidth: size.minWidth,
     minHeight: size.minHeight,
@@ -22,6 +20,7 @@ export const Draggable = ({id, position, children, isMaximized, isMinimized, isD
     maxHeight: "100%",
     zIndex: zIndex || 0,
     transition: isDragging ? "none" : isResizing ? "none" : "transform 0.3s ease-in-out, width 0.3s ease-in-out, height 0.3s ease-in-out",
+    userSelect: isResizing ? "none" : "auto",
   };
 
   const style = {
