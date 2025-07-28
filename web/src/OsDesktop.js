@@ -599,7 +599,7 @@ const OsDesktop = (props) => {
           ...window,
           position: {
             x: window.position.x + delta.x,
-            y: window.position.y + delta.y,
+            y: Math.max(0, window.position.y + delta.y),
           },
           isDragging: false,
         }
