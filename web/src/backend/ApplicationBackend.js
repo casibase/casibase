@@ -35,24 +35,26 @@ export function getApplication(owner, name) {
 }
 
 export function updateApplication(owner, name, application) {
+  const newApplication = Setting.deepCopy(application);
   return fetch(`${Setting.ServerUrl}/api/update-application?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(application),
+    body: JSON.stringify(newApplication),
   }).then(res => res.json());
 }
 
 export function addApplication(application) {
+  const newApplication = Setting.deepCopy(application);
   return fetch(`${Setting.ServerUrl}/api/add-application`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(application),
+    body: JSON.stringify(newApplication),
   }).then(res => res.json());
 }
 
@@ -67,25 +69,25 @@ export function deleteApplication(application) {
   }).then(res => res.json());
 }
 
-export function deployApplication(deploymentRequest) {
-  return fetch(`${Setting.ServerUrl}/api/deploy-application`, {
+export function deployApplication(application) {
+  const newApplication = Setting.deepCopy(application);
+  return fetch(`${Setting.ServerUrl}/api/deploy-application?id=${application.owner}/${encodeURIComponent(application.name)}`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(deploymentRequest),
+    body: JSON.stringify(newApplication),
   }).then(res => res.json());
 }
 
-export function undeployApplication(deploymentRequest) {
-  return fetch(`${Setting.ServerUrl}/api/undeploy-application`, {
+export function undeployApplication(owner, name) {
+  return fetch(`${Setting.ServerUrl}/api/undeploy-application?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(deploymentRequest),
   }).then(res => res.json());
 }
 

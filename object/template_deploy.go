@@ -34,11 +34,6 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-type DeploymentStatus struct {
-	Status  string `json:"status"`
-	Message string `json:"message"`
-}
-
 type K8sClient struct {
 	clientSet     *kubernetes.Clientset
 	dynamicClient dynamic.Interface
@@ -139,19 +134,19 @@ func ensureK8sClient() error {
 	return nil
 }
 
-func GetK8sStatus() (*DeploymentStatus, error) {
+func GetK8sStatus() (string, error) {
 	if err := ensureK8sClient(); err != nil {
-		return &DeploymentStatus{Status: "Disconnected", Message: fmt.Sprintf("failed to initialize k8s client: %v", err)}, nil
+		return "Disconnected", nil
 	}
 
 	err := k8sClient.testConnection()
 	if err != nil {
 		k8sClient.connected = false
-		return &DeploymentStatus{Status: "Disconnected", Message: err.Error()}, nil
+		return "Disconnected", nil
 	}
 
 	k8sClient.connected = true
-	return &DeploymentStatus{Status: "Connected", Message: "Successfully connected to Kubernetes cluster"}, nil
+	return "Connected", nil
 }
 
 func (k *K8sClient) createNamespaceIfNotExists(name string) error {

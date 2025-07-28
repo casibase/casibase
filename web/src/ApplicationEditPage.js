@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row, Select, Tag} from "antd";
+import {Button, Card, Col, Input, Popconfirm, Row, Select, Tag} from "antd";
 import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as TemplateBackend from "./backend/TemplateBackend";
 import * as Setting from "./Setting";
@@ -34,6 +34,7 @@ class ApplicationEditPage extends React.Component {
       applicationName: props.match.params.applicationName,
       application: null,
       templates: [],
+      deploying: false,
     };
   }
 
@@ -55,6 +56,44 @@ class ApplicationEditPage extends React.Component {
       });
   }
 
+  deployApplication() {
+    this.setState({deploying: true});
+
+    ApplicationBackend.deployApplication(this.state.application)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", i18next.t("general:Successfully deployed"));
+          this.getApplication();
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${res.msg}`);
+        }
+        this.setState({deploying: false});
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${error}`);
+        this.setState({deploying: false});
+      });
+  }
+
+  undeployApplication() {
+    this.setState({deploying: true});
+
+    ApplicationBackend.undeployApplication(this.state.application.owner, this.state.application.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", i18next.t("general:Successfully undeployed"));
+          this.getApplication();
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${res.msg}`);
+        }
+        this.setState({deploying: false});
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${error}`);
+        this.setState({deploying: false});
+      });
+  }
+
   renderStatus(status) {
     let color;
     switch (status) {
@@ -62,6 +101,9 @@ class ApplicationEditPage extends React.Component {
       color = "green";
       break;
     case "Pending":
+      color = "orange";
+      break;
+    case "Terminating":
       color = "orange";
       break;
     case "Failed":
@@ -166,16 +208,19 @@ class ApplicationEditPage extends React.Component {
           </Col>
           <Col span={22} >
             {this.renderStatus(this.state.application.status)}
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Message"), i18next.t("general:Message - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <TextArea autoSize={{minRows: 1, maxRows: 5}} value={this.state.application.message} onChange={(e) => {
-              this.updateApplicationField("message", e.target.value);
-            }} />
+            {
+              this.state.application.status === "Not Deployed" ? (
+                <Button loading={this.state.deploying} style={{marginLeft: "10px"}} type="primary" onClick={() => this.deployApplication()}>
+                  {i18next.t("application:Deploy")}
+                </Button>
+              ) : (
+                <Popconfirm title={`${i18next.t("general:Sure to undeploy")}: ${this.state.application.name} ?`} onConfirm={() => this.undeployApplication()} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                  <Button loading={this.state.deploying} style={{marginLeft: "10px"}} type="primary" danger>
+                    {i18next.t("application:Undeploy")}
+                  </Button>
+                </Popconfirm>
+              )
+            }
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
