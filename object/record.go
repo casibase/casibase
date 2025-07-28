@@ -45,6 +45,10 @@ type Record struct {
 	RequestUri   string `xorm:"varchar(1000)" json:"requestUri"`
 	Action       string `xorm:"varchar(1000)" json:"action"`
 	Language     string `xorm:"varchar(100)" json:"language"`
+	Region       string `xorm:"varchar(100)" json:"region"`
+	City         string `xorm:"varchar(100)" json:"city"`
+	Unit         string `xorm:"varchar(100)" json:"unit"`
+	Section      string `xorm:"varchar(100)" json:"section"`
 
 	Object   string `xorm:"mediumtext" json:"object"`
 	Response string `xorm:"mediumtext" json:"response"`
@@ -78,6 +82,16 @@ func GetRecordCount(owner, field, value string) (int64, error) {
 func GetRecords(owner string) ([]*Record, error) {
 	records := []*Record{}
 	err := adapter.engine.Desc("id").Find(&records, &Record{Owner: owner})
+	if err != nil {
+		return records, err
+	}
+
+	return records, nil
+}
+
+func getAllRecords() ([]*Record, error) {
+	records := []*Record{}
+	err := adapter.engine.Desc("id").Find(&records, &Record{})
 	if err != nil {
 		return records, err
 	}
@@ -148,6 +162,14 @@ func UpdateRecord(id string, record *Record) (bool, error) {
 	return affected != 0, nil
 }
 
+func UpdateRecordInternal(id int, record Record) error {
+	_, err := adapter.engine.ID(id).Update(record)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func UpdateRecordFields(id string, fields map[string]interface{}) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	if p, err := getRecord(owner, name); err != nil {
@@ -194,6 +216,17 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	}
 	languageCode := conf.GetLanguage(language)
 
+	// get location info from client ip
+	locationInfo, err := util.GetInfoFromIP(ip)
+	if err != nil {
+		return nil, err
+	}
+	region := locationInfo.Country
+	city := locationInfo.City
+	if err != nil {
+		return nil, err
+	}
+
 	record := Record{
 		Name:        util.GenerateId(),
 		CreatedTime: util.GetCurrentTime(),
@@ -203,6 +236,8 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 		RequestUri:  requestUri,
 		Action:      action,
 		Language:    languageCode,
+		Region:      region,
+		City:        city,
 		Object:      object,
 		Response:    fmt.Sprintf("{\"status\":\"%s\",\"msg\":\"%s\"}", resp.Status, resp.Msg),
 		IsTriggered: false,

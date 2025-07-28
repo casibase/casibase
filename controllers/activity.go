@@ -15,6 +15,8 @@
 package controllers
 
 import (
+	"strings"
+
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -29,31 +31,10 @@ import (
 func (c *ApiController) GetActivities() {
 	days := util.ParseInt(c.Input().Get("days"))
 	user := c.Input().Get("selectedUser")
-	field := c.Input().Get("field")
+	fieldParam := c.Input().Get("field")
+	fields := strings.Split(fieldParam, ",")
 
-	activities, err := object.GetActivities(days, user, field)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	c.ResponseOk(activities)
-}
-
-// GetRangeActivities
-// @Title GetRangeActivities
-// @Tag Activity API
-// @Description get range activities
-// @Param count query string true "count of range activities"
-// @Success 200 {array} object.Activity The Response object
-// @router /get-range-activities [get]
-func (c *ApiController) GetRangeActivities() {
-	rangeType := c.Input().Get("rangeType")
-	count := util.ParseInt(c.Input().Get("count"))
-	user := c.Input().Get("user")
-	field := c.Input().Get("field")
-
-	activities, err := object.GetRangeActivities(rangeType, count, user, field)
+	activities, err := object.GetActivities(days, user, fields)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
