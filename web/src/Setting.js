@@ -2068,3 +2068,13 @@ export function getFooterHtml(themes) {
     return FooterHtml;
   }
 }
+
+export function isDarkMode() {
+  let storageThemeAlgorithm = [];
+  try {
+    storageThemeAlgorithm = localStorage.getItem("themeAlgorithm") ? JSON.parse(localStorage.getItem("themeAlgorithm")) : ["default"];
+  } catch {
+    storageThemeAlgorithm = ["default"];
+  }
+  return storageThemeAlgorithm.includes("dark") ? true : false;
+}

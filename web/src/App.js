@@ -341,6 +341,14 @@ class App extends Component {
     localStorage.setItem("themeAlgorithm", JSON.stringify(nextThemeAlgorithm));
   };
 
+  getLogo(themes) {
+    return Setting.getLogo(themes);
+  }
+
+  getFooterHtml(themes) {
+    return Setting.getFooterHtml(themes);
+  }
+
   renderAvatar() {
     if (this.state.account.avatar === "") {
       return (
@@ -813,7 +821,7 @@ class App extends Component {
     };
 
     return (
-      <Header style={{padding: "0", marginBottom: "3px", backgroundColor: this.state.themeAlgorithm.includes("dark") ? "black" : "white", display: "flex", justifyContent: "space-between"}}>
+      <Header style={{padding: "0", marginBottom: "3px", display: "flex", justifyContent: "space-between", backgroundColor: Setting.isDarkMode() ? "#1f1f1f" : "#fff"}}>
         <div style={{display: "flex", alignItems: "center", flex: 1, overflow: "hidden"}}>
           {Setting.isMobile() ? null : (
             <Link to={"/"}>
@@ -838,7 +846,7 @@ class App extends Component {
             </React.Fragment>
           ) : (
             <div style={{display: "flex", marginLeft: "10px", flex: 1, minWidth: 0, overflow: "auto", paddingRight: "20px"}}>
-              <Menu style={{minWidth: 0, width: "100%"}} onClick={onClick} items={this.getMenuItems()} mode={"horizontal"} selectedKeys={[this.state.selectedMenuKey]} />
+              <Menu style={{minWidth: 0, width: "100%", backgroundColor: Setting.isDarkMode() ? "#1f1f1f" : "#fff"}} onClick={onClick} items={this.getMenuItems()} mode={"horizontal"} selectedKeys={[this.state.selectedMenuKey]} />
             </div>
           )}
         </div>
@@ -864,7 +872,7 @@ class App extends Component {
             height: "67px",
           }
         }>
-          <div dangerouslySetInnerHTML={{__html: Setting.getFooterHtml(this.state.themeAlgorithm)}} />
+          <div dangerouslySetInnerHTML={{__html: this.getFooterHtml(this.state.themeAlgorithm)}} />
         </Footer>
       </React.Fragment>
     );

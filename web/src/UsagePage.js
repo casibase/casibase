@@ -521,6 +521,9 @@ class UsagePage extends BaseListPage {
         trigger: "axis",
         axisPointer: {
           type: "cross",
+          crossStyle: {
+            color: Setting.isDarkMode() ? "rgba(0, 0, 0, 1)" : "#999",
+          },
         },
       },
       legend: {
@@ -658,10 +661,13 @@ class UsagePage extends BaseListPage {
                   height: "400px",
                   width: "100%",
                   display: "inline-block",
+                  backgroundColor: Setting.isDarkMode() ? "#000" : "#fff",
                 }}
                 showLoading={this.state.usages === null}
                 loadingOption={{
                   color: localStorage.getItem("themeColor"),
+                  textColor: Setting.isDarkMode() ? "rgba(255, 255, 255, 1)" : "#000",
+                  maskColor: Setting.isDarkMode() ? "rgba(0, 0, 0, 1)" : "rgba(255, 255, 255, 0.8)",
                   fontSize: "16px",
                   spinnerRadius: 6,
                   lineWidth: 3,
@@ -677,10 +683,13 @@ class UsagePage extends BaseListPage {
                   height: "400px",
                   width: "100%",
                   display: "inline-block",
+                  backgroundColor: Setting.isDarkMode() ? "#000" : "#fff",
                 }}
                 showLoading={this.state.usages === null}
                 loadingOption={{
                   color: localStorage.getItem("themeColor"),
+                  textColor: Setting.isDarkMode() ? "rgba(255, 255, 255, 1)" : "#000",
+                  maskColor: Setting.isDarkMode() ? "rgba(0, 0, 0, 1)" : "rgba(255, 255, 255, 0.8)",
                   fontSize: "16px",
                   spinnerRadius: 6,
                   lineWidth: 3,
@@ -705,10 +714,13 @@ class UsagePage extends BaseListPage {
               height: "400px",
               width: "48%",
               display: "inline-block",
+              backgroundColor: Setting.isDarkMode() ? "#000" : "#fff",
             }}
             showLoading={rangeUsages === null}
             loadingOption={{
               color: localStorage.getItem("themeColor"),
+              textColor: Setting.isDarkMode() ? "rgba(255, 255, 255, 1)" : "#000",
+              maskColor: Setting.isDarkMode() ? "rgba(0, 0, 0, 1)" : "rgba(255, 255, 255, 0.8)",
               fontSize: "16px",
               spinnerRadius: 6,
               lineWidth: 3,
@@ -722,10 +734,13 @@ class UsagePage extends BaseListPage {
               height: "400px",
               width: "48%",
               display: "inline-block",
+              backgroundColor: Setting.isDarkMode() ? "#000" : "#fff",
             }}
             showLoading={rangeUsages === null}
             loadingOption={{
               color: localStorage.getItem("themeColor"),
+              textColor: Setting.isDarkMode() ? "rgba(255, 255, 255, 1)" : "#000",
+              maskColor: Setting.isDarkMode() ? "rgba(0, 0, 0, 1)" : "rgba(255, 255, 255, 0.8)",
               fontSize: "16px",
               spinnerRadius: 6,
               lineWidth: 3,
@@ -740,7 +755,7 @@ class UsagePage extends BaseListPage {
 
   render() {
     return (
-      <div>
+      <div style={{backgroundColor: Setting.isDarkMode() ? "black" : "white"}}>
         <Row style={{marginTop: "20px"}} >
           <Col span={1} />
           <Col span={17} >

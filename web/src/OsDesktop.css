@@ -3,7 +3,6 @@
   height: calc(100vh - 64px);
   display: flex;
   flex-direction: column;
-  background-color: #f0f2f5;
   overflow: hidden;
 }
 
@@ -32,7 +31,6 @@
   height: 30px;
   line-height: 30px;
   margin-right: 5px;
-  background-color: #1a2d3e;
   border-radius: 3px;
   cursor: pointer;
   white-space: nowrap;
@@ -147,7 +145,6 @@
 
 .desktop-icon .icon-name {
   text-align: center;
-  color: #333;
   font-size: 14px;
   font-weight: 500;
   padding: 4px 8px;
@@ -157,7 +154,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   transition: all 0.2s ease;
-  text-shadow: 0 1px 2px rgb(255 255 255 / 80%);
   background: transparent;
 }
 
@@ -168,7 +164,6 @@
 }
 
 .desktop-window {
-  background-color: white;
   border-radius: 5px;
   box-shadow: 0 2px 10px rgb(0 0 0 / 20%);
   overflow: hidden;
@@ -259,7 +254,6 @@
 
 .window-header {
   height: 32px;
-  background-color: #f5f5f5;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -296,7 +290,6 @@
 .window-title {
   font-size: 14px;
   font-weight: 400;
-  color: #323130;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -361,15 +354,10 @@
 
 .window-minimize .control-icon {
   font-weight: bold;
-  color: rgb(0 0 0 / 50%) !important;
 }
 
 .window-minimize:active {
   background-color: #e6a926 !important;
-}
-
-.window-maximize .control-icon {
-  color: rgb(0 0 0 / 50%) !important;
 }
 
 .window-maximize:active {
@@ -419,7 +407,6 @@
 .window-content {
   flex-grow: 1;
   overflow: auto;
-  background-color: white;
 }
 
 .dock {
@@ -428,7 +415,6 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 2000;
-  background: rgb(255 255 255 / 90%);
   backdrop-filter: blur(10px);
   border-radius: 15px;
   padding: 8px 16px;

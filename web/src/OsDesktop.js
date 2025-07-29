@@ -23,7 +23,7 @@ import routeManager, {DynamicRouteComponent} from "./component/AppRouteManager";
 import {StaticBaseUrl} from "./Conf";
 import {Draggable} from "./component/DragDrop/Draggable";
 import {Droppable} from "./component/DragDrop/Droppable";
-import {getRandomName} from "./Setting";
+import {getRandomName, isDarkMode} from "./Setting";
 
 const getIconUrl = (appType) => {
   return `${StaticBaseUrl}/apps/${appType}.svg`;
@@ -182,7 +182,14 @@ const Window = ({title, isMaximized, onClose, onMaximize, onMinimize, onFocus, a
           </Button>
         </div>
       </div>
-      <div className="window-content">
+      <div className="window-content" style={{
+        backgroundColor: isDarkMode() ? "rgba(20, 20, 20, 0.95)" : "rgba(255, 255, 255, 0.95)",
+        height: "100%",
+        width: "100%",
+        overflow: "auto",
+        padding: "16px",
+        color: isDarkMode() ? "#fff" : "#000",
+      }}>
         <WindowContent
           appType={appType}
           account={account}
