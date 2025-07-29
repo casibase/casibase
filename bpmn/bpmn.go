@@ -301,120 +301,121 @@ func buildPathsHelper(currentTask string, tasks map[string]Task, sequenceFlows m
 	return allPaths
 }
 
-func ComparePaths(standardPath, actualPath *PathNode, variance *int, mandatoryTasks map[string]bool) {
-	if standardPath == nil || actualPath == nil {
+func ComparePaths(standardPath, actualPath *PathNode, variance *int, mandatoryTasks map[string]bool, variances *strings.Builder) {
+	if standardPath == nil && actualPath == nil {
 		return
 	}
 
-	if standardPath.Task.Name != actualPath.Task.Name && mandatoryTasks[standardPath.Task.ID] {
-		fmt.Printf("Variance detected: Task %s does not match actual task %s\n", standardPath.Task.Name, actualPath.Task.Name)
+	if standardPath == nil {
+		variances.WriteString(fmt.Sprintf("差异：发现额外的实际任务 %s\n", actualPath.Task.Name))
+		*variance++
+		return
+	}
+
+	if actualPath == nil {
+		variances.WriteString(fmt.Sprintf("差异：实际路径中缺少任务 %s\n", standardPath.Task.Name))
+		*variance++
+		return
+	}
+
+	// 只在任务名称或ID不匹配时计算一次差异
+	if standardPath.Task.Name != actualPath.Task.Name || standardPath.Task.ID != actualPath.Task.ID {
+		variances.WriteString(fmt.Sprintf("检测到差异：任务 %s 与实际任务 %s 不匹配\n", standardPath.Task.Name, actualPath.Task.Name))
 		*variance++
 	}
 
-	if standardPath.Task.ID != actualPath.Task.ID && mandatoryTasks[standardPath.Task.ID] {
-		fmt.Printf("Variance detected: Task ID %s does not match actual task ID %s\n", standardPath.Task.ID, actualPath.Task.ID)
-		*variance++
-	}
-
+	// 检查执行时间差异
 	if !actualPath.ActualExecTime.IsZero() {
 		if standardPath.Delay > 0 {
 			expectedExecTime := standardPath.ActualExecTime.Add(time.Duration(standardPath.Delay) * 24 * time.Hour)
 			if actualPath.ActualExecTime.Before(expectedExecTime) {
-				fmt.Printf("Variance: Task %s executed too early\n", actualPath.Task.Name)
+				variances.WriteString(fmt.Sprintf("差异：任务 %s 执行过早\n", actualPath.Task.Name))
 				*variance++
 			} else if actualPath.ActualExecTime.After(expectedExecTime) {
-				fmt.Printf("Variance: Task %s executed too late\n", actualPath.Task.Name)
+				variances.WriteString(fmt.Sprintf("差异：任务 %s 执行过晚\n", actualPath.Task.Name))
 				*variance++
 			}
 		} else if actualPath.ActualExecTime.After(standardPath.ActualExecTime) {
-			fmt.Printf("Variance: Task %s executed later than expected\n", actualPath.Task.Name)
+			variances.WriteString(fmt.Sprintf("差异：任务 %s 执行晚于预期\n", actualPath.Task.Name))
 			*variance++
 		}
 	}
 
-	standardNext := map[string]bool{}
-	actualTasks := map[string]bool{}
-
-	for _, next := range standardPath.Next {
-		standardNext[next.Task.Name] = true
-	}
-
-	for _, next := range actualPath.Next {
-		actualTasks[next.Task.Name] = true
-
-		if !standardNext[next.Task.Name] && mandatoryTasks[next.Task.ID] {
-			fmt.Printf("Variance: Actual task %s is not in standard path\n", next.Task.Name)
-			*variance++
-		}
-	}
-
-	for _, next := range standardPath.Next {
-		if mandatoryTasks[next.Task.ID] && !actualTasks[next.Task.Name] {
-			fmt.Printf("Variance: Missing task %s in actual path\n", next.Task.Name)
-			*variance++
-		}
-	}
-
-	for i := 0; i < len(standardPath.Next) && i < len(actualPath.Next); i++ {
-		ComparePaths(standardPath.Next[i], actualPath.Next[i], variance, mandatoryTasks)
-	}
-
+	// 检查并行任务数量差异
 	if len(standardPath.Concurrent) != len(actualPath.Concurrent) {
-		fmt.Printf("Variance: Number of concurrent tasks do not match (expected %d, found %d)\n", len(standardPath.Concurrent), len(actualPath.Concurrent))
+		variances.WriteString(fmt.Sprintf("差异：并行任务数量不匹配（期望%d个，实际发现%d个）\n", len(standardPath.Concurrent), len(actualPath.Concurrent)))
 		*variance++
-	} else {
-		for i := 0; i < len(standardPath.Concurrent) && i < len(actualPath.Concurrent); i++ {
-			ComparePaths(standardPath.Concurrent[i], actualPath.Concurrent[i], variance, mandatoryTasks)
-		}
 	}
 
-	if len(actualPath.Concurrent) > len(standardPath.Concurrent) {
-		for _, concurrent := range actualPath.Concurrent[len(standardPath.Concurrent):] {
-			fmt.Printf("Variance: Extra concurrent task %s in actual path\n", concurrent.Task.Name)
-			*variance++
+	// 递归比较并行任务
+	maxConcurrent := len(standardPath.Concurrent)
+	if len(actualPath.Concurrent) > maxConcurrent {
+		maxConcurrent = len(actualPath.Concurrent)
+	}
+	for i := 0; i < maxConcurrent; i++ {
+		var stdConcurrent, actualConcurrent *PathNode
+		if i < len(standardPath.Concurrent) {
+			stdConcurrent = standardPath.Concurrent[i]
 		}
+		if i < len(actualPath.Concurrent) {
+			actualConcurrent = actualPath.Concurrent[i]
+		}
+		ComparePaths(stdConcurrent, actualConcurrent, variance, mandatoryTasks, variances)
+	}
+
+	// 递归比较下一个任务
+	maxNext := len(standardPath.Next)
+	if len(actualPath.Next) > maxNext {
+		maxNext = len(actualPath.Next)
+	}
+	for i := 0; i < maxNext; i++ {
+		var stdNext, actualNext *PathNode
+		if i < len(standardPath.Next) {
+			stdNext = standardPath.Next[i]
+		}
+		if i < len(actualPath.Next) {
+			actualNext = actualPath.Next[i]
+		}
+		ComparePaths(stdNext, actualNext, variance, mandatoryTasks, variances)
 	}
 }
 
 func ComparePath(standardBpmnText string, unknownBpmnText string) string {
 	standardTasks, standardSequenceFlows, standardExclusiveGateways, standardParallelGateways, standardTimerEvents, standardStartEvents, err := ParseBPMN(standardBpmnText)
 	if err != nil {
-		return fmt.Sprintf("Error parsing standard BPMN file: %v", err)
+		return fmt.Sprintf("解析标准BPMN文件时出错：%v", err)
 	}
 
 	unknownTasks, unknownSequenceFlows, unknownExclusiveGateways, unknownParallelGateways, unknownTimerEvents, unknownStartEvents, err := ParseBPMN(unknownBpmnText)
 	if err != nil {
-		return fmt.Sprintf("Error parsing clinical BPMN file: %v", err)
+		return fmt.Sprintf("解析待比较BPMN文件时出错：%v", err)
 	}
 
 	if len(standardStartEvents) == 0 || len(unknownStartEvents) == 0 {
-		return "No start events found in one of the BPMN files."
+		return "其中一个BPMN文件中未找到开始事件。"
 	}
 
 	standardPaths := buildPaths(standardStartEvents[0], standardTasks, standardSequenceFlows, standardExclusiveGateways, standardParallelGateways, standardTimerEvents, nil)
 	if len(standardPaths) == 0 {
-		return "No standard paths found."
+		return "未找到标准路径。"
 	}
 	standardPath := standardPaths[0]
 
 	unknownPaths := buildPaths(unknownStartEvents[0], unknownTasks, unknownSequenceFlows, unknownExclusiveGateways, unknownParallelGateways, unknownTimerEvents, nil)
 	if len(unknownPaths) == 0 {
-		return "No unknown paths found."
+		return "未找到待比较路径。"
 	}
 	unknownPath := unknownPaths[0]
 
 	var variance int
-	ComparePaths(standardPath, unknownPath, &variance, make(map[string]bool))
-
-	standardPathStr := PathToString(standardPath, "")
-	unknownPathStr := PathToString(unknownPath, "")
-
-	result := fmt.Sprintf("Standard Path:\n%s\n\nUnknown Path:\n%s\n\n", standardPathStr, unknownPathStr)
+	var variances strings.Builder
+	ComparePaths(standardPath, unknownPath, &variance, nil, &variances)
 
 	if variance > 0 {
-		result += fmt.Sprintf("Path has %d variance(s) compared to the standard path.\n", variance)
+		result := variances.String()
+		result += fmt.Sprintf("与标准路径相比，该路径有%d个差异。", variance)
+		return result
 	} else {
-		result += "Paths match exactly!"
+		return "路径完全匹配！"
 	}
-	return result
 }
