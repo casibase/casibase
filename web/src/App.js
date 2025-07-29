@@ -345,6 +345,10 @@ class App extends Component {
     return Setting.getLogo(themes);
   }
 
+  getFooterHtml(themes) {
+    return Setting.getFooterHtml(themes);
+  }
+
   renderAvatar() {
     if (this.state.account.avatar === "") {
       return (
@@ -868,7 +872,7 @@ class App extends Component {
             height: "67px",
           }
         }>
-          <div dangerouslySetInnerHTML={{__html: Conf.FooterHtml}} />
+          <div dangerouslySetInnerHTML={{__html: this.getFooterHtml(this.state.themeAlgorithm)}} />
         </Footer>
       </React.Fragment>
     );

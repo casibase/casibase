@@ -2058,3 +2058,13 @@ export function getLogo(themes) {
     return defaultLogoUrl;
   }
 }
+
+export function getFooterHtml(themes) {
+  let FooterHtml = Conf.FooterHtml;
+  FooterHtml = FooterHtml.replace("https://cdn.casibase.org", Conf.StaticBaseUrl);
+  if (themes.includes("dark")) {
+    return FooterHtml.replace(/(\.png)/g, "_white$1");
+  } else {
+    return FooterHtml;
+  }
+}
