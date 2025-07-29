@@ -350,8 +350,6 @@ class ActivityPage extends BaseListPage {
                     showLoading={this.state["activities" + dataName] === undefined}
                     loadingOption={{
                       color: localStorage.getItem("themeColor"),
-                      textColor: "#000",
-                      maskColor: "rgba(255, 255, 255, 0.8)",
                       fontSize: "16px",
                       spinnerRadius: 6,
                       lineWidth: 3,
@@ -386,8 +384,6 @@ class ActivityPage extends BaseListPage {
               showLoading={activitiesAction === undefined}
               loadingOption={{
                 color: localStorage.getItem("themeColor"),
-                textColor: "#000",
-                maskColor: "rgba(255, 255, 255, 0.8)",
                 fontSize: "16px",
                 spinnerRadius: 6,
                 lineWidth: 3,
@@ -408,8 +404,6 @@ class ActivityPage extends BaseListPage {
               showLoading={activitiesAction === undefined}
               loadingOption={{
                 color: localStorage.getItem("themeColor"),
-                textColor: "#000",
-                maskColor: "rgba(255, 255, 255, 0.8)",
                 fontSize: "16px",
                 spinnerRadius: 6,
                 lineWidth: 3,

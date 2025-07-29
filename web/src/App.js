@@ -336,14 +336,10 @@ class App extends Component {
   setLogoAndThemeAlgorithm = (nextThemeAlgorithm) => {
     this.setState({
       themeAlgorithm: nextThemeAlgorithm,
-      logo: this.getLogo(nextThemeAlgorithm),
+      logo: Setting.getLogo(nextThemeAlgorithm),
     });
     localStorage.setItem("themeAlgorithm", JSON.stringify(nextThemeAlgorithm));
   };
-
-  getLogo(themes) {
-    return Setting.getLogo(themes);
-  }
 
   renderAvatar() {
     if (this.state.account.avatar === "") {
@@ -821,7 +817,7 @@ class App extends Component {
         <div style={{display: "flex", alignItems: "center", flex: 1, overflow: "hidden"}}>
           {Setting.isMobile() ? null : (
             <Link to={"/"}>
-              <img className="logo" src={this.getLogo(this.state.themeAlgorithm)} alt="logo" />
+              <img className="logo" src={Setting.getLogo(this.state.themeAlgorithm)} alt="logo" />
             </Link>
           )}
           {Setting.isMobile() ? (
@@ -868,7 +864,7 @@ class App extends Component {
             height: "67px",
           }
         }>
-          <div dangerouslySetInnerHTML={{__html: Conf.FooterHtml}} />
+          <div dangerouslySetInnerHTML={{__html: Setting.getFooterHtml(this.state.themeAlgorithm)}} />
         </Footer>
       </React.Fragment>
     );
