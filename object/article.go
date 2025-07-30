@@ -107,13 +107,13 @@ func GetArticle(id string) (*Article, error) {
 }
 
 func GetArticleCount(owner, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Article{})
 }
 
 func GetPaginationArticles(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Article, error) {
 	articles := []*Article{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&articles)
 	if err != nil {
 		return articles, err

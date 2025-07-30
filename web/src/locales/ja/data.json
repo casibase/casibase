@@ -261,7 +261,7 @@
     "Secret key": "クラウドサービスプロバイダの暗号化キー",
     "Secret key - Tooltip": "クラウドサービスプロバイダの暗号化キー",
     "Section": "Section",
-    "Sessions": "接続セッション",
+    "Connections": "接続セッション",
     "Size": "サイズ",
     "Size - Tooltip": "サイズ仕様",
     "Sorry, the page you visited does not exist.": "申し訳ありませんが、訪問したページは存在しません。",
@@ -510,7 +510,7 @@
     "Query": "照会",
     "View Record": "ログを表示"
   },
-  "session": {
+  "connection": {
     "History": "履歴",
     "Online": "オンライン"
   },

@@ -261,7 +261,7 @@
     "Secret key": "Шифровый ключ провайдера",
     "Secret key - Tooltip": "Шифровый ключ провайдера",
     "Section": "Section",
-    "Sessions": "Сессии подключения",
+    "Connections": "Сессии подключения",
     "Size": "Размер",
     "Size - Tooltip": "Размерный формат",
     "Sorry, the page you visited does not exist.": "Извините, страница, которую вы посетили, не существует.",
@@ -510,7 +510,7 @@
     "Query": "Запрос",
     "View Record": "Посмотреть запись"
   },
-  "session": {
+  "connection": {
     "History": "История",
     "Online": "Онлайн"
   },

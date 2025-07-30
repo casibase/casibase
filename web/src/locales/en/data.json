@@ -261,7 +261,7 @@
     "Secret key": "Secret key",
     "Secret key - Tooltip": "Cloud provider secret key",
     "Section": "Section",
-    "Sessions": "Sessions",
+    "Connections": "Connections",
     "Size": "Size",
     "Size - Tooltip": "Total size",
     "Sorry, the page you visited does not exist.": "Sorry, the page you visited does not exist.",
@@ -510,7 +510,7 @@
     "Query": "Query",
     "View Record": "View Record"
   },
-  "session": {
+  "connection": {
     "History": "History",
     "Online": "Online"
   },

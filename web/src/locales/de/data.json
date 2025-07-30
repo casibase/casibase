@@ -261,7 +261,7 @@
     "Secret key": "Cloud-Anbieterverschlüsselungsschlüssel",
     "Secret key - Tooltip": "Cloud-Anbieterverschlüsselungsschlüssel",
     "Section": "Section",
-    "Sessions": "Verbindungssitzungen",
+    "Connections": "Verbindungssitzungen",
     "Size": "Größe",
     "Size - Tooltip": "Größenangabe",
     "Sorry, the page you visited does not exist.": "Entschuldigung, die von Ihnen besuchte Seite existiert nicht.",
@@ -510,7 +510,7 @@
     "Query": "Abfrage",
     "View Record": "Protokoll anzeigen"
   },
-  "session": {
+  "connection": {
     "History": "Verlauf",
     "Online": "Online"
   },

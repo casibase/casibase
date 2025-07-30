@@ -261,7 +261,7 @@
     "Secret key": "Clave de cifrado del proveedor en la nube",
     "Secret key - Tooltip": "Clave de cifrado del proveedor en la nube",
     "Section": "Section",
-    "Sessions": "Sesiones de conexión",
+    "Connections": "Sesiones de conexión",
     "Size": "Tamaño",
     "Size - Tooltip": "Especificaciones de tamaño",
     "Sorry, the page you visited does not exist.": "Lo siento, la página que visitaste no existe.",
@@ -510,7 +510,7 @@
     "Query": "Consulta",
     "View Record": "Ver registro"
   },
-  "session": {
+  "connection": {
     "History": "Historial",
     "Online": "En línea"
   },

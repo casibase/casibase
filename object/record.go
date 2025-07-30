@@ -75,7 +75,7 @@ type Response struct {
 }
 
 func GetRecordCount(owner, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Record{Owner: owner})
 }
 
@@ -101,7 +101,7 @@ func getAllRecords() ([]*Record, error) {
 
 func GetPaginationRecords(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Record, error) {
 	records := []*Record{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&records)
 	if err != nil {
 		return records, err

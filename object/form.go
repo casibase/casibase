@@ -145,13 +145,13 @@ func (form *Form) GetId() string {
 }
 
 func GetFormCount(owner string, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Form{})
 }
 
 func GetPaginationForms(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Form, error) {
 	forms := []*Form{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&forms)
 	if err != nil {
 		return forms, err

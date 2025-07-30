@@ -323,13 +323,13 @@ func refreshVector(vector *Vector) (bool, error) {
 }
 
 func GetStoreCount(field, value string) (int64, error) {
-	session := GetSession("", -1, -1, field, value, "", "")
+	session := GetDbSession("", -1, -1, field, value, "", "")
 	return session.Count(&Store{})
 }
 
 func GetPaginationStores(offset, limit int, field, value, sortField, sortOrder string) ([]*Store, error) {
 	stores := []*Store{}
-	session := GetSession("", offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession("", offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&stores)
 	if err != nil {
 		return stores, err

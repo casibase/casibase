@@ -42,13 +42,13 @@ func GetTemplates(owner string) ([]*Template, error) {
 }
 
 func GetTemplateCount(owner, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Template{})
 }
 
 func GetPaginationTemplates(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Template, error) {
 	templates := []*Template{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&templates)
 	if err != nil {
 		return templates, err

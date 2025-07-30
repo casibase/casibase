@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as SessionBackend from "./backend/SessionBackend";
+import * as ConnectionBackend from "./backend/ConnectionBackend";
 import * as Setting from "./Setting";
 import {Button, Popconfirm, Radio, Table} from "antd";
 import i18next from "i18next";
@@ -26,7 +26,7 @@ import {DeleteOutlined} from "@ant-design/icons";
 export const Connected = "connected";
 const Disconnected = "disconnected";
 
-class SessionListPage extends BaseListPage {
+class ConnectionListPage extends BaseListPage {
   constructor(props) {
     super(props);
     this.state = {
@@ -44,11 +44,11 @@ class SessionListPage extends BaseListPage {
   }
 
   deleteItem = async(i) => {
-    return SessionBackend.deleteSession(this.state.data[i]);
+    return ConnectionBackend.deleteConnection(this.state.data[i]);
   };
 
-  deleteSession(i) {
-    SessionBackend.deleteSession(this.state.data[i])
+  deleteConnection(i) {
+    ConnectionBackend.deleteConnection(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deleted"));
@@ -68,8 +68,8 @@ class SessionListPage extends BaseListPage {
       });
   }
 
-  stopSession(i) {
-    SessionBackend.disconnect(Setting.GetIdFromObject(this.state.data[i]))
+  stopConnection(i) {
+    ConnectionBackend.disconnect(Setting.GetIdFromObject(this.state.data[i]))
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully stopped"));
@@ -89,7 +89,7 @@ class SessionListPage extends BaseListPage {
       });
   }
 
-  renderTable(sessions) {
+  renderTable(connections) {
     const columns = [
       {
         title: i18next.t("general:Node"),
@@ -220,14 +220,14 @@ class SessionListPage extends BaseListPage {
                   style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
                   text={i18next.t("general:Stop")}
                   title={`${i18next.t("general:Sure to disconnect from")}: ${record.name} ?`}
-                  onConfirm={() => this.stopSession(index)}
+                  onConfirm={() => this.stopConnection(index)}
                 />
               </div>
             ) : (
               <PopconfirmModal
                 style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteSession(index)}
+                onConfirm={() => this.deleteConnection(index)}
               />
             );
         },
@@ -245,18 +245,18 @@ class SessionListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={sessions} rowKey={(record) => `${record.owner}/${record.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={connections} rowKey={(record) => `${record.owner}/${record.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Sessions")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Connections")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Radio.Group size={"small"} buttonStyle="solid" defaultValue={Connected}
                 onChange={(e) => {
                   this.setState({
                     status: e.target.value,
                   });
                 }}>
-                <Radio.Button value={Connected}>{i18next.t("session:Online")}</Radio.Button>
-                <Radio.Button value={Disconnected}>{i18next.t("session:History")}</Radio.Button>
+                <Radio.Button value={Connected}>{i18next.t("connection:Online")}</Radio.Button>
+                <Radio.Button value={Disconnected}>{i18next.t("connection:History")}</Radio.Button>
               </Radio.Group>
               {this.state.selectedRowKeys.length > 0 && (
                 <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
@@ -286,7 +286,7 @@ class SessionListPage extends BaseListPage {
       loading: true,
     });
 
-    SessionBackend.getSessions(Setting.getRequestOrganization(this.props.account), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder, this.state.status).then((res) => {
+    ConnectionBackend.getConnections(Setting.getRequestOrganization(this.props.account), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder, this.state.status).then((res) => {
       this.setState({
         loading: false,
       });
@@ -314,4 +314,4 @@ class SessionListPage extends BaseListPage {
   };
 }
 
-export default SessionListPage;
+export default ConnectionListPage;

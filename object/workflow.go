@@ -152,13 +152,13 @@ func (workflow *Workflow) GetId() string {
 }
 
 func GetWorkflowCount(owner string, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Workflow{})
 }
 
 func GetPaginationWorkflows(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Workflow, error) {
 	workflows := []*Workflow{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&workflows)
 	if err != nil {
 		return workflows, err

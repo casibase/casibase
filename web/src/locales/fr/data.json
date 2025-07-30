@@ -261,7 +261,7 @@
     "Secret key": "Clé de chiffrement du fournisseur cloud",
     "Secret key - Tooltip": "Clé de chiffrement du fournisseur cloud",
     "Section": "Section",
-    "Sessions": "Sessions de connexion",
+    "Connections": "Connecter une session",
     "Size": "Taille",
     "Size - Tooltip": "Format de taille",
     "Sorry, the page you visited does not exist.": "Désolé, la page que vous avez visitée n'existe pas.",
@@ -510,7 +510,7 @@
     "Query": "Requête",
     "View Record": "Afficher l'enregistrement"
   },
-  "session": {
+  "connection": {
     "History": "Historique",
     "Online": "En ligne"
   },

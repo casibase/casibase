@@ -71,7 +71,7 @@ type Image struct {
 }
 
 func GetImageCount(owner, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Image{})
 }
 
@@ -87,7 +87,7 @@ func GetImages(owner string) ([]*Image, error) {
 
 func GetPaginationImages(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Image, error) {
 	images := []*Image{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&images)
 	if err != nil {
 		return images, err
