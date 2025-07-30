@@ -55,7 +55,7 @@ class ApplicationListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
-            k8sStatus: res.data.status,
+            k8sStatus: res.data,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
