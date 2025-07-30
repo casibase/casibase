@@ -142,7 +142,7 @@ func (chat *Chat) GetId() string {
 }
 
 func GetChatCount(owner string, field string, value string, store string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	if store != "" {
 		session = session.And("store = ?", store)
 	}
@@ -151,7 +151,7 @@ func GetChatCount(owner string, field string, value string, store string) (int64
 
 func GetPaginationChats(owner string, offset, limit int, field, value, sortField, sortOrder string, store string) ([]*Chat, error) {
 	chats := []*Chat{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	if store != "" {
 		session = session.And("store = ?", store)
 	}

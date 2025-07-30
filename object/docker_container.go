@@ -45,7 +45,7 @@ type Container struct {
 }
 
 func GetContainerCount(owner, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Container{})
 }
 
@@ -60,7 +60,7 @@ func GetContainers(owner string) ([]*Container, error) {
 
 func GetPaginationContainers(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Container, error) {
 	containers := []*Container{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&containers)
 	if err != nil {
 		return containers, err

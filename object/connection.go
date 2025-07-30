@@ -30,7 +30,7 @@ const (
 	Disconnected = "disconnected"
 )
 
-type Session struct {
+type Connection struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
@@ -60,83 +60,83 @@ type Session struct {
 	CommandCount int64 `json:"commandCount"`
 }
 
-func (s *Session) GetId() string {
+func (s *Connection) GetId() string {
 	return util.GetIdFromOwnerAndName(s.Owner, s.Name)
 }
 
-func GetSessionCount(owner, status, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
-	return session.Count(&Session{Status: status})
+func GetConnectionCount(owner, status, field, value string) (int64, error) {
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&Connection{Status: status})
 }
 
-func GetSessions(owner string) ([]*Session, error) {
-	sessions := []*Session{}
-	err := adapter.engine.Desc("connected_time").Find(&sessions, &Session{Owner: owner})
+func GetConnections(owner string) ([]*Connection, error) {
+	connections := []*Connection{}
+	err := adapter.engine.Desc("connected_time").Find(&connections, &Connection{Owner: owner})
 	if err != nil {
-		return sessions, err
+		return connections, err
 	}
 
-	return sessions, nil
+	return connections, nil
 }
 
-func GetPaginationSessions(owner, status string, offset, limit int, field, value, sortField, sortOrder string) ([]*Session, error) {
-	sessions := []*Session{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
-	err := session.Find(&sessions, &Session{Status: status})
+func GetPaginationConnections(owner, status string, offset, limit int, field, value, sortField, sortOrder string) ([]*Connection, error) {
+	connections := []*Connection{}
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&connections, &Connection{Status: status})
 	if err != nil {
-		return sessions, err
+		return connections, err
 	}
 
-	return sessions, nil
+	return connections, nil
 }
 
-func GetSessionsByStatus(statuses []string) ([]*Session, error) {
-	sessions := []*Session{}
-	err := adapter.engine.In("status", statuses).Find(&sessions)
+func GetSessionsByStatus(statuses []string) ([]*Connection, error) {
+	connections := []*Connection{}
+	err := adapter.engine.In("status", statuses).Find(&connections)
 	if err != nil {
-		return sessions, err
+		return connections, err
 	}
-	return sessions, nil
+	return connections, nil
 }
 
-func getSession(owner string, name string) (*Session, error) {
+func getConnection(owner string, name string) (*Connection, error) {
 	if owner == "" || name == "" {
 		return nil, nil
 	}
 
-	session := Session{Owner: owner, Name: name}
-	existed, err := adapter.engine.Get(&session)
+	connection := Connection{Owner: owner, Name: name}
+	existed, err := adapter.engine.Get(&connection)
 	if err != nil {
-		return &session, err
+		return &connection, err
 	}
 
 	if existed {
-		return &session, nil
+		return &connection, nil
 	} else {
 		return nil, nil
 	}
 }
 
-func GetConnSession(id string) (*Session, error) {
+func GetConnection(id string) (*Connection, error) {
 	owner, name := util.GetOwnerAndNameFromIdNoCheck(id)
-	return getSession(owner, name)
+	return getConnection(owner, name)
 }
 
-func UpdateSession(id string, session *Session, columns ...string) (bool, error) {
+func UpdateConnection(id string, connection *Connection, columns ...string) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	if oldSession, err := getSession(owner, name); err != nil {
+	if oldConnection, err := getConnection(owner, name); err != nil {
 		return false, err
-	} else if oldSession == nil {
+	} else if oldConnection == nil {
 		return false, nil
 	}
 
 	if len(columns) == 0 {
-		_, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(session)
+		_, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(connection)
 		if err != nil {
 			return false, err
 		}
 	} else {
-		_, err := adapter.engine.ID(core.PK{owner, name}).Cols(columns...).Update(session)
+		_, err := adapter.engine.ID(core.PK{owner, name}).Cols(columns...).Update(connection)
 		if err != nil {
 			return false, err
 		}
@@ -145,8 +145,8 @@ func UpdateSession(id string, session *Session, columns ...string) (bool, error)
 	return true, nil
 }
 
-func DeleteSession(session *Session) (bool, error) {
-	affected, err := adapter.engine.ID(core.PK{session.Owner, session.Name}).Delete(&Session{})
+func DeleteConnection(connection *Connection) (bool, error) {
+	affected, err := adapter.engine.ID(core.PK{connection.Owner, connection.Name}).Delete(&Connection{})
 	if err != nil {
 		return false, err
 	}
@@ -154,13 +154,13 @@ func DeleteSession(session *Session) (bool, error) {
 	return affected != 0, nil
 }
 
-func DeleteSessionById(id string) (bool, error) {
+func DeleteConnectionById(id string) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	return DeleteSession(&Session{Owner: owner, Name: name})
+	return DeleteConnection(&Connection{Owner: owner, Name: name})
 }
 
-func AddSession(session *Session) (bool, error) {
-	affected, err := adapter.engine.Insert(session)
+func AddConnection(connection *Connection) (bool, error) {
+	affected, err := adapter.engine.Insert(connection)
 	if err != nil {
 		return false, err
 	}
@@ -168,7 +168,7 @@ func AddSession(session *Session) (bool, error) {
 	return affected != 0, nil
 }
 
-func CreateSession(session *Session, nodeId string, mode string) (*Session, error) {
+func CreateConnection(connection *Connection, nodeId string, mode string) (*Connection, error) {
 	node, err := GetNode(nodeId)
 	if err != nil {
 		return nil, err
@@ -178,74 +178,74 @@ func CreateSession(session *Session, nodeId string, mode string) (*Session, erro
 		return nil, nil
 	}
 
-	session.Owner = node.Owner
-	session.Name = util.GenerateId()
-	session.CreatedTime = util.GetCurrentTime()
-	session.Protocol = node.RemoteProtocol
-	session.Node = nodeId
-	session.Status = NoConnect
-	session.Mode = mode
-	session.Reviewed = false
-	session.Operations = []string{"paste", "copy", "createDir", "edit", "rename", "delete", "download", "upload", "fileSystem"}
+	connection.Owner = node.Owner
+	connection.Name = util.GenerateId()
+	connection.CreatedTime = util.GetCurrentTime()
+	connection.Protocol = node.RemoteProtocol
+	connection.Node = nodeId
+	connection.Status = NoConnect
+	connection.Mode = mode
+	connection.Reviewed = false
+	connection.Operations = []string{"paste", "copy", "createDir", "edit", "rename", "delete", "download", "upload", "fileSystem"}
 
-	_, err = AddSession(session)
+	_, err = AddConnection(connection)
 	if err != nil {
 		return nil, err
 	}
 
-	respSession := &Session{
-		Owner:      session.Owner,
-		Name:       session.Name,
+	respConnection := &Connection{
+		Owner:      connection.Owner,
+		Name:       connection.Name,
 		Protocol:   node.RemoteProtocol,
-		Operations: session.Operations,
+		Operations: connection.Operations,
 	}
-	return respSession, nil
+	return respConnection, nil
 }
 
-func CloseDBSession(id string, code int, msg string) error {
-	s, err := GetConnSession(id)
+func CloseDbSession(id string, code int, msg string) error {
+	connection, err := GetConnection(id)
 	if err != nil {
 		return err
 	}
-	if s == nil {
+	if connection == nil {
 		return nil
 	}
 
-	if s.Status == Disconnected {
+	if connection.Status == Disconnected {
 		return nil
 	}
 
-	if s.Status == Connecting {
+	if connection.Status == Connecting {
 		// The session has not been established successfully, so you do not need to save data
-		_, err := DeleteSession(s)
+		_, err := DeleteConnection(connection)
 		if err != nil {
 			return err
 		}
 		return nil
 	}
 
-	s.Status = Disconnected
-	s.Code = code
-	s.Message = msg
-	s.EndTime = util.GetCurrentTime()
+	connection.Status = Disconnected
+	connection.Code = code
+	connection.Message = msg
+	connection.EndTime = util.GetCurrentTime()
 
-	_, err = UpdateSession(id, s)
+	_, err = UpdateConnection(id, connection)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func WriteCloseMessage(session *guacamole.Session, mode string, code int, msg string) {
+func WriteCloseMessage(guacSession *guacamole.Session, mode string, code int, msg string) {
 	err := guacamole.NewInstruction("error", "", strconv.Itoa(code))
-	_ = session.WriteString(err.String())
+	_ = guacSession.WriteString(err.String())
 	disconnect := guacamole.NewInstruction("disconnect")
-	_ = session.WriteString(disconnect.String())
+	_ = guacSession.WriteString(disconnect.String())
 }
 
 var mutex sync.Mutex
 
-func CloseSession(id string, code int, msg string) error {
+func CloseConnection(id string, code int, msg string) error {
 	mutex.Lock()
 	defer mutex.Unlock()
 	guacSession := guacamole.GlobalSessionManager.Get(id)
@@ -261,7 +261,7 @@ func CloseSession(id string, code int, msg string) error {
 	}
 	guacamole.GlobalSessionManager.Delete(id)
 
-	err := CloseDBSession(id, code, msg)
+	err := CloseDbSession(id, code, msg)
 	if err != nil {
 		return err
 	}

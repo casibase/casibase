@@ -367,7 +367,7 @@ func GetAnswerWithContext(provider string, question string, history []*model.Raw
 }
 
 func GetMessageCount(owner string, field string, value string, store string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	if store != "" {
 		session = session.And("store = ?", store)
 	}
@@ -376,7 +376,7 @@ func GetMessageCount(owner string, field string, value string, store string) (in
 
 func GetPaginationMessages(owner string, offset, limit int, field, value, sortField, sortOrder, store string) ([]*Message, error) {
 	messages := []*Message{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	if store != "" {
 		session = session.And("store = ?", store)
 	}

@@ -13,28 +13,28 @@
 // limitations under the License.
 
 import * as Setting from "../Setting";
-import {Connected} from "../SessionListPage";
+import {Connected} from "../ConnectionListPage";
 
-export function getSessions(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "", status = Connected) {
-  return fetch(`${Setting.ServerUrl}/api/get-sessions?owner=${owner}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}&status=${status}`, {
+export function getConnections(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "", status = Connected) {
+  return fetch(`${Setting.ServerUrl}/api/get-connections?owner=${owner}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}&status=${status}`, {
     method: "GET",
     credentials: "include",
   }).then(res => res.json());
 }
 
-export function getSession(owner, name) {
-  return fetch(`${Setting.ServerUrl}/api/get-session?id=${owner}/${encodeURIComponent(name)}`, {
+export function getConnection(owner, name) {
+  return fetch(`${Setting.ServerUrl}/api/get-connection?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
   }).then(res => res.json());
 }
 
-export function updateSession(owner, name, session) {
-  const newSession = Setting.deepCopy(session);
-  return fetch(`${Setting.ServerUrl}/api/update-session?id=${owner}/${encodeURIComponent(name)}`, {
+export function updateConnection(owner, name, connection) {
+  const newConnection = Setting.deepCopy(connection);
+  return fetch(`${Setting.ServerUrl}/api/update-connection?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
-    body: JSON.stringify(newSession),
+    body: JSON.stringify(newConnection),
   }).then(res => res.json());
 }
 
@@ -45,24 +45,24 @@ export function addNodeTunnel(nodeId, mode = "guacd") {
   }).then(res => res.json());
 }
 
-export function deleteSession(session) {
-  const newSession = Setting.deepCopy(session);
-  return fetch(`${Setting.ServerUrl}/api/delete-session`, {
+export function deleteConnection(connection) {
+  const newConnection = Setting.deepCopy(connection);
+  return fetch(`${Setting.ServerUrl}/api/delete-connection`, {
     method: "POST",
     credentials: "include",
-    body: JSON.stringify(newSession),
+    body: JSON.stringify(newConnection),
   }).then(res => res.json());
 }
 
-export function connect(sessionId) {
-  return fetch(`${Setting.ServerUrl}/api/start-session?id=${sessionId}`, {
+export function connect(connectionId) {
+  return fetch(`${Setting.ServerUrl}/api/start-connection?id=${connectionId}`, {
     method: "POST",
     credentials: "include",
   }).then(res => res.json());
 }
 
-export function disconnect(sessionId) {
-  return fetch(`${Setting.ServerUrl}/api/stop-session?id=${sessionId}`, {
+export function disconnect(connectionId) {
+  return fetch(`${Setting.ServerUrl}/api/stop-connection?id=${connectionId}`, {
     method: "POST",
     credentials: "include",
   }).then(res => res.json());

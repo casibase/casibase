@@ -91,7 +91,7 @@ type Node struct {
 }
 
 func GetNodeCount(owner, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Node{})
 }
 
@@ -107,7 +107,7 @@ func GetNodes(owner string) ([]*Node, error) {
 
 func GetPaginationNodes(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Node, error) {
 	nodes := []*Node{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&nodes)
 	if err != nil {
 		return nodes, err

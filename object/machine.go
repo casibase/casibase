@@ -55,7 +55,7 @@ type Machine struct {
 }
 
 func GetMachineCount(owner, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Machine{})
 }
 
@@ -70,7 +70,7 @@ func GetMachines(owner string) ([]*Machine, error) {
 
 func GetPaginationMachines(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Machine, error) {
 	machines := []*Machine{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&machines)
 	if err != nil {
 		return machines, err

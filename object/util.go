@@ -36,7 +36,7 @@ func getUrlFromPath(path string, origin string) (string, error) {
 	return res, err
 }
 
-func GetSession(owner string, offset, limit int, field, value, sortField, sortOrder string) *xorm.Session {
+func GetDbSession(owner string, offset, limit int, field, value, sortField, sortOrder string) *xorm.Session {
 	session := adapter.engine.Prepare()
 	if offset != -1 && limit != -1 {
 		session.Limit(limit, offset)

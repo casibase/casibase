@@ -22,7 +22,7 @@ import qs from "qs";
 import {Base64} from "js-base64";
 import Draggable from "react-draggable";
 import GuacdClipboard from "./GuacdClipboard";
-import * as SessionBackend from "../../backend/SessionBackend";
+import * as ConnectionBackend from "../../backend/ConnectionBackend";
 import i18next from "i18next";
 
 const STATE_IDLE = 0;
@@ -37,7 +37,7 @@ const GuacdPage = (props) => {
 
   const [box, setBox] = useState({width: 0, height: 0});
   const [guacd, setGuacd] = useState({});
-  const [session, setSession] = useState({});
+  const [connection, setConnection] = useState({});
   const [clipboardText, setClipboardText] = useState("");
   const [isFullScreened, setIsFullScreened] = useState(false);
   const [clipboardVisible, setClipboardVisible] = useState(false);
@@ -70,18 +70,18 @@ const GuacdPage = (props) => {
   }, [nodeId, box]);
 
   const addNodeTunnel = () => {
-    SessionBackend.addNodeTunnel(nodeId).then((res) => {
+    ConnectionBackend.addNodeTunnel(nodeId).then((res) => {
       if (res.status === "ok") {
-        const session = res.data;
-        setSession(session);
-        renderDisplay(`${session.owner}/${session.name}`, session.protocol, box.width, box.height);
+        const connection = res.data;
+        setConnection(connection);
+        renderDisplay(`${connection.owner}/${connection.name}`, connection.protocol, box.width, box.height);
       } else {
         Setting.showMessage("error", i18next.t("general:Failed to connect" + res.msg));
       }
     });
   };
 
-  const renderDisplay = (sessionId, protocol, width, height) => {
+  const renderDisplay = (connectionId, protocol, width, height) => {
     const wsEndpoint = Setting.ServerUrl.replace("http://", "ws://");
     const wsUrl = `${wsEndpoint}/api/get-node-tunnel`;
     const tunnel = new Guacamole.WebSocketTunnel(wsUrl);
@@ -92,7 +92,7 @@ const GuacdPage = (props) => {
 
     // Handling client state change events.
     client.onstatechange = (state) => {
-      onClientStateChange(state, sessionId);
+      onClientStateChange(state, connectionId);
     };
 
     client.onerror = onError;
@@ -104,7 +104,7 @@ const GuacdPage = (props) => {
     }
 
     const params = {
-      "sessionId": sessionId,
+      "connectionId": connectionId,
       "protocol": protocol,
       "width": width,
       "height": height,
@@ -235,7 +235,7 @@ const GuacdPage = (props) => {
   };
 
   const handleClipboardReceived = (stream, mimetype) => {
-    if (!session.operations.includes("copy")) {
+    if (!connection.operations.includes("copy")) {
       return;
     }
 
@@ -263,7 +263,7 @@ const GuacdPage = (props) => {
     if (!guacd.client) {
       return;
     }
-    if (!session.operations.includes("paste")) {
+    if (!connection.operations.includes("paste")) {
       message.warn("Can not paste");
       return;
     }
@@ -282,7 +282,7 @@ const GuacdPage = (props) => {
 
   };
 
-  const onClientStateChange = (state, sessionId) => {
+  const onClientStateChange = (state, connectionId) => {
     const key = "message";
     switch (state) {
     case STATE_IDLE:
@@ -302,7 +302,7 @@ const GuacdPage = (props) => {
       message.destroy(key);
       message.success({content: "Connection successful", duration: 3, key: key});
       // Send a request to the backend to update the session's status
-      SessionBackend.connect(sessionId);
+      ConnectionBackend.connect(connectionId);
       break;
     case STATE_DISCONNECTING:
       // Handle disconnecting state if needed
@@ -487,7 +487,7 @@ const GuacdPage = (props) => {
         </Draggable>
       }
       {
-        session.protocol === "VNC" &&
+        connection.protocol === "VNC" &&
         <Draggable>
           <Affix style={{position: "absolute", top: 100, right: 100}}>
             <Dropdown overlay={hotKeyMenu} trigger={["click"]} placement="bottomLeft">
@@ -497,7 +497,7 @@ const GuacdPage = (props) => {
         </Draggable>
       }
       {
-        session.protocol === "RDP" &&
+        connection.protocol === "RDP" &&
         <Draggable>
           <Affix style={{position: "absolute", top: 100, right: 100}}>
             <Dropdown overlay={hotKeyMenu} trigger={["click"]} placement="bottomLeft">

@@ -462,13 +462,13 @@ routeManager.registerApp("super-resolution", {
   ],
 });
 
-routeManager.registerApp("sessions", {
-  title: "Sessions",
+routeManager.registerApp("connections", {
+  title: "Connections",
   gradient: "linear-gradient(135deg, #f16a7d 0%, #c7c7c7 100%)",
   routes: [
     {
-      path: "/sessions",
-      component: () => import("../SessionListPage"),
+      path: "/connections",
+      component: () => import("../ConnectionListPage"),
     },
   ],
 });

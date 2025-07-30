@@ -261,7 +261,7 @@
     "Secret key": "Kunci enkripsi penyedia cloud",
     "Secret key - Tooltip": "Kunci enkripsi penyedia cloud",
     "Section": "Section",
-    "Sessions": "Sesi koneksi",
+    "Connections": "Sesi koneksi",
     "Size": "Ukuran",
     "Size - Tooltip": "Spesifikasi ukuran",
     "Sorry, the page you visited does not exist.": "Maaf, halaman yang Anda kunjungi tidak ada.",
@@ -510,7 +510,7 @@
     "Query": "Query",
     "View Record": "Lihat catatan"
   },
-  "session": {
+  "connection": {
     "History": "Sejarah",
     "Online": "Online"
   },

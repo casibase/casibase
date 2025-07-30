@@ -261,7 +261,7 @@
     "Secret key": "클라우드 서비스 공급업체 암호화 키",
     "Secret key - Tooltip": "클라우드 서비스 공급업체 암호화 키",
     "Section": "Section",
-    "Sessions": "연결 세션",
+    "Connections": "연결 세션",
     "Size": "크기",
     "Size - Tooltip": "크기 규격",
     "Sorry, the page you visited does not exist.": "죄송합니다. 방문하신 페이지가 존재하지 않습니다.",
@@ -510,7 +510,7 @@
     "Query": "조회",
     "View Record": "로그 보기"
   },
-  "session": {
+  "connection": {
     "History": "히스토리",
     "Online": "온라인"
   },
