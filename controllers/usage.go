@@ -15,6 +15,7 @@
 package controllers
 
 import (
+	"github.com/beego/beego"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -80,15 +81,20 @@ func (c *ApiController) GetRangeUsages() {
 // @router /get-users [get]
 func (c *ApiController) GetUsers() {
 	user := c.Input().Get("user")
-	if c.IsAdmin() {
+	disablePreviewMode, _ := beego.AppConfig.Bool("disablePreviewMode")
+	var users []string
+	var err error
+	isAdmin := c.IsAdmin()
+	if isAdmin || !disablePreviewMode {
 		user = ""
+		users, err = object.GetUsers(user)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+	} else {
+		users = append(users, user)
 	}
-	users, err := object.GetUsers(user)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
 	c.ResponseOk(users)
 }
 

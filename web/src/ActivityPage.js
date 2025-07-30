@@ -257,7 +257,7 @@ class ActivityPage extends BaseListPage {
 
   renderDropdown() {
     const users_options = [
-      <option key="all" value="All" disabled={!(this.props.account.name === "admin" || this.props.account.type === "chat-admin")}>
+      <option key="all" value="All" disabled={!Setting.isLocalAdminUser(this.props.account)}>
         All
       </option>,
       ...this.state.users.map((user, index) => (
