@@ -38,9 +38,6 @@ const MessageSuggestions = ({message, sendMessage}) => {
             color="primary"
             variant="filled"
             style={{
-              whiteSpace: "normal",
-              wordBreak: "break-word",
-              textAlign: "left",
               height: "auto",
               padding: "8px 16px",
             }}
@@ -50,9 +47,14 @@ const MessageSuggestions = ({message, sendMessage}) => {
               updateMessage(message.owner, message.name, message, true);
             }}
           >
-            <span style={{lineHeight: "1.5"}}>
+            <div style={{
+              whiteSpace: "normal",
+              wordBreak: "break-word",
+              textAlign: "left",
+              lineHeight: "1.5",
+            }}>
               {suggestionText}
-            </span>
+            </div>
           </Button>
         );
       })}
