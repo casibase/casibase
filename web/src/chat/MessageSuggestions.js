@@ -37,13 +37,22 @@ const MessageSuggestions = ({message, sendMessage}) => {
             key={index}
             color="primary"
             variant="filled"
+            style={{
+              whiteSpace: "normal",
+              wordBreak: "break-word",
+              textAlign: "left",
+              height: "auto",
+              padding: "8px 16px",
+            }}
             onClick={() => {
               sendMessage(suggestionText, "");
               message.suggestions[index].isHit = true;
               updateMessage(message.owner, message.name, message, true);
             }}
           >
-            {suggestionText}
+            <span style={{lineHeight: "1.5"}}>
+              {suggestionText}
+            </span>
           </Button>
         );
       })}
