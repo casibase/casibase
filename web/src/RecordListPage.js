@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Switch, Table, Tooltip} from "antd";
+import {Button, Popconfirm, Popover, Switch, Table, Tooltip} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as RecordBackend from "./backend/RecordBackend";
@@ -23,6 +23,7 @@ import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import {DeleteOutlined} from "@ant-design/icons";
+import Highlighter from "react-highlight-words";
 
 class RecordListPage extends BaseListPage {
   constructor(props) {
@@ -156,6 +157,83 @@ class RecordListPage extends BaseListPage {
           Setting.showMessage("error", `${i18next.t("general:Failed to query record")}: ${res.msg}`);
         }
       });
+  }
+
+  getSearchedContext(text, searchText, contextLength = 100) {
+    if (!text) {
+      return "";
+    }
+    const textStr = text.toString();
+    if (!searchText) {
+      return Setting.getShortText(textStr, contextLength);
+    }
+
+    const searchIndex = textStr.toLowerCase().indexOf(searchText.toLowerCase());
+    if (searchIndex === -1) {
+      return Setting.getShortText(textStr, contextLength);
+    }
+    const halfContext = Math.floor(contextLength / 2);
+    const start = Math.max(0, searchIndex - halfContext);
+    const end = Math.min(textStr.length, searchIndex + searchText.length + halfContext);
+    let contextText = textStr.substring(start, end);
+    if (start > 0) {
+      contextText = "..." + contextText;
+    }
+    if (end < textStr.length) {
+      contextText = contextText + "...";
+    }
+    return contextText;
+  }
+
+  renderTextWithPopover(text, searchText, isSearched = false, record = null) {
+    if (!text) {
+      return null;
+    }
+    const POPOVER_CONTEXT_LENGTH = 10000;
+    const displayText = this.getSearchedContext(text, searchText, 100);
+    const popoverText = this.getSearchedContext(text, searchText, POPOVER_CONTEXT_LENGTH);
+
+    return (
+      <Popover
+        placement="left"
+        trigger="hover"
+        title={
+          <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+            {i18next.t("record:Object")}
+            {record && (
+              <Link to={`/records/${record.organization}/${record.name}`}>
+                {i18next.t("record:View Record")}
+              </Link>
+            )}
+          </div>
+        }
+        content={
+          <div style={{width: "400px", maxHeight: "300px", wordBreak: "break-all", overflow: "auto"}}>
+            {isSearched ? (
+              <Highlighter
+                highlightStyle={{backgroundColor: "#ffc069"}}
+                searchWords={[searchText]}
+                textToHighlight={popoverText}
+              />
+            ) : (
+              <span>{popoverText}</span>
+            )}
+          </div>
+        }
+      >
+        <div style={{wordBreak: "break-all"}}>
+          {isSearched ? (
+            <Highlighter
+              highlightStyle={{backgroundColor: "#ffc069"}}
+              searchWords={[searchText]}
+              textToHighlight={displayText}
+            />
+          ) : (
+            <span>{displayText}</span>
+          )}
+        </div>
+      </Popover>
+    );
   }
 
   renderTable(records) {
@@ -348,7 +426,7 @@ class RecordListPage extends BaseListPage {
         title: i18next.t("general:Section"),
         dataIndex: "section",
         key: "section",
-        width: "90px",
+        width: "190px",
         sorter: true,
         ...this.getColumnSearchProps("section"),
       },
@@ -364,9 +442,16 @@ class RecordListPage extends BaseListPage {
         title: i18next.t("record:Object"),
         dataIndex: "object",
         key: "object",
-        width: "90px",
+        width: "190px",
         sorter: true,
         ...this.getColumnSearchProps("object"),
+        render: (text, record, index) => {
+          if (text === "") {
+            return null;
+          }
+          const isSearched = this.state.searchedColumn === "object" && this.state.searchText;
+          return this.renderTextWithPopover(text, this.state.searchText, isSearched, record);
+        },
       },
       {
         title: i18next.t("general:Is triggered"),
