@@ -226,6 +226,31 @@ const MessageItem = ({
               {renderMessageContent()}
             </div>
           }
+          footer={
+            <div style={{display: "flex", flexDirection: "column", gap: "12px"}}>
+              {!isEditing && message.author === "AI" && (disableInput === false || index !== isLastMessage) && (
+                <MessageActions
+                  message={message}
+                  isLastMessage={isLastMessage}
+                  index={index}
+                  onCopy={onCopy}
+                  onRegenerate={onRegenerate}
+                  onLike={onLike}
+                  onToggleRead={onToggleRead}
+                  onEdit={() => setIsHovering(true)}
+                  isReading={isReading}
+                  isLoadingTTS={isLoadingTTS} // Pass loading state to MessageActions
+                  readingMessage={readingMessage}
+                  account={account}
+                  setIsRegenerating={setIsRegenerating}
+                  isRegenerating={isRegenerating}
+                />
+              )}
+              {message.author === "AI" && isLastMessage && (
+                <MessageSuggestions message={message} sendMessage={sendMessage} />
+              )}
+            </div>
+          }
           loading={message.text === "" && message.author === "AI" && !message.reasonText && !message.errorText}
           typing={message.author === "AI" && !message.isReasoningPhase ? {
             step: 2,
@@ -270,29 +295,6 @@ const MessageItem = ({
       {renderReasoningBubble()}
 
       {renderMessageBubble()}
-
-      {!isEditing && message.author === "AI" && (disableInput === false || index !== isLastMessage) && (
-        <MessageActions
-          message={message}
-          isLastMessage={isLastMessage}
-          index={index}
-          onCopy={onCopy}
-          onRegenerate={onRegenerate}
-          onLike={onLike}
-          onToggleRead={onToggleRead}
-          onEdit={() => setIsHovering(true)}
-          isReading={isReading}
-          isLoadingTTS={isLoadingTTS} // Pass loading state to MessageActions
-          readingMessage={readingMessage}
-          account={account}
-          setIsRegenerating={setIsRegenerating}
-          isRegenerating={isRegenerating}
-        />
-      )}
-
-      {message.author === "AI" && isLastMessage && (
-        <MessageSuggestions message={message} sendMessage={sendMessage} />
-      )}
     </div>
   );
 };

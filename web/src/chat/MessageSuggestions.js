@@ -14,7 +14,6 @@
 
 import React from "react";
 import {Button} from "antd";
-import {ThemeDefault} from "../Conf";
 import * as Setting from "../Setting";
 import {updateMessage} from "../backend/MessageBackend";
 
@@ -23,40 +22,8 @@ const MessageSuggestions = ({message, sendMessage}) => {
     return null;
   }
 
-  const fontSize = Setting.isMobile() ? "10px" : "12px";
-
-  const containerStyle = {
-    position: "absolute",
-    left: "48px",
-    top: "calc(100% + 10px)",
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
-    justifyContent: "start",
-    alignItems: "center",
-    zIndex: "10",
-    maxWidth: "80%",
-    gap: "8px",
-    padding: "8px 0",
-  };
-
-  const buttonStyle = {
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
-    border: "1px solid " + ThemeDefault.colorPrimary,
-    color: ThemeDefault.colorPrimary,
-    borderRadius: "4px",
-    fontSize: fontSize,
-    margin: "3px",
-    padding: "8px 16px",
-    textAlign: "start",
-    whiteSpace: "pre-wrap",
-    height: "28px",
-    transition: "all 0.3s",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-  };
-
   return (
-    <div style={containerStyle}>
+    <div style={{display: "flex", flexWrap: "wrap", gap: "8px"}}>
       {message.suggestions.map((suggestion, index) => {
         let suggestionText = suggestion.text;
         if (suggestionText.trim() === "") {
@@ -67,17 +34,27 @@ const MessageSuggestions = ({message, sendMessage}) => {
 
         return (
           <Button
-            className="suggestions-item"
             key={index}
-            type="primary"
-            style={buttonStyle}
+            color="primary"
+            variant="filled"
+            style={{
+              height: "auto",
+              padding: "8px 16px",
+            }}
             onClick={() => {
               sendMessage(suggestionText, "");
               message.suggestions[index].isHit = true;
               updateMessage(message.owner, message.name, message, true);
             }}
           >
-            {suggestionText}
+            <div style={{
+              whiteSpace: "normal",
+              wordBreak: "break-word",
+              textAlign: "left",
+              lineHeight: "1.5",
+            }}>
+              {suggestionText}
+            </div>
           </Button>
         );
       })}

@@ -14,7 +14,6 @@
 
 import React from "react";
 import {Button, Space, Tooltip} from "antd";
-import {ThemeDefault} from "../Conf";
 import {
   CopyOutlined,
   DislikeFilled,
@@ -74,57 +73,60 @@ const MessageActions = ({
     <Space
       size="small"
       style={{
-        marginTop: "8px",
-        marginLeft: "48px",
         opacity: 0.8,
       }}
     >
-      <Button
-        className="cs-button"
-        icon={<CopyOutlined />}
-        style={{border: "none", color: ThemeDefault.colorPrimary}}
-        onClick={() => onCopy(message.html.props.dangerouslySetInnerHTML.__html)}
-      />
-
-      {!isLastMessage ? null : (
+      <Tooltip title={i18next.t("general:Copy")} arrow={false}>
         <Button
-          className="cs-button"
-          icon={<ReloadOutlined />}
-          style={{border: "none", color: ThemeDefault.colorPrimary}}
-          onClick={() => {
-            setIsRegenerating(true);
-            onRegenerate(index);
-          }}
-          disabled={isRegenerating}
+          icon={<CopyOutlined />}
+          color="primary"
+          variant="text"
+          onClick={() => onCopy(message.text)}
         />
-      )}
+      </Tooltip>
 
-      <Button
-        className="cs-button"
-        icon={message.likeUsers?.includes(account.name) ? <LikeFilled /> : <LikeOutlined />}
-        style={{border: "none", color: ThemeDefault.colorPrimary}}
-        onClick={() => onLike(message, "like")}
-      />
-
-      <Button
-        className="cs-button"
-        icon={message.dislikeUsers?.includes(account.name) ? <DislikeFilled /> : <DislikeOutlined />}
-        style={{border: "none", color: ThemeDefault.colorPrimary}}
-        onClick={() => onLike(message, "dislike")}
-      />
-
-      <Tooltip title={getTtsTooltip()}>
+      <Tooltip title={i18next.t("general:Like")} arrow={false}>
         <Button
-          className="cs-button"
+          icon={message.likeUsers?.includes(account.name) ? <LikeFilled /> : <LikeOutlined />}
+          color="primary"
+          variant="text"
+          onClick={() => onLike(message, "like")}
+        />
+      </Tooltip>
+
+      <Tooltip title={i18next.t("general:Dislike")} arrow={false}>
+        <Button
+          icon={message.dislikeUsers?.includes(account.name) ? <DislikeFilled /> : <DislikeOutlined />}
+          color="primary"
+          variant="text"
+          onClick={() => onLike(message, "dislike")}
+        />
+      </Tooltip>
+
+      <Tooltip title={getTtsTooltip()} arrow={false}>
+        <Button
           icon={getTtsIcon()}
-          style={{
-            border: "none",
-            color: isCurrentMessageBeingLoaded ? "#1890ff" : ThemeDefault.colorPrimary,
-          }}
+          color="primary"
+          variant="text"
           onClick={() => onToggleRead(message)}
           disabled={isCurrentMessageBeingLoaded}
         />
       </Tooltip>
+
+      {!isLastMessage ? null : (
+        <Tooltip title={i18next.t("general:Regenerate Answer")} arrow={false}>
+          <Button
+            icon={<ReloadOutlined />}
+            color="primary"
+            variant="text"
+            onClick={() => {
+              setIsRegenerating(true);
+              onRegenerate(index);
+            }}
+            disabled={isRegenerating}
+          />
+        </Tooltip>
+      )}
     </Space>
   );
 };
