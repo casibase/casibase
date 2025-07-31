@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Switch, Table, Tooltip} from "antd";
+import {Button, Popconfirm, Popover, Switch, Table, Tooltip} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as RecordBackend from "./backend/RecordBackend";
@@ -23,6 +23,9 @@ import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import {DeleteOutlined} from "@ant-design/icons";
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/material-darker.css";
 
 class RecordListPage extends BaseListPage {
   constructor(props) {
@@ -364,9 +367,52 @@ class RecordListPage extends BaseListPage {
         title: i18next.t("record:Object"),
         dataIndex: "object",
         key: "object",
-        width: "90px",
+        width: "200px",
         sorter: true,
         ...this.getColumnSearchProps("object"),
+        render: (text, record, index) => {
+          if (!text || text === "") {
+            return (
+              <div style={{maxWidth: "200px"}}>
+                {Setting.getShortText(text, 50)}
+              </div>
+            );
+          }
+
+          const formattedText = JSON.stringify(JSON.parse(text), null, 2);
+
+          return (
+            <Popover
+              placement="right"
+              content={
+                <div style={{width: "600px", height: "400px"}}>
+                  <CodeMirror
+                    value={formattedText}
+                    options={{
+                      mode: "application/json",
+                      theme: "material-darker",
+                      readOnly: true,
+                      lineNumbers: true,
+                    }}
+                    editorDidMount={(editor) => {
+                      if (window.ResizeObserver) {
+                        const resizeObserver = new ResizeObserver(() => {
+                          editor.refresh();
+                        });
+                        resizeObserver.observe(editor.getWrapperElement().parentNode);
+                      }
+                    }}
+                  />
+                </div>
+              }
+              trigger="hover"
+            >
+              <div style={{maxWidth: "200px", cursor: "pointer"}}>
+                {Setting.getShortText(text, 50)}
+              </div>
+            </Popover>
+          );
+        },
       },
       {
         title: i18next.t("general:Is triggered"),
