@@ -173,6 +173,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(store.Name, store.SearchProvider, embeddingProvider, embeddingProviderObj, modelProvider, "admin", question, knowledgeCount)
 	if err != nil && err.Error() != "no knowledge vectors found" {
+		err = fmt.Errorf("object.GetNearestKnowledge() error, %s", err.Error())
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}

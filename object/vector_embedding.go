@@ -204,6 +204,7 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string)
 	for i := 0; i < 10; i++ {
 		res, embeddingResult, err = queryVectorWithContext(embeddingProvider, text, i)
 		if err != nil {
+			err = fmt.Errorf("queryVectorSafe() error, %s", err.Error())
 			if i > 0 {
 				fmt.Printf("\tFailed (%d): %s\n", i+1, err.Error())
 			}
