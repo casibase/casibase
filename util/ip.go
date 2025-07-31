@@ -60,6 +60,10 @@ func InitIpDb() {
 }
 
 func GetInfoFromIP(ip string) (*LocationInfo, error) {
+	if !IsInternetIp(ip) {
+		return &LocationInfo{}, nil
+	}
+
 	var info *LocationInfo
 	var err error
 	if isLocalIpDb {
