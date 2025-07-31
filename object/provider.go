@@ -462,7 +462,7 @@ func (p *Provider) processProviderParams(providerDb *Provider) {
 	if p.Type == "Ollama" && p.ProviderUrl != "" && !strings.HasPrefix(p.ProviderUrl, "http") {
 		p.ProviderUrl = "http://" + p.ProviderUrl
 	}
-	if p.Category == "Model" && p.Type == "OpenAI" && (strings.Contains(p.SubType, "o3") || strings.Contains(p.SubType, "o4-mini")) {
+	if p.Category == "Model" && p.Type == "OpenAI" && (strings.Contains(p.SubType, "o1") || strings.Contains(p.SubType, "o3") || strings.Contains(p.SubType, "o4")) {
 		p.Temperature = 1
 		p.TopP = 1
 		p.FrequencyPenalty = 0

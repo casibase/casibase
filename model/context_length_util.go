@@ -183,6 +183,8 @@ func getContextLength(typ string) int {
 			return 100000
 		} else if strings.Contains(typ, "o3") {
 			return 100000
+		} else if strings.Contains(typ, "o1") {
+			return 128000
 		} else if strings.Contains(typ, "4.5") || strings.Contains(typ, "4o") {
 			return 128000
 		} else if strings.Contains(typ, "4.1") {
