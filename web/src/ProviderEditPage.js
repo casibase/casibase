@@ -296,6 +296,8 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Speech-to-Text") {
                 this.updateProviderField("type", "Alibaba Cloud");
                 this.updateProviderField("subType", "paraformer-realtime-v1");
+              } else if (value === "Private Cloud") {
+                this.updateProviderField("type", "Kubernetes");
               }
             })}>
               {
@@ -310,6 +312,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Video", name: "Video"},
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
                   {id: "Speech-to-Text", name: "Speech-to-Text"},
+                  {id: "Docker", name: "Docker"},
                   {id: "Kubernetes", name: "Kubernetes"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
@@ -1048,7 +1051,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          this.state.provider.category === "Kubernetes" ? (
+          this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes" ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("provider:Config text"), i18next.t("provider:Config text - Tooltip"))} :

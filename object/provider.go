@@ -273,7 +273,7 @@ func GetDefaultKubernetesProvider() (*Provider, error) {
 	}
 
 	for _, provider := range providers {
-		if provider.Category == "Kubernetes" {
+		if provider.Category == "Private Cloud" && provider.Type == "Kubernetes" && provider.State == "Active" {
 			return provider, nil
 		}
 	}
