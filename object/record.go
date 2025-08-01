@@ -39,7 +39,7 @@ type Record struct {
 
 	Organization string `xorm:"varchar(100)" json:"organization"`
 	ClientIp     string `xorm:"varchar(100)" json:"clientIp"`
-	UserAgent    string `xorm:"varchar(100)" json:"userAgent"`
+	UserAgent    string `xorm:"varchar(512)" json:"userAgent"`
 	User         string `xorm:"varchar(100)" json:"user"`
 	Method       string `xorm:"varchar(100)" json:"method"`
 	RequestUri   string `xorm:"varchar(1000)" json:"requestUri"`
@@ -195,7 +195,7 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	}
 
 	object := ""
-	if ctx.Input.RequestBody != nil && len(ctx.Input.RequestBody) != 0 {
+	if len(ctx.Input.RequestBody) != 0 {
 		object = string(ctx.Input.RequestBody)
 	}
 
@@ -223,9 +223,6 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	}
 	region := locationInfo.Country
 	city := locationInfo.City
-	if err != nil {
-		return nil, err
-	}
 
 	record := Record{
 		Name:        util.GenerateId(),
@@ -258,6 +255,10 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 		return false, nil, nil
 	}
 
+	if strings.HasSuffix(record.Action, "-records") {
+		return false, nil, nil
+	}
+
 	if record.Provider == "" {
 		providerFrist, providerSecend, err := GetTwoActiveBlockchainProvider("admin")
 		if err != nil {
@@ -287,6 +288,83 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 		}
 
 		return affected2, data, nil
+	}
+
+	return affected != 0, nil, nil
+}
+
+func AddRecords(records *[]Record) (bool, interface{}, error) {
+	if records == nil || len(*records) == 0 {
+		return false, nil, nil
+	}
+
+	var validRecords []Record
+	var needCommitRecords []*Record
+
+	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider("admin")
+	if err != nil {
+		return false, nil, err
+	}
+
+	for i := range *records {
+		record := &(*records)[i]
+
+		if logPostOnly && record.Method == "GET" {
+			continue
+		}
+
+		if strings.HasSuffix(record.Action, "-record") {
+			continue
+		}
+
+		if strings.HasSuffix(record.Action, "-record-second") {
+			continue
+		}
+
+		if strings.HasSuffix(record.Action, "-records") {
+			continue
+		}
+
+		if record.Provider == "" {
+			if providerFirst != nil {
+				record.Provider = providerFirst.Name
+			}
+
+			if providerSecond != nil {
+				record.Provider2 = providerSecond.Name
+			}
+		}
+
+		record.Owner = record.Organization
+
+		validRecords = append(validRecords, *record)
+
+		if record.NeedCommit {
+			needCommitRecords = append(needCommitRecords, record)
+		}
+	}
+
+	if len(validRecords) == 0 {
+		return false, nil, nil
+	}
+
+	affected, err := adapter.engine.Insert(validRecords)
+	if err != nil {
+		return false, nil, err
+	}
+
+	if len(needCommitRecords) > 0 {
+		var commitResults []interface{}
+		for _, record := range needCommitRecords {
+			_, data, err := CommitRecord(record)
+			if err != nil {
+				return false, nil, err
+			}
+			if data != nil {
+				commitResults = append(commitResults, data)
+			}
+		}
+		return affected != 0, commitResults, nil
 	}
 
 	return affected != 0, nil, nil

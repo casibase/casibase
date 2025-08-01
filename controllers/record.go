@@ -134,6 +134,39 @@ func (c *ApiController) AddRecord() {
 	c.ServeJSON()
 }
 
+// AddRecords
+// @Title AddRecord
+// @Tag Record API
+// @Description add multiple records
+// @Param   body    body   []object.Record  true        "The details of the record"
+// @Success 200 {object} controllers.Response The Response object
+// @router /add-records [post]
+func (c *ApiController) AddRecords() {
+	var records []object.Record
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &records)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	for i := range records {
+		if records[i].ClientIp == "" {
+			records[i].ClientIp = c.getClientIp()
+		}
+		if records[i].UserAgent == "" {
+			records[i].UserAgent = c.getUserAgent()
+		}
+	}
+
+	if len(records) == 0 {
+		c.ResponseError("No records to add")
+		return
+	}
+
+	c.Data["json"] = wrapActionResponse2(object.AddRecords(&records))
+	c.ServeJSON()
+}
+
 // DeleteRecord
 // @Title DeleteRecord
 // @Tag Record API
