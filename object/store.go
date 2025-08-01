@@ -24,6 +24,7 @@ import (
 )
 
 type File struct {
+	FileId      string  `xorm:"varchar(100)" json:"fileId"`
 	Key         string  `xorm:"varchar(100)" json:"key"`
 	Title       string  `xorm:"varchar(100)" json:"title"`
 	Size        int64   `json:"size"`
@@ -58,17 +59,18 @@ type Store struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
-	StorageProvider      string `xorm:"varchar(100)" json:"storageProvider"`
-	StorageSubpath       string `xorm:"varchar(100)" json:"storageSubpath"`
-	ImageProvider        string `xorm:"varchar(100)" json:"imageProvider"`
-	SplitProvider        string `xorm:"varchar(100)" json:"splitProvider"`
-	SearchProvider       string `xorm:"varchar(100)" json:"searchProvider"`
-	ModelProvider        string `xorm:"varchar(100)" json:"modelProvider"`
-	EmbeddingProvider    string `xorm:"varchar(100)" json:"embeddingProvider"`
-	TextToSpeechProvider string `xorm:"varchar(100)" json:"textToSpeechProvider"`
-	EnableTtsStreaming   bool   `xorm:"bool" json:"enableTtsStreaming"`
-	SpeechToTextProvider string `xorm:"varchar(100)" json:"speechToTextProvider"`
-	AgentProvider        string `xorm:"varchar(100)" json:"agentProvider"`
+	StorageProvider       string `xorm:"varchar(100)" json:"storageProvider"`
+	MirrorStorageProvider string `xorm:"varchar(100)" json:"mirrorStorageProvider"`
+	StorageSubpath        string `xorm:"varchar(100)" json:"storageSubpath"`
+	ImageProvider         string `xorm:"varchar(100)" json:"imageProvider"`
+	SplitProvider         string `xorm:"varchar(100)" json:"splitProvider"`
+	SearchProvider        string `xorm:"varchar(100)" json:"searchProvider"`
+	ModelProvider         string `xorm:"varchar(100)" json:"modelProvider"`
+	EmbeddingProvider     string `xorm:"varchar(100)" json:"embeddingProvider"`
+	TextToSpeechProvider  string `xorm:"varchar(100)" json:"textToSpeechProvider"`
+	EnableTtsStreaming    bool   `xorm:"bool" json:"enableTtsStreaming"`
+	SpeechToTextProvider  string `xorm:"varchar(100)" json:"speechToTextProvider"`
+	AgentProvider         string `xorm:"varchar(100)" json:"agentProvider"`
 
 	MemoryLimit         int      `json:"memoryLimit"`
 	Frequency           int      `json:"frequency"`
@@ -217,7 +219,7 @@ func (store *Store) GetStorageProviderObj() (storage.StorageProvider, error) {
 
 	var storageProvider storage.StorageProvider
 	if provider != nil {
-		storageProvider, err = provider.GetStorageProviderObj()
+		storageProvider, err = provider.GetStorageProviderObj(store.MirrorStorageProvider)
 		if err != nil {
 			return nil, err
 		}

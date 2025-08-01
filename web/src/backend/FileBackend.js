@@ -39,8 +39,8 @@ export function addFile(storeId, key, isLeaf, filename, file) {
   }).then(res => res.json());
 }
 
-export function deleteFile(storeId, key, isLeaf) {
-  return fetch(`${Setting.ServerUrl}/api/delete-file?store=${storeId}&key=${key}&isLeaf=${isLeaf ? 1 : 0}`, {
+export function deleteFile(storeId, key, fileId, isLeaf) {
+  return fetch(`${Setting.ServerUrl}/api/delete-file?store=${storeId}&key=${key}&fileId=${fileId}&isLeaf=${isLeaf ? 1 : 0}`, {
     method: "POST",
     credentials: "include",
     headers: {

@@ -212,7 +212,7 @@ class FileTree extends React.Component {
 
   deleteFile(file, isLeaf) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
-    FileBackend.deleteFile(storeId, file.key, isLeaf)
+    FileBackend.deleteFile(storeId, file.key, file.fileId, isLeaf)
       .then((res) => {
         if (res.status === "ok") {
           if (res.data === true) {

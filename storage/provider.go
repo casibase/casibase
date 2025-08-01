@@ -17,6 +17,7 @@ package storage
 import "bytes"
 
 type Object struct {
+	Id           string
 	Key          string
 	LastModified string
 	Size         int64
@@ -26,14 +27,26 @@ type Object struct {
 type StorageProvider interface {
 	ListObjects(prefix string) ([]*Object, error)
 	PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) (string, error)
-	DeleteObject(key string) error
+	DeleteObject(key string, fileId string) error
 }
 
-func GetStorageProvider(typ string, clientId string, providerName string) (StorageProvider, error) {
+func GetStorageProvider(typ string, clientId string, clientSecret string, providerName string, mirrorProviderType string) (StorageProvider, error) {
 	var p StorageProvider
 	var err error
 	if typ == "Local File System" {
 		p, err = NewLocalFileSystemStorageProvider(clientId)
+	} else if typ == "OpenAI File System" {
+		var mirrorP StorageProvider
+
+		if mirrorProviderType == "Local File System" {
+			mirrorP, err = NewLocalFileSystemStorageProvider(clientId)
+		} else {
+			mirrorP, err = NewCasdoorProvider(mirrorProviderType)
+		}
+		if err != nil {
+			return nil, err
+		}
+		p, err = NewOpenAIFileSystemStorageProvider(clientSecret, mirrorP)
 	} else {
 		p, err = NewCasdoorProvider(providerName)
 	}

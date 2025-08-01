@@ -60,10 +60,10 @@ func (w *SubpathStorageProvider) PutObject(user string, parent string, key strin
 	return w.provider.PutObject(user, parent, fullKey, fileBuffer)
 }
 
-func (w *SubpathStorageProvider) DeleteObject(key string) error {
+func (w *SubpathStorageProvider) DeleteObject(key string, fileId string) error {
 	// Prepend the subpath to the key
 	fullKey := w.buildFullPath(key)
-	return w.provider.DeleteObject(fullKey)
+	return w.provider.DeleteObject(fullKey, fileId)
 }
 
 // Constructs the full path by combining subpath and path
