@@ -119,10 +119,10 @@ func UpdateApplication(id string, application *Application) (bool, error) {
 	return affected != 0, nil
 }
 
-func UpdateApplicationStatus(owner, name, status string) {
+func UpdateApplicationStatus(owner, name, status string) error {
 	application, err := getApplication(owner, name)
 	if err != nil || application == nil {
-		return
+		return fmt.Errorf("failed to get application %s/%s: %v", owner, name, err)
 	}
 
 	application.Status = status
@@ -130,8 +130,10 @@ func UpdateApplicationStatus(owner, name, status string) {
 
 	_, err = UpdateApplication(fmt.Sprintf("%s/%s", owner, name), application)
 	if err != nil {
-		return
+		return fmt.Errorf("failed to update application %s/%s status to %s: %v", owner, name, status, err)
 	}
+
+	return nil
 }
 
 func AddApplication(application *Application) (bool, error) {
@@ -287,7 +289,11 @@ func DeployApplication(application *Application) (bool, error) {
 		return false, fmt.Errorf("failed to deploy manifest: %v", err)
 	}
 
-	UpdateApplicationStatus(application.Owner, application.Name, StatusPending)
+	err = UpdateApplicationStatus(application.Owner, application.Name, StatusPending)
+	if err != nil {
+		return true, err
+	}
+
 	return true, nil
 }
 
@@ -313,7 +319,11 @@ func UndeployApplication(owner, name string) (bool, error) {
 		return false, fmt.Errorf("failed to delete namespace: %v", err)
 	}
 
-	UpdateApplicationStatus(owner, name, StatusTerminating)
+	err = UpdateApplicationStatus(owner, name, StatusTerminating)
+	if err != nil {
+		return true, err
+	}
+
 	return true, nil
 }
 
@@ -334,20 +344,17 @@ func DeployApplicationSync(application *Application) (bool, error) {
 	ticker := time.NewTicker(5 * time.Second)
 	defer ticker.Stop()
 
-	var lastErr error
-
 	for {
 		select {
 		case <-ctx.Done():
-			UpdateApplicationStatus(application.Owner, application.Name, StatusFailed)
-			if lastErr != nil {
-				return false, fmt.Errorf("deployment timeout: %v", lastErr)
+			err := UpdateApplicationStatus(application.Owner, application.Name, StatusFailed)
+			if err != nil {
+				return false, err
 			}
 			return false, fmt.Errorf("deployment timeout: application did not become ready within 10 minutes")
 		case <-ticker.C:
 			status, err := GetApplicationStatus(application.Owner, application.Name)
 			if err != nil {
-				lastErr = err
 				continue
 			}
 
@@ -355,15 +362,13 @@ func DeployApplicationSync(application *Application) (bool, error) {
 			case StatusRunning:
 				return true, nil
 			case StatusNotDeployed:
-				if lastErr != nil {
-					return false, fmt.Errorf("deployment failed: %v", lastErr)
-				}
-				return false, fmt.Errorf("deployment failed: application not deployed")
+				return false, fmt.Errorf("namespace %s is terminating and all resources have been cleaned up", application.Namespace)
 			case StatusFailed:
-				if lastErr != nil {
-					return false, fmt.Errorf("deployment failed: %v", lastErr)
+				reason, err := GetApplicationFailureReason(application.Namespace)
+				if err != nil {
+					return false, fmt.Errorf("deployment failed, and could not retrieve failure details: %v", err)
 				}
-				return false, fmt.Errorf("deployment failed")
+				return false, fmt.Errorf("deployment failed: %s", reason)
 			default:
 				continue
 			}
@@ -411,6 +416,70 @@ func UndeployApplicationSync(owner, name string) (bool, error) {
 	}
 }
 
+func GetApplicationFailureReason(namespace string) (string, error) {
+	if err := ensureK8sClient(); err != nil {
+		return "", err
+	}
+	if !k8sClient.connected {
+		return "", fmt.Errorf("k8s client is not connected to the cluster")
+	}
+
+	pods, err := k8sClient.clientSet.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		if errors.IsNotFound(err) {
+			return "namespace or pods not found", nil
+		}
+		return "", fmt.Errorf("failed to list pods in namespace %s: %w", namespace, err)
+	}
+
+	if len(pods.Items) == 0 {
+		return "no pods were found in the application namespace to inspect", nil
+	}
+
+	var reasons []string
+	for _, pod := range pods.Items {
+		if pod.Status.Phase == v1.PodFailed {
+			reason := fmt.Sprintf("pod [%s] has failed", pod.Name)
+			if pod.Status.Reason != "" {
+				reason += fmt.Sprintf(" with reason: '%s'", pod.Status.Reason)
+			}
+			if pod.Status.Message != "" {
+				reason += fmt.Sprintf(" and message: '%s'", pod.Status.Message)
+			}
+			reasons = append(reasons, reason)
+			continue
+		}
+
+		// Check init containers, as they can block the main containers from starting.
+		for _, status := range pod.Status.InitContainerStatuses {
+			if status.State.Waiting != nil && status.State.Waiting.Reason != "" {
+				reasons = append(reasons, fmt.Sprintf("pod [%s] init container [%s] is waiting: %s (%s)", pod.Name, status.Name, status.State.Waiting.Reason, status.State.Waiting.Message))
+			}
+			if status.State.Terminated != nil && status.State.Terminated.Reason != "" && status.State.Terminated.Reason != "Completed" {
+				reasons = append(reasons, fmt.Sprintf("pod [%s] init container [%s] terminated with exit code %d: %s (%s)", pod.Name, status.Name, status.State.Terminated.ExitCode, status.State.Terminated.Reason, status.State.Terminated.Message))
+			}
+		}
+
+		// Check the main containers for issues.
+		for _, status := range pod.Status.ContainerStatuses {
+			if status.State.Waiting != nil && status.State.Waiting.Reason != "" {
+				// e.g., ImagePullBackOff, CrashLoopBackOff, ErrImagePull
+				reasons = append(reasons, fmt.Sprintf("pod [%s] container [%s] is waiting: %s (%s)", pod.Name, status.Name, status.State.Waiting.Reason, status.State.Waiting.Message))
+			}
+			if status.State.Terminated != nil && status.State.Terminated.Reason != "" {
+				// e.g., OOMKilled, ContainerCannotRun, Error
+				reasons = append(reasons, fmt.Sprintf("pod [%s] container [%s] terminated with exit code %d: %s (%s)", pod.Name, status.Name, status.State.Terminated.ExitCode, status.State.Terminated.Reason, status.State.Terminated.Message))
+			}
+		}
+	}
+
+	if len(reasons) > 0 {
+		return strings.Join(reasons, "; "), nil
+	}
+
+	return "deployment failed for an unknown reason. Check pod logs and events in the namespace for more details.", nil
+}
+
 // GetApplicationStatus returns application status as string
 func GetApplicationStatus(owner, name string) (string, error) {
 	if err := ensureK8sClient(); err != nil {
@@ -430,7 +499,7 @@ func GetApplicationStatus(owner, name string) (string, error) {
 	)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			UpdateApplicationStatus(owner, name, StatusNotDeployed)
+			err = UpdateApplicationStatus(owner, name, StatusNotDeployed)
 			return StatusNotDeployed, nil
 		}
 		return StatusUnknown, err
@@ -442,11 +511,17 @@ func GetApplicationStatus(owner, name string) (string, error) {
 		deployments, _ := k8sClient.clientSet.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
 
 		if len(pods.Items) == 0 && len(services.Items) == 0 && len(deployments.Items) == 0 {
-			UpdateApplicationStatus(owner, name, StatusNotDeployed)
+			err := UpdateApplicationStatus(owner, name, StatusNotDeployed)
+			if err != nil {
+				return "", err
+			}
 			return StatusNotDeployed, nil
 		}
 
-		UpdateApplicationStatus(owner, name, StatusTerminating)
+		err = UpdateApplicationStatus(owner, name, StatusTerminating)
+		if err != nil {
+			return "", err
+		}
 		return StatusTerminating, nil
 	}
 
@@ -459,19 +534,28 @@ func GetApplicationStatus(owner, name string) (string, error) {
 	}
 
 	if len(deployments.Items) == 0 {
-		UpdateApplicationStatus(owner, name, StatusNotDeployed)
+		err := UpdateApplicationStatus(owner, name, StatusNotDeployed)
+		if err != nil {
+			return "", err
+		}
 		return StatusNotDeployed, nil
 	}
 
 	// Check if all deployments are ready
 	for _, deployment := range deployments.Items {
 		if deployment.Status.ReadyReplicas < deployment.Status.Replicas {
-			UpdateApplicationStatus(owner, name, StatusPending)
+			err := UpdateApplicationStatus(owner, name, StatusPending)
+			if err != nil {
+				return "", err
+			}
 			return StatusPending, nil
 		}
 	}
 
-	UpdateApplicationStatus(owner, name, StatusRunning)
+	err = UpdateApplicationStatus(owner, name, StatusRunning)
+	if err != nil {
+		return "", err
+	}
 	return StatusRunning, nil
 }
 
