@@ -220,7 +220,7 @@ func updateContainer(oldContainer *Container, container *Container) (bool, error
 		return false, fmt.Errorf("The provider: %s does not exist", container.Provider)
 	}
 
-	client, err := pkgdocker.NewContainerClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region)
+	client, err := pkgdocker.NewContainerClient(provider.ClientId, provider.ClientSecret, provider.Region)
 	if err != nil {
 		return false, err
 	}
@@ -246,7 +246,7 @@ func getContainers(owner string) ([]*Container, error) {
 
 	for _, provider := range providers {
 		if provider.Category == "Private Cloud" && provider.State == "Active" && provider.Type == "Docker" {
-			client, err2 := pkgdocker.NewContainerClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region)
+			client, err2 := pkgdocker.NewContainerClient(provider.ClientId, provider.ClientSecret, provider.Region)
 			if err2 != nil {
 				return nil, err2
 			}
