@@ -107,8 +107,9 @@ They must:
 	if needTitle {
 		fullPrompt.WriteString(`
 **Finally, generate a concise and meaningful title for the original question. No need to answer user question. 
-
-- The title must be in the same language.
+A meaningful topic title should be able to represent the user's purpose or the overall theme of this conversation.
+Examples of generated title:
+	query: what is casibase? title: introduction to casibase
 - The title must start with "=====" (five equals signs, no space).
 - Do not include the divider or title if a meaningful title cannot be generated.
 - Do NOT include any explanations or extra text—just output the title.`)
