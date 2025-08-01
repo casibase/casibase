@@ -180,6 +180,8 @@ func DeleteApplication(application *Application) (bool, error) {
 }
 
 func generateManifestWithKustomize(baseManifest, parameters string) (string, error) {
+	fmt.Println("baseManifest:", baseManifest)
+	fmt.Println("parameters:", parameters)
 	// If no parameters provided, return base manifest directly
 	if parameters == "" {
 		return baseManifest, nil
@@ -246,6 +248,7 @@ func generateManifestWithKustomize(baseManifest, parameters string) (string, err
 
 	// Convert to final YAML
 	finalManifestBytes, err := resMap.AsYaml()
+	fmt.Println("Final Manifest Bytes:", string(finalManifestBytes))
 	if err != nil {
 		return "", fmt.Errorf("failed to convert result to yaml: %v", err)
 	}
@@ -338,7 +341,7 @@ func DeployApplicationSync(application *Application) (bool, error) {
 	}
 
 	// Wait for deployment to be ready (with timeout)
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	ticker := time.NewTicker(5 * time.Second)
@@ -351,7 +354,11 @@ func DeployApplicationSync(application *Application) (bool, error) {
 			if err != nil {
 				return false, err
 			}
-			return false, fmt.Errorf("deployment timeout: application did not become ready within 10 minutes")
+			reason, err := GetApplicationFailureReason(application.Namespace)
+			if err != nil {
+				return false, fmt.Errorf("deployment failed, and could not retrieve failure details: %v", err)
+			}
+			return false, fmt.Errorf("deployment failed: %s", reason)
 		case <-ticker.C:
 			status, err := GetApplicationStatus(application.Owner, application.Name)
 			if err != nil {
@@ -363,12 +370,6 @@ func DeployApplicationSync(application *Application) (bool, error) {
 				return true, nil
 			case StatusNotDeployed:
 				return false, fmt.Errorf("namespace %s is terminating and all resources have been cleaned up", application.Namespace)
-			case StatusFailed:
-				reason, err := GetApplicationFailureReason(application.Namespace)
-				if err != nil {
-					return false, fmt.Errorf("deployment failed, and could not retrieve failure details: %v", err)
-				}
-				return false, fmt.Errorf("deployment failed: %s", reason)
 			default:
 				continue
 			}
