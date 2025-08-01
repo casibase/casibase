@@ -88,6 +88,9 @@ func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.
 	if provider.ClientSecret != "" {
 		provider.ClientSecret = "***"
 	}
+	if provider.ConfigText != "" {
+		provider.ConfigText = "***"
+	}
 
 	if !isAdmin(user) {
 		if provider.ProviderKey != "" {
@@ -95,9 +98,6 @@ func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.
 		}
 		if provider.UserKey != "" {
 			provider.UserKey = "***"
-		}
-		if provider.ConfigText != "" {
-			provider.ConfigText = "***"
 		}
 		if provider.SignKey != "" {
 			provider.SignKey = "***"
@@ -448,6 +448,9 @@ func RefreshMcpTools(provider *Provider) error {
 func (p *Provider) processProviderParams(providerDb *Provider) {
 	if p.ClientSecret == "***" {
 		p.ClientSecret = providerDb.ClientSecret
+	}
+	if p.ConfigText == "***" {
+		p.ConfigText = providerDb.ConfigText
 	}
 	if p.UserKey == "***" {
 		p.UserKey = providerDb.UserKey

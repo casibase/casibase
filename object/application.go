@@ -334,14 +334,20 @@ func DeployApplicationSync(application *Application) (bool, error) {
 	ticker := time.NewTicker(5 * time.Second)
 	defer ticker.Stop()
 
+	var lastErr error
+
 	for {
 		select {
 		case <-ctx.Done():
-			UpdateApplicationStatus(application.Owner, application.Name, "Failed")
+			UpdateApplicationStatus(application.Owner, application.Name, StatusFailed)
+			if lastErr != nil {
+				return false, fmt.Errorf("deployment timeout: %v", lastErr)
+			}
 			return false, fmt.Errorf("deployment timeout: application did not become ready within 10 minutes")
 		case <-ticker.C:
 			status, err := GetApplicationStatus(application.Owner, application.Name)
 			if err != nil {
+				lastErr = err
 				continue
 			}
 
@@ -349,8 +355,14 @@ func DeployApplicationSync(application *Application) (bool, error) {
 			case StatusRunning:
 				return true, nil
 			case StatusNotDeployed:
+				if lastErr != nil {
+					return false, fmt.Errorf("deployment failed: %v", lastErr)
+				}
 				return false, fmt.Errorf("deployment failed: application not deployed")
 			case StatusFailed:
+				if lastErr != nil {
+					return false, fmt.Errorf("deployment failed: %v", lastErr)
+				}
 				return false, fmt.Errorf("deployment failed")
 			default:
 				continue

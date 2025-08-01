@@ -117,14 +117,26 @@ func (k *K8sClient) testConnection() error {
 // Ensure k8s client is initialized, try to initialize if not
 func ensureK8sClient() error {
 	// Get current Kubernetes provider
-	provider, err := GetDefaultKubernetesProvider()
+	providers, err := getActiveCloudProviders("admin")
 	if err != nil {
-		return fmt.Errorf("failed to get default Kubernetes provider: %v", err)
+		return fmt.Errorf("failed to get active cloud providers: %v", err)
+	}
+
+	var kubernetesProvider *Provider
+	for _, provider := range providers {
+		if provider.Type == "Kubernetes" {
+			kubernetesProvider = provider
+			break
+		}
+	}
+
+	if kubernetesProvider == nil {
+		return fmt.Errorf("no active Kubernetes provider found")
 	}
 
 	// Check if client needs to be created or updated
-	if k8sClient == nil || k8sClient.configText != provider.ConfigText {
-		client, err := createK8sClientFromProvider(provider)
+	if k8sClient == nil || k8sClient.configText != kubernetesProvider.ConfigText {
+		client, err := createK8sClientFromProvider(kubernetesProvider)
 		if err != nil {
 			return err
 		}
@@ -136,13 +148,13 @@ func ensureK8sClient() error {
 
 func GetK8sStatus() (string, error) {
 	if err := ensureK8sClient(); err != nil {
-		return "Disconnected", nil
+		return "Disconnected", err
 	}
 
 	err := k8sClient.testConnection()
 	if err != nil {
 		k8sClient.connected = false
-		return "Disconnected", nil
+		return "Disconnected", err
 	}
 
 	k8sClient.connected = true
