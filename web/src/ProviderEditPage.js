@@ -177,7 +177,7 @@ class ProviderEditPage extends React.Component {
       if (["OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama", "Writer"].includes(provider.type)) {
         return true;
       } else if (provider.type === "OpenAI") {
-        if (provider.subType.includes("o3") || provider.subType.includes("o3-mini") || provider.subType.includes("o4-mini")) {
+        if (provider.subType.includes("o1") || provider.subType.includes("o3") || provider.subType.includes("o4")) {
           return false;
         } else {
           return true;
@@ -192,7 +192,7 @@ class ProviderEditPage extends React.Component {
       if (["OpenRouter", "Baidu Cloud", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama", "Writer"].includes(provider.type)) {
         return true;
       } else if (provider.type === "OpenAI") {
-        if (provider.subType.includes("o3") || provider.subType.includes("o3-mini") || provider.subType.includes("o4-mini")) {
+        if (provider.subType.includes("o1") || provider.subType.includes("o3") || provider.subType.includes("o4")) {
           return false;
         } else {
           return true;
@@ -313,6 +313,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
                   {id: "Speech-to-Text", name: "Speech-to-Text"},
                   {id: "Docker", name: "Docker"},
+                  {id: "Kubernetes", name: "Kubernetes"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
@@ -960,7 +961,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && this.state.provider.type === "OpenAI" && !["o3", "o3-mini", "o4-mini"].includes(this.state.provider.subType)) ? (
+          (this.state.provider.category === "Model" && this.state.provider.type === "OpenAI" && !["o1", "o1-pro", "o3", "o3-mini", "o4-mini"].includes(this.state.provider.subType)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -982,7 +983,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && this.state.provider.type === "OpenAI" && !["o3", "o3-mini", "o4-mini"].includes(this.state.provider.subType)) ? (
+          (this.state.provider.category === "Model" && this.state.provider.type === "OpenAI" && !["o1", "o1-pro", "o3", "o3-mini", "o4-mini"].includes(this.state.provider.subType)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>

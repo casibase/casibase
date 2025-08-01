@@ -92,6 +92,8 @@ Language models:
 | GPT-4.1               | 100K    | $0.002                   | $0.008                   |
 | GPT-4.1-mini          | 100K    | $0.0004	                 | $0.0016                  |
 | GPT-4.1-nano          | 100K    | $0.0001                  | $0.0004                  |
+| o1                    | 200K    | $0.015                   | $0.060                   |
+| o1-pro                | 200K    | $0.15                    | $0.6                     |
 | o3                    | 200K    | $0.002                   | $0.008                   |
 | o3-mini               | 200K    | $0.0011                  | $0.0044                   |
 | o4-mini               | 200K    | $0.0011                  | $0.0044                  |
@@ -157,6 +159,17 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 		} else {
 			inputPricePerThousandTokens = 0.03
 			outputPricePerThousandTokens = 0.06
+		}
+		modelResult.Currency = "USD"
+
+	// o1 model
+	case strings.Contains(model, "o1"):
+		if strings.Contains(model, "pro") {
+			inputPricePerThousandTokens = 0.15
+			outputPricePerThousandTokens = 0.6
+		} else {
+			inputPricePerThousandTokens = 0.015
+			outputPricePerThousandTokens = 0.060
 		}
 		modelResult.Currency = "USD"
 

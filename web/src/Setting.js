@@ -949,6 +949,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_kubernetes.png`,
         url: "https://kubernetes.io/",
       },
+      "Docker": {
+        logo: `${StaticBaseUrl}/img/social_docker.png`,
+        url: "https://www.docker.com/",
+      },
     },
     "Text-to-Speech": {
       "Alibaba Cloud": {
@@ -1022,6 +1026,8 @@ export function getCompatibleProviderOptions(category) {
         {"id": "gpt-4.1-nano", "name": "gpt-4.1-nano"},
         {"id": "gpt-4.5-preview", "name": "gpt-4.5-preview"},
         {"id": "gpt-4.5-preview-2025-02-27", "name": "gpt-4.5-preview-2025-02-27"},
+        {"id": "o1", "name": "o1"},
+        {"id": "o1-pro", "name": "o1-pro"},
         {"id": "o3", "name": "o3"},
         {"id": "o3-mini", "name": "o3-mini"},
         {"id": "o4-mini", "name": "o4-mini"},
@@ -1125,6 +1131,7 @@ export function getProviderTypeOptions(category) {
       {id: "VMware", name: "VMware"},
       {id: "PVE", name: "PVE"},
       {id: "Kubernetes", name: "Kubernetes"},
+      {id: "Docker", name: "Docker"},
     ]);
   } else if (category === "Blockchain") {
     return ([
@@ -1175,6 +1182,8 @@ const openaiModels = [
   {id: "gpt-4.1-nano", name: "gpt-4.1-nano"},
   {id: "gpt-4.5-preview", name: "gpt-4.5-preview"},
   {id: "gpt-4.5-preview-2025-02-27", name: "gpt-4.5-preview-2025-02-27"},
+  {id: "o1", name: "o1"},
+  {id: "o1-pro", name: "o1-pro"},
   {id: "o3", name: "o3"},
   {id: "o3-mini", name: "o3-mini"},
   {id: "o4-mini", name: "o4-mini"},
