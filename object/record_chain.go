@@ -111,7 +111,7 @@ func (record *Record) toParam() string {
 	return util.StructToJson(res)
 }
 
-func CommitRecord(record *Record) (bool, interface{}, error) {
+func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 	if record.Block != "" {
 		return false, nil, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getId(), record.Block)
 	}

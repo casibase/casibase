@@ -135,7 +135,7 @@ func (c *ApiController) AddRecord() {
 }
 
 // AddRecords
-// @Title AddRecord
+// @Title AddRecords
 // @Tag Record API
 // @Description add multiple records
 // @Param   body    body   []object.Record  true        "The details of the record"
@@ -149,12 +149,15 @@ func (c *ApiController) AddRecords() {
 		return
 	}
 
+	clientIp := c.getClientIp()
+	userAgent := c.getUserAgent()
+
 	for i := range records {
 		if records[i].ClientIp == "" {
-			records[i].ClientIp = c.getClientIp()
+			records[i].ClientIp = clientIp
 		}
 		if records[i].UserAgent == "" {
-			records[i].UserAgent = c.getUserAgent()
+			records[i].UserAgent = userAgent
 		}
 	}
 
