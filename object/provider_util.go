@@ -147,7 +147,7 @@ func getActiveCloudProviders(owner string) ([]*Provider, error) {
 
 	res := []*Provider{}
 	for _, provider := range providers {
-		if ((provider.ClientId != "" && provider.ClientSecret != "") || (provider.ConfigText != "" && provider.Type == "Kubernetes")) && (provider.Category == "Public Cloud" || provider.Category == "Private Cloud") && provider.State == "Active" {
+		if provider.ClientId != "" && provider.ClientSecret != "" && (provider.Category == "Public Cloud" || provider.Category == "Private Cloud") && provider.State == "Active" {
 			res = append(res, provider)
 		}
 	}
