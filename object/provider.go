@@ -449,9 +449,6 @@ func (p *Provider) processProviderParams(providerDb *Provider) {
 	if p.ClientSecret == "***" {
 		p.ClientSecret = providerDb.ClientSecret
 	}
-	if p.ConfigText == "***" {
-		p.ConfigText = providerDb.ConfigText
-	}
 	if p.UserKey == "***" {
 		p.UserKey = providerDb.UserKey
 	}
