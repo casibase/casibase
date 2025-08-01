@@ -245,7 +245,7 @@ func getContainers(owner string) ([]*Container, error) {
 	}
 
 	for _, provider := range providers {
-		if provider.Category == "Docker" {
+		if provider.Category == "Private Cloud" && provider.State == "Active" && provider.Type == "Docker" {
 			client, err2 := pkgdocker.NewContainerClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region)
 			if err2 != nil {
 				return nil, err2
