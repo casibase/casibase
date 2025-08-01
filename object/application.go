@@ -416,7 +416,12 @@ func UndeployApplicationSync(owner, name string) (bool, error) {
 	}
 }
 
+// GetApplicationFailureReason returns the failure reason for an application deployment
 func GetApplicationFailureReason(namespace string) (string, error) {
+	if namespace == "" {
+		return "", fmt.Errorf("namespace cannot be empty")
+	}
+
 	if err := ensureK8sClient(); err != nil {
 		return "", err
 	}
@@ -436,8 +441,20 @@ func GetApplicationFailureReason(namespace string) (string, error) {
 		return "no pods were found in the application namespace to inspect", nil
 	}
 
+	reasons := analyzePodFailures(pods.Items)
+	if len(reasons) > 0 {
+		return strings.Join(reasons, "; "), nil
+	}
+
+	return "deployment failed for an unknown reason. Check pod logs and events in the namespace for more details.", nil
+}
+
+// analyzePodFailures analyzes pod failures and returns a list of failure reasons
+func analyzePodFailures(pods []v1.Pod) []string {
 	var reasons []string
-	for _, pod := range pods.Items {
+
+	for _, pod := range pods {
+		// Check if pod itself has failed
 		if pod.Status.Phase == v1.PodFailed {
 			reason := fmt.Sprintf("pod [%s] has failed", pod.Name)
 			if pod.Status.Reason != "" {
@@ -450,34 +467,38 @@ func GetApplicationFailureReason(namespace string) (string, error) {
 			continue
 		}
 
-		// Check init containers, as they can block the main containers from starting.
+		// Check init containers
 		for _, status := range pod.Status.InitContainerStatuses {
-			if status.State.Waiting != nil && status.State.Waiting.Reason != "" {
-				reasons = append(reasons, fmt.Sprintf("pod [%s] init container [%s] is waiting: %s (%s)", pod.Name, status.Name, status.State.Waiting.Reason, status.State.Waiting.Message))
-			}
-			if status.State.Terminated != nil && status.State.Terminated.Reason != "" && status.State.Terminated.Reason != "Completed" {
-				reasons = append(reasons, fmt.Sprintf("pod [%s] init container [%s] terminated with exit code %d: %s (%s)", pod.Name, status.Name, status.State.Terminated.ExitCode, status.State.Terminated.Reason, status.State.Terminated.Message))
+			if containerReason := analyzeContainerStatus(pod.Name, status.Name, "init container", status.State); containerReason != "" {
+				reasons = append(reasons, containerReason)
 			}
 		}
 
-		// Check the main containers for issues.
+		// Check main containers
 		for _, status := range pod.Status.ContainerStatuses {
-			if status.State.Waiting != nil && status.State.Waiting.Reason != "" {
-				// e.g., ImagePullBackOff, CrashLoopBackOff, ErrImagePull
-				reasons = append(reasons, fmt.Sprintf("pod [%s] container [%s] is waiting: %s (%s)", pod.Name, status.Name, status.State.Waiting.Reason, status.State.Waiting.Message))
-			}
-			if status.State.Terminated != nil && status.State.Terminated.Reason != "" {
-				// e.g., OOMKilled, ContainerCannotRun, Error
-				reasons = append(reasons, fmt.Sprintf("pod [%s] container [%s] terminated with exit code %d: %s (%s)", pod.Name, status.Name, status.State.Terminated.ExitCode, status.State.Terminated.Reason, status.State.Terminated.Message))
+			if containerReason := analyzeContainerStatus(pod.Name, status.Name, "container", status.State); containerReason != "" {
+				reasons = append(reasons, containerReason)
 			}
 		}
 	}
 
-	if len(reasons) > 0 {
-		return strings.Join(reasons, "; "), nil
+	return reasons
+}
+
+// analyzeContainerStatus analyzes a single container's status and returns failure reason if any
+func analyzeContainerStatus(podName, containerName, containerType string, state v1.ContainerState) string {
+	if state.Waiting != nil && state.Waiting.Reason != "" {
+		return fmt.Sprintf("pod [%s] %s [%s] is waiting: %s (%s)",
+			podName, containerType, containerName, state.Waiting.Reason, state.Waiting.Message)
 	}
 
-	return "deployment failed for an unknown reason. Check pod logs and events in the namespace for more details.", nil
+	if state.Terminated != nil && state.Terminated.Reason != "" && state.Terminated.Reason != "Completed" {
+		return fmt.Sprintf("pod [%s] %s [%s] terminated with exit code %d: %s (%s)",
+			podName, containerType, containerName, state.Terminated.ExitCode,
+			state.Terminated.Reason, state.Terminated.Message)
+	}
+
+	return ""
 }
 
 // GetApplicationStatus returns application status as string
