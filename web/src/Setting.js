@@ -945,6 +945,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_pve.png`,
         url: "https://www.proxmox.com/",
       },
+      "Kubernetes": {
+        logo: `${StaticBaseUrl}/img/social_kubernetes.png`,
+        url: "https://kubernetes.io/",
+      },
     },
     "Text-to-Speech": {
       "Alibaba Cloud": {
@@ -1120,6 +1124,7 @@ export function getProviderTypeOptions(category) {
       {id: "Xen", name: "Xen"},
       {id: "VMware", name: "VMware"},
       {id: "PVE", name: "PVE"},
+      {id: "Kubernetes", name: "Kubernetes"},
     ]);
   } else if (category === "Blockchain") {
     return ([
