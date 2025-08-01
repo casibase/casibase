@@ -180,8 +180,6 @@ func DeleteApplication(application *Application) (bool, error) {
 }
 
 func generateManifestWithKustomize(baseManifest, parameters string) (string, error) {
-	fmt.Println("baseManifest:", baseManifest)
-	fmt.Println("parameters:", parameters)
 	// If no parameters provided, return base manifest directly
 	if parameters == "" {
 		return baseManifest, nil
@@ -248,7 +246,6 @@ func generateManifestWithKustomize(baseManifest, parameters string) (string, err
 
 	// Convert to final YAML
 	finalManifestBytes, err := resMap.AsYaml()
-	fmt.Println("Final Manifest Bytes:", string(finalManifestBytes))
 	if err != nil {
 		return "", fmt.Errorf("failed to convert result to yaml: %v", err)
 	}
