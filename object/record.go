@@ -298,7 +298,7 @@ func AddRecords(records *[]Record) (bool, interface{}, error) {
 		return false, nil, nil
 	}
 
-	var validRecords []Record
+	var validRecords []*Record
 	var needCommitRecords []*Record
 
 	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider("admin")
@@ -306,6 +306,7 @@ func AddRecords(records *[]Record) (bool, interface{}, error) {
 		return false, nil, err
 	}
 
+	// Process each record
 	for i := range *records {
 		record := &(*records)[i]
 
@@ -337,7 +338,7 @@ func AddRecords(records *[]Record) (bool, interface{}, error) {
 
 		record.Owner = record.Organization
 
-		validRecords = append(validRecords, *record)
+		validRecords = append(validRecords, record)
 
 		if record.NeedCommit {
 			needCommitRecords = append(needCommitRecords, record)
@@ -348,7 +349,33 @@ func AddRecords(records *[]Record) (bool, interface{}, error) {
 		return false, nil, nil
 	}
 
-	affected, err := adapter.engine.Insert(validRecords)
+	session := adapter.engine.NewSession()
+	defer session.Close()
+
+	err = session.Begin()
+	if err != nil {
+		return false, nil, err
+	}
+
+	batchSize := 150
+	var totalAffected int64
+
+	for i := 0; i < len(validRecords); i += batchSize {
+		end := i + batchSize
+		if end > len(validRecords) {
+			end = len(validRecords)
+		}
+
+		batch := validRecords[i:end]
+		affected, err := session.Insert(batch)
+		if err != nil {
+			session.Rollback()
+			return false, nil, err
+		}
+		totalAffected += affected
+	}
+
+	err = session.Commit()
 	if err != nil {
 		return false, nil, err
 	}
@@ -356,7 +383,15 @@ func AddRecords(records *[]Record) (bool, interface{}, error) {
 	if len(needCommitRecords) > 0 {
 		var commitResults []interface{}
 		for _, record := range needCommitRecords {
-			_, data, err := CommitRecord(record)
+			insertedRecord, err := getRecord(record.Owner, record.Name)
+			if err != nil {
+				return false, nil, err
+			}
+			if insertedRecord == nil {
+				return false, nil, fmt.Errorf("failed to find inserted record for commit: %s", record.Name)
+			}
+
+			_, data, err := CommitRecord(insertedRecord)
 			if err != nil {
 				return false, nil, err
 			}
@@ -364,10 +399,10 @@ func AddRecords(records *[]Record) (bool, interface{}, error) {
 				commitResults = append(commitResults, data)
 			}
 		}
-		return affected != 0, commitResults, nil
+		return totalAffected != 0, commitResults, nil
 	}
 
-	return affected != 0, nil, nil
+	return totalAffected != 0, nil, nil
 }
 
 func DeleteRecord(record *Record) (bool, error) {
