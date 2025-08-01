@@ -23,14 +23,6 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-type ApplicationDeploymentRequest struct {
-	Owner       string `json:"owner"`
-	Name        string `json:"name"`
-	DisplayName string `json:"displayName"`
-	Template    string `json:"template"`
-	Parameters  string `json:"parameters"`
-}
-
 // GetApplications
 // @Title GetApplications
 // @Tag Application API
@@ -127,20 +119,20 @@ func (c *ApiController) UpdateApplication() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-application [post]
 func (c *ApiController) AddApplication() {
-	var req ApplicationDeploymentRequest
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &req)
+	var application object.Application
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &application)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	if req.Owner == "" || req.Name == "" || req.Template == "" {
+	if application.Template == "" {
 		c.ResponseError("Missing required parameters")
 		return
 	}
 
 	// Verify template exists
-	template, err := object.GetTemplate(req.Owner, req.Template)
+	template, err := object.GetTemplate(util.GetIdFromOwnerAndName(application.Owner, application.Template))
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -151,17 +143,7 @@ func (c *ApiController) AddApplication() {
 		return
 	}
 
-	// Create new application
-	application := &object.Application{
-		Owner:       req.Owner,
-		Name:        req.Name,
-		DisplayName: req.DisplayName,
-		Template:    req.Template,
-		Parameters:  req.Parameters,
-		Status:      "Not Deployed",
-	}
-
-	success, err := object.AddApplication(application)
+	success, err := object.AddApplication(&application)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

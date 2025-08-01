@@ -57,7 +57,12 @@ func GetPaginationTemplates(owner string, offset, limit int, field, value, sortF
 	return templates, nil
 }
 
-func GetTemplate(owner, name string) (*Template, error) {
+func GetTemplate(id string) (*Template, error) {
+	owner, name := util.GetOwnerAndNameFromId(id)
+	return getTemplate(owner, name)
+}
+
+func getTemplate(owner, name string) (*Template, error) {
 	template := Template{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&template)
 	if err != nil {
@@ -73,16 +78,16 @@ func GetTemplate(owner, name string) (*Template, error) {
 
 func UpdateTemplate(id string, template *Template) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-
-	if template.Owner == "" {
-		template.Owner = owner
-	}
-	if template.Name == "" {
-		template.Name = name
-	}
 	template.UpdatedTime = util.GetCurrentTime()
+	_, err := getTemplate(owner, name)
+	if err != nil {
+		return false, err
+	}
+	if template == nil {
+		return false, nil
+	}
 
-	affected, err := adapter.engine.ID(core.PK{owner, name}).Update(template)
+	affected, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(template)
 	if err != nil {
 		return false, err
 	}
@@ -106,8 +111,8 @@ func AddTemplate(template *Template) (bool, error) {
 	return affected != 0, nil
 }
 
-func DeleteTemplate(owner, name string) (bool, error) {
-	affected, err := adapter.engine.Delete(&Template{Owner: owner, Name: name})
+func DeleteTemplate(template *Template) (bool, error) {
+	affected, err := adapter.engine.ID(core.PK{template.Owner, template.Name}).Delete(&Template{})
 	if err != nil {
 		return false, err
 	}
