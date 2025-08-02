@@ -54,7 +54,7 @@ func GetTextFromMarkitdown(path string) (string, error) {
 	// Open the input file
 	file, err := os.Open(path)
 	if err != nil {
-		return "", fmt.Errorf("failed to open file: %w", err)
+		return "", fmt.Errorf("GetTextFromMarkitdown() error, failed to open file: %v", err)
 	}
 	defer file.Close()
 
@@ -68,7 +68,7 @@ func GetTextFromMarkitdown(path string) (string, error) {
 
 	err = cmd.Run()
 	if err != nil {
-		return "", fmt.Errorf("markitdown execution failed: %v: %s", err, stderr.String())
+		return "", fmt.Errorf("GetTextFromMarkitdown() error, markitdown failed to run: %v: %s", err, stderr.String())
 	}
 
 	outputBytes := out.Bytes()
