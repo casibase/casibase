@@ -39,7 +39,7 @@ type Record struct {
 
 	Organization string `xorm:"varchar(100)" json:"organization"`
 	ClientIp     string `xorm:"varchar(100)" json:"clientIp"`
-	UserAgent    string `xorm:"varchar(100)" json:"userAgent"`
+	UserAgent    string `xorm:"varchar(200)" json:"userAgent"`
 	User         string `xorm:"varchar(100)" json:"user"`
 	Method       string `xorm:"varchar(100)" json:"method"`
 	RequestUri   string `xorm:"varchar(1000)" json:"requestUri"`
@@ -99,6 +99,26 @@ func getAllRecords() ([]*Record, error) {
 	return records, nil
 }
 
+func getValidRecords(records []*Record) ([]*Record, error) {
+	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider("admin")
+	if err != nil {
+		return nil, err
+	}
+	var validRecords []*Record
+	for _, record := range records {
+		ok, err := prepareRecord(record, providerFirst, providerSecond)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			continue
+		}
+		validRecords = append(validRecords, record)
+
+	}
+	return validRecords, nil
+}
+
 func GetPaginationRecords(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Record, error) {
 	records := []*Record{}
 	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
@@ -126,6 +146,38 @@ func getRecord(owner string, name string) (*Record, error) {
 	} else {
 		return nil, nil
 	}
+}
+
+func prepareRecord(record *Record, providerFirst, providerSecond *Provider) (bool, error) {
+	if logPostOnly && record.Method == "GET" {
+		return false, nil
+	}
+
+	if strings.HasSuffix(record.Action, "-record") {
+		return false, nil
+	}
+
+	if strings.HasSuffix(record.Action, "-record-second") {
+		return false, nil
+	}
+
+	if strings.HasSuffix(record.Action, "-records") {
+		return false, nil
+	}
+
+	if record.Provider == "" {
+		if providerFirst != nil {
+			record.Provider = providerFirst.Name
+		}
+
+		if providerSecond != nil {
+			record.Provider2 = providerSecond.Name
+		}
+	}
+
+	record.Owner = record.Organization
+
+	return true, nil
 }
 
 func GetRecord(id string) (*Record, error) {
@@ -195,7 +247,7 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	}
 
 	object := ""
-	if ctx.Input.RequestBody != nil && len(ctx.Input.RequestBody) != 0 {
+	if len(ctx.Input.RequestBody) != 0 {
 		object = string(ctx.Input.RequestBody)
 	}
 
@@ -223,9 +275,6 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	}
 	region := locationInfo.Country
 	city := locationInfo.City
-	if err != nil {
-		return nil, err
-	}
 
 	record := Record{
 		Name:        util.GenerateId(),
@@ -246,34 +295,18 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 }
 
 func AddRecord(record *Record) (bool, interface{}, error) {
-	if logPostOnly && record.Method == "GET" {
+	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider(record.Owner)
+	if err != nil {
+		return false, nil, err
+	}
+
+	ok, err := prepareRecord(record, providerFirst, providerSecond)
+	if err != nil {
+		return false, nil, err
+	}
+	if !ok {
 		return false, nil, nil
 	}
-
-	if strings.HasSuffix(record.Action, "-record") {
-		return false, nil, nil
-	}
-
-	if strings.HasSuffix(record.Action, "-record-second") {
-		return false, nil, nil
-	}
-
-	if record.Provider == "" {
-		providerFrist, providerSecend, err := GetTwoActiveBlockchainProvider("admin")
-		if err != nil {
-			return false, nil, err
-		}
-
-		if providerFrist != nil {
-			record.Provider = providerFrist.Name
-		}
-
-		if providerSecend != nil {
-			record.Provider2 = providerSecend.Name
-		}
-	}
-
-	record.Owner = record.Organization
 
 	affected, err := adapter.engine.Insert(record)
 	if err != nil {
@@ -290,6 +323,49 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 	}
 
 	return affected != 0, nil, nil
+}
+
+func AddRecords(records []*Record) (bool, interface{}, error) {
+	if len(records) == 0 {
+		return false, nil, nil
+	}
+
+	validRecords, err := getValidRecords(records)
+	if err != nil {
+		return false, nil, err
+	}
+
+	if len(validRecords) == 0 {
+		return false, nil, nil
+	}
+
+	totalAffected := int64(0)
+	session := adapter.engine.NewSession()
+	defer session.Close()
+	err = session.Begin()
+	if err != nil {
+		return false, nil, err
+	}
+
+	batchSize := 150
+	for i := 0; i < len(validRecords); i += batchSize {
+		end := min(i+batchSize, len(validRecords))
+
+		batch := validRecords[i:end]
+		affected, err := session.Insert(batch)
+		if err != nil {
+			session.Rollback()
+			return false, nil, err
+		}
+		totalAffected += affected
+	}
+
+	err = session.Commit()
+	if err != nil {
+		return false, nil, err
+	}
+
+	return totalAffected != 0, nil, nil
 }
 
 func DeleteRecord(record *Record) (bool, error) {
