@@ -18,9 +18,8 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
-	"runtime"
-	"strings"
 	"unicode/utf8"
 
 	"golang.org/x/text/encoding/simplifiedchinese"
@@ -52,22 +51,26 @@ func GetTextFromMarkitdown(path string) (string, error) {
 		return "", fmt.Errorf("GetTextFromMarkitdown() error, markitdown does not exist")
 	}
 
-	var cmd *exec.Cmd
-	isWindows := strings.Contains(strings.ToLower(runtime.GOOS), "windows")
-	if isWindows {
-		cmd = exec.Command("cmd", "/C", fmt.Sprintf("markitdown < %s", path))
-	} else {
-		cmd = exec.Command("sh", "-c", fmt.Sprintf("markitdown < %s", path))
-	}
-
-	err := cmd.Run()
+	// Open the input file
+	file, err := os.Open(path)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to open file: %w", err)
 	}
+	defer file.Close()
+
+	cmd := exec.Command("markitdown")
+
+	cmd.Stdin = file
 
 	var out, stderr bytes.Buffer
 	cmd.Stdout = &out
 	cmd.Stderr = &stderr
+
+	err = cmd.Run()
+	if err != nil {
+		return "", fmt.Errorf("markitdown execution failed: %v: %s", err, stderr.String())
+	}
+
 	outputBytes := out.Bytes()
 	if utf8.Valid(outputBytes) {
 		return string(outputBytes), nil
