@@ -136,13 +136,13 @@ func ensureK8sClient() error {
 
 func GetK8sStatus() (string, error) {
 	if err := ensureK8sClient(); err != nil {
-		return "Disconnected", nil
+		return "Disconnected", err
 	}
 
 	err := k8sClient.testConnection()
 	if err != nil {
 		k8sClient.connected = false
-		return "Disconnected", nil
+		return "Disconnected", err
 	}
 
 	k8sClient.connected = true
