@@ -311,8 +311,6 @@ func AddRecords(records *[]Record) (bool, interface{}, error) {
 	}
 
 	var validRecords []*Record
-	needCommitRecords := map[string]*Record{}
-	var needCommitRecordsName []string
 
 	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider("admin")
 	if err != nil {
@@ -330,14 +328,9 @@ func AddRecords(records *[]Record) (bool, interface{}, error) {
 		}
 
 		validRecords = append(validRecords, &record)
-
-		if record.NeedCommit {
-			needCommitRecords[record.Name] = &record
-			needCommitRecordsName = append(needCommitRecordsName, record.Name)
-		}
 	}
 
-	if len(validRecords) == 0 && len(needCommitRecords) == 0 {
+	if len(validRecords) == 0 {
 		return false, nil, nil
 	}
 
@@ -349,36 +342,17 @@ func AddRecords(records *[]Record) (bool, interface{}, error) {
 		return false, nil, err
 	}
 
-	if len(validRecords) > 0 {
-		batchSize := 150
-		for i := 0; i < len(validRecords); i += batchSize {
-			end := min(i+batchSize, len(validRecords))
+	batchSize := 150
+	for i := 0; i < len(validRecords); i += batchSize {
+		end := min(i+batchSize, len(validRecords))
 
-			batch := validRecords[i:end]
-			affected, err := session.Insert(batch)
-			if err != nil {
-				session.Rollback()
-				return false, nil, err
-			}
-			totalAffected += affected
-		}
-	}
-
-	// get need commit records id by batch querying names
-	if len(needCommitRecords) > 0 {
-		recordNameWithId := []struct {
-			Id   int
-			Name string
-		}{}
-		err := session.Table(Record{}).In("name", needCommitRecordsName).Cols("id", "name").Find(&recordNameWithId)
+		batch := validRecords[i:end]
+		affected, err := session.Insert(batch)
 		if err != nil {
 			session.Rollback()
 			return false, nil, err
 		}
-		// Update need commit records with their Id
-		for _, record := range recordNameWithId {
-			needCommitRecords[record.Name].Id = record.Id
-		}
+		totalAffected += affected
 	}
 
 	err = session.Commit()
@@ -386,53 +360,7 @@ func AddRecords(records *[]Record) (bool, interface{}, error) {
 		return false, nil, err
 	}
 
-	if len(needCommitRecords) == 0 {
-		return totalAffected != 0, nil, nil
-	}
-
-	commitResults := make([]interface{}, 0, len(needCommitRecords))
-	for _, record := range needCommitRecords {
-		_, data, err := CommitRecord(record)
-		if err != nil {
-			return false, nil, err
-		}
-		if data != nil {
-			data["record_id"] = record.getId()
-			commitResults = append(commitResults, data)
-		}
-	}
-
-	// Ethereum concurrency handling is not implemented
-	// var mu sync.Mutex
-	// var wg sync.WaitGroup
-	// errChan := make(chan error, min(len(needCommitRecords), 10))
-	// for _, record := range needCommitRecords {
-	// 	wg.Add(1)
-	// 	go func(r *Record) {
-	// 		defer wg.Done()
-	// 		_, data, err := CommitRecord(r)
-	// 		if err != nil {
-	// 			errChan <- err
-	// 			return
-	// 		}
-	// 		if data != nil {
-	// 			data["record_id"] = r.getId()
-	// 			mu.Lock()
-	// 			commitResults = append(commitResults, data)
-	// 			mu.Unlock()
-	// 		}
-	// 	}(record)
-	// }
-
-	// wg.Wait()
-	// close(errChan)
-	// for err := range errChan {
-	// 	if err != nil {
-	// 		return false, nil, err
-	// 	}
-	// }
-
-	return totalAffected != 0, commitResults, nil
+	return totalAffected != 0, nil, nil
 }
 
 func DeleteRecord(record *Record) (bool, error) {
