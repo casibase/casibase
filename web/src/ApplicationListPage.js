@@ -170,6 +170,7 @@ spec:
       displayName: `${i18next.t("application:New Application")} - ${randomName}`,
       description: "",
       template: this.state.templates[0]?.name || "",
+      namespace: `casibase-application-${randomName}`,
       parameters: defaultParameters,
       status: "Not Deployed",
     };
