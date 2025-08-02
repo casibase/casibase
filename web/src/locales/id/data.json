@@ -16,10 +16,16 @@
   "application": {
     "Deploy": "Terapkan",
     "Edit Application": "Edit Aplikasi",
+    "Failed": "Gagal",
     "New Application": "Aplikasi Baru",
+    "Not Deployed": "Tidak di-deploy",
     "Parameters": "Parameter",
     "Parameters - Tooltip": "Parameter aplikasi",
-    "Undeploy": "Batalkan Penerapan"
+    "Pending": "Tertunda",
+    "Running": "Berjalan",
+    "Terminating": "Menghentikan",
+    "Undeploy": "Batal Deploy",
+    "Unknown": "Tidak diketahui"
   },
   "article": {
     "Abstract": "Abstrak",
@@ -80,6 +86,10 @@
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Teks percakapan Anda mengandung konten sensitif. Percakapan ini telah ditangguhkan secara paksa.",
     "click to stop...": "klik untuk menghentikan..."
   },
+  "connection": {
+    "History": "Riwayat",
+    "Online": "Online"
+  },
   "container": {
     "Command": "Perintah",
     "Command - Tooltip": "Perintah mulai kontainer",
@@ -127,10 +137,12 @@
     "Chats": "Percakapan",
     "Chats & Messages": "Percakapan & Pesan",
     "City": "City",
+    "City - Tooltip": "Kota tempat sumber daya berada. (Penjelasan: Biasanya merujuk pada lokasi geografis pusat data atau layanan.)",
     "Client IP": "IP klien",
     "Client IP - Tooltip": "Alamat IP asli klien",
     "Close": "Tutup",
     "Cloud Resources": "Sumber daya cloud",
+    "Connections": "Sesi koneksi",
     "Containers": "Kontainer",
     "Copied to clipboard successfully": "Berhasil disalin ke papan klip",
     "Copy": "Salin",
@@ -143,6 +155,7 @@
     "Delete All": "Hapus semuanya",
     "Description": "Deskripsi",
     "Description - Tooltip": "Deskripsi terperinci",
+    "Dislike": "Tidak suka",
     "Display name": "Nama tampilan",
     "Display name - Tooltip": "Nama tampilan untuk pengguna",
     "Down": "Turun",
@@ -189,6 +202,7 @@
     "Label": "Label",
     "Language": "Bahasa",
     "Language - Tooltip": "Lingkungan bahasa (seperti zh-CN/en-US)",
+    "Like": "Suka",
     "Loading...": "Sedang memuat...",
     "Logging & Auditing": "Pencatatan & audit",
     "Machines": "Host",
@@ -261,7 +275,7 @@
     "Secret key": "Kunci enkripsi penyedia cloud",
     "Secret key - Tooltip": "Kunci enkripsi penyedia cloud",
     "Section": "Section",
-    "Connections": "Sesi koneksi",
+    "Section - Tooltip": "Bagian atau pengelompokan konten tertentu. (Penjelasan: Digunakan untuk mengatur informasi ke dalam blok-blok logis, seperti bagian dalam dokumen atau halaman web.)",
     "Size": "Ukuran",
     "Size - Tooltip": "Spesifikasi ukuran",
     "Sorry, the page you visited does not exist.": "Maaf, halaman yang Anda kunjungi tidak ada.",
@@ -314,6 +328,8 @@
     "Type - Tooltip": "Tipe",
     "URL": "Tautan",
     "URL - Tooltip": "Alamat jaringan lengkap sumber daya",
+    "Unit": "Satuan",
+    "Unit - Tooltip": "Satuan pengukuran standar. (Penjelasan: Mendefinisikan skala suatu nilai, seperti MB, GB, detik.)",
     "Unknown category": "Kategori tidak dikenal",
     "Up": "Naik",
     "Updated time": "Waktu diperbarui",
@@ -326,7 +342,6 @@
     "Username - Tooltip": "Nama pengguna masuk",
     "Users": "Pengguna",
     "Users - Tooltip": "Tambahkan peserta percakapan (pilihan berganda)",
-    "Unit": "unit",
     "Vectors": "Vektor",
     "Vectors failed to generate": "Gagal menghasilkan vektor",
     "Vectors generated successfully": "Vektor berhasil dihasilkan",
@@ -509,10 +524,6 @@
     "Object": "Objek",
     "Query": "Query",
     "View Record": "Lihat catatan"
-  },
-  "connection": {
-    "History": "Sejarah",
-    "Online": "Online"
   },
   "store": {
     "Add Permission": "Tambahkan izin",

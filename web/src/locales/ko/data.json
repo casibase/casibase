@@ -16,10 +16,16 @@
   "application": {
     "Deploy": "배포",
     "Edit Application": "애플리케이션 편집",
+    "Failed": "실패",
     "New Application": "새 애플리케이션",
-    "Parameters": "매개변수",
-    "Parameters - Tooltip": "애플리케이션 매개변수",
-    "Undeploy": "배포 취소"
+    "Not Deployed": "배포되지 않음",
+    "Parameters": "파라미터",
+    "Parameters - Tooltip": "애플리케이션 파라미터",
+    "Pending": "대기 중",
+    "Running": "실행 중",
+    "Terminating": "종료 중",
+    "Undeploy": "배포 취소",
+    "Unknown": "알 수 없음"
   },
   "article": {
     "Abstract": "요약",
@@ -80,6 +86,10 @@
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "채팅 내용에 민감한 정보가 포함되어 있습니다. 이 대화가 강제 종료되었습니다.",
     "click to stop...": "클릭하여 중지..."
   },
+  "connection": {
+    "History": "히스토리",
+    "Online": "온라인"
+  },
   "container": {
     "Command": "명령",
     "Command - Tooltip": "컨테이너 시작 명령",
@@ -127,10 +137,12 @@
     "Chats": "대화",
     "Chats & Messages": "대화 & 메시지",
     "City": "City",
+    "City - Tooltip": "리소스가 위치한 도시. (설명: 일반적으로 데이터 센터나 서비스의 지리적 위치를 나타냅니다.)",
     "Client IP": "클라이언트 IP",
     "Client IP - Tooltip": "클라이언트 원래 IP 주소",
     "Close": "닫기",
     "Cloud Resources": "클라우드 리소스",
+    "Connections": "연결 세션",
     "Containers": "컨테이너",
     "Copied to clipboard successfully": "클립보드에 성공적으로 복사되었습니다",
     "Copy": "복사",
@@ -143,6 +155,7 @@
     "Delete All": "모두 삭제",
     "Description": "설명",
     "Description - Tooltip": "상세 설명",
+    "Dislike": "싫어요",
     "Display name": "표시 이름",
     "Display name - Tooltip": "사용자에게 표시되는 이름",
     "Down": "아래로",
@@ -189,6 +202,7 @@
     "Label": "레이블",
     "Language": "언어",
     "Language - Tooltip": "언어 환경(예: zh-CN/en-US)",
+    "Like": "좋아요",
     "Loading...": "로딩 중...",
     "Logging & Auditing": "로깅 & 감사",
     "Machines": "호스트",
@@ -261,7 +275,7 @@
     "Secret key": "클라우드 서비스 공급업체 암호화 키",
     "Secret key - Tooltip": "클라우드 서비스 공급업체 암호화 키",
     "Section": "Section",
-    "Connections": "연결 세션",
+    "Section - Tooltip": "콘텐츠의 특정 부분 또는 그룹. (설명: 문서나 웹 페이지의 섹션과 같이 정보를 논리적 블록으로 구성하는 데 사용됩니다.)",
     "Size": "크기",
     "Size - Tooltip": "크기 규격",
     "Sorry, the page you visited does not exist.": "죄송합니다. 방문하신 페이지가 존재하지 않습니다.",
@@ -314,6 +328,8 @@
     "Type - Tooltip": "유형",
     "URL": "링크",
     "URL - Tooltip": "리소스 완전한 네트워크 주소",
+    "Unit": "단위",
+    "Unit - Tooltip": "표준 측정 단위. (설명: 값의 척도를 정의합니다, 예: MB, GB, 초.)",
     "Unknown category": "알 수 없는 카테고리",
     "Up": "위로",
     "Updated time": "업데이트 시간",
@@ -326,7 +342,6 @@
     "Username - Tooltip": "로그인 사용자 이름",
     "Users": "사용자",
     "Users - Tooltip": "채팅 참가자를 추가합니다(다중 선택)",
-    "Unit": "unit",
     "Vectors": "벡터",
     "Vectors failed to generate": "벡터 생성 실패",
     "Vectors generated successfully": "벡터 생성 성공",
@@ -509,10 +524,6 @@
     "Object": "객체",
     "Query": "조회",
     "View Record": "로그 보기"
-  },
-  "connection": {
-    "History": "히스토리",
-    "Online": "온라인"
   },
   "store": {
     "Add Permission": "권한 추가",
