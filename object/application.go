@@ -17,9 +17,9 @@ package object
 import (
 	"fmt"
 	"strings"
-	"xorm.io/core"
 
 	"github.com/casibase/casibase/util"
+	"xorm.io/core"
 )
 
 type Application struct {
@@ -82,16 +82,16 @@ func GetApplication(id string) (*Application, error) {
 
 func UpdateApplication(id string, application *Application) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-
-	if application.Owner == "" {
-		application.Owner = owner
-	}
-	if application.Name == "" {
-		application.Name = name
-	}
 	application.UpdatedTime = util.GetCurrentTime()
+	_, err := getApplication(owner, name)
+	if err != nil {
+		return false, err
+	}
+	if application == nil {
+		return false, nil
+	}
 
-	affected, err := adapter.engine.ID(core.PK{owner, name}).Update(application)
+	affected, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(application)
 	if err != nil {
 		return false, err
 	}

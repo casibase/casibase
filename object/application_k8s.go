@@ -145,7 +145,7 @@ func DeployApplication(application *Application) (bool, error) {
 	}
 
 	// Get the template
-	template, err := GetTemplate(application.Owner, application.Template)
+	template, err := getTemplate(application.Owner, application.Template)
 	if err != nil {
 		return false, fmt.Errorf("failed to get template: %v", err)
 	}

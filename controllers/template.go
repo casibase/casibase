@@ -74,7 +74,7 @@ func (c *ApiController) GetTemplates() {
 func (c *ApiController) GetTemplate() {
 	id := c.Input().Get("id")
 
-	res, err := object.GetTemplate(util.GetOwnerAndNameFromId(id))
+	res, err := object.GetTemplate(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -149,7 +149,7 @@ func (c *ApiController) DeleteTemplate() {
 		return
 	}
 
-	success, err := object.DeleteTemplate(template.Owner, template.Name)
+	success, err := object.DeleteTemplate(&template)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
