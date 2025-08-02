@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table, Tag, Tooltip} from "antd";
+import {Alert, Button, Popconfirm, Table, Tag, Tooltip} from "antd";
 import {DeleteOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
@@ -30,6 +30,7 @@ class ApplicationListPage extends BaseListPage {
       ...this.state,
       templates: [],
       k8sStatus: null,
+      k8sError: null,
       deploying: {},
     };
   }
@@ -56,12 +57,19 @@ class ApplicationListPage extends BaseListPage {
         if (res.status === "ok") {
           this.setState({
             k8sStatus: res.data,
+            k8sError: null,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+          this.setState({
+            k8sError: res.msg,
+          });
         }
       })
       .catch(error => {
+        this.setState({
+          k8sError: error.toString(),
+        });
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${error}`);
       });
   }
@@ -225,29 +233,37 @@ spec:
 
   renderStatus(status) {
     let color;
+    let translationKey;
+
     switch (status) {
     case "Running":
       color = "green";
+      translationKey = i18next.t("application:Running");
       break;
     case "Pending":
       color = "orange";
+      translationKey = i18next.t("application:Pending");
       break;
     case "Terminating":
       color = "orange";
+      translationKey = i18next.t("application:Terminating");
       break;
     case "Failed":
       color = "red";
+      translationKey = i18next.t("application:Failed");
       break;
     case "Not Deployed":
       color = "default";
+      translationKey = i18next.t("application:Not Deployed");
       break;
     default:
       color = "default";
+      translationKey = i18next.t("application:Unknown");
     }
 
     return (
       <Tag color={color}>
-        {i18next.t(`application:${status}`)}
+        {translationKey}
       </Tag>
     );
   }
@@ -396,8 +412,11 @@ spec:
               )}
                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               {i18next.t("general:Status")}:
-                       &nbsp;
-              {Setting.getDisplayTag(this.state.k8sStatus === "Connected" ? i18next.t("general:Active") : i18next.t("general:Inactive"))}
+              &nbsp;
+              {Setting.getDisplayTag(this.state.k8sStatus === "Connected" ? i18next.t("general:Active") : i18next.t("general:Inactive"), this.state.k8sStatus === "Connected" ? "green" : "red")}
+              {this.state.k8sStatus !== "Connected" && this.state.k8sError && (
+                <Alert message={this.state.k8sError} type="error" size="small" style={{marginLeft: "8px", display: "inline-flex", alignItems: "center", minHeight: "unset", padding: "2px 8px"}} showIcon closable />
+              )}
             </div>
           )}
           loading={this.state.loading}

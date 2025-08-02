@@ -96,29 +96,37 @@ class ApplicationEditPage extends React.Component {
 
   renderStatus(status) {
     let color;
+    let translationKey;
+
     switch (status) {
     case "Running":
       color = "green";
+      translationKey = i18next.t("application:Running");
       break;
     case "Pending":
       color = "orange";
+      translationKey = i18next.t("application:Pending");
       break;
     case "Terminating":
       color = "orange";
+      translationKey = i18next.t("application:Terminating");
       break;
     case "Failed":
       color = "red";
+      translationKey = i18next.t("application:Failed");
       break;
     case "Not Deployed":
       color = "default";
+      translationKey = i18next.t("application:Not Deployed");
       break;
     default:
       color = "default";
+      translationKey = i18next.t("application:Unknown");
     }
 
     return (
       <Tag color={color}>
-        {i18next.t(`application:${status}`)}
+        {translationKey}
       </Tag>
     );
   }

@@ -16,10 +16,16 @@
   "application": {
     "Deploy": "Deploy",
     "Edit Application": "Edit Application",
+    "Failed": "Failed",
     "New Application": "New Application",
+    "Not Deployed": "Not Deployed",
     "Parameters": "Parameters",
     "Parameters - Tooltip": "Application parameters",
-    "Undeploy": "Undeploy"
+    "Pending": "Pending",
+    "Running": "Running",
+    "Terminating": "Terminating",
+    "Undeploy": "Undeploy",
+    "Unknown": "Unknown"
   },
   "article": {
     "Abstract": "Abstract",
@@ -80,6 +86,10 @@
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Your chat text involves sensitive content. This chat has been forcibly terminated.",
     "click to stop...": "click to stop..."
   },
+  "connection": {
+    "History": "History",
+    "Online": "Online"
+  },
   "container": {
     "Command": "Command",
     "Command - Tooltip": "Container entrypoint command",
@@ -127,10 +137,12 @@
     "Chats": "Chats",
     "Chats & Messages": "Chats & Messages",
     "City": "City",
+    "City - Tooltip": "City - Tooltip",
     "Client IP": "Client IP",
     "Client IP - Tooltip": "Client's original IP address",
     "Close": "Close",
     "Cloud Resources": "Cloud Resources",
+    "Connections": "Connections",
     "Containers": "Containers",
     "Copied to clipboard successfully": "Copied to clipboard successfully",
     "Copy": "Copy",
@@ -143,6 +155,7 @@
     "Delete All": "Delete All",
     "Description": "Description",
     "Description - Tooltip": "Detailed description",
+    "Dislike": "Dislike",
     "Display name": "Display name",
     "Display name - Tooltip": "User-friendly display name",
     "Down": "Down",
@@ -189,6 +202,7 @@
     "Label": "Label",
     "Language": "Language",
     "Language - Tooltip": "Language locale (e.g., zh-CN/en-US)",
+    "Like": "Like",
     "Loading...": "Loading...",
     "Logging & Auditing": "Logging & Auditing",
     "Machines": "Machines",
@@ -261,7 +275,7 @@
     "Secret key": "Secret key",
     "Secret key - Tooltip": "Cloud provider secret key",
     "Section": "Section",
-    "Connections": "Connections",
+    "Section - Tooltip": "Section - Tooltip",
     "Size": "Size",
     "Size - Tooltip": "Total size",
     "Sorry, the page you visited does not exist.": "Sorry, the page you visited does not exist.",
@@ -314,6 +328,8 @@
     "Type - Tooltip": "Type",
     "URL": "URL",
     "URL - Tooltip": "Full resource URL",
+    "Unit": "unit",
+    "Unit - Tooltip": "Unit - Tooltip",
     "Unknown category": "Unknown category",
     "Up": "Up",
     "Updated time": "Updated time",
@@ -326,7 +342,6 @@
     "Username - Tooltip": "Login username",
     "Users": "Users",
     "Users - Tooltip": "Participants",
-    "Unit": "unit",
     "Vectors": "Vectors",
     "Vectors failed to generate": "Vectors failed to generate",
     "Vectors generated successfully": "Vectors generated successfully",
@@ -509,10 +524,6 @@
     "Object": "Object",
     "Query": "Query",
     "View Record": "View Record"
-  },
-  "connection": {
-    "History": "History",
-    "Online": "Online"
   },
   "store": {
     "Add Permission": "Add Permission",

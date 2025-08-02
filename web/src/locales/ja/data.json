@@ -16,10 +16,16 @@
   "application": {
     "Deploy": "デプロイ",
     "Edit Application": "アプリケーションの編集",
+    "Failed": "失敗",
     "New Application": "新規アプリケーション",
-    "Parameters": "パラメーター",
-    "Parameters - Tooltip": "アプリケーションパラメーター",
-    "Undeploy": "アンデプロイ"
+    "Not Deployed": "未デプロイ",
+    "Parameters": "パラメータ",
+    "Parameters - Tooltip": "アプリケーションのパラメータ",
+    "Pending": "保留中",
+    "Running": "実行中",
+    "Terminating": "終了中",
+    "Undeploy": "アンデプロイ",
+    "Unknown": "不明"
   },
   "article": {
     "Abstract": "概要",
@@ -80,6 +86,10 @@
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "あなたのチャットテキストに敏感な内容が含まれています。このチャットは強制的に終了されました。",
     "click to stop...": "停止するにはクリック..."
   },
+  "connection": {
+    "History": "履歴",
+    "Online": "オンライン"
+  },
   "container": {
     "Command": "コマンド",
     "Command - Tooltip": "コンテナ起動コマンド",
@@ -127,10 +137,12 @@
     "Chats": "チャット",
     "Chats & Messages": "チャット & メッセージ",
     "City": "City",
+    "City - Tooltip": "リソースが所在する都市。(説明: 通常、データセンターやサービスの地理的な場所を指します。)",
     "Client IP": "クライアントIP",
     "Client IP - Tooltip": "クライアントの元のIPアドレス",
     "Close": "閉じる",
     "Cloud Resources": "クラウドリソース",
+    "Connections": "接続セッション",
     "Containers": "コンテナ",
     "Copied to clipboard successfully": "クリップボードに正常にコピーされました",
     "Copy": "コピー",
@@ -143,6 +155,7 @@
     "Delete All": "全て削除",
     "Description": "説明",
     "Description - Tooltip": "詳細説明",
+    "Dislike": "低評価",
     "Display name": "表示名",
     "Display name - Tooltip": "ユーザーに表示する名前",
     "Down": "下移動",
@@ -189,6 +202,7 @@
     "Label": "ラベル",
     "Language": "言語",
     "Language - Tooltip": "言語環境（例：zh-CN/en-US）",
+    "Like": "高評価",
     "Loading...": "読み込み中...",
     "Logging & Auditing": "ログ & 監査",
     "Machines": "マシン",
@@ -261,7 +275,7 @@
     "Secret key": "クラウドサービスプロバイダの暗号化キー",
     "Secret key - Tooltip": "クラウドサービスプロバイダの暗号化キー",
     "Section": "Section",
-    "Connections": "接続セッション",
+    "Section - Tooltip": "コンテンツの特定の部位やグループ。(説明: ドキュメントやウェブページ内のセクションなど、情報を論理的なブロックに整理するために使用されます。)",
     "Size": "サイズ",
     "Size - Tooltip": "サイズ仕様",
     "Sorry, the page you visited does not exist.": "申し訳ありませんが、訪問したページは存在しません。",
@@ -314,6 +328,8 @@
     "Type - Tooltip": "タイプ",
     "URL": "リンク",
     "URL - Tooltip": "リソースの完全ネットワークアドレス",
+    "Unit": "単位",
+    "Unit - Tooltip": "標準の測定単位。(説明: MB、GB、秒など、値の尺度を定義します。)",
     "Unknown category": "未知のカテゴリ",
     "Up": "上移動",
     "Updated time": "更新時間",
@@ -326,7 +342,6 @@
     "Username - Tooltip": "ログインユーザー名",
     "Users": "ユーザー",
     "Users - Tooltip": "チャット参加者を追加（複数選択可）",
-    "Unit": "unit",
     "Vectors": "ベクトル",
     "Vectors failed to generate": "ベクトル生成に失敗しました",
     "Vectors generated successfully": "ベクトルが正常に生成されました",
@@ -509,10 +524,6 @@
     "Object": "オブジェクト",
     "Query": "照会",
     "View Record": "ログを表示"
-  },
-  "connection": {
-    "History": "履歴",
-    "Online": "オンライン"
   },
   "store": {
     "Add Permission": "権限を追加",

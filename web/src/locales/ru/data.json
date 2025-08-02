@@ -16,10 +16,16 @@
   "application": {
     "Deploy": "Развернуть",
     "Edit Application": "Редактировать приложение",
+    "Failed": "Сбой",
     "New Application": "Новое приложение",
+    "Not Deployed": "Не развернуто",
     "Parameters": "Параметры",
     "Parameters - Tooltip": "Параметры приложения",
-    "Undeploy": "Отменить развертывание"
+    "Pending": "В ожидании",
+    "Running": "Выполняется",
+    "Terminating": "Завершается",
+    "Undeploy": "Отменить развертывание",
+    "Unknown": "Неизвестно"
   },
   "article": {
     "Abstract": "Аннотация",
@@ -80,6 +86,10 @@
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Ваш чат содержит контент, который может быть чувствительным. Этот чат был принудительно завершен.",
     "click to stop...": "Нажмите, чтобы остановить..."
   },
+  "connection": {
+    "History": "История",
+    "Online": "Онлайн"
+  },
   "container": {
     "Command": "Команда",
     "Command - Tooltip": "Команда запуска контейнера",
@@ -127,10 +137,12 @@
     "Chats": "Чаты",
     "Chats & Messages": "Чаты & Сообщения",
     "City": "City",
+    "City - Tooltip": "Город, в котором находится ресурс. (Пояснение: Обычно относится к географическому расположению центра обработки данных или сервиса.)",
     "Client IP": "IP-клиента",
     "Client IP - Tooltip": "Исходный IP-адрес клиента",
     "Close": "Закрыть",
     "Cloud Resources": "Облачные ресурсы",
+    "Connections": "Сессии подключения",
     "Containers": "Контейнеры",
     "Copied to clipboard successfully": "Успешно скопировано в буфер обмена",
     "Copy": "Копировать",
@@ -143,6 +155,7 @@
     "Delete All": "Удалить все",
     "Description": "Описание",
     "Description - Tooltip": "Подробное описание",
+    "Dislike": "Не нравится",
     "Display name": "Отображаемое имя",
     "Display name - Tooltip": "Имя, отображаемое пользователю",
     "Down": "Вниз",
@@ -189,6 +202,7 @@
     "Label": "Метка",
     "Language": "Язык",
     "Language - Tooltip": "Языковая среда (например, zh-CN/en-US)",
+    "Like": "Нравится",
     "Loading...": "Загрузка...",
     "Logging & Auditing": "Журналирование & Аудит",
     "Machines": "Хосты",
@@ -261,7 +275,7 @@
     "Secret key": "Шифровый ключ провайдера",
     "Secret key - Tooltip": "Шифровый ключ провайдера",
     "Section": "Section",
-    "Connections": "Сессии подключения",
+    "Section - Tooltip": "Определенная часть или группа контента. (Пояснение: Используется для организации информации в логические блоки, например, раздел в документе или на веб-странице.)",
     "Size": "Размер",
     "Size - Tooltip": "Размерный формат",
     "Sorry, the page you visited does not exist.": "Извините, страница, которую вы посетили, не существует.",
@@ -314,6 +328,8 @@
     "Type - Tooltip": "Тип",
     "URL": "Ссылка",
     "URL - Tooltip": "Полный сетевой адрес ресурса",
+    "Unit": "Единица",
+    "Unit - Tooltip": "Стандартная единица измерения. (Пояснение: Определяет масштаб значения, например, МБ, ГБ, секунды.)",
     "Unknown category": "Неизвестная категория",
     "Up": "Вверх",
     "Updated time": "Время обновления",
@@ -326,7 +342,6 @@
     "Username - Tooltip": "Имя пользователя для входа",
     "Users": "Пользователи",
     "Users - Tooltip": "Добавить участников чата ( множественный выбор)",
-    "Unit": "unit",
     "Vectors": "Векторы",
     "Vectors failed to generate": "Векторы не удалось сгенерировать",
     "Vectors generated successfully": "Векторы успешно сгенерированы",
@@ -509,10 +524,6 @@
     "Object": "Объект",
     "Query": "Запрос",
     "View Record": "Посмотреть запись"
-  },
-  "connection": {
-    "History": "История",
-    "Online": "Онлайн"
   },
   "store": {
     "Add Permission": "Добавить право",

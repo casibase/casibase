@@ -16,10 +16,16 @@
   "application": {
     "Deploy": "Bereitstellen",
     "Edit Application": "Anwendung bearbeiten",
+    "Failed": "Fehlgeschlagen",
     "New Application": "Neue Anwendung",
+    "Not Deployed": "Nicht bereitgestellt",
     "Parameters": "Parameter",
-    "Parameters - Tooltip": "Anwendungsparameter",
-    "Undeploy": "Bereitstellung aufheben"
+    "Parameters - Tooltip": "Parameter der Anwendung",
+    "Pending": "Ausstehend",
+    "Running": "Wird ausgeführt",
+    "Terminating": "Wird beendet",
+    "Undeploy": "Bereitstellung aufheben",
+    "Unknown": "Unbekannt"
   },
   "article": {
     "Abstract": "Abstrakt",
@@ -80,6 +86,10 @@
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Ihr Chattext beinhaltet sensibles Inhalt. Dieser Chat wurde zwangsweise beendet.",
     "click to stop...": "klicken, um zu stoppen..."
   },
+  "connection": {
+    "History": "Verlauf",
+    "Online": "Online"
+  },
   "container": {
     "Command": "Befehl",
     "Command - Tooltip": "Container-Startbefehl",
@@ -127,10 +137,12 @@
     "Chats": "Chats",
     "Chats & Messages": "Chats & Nachrichten",
     "City": "City",
+    "City - Tooltip": "Die Stadt, in der sich die Ressource befindet. (Erklärung: Bezieht sich normalerweise auf den geografischen Standort eines Rechenzentrums oder Dienstes.)",
     "Client IP": "Client-IP",
     "Client IP - Tooltip": "Original-IP-Adresse des Clients",
     "Close": "Schließen",
     "Cloud Resources": "Cloud-Ressourcen",
+    "Connections": "Verbindungssitzungen",
     "Containers": "Container",
     "Copied to clipboard successfully": "Erfolgreich in die Zwischenablage kopiert",
     "Copy": "Kopieren",
@@ -143,6 +155,7 @@
     "Delete All": "Alles löschen",
     "Description": "Beschreibung",
     "Description - Tooltip": "Detaillierte Beschreibung",
+    "Dislike": "Ablehnen",
     "Display name": "Anzeigename",
     "Display name - Tooltip": "Benutzerfreundlicher Anzeigename",
     "Down": "Nach unten",
@@ -189,6 +202,7 @@
     "Label": "Label",
     "Language": "Sprache",
     "Language - Tooltip": "Sprachumgebung (z.B. zh-CN/en-US)",
+    "Like": "Mögen",
     "Loading...": "Lade...",
     "Logging & Auditing": "Protokollierung & Auditing",
     "Machines": "Server",
@@ -261,7 +275,7 @@
     "Secret key": "Cloud-Anbieterverschlüsselungsschlüssel",
     "Secret key - Tooltip": "Cloud-Anbieterverschlüsselungsschlüssel",
     "Section": "Section",
-    "Connections": "Verbindungssitzungen",
+    "Section - Tooltip": "Ein bestimmter Teil oder eine Gruppierung von Inhalten. (Erklärung: Dient zur Organisation von Informationen in logische Blöcke, z. B. ein Abschnitt in einem Dokument oder auf einer Webseite.)",
     "Size": "Größe",
     "Size - Tooltip": "Größenangabe",
     "Sorry, the page you visited does not exist.": "Entschuldigung, die von Ihnen besuchte Seite existiert nicht.",
@@ -314,6 +328,8 @@
     "Type - Tooltip": "Typ",
     "URL": "URL",
     "URL - Tooltip": "Vollständige Netzwerkadresse der Ressource",
+    "Unit": "Einheit",
+    "Unit - Tooltip": "Eine Standardmesseinheit. (Erklärung: Definiert die Maßeinheit für einen Wert, z. B. MB, GB, Sekunden.)",
     "Unknown category": "Unbekannte Kategorie",
     "Up": "Nach oben",
     "Updated time": "Aktualisierungszeit",
@@ -326,7 +342,6 @@
     "Username - Tooltip": "Anmeldename",
     "Users": "Benutzer",
     "Users - Tooltip": "Chat-Teilnehmer hinzufügen (Mehrfachauswahl)",
-    "Unit": "unit",
     "Vectors": "Vektoren",
     "Vectors failed to generate": "Vektorgenerierung fehlgeschlagen",
     "Vectors generated successfully": "Vektoren erfolgreich generiert",
@@ -509,10 +524,6 @@
     "Object": "Objekt",
     "Query": "Abfrage",
     "View Record": "Protokoll anzeigen"
-  },
-  "connection": {
-    "History": "Verlauf",
-    "Online": "Online"
   },
   "store": {
     "Add Permission": "Berechtigung hinzufügen",

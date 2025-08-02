@@ -1843,9 +1843,9 @@ export function getDisplayPrice(price, currency) {
   );
 }
 
-export function getDisplayTag(s) {
+export function getDisplayTag(s, color = "default") {
   return (
-    <Tag style={{fontWeight: "bold"}} color={"default"}>
+    <Tag style={{fontWeight: "bold"}} color={color}>
       {s}
     </Tag>
   );

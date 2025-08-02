@@ -16,10 +16,16 @@
   "application": {
     "Deploy": "部署",
     "Edit Application": "编辑应用",
+    "Failed": "失败",
     "New Application": "新建应用",
+    "Not Deployed": "未部署",
     "Parameters": "参数",
     "Parameters - Tooltip": "应用参数",
-    "Undeploy": "取消部署"
+    "Pending": "等待中",
+    "Running": "运行中",
+    "Terminating": "正在终止",
+    "Undeploy": "取消部署",
+    "Unknown": "未知"
   },
   "article": {
     "Abstract": "摘要",
@@ -80,6 +86,10 @@
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "您的聊天信息涉及敏感内容。此会话已被强制终止。",
     "click to stop...": "点击停止..."
   },
+  "connection": {
+    "History": "历史",
+    "Online": "在线"
+  },
   "container": {
     "Command": "命令",
     "Command - Tooltip": "容器启动命令",
@@ -127,10 +137,12 @@
     "Chats": "会话",
     "Chats & Messages": "会话 & 消息",
     "City": "城市",
+    "City - Tooltip": "资源所在的城市。(解释: 通常指数据中心或服务的地理位置。)",
     "Client IP": "客户端IP",
     "Client IP - Tooltip": "客户端原始IP地址",
     "Close": "关闭",
     "Cloud Resources": "云资源",
+    "Connections": "连接会话",
     "Containers": "容器",
     "Copied to clipboard successfully": "已成功复制到剪贴板",
     "Copy": "复制",
@@ -143,6 +155,7 @@
     "Delete All": "删除全部",
     "Description": "描述",
     "Description - Tooltip": "详细描述",
+    "Dislike": "不喜欢",
     "Display name": "显示名称",
     "Display name - Tooltip": "面向用户显示的名称",
     "Down": "下移",
@@ -189,6 +202,7 @@
     "Label": "标签",
     "Language": "语言",
     "Language - Tooltip": "语言环境（如 zh-CN/en-US）",
+    "Like": "喜欢",
     "Loading...": "加载中...",
     "Logging & Auditing": "日志 & 审计",
     "Machines": "主机",
@@ -261,7 +275,7 @@
     "Secret key": "云服务商加密密钥",
     "Secret key - Tooltip": "云服务商加密密钥",
     "Section": "单位",
-    "Connections": "连接会话",
+    "Section - Tooltip": "内容的特定部分或分组",
     "Size": "大小",
     "Size - Tooltip": "大小规格",
     "Sorry, the page you visited does not exist.": "抱歉，您访问的页面不存在。",
@@ -314,6 +328,8 @@
     "Type - Tooltip": "类型",
     "URL": "链接",
     "URL - Tooltip": "资源完整网络地址",
+    "Unit": "部门",
+    "Unit - Tooltip": "业务单元部门",
     "Unknown category": "未知分类",
     "Up": "上移",
     "Updated time": "更新时间",
@@ -326,7 +342,6 @@
     "Username - Tooltip": "登录用户名",
     "Users": "用户",
     "Users - Tooltip": "添加聊天参与者（多选）",
-    "Unit": "部门",
     "Vectors": "向量",
     "Vectors failed to generate": "向量生成失败",
     "Vectors generated successfully": "向量生成成功",
@@ -509,10 +524,6 @@
     "Object": "对象",
     "Query": "查询",
     "View Record": "查看日志"
-  },
-  "connection": {
-    "History": "历史",
-    "Online": "在线"
   },
   "store": {
     "Add Permission": "添加权限",
