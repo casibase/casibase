@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Popconfirm, Row, Select, Tag} from "antd";
+import {Button, Card, Col, Input, Popconfirm, Row, Select} from "antd";
 import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as TemplateBackend from "./backend/TemplateBackend";
 import * as Setting from "./Setting";
@@ -92,43 +92,6 @@ class ApplicationEditPage extends React.Component {
         Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${error}`);
         this.setState({deploying: false});
       });
-  }
-
-  renderStatus(status) {
-    let color;
-    let translationKey;
-
-    switch (status) {
-    case "Running":
-      color = "green";
-      translationKey = i18next.t("application:Running");
-      break;
-    case "Pending":
-      color = "orange";
-      translationKey = i18next.t("application:Pending");
-      break;
-    case "Terminating":
-      color = "orange";
-      translationKey = i18next.t("application:Terminating");
-      break;
-    case "Failed":
-      color = "red";
-      translationKey = i18next.t("application:Failed");
-      break;
-    case "Not Deployed":
-      color = "default";
-      translationKey = i18next.t("application:Not Deployed");
-      break;
-    default:
-      color = "default";
-      translationKey = i18next.t("application:Unknown");
-    }
-
-    return (
-      <Tag color={color}>
-        {translationKey}
-      </Tag>
-    );
   }
 
   getTemplates() {
@@ -215,7 +178,7 @@ class ApplicationEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Status"), i18next.t("general:Status - Tooltip"))} :
           </Col>
           <Col span={22} >
-            {this.renderStatus(this.state.application.status)}
+            {Setting.getApplicationStatusTag(this.state.application.status)}
             {
               this.state.application.status === "Not Deployed" ? (
                 <Button loading={this.state.deploying} style={{marginLeft: "10px"}} type="primary" onClick={() => this.deployApplication()}>
