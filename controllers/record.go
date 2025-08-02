@@ -142,10 +142,15 @@ func (c *ApiController) AddRecord() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-records [post]
 func (c *ApiController) AddRecords() {
-	var records []object.Record
+	var records []*object.Record
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &records)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	if len(records) == 0 {
+		c.ResponseError("No records to add")
 		return
 	}
 
@@ -161,12 +166,7 @@ func (c *ApiController) AddRecords() {
 		}
 	}
 
-	if len(records) == 0 {
-		c.ResponseError("No records to add")
-		return
-	}
-
-	c.Data["json"] = wrapActionResponse2(object.AddRecords(&records))
+	c.Data["json"] = wrapActionResponse2(object.AddRecords(records))
 	c.ServeJSON()
 }
 

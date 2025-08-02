@@ -47,6 +47,34 @@
                 }
             }
         },
+        "/add-application": {
+            "post": {
+                "tags": [
+                    "Application API"
+                ],
+                "description": "add application",
+                "operationId": "ApiController.AddApplication",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the application",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Application"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/add-article": {
             "post": {
                 "tags": [
@@ -98,6 +126,34 @@
                         "description": "The Response object",
                         "schema": {
                             "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-connection": {
+            "post": {
+                "tags": [
+                    "Connection API"
+                ],
+                "description": "add connection",
+                "operationId": "ApiController.AddConnection",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The connection object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Connection"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Response"
                         }
                     }
                 }
@@ -321,9 +377,9 @@
         "/add-node-tunnel": {
             "get": {
                 "tags": [
-                    "Session API"
+                    "Connection API"
                 ],
-                "description": "add session",
+                "description": "add node tunnel session",
                 "operationId": "ApiController.AddNodeTunnel",
                 "parameters": [
                     {
@@ -456,29 +512,32 @@
                 }
             }
         },
-        "/add-session": {
+        "/add-records": {
             "post": {
                 "tags": [
-                    "Session API"
+                    "Record API"
                 ],
-                "description": "add session",
-                "operationId": "ApiController.AddSession",
+                "description": "add multiple records",
+                "operationId": "ApiController.AddRecords",
                 "parameters": [
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "The session object",
+                        "description": "The details of the record",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/object.Session"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Record"
+                            }
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "The Response object",
                         "schema": {
-                            "$ref": "#/definitions/Response"
+                            "$ref": "#/definitions/controllers.Response"
                         }
                     }
                 }
@@ -527,6 +586,34 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/object.Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-template": {
+            "post": {
+                "tags": [
+                    "Template API"
+                ],
+                "description": "add template",
+                "operationId": "ApiController.AddTemplate",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the template",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Template"
                         }
                     }
                 ],
@@ -680,6 +767,34 @@
                 }
             }
         },
+        "/commit-record-second": {
+            "post": {
+                "tags": [
+                    "Record API"
+                ],
+                "description": "commit a record",
+                "operationId": "ApiController.CommitRecordSecond",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the record",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Record"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/delete-all-vectors": {
             "post": {
                 "tags": [
@@ -687,6 +802,34 @@
                 ],
                 "description": "delete all vectors",
                 "operationId": "ApiController.DeleteAllVectors",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-application": {
+            "post": {
+                "tags": [
+                    "Application API"
+                ],
+                "description": "delete application",
+                "operationId": "ApiController.DeleteApplication",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the application",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Application"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "The Response object",
@@ -748,6 +891,32 @@
                         "description": "The Response object",
                         "schema": {
                             "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-connection": {
+            "post": {
+                "tags": [
+                    "Connection API"
+                ],
+                "description": "delete connection",
+                "operationId": "ApiController.DeleteConnection",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of connection",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Response"
                         }
                     }
                 }
@@ -1073,32 +1242,6 @@
                 }
             }
         },
-        "/delete-session": {
-            "post": {
-                "tags": [
-                    "Session API"
-                ],
-                "description": "delete session",
-                "operationId": "ApiController.DeleteSession",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "id",
-                        "description": "The id of session",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/Response"
-                        }
-                    }
-                }
-            }
-        },
         "/delete-store": {
             "post": {
                 "tags": [
@@ -1142,6 +1285,34 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/object.Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-template": {
+            "post": {
+                "tags": [
+                    "Template API"
+                ],
+                "description": "delete template",
+                "operationId": "ApiController.DeleteTemplate",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the template",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Template"
                         }
                     }
                 ],
@@ -1226,6 +1397,34 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/object.Workflow"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/deploy-application": {
+            "post": {
+                "tags": [
+                    "Application API"
+                ],
+                "description": "deploy application synchronously",
+                "operationId": "ApiController.DeployApplication",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The deployment request details",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ApplicationDeploymentRequest"
                         }
                     }
                 ],
@@ -1373,6 +1572,35 @@
                 }
             }
         },
+        "/get-activities": {
+            "get": {
+                "tags": [
+                    "Activity API"
+                ],
+                "description": "get activities",
+                "operationId": "ApiController.GetActivities",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "days",
+                        "description": "days count",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Activity"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/get-answer": {
             "get": {
                 "tags": [
@@ -1413,6 +1641,87 @@
                 "responses": {
                     "200": {
                         "description": "{string} string \"answer message\""
+                    }
+                }
+            }
+        },
+        "/get-application": {
+            "get": {
+                "tags": [
+                    "Application API"
+                ],
+                "description": "get application",
+                "operationId": "ApiController.GetApplication",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of application",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Application"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-application-status": {
+            "get": {
+                "tags": [
+                    "Application API"
+                ],
+                "description": "get application deployment status",
+                "operationId": "ApiController.GetApplicationStatus",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the application",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.DeploymentStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-applications": {
+            "get": {
+                "tags": [
+                    "Application API"
+                ],
+                "description": "get applications",
+                "operationId": "ApiController.GetApplications",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "owner",
+                        "description": "The owner of applications",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Application"
+                            }
+                        }
                     }
                 }
             }
@@ -1536,6 +1845,65 @@
                             "items": {
                                 "$ref": "#/definitions/object.Chat"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-connection": {
+            "get": {
+                "tags": [
+                    "Connection API"
+                ],
+                "description": "get connection",
+                "operationId": "ApiController.GetConnection",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of connection",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/object.Connection"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-connections": {
+            "get": {
+                "tags": [
+                    "Connection API"
+                ],
+                "description": "get all connections",
+                "operationId": "ApiController.GetConnections",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "pageSize",
+                        "description": "The size of each page",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "p",
+                        "description": "The number of the page",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Connection"
                         }
                     }
                 }
@@ -1943,6 +2311,23 @@
                 }
             }
         },
+        "/get-k8s-status": {
+            "get": {
+                "tags": [
+                    "Deployment API"
+                ],
+                "description": "get kubernetes cluster status",
+                "operationId": "ApiController.GetK8sStatus",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.K8sStatus"
+                        }
+                    }
+                }
+            }
+        },
         "/get-machine": {
             "get": {
                 "tags": [
@@ -2072,6 +2457,67 @@
                         "description": "The Response object",
                         "schema": {
                             "$ref": "#/definitions/object.Node"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-node-tunnel": {
+            "get": {
+                "tags": [
+                    "Connection API"
+                ],
+                "description": "get node tunnel session",
+                "operationId": "ApiController.GetNodeTunnel",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "width",
+                        "description": "The width of the tunnel",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "height",
+                        "description": "The height of the tunnel",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "dpi",
+                        "description": "The dpi of the tunnel",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "connectionId",
+                        "description": "The id of the connectionId",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "username",
+                        "description": "The username for the tunnel",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "password",
+                        "description": "The password for the tunnel",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Response"
                         }
                     }
                 }
@@ -2366,65 +2812,6 @@
                 }
             }
         },
-        "/get-session": {
-            "get": {
-                "tags": [
-                    "Session API"
-                ],
-                "description": "get session",
-                "operationId": "ApiController.GetConnSession",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "id",
-                        "description": "The id of session",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/object.Session"
-                        }
-                    }
-                }
-            }
-        },
-        "/get-sessions": {
-            "get": {
-                "tags": [
-                    "Session API"
-                ],
-                "description": "get all sessions",
-                "operationId": "ApiController.GetSessions",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "pageSize",
-                        "description": "The size of each page",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "p",
-                        "description": "The number of the page",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The Response object",
-                        "schema": {
-                            "$ref": "#/definitions/object.Session"
-                        }
-                    }
-                }
-            }
-        },
         "/get-storage-providers": {
             "get": {
                 "tags": [
@@ -2566,6 +2953,61 @@
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/object.Task"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-template": {
+            "get": {
+                "tags": [
+                    "Template API"
+                ],
+                "description": "get template",
+                "operationId": "ApiController.GetTemplate",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of template",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Template"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-templates": {
+            "get": {
+                "tags": [
+                    "Template API"
+                ],
+                "description": "get templates",
+                "operationId": "ApiController.GetTemplates",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "owner",
+                        "description": "The owner of templates",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Template"
                             }
                         }
                     }
@@ -2835,6 +3277,32 @@
                 }
             }
         },
+        "/query-record-second": {
+            "get": {
+                "tags": [
+                    "Record API"
+                ],
+                "description": "query record",
+                "operationId": "ApiController.QueryRecordSecond",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id ( owner/name ) of the record",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Record"
+                        }
+                    }
+                }
+            }
+        },
         "/refresh-mcp-tools": {
             "post": {
                 "tags": [
@@ -2938,6 +3406,121 @@
                 }
             }
         },
+        "/start-connection": {
+            "post": {
+                "tags": [
+                    "Connection API"
+                ],
+                "description": "start connection",
+                "operationId": "ApiController.StartConnection",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of connection",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/stop-connection": {
+            "post": {
+                "tags": [
+                    "Connection API"
+                ],
+                "description": "stop connection",
+                "operationId": "ApiController.StopConnection",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of connection",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/undeploy-application": {
+            "post": {
+                "tags": [
+                    "Application API"
+                ],
+                "description": "undeploy application synchronously",
+                "operationId": "ApiController.UndeployApplication",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The deployment request details",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ApplicationDeploymentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-application": {
+            "post": {
+                "tags": [
+                    "Application API"
+                ],
+                "description": "update application",
+                "operationId": "ApiController.UpdateApplication",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the application",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the application",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Application"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/update-article": {
             "post": {
                 "tags": [
@@ -3003,6 +3586,41 @@
                         "description": "The Response object",
                         "schema": {
                             "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-connection": {
+            "post": {
+                "tags": [
+                    "Connection API"
+                ],
+                "description": "update connection",
+                "operationId": "ApiController.UpdateConnection",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of connection",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The connection object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Connection"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Response"
                         }
                     }
                 }
@@ -3393,41 +4011,6 @@
                 }
             }
         },
-        "/update-session": {
-            "post": {
-                "tags": [
-                    "Session API"
-                ],
-                "description": "update session",
-                "operationId": "ApiController.UpdateSession",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "id",
-                        "description": "The id of session",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "The session object",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/object.Session"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/Response"
-                        }
-                    }
-                }
-            }
-        },
         "/update-store": {
             "post": {
                 "tags": [
@@ -3485,6 +4068,41 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/object.Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-template": {
+            "post": {
+                "tags": [
+                    "Template API"
+                ],
+                "description": "update template",
+                "operationId": "ApiController.UpdateTemplate",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the template",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the template",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Template"
                         }
                     }
                 ],
@@ -3603,6 +4221,46 @@
                 }
             }
         },
+        "/upload-file": {
+            "post": {
+                "tags": [
+                    "File API"
+                ],
+                "description": "upload file to casdoor storage",
+                "operationId": "ApiController.UploadFile",
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "file",
+                        "description": "The base64 encoded file data",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "type",
+                        "description": "The file type/extension",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "description": "The file name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/upload-video": {
             "post": {
                 "tags": [
@@ -3631,12 +4289,16 @@
         }
     },
     "definitions": {
-        "157591.File": {
+        "199312.File": {
             "title": "File",
             "type": "object"
         },
-        "160355.Properties": {
+        "202307.Properties": {
             "title": "Properties",
+            "type": "object"
+        },
+        "ApplicationDeploymentRequest": {
+            "title": "ApplicationDeploymentRequest",
             "type": "object"
         },
         "Response": {
@@ -3693,6 +4355,57 @@
         "object": {
             "title": "object",
             "type": "object"
+        },
+        "object.Activity": {
+            "title": "Activity",
+            "type": "object",
+            "properties": {
+                "FieldCount": {
+                    "additionalProperties": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.Application": {
+            "title": "Application",
+            "type": "object",
+            "properties": {
+                "createdTime": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "namespace": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "template": {
+                    "type": "string"
+                },
+                "updatedTime": {
+                    "type": "string"
+                }
+            }
         },
         "object.Article": {
             "title": "Article",
@@ -3786,6 +4499,9 @@
                     "type": "integer",
                     "format": "int64"
                 },
+                "modelProvider": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -3838,6 +4554,88 @@
                 }
             }
         },
+        "object.Connection": {
+            "title": "Connection",
+            "type": "object",
+            "properties": {
+                "clientIp": {
+                    "type": "string"
+                },
+                "clientIpDesc": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "commandCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "connectionId": {
+                    "type": "string"
+                },
+                "createdTime": {
+                    "type": "string"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "mode": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "node": {
+                    "type": "string"
+                },
+                "operations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "protocol": {
+                    "type": "string"
+                },
+                "recording": {
+                    "type": "string"
+                },
+                "reviewed": {
+                    "type": "boolean"
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "userAgent": {
+                    "type": "string"
+                },
+                "userAgentDesc": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
         "object.Container": {
             "title": "Container",
             "type": "object",
@@ -3884,6 +4682,10 @@
                     "type": "string"
                 }
             }
+        },
+        "object.DeploymentStatus": {
+            "title": "DeploymentStatus",
+            "type": "object"
         },
         "object.File": {
             "title": "File",
@@ -3939,6 +4741,12 @@
                     "type": "string"
                 },
                 "position": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "url": {
                     "type": "string"
                 }
             }
@@ -4114,6 +4922,10 @@
                     "type": "string"
                 }
             }
+        },
+        "object.K8sStatus": {
+            "title": "K8sStatus",
+            "type": "object"
         },
         "object.Label": {
             "title": "Label",
@@ -4310,6 +5122,9 @@
                     "type": "string"
                 },
                 "replyTo": {
+                    "type": "string"
+                },
+                "store": {
                     "type": "string"
                 },
                 "suggestions": {
@@ -4544,9 +5359,6 @@
             "title": "Provider",
             "type": "object",
             "properties": {
-                "apiKey": {
-                    "type": "string"
-                },
                 "apiVersion": {
                     "type": "string"
                 },
@@ -4568,6 +5380,9 @@
                 "compatibleProvider": {
                     "type": "string"
                 },
+                "configText": {
+                    "type": "string"
+                },
                 "contractMethod": {
                     "type": "string"
                 },
@@ -4582,6 +5397,9 @@
                 },
                 "displayName": {
                     "type": "string"
+                },
+                "enableThinking": {
+                    "type": "boolean"
                 },
                 "flavor": {
                     "type": "string"
@@ -4619,6 +5437,9 @@
                 "presencePenalty": {
                     "type": "number",
                     "format": "float"
+                },
+                "providerKey": {
+                    "type": "string"
                 },
                 "providerUrl": {
                     "type": "string"
@@ -4677,6 +5498,18 @@
                 "block": {
                     "type": "string"
                 },
+                "block2": {
+                    "type": "string"
+                },
+                "blockHash": {
+                    "type": "string"
+                },
+                "blockHash2": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
                 "clientIp": {
                     "type": "string"
                 },
@@ -4699,6 +5532,9 @@
                 "name": {
                     "type": "string"
                 },
+                "needCommit": {
+                    "type": "boolean"
+                },
                 "object": {
                     "type": "string"
                 },
@@ -4711,13 +5547,28 @@
                 "provider": {
                     "type": "string"
                 },
+                "provider2": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
                 "requestUri": {
                     "type": "string"
                 },
                 "response": {
                     "type": "string"
                 },
+                "section": {
+                    "type": "string"
+                },
                 "transaction": {
+                    "type": "string"
+                },
+                "transaction2": {
+                    "type": "string"
+                },
+                "unit": {
                     "type": "string"
                 },
                 "user": {
@@ -4804,88 +5655,6 @@
                 }
             }
         },
-        "object.Session": {
-            "title": "Session",
-            "type": "object",
-            "properties": {
-                "clientIp": {
-                    "type": "string"
-                },
-                "clientIpDesc": {
-                    "type": "string"
-                },
-                "code": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "commandCount": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "connectionId": {
-                    "type": "string"
-                },
-                "createdTime": {
-                    "type": "string"
-                },
-                "creator": {
-                    "type": "string"
-                },
-                "endTime": {
-                    "type": "string"
-                },
-                "height": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "mode": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "node": {
-                    "type": "string"
-                },
-                "operations": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "owner": {
-                    "type": "string"
-                },
-                "protocol": {
-                    "type": "string"
-                },
-                "recording": {
-                    "type": "string"
-                },
-                "reviewed": {
-                    "type": "boolean"
-                },
-                "startTime": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "userAgent": {
-                    "type": "string"
-                },
-                "userAgentDesc": {
-                    "type": "string"
-                },
-                "width": {
-                    "type": "integer",
-                    "format": "int64"
-                }
-            }
-        },
         "object.Store": {
             "title": "Store",
             "type": "object",
@@ -4895,6 +5664,10 @@
                 },
                 "avatar": {
                     "type": "string"
+                },
+                "chatCount": {
+                    "type": "integer",
+                    "format": "int64"
                 },
                 "childModelProviders": {
                     "type": "array",
@@ -4948,6 +5721,10 @@
                     "type": "integer",
                     "format": "int64"
                 },
+                "messageCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "modelProvider": {
                     "type": "string"
                 },
@@ -4967,7 +5744,10 @@
                     }
                 },
                 "propertiesMap": {
-                    "$ref": "#/definitions/160355.Properties"
+                    "$ref": "#/definitions/202307.Properties"
+                },
+                "searchProvider": {
+                    "type": "string"
                 },
                 "showAutoRead": {
                     "type": "boolean"
@@ -5088,6 +5868,39 @@
                     "type": "string"
                 },
                 "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.Template": {
+            "title": "Template",
+            "type": "object",
+            "properties": {
+                "createdTime": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "manifest": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "updatedTime": {
+                    "type": "string"
+                },
+                "version": {
                     "type": "string"
                 }
             }
@@ -5245,6 +6058,9 @@
                 "displayName": {
                     "type": "string"
                 },
+                "downloadUrl": {
+                    "type": "string"
+                },
                 "editMode": {
                     "type": "string"
                 },
@@ -5384,6 +6200,9 @@
                     "type": "string"
                 },
                 "owner": {
+                    "type": "string"
+                },
+                "questionTemplate": {
                     "type": "string"
                 },
                 "text": {

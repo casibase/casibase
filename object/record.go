@@ -99,6 +99,26 @@ func getAllRecords() ([]*Record, error) {
 	return records, nil
 }
 
+func getValidRecords(records []*Record) ([]*Record, error) {
+	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider("admin")
+	if err != nil {
+		return nil, err
+	}
+	var validRecords []*Record
+	for _, record := range records {
+		ok, err := prepareRecord(record, providerFirst, providerSecond)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			continue
+		}
+		validRecords = append(validRecords, record)
+
+	}
+	return validRecords, nil
+}
+
 func GetPaginationRecords(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Record, error) {
 	records := []*Record{}
 	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
@@ -305,29 +325,14 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 	return affected != 0, nil, nil
 }
 
-func AddRecords(records *[]Record) (bool, interface{}, error) {
-	if records == nil || len(*records) == 0 {
+func AddRecords(records []*Record) (bool, interface{}, error) {
+	if len(records) == 0 {
 		return false, nil, nil
 	}
 
-	var validRecords []*Record
-
-	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider("admin")
+	validRecords, err := getValidRecords(records)
 	if err != nil {
 		return false, nil, err
-	}
-
-	// Process each record
-	for _, record := range *records {
-		ok, err := prepareRecord(&record, providerFirst, providerSecond)
-		if err != nil {
-			return false, nil, err
-		}
-		if !ok {
-			continue
-		}
-
-		validRecords = append(validRecords, &record)
 	}
 
 	if len(validRecords) == 0 {
