@@ -201,6 +201,13 @@ func initAPI() {
 	beego.Router("/api/add-node-tunnel", &controllers.ApiController{}, "POST:AddNodeTunnel")
 	beego.Router("/api/get-node-tunnel", &controllers.ApiController{}, "GET:GetNodeTunnel")
 
+	beego.Router("/api/get-sessions", &controllers.ApiController{}, "GET:GetSessions")
+	beego.Router("/api/get-session", &controllers.ApiController{}, "GET:GetSession")
+	beego.Router("/api/update-session", &controllers.ApiController{}, "POST:UpdateSession")
+	beego.Router("/api/add-session", &controllers.ApiController{}, "POST:AddSession")
+	beego.Router("/api/delete-session", &controllers.ApiController{}, "POST:DeleteSession")
+	beego.Router("/api/is-session-duplicated", &controllers.ApiController{}, "GET:IsSessionDuplicated")
+
 	beego.Router("/api/get-connections", &controllers.ApiController{}, "GET:GetConnections")
 	beego.Router("/api/get-connection", &controllers.ApiController{}, "GET:GetConnection")
 	beego.Router("/api/update-connection", &controllers.ApiController{}, "POST:UpdateConnection")
