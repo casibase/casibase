@@ -185,7 +185,10 @@ class App extends Component {
       this.setState({ selectedMenuKey: "/sysinfo" });
     } else if (uri.includes("/swagger")) {
       this.setState({ selectedMenuKey: "/swagger" });
-    } else {
+    } else if (uri.includes("/dashboard")) {
+      this.setState({ selectedMenuKey: "/dashboard" });
+    }
+    else {
       this.setState({ selectedMenuKey: "null" });
     }
   }
