@@ -12,7 +12,7 @@
     "Signout failed": "登出失败",
     "Successfully signed out, redirected to homepage": "成功登出，跳转至首页",
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "系统检测到您正在使用默认密码，存在安全隐患。请立即修改您的密码。以下是具体操作"
-  },
+},
   "article": {
     "Abstract": "摘要",
     "Content": "内容",
@@ -639,5 +639,8 @@
   },
   "workflow": {
     "Edit Workflow": "编辑工作流"
+  },
+  "dashboard":{
+    "Dashboard":"数据看板"
   }
 }

@@ -6,6 +6,7 @@ const cardGroups = [
         groupTitle: "数据与链",
         color: "#0984e3",
         cards: [
+            { title: "数据看板", icon: "🔢", router: "/dashboard", desc: "纵览全局数据" },
             { title: "上链", icon: "🔗", router: "/chain", desc: "可信存证" },
             { title: "数据使用控制", icon: "🛡️", router: "/data-control", desc: "权限与追踪" },
         ]

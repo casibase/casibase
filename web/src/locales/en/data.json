@@ -12,6 +12,7 @@
     "Signout failed": "Signout failed",
     "Successfully signed out, redirected to homepage": "Successfully signed out, redirected to homepage",
     "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions"
+   
   },
   "article": {
     "Abstract": "Abstract",
