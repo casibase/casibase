@@ -101,6 +101,18 @@ func (c *ApiController) Signin() {
 	userId := claims.User.Owner + "/" + claims.User.Name
 	c.Ctx.Input.SetParam("recordUserId", userId)
 
+	// Record session ID
+	sessionId := c.Ctx.Input.CruSession.SessionID()
+	if sessionId != "" && userId != "" {
+		session := &object.Session{
+			Owner:     claims.User.Owner,
+			Name:      claims.User.Name,
+			SessionId: []string{sessionId},
+		}
+
+		object.AddSession(session)
+	}
+
 	c.ResponseOk(claims)
 }
 
@@ -111,6 +123,13 @@ func (c *ApiController) Signin() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /signout [post]
 func (c *ApiController) Signout() {
+	user := c.GetSessionUser()
+	_, err := object.DeleteSessionId(util.GetIdFromOwnerAndName(user.Owner, user.Name), c.Ctx.Input.CruSession.SessionID())
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
 	c.SetSessionClaims(nil)
 
 	c.ResponseOk()

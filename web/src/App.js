@@ -54,6 +54,7 @@ import ContainerListPage from "./ContainerListPage";
 import ContainerEditPage from "./ContainerEditPage";
 import PodListPage from "./PodListPage";
 import PodEditPage from "./PodEditPage";
+import SessionListPage from "./SessionListPage";
 import ConnectionListPage from "./ConnectionListPage";
 import RecordListPage from "./RecordListPage";
 import RecordEditPage from "./RecordEditPage";
@@ -210,6 +211,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/templates"});
     } else if (uri.includes("/applications")) {
       this.setState({selectedMenuKey: "/applications"});
+    } else if (uri.includes("/sessions")) {
+      this.setState({selectedMenuKey: "/sessions"});
     } else if (uri.includes("/connections")) {
       this.setState({selectedMenuKey: "/connections"});
     } else if (uri.includes("/records")) {
@@ -500,6 +503,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
       res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"));
+      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
       res.push(Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections"));
       res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"));
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "ai") {
@@ -604,7 +608,8 @@ class App extends Component {
         Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/connections">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"),
         Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections"),
         Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"),
       ]));
@@ -709,6 +714,7 @@ class App extends Component {
         <Route exact path="/applications/:applicationName" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes" render={(props) => this.renderSigninIfNotSignedIn(<NodeListPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes/:nodeName" render={(props) => this.renderSigninIfNotSignedIn(<NodeEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/sessions" render={(props) => this.renderSigninIfNotSignedIn(<SessionListPage account={this.state.account} {...props} />)} />
         <Route exact path="/connections" render={(props) => this.renderSigninIfNotSignedIn(<ConnectionListPage account={this.state.account} {...props} />)} />
         <Route exact path="/records" render={(props) => this.renderSigninIfNotSignedIn(<RecordListPage account={this.state.account} {...props} />)} />
         <Route exact path="/records/:organizationName/:recordName" render={(props) => this.renderSigninIfNotSignedIn(<RecordEditPage account={this.state.account} {...props} />)} />

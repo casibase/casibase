@@ -276,6 +276,7 @@
     "Secret key - Tooltip": "クラウドサービスプロバイダの暗号化キー",
     "Section": "Section",
     "Section - Tooltip": "コンテンツの特定の部位やグループ。(説明: ドキュメントやウェブページ内のセクションなど、情報を論理的なブロックに整理するために使用されます。)",
+    "Sessions": "Sessions",
     "Size": "サイズ",
     "Size - Tooltip": "サイズ仕様",
     "Sorry, the page you visited does not exist.": "申し訳ありませんが、訪問したページは存在しません。",
