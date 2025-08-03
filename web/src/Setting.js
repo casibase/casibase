@@ -1425,8 +1425,12 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "iFlytek") {
     return [
-      {id: "spark-v1.5", name: "spark-v1.5"},
-      {id: "spark-v2.0", name: "spark-v2.0"},
+      {id: "spark4.0-ultra", name: "Spark4.0 Ultra"},
+      {id: "spark-max", name: "Spark Max"},
+      {id: "spark-max-32k", name: "Spark Max-32K"},
+      {id: "spark-pro", name: "Spark Pro"},
+      {id: "spark-pro-128k", name: "Spark Pro-128K"},
+      {id: "spark-lite", name: "Spark Lite"}
     ];
   } else if (type === "ChatGLM") {
     return [
