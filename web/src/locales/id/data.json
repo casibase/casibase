@@ -276,6 +276,8 @@
     "Secret key - Tooltip": "Kunci enkripsi penyedia cloud",
     "Section": "Section",
     "Section - Tooltip": "Bagian atau pengelompokan konten tertentu. (Penjelasan: Digunakan untuk mengatur informasi ke dalam blok-blok logis, seperti bagian dalam dokumen atau halaman web.)",
+    "Session ID": "Session ID",
+    "Sessions": "Sessions",
     "Size": "Ukuran",
     "Size - Tooltip": "Spesifikasi ukuran",
     "Sorry, the page you visited does not exist.": "Maaf, halaman yang Anda kunjungi tidak ada.",

@@ -276,6 +276,8 @@
     "Secret key - Tooltip": "클라우드 서비스 공급업체 암호화 키",
     "Section": "Section",
     "Section - Tooltip": "콘텐츠의 특정 부분 또는 그룹. (설명: 문서나 웹 페이지의 섹션과 같이 정보를 논리적 블록으로 구성하는 데 사용됩니다.)",
+    "Session ID": "Session ID",
+    "Sessions": "Sessions",
     "Size": "크기",
     "Size - Tooltip": "크기 규격",
     "Sorry, the page you visited does not exist.": "죄송합니다. 방문하신 페이지가 존재하지 않습니다.",
