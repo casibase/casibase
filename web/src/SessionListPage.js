@@ -91,7 +91,7 @@ class SessionListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Session ID"),
+        title: i18next.t("general:ID"),
         dataIndex: "sessionId",
         key: "sessionId",
         width: "180px",
