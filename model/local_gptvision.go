@@ -67,7 +67,23 @@ func getImageRefinedText(text string) (string, error) {
 	return res, nil
 }
 
-func OpenaiRawMessagesToGpt4VisionMessages(messages []*RawMessage) ([]openai.ChatCompletionMessage, error) {
+func IsVisionModel(subType string) bool {
+	visionModels := []string{
+		"gpt-4o", "gpt-4o-2024-08-06", "gpt-4o-mini", "gpt-4o-mini-2024-07-18",
+		"gpt-4.5-preview", "gpt-4.5-preview-2025-02-27", "gpt-4.1",
+		"gpt-4.1-mini", "gpt-4.1-nano", "o1", "o1-pro", "o3", "o4-mini",
+	}
+
+	for _, visionModel := range visionModels {
+		if subType == visionModel {
+			return true
+		}
+	}
+
+	return false
+}
+
+func OpenaiRawMessagesToGptVisionMessages(messages []*RawMessage) ([]openai.ChatCompletionMessage, error) {
 	res := []openai.ChatCompletionMessage{}
 	for _, message := range messages {
 		var role string

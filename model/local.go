@@ -373,8 +373,8 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		var messages []openai.ChatCompletionMessage
-		if strings.HasSuffix(p.subType, "-vision-preview") || strings.Contains(p.subType, "4o") {
-			messages, err = OpenaiRawMessagesToGpt4VisionMessages(rawMessages)
+		if IsVisionModel(p.subType) {
+			messages, err = OpenaiRawMessagesToGptVisionMessages(rawMessages)
 			if err != nil {
 				return nil, err
 			}
