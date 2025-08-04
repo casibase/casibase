@@ -16,6 +16,8 @@ package object
 
 import (
 	"fmt"
+	"sync"
+	"time"
 
 	"github.com/casibase/casibase/chain"
 	"github.com/casibase/casibase/util"
@@ -26,6 +28,12 @@ type Param struct {
 	Field string `json:"field"`
 	Value string `json:"value"`
 }
+
+// Global variables for commit task
+var (
+	eventTaskChan  chan []string
+	commitTaskOnce sync.Once
+)
 
 func (record *Record) getRecordProvider(chainProvider string) (*Provider, error) {
 	if chainProvider != "" {
@@ -214,4 +222,98 @@ func QueryRecordSecond(id string) (string, error) {
 	}
 
 	return res, nil
+}
+
+// BatchCommitRecords commits multiple records in a batch.
+func BatchCommitRecords(recordIds []string) (bool, error) {
+	if len(recordIds) == 0 {
+		return false, nil
+	}
+
+	var errors []string
+
+	for _, recordId := range recordIds {
+		// Get the record by ID
+		record, err := getRecord(util.GetOwnerAndNameFromId(recordId))
+		if err != nil {
+			errors = append(errors, fmt.Sprintf("failed to get record %s: %v", recordId, err))
+			continue
+		}
+		if record == nil {
+			errors = append(errors, fmt.Sprintf("failed to get record %s: not exist", recordId))
+			continue
+		}
+
+		// Commit the record
+		if _, _, err := CommitRecord(record); err != nil {
+			errors = append(errors, err.Error())
+			continue
+		}
+	}
+
+	if len(errors) > 0 {
+		return false, fmt.Errorf("failed to commit %d/%d records: %v", len(errors), len(recordIds), errors)
+	}
+
+	return true, nil
+}
+
+// ScanNeedCommitRecords scans the database table for records that
+// need to be committed but have not yet been committed.
+func ScanNeedCommitRecords() (bool, error) {
+	records := []*Record{}
+	err := adapter.engine.Where("need_commit = ? AND block = ?", true, "").Asc("id").Find(&records)
+	if err != nil {
+		return false, fmt.Errorf("failed to scan records that need to be committed: %v", err)
+	}
+
+	if len(records) == 0 {
+		return true, nil
+	}
+
+	var errors []string
+
+	for _, record := range records {
+		if _, _, err := CommitRecord(record); err != nil {
+			errors = append(errors, err.Error())
+		}
+	}
+
+	if len(errors) > 0 {
+		return false, fmt.Errorf("failed to commit %d/%d records: %v", len(errors), len(records), errors)
+	}
+
+	return true, nil
+}
+
+func InitCommitRecordsTask() {
+	commitTaskOnce.Do(func() {
+		// Initialize channels
+		eventTaskChan = make(chan []string, 100)
+
+		go func() {
+			// Create timer for first execution
+			timer := time.NewTimer(5 * time.Minute)
+			defer timer.Stop()
+
+			for {
+				select {
+				case <-timer.C:
+					// Execute the periodic task to scan and commit records
+					if _, err := ScanNeedCommitRecords(); err != nil {
+						fmt.Printf("Error scanning records: %v\n", err)
+					}
+
+					// Reset timer for next execution
+					timer.Reset(5 * time.Minute)
+
+				case recordIds := <-eventTaskChan:
+					// Execute the event task to commit records
+					if _, err := BatchCommitRecords(recordIds); err != nil {
+						fmt.Printf("Error in event task: %v\n", err)
+					}
+				}
+			}
+		}()
+	})
 }

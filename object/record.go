@@ -99,24 +99,28 @@ func getAllRecords() ([]*Record, error) {
 	return records, nil
 }
 
-func getValidRecords(records []*Record) ([]*Record, error) {
+func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []string, error) {
 	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider("admin")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	var validRecords []*Record
+	var commitRecordIds []string
 	for _, record := range records {
 		ok, err := prepareRecord(record, providerFirst, providerSecond)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		if !ok {
 			continue
 		}
 		validRecords = append(validRecords, record)
 
+		if record.NeedCommit {
+			commitRecordIds = append(commitRecordIds, record.getId())
+		}
 	}
-	return validRecords, nil
+	return validRecords, commitRecordIds, nil
 }
 
 func GetPaginationRecords(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Record, error) {
@@ -330,7 +334,7 @@ func AddRecords(records []*Record) (bool, interface{}, error) {
 		return false, nil, nil
 	}
 
-	validRecords, err := getValidRecords(records)
+	validRecords, commitRecordIds, err := getValidAndNeedCommitRecords(records)
 	if err != nil {
 		return false, nil, err
 	}
@@ -363,6 +367,14 @@ func AddRecords(records []*Record) (bool, interface{}, error) {
 	err = session.Commit()
 	if err != nil {
 		return false, nil, err
+	}
+
+	// Send commit event for records that need to be committed
+	if len(commitRecordIds) > 0 {
+		// Use goroutine to avoid blocking when channel is full
+		go func() {
+			eventTaskChan <- commitRecordIds
+		}()
 	}
 
 	return totalAffected != 0, nil, nil
