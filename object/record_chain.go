@@ -16,7 +16,6 @@ package object
 
 import (
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/casibase/casibase/chain"
@@ -31,8 +30,7 @@ type Param struct {
 
 // Global variables for commit task
 var (
-	eventTaskChan  chan []string
-	commitTaskOnce sync.Once
+	eventTaskChan chan []string
 )
 
 func (record *Record) getRecordProvider(chainProvider string) (*Provider, error) {
@@ -287,33 +285,31 @@ func ScanNeedCommitRecords() (bool, error) {
 }
 
 func InitCommitRecordsTask() {
-	commitTaskOnce.Do(func() {
-		// Initialize channels
-		eventTaskChan = make(chan []string, 100)
+	// Initialize channels
+	eventTaskChan = make(chan []string, 100)
 
-		go func() {
-			// Create timer for first execution
-			timer := time.NewTimer(5 * time.Minute)
-			defer timer.Stop()
+	go func() {
+		// Create timer for first execution
+		timer := time.NewTimer(5 * time.Minute)
+		defer timer.Stop()
 
-			for {
-				select {
-				case <-timer.C:
-					// Execute the periodic task to scan and commit records
-					if _, err := ScanNeedCommitRecords(); err != nil {
-						fmt.Printf("Error scanning records: %v\n", err)
-					}
+		for {
+			select {
+			case <-timer.C:
+				// Execute the periodic task to scan and commit records
+				if _, err := ScanNeedCommitRecords(); err != nil {
+					fmt.Printf("Error scanning records: %v\n", err)
+				}
 
-					// Reset timer for next execution
-					timer.Reset(5 * time.Minute)
+				// Reset timer for next execution
+				timer.Reset(5 * time.Minute)
 
-				case recordIds := <-eventTaskChan:
-					// Execute the event task to commit records
-					if _, err := BatchCommitRecords(recordIds); err != nil {
-						fmt.Printf("Error in event task: %v\n", err)
-					}
+			case recordIds := <-eventTaskChan:
+				// Execute the event task to commit records
+				if _, err := BatchCommitRecords(recordIds); err != nil {
+					fmt.Printf("Error in event task: %v\n", err)
 				}
 			}
-		}()
-	})
+		}
+	}()
 }
