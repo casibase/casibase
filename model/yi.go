@@ -15,13 +15,8 @@
 package model
 
 import (
-	"context"
 	"fmt"
 	"io"
-	"net/http"
-	"strings"
-
-	"github.com/sashabaranov/go-openai"
 )
 
 type YiProvider struct {
@@ -69,95 +64,18 @@ func (p *YiProvider) calculatePrice(modelResult *ModelResult) error {
 }
 
 func (p *YiProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
-	// Set up context and output stream
-	ctx := context.Background()
-	flusher, ok := writer.(http.Flusher)
-	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
-	}
-
 	// Configure Yi API client
 	const BaseUrl = "https://api.lingyiwanwu.com/v1"
-	config := openai.DefaultConfig(p.apiKey)
-	config.BaseURL = BaseUrl
-	client := openai.NewClientWithConfig(config)
 
-	// Build request messages
-	messages := []openai.ChatCompletionMessage{
-		{
-			Role:    "user",
-			Content: question,
-		},
-	}
-
-	// Create chat request
-	request := openai.ChatCompletionRequest{
-		Model:       p.subType,
-		Messages:    messages,
-		Temperature: p.temperature,
-		TopP:        p.topP,
-		Stream:      true,
-	}
-
-	// Calculate token count
-	modelResult := &ModelResult{}
-	promptTokenCount, err := OpenaiNumTokensFromMessages(messages, "gpt-4")
+	// Create a new LocalModelProvider to handle the request
+	localProvider, err := NewLocalModelProvider("Custom", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
 	if err != nil {
 		return nil, err
 	}
-	modelResult.PromptTokenCount = promptTokenCount
-	modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
 
-	// Handle dry run
-	if strings.HasPrefix(question, "$CasibaseDryRun$") {
-		if getContextLength(p.subType) > modelResult.TotalTokenCount {
-			return modelResult, nil
-		} else {
-			return nil, fmt.Errorf("exceed max tokens")
-		}
-	}
-
-	// Create stream response
-	stream, err := client.CreateChatCompletionStream(ctx, request)
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo)
 	if err != nil {
 		return nil, err
 	}
-	defer stream.Close()
-
-	// Process stream response
-	for {
-		response, err := stream.Recv()
-		if err != nil {
-			if err == io.EOF {
-				break
-			}
-			return nil, err
-		}
-
-		if len(response.Choices) == 0 {
-			continue
-		}
-
-		// Send data to client
-		data := response.Choices[0].Delta.Content
-		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
-			return nil, err
-		}
-		flusher.Flush()
-
-		// Update token count and price
-		responseTokenCount, err := GetTokenSize("gpt-4", data)
-		if err != nil {
-			return nil, err
-		}
-		modelResult.ResponseTokenCount += responseTokenCount
-		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
-
-		err = p.calculatePrice(modelResult)
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	return modelResult, nil
 }

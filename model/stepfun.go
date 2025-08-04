@@ -14,12 +14,8 @@
 package model
 
 import (
-	"context"
 	"fmt"
 	"io"
-	"net/http"
-
-	"github.com/sashabaranov/go-openai"
 )
 
 type StepFunModelProvider struct {
@@ -78,73 +74,14 @@ func (p *StepFunModelProvider) calculatePrice(modelResult *ModelResult) error {
 }
 
 func (p *StepFunModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
-	ctx := context.Background()
-	flusher, ok := writer.(http.Flusher)
-	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
-	}
-
 	const BaseUrl = "https://api.stepfun.com/v1"
-	config := openai.DefaultConfig(p.apiKey)
-	config.BaseURL = BaseUrl
-	client := openai.NewClientWithConfig(config)
-
-	// set request params
-	messages := []openai.ChatCompletionMessage{
-		{
-			Role:    "user",
-			Content: question,
-		},
-	}
-
-	request := openai.ChatCompletionRequest{
-		Model:       p.subType,
-		Messages:    messages,
-		Temperature: p.temperature,
-		TopP:        p.topP,
-		Stream:      true,
-	}
-
-	flushData := func(data string) error {
-		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
-			return err
-		}
-		flusher.Flush()
-		return nil
-	}
-	modelResult := &ModelResult{}
-
-	stream, err := client.CreateChatCompletionStream(ctx, request)
+	// Create a new LocalModelProvider to handle the request
+	localProvider, err := NewLocalModelProvider("Custom", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
 	if err != nil {
 		return nil, err
 	}
-	defer stream.Close()
 
-	for {
-		response, err := stream.Recv()
-		if err != nil {
-			if err == io.EOF {
-				break
-			}
-			return nil, err
-		}
-
-		if len(response.Choices) == 0 {
-			continue
-		}
-
-		data := response.Choices[0].Delta.Content
-		err = flushData(data)
-		if err != nil {
-			return nil, err
-		}
-
-		modelResult.PromptTokenCount = response.Usage.PromptTokens
-		modelResult.ResponseTokenCount = response.Usage.CompletionTokens
-		modelResult.TotalTokenCount = response.Usage.TotalTokens
-	}
-
-	err = p.calculatePrice(modelResult)
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo)
 	if err != nil {
 		return nil, err
 	}
