@@ -14,7 +14,7 @@
 
 import React, {useEffect, useRef, useState} from "react";
 import {useHistory} from "react-router-dom";
-import {Button} from "antd";
+import {Button, Tooltip} from "antd";
 import {LeftOutlined, RightOutlined} from "@ant-design/icons";
 import {DndContext, MouseSensor, PointerSensor, TouchSensor, useSensor, useSensors} from "@dnd-kit/core";
 import i18next from "i18next";
@@ -196,37 +196,111 @@ const Window = ({title, isMaximized, onClose, onMaximize, onMinimize, onFocus, a
   );
 };
 
-const DockItem = ({window, onClick, isActive}) => {
+const DockItem = ({window, onClick, isActive, scale, translateY}) => {
   return (
-    <div
-      className={`dock-item ${isActive ? "active" : ""} ${window.isMinimized ? "minimized" : ""}`}
-      onClick={() => onClick(window.id)}
-      style={{"--icon-gradient": window.gradient}}
-      title={i18next.t(`${window.appConfig?.i18nNamespace || "general"}:${window.title}`)}
-    >
-      <img
-        src={getIconUrl(window.appType)}
-        alt={window.title}
-        onError={e => e.target.src = getDefaultIconUrl(window.appType)}
-      />
-      {!window.isMinimized && <div className="dock-indicator"></div>}
-    </div>
+    <Tooltip title={i18next.t(`${window.appConfig?.i18nNamespace || "general"}:${window.title}`)}>
+      <div
+        className={`dock-item ${isActive ? "active" : ""} ${window.isMinimized ? "minimized" : ""}`}
+        onClick={() => onClick(window.id)}
+        style={{
+          "--icon-gradient": window.gradient,
+          transform: `translateY(${translateY}px) translateZ(0px) scale(${scale})`,
+        }}
+      >
+        <img
+          src={getIconUrl(window.appType)}
+          alt={window.title}
+          onError={e => e.target.src = getDefaultIconUrl(window.appType)}
+        />
+        {!window.isMinimized && <div className="dock-indicator"></div>}
+      </div>
+    </Tooltip>
   );
 };
 
 const Dock = ({windows, activeWindowId, onDockItemClick}) => {
+  const [mousePosition, setMousePosition] = useState(null);
+  const dockContainerRef = useRef(null);
+
   if (windows.length === 0) {
     return null;
   }
 
+  const itemWidth = 48;
+  const itemGap = 16;
+  const maxDistance = 150;
+  const minScale = 1.0;
+  const maxScale = 1.5;
+
+  const calculateScale = (itemIndex) => {
+    if (!mousePosition || !dockContainerRef.current) {return 1;}
+
+    const dockItems = dockContainerRef.current.querySelectorAll(".dock-item");
+    if (dockItems.length <= itemIndex) {return 1;}
+
+    const itemElement = dockItems[itemIndex];
+    const itemRect = itemElement.getBoundingClientRect();
+    const itemCenter = itemRect.left + itemRect.width / 2;
+    const distance = Math.abs(mousePosition.x - itemCenter);
+
+    if (distance >= maxDistance) {
+      return minScale;
+    }
+
+    const scale = maxScale - (distance / maxDistance) * (maxScale - minScale);
+    return scale;
+  };
+
+  const calculateTranslateY = (scale) => {
+    if (!mousePosition || !dockContainerRef.current) {return -4;}
+
+    const minTranslateY = -4;
+    const maxTranslateY = -16;
+    const translateY = minTranslateY + (scale - minScale) / (maxScale - minScale) * (maxTranslateY - minTranslateY);
+
+    return translateY;
+  };
+
+  const calculateContainerWidth = () => {
+    const padding = 16; // The padding value of the dock-container
+    const baseWidth = windows.length * itemWidth + (windows.length - 1) * itemGap + (padding * 2);
+
+    if (!mousePosition || !dockContainerRef.current) {
+      // when not hovering
+      return `${baseWidth}px`;
+    }
+
+    const expandedWidth = baseWidth * (maxScale * 0.4 + 0.5);
+
+    return `${expandedWidth}px`;
+  };
+
+  const handleMouseMove = (e) => {
+    setMousePosition({x: e.clientX, y: e.clientY});
+  };
+
+  const handleMouseLeave = () => {
+    setMousePosition(null);
+  };
+
   return (
     <div className="dock">
-      <div className="dock-container">
-        {windows.map(window => (
+      <div
+        className="dock-container"
+        ref={dockContainerRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          width: calculateContainerWidth(),
+        }}
+      >
+        {windows.map((window, index) => (
           <DockItem
             key={window.id}
             window={window}
             isActive={activeWindowId === window.id}
+            scale={calculateScale(index)}
+            translateY={calculateTranslateY(calculateScale(index))}
             onClick={onDockItemClick}
           />
         ))}
