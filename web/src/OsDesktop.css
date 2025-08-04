@@ -123,10 +123,11 @@
 }
 
 .dock-item img {
-  width: 32px;
-  height: 32px;
+  width: 67%;
+  height: 67%;
   filter: drop-shadow(0 2px 4px rgb(0 0 0 / 30%));
   transition: all 0.3s ease;
+  object-fit: contain;
 }
 
 .dock-item:hover img {
@@ -431,7 +432,6 @@
   background: rgb(255 255 255 / 90%);
   backdrop-filter: blur(10px);
   border-radius: 15px;
-  padding: 8px 16px;
   box-shadow:
     0 8px 32px rgb(0 0 0 / 15%),
     0 4px 16px rgb(0 0 0 / 10%),
@@ -441,8 +441,13 @@
 
 .dock-container {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 16px;
+  height: 64px;
+  overflow: visible;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .dock-item {
@@ -461,14 +466,7 @@
     0 2px 8px rgb(0 0 0 / 10%),
     inset 0 1px 0 rgb(255 255 255 / 30%);
   user-select: none;
-}
-
-.dock-item:hover {
-  transform: translateY(-4px) scale(1.1);
-  box-shadow:
-    0 8px 24px rgb(0 0 0 / 20%),
-    0 4px 12px rgb(0 0 0 / 15%),
-    inset 0 1px 0 rgb(255 255 255 / 40%);
+  flex-shrink: 0;
 }
 
 .dock-item:active {
@@ -481,14 +479,6 @@
     0 6px 20px rgb(79 172 254 / 40%),
     0 3px 10px rgb(79 172 254 / 20%),
     inset 0 1px 0 rgb(255 255 255 / 40%);
-}
-
-.dock-item.active:hover {
-  transform: translateY(-4px) scale(1.1);
-  box-shadow:
-    0 8px 24px rgb(79 172 254 / 50%),
-    0 4px 12px rgb(79 172 254 / 30%),
-    inset 0 1px 0 rgb(255 255 255 / 50%);
 }
 
 .dock-item.minimized {
