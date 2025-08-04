@@ -223,7 +223,7 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 	userMessage := &object.Message{
 		Owner:        "admin",
 		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
-		CreatedTime:  util.AdjustTime(chat.CreatedTime, -100),
+		CreatedTime:  util.AdjustTimeFromSecToMilli(chat.CreatedTime, -100),
 		Organization: chat.Organization,
 		Store:        chat.Store,
 		User:         userName,
