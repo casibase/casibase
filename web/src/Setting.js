@@ -1430,7 +1430,7 @@ export function getModelSubTypeOptions(type) {
       {id: "spark-max-32k", name: "Spark Max-32K"},
       {id: "spark-pro", name: "Spark Pro"},
       {id: "spark-pro-128k", name: "Spark Pro-128K"},
-      {id: "spark-lite", name: "Spark Lite"}
+      {id: "spark-lite", name: "Spark Lite"},
     ];
   } else if (type === "ChatGLM") {
     return [
