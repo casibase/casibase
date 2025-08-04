@@ -117,7 +117,7 @@ func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []string, error
 		if !ok {
 			continue
 		}
-		record.CreatedTime = util.GetCurrentTimeBasedOnLast(recordTime)
+		record.CreatedTime = util.GetCurrentTimeBasedOnLastMilli(recordTime)
 		recordTime = record.CreatedTime
 
 		validRecords = append(validRecords, record)
