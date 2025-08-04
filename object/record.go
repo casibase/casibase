@@ -104,9 +104,12 @@ func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []string, error
 	if err != nil {
 		return nil, nil, err
 	}
+
 	var validRecords []*Record
 	var commitRecordIds []string
-	for _, record := range records {
+	recordTime := util.GetCurrentTimeWithMilli()
+
+	for i, record := range records {
 		ok, err := prepareRecord(record, providerFirst, providerSecond)
 		if err != nil {
 			return nil, nil, err
@@ -114,6 +117,8 @@ func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []string, error
 		if !ok {
 			continue
 		}
+		record.CreatedTime = util.AdjustTimeWithMilli(recordTime, i)
+
 		validRecords = append(validRecords, record)
 
 		if record.NeedCommit {
@@ -282,7 +287,7 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 
 	record := Record{
 		Name:        util.GenerateId(),
-		CreatedTime: util.GetCurrentTime(),
+		CreatedTime: util.GetCurrentTimeWithMilli(),
 		ClientIp:    ip,
 		User:        "",
 		Method:      ctx.Request.Method,
@@ -311,6 +316,8 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 	if !ok {
 		return false, nil, nil
 	}
+
+	record.CreatedTime = util.GetCurrentTimeWithMilli()
 
 	affected, err := adapter.engine.Insert(record)
 	if err != nil {

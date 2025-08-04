@@ -41,7 +41,7 @@ func GetCurrentTimeEx(timestamp string) string {
 	return tm.Format("2006-01-02T15:04:05.999Z07:00")
 }
 
-func AdjustTime(timeStr string, offsetMs int) string {
+func AdjustTimeFromSecToMilli(timeStr string, offsetMs int) string {
 	t, err := time.Parse(time.RFC3339, timeStr)
 	if err != nil {
 		return timeStr
@@ -49,7 +49,18 @@ func AdjustTime(timeStr string, offsetMs int) string {
 
 	adjustedTime := t.Add(time.Duration(offsetMs) * time.Millisecond)
 
-	return adjustedTime.Format(time.RFC3339)
+	return adjustedTime.Format("2006-01-02T15:04:05.999Z07:00")
+}
+
+func AdjustTimeWithMilli(timeStr string, offsetMs int) string {
+	t, err := time.Parse("2006-01-02T15:04:05.999Z07:00", timeStr)
+	if err != nil {
+		return timeStr
+	}
+
+	adjustedTime := t.Add(time.Duration(offsetMs) * time.Millisecond)
+
+	return adjustedTime.Format("2006-01-02T15:04:05.999Z07:00")
 }
 
 // GetCurrentUnixTime returns the current Unix timestamp in seconds
