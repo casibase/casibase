@@ -38,6 +38,7 @@ func main() {
 	util.InitParser()
 	object.InitCleanupChats()
 	object.InitStoreCount()
+	object.InitCommitRecordsTask()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},
