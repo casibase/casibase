@@ -40,7 +40,7 @@ type ModelProvider interface {
 	QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error)
 }
 
-func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string, compatibleProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string, enableThinking bool) (ModelProvider, error) {
+func GetModelProvider(typ string, subType string, clientId string, clientSecret string, userKey string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string, compatibleProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string, enableThinking bool) (ModelProvider, error) {
 	var p ModelProvider
 	var err error
 	if typ == "Ollama" {
@@ -64,7 +64,7 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	} else if typ == "Baidu Cloud" {
 		p, err = NewBaiduCloudModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "iFlytek" {
-		p, err = NewiFlytekModelProvider(subType, clientSecret, temperature, topK)
+		p, err = NewiFlytekModelProvider(subType, clientSecret, clientId, userKey, temperature, topK)
 	} else if typ == "ChatGLM" {
 		p, err = NewChatGLMModelProvider(subType, clientSecret)
 	} else if typ == "MiniMax" {

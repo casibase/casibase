@@ -54,7 +54,6 @@ require (
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1074
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tbaas v1.0.1115
 	github.com/ua-parser/uap-go v0.0.0-20230823213814-f77b3e91e9dc
-	github.com/vogo/xfspark v0.1.2
 	github.com/volcengine/volcengine-go-sdk v1.0.141
 	github.com/wangbin/jiebago v0.3.2
 	golang.org/x/net v0.38.0
@@ -87,6 +86,7 @@ require (
 	github.com/hhrutter/pkcs7 v0.2.0 // indirect
 	github.com/hhrutter/tiff v1.0.2 // indirect
 	github.com/holiman/uint256 v1.3.2 // indirect
+	github.com/iflytek/spark-ai-go v0.0.0-20240509090842-11decd0816f6 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
 	github.com/monochromegane/go-gitignore v0.0.0-20200626010858-205db1a8cc00 // indirect
@@ -95,6 +95,7 @@ require (
 	github.com/supranational/blst v0.3.14 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
 	github.com/xlab/treeprint v1.2.0 // indirect
+	go.uber.org/zap v1.27.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.3 // indirect
 	golang.org/x/image v0.27.0 // indirect
@@ -250,7 +251,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/mock v0.4.0 // indirect
-	go.uber.org/multierr v1.9.0 // indirect
+	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/mod v0.22.0 // indirect

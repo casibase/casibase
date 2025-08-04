@@ -15,12 +15,15 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
 
-	iflytek "github.com/vogo/xfspark/chat"
+	"github.com/iflytek/spark-ai-go/sparkai/llms/spark"
+	"github.com/iflytek/spark-ai-go/sparkai/llms/spark/client/sparkclient"
+	"github.com/iflytek/spark-ai-go/sparkai/messages"
 )
 
 type iFlytekModelProvider struct {
@@ -28,17 +31,17 @@ type iFlytekModelProvider struct {
 	appID       string
 	apiKey      string
 	secretKey   string
-	temperature string
+	temperature float32
 	topK        int
 }
 
-func NewiFlytekModelProvider(subType string, secretKey string, temperature float32, topK int) (*iFlytekModelProvider, error) {
+func NewiFlytekModelProvider(subType string, secretKey string, apiKey string, appId string, temperature float32, topK int) (*iFlytekModelProvider, error) {
 	p := &iFlytekModelProvider{
 		subType:     subType,
-		appID:       "",
-		apiKey:      "",
+		appID:       appId,
+		apiKey:      apiKey,
 		secretKey:   secretKey,
-		temperature: fmt.Sprintf("%f", temperature),
+		temperature: temperature,
 		topK:        topK,
 	}
 	return p, nil
@@ -101,7 +104,7 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
 	modelResult.Currency = "CNY"
 
 	switch p.subType {
-	case "spark-ultra":
+	case "spark4.0-ultra":
 		if tokenCount <= 3000000 {
 			price = float64(tokenCount) / 10000 * 0.70
 		} else if tokenCount <= 15000000 {
@@ -182,7 +185,13 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
 }
 
 func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
-	client := iflytek.NewServer(p.appID, p.apiKey, p.secretKey)
+	baseUrl, domain, err := p.getBaseUrl()
+	_, client, err := spark.NewClient(spark.WithBaseURL(baseUrl), spark.WithApiKey(p.apiKey), spark.WithApiSecret(p.secretKey), spark.WithAppId(p.appID), spark.WithAPIDomain(domain))
+	if err != nil {
+		return nil, err
+	}
+	ctx := context.Background()
+
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
 		return nil, fmt.Errorf("writer does not implement http.Flusher")
@@ -199,19 +208,11 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 		}
 	}
 
-	session, err := client.GetSession("1")
-	if err != nil {
-		return nil, fmt.Errorf("iflytek get session error: %v", err)
-	}
-	if session == nil {
-		return nil, fmt.Errorf("iflytek get session error: session is nil")
-	}
+	chatMessages := p.getChatMessages(question, history)
 
-	session.Req.Parameter.Chat.Temperature = p.temperature
-	session.Req.Parameter.Chat.TopK = p.topK
-	response, err := session.Send(question)
-	if err != nil {
-		return nil, fmt.Errorf("iflytek send error: %v", err)
+	r := &sparkclient.ChatRequest{
+		Domain:   &domain,
+		Messages: chatMessages,
 	}
 
 	flushData := func(data string) error {
@@ -222,7 +223,17 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 		return nil
 	}
 
-	err = flushData(response)
+	response := ""
+
+	_, err = client.CreateChatWithCallBack(ctx, r, func(msg messages.ChatMessage) error {
+		content := msg.GetContent()
+		response += content
+		err = flushData(content)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -238,4 +249,45 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 	}
 
 	return modelResult, nil
+}
+
+func (p *iFlytekModelProvider) getChatMessages(question string, history []*RawMessage) []messages.ChatMessage {
+	var result []messages.ChatMessage
+
+	for i := len(history) - 1; i >= 0; i-- {
+		msg := history[i]
+		role := "user"
+		if msg.Author == "AI" {
+			role = "assistant"
+		}
+		result = append(result, &messages.GenericChatMessage{
+			Role:    role,
+			Content: msg.Text,
+		})
+	}
+
+	result = append(result, &messages.GenericChatMessage{
+		Role:    "user",
+		Content: question,
+	})
+
+	return result
+}
+
+func (p *iFlytekModelProvider) getBaseUrl() (string, string, error) {
+	if p.subType == "spark4.0-ultra" {
+		return "wss://spark-api.xf-yun.com/v4.0/chat", "4.0Ultra", nil
+	} else if p.subType == "spark-max-32k" {
+		return "wss://spark-api.xf-yun.com/chat/max-32k", "max-32k", nil
+	} else if p.subType == "spark-max" {
+		return "wss://spark-api.xf-yun.com/v3.5/chat", "generalv3.5", nil
+	} else if p.subType == "spark-pro-128k" {
+		return "wss://spark-api.xf-yun.com/chat/pro-128k", "pro-128k", nil
+	} else if p.subType == "spark-pro" {
+		return "wss://spark-api.xf-yun.com/v3.1/chat", "generalv3", nil
+	} else if p.subType == "spark-lite" {
+		return "wss://spark-api.xf-yun.com/v1.1/chat", "lite", nil
+	} else {
+		return "", "", fmt.Errorf("chat model not found")
+	}
 }
