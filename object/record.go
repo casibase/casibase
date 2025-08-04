@@ -109,7 +109,7 @@ func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []string, error
 	var commitRecordIds []string
 	recordTime := util.GetCurrentTimeWithMilli()
 
-	for i, record := range records {
+	for _, record := range records {
 		ok, err := prepareRecord(record, providerFirst, providerSecond)
 		if err != nil {
 			return nil, nil, err
@@ -117,7 +117,8 @@ func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []string, error
 		if !ok {
 			continue
 		}
-		record.CreatedTime = util.AdjustTimeWithMilli(recordTime, i)
+		record.CreatedTime = util.GetCurrentTimeBasedOnLast(recordTime)
+		recordTime = record.CreatedTime
 
 		validRecords = append(validRecords, record)
 

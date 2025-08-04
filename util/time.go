@@ -34,7 +34,21 @@ func GetCurrentTimeEx(timestamp string) string {
 		panic(err)
 	}
 
-	if !tm.After(inputTime) {
+	if !tm.After(inputTime.Add(1 * time.Millisecond)) {
+		tm = inputTime.Add(1 * time.Millisecond)
+	}
+
+	return tm.Format("2006-01-02T15:04:05.999Z07:00")
+}
+
+func GetCurrentTimeBasedOnLast(timestamp string) string {
+	tm := time.Now()
+	inputTime, err := time.Parse("2006-01-02T15:04:05.999Z07:00", timestamp)
+	if err != nil {
+		panic(err)
+	}
+
+	if !tm.After(inputTime.Add(1 * time.Millisecond)) {
 		tm = inputTime.Add(1 * time.Millisecond)
 	}
 
