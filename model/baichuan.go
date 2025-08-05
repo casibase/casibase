@@ -80,5 +80,10 @@ func (p *BaichuanModelProvider) QueryText(question string, writer io.Writer, his
 	if err != nil {
 		return nil, err
 	}
+
+	err = p.calculatePrice(modelResult)
+	if err != nil {
+		return nil, err
+	}
 	return modelResult, nil
 }

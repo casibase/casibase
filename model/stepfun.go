@@ -85,5 +85,10 @@ func (p *StepFunModelProvider) QueryText(question string, writer io.Writer, hist
 	if err != nil {
 		return nil, err
 	}
+
+	err = p.calculatePrice(modelResult)
+	if err != nil {
+		return nil, err
+	}
 	return modelResult, nil
 }
