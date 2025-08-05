@@ -381,6 +381,7 @@ class RecordListPage extends BaseListPage {
 
           let formattedText;
           let isValidJson = false;
+          let errorMessage;
 
           try {
             // Try to parse and format JSON
@@ -391,6 +392,7 @@ class RecordListPage extends BaseListPage {
             // If parsing fails, use original text
             formattedText = text;
             isValidJson = false;
+            errorMessage = error.message;
           }
 
           return (
@@ -398,7 +400,7 @@ class RecordListPage extends BaseListPage {
               placement="right"
               content={
                 <div style={{width: "600px", height: "400px"}}>
-                  {!isValidJson && <Alert message="JSON parse failed" type="error" style={{marginBottom: "12px"}} />}
+                  {!isValidJson && <Alert message={errorMessage} type="error" style={{marginBottom: "12px"}} />}
                   <CodeMirror
                     value={formattedText}
                     options={{
