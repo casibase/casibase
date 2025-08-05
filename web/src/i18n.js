@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import i18n from "i18next";
-import zh from "./locales/zh/data.json";
-import en from "./locales/en/data.json";
+import zhData from "./locales/zh/data.json";
+import enData from "./locales/en/data.json";
 import es from "./locales/es/data.json";
 import fr from "./locales/fr/data.json";
 import de from "./locales/de/data.json";
@@ -26,8 +26,8 @@ import * as Conf from "./Conf";
 import {initReactI18next} from "react-i18next";
 
 const resources = {
-  en: en,
-  zh: zh,
+  en: { ...enData },
+  zh: { ...zhData },
   es: es,
   fr: fr,
   de: de,

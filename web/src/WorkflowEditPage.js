@@ -18,7 +18,7 @@ import * as WorkflowBackend from "./backend/WorkflowBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import BpmnComponent from "./BpmnComponent";
-import {Controlled as CodeMirror} from "react-codemirror2";
+import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import ChatWidget from "./common/ChatWidget";
 require("codemirror/theme/material-darker.css");
@@ -104,11 +104,11 @@ class WorkflowEditPage extends React.Component {
         <div>
           {i18next.t("workflow:Edit Workflow")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitWorkflowEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitWorkflowEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          <Button style={{ marginLeft: "20px" }} type="primary" onClick={() => this.submitWorkflowEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
-      } style={{marginLeft: "5px"}} type="inner">
-        <Row style={{marginTop: "10px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+      } style={{ marginLeft: "5px" }} type="inner">
+        <Row style={{ marginTop: "10px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -117,8 +117,8 @@ class WorkflowEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -127,11 +127,11 @@ class WorkflowEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
           </Col>
-          <Col span={10} >
+          {/* <Col span={10} >
             <div style={{height: "500px"}}>
               <CodeMirror
                 value={this.state.workflow.text}
@@ -141,9 +141,9 @@ class WorkflowEditPage extends React.Component {
                 }}
               />
             </div>
-          </Col>
+          </Col> */}
           <Col span={1} />
-          <Col span={11} >
+          <Col span={21} >
             <div>
               <BpmnComponent
                 diagramXML={this.state.workflow.text}
@@ -160,23 +160,23 @@ class WorkflowEditPage extends React.Component {
             </div>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Text2"), i18next.t("general:Text2 - Tooltip"))} :
           </Col>
-          <Col span={10} >
-            <div style={{height: "500px"}}>
+          {/* <Col span={10} >
+            <div style={{ height: "500px" }}>
               <CodeMirror
                 value={this.state.workflow.text2}
-                options={{mode: "xml", theme: "material-darker"}}
+                options={{ mode: "xml", theme: "material-darker" }}
                 onBeforeChange={(editor, data, value) => {
                   this.updateWorkflowField("text2", value);
                 }}
               />
             </div>
-          </Col>
+          </Col> */}
           <Col span={1} />
-          <Col span={11} >
+          <Col span={21} >
             <div>
               <BpmnComponent
                 diagramXML={this.state.workflow.text2}
@@ -193,15 +193,15 @@ class WorkflowEditPage extends React.Component {
             </div>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Message"), i18next.t("general:Message - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <div style={{height: "500px"}}>
+            <div style={{ height: "500px" }}>
               <CodeMirror
                 value={this.state.workflow.message}
-                options={{mode: "html", theme: "material-darker"}}
+                options={{ mode: "html", theme: "material-darker" }}
                 onBeforeChange={(editor, data, value) => {
                   this.updateWorkflowField("message", value);
                 }}
@@ -306,9 +306,9 @@ class WorkflowEditPage extends React.Component {
         {
           this.state.workflow !== null ? this.renderWorkflow() : null
         }
-        <div style={{marginTop: "20px", marginLeft: "40px"}}>
+        <div style={{ marginTop: "20px", marginLeft: "40px" }}>
           <Button size="large" onClick={() => this.submitWorkflowEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitWorkflowEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          <Button style={{ marginLeft: "20px" }} type="primary" size="large" onClick={() => this.submitWorkflowEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );
