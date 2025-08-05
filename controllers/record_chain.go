@@ -35,7 +35,26 @@ func (c *ApiController) CommitRecord() {
 		return
 	}
 
-	c.Data["json"] = wrapActionResponse(object.CommitRecord(&record))
+	c.Data["json"] = wrapActionResponse2(object.CommitRecord(&record))
+	c.ServeJSON()
+}
+
+// CommitRecordSecond
+// @Title CommitRecordSecond
+// @Tag Record API
+// @Description commit a record
+// @Param   body    body   object.Record  true        "The details of the record"
+// @Success 200 {object} controllers.Response The Response object
+// @router /commit-record-second [post]
+func (c *ApiController) CommitRecordSecond() {
+	var record object.Record
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &record)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.Data["json"] = wrapActionResponse(object.CommitRecordSecond(&record))
 	c.ServeJSON()
 }
 
@@ -50,6 +69,25 @@ func (c *ApiController) QueryRecord() {
 	id := c.Input().Get("id")
 
 	res, err := object.QueryRecord(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(res)
+}
+
+// QueryRecordSecond
+// @Title QueryRecordSecond
+// @Tag Record API
+// @Description query record
+// @Param   id     query    string  true        "The id ( owner/name ) of the record"
+// @Success 200 {object} object.Record The Response object
+// @router /query-record-second [get]
+func (c *ApiController) QueryRecordSecond() {
+	id := c.Input().Get("id")
+
+	res, err := object.QueryRecordSecond(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

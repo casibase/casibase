@@ -86,7 +86,8 @@ class TtsHelper {
 
     const useCloudTTS = store &&
         store.textToSpeechProvider &&
-        store.textToSpeechProvider !== "";
+        store.textToSpeechProvider !== "" &&
+        store.textToSpeechProvider !== "Browser Built-In";
 
     if (useCloudTTS) {
       this.component.setState({

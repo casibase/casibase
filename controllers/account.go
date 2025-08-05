@@ -36,6 +36,10 @@ func InitAuthConfig() {
 	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
 	casdoorApplication := beego.AppConfig.String("casdoorApplication")
 
+	if casdoorEndpoint == "" {
+		return
+	}
+
 	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, "", casdoorOrganization, casdoorApplication)
 	application, err := casdoorsdk.GetApplication(casdoorApplication)
 	if err != nil {
@@ -97,6 +101,18 @@ func (c *ApiController) Signin() {
 	userId := claims.User.Owner + "/" + claims.User.Name
 	c.Ctx.Input.SetParam("recordUserId", userId)
 
+	// Record session ID
+	sessionId := c.Ctx.Input.CruSession.SessionID()
+	if sessionId != "" && userId != "" {
+		session := &object.Session{
+			Owner:     claims.User.Owner,
+			Name:      claims.User.Name,
+			SessionId: []string{sessionId},
+		}
+
+		object.AddSession(session)
+	}
+
 	c.ResponseOk(claims)
 }
 
@@ -107,18 +123,38 @@ func (c *ApiController) Signin() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /signout [post]
 func (c *ApiController) Signout() {
+	user := c.GetSessionUser()
+	_, err := object.DeleteSessionId(util.GetIdFromOwnerAndName(user.Owner, user.Name), c.Ctx.Input.CruSession.SessionID())
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
 	c.SetSessionClaims(nil)
 
 	c.ResponseOk()
 }
 
-func (c *ApiController) addInitialChat(organization string, userName string) (*object.Chat, error) {
-	store, err := object.GetDefaultStore("admin")
-	if err != nil {
-		return nil, err
-	}
-	if store == nil {
-		return nil, fmt.Errorf("The default store is not found")
+func (c *ApiController) addInitialChat(organization string, userName string, storeName string) (*object.Chat, error) {
+	var store *object.Store
+	var err error
+
+	if storeName != "" {
+		store, err = object.GetStore(util.GetId("admin", storeName))
+		if err != nil {
+			return nil, err
+		}
+		if store == nil {
+			return nil, fmt.Errorf("The store: %s is not found", storeName)
+		}
+	} else {
+		store, err = object.GetDefaultStore("admin")
+		if err != nil {
+			return nil, err
+		}
+		if store == nil {
+			return nil, fmt.Errorf("The default store is not found")
+		}
 	}
 
 	currentTime := util.GetCurrentTime()
@@ -171,7 +207,7 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 	organizationName := user.Owner
 	userName := user.Name
 
-	chat, err := c.addInitialChat(organizationName, userName)
+	chat, err := c.addInitialChat(organizationName, userName, "")
 	if err != nil {
 		return err
 	}
@@ -187,8 +223,9 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 	userMessage := &object.Message{
 		Owner:        "admin",
 		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
-		CreatedTime:  util.AdjustTime(chat.CreatedTime, -100),
+		CreatedTime:  util.AdjustTimeFromSecToMilli(chat.CreatedTime, -100),
 		Organization: chat.Organization,
+		Store:        chat.Store,
 		User:         userName,
 		Chat:         chat.Name,
 		ReplyTo:      "",
@@ -207,6 +244,7 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
 		CreatedTime:  util.GetCurrentTimeEx(chat.CreatedTime),
 		Organization: chat.Organization,
+		Store:        chat.Store,
 		User:         userName,
 		Chat:         chat.Name,
 		ReplyTo:      "Welcome",
@@ -219,10 +257,7 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 }
 
 func (c *ApiController) anonymousSignin() {
-	clientIp := c.getClientIp()
-	userAgent := c.getUserAgent()
-	hash := getContentHash(fmt.Sprintf("%s|%s", clientIp, userAgent))
-	username := fmt.Sprintf("u-%s", hash)
+	username := c.getAnonymousUsername()
 
 	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
 	user := casdoorsdk.User{
@@ -253,6 +288,13 @@ func (c *ApiController) anonymousSignin() {
 	}
 
 	c.ResponseOk(user)
+}
+
+func (c *ApiController) getAnonymousUsername() string {
+	clientIp := c.getClientIp()
+	userAgent := c.getUserAgent()
+	hash := getContentHash(fmt.Sprintf("%s|%s", clientIp, userAgent))
+	return fmt.Sprintf("u-%s", hash)
 }
 
 func (c *ApiController) isPublicDomain() bool {

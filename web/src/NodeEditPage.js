@@ -17,8 +17,8 @@ import {Button, Card, Col, Input, Row, Select, Switch} from "antd";
 import * as NodeBackend from "./backend/NodeBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import ServiceTable from "./ServiceTable";
-import RemoteAppTable from "./RemoteAppTable";
+import ServiceTable from "./table/ServiceTable";
+import RemoteAppTable from "./table/RemoteAppTable";
 
 const {Option} = Select;
 

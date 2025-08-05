@@ -109,3 +109,23 @@ func GetVideoCoverUrl(videoId string) string {
 
 	return resp.Video.CoverURL
 }
+
+func GetVideoFileUrl(videoId string) string {
+	r := vod.CreateGetMezzanineInfoRequest()
+	r.VideoId = videoId
+	r.AcceptFormat = "JSON"
+
+	resp, err := VodClient.GetMezzanineInfo(r)
+	if err != nil {
+		fmt.Println(err)
+		return err.Error()
+	}
+
+	downloadUrl := resp.Mezzanine.FileURL
+	if downloadUrl == "" {
+		fmt.Println(err)
+		return err.Error()
+	}
+
+	return downloadUrl
+}

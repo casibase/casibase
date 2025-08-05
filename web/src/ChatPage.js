@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Button, Drawer, Modal, Spin} from "antd";
-import {BarsOutlined, CloseCircleFilled} from "@ant-design/icons";
+import {BarsOutlined, CloseCircleFilled, MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as StoreBackend from "./backend/StoreBackend";
 import ChatMenu from "./ChatMenu";
@@ -39,6 +39,9 @@ class ChatPage extends BaseListPage {
   }
 
   UNSAFE_componentWillMount() {
+    const savedCollapsedState = localStorage.getItem("chatMenuCollapsed");
+    const chatMenuCollapsed = savedCollapsedState ? JSON.parse(savedCollapsedState) : false;
+
     this.setState({
       loading: true,
       disableInput: false,
@@ -47,6 +50,7 @@ class ChatPage extends BaseListPage {
       messageError: false,
       autoRead: false,
       chatMenuVisible: false,
+      chatMenuCollapsed: chatMenuCollapsed,
       defaultStore: null,
       filteredStores: [],
       paneCount: 1,
@@ -85,6 +89,40 @@ class ChatPage extends BaseListPage {
     });
   };
 
+  toggleChatMenuCollapse = () => {
+    const newCollapsedState = !this.state.chatMenuCollapsed;
+    this.setState({
+      chatMenuCollapsed: newCollapsedState,
+    });
+    localStorage.setItem("chatMenuCollapsed", JSON.stringify(newCollapsedState));
+  };
+
+  generateChatUrl(chatName, storeName, owner = "admin") {
+    const currentStoreName = this.getStore();
+    if (!currentStoreName) {
+      if (chatName) {
+        return `/chat/${chatName}`;
+      }
+      return "/chat";
+    }
+    const targetStoreName = storeName || currentStoreName;
+
+    if (chatName) {
+      return `/${owner}/${targetStoreName}/chat/${chatName}`;
+    }
+    return `/${owner}/${targetStoreName}/chat`;
+  }
+
+  updateStoreAndUrl = (newStore) => {
+    if (!this.state.chat) {
+      return null;
+    }
+    const updatedChat = {...this.state.chat, store: newStore.name};
+    this.goToLinkSoft(this.generateChatUrl(updatedChat.name, updatedChat.store));
+    this.setState({chat: updatedChat});
+    return updatedChat;
+  };
+
   getGlobalStores() {
     StoreBackend.getGlobalStores("", "", "", "", "", "").then((res) => {
       if (res.status === "ok") {
@@ -111,6 +149,14 @@ class ChatPage extends BaseListPage {
   getChat() {
     if (this.props.match) {
       return this.props.match.params.chatName;
+    } else {
+      return undefined;
+    }
+  }
+
+  getStore() {
+    if (this.props.match) {
+      return this.props.match.params.storeName;
     } else {
       return undefined;
     }
@@ -167,11 +213,12 @@ class ChatPage extends BaseListPage {
 
   newMessage(text, fileName, isHidden, isRegenerated) {
     const randomName = Setting.getRandomName();
-    return {
+    const message = {
       owner: "admin",
       name: `message_${randomName}`,
       createdTime: moment().format(),
       organization: this.props.account.owner,
+      store: this.state.chat?.store,
       user: this.props.account.name,
       chat: this.state.chat?.name,
       replyTo: "",
@@ -183,6 +230,15 @@ class ChatPage extends BaseListPage {
       isRegenerated: isRegenerated,
       fileName: fileName,
     };
+
+    if (!this.state.chat) {
+      const urlStoreName = this.getStore();
+      if (urlStoreName) {
+        message.store = urlStoreName;
+      }
+    }
+
+    return message;
   }
 
   cancelMessage = () => {
@@ -221,14 +277,17 @@ class ChatPage extends BaseListPage {
           const field = "user";
           const value = this.props.account.name;
           const sortField = "", sortOrder = "";
+          const storeName = this.getStore();
           ChatBackend.getChats(value, -1, -1, field, value, sortField, sortOrder)
             .then((res) => {
               if (res.status === "ok") {
+                let chats = res.data;
+                if (storeName) {
+                  chats = chats.filter(chat => chat.store === storeName);
+                }
                 this.setState({
-                  data: res.data,
+                  data: chats,
                 });
-
-                const chats = res.data;
                 if (this.menu && this.menu.current) {
                   this.menu.current.setSelectedKeyToNewChat(chats);
                 }
@@ -448,7 +507,7 @@ class ChatPage extends BaseListPage {
 
   addChat(chat, selectStore) {
     const newChat = this.newChat(chat, selectStore);
-    this.goToLinkSoft(`/chat/${newChat.name}`);
+    this.goToLinkSoft(this.generateChatUrl(newChat.name, newChat.store));
     ChatBackend.addChat(newChat)
       .then((res) => {
         if (res.status === "ok") {
@@ -492,7 +551,7 @@ class ChatPage extends BaseListPage {
               data: data,
             });
             this.getMessages(focusedChat);
-            this.goToLinkSoft(`/chat/${focusedChat.name}`);
+            this.goToLinkSoft(this.generateChatUrl(focusedChat.name, focusedChat.store));
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
@@ -530,6 +589,13 @@ class ChatPage extends BaseListPage {
   getCurrentChat() {
     return this.state.data.filter(chat => chat.name === this.state.chat?.name)[0];
   }
+
+  handleChatUpdate = (updatedChat) => {
+    this.setState(prevState => ({
+      data: prevState.data.map(c => (c.name === updatedChat.name ? updatedChat : c)),
+      chat: updatedChat,
+    }));
+  };
 
   renderModal() {
     if (Conf.IframeUrl === "" || this.state.messages === null) {
@@ -607,7 +673,7 @@ class ChatPage extends BaseListPage {
         chatMenuVisible: false,
       });
       this.getMessages(chat);
-      this.goToLinkSoft(`/chat/${chat.name}`);
+      this.goToLinkSoft(this.generateChatUrl(chat.name, chat.store));
     };
 
     const onAddChat = (selectStore = {}) => {
@@ -625,6 +691,8 @@ class ChatPage extends BaseListPage {
       this.updateChatName(chats, i, chat, newName);
     };
 
+    const currentStoreName = this.getStore();
+
     if (this.state.loading) {
       return (
         <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
@@ -634,7 +702,7 @@ class ChatPage extends BaseListPage {
     }
 
     return (
-      <div style={{display: "flex", backgroundColor: "white", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : (window.location.pathname.startsWith("/chat")) ? "calc(100vh - 135px)" : Setting.isMobile() ? "calc(100vh - 136px)" : "calc(100vh - 186px)"}}>
+      <div style={{display: "flex", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : (window.location.pathname.startsWith("/chat")) ? "calc(100vh - 135px)" : Setting.isMobile() ? "calc(100vh - 136px)" : "calc(100vh - 186px)"}}>
         {
           this.renderModal()
         }
@@ -642,9 +710,9 @@ class ChatPage extends BaseListPage {
           this.renderUnsafePasswordModal()
         }
         {
-          !(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && (
-            <div style={{width: "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
-              <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores} />
+          !(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && !this.state.chatMenuCollapsed && (
+            <div style={{width: "250px", height: "100%", marginRight: "2px"}}>
+              <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores} currentStoreName={currentStoreName} />
             </div>
           )
         }
@@ -656,14 +724,17 @@ class ChatPage extends BaseListPage {
           </Drawer>
         )}
 
-        <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative", display: "flex", flexDirection: "column"}}>
+        <div style={{flex: 1, height: "100%", position: "relative", display: "flex", flexDirection: "column"}}>
           {this.state.chat && this.state.paneCount === 1 && (
-            <div style={{display: "flex", alignItems: "center"}}>
+            <div style={{display: "flex", alignItems: "center", marginLeft: "15px"}}>
               {Setting.isMobile() && (
                 <Button type="text" icon={<BarsOutlined />} onClick={this.toggleChatMenu} style={{marginRight: "8px"}} />
               )}
+              {!(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && (
+                <Button type="text" icon={this.state.chatMenuCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={this.toggleChatMenuCollapse} style={{marginRight: "8px"}} />
+              )}
               <div style={{flex: 1}}>
-                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} />
+                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} onChatUpdated={this.handleChatUpdate} onStoreChange={this.updateStoreAndUrl} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} />
               </div>
             </div>
           )}
@@ -679,7 +750,7 @@ class ChatPage extends BaseListPage {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  backgroundImage: `url(${Setting.StaticBaseUrl}/img/casibase-logo_1200x256.png)`,
+                  backgroundImage: `url(${Conf.StaticBaseUrl}/img/casibase-logo_1200x256.png)`,
                   backgroundPosition: "center",
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "200px auto",
@@ -718,6 +789,7 @@ class ChatPage extends BaseListPage {
     const value = this.props.account.name;
     const sortField = params.sortField, sortOrder = params.sortOrder;
     const chatName = this.getChat();
+    const storeName = this.getStore();
 
     if (setLoading) {
       this.setState({loading: true});
@@ -725,15 +797,18 @@ class ChatPage extends BaseListPage {
     ChatBackend.getChats(value, -1, -1, field, value, sortField, sortOrder)
       .then((res) => {
         if (res.status === "ok") {
+          let chats = res.data;
+          if (storeName) {
+            chats = chats.filter(chat => chat.store === storeName);
+          }
           this.setState({
             loading: false,
-            data: res.data,
+            data: chats,
             messages: [],
             searchText: params.searchText,
             searchedColumn: params.searchedColumn,
           });
 
-          const chats = res.data;
           if (chatName !== undefined && chats.length > 0) {
             const chat = chats.find(chat => chat.name === chatName);
             this.getMessages(chat);

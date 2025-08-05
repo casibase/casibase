@@ -15,7 +15,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {Button, List, Popconfirm, Table, Tooltip, Upload} from "antd";
-import {DeleteOutlined, UploadOutlined} from "@ant-design/icons";
+import {DeleteOutlined, DownloadOutlined, UploadOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -148,6 +148,10 @@ class VideoListPage extends BaseListPage {
 
   requireReviewer() {
     return !(this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
+  }
+
+  requireAdmin() {
+    return !(this.props.account.type === "video-admin-user");
   }
 
   filterReviewer1(remarks) {
@@ -430,6 +434,25 @@ class VideoListPage extends BaseListPage {
           }
         },
       },
+      {
+        title: i18next.t("general:Download"),
+        dataIndex: "downloadUrl",
+        key: "downloadUrl",
+        width: "110px",
+        sorter: true,
+        ...this.getColumnSearchProps("downloadUrl"),
+        render: (text, record, index) => {
+          if (!text) {
+            return null;
+          }
+
+          return (
+            <a target="_blank" rel="noreferrer" href={text}>
+              <Button icon={<DownloadOutlined />} style={{marginRight: "10px"}} type="primary">{i18next.t("general:Download")}</Button>
+            </a>
+          );
+        },
+      },
       // {
       //   title: i18next.t("video:Label count"),
       //   dataIndex: "labelCount",
@@ -499,6 +522,10 @@ class VideoListPage extends BaseListPage {
 
     if (this.requireReviewer()) {
       columns = columns.filter(column => column.key !== "reviewState");
+    }
+
+    if (this.requireAdmin()) {
+      columns = columns.filter(column => column.key !== "downloadUrl");
     }
 
     return (

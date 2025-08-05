@@ -19,6 +19,7 @@ import (
 	"strings"
 
 	"github.com/beego/beego"
+	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
@@ -136,7 +137,12 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", store.ModelProvider)
+	modelProviderName := store.ModelProvider
+	if chat.ModelProvider != "" {
+		modelProviderName = chat.ModelProvider
+	}
+
+	modelProvider, modelProviderObj, err := object.GetModelProviderFromContext("admin", modelProviderName)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -162,13 +168,17 @@ func (c *ApiController) GetMessageAnswer() {
 
 	knowledgeCount := store.KnowledgeCount
 	if knowledgeCount <= 0 {
-		knowledgeCount = 5
+		knowledgeCount = 10
 	}
 
-	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, "admin", question, knowledgeCount)
+	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(store.Name, store.SearchProvider, embeddingProvider, embeddingProviderObj, modelProvider, "admin", question, knowledgeCount)
 	if err != nil && err.Error() != "no knowledge vectors found" {
+		err = fmt.Errorf("object.GetNearestKnowledge() error, %s", err.Error())
 		c.ResponseErrorStream(message, err.Error())
 		return
+	}
+	if embeddingResult == nil {
+		embeddingResult = &embedding.EmbeddingResult{}
 	}
 
 	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}, []byte{}, []byte{}}
@@ -200,7 +210,9 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	question, err = getQuestionWithCarriers(question, store.SuggestionCount, chat.NeedTitle)
+	if modelProvider.Type != "Dummy" && !isReasonModel(modelProvider.SubType) {
+		question, err = getQuestionWithCarriers(question, store.SuggestionCount, chat.NeedTitle)
+	}
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -217,7 +229,11 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, store.Prompt, knowledge, agentInfo)
 	} else {
-		modelResult, err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge, nil)
+		if isReasonModel(modelProvider.SubType) {
+			modelResult, err = QueryCarrierText(question, writer, history, store.Prompt, knowledge, modelProviderObj, chat.NeedTitle, store.SuggestionCount)
+		} else {
+			modelResult, err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge, nil)
+		}
 	}
 	if err != nil {
 		if strings.Contains(err.Error(), "write tcp") {
@@ -404,6 +420,7 @@ func (c *ApiController) GetAnswer() {
 		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
 		CreatedTime:  util.GetCurrentTimeEx(chat.CreatedTime),
 		Organization: chat.Organization,
+		Store:        chat.Store,
 		User:         userName,
 		Chat:         chat.Name,
 		ReplyTo:      "",
@@ -424,6 +441,7 @@ func (c *ApiController) GetAnswer() {
 		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
 		CreatedTime:  util.GetCurrentTimeEx(chat.CreatedTime),
 		Organization: chat.Organization,
+		Store:        chat.Store,
 		User:         userName,
 		Chat:         chat.Name,
 		ReplyTo:      questionMessage.Name,

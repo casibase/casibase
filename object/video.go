@@ -57,6 +57,7 @@ type Video struct {
 	VideoId        string         `xorm:"varchar(100)" json:"videoId"`
 	VideoLength    string         `xorm:"varchar(100)" json:"videoLength"`
 	CoverUrl       string         `xorm:"varchar(200)" json:"coverUrl"`
+	DownloadUrl    string         `xorm:"varchar(200)" json:"downloadUrl"`
 	AudioUrl       string         `xorm:"varchar(200)" json:"audioUrl"`
 	EditMode       string         `xorm:"varchar(100)" json:"editMode"`
 	Labels         []*Label       `xorm:"mediumtext" json:"labels"`
@@ -247,7 +248,7 @@ func (v *Video) refineVideoAndCoverUrl() error {
 	}
 	v.ExcellentCount = excellentCount
 
-	if v.VideoId == "" || v.CoverUrl != "" {
+	if v.VideoId == "" || (v.CoverUrl != "" && v.DownloadUrl != "") {
 		return nil
 	}
 
@@ -259,6 +260,9 @@ func (v *Video) refineVideoAndCoverUrl() error {
 	coverUrl := video.GetVideoCoverUrl(v.VideoId)
 	v.CoverUrl = coverUrl
 
+	downloadUrl := video.GetVideoFileUrl(v.VideoId)
+	v.DownloadUrl = downloadUrl
+
 	_, err = UpdateVideo(v.GetId(), v)
 	if err != nil {
 		return err
@@ -268,13 +272,13 @@ func (v *Video) refineVideoAndCoverUrl() error {
 }
 
 func GetVideoCount(owner string, field string, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Video{})
 }
 
 func GetPaginationVideos(owner string, offset int, limit int, field string, value string, sortField string, sortOrder string) ([]*Video, error) {
 	videos := []*Video{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&videos)
 	if err != nil {
 		return videos, err

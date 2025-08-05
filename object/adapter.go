@@ -205,6 +205,16 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
+	err = a.engine.Sync2(new(Template))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Application))
+	if err != nil {
+		panic(err)
+	}
+
 	err = a.engine.Sync2(new(Node))
 	if err != nil {
 		panic(err)
@@ -235,6 +245,11 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
+	err = a.engine.Sync2(new(Form))
+	if err != nil {
+		panic(err)
+	}
+
 	err = a.engine.Sync2(new(Workflow))
 	if err != nil {
 		panic(err)
@@ -246,6 +261,11 @@ func (a *Adapter) createTable() {
 	}
 
 	err = a.engine.Sync2(new(Session))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Connection))
 	if err != nil {
 		panic(err)
 	}

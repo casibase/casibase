@@ -14,6 +14,12 @@
 
 package object
 
+import (
+	"fmt"
+
+	"github.com/casibase/casibase/embedding"
+)
+
 type DefaultSearchProvider struct {
 	owner string
 }
@@ -22,10 +28,18 @@ func NewDefaultSearchProvider(owner string) (*DefaultSearchProvider, error) {
 	return &DefaultSearchProvider{owner: owner}, nil
 }
 
-func (p *DefaultSearchProvider) Search(embeddingProviderName string, qVector []float32, knowledgeCount int) ([]Vector, error) {
-	vectors, err := getRelatedVectors(embeddingProviderName)
+func (p *DefaultSearchProvider) Search(storeName string, embeddingProviderName string, embeddingProviderObj embedding.EmbeddingProvider, modelProviderName string, text string, knowledgeCount int) ([]Vector, *embedding.EmbeddingResult, error) {
+	vectors, err := getRelatedVectors(storeName, embeddingProviderName)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
+	}
+
+	qVector, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text)
+	if err != nil {
+		return nil, embeddingResult, err
+	}
+	if qVector == nil || len(qVector) == 0 {
+		return nil, embeddingResult, fmt.Errorf("no qVector found")
 	}
 
 	var vectorData [][]float32
@@ -35,7 +49,7 @@ func (p *DefaultSearchProvider) Search(embeddingProviderName string, qVector []f
 
 	similarities, err := getNearestVectors(qVector, vectorData, knowledgeCount)
 	if err != nil {
-		return nil, err
+		return nil, embeddingResult, err
 	}
 
 	res := []Vector{}
@@ -45,5 +59,5 @@ func (p *DefaultSearchProvider) Search(embeddingProviderName string, qVector []f
 		res = append(res, *vector)
 	}
 
-	return res, nil
+	return res, embeddingResult, nil
 }

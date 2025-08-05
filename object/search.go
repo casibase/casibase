@@ -14,14 +14,22 @@
 
 package object
 
+import (
+	"github.com/casibase/casibase/embedding"
+)
+
 type SearchProvider interface {
-	Search(embeddingProviderName string, qVector []float32, knowledgeCount int) ([]Vector, error)
+	Search(storeName string, embeddingProviderName string, embeddingProviderObj embedding.EmbeddingProvider, modelProviderName string, text string, knowledgeCount int) ([]Vector, *embedding.EmbeddingResult, error)
 }
 
 func GetSearchProvider(typ string, owner string) (SearchProvider, error) {
 	var p SearchProvider
 	var err error
 	if typ == "Default" {
+		p, err = NewDefaultSearchProvider(owner)
+	} else if typ == "Hierarchy" {
+		p, err = NewHierarchySearchProvider(owner)
+	} else {
 		p, err = NewDefaultSearchProvider(owner)
 	}
 

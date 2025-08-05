@@ -40,6 +40,7 @@ import SigninPage from "./SigninPage";
 import i18next from "i18next";
 import { withTranslation } from "react-i18next";
 import LanguageSelect from "./LanguageSelect";
+import ThemeSelect from "./ThemeSelect";
 import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
 import MessageListPage from "./MessageListPage";
@@ -55,18 +56,24 @@ import ContainerEditPage from "./ContainerEditPage";
 import PodListPage from "./PodListPage";
 import PodEditPage from "./PodEditPage";
 import SessionListPage from "./SessionListPage";
+import ConnectionListPage from "./ConnectionListPage";
 import RecordListPage from "./RecordListPage";
 import RecordEditPage from "./RecordEditPage";
 import WorkflowListPage from "./WorkflowListPage";
 import WorkflowEditPage from "./WorkflowEditPage";
 import TaskListPage from "./TaskListPage";
 import TaskEditPage from "./TaskEditPage";
+import FormListPage from "./FormListPage";
+import FormEditPage from "./FormEditPage";
+import FormDataPage from "./FormDataPage";
+import * as FormBackend from "./backend/FormBackend";
 import ArticleListPage from "./ArticleListPage";
 import ArticleEditPage from "./ArticleEditPage";
 import ChatPage from "./ChatPage";
 import CustomGithubCorner from "./CustomGithubCorner";
 import ShortcutsPage from "./basic/ShortcutsPage";
 import UsagePage from "./UsagePage";
+import ActivityPage from "./ActivityPage";
 import * as StoreBackend from "./backend/StoreBackend";
 import NodeWorkbench from "./NodeWorkbench";
 import AccessPage from "./component/access/AccessPage";
@@ -76,19 +83,33 @@ import PythonYolov8miPage from "./frame/PythonYolov8miPage";
 import PythonSrPage from "./frame/PythonSrPage";
 import SystemInfo from "./SystemInfo";
 import * as FetchFilter from "./backend/FetchFilter";
+import OsDesktop from "./OsDesktop";
+import TemplateListPage from "./TemplateListPage";
+import TemplateEditPage from "./TemplateEditPage";
+import ApplicationListPage from "./ApplicationListPage";
+import ApplicationEditPage from "./ApplicationEditPage";
 
 const { Header, Footer, Content, Sider } = Layout;
 
 class App extends Component {
   constructor(props) {
     super(props);
+    this.setThemeAlgorithm();
+    let storageThemeAlgorithm = [];
+    try {
+      storageThemeAlgorithm = localStorage.getItem("themeAlgorithm") ? JSON.parse(localStorage.getItem("themeAlgorithm")) : ["default"];
+    } catch {
+      storageThemeAlgorithm = ["default"];
+    }
     this.state = {
       classes: props,
       selectedMenuKey: 0,
       account: undefined,
       uri: null,
+      themeAlgorithm: storageThemeAlgorithm,
       themeData: Conf.ThemeDefault,
       menuVisible: false,
+      forms: [],
     };
     this.initConfig();
   }
@@ -96,6 +117,12 @@ class App extends Component {
   initConfig() {
     Setting.initServerUrl();
     Setting.initWebConfig();
+
+    const cachedThemeColor = localStorage.getItem("themeColor");
+    if (cachedThemeColor) {
+      Setting.setThemeColor(cachedThemeColor);
+    }
+
     FetchFilter.initDemoMode();
     Setting.initCasdoorSdk(Conf.AuthConfig);
     if (!Conf.DisablePreviewMode) {
@@ -107,13 +134,18 @@ class App extends Component {
     this.updateMenuKey();
     this.getAccount();
     this.setTheme();
+    this.getForms();
   }
 
   setTheme() {
     StoreBackend.getStore("admin", "_casibase_default_store_").then((res) => {
       if (res.status === "ok" && res.data) {
         const color = res.data.themeColor ? res.data.themeColor : Conf.ThemeDefault.colorPrimary;
-        Setting.setThemeColor(color);
+        const currentColor = localStorage.getItem("themeColor");
+        if (currentColor !== color) {
+          Setting.setThemeColor(color);
+          localStorage.setItem("themeColor", color);
+        }
       } else {
         Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -127,6 +159,21 @@ class App extends Component {
     if (this.state.uri !== uri) {
       this.updateMenuKey();
     }
+  }
+
+  updateMenuKeyForm(forms) {
+    // eslint-disable-next-line no-restricted-globals
+    const uri = location.pathname;
+    this.setState({
+      uri: uri,
+    });
+
+    forms.forEach(form => {
+      const path = `/forms/${form.name}/data`;
+      if (uri.includes(path)) {
+        this.setState({selectedMenuKey: path});
+      }
+    });
   }
 
   updateMenuKey() {
@@ -148,7 +195,9 @@ class App extends Component {
     } else if (uri.includes("/messages")) {
       this.setState({ selectedMenuKey: "/messages" });
     } else if (uri.includes("/usages")) {
-      this.setState({ selectedMenuKey: "/usages" });
+      this.setState({selectedMenuKey: "/usages"});
+    } else if (uri.includes("/activities")) {
+      this.setState({selectedMenuKey: "/activities"});
     } else if (uri.includes("/nodes")) {
       this.setState({ selectedMenuKey: "/nodes" });
     } else if (uri.includes("/machines")) {
@@ -158,9 +207,15 @@ class App extends Component {
     } else if (uri.includes("/containers")) {
       this.setState({ selectedMenuKey: "/containers" });
     } else if (uri.includes("/pods")) {
-      this.setState({ selectedMenuKey: "/pods" });
+      this.setState({selectedMenuKey: "/pods"});
+    } else if (uri.includes("/templates")) {
+      this.setState({selectedMenuKey: "/templates"});
+    } else if (uri.includes("/applications")) {
+      this.setState({selectedMenuKey: "/applications"});
     } else if (uri.includes("/sessions")) {
-      this.setState({ selectedMenuKey: "/sessions" });
+      this.setState({selectedMenuKey: "/sessions"});
+    } else if (uri.includes("/connections")) {
+      this.setState({selectedMenuKey: "/connections"});
     } else if (uri.includes("/records")) {
       this.setState({ selectedMenuKey: "/records" });
     } else if (uri.includes("/workflows")) {
@@ -172,7 +227,9 @@ class App extends Component {
     } else if (uri.includes("/sr")) {
       this.setState({ selectedMenuKey: "/sr" });
     } else if (uri.includes("/tasks")) {
-      this.setState({ selectedMenuKey: "/tasks" });
+      this.setState({selectedMenuKey: "/tasks"});
+    } else if (uri.includes("/forms")) {
+      this.setState({selectedMenuKey: "/forms"});
     } else if (uri.includes("/articles")) {
       this.setState({ selectedMenuKey: "/articles" });
     } else if (uri.includes("/public-videos")) {
@@ -222,6 +279,21 @@ class App extends Component {
       });
   }
 
+  getForms() {
+    FormBackend.getForms("admin")
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            forms: res.data,
+          });
+
+          this.updateMenuKeyForm(res.data);
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
   signout() {
     AccountBackend.signout()
       .then((res) => {
@@ -257,6 +329,23 @@ class App extends Component {
     this.setState({
       menuVisible: true,
     });
+  };
+
+  setThemeAlgorithm() {
+    const currentUrl = window.location.href;
+    const url = new URL(currentUrl);
+    const themeType = url.searchParams.get("theme");
+    if (themeType === "dark" || themeType === "default") {
+      localStorage.setItem("themeAlgorithm", JSON.stringify([themeType]));
+    }
+  }
+
+  setLogoAndThemeAlgorithm = (nextThemeAlgorithm) => {
+    this.setState({
+      themeAlgorithm: nextThemeAlgorithm,
+      logo: Setting.getLogo(nextThemeAlgorithm),
+    });
+    localStorage.setItem("themeAlgorithm", JSON.stringify(nextThemeAlgorithm));
   };
 
   renderAvatar() {
@@ -417,6 +506,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
       res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"));
       res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
+      res.push(Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections"));
       res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"));
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "ai") {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
@@ -426,6 +516,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
+      res.push(Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities"));
       // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
       // res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
     } else if (this.state.account.type === "chat-admin") {
@@ -435,6 +526,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
+      res.push(Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities"));
 
       if (window.location.pathname === "/") {
         Setting.goToLinkSoft(this, "/chat");
@@ -514,14 +606,16 @@ class App extends Component {
 
         ]));
     } else {
-      const textColor = "black";
-      const twoToneColor = "rgb(89,54,213)";
+      const textColor = this.state.themeAlgorithm.includes("dark") ? "white" : "black";
+      const twoToneColor = this.state.themeData.colorPrimary;
 
       res.pop();
 
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/chat">{i18next.t("general:Home")}</Link>, "/home", <HomeTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/Chat"),
         Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"),
+        Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities"),
+        Setting.getItem(<Link to="/desktop">{i18next.t("general:OS Desktop")}</Link>, "/desktop"),
       ]));
 
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/chats">{i18next.t("general:Chats & Messages")}</Link>, "/ai-chat", <BulbTwoTone twoToneColor={twoToneColor} />, [
@@ -548,12 +642,17 @@ class App extends Component {
         Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"),
         Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"),
         Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"),
+        Setting.getItem(<Link to="/forms">{i18next.t("general:Forms")}</Link>, "/forms"),
         Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows"),
+        Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"),
+        Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
+        Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"),
         Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"),
       ]));
 
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"),
+        Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections"),
         Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"),
       ]));
 
@@ -583,6 +682,15 @@ class App extends Component {
             {Setting.renderExternalLink()}
           </a>, "/swagger")]));
     }
+
+    const sortedForms = this.state.forms.slice().sort((a, b) => {
+      return a.position.localeCompare(b.position);
+    });
+
+    sortedForms.forEach(form => {
+      const path = `/forms/${form.name}/data`;
+      res.push(Setting.getItem(<Link to={path}>{form.displayName}</Link>, path));
+    });
 
     return res;
   }
@@ -625,6 +733,8 @@ class App extends Component {
         <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName/view" render={(props) => this.renderSigninIfNotSignedIn(<FileTreePage account={this.state.account} {...props} />)} />
+        <Route exact path="/stores/:owner/:storeName/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/stores/:owner/:storeName/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)} />
         <Route exact path="/videos/:owner/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/public-videos" render={(props) => <PublicVideoListPage {...props} />} />
@@ -639,9 +749,16 @@ class App extends Component {
         <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/usages" render={(props) => this.renderSigninIfNotSignedIn(<UsagePage account={this.state.account} {...props} />)} />
+        <Route exact path="/activities" render={(props) => this.renderSigninIfNotSignedIn(<ActivityPage account={this.state.account} {...props} />)} />
+        <Route exact path="/desktop" render={(props) => <OsDesktop account={this.state.account} {...props} />} />
+        <Route exact path="/templates" render={(props) => this.renderSigninIfNotSignedIn(<TemplateListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/templates/:templateName" render={(props) => this.renderSigninIfNotSignedIn(<TemplateEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/applications" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/applications/:applicationName" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes" render={(props) => this.renderSigninIfNotSignedIn(<NodeListPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes/:nodeName" render={(props) => this.renderSigninIfNotSignedIn(<NodeEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/sessions" render={(props) => this.renderSigninIfNotSignedIn(<SessionListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/connections" render={(props) => this.renderSigninIfNotSignedIn(<ConnectionListPage account={this.state.account} {...props} />)} />
         <Route exact path="/records" render={(props) => this.renderSigninIfNotSignedIn(<RecordListPage account={this.state.account} {...props} />)} />
         <Route exact path="/records/:organizationName/:recordName" render={(props) => this.renderSigninIfNotSignedIn(<RecordEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
@@ -660,10 +777,16 @@ class App extends Component {
         <Route exact path="/sr" render={(props) => this.renderSigninIfNotSignedIn(<PythonSrPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks" render={(props) => this.renderSigninIfNotSignedIn(<TaskListPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks/:taskName" render={(props) => this.renderSigninIfNotSignedIn(<TaskEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/forms" render={(props) => this.renderSigninIfNotSignedIn(<FormListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/forms/:formName" render={(props) => this.renderSigninIfNotSignedIn(<FormEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/forms/:formName/data" render={(props) => this.renderSigninIfNotSignedIn(<FormDataPage key={props.match.params.formName} account={this.state.account} {...props} />)} />
         <Route exact path="/articles" render={(props) => this.renderSigninIfNotSignedIn(<ArticleListPage account={this.state.account} {...props} />)} />
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
+        <Route exact path="/stores/:owner/:storeName/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
+        <Route exact path="/:owner/:storeName/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
+        <Route exact path="/:owner/:storeName/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/sysinfo" render={(props) => this.renderSigninIfNotSignedIn(<SystemInfo account={this.state.account} {...props} />)} />
         <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
@@ -823,8 +946,6 @@ class App extends Component {
       <React.Fragment>
         <Footer id="footer" style={
           {
-            borderTop: "1px solid #e8e8e8",
-            backgroundColor: "white",
             textAlign: "center",
             height: "67px",
           }
@@ -863,7 +984,7 @@ class App extends Component {
             colorInfo: this.state.themeData.colorPrimary,
             borderRadius: this.state.themeData.borderRadius,
           },
-          // algorithm: Setting.getAlgorithm(this.state.themeAlgorithm),
+          algorithm: Setting.getAlgorithm(this.state.themeAlgorithm),
         }}>
           <StyleProvider hashPriority="high" transformers={[legacyLogicalPropertiesTransformer]}>
             {

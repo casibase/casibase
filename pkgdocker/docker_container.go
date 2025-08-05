@@ -50,7 +50,7 @@ type ContainerClient struct {
 }
 
 // Docker remote access service needs to be enabled and configured in advance.
-func NewContainerClient(providerType string, username string, hostname string, region string) (ContainerClient, error) {
+func NewContainerClient(username string, hostname string, region string) (ContainerClient, error) {
 	remoteAddr := "tcp://" + hostname + ":2375"
 	containerClient, err := client.NewClientWithOpts(client.WithHost(remoteAddr), client.WithAPIVersionNegotiation())
 	if err != nil {

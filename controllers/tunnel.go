@@ -28,15 +28,15 @@ import (
 )
 
 const (
-	TunnelClosed       int = -1
-	Normal             int = 0
-	SessionNotFound    int = 800
-	NewTunnelError     int = 801
-	ForcedDisconnect   int = 802
-	NodeNotActive      int = 803
-	ParametersError    int = 804
-	NodeNotFound       int = 805
-	SessionUpdateError int = 806
+	TunnelClosed          int = -1
+	Normal                int = 0
+	ConnectionNotFound    int = 800
+	NewTunnelError        int = 801
+	ForcedDisconnect      int = 802
+	NodeNotActive         int = 803
+	ParametersError       int = 804
+	NodeNotFound          int = 805
+	ConnectionUpdateError int = 806
 )
 
 var UpGrader = websocket.Upgrader{
@@ -50,8 +50,8 @@ var UpGrader = websocket.Upgrader{
 
 // AddNodeTunnel
 // @Title AddNodeTunnel
-// @Tag Session API
-// @Description add session
+// @Tag Connection API
+// @Description add node tunnel session
 // @Param   nodeId    query   string  true        "The id of node"
 // @Success 200 {object} Response
 // @router /add-node-tunnel [get]
@@ -65,7 +65,7 @@ func (c *ApiController) AddNodeTunnel() {
 		return
 	}
 
-	session := &object.Session{
+	connection := &object.Connection{
 		Creator:       user.Name,
 		ClientIp:      c.getClientIp(),
 		UserAgent:     c.getUserAgent(),
@@ -74,15 +74,27 @@ func (c *ApiController) AddNodeTunnel() {
 	}
 
 	var err error
-	session, err = object.CreateSession(session, nodeId, mode)
+	connection, err = object.CreateConnection(connection, nodeId, mode)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(session)
+	c.ResponseOk(connection)
 }
 
+// GetNodeTunnel
+// @Title GetNodeTunnel
+// @Tag Connection API
+// @Description get node tunnel session
+// @Param   width        query   string  true        "The width of the tunnel"
+// @Param   height       query   string  true        "The height of the tunnel"
+// @Param   dpi          query   string  true        "The dpi of the tunnel"
+// @Param   connectionId query   string  true        "The id of the connectionId"
+// @Param   username     query   string  true        "The username for the tunnel"
+// @Param   password     query   string  true        "The password for the tunnel"
+// @Success 200 {object} Response
+// @router /get-node-tunnel [get]
 func (c *ApiController) GetNodeTunnel() {
 	c.EnableRender = false
 	ctx := c.Ctx
@@ -95,7 +107,7 @@ func (c *ApiController) GetNodeTunnel() {
 	width := c.Input().Get("width")
 	height := c.Input().Get("height")
 	dpi := c.Input().Get("dpi")
-	sessionId := c.Input().Get("sessionId")
+	connectionId := c.Input().Get("connectionId")
 
 	username := c.Input().Get("username")
 	password := c.Input().Get("password")
@@ -111,13 +123,13 @@ func (c *ApiController) GetNodeTunnel() {
 		return
 	}
 
-	session, err := object.GetConnSession(sessionId)
+	connection, err := object.GetConnection(connectionId)
 	if err != nil {
-		guacamole.Disconnect(ws, SessionNotFound, err.Error())
+		guacamole.Disconnect(ws, ConnectionNotFound, err.Error())
 		return
 	}
 
-	node, err := object.GetNode(session.Node)
+	node, err := object.GetNode(connection.Node)
 	if err != nil || node == nil {
 		guacamole.Disconnect(ws, NodeNotFound, err.Error())
 		return
@@ -153,29 +165,29 @@ func (c *ApiController) GetNodeTunnel() {
 	}
 
 	guacSession := &guacamole.Session{
-		Id:          sessionId,
-		Protocol:    session.Protocol,
+		Id:          connectionId,
+		Protocol:    connection.Protocol,
 		WebSocket:   ws,
 		GuacdTunnel: tunnel,
 	}
 
-	guacSession.Observer = guacamole.NewObserver(sessionId)
+	guacSession.Observer = guacamole.NewObserver(connectionId)
 	guacamole.GlobalSessionManager.Add(guacSession)
 
-	session.ConnectionId = tunnel.ConnectionID
-	session.Width = intWidth
-	session.Height = intHeight
-	session.Status = object.Connecting
-	session.Recording = configuration.GetParameter(guacamole.RecordingPath)
+	connection.ConnectionId = tunnel.ConnectionID
+	connection.Width = intWidth
+	connection.Height = intHeight
+	connection.Status = object.Connecting
+	connection.Recording = configuration.GetParameter(guacamole.RecordingPath)
 
-	if session.Recording == "" {
+	if connection.Recording == "" {
 		// No audit is required when no screen is recorded
-		session.Reviewed = true
+		connection.Reviewed = true
 	}
 
-	_, err = object.UpdateSession(sessionId, session)
+	_, err = object.UpdateConnection(connectionId, connection)
 	if err != nil {
-		guacamole.Disconnect(ws, SessionUpdateError, err.Error())
+		guacamole.Disconnect(ws, ConnectionUpdateError, err.Error())
 		return
 	}
 
@@ -189,9 +201,9 @@ func (c *ApiController) GetNodeTunnel() {
 			logs.Error(fmt.Sprintf("GetNodeTunnel():ws.ReadMessage() error: %s", err.Error()))
 
 			_ = tunnel.Close()
-			err2 := object.CloseSession(sessionId, Normal, "Normal user exit")
+			err2 := object.CloseConnection(connectionId, Normal, "Normal user exit")
 			if err2 != nil {
-				logs.Error(fmt.Sprintf("GetNodeTunnel():object.CloseSession() error: %s", err.Error()))
+				logs.Error(fmt.Sprintf("GetNodeTunnel():object.CloseConnection() error: %s", err.Error()))
 			}
 			return
 		}
@@ -200,9 +212,9 @@ func (c *ApiController) GetNodeTunnel() {
 		if err != nil {
 			logs.Error(fmt.Sprintf("GetNodeTunnel():tunnel.WriteAndFlush() error: %s", err.Error()))
 
-			err2 := object.CloseSession(sessionId, Normal, "Normal user exit")
+			err2 := object.CloseConnection(connectionId, Normal, "Normal user exit")
 			if err2 != nil {
-				logs.Error(fmt.Sprintf("GetNodeTunnel():object.CloseSession() (2nd) error: %s", err.Error()))
+				logs.Error(fmt.Sprintf("GetNodeTunnel():object.CloseConnection() (2nd) error: %s", err.Error()))
 			}
 			return
 		}
@@ -216,24 +228,24 @@ func (c *ApiController) TunnelMonitor() {
 		c.ResponseError("WebSocket upgrade failed:", err)
 		return
 	}
-	sessionId := c.Input().Get("sessionId")
+	connectionId := c.Input().Get("connectionId")
 
-	s, err := object.GetConnSession(sessionId)
+	connection, err := object.GetConnection(connectionId)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	if s.Status != object.Connected {
-		guacamole.Disconnect(ws, NodeNotActive, "Session offline")
+	if connection.Status != object.Connected {
+		guacamole.Disconnect(ws, NodeNotActive, "Connection offline")
 		return
 	}
 
-	connectionId := s.ConnectionId
+	connectionId = connection.ConnectionId
 	configuration := guacamole.NewConfiguration()
 	configuration.ConnectionID = connectionId
-	configuration.SetParameter("width", strconv.Itoa(s.Width))
-	configuration.SetParameter("height", strconv.Itoa(s.Height))
+	configuration.SetParameter("width", strconv.Itoa(connection.Width))
+	configuration.SetParameter("height", strconv.Itoa(connection.Height))
 	configuration.SetParameter("dpi", "96")
 	configuration.SetReadOnlyMode()
 
@@ -250,19 +262,19 @@ func (c *ApiController) TunnelMonitor() {
 	}
 
 	guacSession := &guacamole.Session{
-		Id:          sessionId,
-		Protocol:    s.Protocol,
+		Id:          connectionId,
+		Protocol:    connection.Protocol,
 		WebSocket:   ws,
 		GuacdTunnel: tunnel,
 	}
 
-	forObsSession := guacamole.GlobalSessionManager.Get(sessionId)
-	if forObsSession == nil {
-		guacamole.Disconnect(ws, SessionNotFound, "Failed to obtain session")
+	forObsGuacSession := guacamole.GlobalSessionManager.Get(connectionId)
+	if forObsGuacSession == nil {
+		guacamole.Disconnect(ws, ConnectionNotFound, "Failed to obtain guacamole session")
 		return
 	}
 	guacSession.Id = util.GenerateId()
-	forObsSession.Observer.Add(guacSession)
+	forObsGuacSession.Observer.Add(guacSession)
 
 	guacamoleHandler := NewGuacamoleHandler(ws, tunnel)
 	guacamoleHandler.Start()
@@ -274,13 +286,13 @@ func (c *ApiController) TunnelMonitor() {
 			_ = tunnel.Close()
 
 			observerId := guacSession.Id
-			forObsSession.Observer.Delete(observerId)
+			forObsGuacSession.Observer.Delete(observerId)
 			return
 		}
 
 		_, err = tunnel.WriteAndFlush(message)
 		if err != nil {
-			err := object.CloseSession(sessionId, Normal, "Normal user exit")
+			err := object.CloseConnection(connectionId, Normal, "Normal user exit")
 			if err != nil {
 				c.ResponseError(err.Error())
 				return

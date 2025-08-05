@@ -15,10 +15,10 @@
 import React from "react";
 import {Button, Popconfirm, Table} from "antd";
 import {DeleteOutlined, DownloadOutlined, FileDoneOutlined} from "@ant-design/icons";
-import * as Setting from "./Setting";
+import * as Setting from "../Setting";
 import i18next from "i18next";
-import * as PermissionUtil from "./PermissionUtil";
-import * as FileBackend from "./backend/FileBackend";
+import * as PermissionUtil from "../PermissionUtil";
+import * as FileBackend from "../backend/FileBackend";
 
 class FileTable extends React.Component {
   constructor(props) {

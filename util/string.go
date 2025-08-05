@@ -124,20 +124,22 @@ func WriteStringToPath(s string, path string) {
 	}
 }
 
-func ReadBytesFromPath(path string) []byte {
+func ReadBytesFromPath(path string) ([]byte, error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	return data
+	return data, nil
 }
 
-func WriteBytesToPath(b []byte, path string) {
+func WriteBytesToPath(b []byte, path string) error {
 	err := ioutil.WriteFile(path, b, 0o644)
 	if err != nil {
-		panic(err)
+		return err
 	}
+
+	return nil
 }
 
 func DecodeBase64(s string) string {

@@ -31,6 +31,10 @@ func NewSuggestionCarrier(suggestionCount int) (*SuggestionCarrier, error) {
 
 func (p *SuggestionCarrier) GetQuestion(question string) (string, error) {
 	if p.suggestionCount <= 0 {
+		promptTemplate := `Your reasoning and response must be in the same language as user's question.
+
+Here is the user's question: %s`
+		question = fmt.Sprintf(promptTemplate, question)
 		return question, nil
 	}
 
@@ -39,11 +43,11 @@ func (p *SuggestionCarrier) GetQuestion(question string) (string, error) {
 		format += p.divider + "<Predicted question " + strconv.Itoa(i+1) + ">"
 	}
 
-	promptTemplate := `Please follow the steps below to optimize your answer:
+	promptTemplate := `\n\nPlease follow the steps below to optimize your answer:
 
 1. **Generate an answer**: Provide a clear, accurate, and helpful answer to the user's question.
 
-2. **Predict possible follow-up questions from the user**: Based on the current question and answer, think and predict three questions that the user might ask further.
+2. **Predict possible follow-up questions from the user's query**: Based on the current question and answer, think and predict three questions that the user might ask further.
 
 3. **Format the answer and predicted questions**: Use a specific format to connect the answer and the predicted questions. The format is as follows:
    - Follow the answer with a separator "%s"
@@ -52,7 +56,7 @@ func (p *SuggestionCarrier) GetQuestion(question string) (string, error) {
 Your answer should be replied in the following format: %s
 
 The '<>' is to tell you to put something in here, your answer does not need to include '<>'.
-The language of suggestions should be the same as the language of answer
+The language of suggestions should be the same as the language of answer.
 Every Predicted question should end with a question mark '?'.
 
 Please note, the separator for each part is "%s", make sure not to use this separator in the answer or question.
@@ -60,6 +64,8 @@ Please note, the separator for each part is "%s", make sure not to use this sepa
 Examples of generated predicted questions:
 1. Do you know the weather today?
 2. Do you have any news to share?
+
+Your reasoning and response must be in the same language as user's question.
 
 Here is the user's question: %s`
 

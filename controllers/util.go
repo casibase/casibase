@@ -22,6 +22,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/beego/beego"
 	"github.com/beego/beego/context"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/conf"
@@ -112,6 +113,11 @@ func (c *ApiController) CheckSignedIn() (string, bool) {
 }
 
 func (c *ApiController) RequireAdmin() bool {
+	disablePreviewMode, _ := beego.AppConfig.Bool("disablePreviewMode")
+	if !disablePreviewMode {
+		return true
+	}
+
 	if !c.IsAdmin() {
 		c.ResponseError("this operation requires admin privilege")
 		return false
@@ -200,4 +206,17 @@ func (c *ApiController) getClientIp() string {
 func (c *ApiController) getUserAgent() string {
 	res := c.Ctx.Request.UserAgent()
 	return res
+}
+
+func (c *ApiController) IsCurrentUser(usernameInput string) bool {
+	username := c.GetSessionUsername()
+	if username == "" && c.getAnonymousUsername() == usernameInput {
+		username = c.getAnonymousUsername()
+	}
+
+	if !c.IsAdmin() && username != usernameInput {
+		c.ResponseError("Unauthorized operation")
+		return false
+	}
+	return true
 }

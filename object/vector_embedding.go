@@ -27,7 +27,7 @@ import (
 	"github.com/casibase/casibase/storage"
 	"github.com/casibase/casibase/txt"
 	"github.com/casibase/casibase/util"
-	"golang.org/x/time/rate"
+	"github.com/cenkalti/backoff/v4"
 )
 
 func filterTextFiles(files []*storage.Object) []*storage.Object {
@@ -101,7 +101,7 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 	return AddVector(vector)
 }
 
-func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, splitProviderName string, embeddingProviderName string, modelSubType string, limit int) (bool, error) {
+func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, splitProviderName string, embeddingProviderName string, modelSubType string) (bool, error) {
 	var affected bool
 
 	files, err := storageProviderObj.ListObjects(prefix)
@@ -111,7 +111,6 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 
 	files = filterTextFiles(files)
 
-	timeLimiter := rate.NewLimiter(rate.Every(time.Minute), limit)
 	for _, file := range files {
 		var text string
 		fileExt := filepath.Ext(file.Key)
@@ -156,17 +155,22 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 				continue
 			}
 
-			if timeLimiter.Allow() {
-				fmt.Printf("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s\n", i+1, len(textSections), storeName, file.Key, i, textSection)
-				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType)
-			} else {
-				err = timeLimiter.Wait(context.Background())
-				if err != nil {
-					return false, err
-				}
+			fmt.Printf("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s\n", i+1, len(textSections), storeName, file.Key, i, textSection)
 
-				fmt.Printf("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s\n", i+1, len(textSections), storeName, file.Key, i, textSection)
+			operation := func() error {
 				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType)
+				if err != nil {
+					if isRetryableError(err) {
+						return err
+					}
+					return backoff.Permanent(err)
+				}
+				return nil
+			}
+			err = backoff.Retry(operation, backoff.NewExponentialBackOff())
+			if err != nil {
+				fmt.Printf("Failed to generate embedding after retries: %v\n", err)
+				return false, err
 			}
 		}
 	}
@@ -174,8 +178,8 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 	return affected, err
 }
 
-func getRelatedVectors(provider string) ([]*Vector, error) {
-	vectors, err := getVectorsByProvider(provider)
+func getRelatedVectors(storeName string, provider string) ([]*Vector, error) {
+	vectors, err := getVectorsByProvider(storeName, provider)
 	if err != nil {
 		return nil, err
 	}
@@ -200,6 +204,7 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string)
 	for i := 0; i < 10; i++ {
 		res, embeddingResult, err = queryVectorWithContext(embeddingProvider, text, i)
 		if err != nil {
+			err = fmt.Errorf("queryVectorSafe() error, %s", err.Error())
 			if i > 0 {
 				fmt.Printf("\tFailed (%d): %s\n", i+1, err.Error())
 			}
@@ -215,21 +220,13 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string)
 	}
 }
 
-func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, owner string, text string, knowledgeCount int) ([]*model.RawMessage, []VectorScore, *embedding.EmbeddingResult, error) {
-	qVector, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-	if qVector == nil || len(qVector) == 0 {
-		return nil, nil, nil, fmt.Errorf("no qVector found")
-	}
-
-	searchProvider, err := GetSearchProvider("Default", owner)
+func GetNearestKnowledge(storeName string, searchProviderType string, embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, modelProvider *Provider, owner string, text string, knowledgeCount int) ([]*model.RawMessage, []VectorScore, *embedding.EmbeddingResult, error) {
+	searchProvider, err := GetSearchProvider(searchProviderType, owner)
 	if err != nil {
 		return nil, nil, nil, err
 	}
 
-	vectors, err := searchProvider.Search(embeddingProvider.Name, qVector, knowledgeCount)
+	vectors, embeddingResult, err := searchProvider.Search(storeName, embeddingProvider.Name, embeddingProviderObj, modelProvider.Name, text, knowledgeCount)
 	if err != nil {
 		if err.Error() == "no knowledge vectors found" {
 			return nil, nil, embeddingResult, err

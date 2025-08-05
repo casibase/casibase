@@ -30,6 +30,7 @@ export function getNode(owner, name) {
 
 export function updateNode(owner, name, node) {
   const newNode = Setting.deepCopy(node);
+  newNode.remotePort = parseInt(newNode.remotePort, 10);
   return fetch(`${Setting.ServerUrl}/api/update-node?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",

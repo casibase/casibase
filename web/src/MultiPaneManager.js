@@ -19,6 +19,7 @@ import moment from "moment";
 import ChatBox from "./ChatBox";
 import {renderReason, renderText} from "./ChatMessageRender";
 import * as Setting from "./Setting";
+import * as Conf from "./Conf";
 import * as ChatBackend from "./backend/ChatBackend";
 import * as MessageBackend from "./backend/MessageBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -89,6 +90,7 @@ const MultiPaneManager = ({
       userAgent: account.education,
       messageCount: 0,
       needTitle: true,
+      modelProvider: baseChat?.modelProvider || selectStore?.modelProvider || null,
     };
   }, [account]);
 
@@ -153,6 +155,9 @@ const MultiPaneManager = ({
         }
 
         lastMessage2.text = parsedResult.finalAnswer;
+        if (reasonText) {
+          lastMessage2.reasonText = reasonText;
+        }
         messages[messages.length - 1] = lastMessage2;
         messages.forEach(msg => msg.html = renderText(msg.text));
 
@@ -191,6 +196,10 @@ const MultiPaneManager = ({
         const finalMessage = Setting.deepCopy(lastMessage);
         finalMessage.text = text;
         finalMessage.isReasoningPhase = false;
+
+        if (reasonText) {
+          finalMessage.reasonText = reasonText;
+        }
 
         const parsedResult = messageCarrier.parseAnswerWithCarriers(text);
         if (parsedResult.title) {
@@ -231,7 +240,6 @@ const MultiPaneManager = ({
         store: originalStore,
         chat: null,
         messages: null,
-        provider: originalStore?.modelProvider || null,
       };
 
       // Keep existing pane data if not a new chat
@@ -248,7 +256,7 @@ const MultiPaneManager = ({
         paneData.chat = panes[i].chat;
       } else {
         // Create new chat for additional panes
-        const chat = createNewChat(initialChat, {name: originalStore?.name});
+        const chat = createNewChat(initialChat, {name: originalStore?.name, modelProvider: originalStore?.modelProvider});
         paneData.chat = chat;
         chatsToAdd.push(chat);
       }
@@ -299,11 +307,21 @@ const MultiPaneManager = ({
     }
   }, [panes, onChatUpdate]);
 
-  const updatePaneProvider = useCallback((paneIndex, provider) => {
-    setPanes(prev => prev.map((pane, i) =>
-      i === paneIndex ? {...pane, provider} : pane
-    ));
-  }, []);
+  const updatePaneProvider = useCallback((paneIndex, providerName) => {
+    const currentChat = panes[paneIndex]?.chat;
+    if (currentChat && currentChat.modelProvider !== providerName) {
+      const updatedChat = {...currentChat, modelProvider: providerName};
+      setPanes(prev => prev.map((pane, i) =>
+        i === paneIndex ? {...pane, chat: updatedChat} : pane
+      ));
+
+      if (paneIndex === 0) {onChatUpdate?.(updatedChat);}
+
+      ChatBackend.updateChat(updatedChat.owner, updatedChat.name, updatedChat).catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
+      });
+    }
+  }, [panes, onChatUpdate]);
 
   const sendMessage = useCallback((paneIndex, text, fileName, isHidden, isRegenerated) => {
     const chat = panes[paneIndex]?.chat;
@@ -315,6 +333,7 @@ const MultiPaneManager = ({
       createdTime: moment().format(),
       organization: account.owner,
       user: account.name,
+      store: chat.store,
       chat: chat.name,
       replyTo: "",
       author: account.name,
@@ -359,7 +378,6 @@ const MultiPaneManager = ({
     <div style={{padding: "8px 12px", borderBottom: "1px solid #f0f0f0", backgroundColor: "#fafafa", fontSize: "12px", display: "flex", gap: "12px", alignItems: "center", justifyContent: "space-between"}}>
       <div style={{display: "flex", gap: "12px", alignItems: "center"}}>
         <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
-          <span>Store:</span>
           <Select size="small" style={{minWidth: "100px"}} value={panes[index]?.store?.name || availableStores[0]?.name || ""} onChange={(value) => updatePaneStore(index, availableStores.find(s => s.name === value))} placeholder="Select store">
             {availableStores.map(store => (
               <Select.Option key={store.name} value={store.name}>{store.displayName || store.name}</Select.Option>
@@ -369,8 +387,7 @@ const MultiPaneManager = ({
 
         {modelProviders.length > 0 && (
           <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
-            <span>Model:</span>
-            <Select size="small" style={{minWidth: "120px"}} value={panes[index]?.provider || modelProviders[0]?.name || ""} onChange={(value) => updatePaneProvider(index, value)} placeholder="Select model" optionLabelProp="children">
+            <Select size="small" style={{minWidth: "120px"}} value={panes[index]?.chat?.modelProvider || panes[index]?.store?.modelProvider || modelProviders[0]?.name || ""} onChange={(value) => updatePaneProvider(index, value)} placeholder="Select model" optionLabelProp="children">
               {modelProviders.map(provider => (
                 <Select.Option key={provider.name} value={provider.name}>
                   <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
@@ -386,7 +403,7 @@ const MultiPaneManager = ({
 
       {index === 0 && canManagePanes && (
         <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-          <span style={{fontSize: "12px", color: "#666"}}>Panes: {paneCount}</span>
+          <span style={{fontSize: "12px", color: "#666"}}>{i18next.t("chat:Panes")}: {paneCount}</span>
           <Button size="small" icon={<PlusOutlined />} onClick={() => paneCount < 4 && onPaneCountChange?.(paneCount + 1)} />
           <Button size="small" icon={<MinusOutlined />} onClick={() => paneCount > 1 && onPaneCountChange?.(paneCount - 1)} disabled={paneCount <= 1} />
         </div>
@@ -408,7 +425,7 @@ const MultiPaneManager = ({
   );
 
   return (
-    <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative", display: "flex", flexDirection: "column"}}>
+    <div style={{flex: 1, height: "100%", position: "relative", display: "flex", flexDirection: "column"}}>
       <div style={{flex: 1, display: "grid", gridTemplateColumns: `repeat(${paneCount}, 1fr)`, gap: "2px", overflow: "hidden"}}>
         {Array.from({length: paneCount}, (_, index) => {
           const pane = panes[index] || {};
@@ -417,7 +434,7 @@ const MultiPaneManager = ({
               {paneCount > 1 && renderPaneHeader(index)}
 
               {(pane.messages?.length > 0) && (
-                <div style={{position: "absolute", top: paneCount > 1 ? 40 : -50, left: 0, right: 0, bottom: 0, backgroundImage: `url(${Setting.StaticBaseUrl}/img/casibase-logo_1200x256.png)`, backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundSize: "150px auto", backgroundBlendMode: "luminosity", filter: "grayscale(80%) brightness(140%) contrast(90%)", opacity: 0.3, pointerEvents: "none"}}></div>
+                <div style={{position: "absolute", top: paneCount > 1 ? 40 : -50, left: 0, right: 0, bottom: 0, backgroundImage: `url(${Conf.StaticBaseUrl}/img/casibase-logo_1200x256.png)`, backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundSize: "150px auto", backgroundBlendMode: "luminosity", filter: "grayscale(80%) brightness(140%) contrast(90%)", opacity: 0.3, pointerEvents: "none"}}></div>
               )}
 
               <div style={{flex: 1}}>

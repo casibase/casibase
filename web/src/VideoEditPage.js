@@ -17,17 +17,18 @@ import {Affix, Avatar, Button, Card, Col, Input, Row, Segmented, Select, Switch,
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import {CheckOutlined, EditOutlined, LinkOutlined, SyncOutlined} from "@ant-design/icons";
+import {CheckOutlined, DownloadOutlined, EditOutlined, LinkOutlined, SyncOutlined} from "@ant-design/icons";
 import Video from "./Video";
-import LabelTable from "./LabelTable";
+import LabelTable from "./table/LabelTable";
 import * as Papa from "papaparse";
 import VideoDataChart from "./VideoDataChart";
 import WordCloudChart from "./WordCloudChart";
 import ChatPage from "./ChatPage";
-import TagTable from "./TagTable";
+import TagTable from "./table/TagTable";
 import * as TaskBackend from "./backend/TaskBackend";
 import * as VideoConf from "./VideoConf";
-import RemarkTable from "./RemarkTable";
+import RemarkTable from "./table/RemarkTable";
+import * as Conf from "./Conf";
 
 const {TextArea} = Input;
 const {Option} = Select;
@@ -712,6 +713,20 @@ class VideoEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        {
+          this.requireAdmin() ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Download"), i18next.t("general:Download"))} :
+              </Col>
+              <Col span={5} >
+                <a target="_blank" rel="noreferrer" href={this.state.video.downloadUrl}>
+                  <Button icon={<DownloadOutlined />} style={{marginRight: "10px"}} type="primary">{i18next.t("general:Download")}</Button>
+                </a>
+              </Col>
+            </Row>
+          )
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("video:Cover"), i18next.t("video:Cover - Tooltip"))} :
@@ -746,7 +761,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={`${Setting.StaticBaseUrl}/img/email_mailtrap.png`} />
+                      <Avatar src={`${Conf.StaticBaseUrl}/img/email_mailtrap.png`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>Labeling</span>
                     </div>
@@ -756,7 +771,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={`${Setting.StaticBaseUrl}/img/social_slack.png`} />
+                      <Avatar src={`${Conf.StaticBaseUrl}/img/social_slack.png`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>Text Recognition</span>
                     </div>
@@ -767,7 +782,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={`${Setting.StaticBaseUrl}/img/social_yandex.png`} />
+                      <Avatar src={`${Conf.StaticBaseUrl}/img/social_yandex.png`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>Text Tagging</span>
                     </div>
@@ -778,7 +793,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={`${Setting.StaticBaseUrl}/img/social_cloudflare.png`} />
+                      <Avatar src={`${Conf.StaticBaseUrl}/img/social_cloudflare.png`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>Word Cloud</span>
                     </div>
@@ -789,7 +804,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={`${Setting.StaticBaseUrl}/img/social_openai.svg`} />
+                      <Avatar src={`${Conf.StaticBaseUrl}/img/social_openai.svg`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>AI Assistant</span>
                     </div>

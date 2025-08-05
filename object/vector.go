@@ -61,9 +61,9 @@ func GetVectors(owner string) ([]*Vector, error) {
 	return vectors, nil
 }
 
-func getVectorsByProvider(provider string) ([]*Vector, error) {
+func getVectorsByProvider(storeName string, provider string) ([]*Vector, error) {
 	vectors := []*Vector{}
-	err := adapter.engine.Find(&vectors, &Vector{Provider: provider})
+	err := adapter.engine.Find(&vectors, &Vector{Store: storeName, Provider: provider})
 	if err != nil {
 		return vectors, err
 	}
@@ -162,13 +162,13 @@ func (vector *Vector) GetId() string {
 }
 
 func GetVectorCount(owner string, field string, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Vector{})
 }
 
 func GetPaginationVectors(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Vector, error) {
 	vectors := []*Vector{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&vectors)
 	if err != nil {
 		return vectors, err

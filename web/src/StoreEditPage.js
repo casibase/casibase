@@ -21,7 +21,8 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import FileTree from "./FileTree";
 import {ThemeDefault} from "./Conf";
-import PromptTable from "./PromptTable";
+import PromptTable from "./table/PromptTable";
+import StoreAvatarUploader from "./AvatarUpload";
 
 const {Option} = Select;
 const {TextArea} = Input;
@@ -188,9 +189,15 @@ class StoreEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Avatar"), i18next.t("general:Avatar - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.store.avatar} onChange={e => {
-              this.updateStoreField("avatar", e.target.value);
-            }} />
+            <StoreAvatarUploader
+              store={this.state.store}
+              onUpdate={(newUrl) => {
+                this.updateStoreField("avatar", newUrl);
+              }}
+              onUploadComplete={(newUrl) => {
+                this.submitStoreEdit(false, undefined);
+              }}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -212,8 +219,8 @@ class StoreEditPage extends React.Component {
               this.updateStoreField("state", value);
             }}
             options={[
-              {value: "Active", label: "Active"},
-              {value: "Inactive", label: "Inactive"},
+              {value: "Active", label: i18next.t("general:Active")},
+              {value: "Inactive", label: i18next.t("general:Inactive")},
             ].map(item => Setting.getOption(item.label, item.value))} />
           </Col>
         </Row>
@@ -267,6 +274,16 @@ class StoreEditPage extends React.Component {
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.splitProvider} onChange={(value => {this.updateStoreField("splitProvider", value);})}
               options={[{name: "Default"}, {name: "Basic"}, {name: "QA"}, {name: "Markdown"}].map((provider) => Setting.getOption(provider.name, provider.name))
+              } />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("store:Search provider"), i18next.t("store:Search provider - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.store.searchProvider} onChange={(value => {this.updateStoreField("searchProvider", value);})}
+              options={[{name: "Default"}, {name: "Hierarchy"}].map((provider) => Setting.getOption(provider.name, provider.name))
               } />
           </Col>
         </Row>

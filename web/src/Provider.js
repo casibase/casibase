@@ -17,11 +17,11 @@ import {Tooltip} from "antd";
 import * as Setting from "./Setting";
 
 export function getProviderUrl(provider) {
-  if (!Setting.OtherProviderInfo[provider.category]) {
+  if (!Setting.getOtherProviderInfo()[provider.category]) {
     return "";
   }
 
-  const info = Setting.OtherProviderInfo[provider.category][provider.type];
+  const info = Setting.getOtherProviderInfo()[provider.category][provider.type];
   // avoid crash when provider is not found
   if (info) {
     return info.url;

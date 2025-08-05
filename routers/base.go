@@ -15,8 +15,11 @@
 package routers
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/beego/beego/context"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -65,6 +68,42 @@ func requestDeny(ctx *context.Context) {
 	}
 }
 
+func responseError(ctx *context.Context, error string, data ...interface{}) {
+	// ctx.ResponseWriter.WriteHeader(http.StatusForbidden)
+
+	resp := Response{Status: "error", Msg: error}
+	switch len(data) {
+	case 2:
+		resp.Data2 = data[1]
+		fallthrough
+	case 1:
+		resp.Data = data[0]
+	}
+
+	err := ctx.Output.JSON(resp, true, false)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func setSessionUser(ctx *context.Context, userId string) {
+	owner, name := util.GetOwnerAndNameFromId(userId)
+	claims := casdoorsdk.Claims{
+		User: casdoorsdk.User{
+			Owner:   owner,
+			Name:    name,
+			IsAdmin: true,
+		},
+	}
+	err := ctx.Input.CruSession.Set("user", claims)
+	if err != nil {
+		panic(err)
+	}
+
+	// https://github.com/beego/beego/issues/3445#issuecomment-455411915
+	ctx.Input.CruSession.SessionRelease(ctx.ResponseWriter)
+}
+
 func getUsernameByClientIdSecret(ctx *context.Context) (string, error) {
 	clientId, clientSecret, ok := ctx.Request.BasicAuth()
 	if !ok {
@@ -81,5 +120,38 @@ func getUsernameByClientIdSecret(ctx *context.Context) (string, error) {
 		return "", fmt.Errorf("Incorrect client secret for application: %s", applicationName)
 	}
 
-	return fmt.Sprintf("app/%s", applicationName), nil
+	return util.GetIdFromOwnerAndName("app", applicationName), nil
+}
+
+func getUsernameByAccessToken(accessTokenInput string) (string, error) {
+	applicationName := conf.GetConfigString("casdoorApplication")
+	clientSecret := conf.GetConfigString("clientSecret")
+	clientId := conf.GetConfigString("clientId")
+	accessToken := getMd5HexDigest(clientId + ":" + clientSecret)
+	if accessTokenInput != accessToken {
+		return "", fmt.Errorf("Incorrect access token for application: %s", applicationName)
+	}
+
+	return util.GetIdFromOwnerAndName("app", applicationName), nil
+}
+
+func parseBearerToken(ctx *context.Context) string {
+	header := ctx.Request.Header.Get("Authorization")
+	tokens := strings.Split(header, " ")
+	if len(tokens) != 2 {
+		return ""
+	}
+
+	prefix := tokens[0]
+	if prefix != "Bearer" {
+		return ""
+	}
+
+	return tokens[1]
+}
+
+func getMd5HexDigest(s string) string {
+	hash := md5.Sum([]byte(s))
+	res := hex.EncodeToString(hash[:])
+	return res
 }

@@ -35,7 +35,7 @@ type Pod struct {
 }
 
 func GetPodCount(owner, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Pod{})
 }
 
@@ -50,7 +50,7 @@ func GetPods(owner string) ([]*Pod, error) {
 
 func GetPaginationPods(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Pod, error) {
 	pods := []*Pod{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&pods)
 	if err != nil {
 		return pods, err

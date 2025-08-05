@@ -20,6 +20,7 @@ export let UsageEndpoints = [];
 export let IframeUrl = "";
 export let ForceLanguage = "";
 export let DefaultLanguage = "";
+export let StaticBaseUrl = "";
 export let HtmlTitle = "";
 export let FaviconUrl = "";
 export let LogoUrl = "";
@@ -48,6 +49,7 @@ export function setConfig(config) {
   if (config.iframeUrl !== undefined) {IframeUrl = config.iframeUrl;}
   if (config.forceLanguage !== undefined) {ForceLanguage = config.forceLanguage;}
   if (config.defaultLanguage !== undefined) {DefaultLanguage = config.defaultLanguage;}
+  if (config.staticBaseUrl !== undefined) {StaticBaseUrl = config.staticBaseUrl;}
   if (config.htmlTitle !== undefined) {HtmlTitle = config.htmlTitle;}
   if (config.faviconUrl !== undefined) {FaviconUrl = config.faviconUrl;}
   if (config.logoUrl !== undefined) {LogoUrl = config.logoUrl;}

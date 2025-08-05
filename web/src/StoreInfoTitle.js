@@ -18,11 +18,10 @@ import {MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as ChatBackend from "./backend/ChatBackend";
-import * as StoreBackend from "./backend/StoreBackend";
 import i18next from "i18next";
 
 const StoreInfoTitle = (props) => {
-  const {chat, stores, onChatUpdated, onStoreUpdated, autoRead, onUpdateAutoRead, account, paneCount = 1, onPaneCountChange, showPaneControls = false} = props;
+  const {chat, stores, onChatUpdated, onStoreChange, autoRead, onUpdateAutoRead, account, paneCount = 1, onPaneCountChange, showPaneControls = false} = props;
 
   const [modelProviders, setModelProviders] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
@@ -97,10 +96,11 @@ const StoreInfoTitle = (props) => {
     if (storeInfo) {
       setSelectedStore(storeInfo);
       storeRef.current = storeInfo;
-      setSelectedProvider(storeInfo.modelProvider);
-      providerRef.current = storeInfo.modelProvider;
+      const provider = chat?.modelProvider || storeInfo.modelProvider;
+      setSelectedProvider(provider);
+      providerRef.current = provider;
     }
-  }, [storeInfo]);
+  }, [storeInfo, chat]);
 
   // Get model providers when component mounts
   useEffect(() => {
@@ -125,7 +125,6 @@ const StoreInfoTitle = (props) => {
 
     setIsUpdating(true);
     try {
-      let updatedStore = {...storeRef.current};
       const updatedChat = {...chatRef.current};
       let storeChanged = false;
       let providerChanged = false;
@@ -134,64 +133,33 @@ const StoreInfoTitle = (props) => {
       if (newStore && newStore.name !== updatedChat.store) {
         updatedChat.store = newStore.name;
         storeChanged = true;
-
-        // If store changes, also get its provider
-        if (newStore.modelProvider && newStore.modelProvider !== providerRef.current) {
-          updatedStore = newStore;
-          providerChanged = true;
-        }
       }
 
-      // Update provider if needed
-      if (newProvider && (!storeChanged || newProvider !== updatedStore.modelProvider)) {
-        updatedStore.modelProvider = newProvider;
+      // Update provider in chat (not in store!)
+      if (newProvider !== undefined && newProvider !== updatedChat.modelProvider) {
+        updatedChat.modelProvider = newProvider;
         providerChanged = true;
       }
 
       // Save changes to the backend
       if (storeChanged || providerChanged) {
-        let storePromise = Promise.resolve();
-        let chatPromise = Promise.resolve();
+        const chatRes = await ChatBackend.updateChat(updatedChat.owner, updatedChat.name, updatedChat);
 
-        // Update the store if needed
-        if (providerChanged) {
-          storePromise = StoreBackend.updateStore(updatedStore.owner, updatedStore.name, updatedStore);
-        }
-
-        // Update the chat if needed
-        if (storeChanged) {
-          chatPromise = ChatBackend.updateChat(updatedChat.owner, updatedChat.name, updatedChat);
-        }
-
-        // Wait for both updates to complete
-        const [storeRes, chatRes] = await Promise.all([
-          storePromise,
-          chatPromise,
-        ]);
-
-        // Handle responses
-        if ((providerChanged && storeRes.status !== "ok") ||
-            (storeChanged && chatRes.status !== "ok")) {
+        if (chatRes.status !== "ok") {
           throw new Error("Failed to update settings");
         }
 
         // Update was successful
-        if (providerChanged) {
-          if (onStoreUpdated) {
-            onStoreUpdated(updatedStore);
-          }
-        }
-
-        if (storeChanged) {
-          if (onChatUpdated) {
-            onChatUpdated(updatedChat);
-          }
+        if (onChatUpdated) {
+          onChatUpdated(updatedChat);
         }
 
         // Update local refs
-        storeRef.current = updatedStore;
-        providerRef.current = updatedStore.modelProvider;
         chatRef.current = updatedChat;
+        if (newProvider !== undefined) {
+          providerRef.current = newProvider;
+          setSelectedProvider(newProvider); // Sync UI state after successful update
+        }
       }
     } catch (error) {
       Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error.message}`);
@@ -212,12 +180,19 @@ const StoreInfoTitle = (props) => {
       setSelectedStore(newStore);
 
       // Also update the provider if the new store has one
-      if (newStore.modelProvider) {
+      if (!chat.modelProvider && newStore.modelProvider) {
         setSelectedProvider(newStore.modelProvider);
       }
 
       // Trigger the combined update
       updateStoreAndChat(newStore, newStore.modelProvider);
+
+      if (onStoreChange) {
+        const updatedChat = onStoreChange(newStore);
+        if (updatedChat) {
+          chatRef.current = updatedChat;
+        }
+      }
     }
   };
 
@@ -225,8 +200,6 @@ const StoreInfoTitle = (props) => {
     // Find the provider object
     const newProvider = modelProviders.find(provider => provider.name === value);
     if (newProvider && storeInfo) {
-      // Update local state immediately for UI responsiveness
-      setSelectedProvider(newProvider.name);
 
       // Trigger the combined update
       updateStoreAndChat(null, newProvider.name);
@@ -283,7 +256,7 @@ const StoreInfoTitle = (props) => {
         {modelProviders.length > 0 && (
           <div>
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Model")}:</span>}
-            <Select value={selectedProvider || storeInfo?.modelProvider || (modelProviders[0]?.name)} style={{width: isMobile ? "35vw" : "15rem"}} onChange={handleProviderChange} disabled={isUpdating} popupMatchSelectWidth={false} optionLabelProp="children" suffixIcon={<div />}>
+            <Select value={selectedProvider || chat?.modelProvider || storeInfo?.modelProvider || (modelProviders[0]?.name)} style={{width: isMobile ? "35vw" : "15rem"}} onChange={handleProviderChange} disabled={isUpdating} popupMatchSelectWidth={false} optionLabelProp="children" suffixIcon={<div />}>
               {modelProviders.map(provider => {
                 const displayName = provider.displayName || provider.name;
                 return (
@@ -318,7 +291,7 @@ const StoreInfoTitle = (props) => {
 
         {showPaneControls && canManagePanes && (
           <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-            <span style={{fontSize: "12px", color: "#666"}}>Panes: {paneCount}</span>
+            <span style={{fontSize: "12px", color: "#666", marginLeft: "20px", marginRight: "10px"}}>{i18next.t("chat:Panes")}: {paneCount}</span>
             <Button size="small" icon={<PlusOutlined />} onClick={addPane} />
             <Button size="small" icon={<MinusOutlined />} onClick={deletePane} disabled={paneCount <= 1} />
           </div>

@@ -23,10 +23,19 @@ import moment from "moment";
 import i18next from "i18next";
 import * as Conf from "./Conf";
 import {DeleteOutlined} from "@ant-design/icons";
+import VectorTooltip from "./VectorTooltip";
 
 class MessageListPage extends BaseListPage {
   constructor(props) {
     super(props);
+  }
+
+  getStore() {
+    if (this.props.match) {
+      return this.props.match.params.storeName;
+    } else {
+      return undefined;
+    }
   }
 
   newMessage() {
@@ -290,11 +299,13 @@ class MessageListPage extends BaseListPage {
         render: (text, record, index) => {
           return record.vectorScores?.map(vectorScore => {
             return (
-              <a key={vectorScore.vector} target="_blank" rel="noreferrer" href={`/vectors/${vectorScore.vector}`}>
-                <Tag style={{marginTop: "5px"}} color={"processing"}>
-                  {vectorScore.score}
-                </Tag>
-              </a>
+              <VectorTooltip key={vectorScore.vector} vectorScore={vectorScore}>
+                <a target="_blank" rel="noreferrer" href={`/vectors/${vectorScore.vector}`}>
+                  <Tag style={{marginTop: "5px"}} color={"processing"}>
+                    {vectorScore.score}
+                  </Tag>
+                </a>
+              </VectorTooltip>
             );
           });
         },
@@ -481,8 +492,9 @@ class MessageListPage extends BaseListPage {
       field = "type";
       value = params.type;
     }
+    const store = this.getStore();
     this.setState({loading: true});
-    MessageBackend.getGlobalMessages(params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    MessageBackend.getGlobalMessages(params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder, store)
       .then((res) => {
         this.setState({
           loading: false,

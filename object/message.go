@@ -42,6 +42,7 @@ type Message struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
 	Organization      string        `xorm:"varchar(100)" json:"organization"`
+	Store             string        `xorm:"varchar(100)" json:"store"`
 	User              string        `xorm:"varchar(100) index" json:"user"`
 	Chat              string        `xorm:"varchar(100) index" json:"chat"`
 	ReplyTo           string        `xorm:"varchar(100) index" json:"replyTo"`
@@ -333,21 +334,29 @@ func (w *MyWriter) Write(p []byte) (n int, err error) {
 	if strings.HasPrefix(s, "event: message\ndata: ") && strings.HasSuffix(s, "\n\n") {
 		data := strings.TrimSuffix(strings.TrimPrefix(s, "event: message\ndata: "), "\n\n")
 		return w.Buffer.WriteString(data)
+	} else if strings.HasPrefix(s, "event: reason\ndata: ") && strings.HasSuffix(s, "\n\n") {
+		return w.Buffer.WriteString("")
 	}
 	return w.Buffer.Write(p)
 }
 
 func GetAnswer(provider string, question string) (string, *model.ModelResult, error) {
+	history := []*model.RawMessage{}
+	knowledge := []*model.RawMessage{}
+	return GetAnswerWithContext(provider, question, history, knowledge, "")
+}
+
+func GetAnswerWithContext(provider string, question string, history []*model.RawMessage, knowledge []*model.RawMessage, prompt string) (string, *model.ModelResult, error) {
 	_, modelProviderObj, err := GetModelProviderFromContext("admin", provider)
 	if err != nil {
 		return "", nil, err
 	}
 
-	history := []*model.RawMessage{}
-	knowledge := []*model.RawMessage{}
+	if prompt == "" {
+		prompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems."
+	}
 	var writer MyWriter
-
-	modelResult, err := modelProviderObj.QueryText(question, &writer, history, "", knowledge, nil)
+	modelResult, err := modelProviderObj.QueryText(question, &writer, history, prompt, knowledge, nil)
 	if err != nil {
 		return "", nil, err
 	}
@@ -357,14 +366,20 @@ func GetAnswer(provider string, question string) (string, *model.ModelResult, er
 	return res, modelResult, nil
 }
 
-func GetMessageCount(owner string, field string, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+func GetMessageCount(owner string, field string, value string, store string) (int64, error) {
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
+	if store != "" {
+		session = session.And("store = ?", store)
+	}
 	return session.Count(&Message{})
 }
 
-func GetPaginationMessage(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Message, error) {
+func GetPaginationMessages(owner string, offset, limit int, field, value, sortField, sortOrder, store string) ([]*Message, error) {
 	messages := []*Message{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
+	if store != "" {
+		session = session.And("store = ?", store)
+	}
 	err := session.Find(&messages)
 	if err != nil {
 		return messages, err

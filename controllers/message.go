@@ -37,6 +37,7 @@ func (c *ApiController) GetGlobalMessages() {
 	value := c.Input().Get("value")
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
+	store := c.Input().Get("store")
 
 	if limit == "" || page == "" {
 		messages, err := object.GetGlobalMessages()
@@ -47,13 +48,13 @@ func (c *ApiController) GetGlobalMessages() {
 		c.ResponseOk(messages)
 	} else {
 		limit := util.ParseInt(limit)
-		count, err := object.GetMessageCount(owner, field, value)
+		count, err := object.GetMessageCount(owner, field, value, store)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		messages, err := object.GetPaginationMessage(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		messages, err := object.GetPaginationMessages(owner, paginator.Offset(), limit, field, value, sortField, sortOrder, store)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -146,6 +147,11 @@ func (c *ApiController) UpdateMessage() {
 		return
 	}
 
+	ok := c.IsCurrentUser(message.User)
+	if !ok {
+		return
+	}
+
 	if message.NeedNotify {
 		err = message.SendEmail()
 		if err != nil {
@@ -177,6 +183,11 @@ func (c *ApiController) AddMessage() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	ok := c.IsCurrentUser(message.User)
+	if !ok {
 		return
 	}
 
@@ -246,7 +257,7 @@ func (c *ApiController) AddMessage() {
 	}
 	var chat *object.Chat
 	if message.Chat == "" {
-		chat, err = c.addInitialChat(message.Organization, message.User)
+		chat, err = c.addInitialChat(message.Organization, message.User, message.Store)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -298,17 +309,19 @@ func (c *ApiController) AddMessage() {
 		}
 		if chat != nil && chat.Type == "AI" {
 			answerMessage := &object.Message{
-				Owner:        message.Owner,
-				Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
-				CreatedTime:  util.GetCurrentTimeEx(message.CreatedTime),
-				Organization: message.Organization,
-				User:         message.User,
-				Chat:         message.Chat,
-				ReplyTo:      message.Name,
-				Author:       "AI",
-				Text:         "",
-				FileName:     message.FileName,
-				VectorScores: []object.VectorScore{},
+				Owner:         message.Owner,
+				Name:          fmt.Sprintf("message_%s", util.GetRandomName()),
+				CreatedTime:   util.GetCurrentTimeEx(message.CreatedTime),
+				Organization:  message.Organization,
+				Store:         chat.Store,
+				User:          message.User,
+				Chat:          message.Chat,
+				ReplyTo:       message.Name,
+				Author:        "AI",
+				Text:          "",
+				FileName:      message.FileName,
+				VectorScores:  []object.VectorScore{},
+				ModelProvider: message.ModelProvider,
 			}
 			_, err = object.AddMessage(answerMessage)
 			if err != nil {
@@ -329,11 +342,6 @@ func (c *ApiController) AddMessage() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /delete-message [post]
 func (c *ApiController) DeleteMessage() {
-	ok := c.RequireAdmin()
-	if !ok {
-		return
-	}
-
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
 	if err != nil {

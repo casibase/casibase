@@ -1,6 +1,7 @@
 import React from "react";
 import {Col, Input, Row, Switch, Table} from "antd";
 import i18next from "i18next";
+
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css";

@@ -46,6 +46,10 @@ func (c *ApiController) GetGlobalStores() {
 
 		c.ResponseOk(stores)
 	} else {
+		if !c.RequireAdmin() {
+			return
+		}
+
 		limit := util.ParseInt(limit)
 		count, err := object.GetStoreCount(field, value)
 		if err != nil {
@@ -63,6 +67,12 @@ func (c *ApiController) GetGlobalStores() {
 		sort.SliceStable(stores, func(i, j int) bool {
 			return stores[i].IsDefault && !stores[j].IsDefault
 		})
+
+		err = object.PopulateStoreCounts(stores)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
 
 		c.ResponseOk(stores, paginator.Nums())
 	}

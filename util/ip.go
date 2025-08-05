@@ -24,7 +24,7 @@ import (
 	"github.com/beego/beego"
 )
 
-var IsMaxmindIpDb bool
+var isLocalIpDb bool
 
 // tryInitLocalDb tries to initialize the local IP database from different paths
 func tryInitLocalDb() error {
@@ -38,9 +38,8 @@ func tryInitLocalDb() error {
 
 // InitIpDb initializes the IP database based on configuration
 func InitIpDb() {
-	IsMaxmindIpDb = beego.AppConfig.DefaultBool("isLocalIpDb", false)
-
-	if IsMaxmindIpDb {
+	isLocalIpDb = beego.AppConfig.DefaultBool("isLocalIpDb", false)
+	if isLocalIpDb {
 		// Use local IP database
 		err := tryInitLocalDb()
 		if err != nil {
@@ -60,17 +59,28 @@ func InitIpDb() {
 	}
 }
 
-// GetDescFromIP returns a string description of an IP address
-func GetDescFromIP(ip string) string {
+func GetInfoFromIP(ip string) (*LocationInfo, error) {
+	if !IsInternetIp(ip) {
+		return &LocationInfo{}, nil
+	}
+
 	var info *LocationInfo
 	var err error
-
-	if IsMaxmindIpDb {
+	if isLocalIpDb {
 		info, err = Find(ip)
 	} else {
 		info, err = FindMaxmind(ip)
 	}
+	if err != nil {
+		return nil, err
+	}
 
+	return info, nil
+}
+
+// GetDescFromIP returns a string description of an IP address
+func GetDescFromIP(ip string) string {
+	info, err := GetInfoFromIP(ip)
 	if err != nil {
 		return ""
 	}

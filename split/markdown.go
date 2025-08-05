@@ -15,6 +15,7 @@
 package split
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 )
@@ -23,6 +24,75 @@ type MarkdownSplitProvider struct{}
 
 func NewMarkdownSplitProvider() (*MarkdownSplitProvider, error) {
 	return &MarkdownSplitProvider{}, nil
+}
+
+func ExtractMarkdownTree(markdownText string) map[string]string {
+	numberedHeadingPattern := regexp.MustCompile(`^(\d+(\.\d+)*\.)\s+(.+)$`)
+	hashHeadingPattern := regexp.MustCompile(`^(#{1,6})\s+(.+)$`)
+
+	lines := strings.Split(markdownText, "\n")
+	result := make(map[string]string)
+
+	var currentKey string
+	var currentContent []string
+	var path []string
+
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+
+		var isHeading bool
+		var level int
+		var title string
+
+		if m := hashHeadingPattern.FindStringSubmatch(line); m != nil {
+			title = fmt.Sprintf("%s %s", m[1], m[2])
+			level = len(m[1])
+			isHeading = true
+		} else if m := numberedHeadingPattern.FindStringSubmatch(line); m != nil {
+			title = fmt.Sprintf("%s %s", m[1], m[3])
+			level = strings.Count(m[1], ".")
+			isHeading = true
+		}
+
+		if isHeading {
+			if currentKey != "" {
+				result[currentKey] = strings.TrimSpace(strings.Join(currentContent, "\n"))
+			} else {
+				result["root"] = strings.TrimSpace(strings.Join(currentContent, "\n"))
+			}
+
+			// update path by level
+			if level == len(path)+1 {
+				// normal level up
+				path = append(path, title)
+			} else if level == len(path) {
+				// same level, replace the last layer
+				path[len(path)-1] = title
+			} else if level < len(path) {
+				// return to parent level
+				path = path[:level-1]
+				path = append(path, title)
+			} else {
+				path = append(path, title)
+			}
+
+			currentKey = strings.Join(path, " > ")
+			currentContent = []string{}
+		} else {
+			currentContent = append(currentContent, line)
+		}
+	}
+
+	if currentKey != "" {
+		result[currentKey] = strings.TrimSpace(strings.Join(currentContent, "\n"))
+	} else {
+		result["root"] = strings.TrimSpace(strings.Join(currentContent, "\n"))
+	}
+
+	return result
 }
 
 func ExtractTablesAndRemainder(markdownText string) (string, []string, error) {
@@ -53,26 +123,54 @@ func ExtractTablesAndRemainder(markdownText string) (string, []string, error) {
 	return remainder, tables, nil
 }
 
+func ExtractTablesWithContext(markdownText string, contextKey string) (string, []string, error) {
+	remainder, tables, err := ExtractTablesAndRemainder(markdownText)
+	if err != nil {
+		return "", nil, err
+	}
+
+	tablesWithContext := make([]string, len(tables))
+	for i, table := range tables {
+		tablesWithContext[i] = contextKey + "\n\n" + table
+	}
+
+	return remainder, tablesWithContext, nil
+}
+
 func (p *MarkdownSplitProvider) SplitText(text string) ([]string, error) {
-	sections := []string{}
+	headingsMap := ExtractMarkdownTree(text)
 
-	remainder, tables, err := ExtractTablesAndRemainder(text)
-	if err != nil {
-		return nil, err
-	}
+	var sections []string
 
-	textSplitter, err := NewDefaultSplitProvider("markdown")
-	if err != nil {
-		return nil, err
-	}
+	for key, content := range headingsMap {
+		remainder, tables, err := ExtractTablesWithContext(content, key)
+		if err != nil {
+			return nil, err
+		}
 
-	sections, err = textSplitter.SplitText(remainder)
-	if err != nil {
-		return nil, err
-	}
+		// add tables to sections
+		for _, table := range tables {
+			sections = append(sections, strings.TrimSpace(table))
+		}
 
-	for _, table := range tables {
-		sections = append(sections, strings.TrimSpace(table))
+		// add text to sections
+		if strings.TrimSpace(remainder) != "" {
+			textSplitter, err := NewDefaultSplitProvider("markdown")
+			if err != nil {
+				return nil, err
+			}
+
+			textSections, err := textSplitter.SplitText(remainder)
+			if err != nil {
+				return nil, err
+			}
+
+			for _, section := range textSections {
+				if strings.TrimSpace(section) != "" {
+					sections = append(sections, key+"\n\n"+strings.TrimSpace(section))
+				}
+			}
+		}
 	}
 
 	return sections, nil

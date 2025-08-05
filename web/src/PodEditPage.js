@@ -137,7 +137,7 @@ class PodEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("pod:Pod IP"), i18next.t("pod:Pod IP - Tooltip"))} :
+            {Setting.getLabel(i18next.t("machine:Private IP"), i18next.t("machine:Private IP - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.pod.podIP} onChange={e => {
@@ -147,7 +147,7 @@ class PodEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("pod:Labels"), i18next.t("pod:Labels - Tooltip"))} :
+            {Setting.getLabel(i18next.t("task:Labels"), i18next.t("task:Labels - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.pod.labels} onChange={e => {
@@ -191,7 +191,7 @@ class PodEditPage extends React.Component {
               this.props.history.push(`/pods/${this.state.pod.owner}/${encodeURIComponent(this.state.pod.name)}`);
             }
           } else {
-            Setting.showMessage("error", i18next.t("general:Failed to save: server side failure"));
+            Setting.showMessage("error", i18next.t("general:Failed to save"));
             this.updatePodField("name", this.state.podName);
           }
         } else {

@@ -37,6 +37,8 @@ func main() {
 	util.InitIpDb()
 	util.InitParser()
 	object.InitCleanupChats()
+	object.InitStoreCount()
+	object.InitCommitRecordsTask()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},
@@ -48,6 +50,7 @@ func main() {
 
 	beego.SetStaticPath("/swagger", "swagger")
 	beego.InsertFilter("*", beego.BeforeRouter, routers.StaticFilter)
+	beego.InsertFilter("*", beego.BeforeRouter, routers.AutoSigninFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.AuthzFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.PrometheusFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.RecordMessage)

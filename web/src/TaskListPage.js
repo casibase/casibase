@@ -15,13 +15,13 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Table, Tag, Tooltip} from "antd";
+import {DeleteOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as TaskBackend from "./backend/TaskBackend";
 import i18next from "i18next";
 import * as ConfTask from "./ConfTask";
-import {DeleteOutlined} from "@ant-design/icons";
 
 class TaskListPage extends BaseListPage {
   constructor(props) {

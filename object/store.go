@@ -62,6 +62,7 @@ type Store struct {
 	StorageSubpath       string `xorm:"varchar(100)" json:"storageSubpath"`
 	ImageProvider        string `xorm:"varchar(100)" json:"imageProvider"`
 	SplitProvider        string `xorm:"varchar(100)" json:"splitProvider"`
+	SearchProvider       string `xorm:"varchar(100)" json:"searchProvider"`
 	ModelProvider        string `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider    string `xorm:"varchar(100)" json:"embeddingProvider"`
 	TextToSpeechProvider string `xorm:"varchar(100)" json:"textToSpeechProvider"`
@@ -82,12 +83,15 @@ type Store struct {
 	ThemeColor          string   `xorm:"varchar(100)" json:"themeColor"`
 	Avatar              string   `xorm:"varchar(200)" json:"avatar"`
 	Title               string   `xorm:"varchar(100)" json:"title"`
-	ChildStores         []string `xorm:"varchar(200)" json:"childStores"`
-	ChildModelProviders []string `xorm:"varchar(200)" json:"childModelProviders"`
+	ChildStores         []string `xorm:"varchar(500)" json:"childStores"`
+	ChildModelProviders []string `xorm:"varchar(500)" json:"childModelProviders"`
 	ShowAutoRead        bool     `json:"showAutoRead"`
 	DisableFileUpload   bool     `json:"disableFileUpload"`
 	IsDefault           bool     `json:"isDefault"`
 	State               string   `xorm:"varchar(100)" json:"state"`
+
+	ChatCount    int `xorm:"-" json:"chatCount"`
+	MessageCount int `xorm:"-" json:"messageCount"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
@@ -298,12 +302,7 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 		return false, err
 	}
 
-	limit := 100000
-	if embeddingProvider.Type == "OpenAI" {
-		limit = 3
-	}
-
-	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, limit)
+	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType)
 	return ok, err
 }
 
@@ -324,13 +323,13 @@ func refreshVector(vector *Vector) (bool, error) {
 }
 
 func GetStoreCount(field, value string) (int64, error) {
-	session := GetSession("", -1, -1, field, value, "", "")
+	session := GetDbSession("", -1, -1, field, value, "", "")
 	return session.Count(&Store{})
 }
 
 func GetPaginationStores(offset, limit int, field, value, sortField, sortOrder string) ([]*Store, error) {
 	stores := []*Store{}
-	session := GetSession("", offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession("", offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&stores)
 	if err != nil {
 		return stores, err

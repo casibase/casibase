@@ -14,19 +14,23 @@
 
 import React from "react";
 import {AutoComplete, Button, Card, Col, Input, InputNumber, Row, Select, Slider, Switch} from "antd";
+import {LinkOutlined} from "@ant-design/icons";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import {LinkOutlined} from "@ant-design/icons";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-import McpToolsTable from "./McpToolsTable";
+import copy from "copy-to-clipboard";
+import FileSaver from "file-saver";
+import McpToolsTable from "./table/McpToolsTable";
 import ModelTestWidget from "./common/TestModelWidget";
 import TtsTestWidget from "./common/TestTtsWidget";
+
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/javascript/javascript");
 
 const {Option} = Select;
+const {TextArea} = Input;
 
 class ProviderEditPage extends React.Component {
   constructor(props) {
@@ -64,7 +68,7 @@ class ProviderEditPage extends React.Component {
       if (provider.type === "Tencent Cloud") {
         return Setting.getLabel(i18next.t("general:Secret ID"), i18next.t("general:Secret ID - Tooltip"));
       } else if (provider.type === "Baidu Cloud") {
-        return Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path - Tooltip"));
+        return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
       } else if (provider.type === "Azure") {
         return Setting.getLabel(i18next.t("provider:Deployment name"), i18next.t("provider:Deployment name - Tooltip"));
       } else if (provider.type === "MiniMax") {
@@ -72,20 +76,65 @@ class ProviderEditPage extends React.Component {
       }
     }
     if (provider.category === "Storage") {
-      return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
+      return Setting.getLabel(i18next.t("store:Storage subpath"), i18next.t("store:Storage subpath - Tooltip"));
     }
     return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID - Tooltip"));
   }
 
+  getNetworkLabel(provider) {
+    if (provider.category === "Blockchain") {
+      if (provider.type === "ChainMaker") {
+        return Setting.getLabel(i18next.t("general:Node address"), i18next.t("general:Node address - Tooltip"));
+      }
+    }
+    return Setting.getLabel(i18next.t("general:Network"), i18next.t("general:Network - Tooltip"));
+  }
+
+  getProviderUrlLabel(provider) {
+    if (["Model", "Blockchain"].includes(provider.category)) {
+      if (provider.type === "Volcano Engine") {
+        return Setting.getLabel(i18next.t("provider:Endpoint ID"), i18next.t("provider:Endpoint ID - Tooltip"));
+      } else if (provider.type === "ChainMaker") {
+        return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
+      }
+    }
+    return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
+  }
+
+  getRegionLabel(provider) {
+    if (provider.category === "Blockchain") {
+      if (provider.type === "ChainMaker") {
+        return Setting.getLabel(i18next.t("general:Org ID"), i18next.t("general:Org ID - Tooltip"));
+      }
+    }
+    return Setting.getLabel(i18next.t("general:Region"), i18next.t("general:Region - Tooltip"));
+  }
+
   getClientSecretLabel(provider) {
     if (["Storage", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(provider.category)) {
+      if (provider.type === "Baidu Cloud") {
+        return Setting.getLabel(i18next.t("general:Access secret"), i18next.t("general:Access secret - Tooltip"));
+      }
       return Setting.getLabel(i18next.t("general:Secret key"), i18next.t("general:Secret key - Tooltip"));
     } else if (provider.category === "Model") {
-      if (provider.type === "Tencent Cloud") {
+      if (provider.type === "Baidu Cloud" || provider.type === "Tencent Cloud") {
         return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
+      }
+    } else if (provider.category === "Blockchain") {
+      if (provider.type === "Ethereum") {
+        return Setting.getLabel(i18next.t("provider:Private key"), i18next.t("provider:Private key - Tooltip"));
       }
     }
     return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret - Tooltip"));
+  }
+
+  getContractNameLabel(provider) {
+    if (provider.category === "Blockchain") {
+      if (provider.type === "Ethereum") {
+        return Setting.getLabel(i18next.t("provider:Contract address"), i18next.t("provider:Contract address - Tooltip"));
+      }
+    }
+    return Setting.getLabel(i18next.t("provider:Contract name"), i18next.t("provider:Contract name - Tooltip"));
   }
 
   parseProviderField(key, value) {
@@ -121,6 +170,36 @@ class ProviderEditPage extends React.Component {
     this.setState({
       provider: provider,
     });
+  }
+
+  isTemperatureEnabled(provider) {
+    if (provider.category === "Model") {
+      if (["OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama", "Writer"].includes(provider.type)) {
+        return true;
+      } else if (provider.type === "OpenAI") {
+        if (provider.subType.includes("o1") || provider.subType.includes("o3") || provider.subType.includes("o4")) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  isTopPEnabled(provider) {
+    if (provider.category === "Model") {
+      if (["OpenRouter", "Baidu Cloud", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama", "Writer"].includes(provider.type)) {
+        return true;
+      } else if (provider.type === "OpenAI") {
+        if (provider.subType.includes("o1") || provider.subType.includes("o3") || provider.subType.includes("o4")) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   InputSlider(props) {
@@ -162,6 +241,7 @@ class ProviderEditPage extends React.Component {
   }
 
   renderProvider() {
+    const editorWidth = Setting.isMobile() ? 22 : 9;
     return (
       <Card size="small" title={
         <div>
@@ -216,6 +296,8 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Speech-to-Text") {
                 this.updateProviderField("type", "Alibaba Cloud");
                 this.updateProviderField("subType", "paraformer-realtime-v1");
+              } else if (value === "Private Cloud") {
+                this.updateProviderField("type", "Kubernetes");
               }
             })}>
               {
@@ -230,8 +312,6 @@ class ProviderEditPage extends React.Component {
                   {id: "Video", name: "Video"},
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
                   {id: "Speech-to-Text", name: "Speech-to-Text"},
-                  {id: "Docker", name: "Docker"},
-                  {id: "Kubernetes", name: "Kubernetes"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
@@ -258,7 +338,7 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "MiniMax") {
                   this.updateProviderField("subType", "abab5-chat");
                 } else if (value === "Claude") {
-                  this.updateProviderField("subType", "claude-2");
+                  this.updateProviderField("subType", "claude-opus-4-0");
                 } else if (value === "Hugging Face") {
                   this.updateProviderField("subType", "gpt2");
                 } else if (value === "ChatGLM") {
@@ -295,6 +375,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "deepseek-ai/DeepSeek-R1");
                 } else if (value === "GitHub") {
                   this.updateProviderField("subType", "gpt-4o");
+                } else if (value === "Writer") {
+                  this.updateProviderField("subType", "palmyra-x5");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
@@ -396,10 +478,15 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.type === "Baidu Cloud" || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
-          (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
-          ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
-          (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent"].includes(this.state.provider.category))) ? (
+          !(this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") &&
+          (
+            ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
+              (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
+              (this.state.provider.category === "Model" && this.state.provider.type === "iFlytek") ||
+              (this.state.provider.category === "Blockchain" && !["ChainMaker", "Ethereum"].includes(this.state.provider.type)) ||
+              ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
+              (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent", "Blockchain"].includes(this.state.provider.category)))
+          ) ? (
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {this.getClientIdLabel(this.state.provider)} :
@@ -417,14 +504,14 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("provider:Compitable Provider"), i18next.t("provider:Compitable Provider - Tooltip"))} :
+                  {Setting.getLabel(i18next.t("provider:Compatible provider"), i18next.t("provider:Compatible provider - Tooltip"))} :
                 </Col>
                 <Col span={22} >
-                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.compitableProvider} onChange={(value => {
-                    this.updateProviderField("compitableProvider", value);
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.compatibleProvider} onChange={(value => {
+                    this.updateProviderField("compatibleProvider", value);
                   })}>
                     {
-                      Setting.getCompitableProviderOptions(this.state.provider.category)
+                      Setting.getCompatibleProviderOptions(this.state.provider.category)
                       // .sort((a, b) => a.name.localeCompare(b.name))
                         .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
                     }
@@ -529,7 +616,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Agent" && this.state.provider.type === "MCP")) ? null : (
+          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") || (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker")) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {this.getClientSecretLabel(this.state.provider)} :
@@ -541,6 +628,50 @@ class ProviderEditPage extends React.Component {
               </Col>
             </Row>
           )
+        }
+        {
+          (this.state.provider.type === "iFlytek" && this.state.provider.category === "Model") && (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("cert:User key"), i18next.t("cert:User key - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.provider.userKey} onChange={e => {
+                  this.updateProviderField("userKey", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          )
+        }
+        {
+          (this.state.provider.category === "Model" && this.state.provider.type === "Claude" && Setting.getThinkingModelMaxTokens(this.state.provider.subType) !== 0) ? (
+            <>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("provider:Enable thinking"), i18next.t("provider:Enable thinking - Tooltip"))} :
+                </Col>
+                <Col span={22} >
+                  <Switch checked={this.state.provider.enableThinking} onChange={checked => {
+                    this.updateProviderField("enableThinking", checked);
+                  }} />
+                </Col>
+              </Row>
+              {
+                this.state.provider.enableThinking && (
+                  <Row style={{marginTop: "20px"}} >
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:Thinking tokens"), i18next.t("provider:Thinking tokens - Tooltip"))} :
+                    </Col>
+                    <Col span={22} >
+                      <InputNumber min={1024} max={Setting.getThinkingModelMaxTokens(this.state.provider.subType) - 1} value={this.state.provider.topK || 1024} onChange={value => {
+                        this.updateProviderField("topK", value);
+                      }} />
+                    </Col>
+                  </Row>
+                )
+              }
+            </>
+          ) : null
         }
         {
           !["Agent"].includes(this.state.provider.category) ? null : (
@@ -586,10 +717,10 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) ? null : (
+          ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) || (this.state.provider.category === "Blockchain" && this.state.provider.type === "Ethereum") || (this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("general:Region"), i18next.t("general:Region - Tooltip"))} :
+                {this.getRegionLabel(this.state.provider)} :
               </Col>
               <Col span={22} >
                 <Input value={this.state.provider.region} onChange={e => {
@@ -602,41 +733,188 @@ class ProviderEditPage extends React.Component {
         {
           this.state.provider.category === "Blockchain" && (
             <>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("general:Network"), i18next.t("general:Network - Tooltip"))} :
-                </Col>
-                <Col span={22}>
-                  <Input value={this.state.provider.network} onChange={e => {
-                    this.updateProviderField("network", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("provider:Chain"), i18next.t("provider:Chain - Tooltip"))} :
-                </Col>
-                <Col span={22}>
-                  <Input value={this.state.provider.chain} onChange={e => {
-                    this.updateProviderField("chain", e.target.value);
-                  }} />
-                </Col>
-              </Row>
+              {this.state.provider.type === "Ethereum" ? null : (
+                <>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:Chain"), i18next.t("provider:Chain - Tooltip"))} :
+                    </Col>
+                    <Col span={22}>
+                      <Input value={this.state.provider.chain} onChange={e => {
+                        this.updateProviderField("chain", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {this.getNetworkLabel(this.state.provider)} :
+                    </Col>
+                    <Col span={22}>
+                      <Input value={this.state.provider.network} onChange={e => {
+                        this.updateProviderField("network", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                </>
+              )}
+              {this.state.provider.type === "ChainMaker" ? (
+                <>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:Auth type"), i18next.t("provider:Auth type - Tooltip"))} :
+                    </Col>
+                    <Col span={22}>
+                      <Select
+                        virtual={false}
+                        style={{width: "100%"}}
+                        value={this.state.provider.text}
+                        onChange={value => {
+                          this.updateProviderField("text", value);
+                        }}
+                      >
+                        <Select.Option value="permissionedwithcert">permissionedwithcert</Select.Option>
+                        <Select.Option value="permissionedwithkey">permissionedwithkey</Select.Option>
+                        <Select.Option value="public">public</Select.Option>
+                      </Select>
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}} >
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("cert:User cert"), i18next.t("cert:User cert - Tooltip"))} :
+                    </Col>
+                    <Col span={editorWidth} >
+                      <Button style={{marginRight: "10px", marginBottom: "10px"}} disabled={this.state.provider.userCert === ""} onClick={() => {
+                        copy(this.state.provider.userCert);
+                        Setting.showMessage("success", i18next.t("general:Copied to clipboard successfully"));
+                      }}
+                      >
+                        {i18next.t("general:Copy")}
+                      </Button>
+                      <Button type="primary" disabled={this.state.provider.userCert === ""} onClick={() => {
+                        const blob = new Blob([this.state.provider.userCert], {type: "text/plain;charset=utf-8"});
+                        FileSaver.saveAs(blob, "user_cert.pem");
+                      }}
+                      >
+                        {i18next.t("general:Download")}
+                      </Button>
+                      <TextArea autoSize={{minRows: 16, maxRows: 16}} value={this.state.provider.userCert} onChange={e => {
+                        this.updateProviderField("userCert", e.target.value);
+                      }} />
+                    </Col>
+                    <Col span={1} />
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("cert:User key"), i18next.t("cert:User key - Tooltip"))} :
+                    </Col>
+                    <Col span={editorWidth} >
+                      <Button style={{marginRight: "10px", marginBottom: "10px"}} disabled={this.state.provider.userKey === ""} onClick={() => {
+                        copy(this.state.provider.userKey);
+                        Setting.showMessage("success", i18next.t("general:Copied to clipboard successfully"));
+                      }}
+                      >
+                        {i18next.t("general:Copy")}
+                      </Button>
+                      <Button type="primary" disabled={this.state.provider.userKey === ""} onClick={() => {
+                        const blob = new Blob([this.state.provider.userKey], {type: "text/plain;charset=utf-8"});
+                        FileSaver.saveAs(blob, "token_jwt_key.key");
+                      }}
+                      >
+                        {i18next.t("general:Download")}
+                      </Button>
+                      <TextArea autoSize={{minRows: 16, maxRows: 16}} value={this.state.provider.userKey} onChange={e => {
+                        this.updateProviderField("userKey", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}} >
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("cert:Sign cert"), i18next.t("cert:Sign cert - Tooltip"))} :
+                    </Col>
+                    <Col span={editorWidth} >
+                      <Button style={{marginRight: "10px", marginBottom: "10px"}} disabled={this.state.provider.signCert === ""} onClick={() => {
+                        copy(this.state.provider.signCert);
+                        Setting.showMessage("success", i18next.t("general:Copied to clipboard successfully"));
+                      }}
+                      >
+                        {i18next.t("general:Copy")}
+                      </Button>
+                      <Button type="primary" disabled={this.state.provider.signCert === ""} onClick={() => {
+                        const blob = new Blob([this.state.provider.signCert], {type: "text/plain;charset=utf-8"});
+                        FileSaver.saveAs(blob, "user_cert.pem");
+                      }}
+                      >
+                        {i18next.t("general:Download")}
+                      </Button>
+                      <TextArea autoSize={{minRows: 16, maxRows: 16}} value={this.state.provider.signCert} onChange={e => {
+                        this.updateProviderField("signCert", e.target.value);
+                      }} />
+                    </Col>
+                    <Col span={1} />
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("cert:Sign key"), i18next.t("cert:Sign key - Tooltip"))} :
+                    </Col>
+                    <Col span={editorWidth} >
+                      <Button style={{marginRight: "10px", marginBottom: "10px"}} disabled={this.state.provider.signKey === ""} onClick={() => {
+                        copy(this.state.provider.signKey);
+                        Setting.showMessage("success", i18next.t("general:Copied to clipboard successfully"));
+                      }}
+                      >
+                        {i18next.t("general:Copy")}
+                      </Button>
+                      <Button type="primary" disabled={this.state.provider.signKey === ""} onClick={() => {
+                        const blob = new Blob([this.state.provider.signKey], {type: "text/plain;charset=utf-8"});
+                        FileSaver.saveAs(blob, "token_jwt_key.key");
+                      }}
+                      >
+                        {i18next.t("general:Download")}
+                      </Button>
+                      <TextArea autoSize={{minRows: 16, maxRows: 16}} value={this.state.provider.signKey} onChange={e => {
+                        this.updateProviderField("signKey", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                </>
+              ) : null}
+              {["Ethereum", "ChainMaker"].includes(this.state.provider.type) ? (
+                <>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {this.getContractNameLabel(this.state.provider)} :
+                    </Col>
+                    <Col span={22}>
+                      <Input value={this.state.provider.contractName} onChange={e => {
+                        this.updateProviderField("contractName", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}}>
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("provider:Invoke method"), i18next.t("provider:Invoke method - Tooltip"))} :
+                    </Col>
+                    <Col span={22}>
+                      <Input value={this.state.provider.contractMethod} onChange={e => {
+                        this.updateProviderField("contractMethod", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                </>
+              ) : null}
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {Setting.getLabel(i18next.t("provider:Browser URL"), i18next.t("provider:Browser URL - Tooltip"))} :
                 </Col>
                 <Col span={22}>
-                  <Input prefix={<LinkOutlined />} value={this.state.provider.browserUrl} onChange={e => {
-                    this.updateProviderField("browserUrl", e.target.value);
-                  }} />
+                  <Input prefix={<LinkOutlined />} value={this.state.provider.browserUrl}
+                    placeholder={this.state.provider.type === "ChainMaker" ? "https://explorer-testnet.chainmaker.org.cn/chainmaker_testnet_chain/block/{bh}" : ""}
+                    onChange={e => {
+                      this.updateProviderField("browserUrl", e.target.value);
+                    }} />
                 </Col>
               </Row>
             </>
           )
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
+          this.isTemperatureEnabled(this.state.provider) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -644,7 +922,7 @@ class ProviderEditPage extends React.Component {
                 </Col>
                 <this.InputSlider
                   min={0}
-                  max={["Alibaba Cloud", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Ollama"].includes(this.state.provider.type) ? 2 : 1}
+                  max={["Alibaba Cloud", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Ollama", "Writer"].includes(this.state.provider.type) ? 2 : 1}
                   step={0.01}
                   value={this.state.provider.temperature}
                   onChange={(value) => {
@@ -657,7 +935,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Baidu Cloud", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
+          this.isTopPEnabled(this.state.provider) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -699,7 +977,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && this.state.provider.type === "OpenAI" && !["o1", "o1-pro", "o3", "o3-mini", "o4-mini"].includes(this.state.provider.subType)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -721,7 +999,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && this.state.provider.type === "OpenAI") ? (
+          (this.state.provider.category === "Model" && this.state.provider.type === "OpenAI" && !["o1", "o1-pro", "o3", "o3-mini", "o4-mini"].includes(this.state.provider.subType)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -774,14 +1052,33 @@ class ProviderEditPage extends React.Component {
           this.state.provider.category === "Model" ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"))} :
+                {Setting.getLabel(i18next.t("provider:Provider key"), i18next.t("provider:Provider key - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Input.Password
-                  value={this.state.provider.apiKey}
+                  value={this.state.provider.providerKey}
                   disabled={!this.state.isAdmin}
                   onChange={e => {
-                    this.updateProviderField("apiKey", e.target.value);
+                    this.updateProviderField("providerKey", e.target.value);
+                  }}
+                />
+              </Col>
+            </Row>
+          ) : null
+        }
+        {
+          this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes" ? (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("provider:Config text"), i18next.t("provider:Config text - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <CodeMirror
+                  value={this.state.provider.configText}
+                  disabled={!this.state.isAdmin}
+                  options={{mode: "yaml", theme: "material-darker"}}
+                  onBeforeChange={(editor, data, value) => {
+                    this.updateProviderField("configText", value);
                   }}
                 />
               </Col>
@@ -790,7 +1087,7 @@ class ProviderEditPage extends React.Component {
         }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {this.state.provider.type === "Volcano Engine" ? Setting.getLabel(i18next.t("provider:EndpointID"), i18next.t("provider:EndpointID - Tooltip")) : Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"))} :
+            {this.getProviderUrlLabel(this.state.provider)} :
           </Col>
           <Col span={22} >
             <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
@@ -817,8 +1114,8 @@ class ProviderEditPage extends React.Component {
               this.updateProviderField("state", value);
             }}
             options={[
-              {value: "Active", label: "Active"},
-              {value: "Inactive", label: "Inactive"},
+              {value: "Active", label: i18next.t("general:Active")},
+              {value: "Inactive", label: i18next.t("general:Inactive")},
             ].map(item => Setting.getOption(item.label, item.value))} />
           </Col>
         </Row>

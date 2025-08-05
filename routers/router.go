@@ -99,10 +99,30 @@ func initAPI() {
 	beego.Router("/api/delete-message", &controllers.ApiController{}, "POST:DeleteMessage")
 	beego.Router("/api/delete-welcome-message", &controllers.ApiController{}, "POST:DeleteWelcomeMessage")
 
+	beego.Router("/api/get-templates", &controllers.ApiController{}, "GET:GetTemplates")
+	beego.Router("/api/get-template", &controllers.ApiController{}, "GET:GetTemplate")
+	beego.Router("/api/update-template", &controllers.ApiController{}, "POST:UpdateTemplate")
+	beego.Router("/api/add-template", &controllers.ApiController{}, "POST:AddTemplate")
+	beego.Router("/api/delete-template", &controllers.ApiController{}, "POST:DeleteTemplate")
+	beego.Router("/api/get-k8s-status", &controllers.ApiController{}, "GET:GetK8sStatus")
+
+	beego.Router("/api/get-applications", &controllers.ApiController{}, "GET:GetApplications")
+	beego.Router("/api/get-application", &controllers.ApiController{}, "GET:GetApplication")
+	beego.Router("/api/update-application", &controllers.ApiController{}, "POST:UpdateApplication")
+	beego.Router("/api/add-application", &controllers.ApiController{}, "POST:AddApplication")
+	beego.Router("/api/delete-application", &controllers.ApiController{}, "POST:DeleteApplication")
+
+	beego.Router("/api/deploy-application", &controllers.ApiController{}, "POST:DeployApplication")
+	beego.Router("/api/undeploy-application", &controllers.ApiController{}, "POST:UndeployApplication")
+	beego.Router("/api/get-application-status", &controllers.ApiController{}, "GET:GetApplicationStatus")
+
 	beego.Router("/api/get-usages", &controllers.ApiController{}, "GET:GetUsages")
 	beego.Router("/api/get-range-usages", &controllers.ApiController{}, "GET:GetRangeUsages")
 	beego.Router("/api/get-users", &controllers.ApiController{}, "GET:GetUsers")
 	beego.Router("/api/get-user-table-infos", &controllers.ApiController{}, "GET:GetUserTableInfos")
+
+	beego.Router("/api/get-activities", &controllers.ApiController{}, "GET:GetActivities")
+	// beego.Router("/api/get-range-activities", &controllers.ApiController{}, "GET:GetRangeActivities")
 
 	beego.Router("/api/get-global-workflows", &controllers.ApiController{}, "GET:GetGlobalWorkflows")
 	beego.Router("/api/get-workflows", &controllers.ApiController{}, "GET:GetWorkflows")
@@ -118,6 +138,15 @@ func initAPI() {
 	beego.Router("/api/add-task", &controllers.ApiController{}, "POST:AddTask")
 	beego.Router("/api/delete-task", &controllers.ApiController{}, "POST:DeleteTask")
 
+	beego.Router("/api/get-global-forms", &controllers.ApiController{}, "GET:GetGlobalForms")
+	beego.Router("/api/get-forms", &controllers.ApiController{}, "GET:GetForms")
+	beego.Router("/api/get-form", &controllers.ApiController{}, "GET:GetForm")
+	beego.Router("/api/update-form", &controllers.ApiController{}, "POST:UpdateForm")
+	beego.Router("/api/add-form", &controllers.ApiController{}, "POST:AddForm")
+	beego.Router("/api/delete-form", &controllers.ApiController{}, "POST:DeleteForm")
+
+	beego.Router("/api/get-form-data", &controllers.ApiController{}, "GET:GetFormData")
+
 	beego.Router("/api/get-global-articles", &controllers.ApiController{}, "GET:GetGlobalArticles")
 	beego.Router("/api/get-articles", &controllers.ApiController{}, "GET:GetArticles")
 	beego.Router("/api/get-article", &controllers.ApiController{}, "GET:GetArticle")
@@ -130,6 +159,8 @@ func initAPI() {
 	beego.Router("/api/delete-file", &controllers.ApiController{}, "POST:DeleteFile")
 	beego.Router("/api/activate-file", &controllers.ApiController{}, "POST:ActivateFile")
 	beego.Router("/api/get-active-file", &controllers.ApiController{}, "GET:GetActiveFile")
+
+	beego.Router("/api/upload-file", &controllers.ApiController{}, "POST:UploadFile")
 
 	beego.Router("/api/get-permissions", &controllers.ApiController{}, "GET:GetPermissions")
 	beego.Router("/api/get-permission", &controllers.ApiController{}, "GET:GetPermission")
@@ -171,21 +202,31 @@ func initAPI() {
 	beego.Router("/api/get-node-tunnel", &controllers.ApiController{}, "GET:GetNodeTunnel")
 
 	beego.Router("/api/get-sessions", &controllers.ApiController{}, "GET:GetSessions")
-	beego.Router("/api/get-session", &controllers.ApiController{}, "GET:GetConnSession")
+	beego.Router("/api/get-session", &controllers.ApiController{}, "GET:GetSession")
 	beego.Router("/api/update-session", &controllers.ApiController{}, "POST:UpdateSession")
 	beego.Router("/api/add-session", &controllers.ApiController{}, "POST:AddSession")
 	beego.Router("/api/delete-session", &controllers.ApiController{}, "POST:DeleteSession")
-	beego.Router("/api/start-session", &controllers.ApiController{}, "POST:StartSession")
-	beego.Router("/api/stop-session", &controllers.ApiController{}, "POST:StopSession")
+	beego.Router("/api/is-session-duplicated", &controllers.ApiController{}, "GET:IsSessionDuplicated")
+
+	beego.Router("/api/get-connections", &controllers.ApiController{}, "GET:GetConnections")
+	beego.Router("/api/get-connection", &controllers.ApiController{}, "GET:GetConnection")
+	beego.Router("/api/update-connection", &controllers.ApiController{}, "POST:UpdateConnection")
+	beego.Router("/api/add-connection", &controllers.ApiController{}, "POST:AddConnection")
+	beego.Router("/api/delete-connection", &controllers.ApiController{}, "POST:DeleteConnection")
+	beego.Router("/api/start-connection", &controllers.ApiController{}, "POST:StartConnection")
+	beego.Router("/api/stop-connection", &controllers.ApiController{}, "POST:StopConnection")
 
 	beego.Router("/api/get-records", &controllers.ApiController{}, "GET:GetRecords")
 	beego.Router("/api/get-record", &controllers.ApiController{}, "GET:GetRecord")
 	beego.Router("/api/update-record", &controllers.ApiController{}, "POST:UpdateRecord")
 	beego.Router("/api/add-record", &controllers.ApiController{}, "POST:AddRecord")
+	beego.Router("/api/add-records", &controllers.ApiController{}, "POST:AddRecords")
 	beego.Router("/api/delete-record", &controllers.ApiController{}, "POST:DeleteRecord")
 
 	beego.Router("/api/commit-record", &controllers.ApiController{}, "POST:CommitRecord")
+	beego.Router("/api/commit-record-second", &controllers.ApiController{}, "POST:CommitRecordSecond")
 	beego.Router("/api/query-record", &controllers.ApiController{}, "GET:QueryRecord")
+	beego.Router("/api/query-record-second", &controllers.ApiController{}, "GET:QueryRecordSecond")
 
 	beego.Router("/api/get-system-info", &controllers.ApiController{}, "GET:GetSystemInfo")
 	beego.Router("/api/get-version-info", &controllers.ApiController{}, "GET:GetVersionInfo")

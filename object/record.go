@@ -39,12 +39,16 @@ type Record struct {
 
 	Organization string `xorm:"varchar(100)" json:"organization"`
 	ClientIp     string `xorm:"varchar(100)" json:"clientIp"`
-	UserAgent    string `xorm:"varchar(100)" json:"userAgent"`
+	UserAgent    string `xorm:"varchar(200)" json:"userAgent"`
 	User         string `xorm:"varchar(100)" json:"user"`
 	Method       string `xorm:"varchar(100)" json:"method"`
 	RequestUri   string `xorm:"varchar(1000)" json:"requestUri"`
 	Action       string `xorm:"varchar(1000)" json:"action"`
 	Language     string `xorm:"varchar(100)" json:"language"`
+	Region       string `xorm:"varchar(100)" json:"region"`
+	City         string `xorm:"varchar(100)" json:"city"`
+	Unit         string `xorm:"varchar(100)" json:"unit"`
+	Section      string `xorm:"varchar(100)" json:"section"`
 
 	Object   string `xorm:"mediumtext" json:"object"`
 	Response string `xorm:"mediumtext" json:"response"`
@@ -52,8 +56,17 @@ type Record struct {
 
 	Provider    string `xorm:"varchar(100)" json:"provider"`
 	Block       string `xorm:"varchar(100)" json:"block"`
+	BlockHash   string `xorm:"varchar(500)" json:"blockHash"`
 	Transaction string `xorm:"varchar(500)" json:"transaction"`
-	IsTriggered bool   `json:"isTriggered"`
+
+	Provider2    string `xorm:"varchar(100)" json:"provider2"`
+	Block2       string `xorm:"varchar(100)" json:"block2"`
+	BlockHash2   string `xorm:"varchar(500)" json:"blockHash2"`
+	Transaction2 string `xorm:"varchar(500)" json:"transaction2"`
+	// For cross-chain records
+
+	IsTriggered bool `json:"isTriggered"`
+	NeedCommit  bool `json:"needCommit"`
 }
 
 type Response struct {
@@ -62,7 +75,7 @@ type Response struct {
 }
 
 func GetRecordCount(owner, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Record{Owner: owner})
 }
 
@@ -76,9 +89,49 @@ func GetRecords(owner string) ([]*Record, error) {
 	return records, nil
 }
 
+func getAllRecords() ([]*Record, error) {
+	records := []*Record{}
+	err := adapter.engine.Desc("id").Find(&records, &Record{})
+	if err != nil {
+		return records, err
+	}
+
+	return records, nil
+}
+
+func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []string, error) {
+	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider("admin")
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var validRecords []*Record
+	var commitRecordIds []string
+	recordTime := util.GetCurrentTimeWithMilli()
+
+	for _, record := range records {
+		ok, err := prepareRecord(record, providerFirst, providerSecond)
+		if err != nil {
+			return nil, nil, err
+		}
+		if !ok {
+			continue
+		}
+		record.CreatedTime = util.GetCurrentTimeBasedOnLastMilli(recordTime)
+		recordTime = record.CreatedTime
+
+		validRecords = append(validRecords, record)
+
+		if record.NeedCommit {
+			commitRecordIds = append(commitRecordIds, record.getId())
+		}
+	}
+	return validRecords, commitRecordIds, nil
+}
+
 func GetPaginationRecords(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Record, error) {
 	records := []*Record{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&records)
 	if err != nil {
 		return records, err
@@ -105,6 +158,38 @@ func getRecord(owner string, name string) (*Record, error) {
 	}
 }
 
+func prepareRecord(record *Record, providerFirst, providerSecond *Provider) (bool, error) {
+	if logPostOnly && record.Method == "GET" {
+		return false, nil
+	}
+
+	if strings.HasSuffix(record.Action, "-record") {
+		return false, nil
+	}
+
+	if strings.HasSuffix(record.Action, "-record-second") {
+		return false, nil
+	}
+
+	if strings.HasSuffix(record.Action, "-records") {
+		return false, nil
+	}
+
+	if record.Provider == "" {
+		if providerFirst != nil {
+			record.Provider = providerFirst.Name
+		}
+
+		if providerSecond != nil {
+			record.Provider2 = providerSecond.Name
+		}
+	}
+
+	record.Owner = record.Organization
+
+	return true, nil
+}
+
 func GetRecord(id string) (*Record, error) {
 	owner, name := util.GetOwnerAndNameFromIdNoCheck(id)
 	return getRecord(owner, name)
@@ -112,13 +197,50 @@ func GetRecord(id string) (*Record, error) {
 
 func UpdateRecord(id string, record *Record) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
+	p, err := getRecord(owner, name)
+	if err != nil {
+		return false, err
+	} else if p == nil {
+		return false, nil
+	}
+
+	// Update provider
+	if record.Provider != p.Provider {
+		record.Block = ""
+		record.BlockHash = ""
+		record.Transaction = ""
+	}
+	if record.Provider2 != p.Provider2 {
+		record.Block2 = ""
+		record.BlockHash2 = ""
+		record.Transaction2 = ""
+	}
+
+	affected, err := adapter.engine.Where("name = ?", name).AllCols().Update(record)
+	if err != nil {
+		return false, err
+	}
+
+	return affected != 0, nil
+}
+
+func UpdateRecordInternal(id int, record Record) error {
+	_, err := adapter.engine.ID(id).Update(record)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateRecordFields(id string, fields map[string]interface{}) (bool, error) {
+	owner, name := util.GetOwnerAndNameFromId(id)
 	if p, err := getRecord(owner, name); err != nil {
 		return false, err
 	} else if p == nil {
 		return false, nil
 	}
 
-	affected, err := adapter.engine.Where("name = ?", name).AllCols().Update(record)
+	affected, err := adapter.engine.Table(&Record{}).Where("name = ?", name).Update(fields)
 	if err != nil {
 		return false, err
 	}
@@ -135,7 +257,7 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	}
 
 	object := ""
-	if ctx.Input.RequestBody != nil && len(ctx.Input.RequestBody) != 0 {
+	if len(ctx.Input.RequestBody) != 0 {
 		object = string(ctx.Input.RequestBody)
 	}
 
@@ -156,15 +278,25 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	}
 	languageCode := conf.GetLanguage(language)
 
+	// get location info from client ip
+	locationInfo, err := util.GetInfoFromIP(ip)
+	if err != nil {
+		return nil, err
+	}
+	region := locationInfo.Country
+	city := locationInfo.City
+
 	record := Record{
 		Name:        util.GenerateId(),
-		CreatedTime: util.GetCurrentTime(),
+		CreatedTime: util.GetCurrentTimeWithMilli(),
 		ClientIp:    ip,
 		User:        "",
 		Method:      ctx.Request.Method,
 		RequestUri:  requestUri,
 		Action:      action,
 		Language:    languageCode,
+		Region:      region,
+		City:        city,
 		Object:      object,
 		Response:    fmt.Sprintf("{\"status\":\"%s\",\"msg\":\"%s\"}", resp.Status, resp.Msg),
 		IsTriggered: false,
@@ -172,36 +304,88 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	return &record, nil
 }
 
-func AddRecord(record *Record) bool {
-	if logPostOnly {
-		if record.Method == "GET" {
-			return false
-		}
+func AddRecord(record *Record) (bool, interface{}, error) {
+	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider(record.Owner)
+	if err != nil {
+		return false, nil, err
 	}
 
-	if strings.HasSuffix(record.Action, "-record") {
-		return false
+	ok, err := prepareRecord(record, providerFirst, providerSecond)
+	if err != nil {
+		return false, nil, err
+	}
+	if !ok {
+		return false, nil, nil
 	}
 
-	if record.Provider == "" {
-		provider, err := getActiveBlockchainProvider("admin")
-		if err != nil {
-			panic(err)
-		}
-
-		if provider != nil {
-			record.Provider = provider.Name
-		}
-	}
-
-	record.Owner = record.Organization
+	record.CreatedTime = util.GetCurrentTimeWithMilli()
 
 	affected, err := adapter.engine.Insert(record)
 	if err != nil {
-		panic(err)
+		return false, nil, err
 	}
 
-	return affected != 0
+	if record.NeedCommit {
+		affected2, data, err := CommitRecord(record)
+		if err != nil {
+			return false, nil, err
+		}
+
+		return affected2, data, nil
+	}
+
+	return affected != 0, nil, nil
+}
+
+func AddRecords(records []*Record) (bool, interface{}, error) {
+	if len(records) == 0 {
+		return false, nil, nil
+	}
+
+	validRecords, commitRecordIds, err := getValidAndNeedCommitRecords(records)
+	if err != nil {
+		return false, nil, err
+	}
+
+	if len(validRecords) == 0 {
+		return false, nil, nil
+	}
+
+	totalAffected := int64(0)
+	session := adapter.engine.NewSession()
+	defer session.Close()
+	err = session.Begin()
+	if err != nil {
+		return false, nil, err
+	}
+
+	batchSize := 150
+	for i := 0; i < len(validRecords); i += batchSize {
+		end := min(i+batchSize, len(validRecords))
+
+		batch := validRecords[i:end]
+		affected, err := session.Insert(batch)
+		if err != nil {
+			session.Rollback()
+			return false, nil, err
+		}
+		totalAffected += affected
+	}
+
+	err = session.Commit()
+	if err != nil {
+		return false, nil, err
+	}
+
+	// Send commit event for records that need to be committed
+	if len(commitRecordIds) > 0 {
+		// Use goroutine to avoid blocking when channel is full
+		go func() {
+			eventTaskChan <- commitRecordIds
+		}()
+	}
+
+	return totalAffected != 0, nil, nil
 }
 
 func DeleteRecord(record *Record) (bool, error) {

@@ -37,6 +37,7 @@ func AuthzFilter(ctx *context.Context) {
 			controllers.DenyRequest(ctx)
 		}
 	}
+	permissionFilter(ctx)
 }
 
 func isAllowedInDemoMode(method string, urlPath string) bool {
@@ -44,9 +45,51 @@ func isAllowedInDemoMode(method string, urlPath string) bool {
 		return true
 	}
 
-	if strings.HasPrefix(urlPath, "/api/signin") || urlPath == "/api/signout" || urlPath == "/api/add-chat" || urlPath == "/api/add-message" || urlPath == "/api/update-message" || urlPath == "/api/delete-welcome-message" || urlPath == "/api/generate-text-to-speech-audio" || urlPath == "/api/add-node-tunnel" || urlPath == "/api/start-session" || urlPath == "/api/stop-session" || urlPath == "/api/commit-record" {
+	if strings.HasPrefix(urlPath, "/api/signin") || urlPath == "/api/signout" || urlPath == "/api/add-chat" || urlPath == "/api/add-message" || urlPath == "/api/update-message" || urlPath == "/api/delete-welcome-message" || urlPath == "/api/generate-text-to-speech-audio" || urlPath == "/api/add-node-tunnel" || urlPath == "/api/start-connection" || urlPath == "/api/stop-connection" || urlPath == "/api/commit-record" || urlPath == "/api/commit-record-second" || urlPath == "/api/update-chat" || urlPath == "/api/delete-chat" {
 		return true
 	}
 
 	return false
+}
+
+func permissionFilter(ctx *context.Context) {
+	path := ctx.Request.URL.Path
+	controllerName := strings.TrimPrefix(path, "/api/")
+
+	if !strings.HasPrefix(path, "/api/") {
+		return
+	}
+
+	disablePreviewMode, _ := beego.AppConfig.Bool("disablePreviewMode")
+
+	isUpdateRequest := strings.HasPrefix(controllerName, "update-") || strings.HasPrefix(controllerName, "add-") || strings.HasPrefix(controllerName, "delete-") || strings.HasPrefix(controllerName, "refresh-") || strings.HasPrefix(controllerName, "deploy-")
+	isGetRequest := strings.HasPrefix(controllerName, "get-")
+
+	if !disablePreviewMode && isGetRequest {
+		return
+	}
+	if !isGetRequest && !isUpdateRequest {
+		return
+	}
+
+	exemptedPaths := []string{
+		"get-account", "get-chats", "get-forms", "get-messages",
+		"delete-welcome-message", "get-message-answer", "get-answer",
+		"get-storage-providers", "get-store", "get-providers", "get-global-stores",
+		"update-chat", "add-chat", "delete-chat", "update-message", "add-message",
+	}
+
+	for _, exemptPath := range exemptedPaths {
+		if controllerName == exemptPath {
+			return
+		}
+	}
+
+	user := GetSessionUser(ctx)
+
+	isAdmin := user != nil && (user.IsAdmin || user.Type == "chat-admin")
+	if !isAdmin {
+		responseError(ctx, "this operation requires admin privilege")
+		return
+	}
 }

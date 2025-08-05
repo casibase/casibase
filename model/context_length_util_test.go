@@ -22,14 +22,11 @@ import "testing"
 func TestGetContextLength(t *testing.T) {
 	testModel := map[string]int{
 		// gpt
-		"openai/gpt-3.5-turbo-16k": 16385,
-		"gpt-3.5-turbo-0125":       16385,
-		"openai/gpt-4":             8192,
-		"gpt-4-32k":                32768,
-		"gpt-4-0613":               8192,
-		"gpt-4o-2024-05-13":        128000,
-		"gpt-4o":                   128000,
-		"gpt-4o-mini":              128000,
+		"gpt-3.5-turbo":     16385,
+		"gpt-4":             8192,
+		"gpt-4o-2024-08-06": 128000,
+		"gpt-4o":            128000,
+		"gpt-4o-mini":       128000,
 		// deepseek
 		"deepseek-r1-distill-llama-70b": 131072,
 		"deepseek-r1-distill-qwen-7b":   8192,

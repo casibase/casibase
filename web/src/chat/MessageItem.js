@@ -18,7 +18,7 @@ import {Alert, Button, Col, Row} from "antd";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
-import {AvatarErrorUrl, ThemeDefault} from "../Conf";
+import {AvatarErrorUrl} from "../Conf";
 import {renderText} from "../ChatMessageRender";
 import MessageActions from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
@@ -128,7 +128,6 @@ const MessageItem = ({
           <div className="message-reason" style={{
             marginBottom: "15px",
             padding: "10px",
-            backgroundColor: "#f8f9fa",
             borderRadius: "5px",
             borderLeft: "3px solid #1890ff",
           }}>
@@ -168,7 +167,6 @@ const MessageItem = ({
             content={
               <div className="message-reason" style={{
                 padding: "10px",
-                backgroundColor: "#f8f9fa",
                 borderRadius: "5px",
                 borderLeft: "3px solid #1890ff",
               }}>
@@ -194,7 +192,6 @@ const MessageItem = ({
             }}
             styles={{
               content: {
-                backgroundColor: ThemeDefault.colorBackground,
                 borderRadius: "16px",
                 padding: "12px 16px",
               },
@@ -229,6 +226,31 @@ const MessageItem = ({
               {renderMessageContent()}
             </div>
           }
+          footer={
+            <div style={{display: "flex", flexDirection: "column", gap: "12px"}}>
+              {!isEditing && message.author === "AI" && (disableInput === false || index !== isLastMessage) && (
+                <MessageActions
+                  message={message}
+                  isLastMessage={isLastMessage}
+                  index={index}
+                  onCopy={onCopy}
+                  onRegenerate={onRegenerate}
+                  onLike={onLike}
+                  onToggleRead={onToggleRead}
+                  onEdit={() => setIsHovering(true)}
+                  isReading={isReading}
+                  isLoadingTTS={isLoadingTTS} // Pass loading state to MessageActions
+                  readingMessage={readingMessage}
+                  account={account}
+                  setIsRegenerating={setIsRegenerating}
+                  isRegenerating={isRegenerating}
+                />
+              )}
+              {message.author === "AI" && isLastMessage && (
+                <MessageSuggestions message={message} sendMessage={sendMessage} />
+              )}
+            </div>
+          }
           loading={message.text === "" && message.author === "AI" && !message.reasonText && !message.errorText}
           typing={message.author === "AI" && !message.isReasoningPhase ? {
             step: 2,
@@ -240,7 +262,6 @@ const MessageItem = ({
           }}
           styles={{
             content: {
-              backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
               borderRadius: "16px",
               padding: "12px 16px",
               minWidth: isEditing ? "300px" : "auto",
@@ -274,29 +295,6 @@ const MessageItem = ({
       {renderReasoningBubble()}
 
       {renderMessageBubble()}
-
-      {!isEditing && message.author === "AI" && (disableInput === false || index !== isLastMessage) && (
-        <MessageActions
-          message={message}
-          isLastMessage={isLastMessage}
-          index={index}
-          onCopy={onCopy}
-          onRegenerate={onRegenerate}
-          onLike={onLike}
-          onToggleRead={onToggleRead}
-          onEdit={() => setIsHovering(true)}
-          isReading={isReading}
-          isLoadingTTS={isLoadingTTS} // Pass loading state to MessageActions
-          readingMessage={readingMessage}
-          account={account}
-          setIsRegenerating={setIsRegenerating}
-          isRegenerating={isRegenerating}
-        />
-      )}
-
-      {message.author === "AI" && isLastMessage && (
-        <MessageSuggestions message={message} sendMessage={sendMessage} />
-      )}
     </div>
   );
 };

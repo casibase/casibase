@@ -16,7 +16,9 @@ package embedding
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/sashabaranov/go-openai"
@@ -28,12 +30,13 @@ type LocalEmbeddingProvider struct {
 	deploymentName         string
 	secretKey              string
 	providerUrl            string
+	compatibleProvider     string
 	apiVersion             string
 	pricePerThousandTokens float64
 	currency               string
 }
 
-func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, providerUrl string, pricePerThousandTokens float64, currency string) (*LocalEmbeddingProvider, error) {
+func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, providerUrl string, compatibleProvider string, pricePerThousandTokens float64, currency string) (*LocalEmbeddingProvider, error) {
 	p := &LocalEmbeddingProvider{
 		typ:                    typ,
 		subType:                subType,
@@ -41,6 +44,7 @@ func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, pro
 		providerUrl:            providerUrl,
 		pricePerThousandTokens: pricePerThousandTokens,
 		currency:               currency,
+		compatibleProvider:     compatibleProvider,
 	}
 	return p, nil
 }
@@ -48,6 +52,10 @@ func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, pro
 func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	config := openai.DefaultConfig(authToken)
 	config.BaseURL = url
+
+	transport := &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
+	httpClient := http.Client{Transport: transport}
+	config.HTTPClient = &httpClient
 
 	c := openai.NewClientWithConfig(config)
 	return c
@@ -99,13 +107,17 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 		client = getProxyClientFromToken(p.secretKey)
 	} else if p.typ == "Custom" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
-	} else if p.typ == "Ollama" {
-		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+	}
+	model := p.subType
+	if model == "custom-embedding" && p.compatibleProvider != "" {
+		model = p.compatibleProvider
+	} else if model == "custom-embedding" && p.compatibleProvider == "" {
+		return nil, nil, fmt.Errorf("no embedding provider specified")
 	}
 
 	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
 		Input: []string{text},
-		Model: openai.EmbeddingModel(p.subType),
+		Model: openai.EmbeddingModel(model),
 	})
 	if err != nil {
 		return nil, nil, err

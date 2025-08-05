@@ -16,8 +16,10 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/beego/beego/utils/pagination"
+	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -35,6 +37,7 @@ func (c *ApiController) GetGlobalChats() {
 	value := c.Input().Get("value")
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
+	store := c.Input().Get("store")
 
 	if limit == "" || page == "" {
 		chats, err := object.GetGlobalChats()
@@ -46,13 +49,13 @@ func (c *ApiController) GetGlobalChats() {
 		c.ResponseOk(chats)
 	} else {
 		limit := util.ParseInt(limit)
-		count, err := object.GetChatCount("", field, value)
+		count, err := object.GetChatCount("", field, value, store)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		chats, err := object.GetPaginationChat("", paginator.Offset(), limit, field, value, sortField, sortOrder)
+		chats, err := object.GetPaginationChats("", paginator.Offset(), limit, field, value, sortField, sortOrder, store)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -142,6 +145,26 @@ func (c *ApiController) UpdateChat() {
 		return
 	}
 
+	ok := c.IsCurrentUser(chat.User)
+	if !ok {
+		return
+	}
+
+	if conf.IsDemoMode() {
+		originalChat, err := object.GetChat(id)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		if originalChat == nil {
+			c.ResponseError(fmt.Sprintf("The chat: %s is not found", id))
+			return
+		}
+
+		originalChat.ModelProvider = chat.ModelProvider
+		chat = *originalChat
+	}
+
 	success, err := object.UpdateChat(id, &chat)
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -163,6 +186,11 @@ func (c *ApiController) AddChat() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &chat)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	ok := c.IsCurrentUser(chat.User)
+	if !ok {
 		return
 	}
 
@@ -206,15 +234,15 @@ func (c *ApiController) AddChat() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /delete-chat [post]
 func (c *ApiController) DeleteChat() {
-	ok := c.RequireAdmin()
-	if !ok {
-		return
-	}
-
 	var chat object.Chat
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &chat)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	ok := c.IsCurrentUser(chat.User)
+	if !ok {
 		return
 	}
 

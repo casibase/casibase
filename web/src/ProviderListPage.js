@@ -41,6 +41,7 @@ class ProviderListPage extends BaseListPage {
       clientId: "",
       clientSecret: "",
       mcpTools: [],
+      enableThinking: false,
       temperature: 1,
       topP: 1,
       topK: 4,
@@ -52,6 +53,14 @@ class ProviderListPage extends BaseListPage {
       providerUrl: "https://platform.openai.com/account/api-keys",
       apiVersion: "",
       apiKey: "",
+      network: "",
+      userKey: "",
+      userCert: "",
+      signKey: "",
+      signCert: "",
+      compatibleProvider: "",
+      contractName: "",
+      contractMethod: "",
       state: "Active",
     };
   }

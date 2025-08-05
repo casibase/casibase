@@ -15,7 +15,7 @@
 import React from "react";
 import {CheckCircleOutlined, DeleteOutlined, DownOutlined, MinusCircleOutlined, SyncOutlined, UpOutlined} from "@ant-design/icons";
 import {Button, Col, Input, Row, Select, Table, Tag, Tooltip} from "antd";
-import * as Setting from "./Setting";
+import * as Setting from "../Setting";
 
 const {Option} = Select;
 

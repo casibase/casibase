@@ -18,14 +18,14 @@ import * as Setting from "../Setting";
 import i18next from "i18next";
 
 const WelcomeHeader = ({store}) => {
-  const avatar = store?.avatar || Setting.AiAvatar;
+  const avatar = (store === undefined) ? null : store.avatar || Setting.getDefaultAiAvatar();
 
   return (
     <Welcome
       variant="borderless"
       icon={avatar}
-      title={store?.welcomeTitle || i18next.t("chat:Hello, I'm Casibase AI Assistant")}
-      description={store?.welcomeText || i18next.t("chat:I'm here to help answer your questions")}
+      title={(store === undefined) ? null : store.welcomeTitle || i18next.t("chat:Hello, I'm Casibase AI Assistant")}
+      description={(store === undefined) ? null : store.welcomeText || i18next.t("chat:I'm here to help answer your questions")}
     />
   );
 };

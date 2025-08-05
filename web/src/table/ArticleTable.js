@@ -15,10 +15,10 @@
 import React from "react";
 import {Button, Col, Row, Select, Table, Tag} from "antd";
 import {DeleteOutlined, DeploymentUnitOutlined, DownOutlined, FileAddOutlined, OrderedListOutlined, TranslationOutlined, UnorderedListOutlined, UpOutlined} from "@ant-design/icons";
-import * as Setting from "./Setting";
+import * as Setting from "../Setting";
 import i18next from "i18next";
-import * as MessageBackend from "./backend/MessageBackend";
-import MemoTextArea from "./MemoTextArea";
+import * as MessageBackend from "../backend/MessageBackend";
+import MemoTextArea from "../MemoTextArea";
 
 const {Option} = Select;
 

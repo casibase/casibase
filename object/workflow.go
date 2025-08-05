@@ -28,9 +28,10 @@ type Workflow struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
-	Text    string `xorm:"mediumtext" json:"text"`
-	Text2   string `xorm:"mediumtext" json:"text2"`
-	Message string `xorm:"mediumtext" json:"message"`
+	Text             string `xorm:"mediumtext" json:"text"`
+	Text2            string `xorm:"mediumtext" json:"text2"`
+	Message          string `xorm:"mediumtext" json:"message"`
+	QuestionTemplate string `xorm:"mediumtext" json:"questionTemplate"`
 }
 
 func GetMaskedWorkflow(workflow *Workflow, isMaskEnabled bool) *Workflow {
@@ -122,6 +123,13 @@ func UpdateWorkflow(id string, workflow *Workflow) (bool, error) {
 }
 
 func AddWorkflow(workflow *Workflow) (bool, error) {
+	if workflow.Text != "" && workflow.Text2 != "" {
+		message := bpmn.ComparePath(workflow.Text, workflow.Text2)
+		workflow.Message = message
+	} else {
+		workflow.Message = ""
+	}
+
 	affected, err := adapter.engine.Insert(workflow)
 	if err != nil {
 		return false, err
@@ -144,13 +152,13 @@ func (workflow *Workflow) GetId() string {
 }
 
 func GetWorkflowCount(owner string, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Workflow{})
 }
 
 func GetPaginationWorkflows(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Workflow, error) {
 	workflows := []*Workflow{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&workflows)
 	if err != nil {
 		return workflows, err

@@ -40,13 +40,13 @@ type ModelProvider interface {
 	QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error)
 }
 
-func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string, compitableProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string) (ModelProvider, error) {
+func GetModelProvider(typ string, subType string, clientId string, clientSecret string, userKey string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string, compatibleProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string, enableThinking bool) (ModelProvider, error) {
 	var p ModelProvider
 	var err error
 	if typ == "Ollama" {
 		p, err = NewLocalModelProvider("Custom-think", "custom-model", "randomString", temperature, topP, 0, 0, providerUrl, subType, inputPricePerThousandTokens, outputPricePerThousandTokens, Currency)
 	} else if typ == "Local" {
-		p, err = NewLocalModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl, compitableProvider, inputPricePerThousandTokens, outputPricePerThousandTokens, Currency)
+		p, err = NewLocalModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl, compatibleProvider, inputPricePerThousandTokens, outputPricePerThousandTokens, Currency)
 	} else if typ == "OpenAI" {
 		p, err = NewOpenAiModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty)
 	} else if typ == "Gemini" {
@@ -56,13 +56,15 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	} else if typ == "Hugging Face" {
 		p, err = NewHuggingFaceModelProvider(subType, clientSecret, temperature)
 	} else if typ == "Claude" {
-		p, err = NewClaudeModelProvider(subType, clientSecret)
+		p, err = NewClaudeModelProvider(subType, clientSecret, enableThinking, topK)
+	} else if typ == "Grok" {
+		p, err = NewGrokModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "OpenRouter" {
 		p, err = NewOpenRouterModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "Baidu Cloud" {
-		p, err = NewBaiduCloudModelProvider(subType, clientId, temperature, topP)
+		p, err = NewBaiduCloudModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "iFlytek" {
-		p, err = NewiFlytekModelProvider(subType, clientSecret, temperature, topK)
+		p, err = NewiFlytekModelProvider(subType, clientSecret, clientId, userKey, temperature, topK)
 	} else if typ == "ChatGLM" {
 		p, err = NewChatGLMModelProvider(subType, clientSecret)
 	} else if typ == "MiniMax" {
@@ -95,6 +97,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewDummyModelProvider(subType)
 	} else if typ == "GitHub" {
 		p, err = NewGitHubModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty)
+	} else if typ == "Writer" {
+		p, err = NewWriterModelProvider(subType, clientSecret, temperature, topP)
 	} else {
 		return nil, nil
 	}

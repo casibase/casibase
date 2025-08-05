@@ -18,7 +18,6 @@ import (
 	"fmt"
 
 	"github.com/casibase/casibase/agent"
-
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/util"
@@ -48,7 +47,7 @@ func getModelProviderFromName(owner string, providerName string) (*Provider, mod
 	if provider.Category != "Model" {
 		return nil, nil, fmt.Errorf("The model provider: %s is expected to be \"Model\" category, got: \"%s\"", provider.GetId(), provider.Category)
 	}
-	if provider.ClientSecret == "" && provider.Type != "Dummy" {
+	if provider.ClientSecret == "" && provider.Type != "Dummy" && provider.Type != "Ollama" {
 		return nil, nil, fmt.Errorf("The model provider: %s's client secret should not be empty", provider.GetId())
 	}
 
@@ -155,16 +154,56 @@ func getActiveCloudProviders(owner string) ([]*Provider, error) {
 	return res, nil
 }
 
-func getActiveBlockchainProvider(owner string) (*Provider, error) {
+func GetActiveBlockchainProvider(owner string) (*Provider, error) {
 	providers, err := GetProviders(owner)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, provider := range providers {
-		if provider.ClientId != "" && provider.ClientSecret != "" && provider.Category == "Blockchain" && provider.State == "Active" {
+		if provider.Category == "Blockchain" && provider.IsDefault && provider.State == "Active" {
+			return provider, nil
+		}
+	}
+
+	for _, provider := range providers {
+		if ((provider.ClientId != "" && provider.ClientSecret != "") || (provider.ClientSecret != "" && provider.Type == "Ethereum") || provider.Type == "ChainMaker") && provider.Category == "Blockchain" && provider.State == "Active" {
 			return provider, nil
 		}
 	}
 	return nil, nil
+}
+
+func GetTwoActiveBlockchainProvider(owner string) (*Provider, *Provider, error) {
+	providers, err := GetProviders(owner)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var providerFirst, providerSecond *Provider
+	// Try to find the first default active blockchain provider
+	for _, provider := range providers {
+		if provider.Category == "Blockchain" && provider.IsDefault && provider.State == "Active" {
+			providerFirst = provider
+			break
+		}
+	}
+
+	// If the first provider is not found, try to find the first active blockchain provider,
+	// then find the second active blockchain provider
+	for _, provider := range providers {
+		if ((provider.ClientId != "" && provider.ClientSecret != "") || (provider.ClientSecret != "" && provider.Type == "Ethereum") || provider.Type == "ChainMaker") && provider.Category == "Blockchain" && provider.State == "Active" {
+			if providerFirst == nil {
+				providerFirst = provider
+			} else if provider.GetId() != providerFirst.GetId() {
+				providerSecond = provider
+				break
+			}
+		}
+	}
+	return providerFirst, providerSecond, nil
+}
+
+func generateProviderKey() string {
+	return fmt.Sprintf("sk-%s", util.GetRandomString(24))
 }

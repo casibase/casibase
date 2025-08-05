@@ -38,6 +38,7 @@ type WebConfig struct {
 	IframeUrl          string   `json:"iframeUrl"`
 	ForceLanguage      string   `json:"forceLanguage"`
 	DefaultLanguage    string   `json:"defaultLanguage"`
+	StaticBaseUrl      string   `json:"staticBaseUrl"`
 	HtmlTitle          string   `json:"htmlTitle"`
 	FaviconUrl         string   `json:"faviconUrl"`
 	LogoUrl            string   `json:"logoUrl"`
@@ -115,6 +116,12 @@ func GetConfigString(key string) string {
 			res = "{\"filename\": \"logs/casibase.log\", \"maxdays\":99999, \"perm\":\"0770\"}"
 		} else if key == "avatarErrorUrl" {
 			res = "https://cdn.casibase.org/gravatar/error.png"
+		}
+	}
+
+	if key == "staticBaseUrl" {
+		if strings.HasSuffix(beego.AppConfig.String("casdoorEndpoint"), ".casdoor.net") && res == "https://cdn.casibase.org" {
+			res = "https://cdn.casibase.com"
 		}
 	}
 
@@ -208,6 +215,7 @@ func GetWebConfig() *WebConfig {
 	config.IframeUrl = GetConfigString("iframeUrl")
 	config.ForceLanguage = GetConfigString("forceLanguage")
 	config.DefaultLanguage = GetLanguage(GetConfigString("defaultLanguage"))
+	config.StaticBaseUrl = GetConfigString("staticBaseUrl")
 	config.HtmlTitle = GetConfigString("htmlTitle")
 	config.FaviconUrl = GetConfigString("faviconUrl")
 	config.LogoUrl = GetConfigString("logoUrl")

@@ -150,13 +150,13 @@ func (task *Task) GetId() string {
 }
 
 func GetTaskCount(owner string, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Task{})
 }
 
 func GetPaginationTasks(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Task, error) {
 	tasks := []*Task{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&tasks)
 	if err != nil {
 		return tasks, err

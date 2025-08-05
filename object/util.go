@@ -19,7 +19,9 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/util"
+	"github.com/sashabaranov/go-openai"
 	"xorm.io/xorm"
 )
 
@@ -34,7 +36,7 @@ func getUrlFromPath(path string, origin string) (string, error) {
 	return res, err
 }
 
-func GetSession(owner string, offset, limit int, field, value, sortField, sortOrder string) *xorm.Session {
+func GetDbSession(owner string, offset, limit int, field, value, sortField, sortOrder string) *xorm.Session {
 	session := adapter.engine.Prepare()
 	if offset != -1 && limit != -1 {
 		session.Limit(limit, offset)
@@ -56,4 +58,30 @@ func GetSession(owner string, offset, limit int, field, value, sortField, sortOr
 		session = session.Desc(util.SnakeString(sortField))
 	}
 	return session
+}
+
+func isAdmin(user *casdoorsdk.User) bool {
+	if user == nil {
+		return false
+	}
+
+	res := user.IsAdmin || user.Type == "chat-admin"
+	return res
+}
+
+func isRetryableError(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	retryableErrors := []string{
+		string(openai.RunErrorRateLimitExceeded),
+	}
+
+	for _, retryableErr := range retryableErrors {
+		if strings.Contains(err.Error(), retryableErr) {
+			return true
+		}
+	}
+	return false
 }

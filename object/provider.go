@@ -42,13 +42,15 @@ type Provider struct {
 	ClientId           string            `xorm:"varchar(100)" json:"clientId"`
 	ClientSecret       string            `xorm:"varchar(2000)" json:"clientSecret"`
 	Region             string            `xorm:"varchar(100)" json:"region"`
-	ApiKey             string            `xorm:"varchar(100)" json:"apiKey"`
+	ProviderKey        string            `xorm:"varchar(100)" json:"providerKey"`
 	ProviderUrl        string            `xorm:"varchar(200)" json:"providerUrl"`
 	ApiVersion         string            `xorm:"varchar(100)" json:"apiVersion"`
-	CompitableProvider string            `xorm:"varchar(100)" json:"compitableProvider"`
+	CompatibleProvider string            `xorm:"varchar(100)" json:"compatibleProvider"`
 	McpTools           []*agent.McpTools `xorm:"text" json:"mcpTools"`
 	Text               string            `xorm:"mediumtext" json:"text"`
+	ConfigText         string            `xorm:"mediumtext" json:"configText"`
 
+	EnableThinking   bool    `json:"enableThinking"`
 	Temperature      float32 `xorm:"float" json:"temperature"`
 	TopP             float32 `xorm:"float" json:"topP"`
 	TopK             int     `xorm:"int" json:"topK"`
@@ -59,68 +61,19 @@ type Provider struct {
 	OutputPricePerThousandTokens float64 `xorm:"DECIMAL(10, 4)" json:"outputPricePerThousandTokens"`
 	Currency                     string  `xorm:"varchar(100)" json:"currency"`
 
-	Network     string `xorm:"varchar(100)" json:"network"`
-	Chain       string `xorm:"varchar(100)" json:"chain"`
-	TestContent string `xorm:"varchar(100)" json:"testContent"`
-	IsDefault   bool   `json:"isDefault"`
-	State       string `xorm:"varchar(100)" json:"state"`
-	BrowserUrl  string `xorm:"varchar(200)" json:"browserUrl"`
-}
+	UserKey        string `xorm:"varchar(1000)" json:"userKey"`
+	UserCert       string `xorm:"mediumtext" json:"userCert"`
+	SignKey        string `xorm:"varchar(1000)" json:"signKey"`
+	SignCert       string `xorm:"mediumtext" json:"signCert"`
+	ContractName   string `xorm:"varchar(100)" json:"contractName"`
+	ContractMethod string `xorm:"varchar(100)" json:"contractMethod"`
+	Network        string `xorm:"varchar(100)" json:"network"`
+	Chain          string `xorm:"varchar(100)" json:"chain"`
+	TestContent    string `xorm:"varchar(100)" json:"testContent"`
 
-// GetProviderByApiKey retrieves a provider using the API key
-func GetProviderByApiKey(apiKey string) (*Provider, error) {
-	if apiKey == "" {
-		return nil, fmt.Errorf("empty API key")
-	}
-
-	provider := &Provider{}
-
-	// Try to find in main database first
-	existed, err := adapter.engine.Where("api_key = ?", apiKey).Get(provider)
-	if err != nil {
-		return nil, err
-	}
-
-	// If not found in main database, try provider adapter
-	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.Where("api_key = ?", apiKey).Get(provider)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if existed {
-		return provider, nil
-	}
-
-	return nil, nil
-}
-
-// GetModelProviderByApiKey retrieves both the provider and its model provider by API key
-func GetModelProviderByApiKey(apiKey string) (model.ModelProvider, error) {
-	provider, err := GetProviderByApiKey(apiKey)
-	if err != nil {
-		return nil, err
-	}
-
-	if provider == nil {
-		return nil, fmt.Errorf("The provider is not found")
-	}
-
-	// Ensure it's a model provider
-	if provider.Category != "Model" {
-		return nil, fmt.Errorf("The model provider: %s is not found", provider.Name)
-	}
-
-	modelProvider, err := provider.GetModelProvider()
-	if err != nil {
-		return nil, err
-	}
-	if modelProvider == nil {
-		return nil, fmt.Errorf("The model provider: %s is not found", provider.Name)
-	}
-
-	return modelProvider, nil
+	IsDefault  bool   `json:"isDefault"`
+	State      string `xorm:"varchar(100)" json:"state"`
+	BrowserUrl string `xorm:"varchar(200)" json:"browserUrl"`
 }
 
 func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.User) *Provider {
@@ -135,8 +88,20 @@ func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.
 	if provider.ClientSecret != "" {
 		provider.ClientSecret = "***"
 	}
-	if provider.ApiKey != "" && (user == nil || user.Name != "admin") {
-		provider.ApiKey = "***"
+
+	if !isAdmin(user) {
+		if provider.ProviderKey != "" {
+			provider.ProviderKey = "***"
+		}
+		if provider.UserKey != "" {
+			provider.UserKey = "***"
+		}
+		if provider.ConfigText != "" {
+			provider.ConfigText = "***"
+		}
+		if provider.SignKey != "" {
+			provider.SignKey = "***"
+		}
 	}
 
 	return provider
@@ -151,16 +116,6 @@ func GetMaskedProviders(providers []*Provider, isMaskEnabled bool, user *casdoor
 		provider = GetMaskedProvider(provider, isMaskEnabled, user)
 	}
 	return providers
-}
-
-func getFilteredProviders(providers []*Provider, needStorage bool) []*Provider {
-	res := []*Provider{}
-	for _, provider := range providers {
-		if (needStorage && provider.Category == "Storage") || (!needStorage && provider.Category != "Storage") {
-			res = append(res, provider)
-		}
-	}
-	return res
 }
 
 func GetGlobalProviders() ([]*Provider, error) {
@@ -236,156 +191,9 @@ func GetProvider(id string) (*Provider, error) {
 	return getProvider(owner, name)
 }
 
-func GetDefaultStorageProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Storage"}
-	existed, err := adapter.engine.Get(&provider)
-	if err != nil {
-		return &provider, err
-	}
-
-	if !existed {
-		return nil, nil
-	}
-
-	return &provider, nil
-}
-
-func GetDefaultVideoProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Video"}
-	existed, err := adapter.engine.Get(&provider)
-	if err != nil {
-		return &provider, err
-	}
-
-	if !existed {
-		return nil, nil
-	}
-
-	return &provider, nil
-}
-
-func GetDefaultModelProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Model", IsDefault: true}
-	existed, err := adapter.engine.UseBool().Get(&provider)
-	if err != nil {
-		return &provider, err
-	}
-
-	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.UseBool().Get(&provider)
-		if err != nil {
-			return &provider, err
-		}
-	}
-
-	if !existed {
-		return nil, nil
-	}
-
-	return &provider, nil
-}
-
-func GetDefaultEmbeddingProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Embedding", IsDefault: true}
-	existed, err := adapter.engine.UseBool().Get(&provider)
-	if err != nil {
-		return &provider, err
-	}
-
-	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.UseBool().Get(&provider)
-		if err != nil {
-			return &provider, err
-		}
-	}
-
-	if !existed {
-		return nil, nil
-	}
-
-	return &provider, nil
-}
-
-func GetDefaultAgentProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Agent", IsDefault: true}
-	existed, err := adapter.engine.UseBool().Get(&provider)
-	if err != nil {
-		return &provider, err
-	}
-
-	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.UseBool().Get(&provider)
-		if err != nil {
-			return &provider, err
-		}
-	}
-
-	if !existed {
-		return nil, nil
-	}
-
-	return &provider, nil
-}
-
-func GetDefaultTextToSpeechProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Text-to-Speech", IsDefault: true}
-	existed, err := adapter.engine.UseBool().Get(&provider)
-	if err != nil {
-		return &provider, err
-	}
-
-	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.UseBool().Get(&provider)
-		if err != nil {
-			return &provider, err
-		}
-	}
-
-	if !existed {
-		return nil, nil
-	}
-
-	return &provider, nil
-}
-
-func GetDefaultSpeechToTextProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Speech-to-Text"}
-	existed, err := adapter.engine.Get(&provider)
-	if err != nil {
-		return &provider, err
-	}
-
-	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.Get(&provider)
-		if err != nil {
-			return &provider, err
-		}
-	}
-
-	if !existed {
-		return nil, nil
-	}
-
-	return &provider, nil
-}
-
-func GetDefaultMachineProvider() (*Provider, error) {
-	provider := Provider{Owner: "admin", Category: "Machine"}
-	existed, err := adapter.engine.Get(&provider)
-	if err != nil {
-		return &provider, err
-	}
-
-	if !existed {
-		return nil, nil
-	}
-
-	return &provider, nil
-}
-
 func UpdateProvider(id string, provider *Provider) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	p, err := getProvider(owner, name)
+	providerDb, err := getProvider(owner, name)
 	if err != nil {
 		return false, err
 	}
@@ -393,17 +201,7 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 		return false, nil
 	}
 
-	if provider.ClientSecret == "***" {
-		provider.ClientSecret = p.ClientSecret
-	}
-
-	if provider.ApiKey == "" && provider.Category == "Model" {
-		provider.ApiKey = generateApiKey()
-	}
-
-	if provider.Type == "Ollama" && provider.ProviderUrl != "" && !strings.HasPrefix(provider.ProviderUrl, "http") {
-		provider.ProviderUrl = "http://" + provider.ProviderUrl
-	}
+	provider.processProviderParams(providerDb)
 
 	if providerAdapter != nil && provider.Category != "Storage" {
 		_, err = providerAdapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
@@ -424,13 +222,9 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 	return true, nil
 }
 
-func generateApiKey() string {
-	return fmt.Sprintf("sk-%s", util.GetRandomString(24))
-}
-
 func AddProvider(provider *Provider) (bool, error) {
-	if provider.ApiKey == "" && provider.Category == "Model" {
-		provider.ApiKey = generateApiKey()
+	if provider.ProviderKey == "" && provider.Category == "Model" {
+		provider.ProviderKey = generateProviderKey()
 	}
 
 	if providerAdapter != nil && provider.Category != "Storage" {
@@ -472,6 +266,20 @@ func (provider *Provider) GetId() string {
 	return fmt.Sprintf("%s/%s", provider.Owner, provider.Name)
 }
 
+func GetDefaultKubernetesProvider() (*Provider, error) {
+	providers, err := GetProviders("admin")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get providers: %v", err)
+	}
+
+	for _, provider := range providers {
+		if provider.Category == "Private Cloud" && provider.Type == "Kubernetes" && provider.State == "Active" {
+			return provider, nil
+		}
+	}
+	return nil, fmt.Errorf("no Kubernetes provider found")
+}
+
 func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
 	pProvider, err := storage.GetStorageProvider(p.Type, p.ClientId, p.Name)
 	if err != nil {
@@ -486,7 +294,7 @@ func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompitableProvider, p.InputPricePerThousandTokens, p.OutputPricePerThousandTokens, p.Currency)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.UserKey, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompatibleProvider, p.InputPricePerThousandTokens, p.OutputPricePerThousandTokens, p.Currency, p.EnableThinking)
 	if err != nil {
 		return nil, err
 	}
@@ -612,13 +420,13 @@ func GetAgentClients(agentProviderObj agent.AgentProvider) (*agent.AgentClients,
 }
 
 func GetProviderCount(owner, field, value string) (int64, error) {
-	session := GetSession(owner, -1, -1, field, value, "", "")
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&Provider{})
 }
 
 func GetPaginationProviders(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Provider, error) {
 	providers := []*Provider{}
-	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&providers)
 	if err != nil {
 		return providers, err
@@ -635,4 +443,29 @@ func RefreshMcpTools(provider *Provider) error {
 
 	provider.McpTools = tools
 	return nil
+}
+
+func (p *Provider) processProviderParams(providerDb *Provider) {
+	if p.ClientSecret == "***" {
+		p.ClientSecret = providerDb.ClientSecret
+	}
+	if p.UserKey == "***" {
+		p.UserKey = providerDb.UserKey
+	}
+	if p.SignKey == "***" {
+		p.SignKey = providerDb.SignKey
+	}
+	if p.ProviderKey == "" && p.Category == "Model" {
+		p.ProviderKey = generateProviderKey()
+	}
+
+	if p.Type == "Ollama" && p.ProviderUrl != "" && !strings.HasPrefix(p.ProviderUrl, "http") {
+		p.ProviderUrl = "http://" + p.ProviderUrl
+	}
+	if p.Category == "Model" && p.Type == "OpenAI" && (strings.Contains(p.SubType, "o1") || strings.Contains(p.SubType, "o3") || strings.Contains(p.SubType, "o4")) {
+		p.Temperature = 1
+		p.TopP = 1
+		p.FrequencyPenalty = 0
+		p.PresencePenalty = 0
+	}
 }

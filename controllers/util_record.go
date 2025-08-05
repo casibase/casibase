@@ -22,11 +22,10 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-func addRecord(c *ApiController, userName string, requestUri string) {
+func addRecord(c *ApiController, userName string, requestUri string) error {
 	record, err := object.NewRecord(c.Ctx)
 	if err != nil {
-		fmt.Printf("addRecord() error: %s\n", err.Error())
-		return
+		return fmt.Errorf("NewRecord() error: %s\n", err.Error())
 	}
 
 	record.User = userName
@@ -36,10 +35,11 @@ func addRecord(c *ApiController, userName string, requestUri string) {
 
 	record.Organization = conf.GetConfigString("casdoorOrganization")
 
-	object.AddRecord(record)
+	_, _, err = object.AddRecord(record)
+	return err
 }
 
-func addRecordForFile(c *ApiController, userName string, action string, sessionId string, key string, filename string, isLeaf bool) {
+func addRecordForFile(c *ApiController, userName string, action string, sessionId string, key string, filename string, isLeaf bool) error {
 	typ := "Folder"
 	if isLeaf {
 		typ = "File"
@@ -53,5 +53,6 @@ func addRecordForFile(c *ApiController, userName string, action string, sessionI
 	}
 
 	text := fmt.Sprintf("%s%s, Session: %s, Path: %s", action, typ, storeName, path)
-	addRecord(c, userName, text)
+	err := addRecord(c, userName, text)
+	return err
 }

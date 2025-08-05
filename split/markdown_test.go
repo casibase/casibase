@@ -84,3 +84,55 @@ There is also an HTML table:
 		panic(fmt.Errorf("markdown test failed: did not get the expected result"))
 	}
 }
+
+func TestExtractMarkdownTree(t *testing.T) {
+	text := `# main title
+
+This is the content of the main title.
+
+## sub title 1
+
+This is the content of the sub title 1.
+
+### sub title 1.1
+
+This is the content of the sub title 1.1.
+
+## sub title 2
+
+This is the content of the sub title 2.
+
+Second paragraph.
+
+# another main title
+
+This is the content of the another main title.
+
+## another sub title
+
+This is the content of the another sub title.
+`
+
+	headingsMap := ExtractMarkdownTree(text)
+
+	expectedMap := map[string]string{
+		"# main title":                                      "This is the content of the main title.",
+		"# main title > ## sub title 1":                     "This is the content of the sub title 1.",
+		"# main title > ## sub title 1 > ### sub title 1.1": "This is the content of the sub title 1.1.",
+		"# main title > ## sub title 2":                     "This is the content of the sub title 2.\nSecond paragraph.",
+		"# another main title":                              "This is the content of the another main title.",
+		"# another main title > ## another sub title":       "This is the content of the another sub title.",
+	}
+
+	if len(headingsMap) != len(expectedMap) {
+		t.Fatalf("Expected %d headings, got %d", len(expectedMap), len(headingsMap))
+	}
+
+	for key, expectedValue := range expectedMap {
+		if value, exists := headingsMap[key]; !exists {
+			t.Errorf("Expected key '%s' not found in result", key)
+		} else if value != expectedValue {
+			t.Errorf("For key '%s':\nExpected:\n%s\nGot:\n%s", key, expectedValue, value)
+		}
+	}
+}

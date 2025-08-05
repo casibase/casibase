@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {notification} from "antd";
+import {CloseOutlined} from "@ant-design/icons";
 import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as Conf from "./Conf";
-import {notification} from "antd";
-import {CloseOutlined} from "@ant-design/icons";
 
 class PreviewInterceptor {
   constructor(getAccount, history) {
@@ -34,6 +34,9 @@ class PreviewInterceptor {
   handleButtonClick(event) {
     const button = event.target.closest("button");
     if (button) {
+      if (button.dataset.previewAllow) {
+        return;
+      }
       const buttonSpan = button.querySelector("span[aria-label]");
       if (buttonSpan && !this.bannedMessageActions.includes(buttonSpan.getAttribute("aria-label"))) {
         return;
@@ -43,7 +46,7 @@ class PreviewInterceptor {
       }
       const titleEl = button.querySelector("title");
       const titleText = titleEl?.textContent;
-      if (titleText === "Stop Loading") {
+      if (titleText === "Stop Loading" || titleText === "Speech Recording") {
         return;
       }
       if (button.innerText !== "" && !this.bannededButtonTexts.includes(button.innerText.replace(/\s+/g, ""))) {
@@ -97,14 +100,12 @@ class PreviewInterceptor {
       message: (
         <div style={{display: "flex", alignItems: "center"}}>
           <img
-            className="notification-icon" style={{width: "15%", height: "15%", marginRight: "5%"}} src={`${Setting.StaticBaseUrl}/img/hushed-face.svg`}
+            className="notification-icon" style={{width: "15%", height: "15%", marginRight: "5%"}} src={`${Conf.StaticBaseUrl}/img/hushed-face.svg`}
           />
           <div style={{display: "flex", flexDirection: "column"}}>
-            {/* 右上文本 */}
             <span style={{fontSize: "18px", fontWeight: "bold", marginBottom: "10px"}}>
               {i18next.t("login:Please log in to use this feature")}
             </span>
-            {/* 右下文本 */}
             <span style={{fontSize: "14px", color: "#555"}}>
               {i18next.t("login:You will be redirected to the login page shortly")}
             </span>

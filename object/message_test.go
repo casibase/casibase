@@ -85,7 +85,7 @@ func TestUpdateMessagePrices(t *testing.T) {
 				panic(err)
 			}
 
-			messages, err := model.OpenaiRawMessagesToGpt4VisionMessages(rawMessages)
+			messages, err := model.OpenaiRawMessagesToGptVisionMessages(rawMessages)
 			if err != nil {
 				panic(err)
 			}

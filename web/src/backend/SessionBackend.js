@@ -1,4 +1,4 @@
-// Copyright 2024 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The Casibase Authors.. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,57 +13,24 @@
 // limitations under the License.
 
 import * as Setting from "../Setting";
-import {Connected} from "../SessionListPage";
 
-export function getSessions(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "", status = Connected) {
-  return fetch(`${Setting.ServerUrl}/api/get-sessions?owner=${owner}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}&status=${status}`, {
+export function getSessions(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
+  return fetch(`${Setting.ServerUrl}/api/get-sessions?owner=${owner}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
     method: "GET",
     credentials: "include",
-  }).then(res => res.json());
-}
-
-export function getSession(owner, name) {
-  return fetch(`${Setting.ServerUrl}/api/get-session?id=${owner}/${encodeURIComponent(name)}`, {
-    method: "GET",
-    credentials: "include",
-  }).then(res => res.json());
-}
-
-export function updateSession(owner, name, session) {
-  const newSession = Setting.deepCopy(session);
-  return fetch(`${Setting.ServerUrl}/api/update-session?id=${owner}/${encodeURIComponent(name)}`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify(newSession),
-  }).then(res => res.json());
-}
-
-export function addNodeTunnel(nodeId, mode = "guacd") {
-  return fetch(`${Setting.ServerUrl}/api/add-node-tunnel?nodeId=${nodeId}&mode=${mode}`, {
-    method: "POST",
-    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
 export function deleteSession(session) {
-  const newSession = Setting.deepCopy(session);
   return fetch(`${Setting.ServerUrl}/api/delete-session`, {
     method: "POST",
     credentials: "include",
-    body: JSON.stringify(newSession),
-  }).then(res => res.json());
-}
-
-export function connect(sessionId) {
-  return fetch(`${Setting.ServerUrl}/api/start-session?id=${sessionId}`, {
-    method: "POST",
-    credentials: "include",
-  }).then(res => res.json());
-}
-
-export function disconnect(sessionId) {
-  return fetch(`${Setting.ServerUrl}/api/stop-session?id=${sessionId}`, {
-    method: "POST",
-    credentials: "include",
+    body: JSON.stringify(session),
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }

@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import React from "react";
-import {DeleteOutlined, DownOutlined, UpOutlined} from "@ant-design/icons";
 import {Button, Col, Input, Row, Table, Tooltip} from "antd";
-import * as Setting from "./Setting";
+import {DeleteOutlined, DownOutlined, UpOutlined} from "@ant-design/icons";
+import * as Setting from "../Setting";
+import i18next from "i18next";
 
-class RemoteAppTable extends React.Component {
+class FormItemTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,30 +30,16 @@ class RemoteAppTable extends React.Component {
     this.props.onUpdateTable(table);
   }
 
-  parseField(key, value) {
-    if (["no", "port", "processId"].includes(key)) {
-      value = Setting.myParseInt(value);
-    }
-    return value;
-  }
-
   updateField(table, index, key, value) {
-    value = this.parseField(key, value);
-
     table[index][key] = value;
     this.updateTable(table);
   }
 
   addRow(table) {
+    const row = {name: `column${table.length}`, label: `Column ${table.length}`, type: "Text", width: "100"};
     if (table === undefined) {
       table = [];
     }
-    const row = {
-      no: table.length,
-      remoteAppName: "||cmd",
-      remoteAppDir: "C:\\Windows\\\\System32\\cmd.exe",
-      remoteAppArgs: ""};
-
     table = Setting.addRow(table, row);
     this.updateTable(table);
   }
@@ -75,71 +62,76 @@ class RemoteAppTable extends React.Component {
   renderTable(table) {
     const columns = [
       {
-        title: "No.",
+        title: i18next.t("general:No."),
         dataIndex: "no",
         key: "no",
-        width: "30px",
-        render: (text, record, index) => {
-          return (
-            <Input value={text} onChange={e => {
-              this.updateField(table, index, "no", e.target.value);
-            }} />
-          );
-        },
-      },
-      {
-        title: "Remote App",
-        dataIndex: "remoteAppName",
-        key: "remoteAppName",
         width: "60px",
         render: (text, record, index) => {
-          return (
-            <Input value={text} onChange={e => {
-              this.updateField(table, index, "remoteAppName", e.target.value);
-            }} />
-          );
+          return (index + 1);
         },
       },
       {
-        title: "Remote App Dir",
-        dataIndex: "remoteAppDir",
-        key: "remoteAppDir",
-        width: "300px",
+        title: i18next.t("general:Name"),
+        dataIndex: "name",
+        key: "name",
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
-              this.updateField(table, index, "remoteAppDir", e.target.value);
+              this.updateField(table, index, "name", e.target.value);
             }} />
           );
         },
       },
       {
-        title: "Remote App Args",
-        dataIndex: "remoteAppArgs",
-        key: "remoteAppArgs",
-        width: "180px",
+        title: i18next.t("general:Label"),
+        dataIndex: "label",
+        key: "label",
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
-              this.updateField(table, index, "remoteAppArgs", e.target.value);
+              this.updateField(table, index, "label", e.target.value);
             }} />
           );
         },
       },
       {
-        title: "Action",
+        title: i18next.t("general:Type"),
+        dataIndex: "type",
+        key: "type",
+        render: (text, record, index) => {
+          return (
+            <Input value={text} onChange={e => {
+              this.updateField(table, index, "type", e.target.value);
+            }} />
+          );
+        },
+      },
+      {
+        title: i18next.t("form:Width"),
+        dataIndex: "width",
+        key: "width",
+        render: (text, record, index) => {
+          return (
+            <Input value={text} onChange={e => {
+              this.updateField(table, index, "width", e.target.value);
+            }} />
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Action"),
         key: "action",
         width: "100px",
         render: (text, record, index) => {
           return (
             <div>
-              <Tooltip placement="bottomLeft" title={"Up"}>
+              <Tooltip placement="bottomLeft" title={i18next.t("general:Up")}>
                 <Button style={{marginRight: "5px"}} disabled={index === 0} icon={<UpOutlined />} size="small" onClick={() => this.upRow(table, index)} />
               </Tooltip>
-              <Tooltip placement="topLeft" title={"Down"}>
+              <Tooltip placement="topLeft" title={i18next.t("general:Down")}>
                 <Button style={{marginRight: "5px"}} disabled={index === table.length - 1} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />
               </Tooltip>
-              <Tooltip placement="topLeft" title={"Delete"}>
+              <Tooltip placement="topLeft" title={i18next.t("general:Delete")}>
                 <Button icon={<DeleteOutlined />} size="small" onClick={() => this.deleteRow(table, index)} />
               </Tooltip>
             </div>
@@ -149,11 +141,11 @@ class RemoteAppTable extends React.Component {
     ];
 
     return (
-      <Table rowKey="index" columns={columns} dataSource={table} size="middle" bordered pagination={false}
+      <Table scroll={{x: "max-content"}} rowKey="name" columns={columns} dataSource={table} size="middle" bordered pagination={false}
         title={() => (
           <div>
             {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
-            <Button style={{marginRight: "5px"}} type="primary" size="small" onClick={() => this.addRow(table)}>{"Add"}</Button>
+            <Button style={{marginRight: "5px"}} type="primary" size="small" onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
           </div>
         )}
       />
@@ -175,4 +167,4 @@ class RemoteAppTable extends React.Component {
   }
 }
 
-export default RemoteAppTable;
+export default FormItemTable;

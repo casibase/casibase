@@ -143,10 +143,11 @@ class ArticleListPage extends BaseListPage {
             return null;
           }
 
+          const jsonText = JSON.stringify(text);
           return (
-            <Tooltip placement="left" title={Setting.getShortText(text, 1000)}>
+            <Tooltip placement="left" title={Setting.getShortText(jsonText, 1000)}>
               <div style={{maxWidth: "300px"}}>
-                {Setting.getShortText(text, 100)}
+                {Setting.getShortText(jsonText, 100)}
               </div>
             </Tooltip>
           );

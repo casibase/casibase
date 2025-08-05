@@ -43,7 +43,7 @@ func (c *ApiController) ChatCompletions() {
 	apiKey = strings.TrimPrefix(apiKey, "Bearer ")
 
 	// Get the model provider based on API key
-	modelProvider, err := object.GetModelProviderByApiKey(apiKey)
+	modelProvider, err := object.GetModelProviderByProviderKey(apiKey)
 	if err != nil {
 		c.ResponseError(fmt.Sprintf("Authentication failed: %s", err.Error()))
 		return
