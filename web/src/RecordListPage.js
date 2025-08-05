@@ -379,7 +379,19 @@ class RecordListPage extends BaseListPage {
             );
           }
 
-          const formattedText = JSON.stringify(JSON.parse(text), null, 2);
+          let formattedText;
+          let isValidJson = false;
+
+          try {
+            // Try to parse and format JSON
+            const parsedJson = JSON.parse(text);
+            formattedText = JSON.stringify(parsedJson, null, 2);
+            isValidJson = true;
+          } catch (error) {
+            // If parsing fails, use original text
+            formattedText = text;
+            isValidJson = false;
+          }
 
           return (
             <Popover
@@ -389,7 +401,7 @@ class RecordListPage extends BaseListPage {
                   <CodeMirror
                     value={formattedText}
                     options={{
-                      mode: "application/json",
+                      mode: isValidJson ? "application/json" : "text/plain",
                       theme: "material-darker",
                       readOnly: true,
                       lineNumbers: true,
