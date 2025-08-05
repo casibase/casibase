@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Popover, Switch, Table, Tooltip} from "antd";
+import {Alert, Button, Popconfirm, Popover, Switch, Table, Tooltip, Typography} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as RecordBackend from "./backend/RecordBackend";
@@ -379,17 +379,35 @@ class RecordListPage extends BaseListPage {
             );
           }
 
-          const formattedText = JSON.stringify(JSON.parse(text), null, 2);
+          let formattedText;
+          let isValidJson = false;
+          let errorMessage;
+
+          try {
+            // Try to parse and format JSON
+            const parsedJson = JSON.parse(text);
+            formattedText = JSON.stringify(parsedJson, null, 2);
+            isValidJson = true;
+          } catch (error) {
+            // If parsing fails, use original text
+            formattedText = text;
+            isValidJson = false;
+            errorMessage = error.message;
+          }
 
           return (
             <Popover
               placement="right"
               content={
-                <div style={{width: "600px", height: "400px"}}>
+                <div style={{width: "600px", height: "400px", display: "flex", flexDirection: "column", gap: "12px"}}>
+                  {!isValidJson && (
+                    <Alert type="error" showIcon message={
+                      <Typography.Paragraph ellipsis={{expandable: "collapsible"}} style={{margin: 0}}>{errorMessage}</Typography.Paragraph>}
+                    />)}
                   <CodeMirror
                     value={formattedText}
                     options={{
-                      mode: "application/json",
+                      mode: isValidJson ? "application/json" : "text/plain",
                       theme: "material-darker",
                       readOnly: true,
                       lineNumbers: true,
