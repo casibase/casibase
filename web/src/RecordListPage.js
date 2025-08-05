@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Popover, Switch, Table, Tooltip} from "antd";
+import {Alert, Button, Popconfirm, Popover, Switch, Table, Tooltip} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as RecordBackend from "./backend/RecordBackend";
@@ -398,6 +398,7 @@ class RecordListPage extends BaseListPage {
               placement="right"
               content={
                 <div style={{width: "600px", height: "400px"}}>
+                  {!isValidJson && <Alert message="JSON parse failed" type="error" style={{marginBottom: "12px"}} />}
                   <CodeMirror
                     value={formattedText}
                     options={{
