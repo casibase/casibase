@@ -40,6 +40,8 @@ const (
 	NamespaceFormat   = "casibase-%s"
 )
 
+var lastSyncTime time.Time
+
 func UpdateApplicationStatus(owner string, name string, status string) error {
 	application, err := getApplication(owner, name)
 	if err != nil {
@@ -188,10 +190,18 @@ func UndeployApplication(owner, name string) (bool, error) {
 		return false, fmt.Errorf("k8s client not connected to cluster")
 	}
 
-	namespace := fmt.Sprintf(NamespaceFormat, strings.ReplaceAll(name, "_", "-"))
+	application, err := getApplication(owner, name)
+	if err != nil {
+		return false, fmt.Errorf("failed to get application: %v", err)
+	}
+	if application == nil {
+		return false, fmt.Errorf("application not found: %s/%s", owner, name)
+	}
+
+	namespace := application.Namespace
 
 	// Delete the entire namespace
-	err := k8sClient.clientSet.CoreV1().Namespaces().Delete(
+	err = k8sClient.clientSet.CoreV1().Namespaces().Delete(
 		context.TODO(),
 		namespace,
 		metav1.DeleteOptions{},
@@ -220,7 +230,7 @@ func DeployApplicationSync(application *Application) (bool, error) {
 	}
 
 	// Wait for deployment to be ready (with timeout)
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	ticker := time.NewTicker(5 * time.Second)
@@ -392,7 +402,17 @@ func GetApplicationStatus(owner, name string) (string, error) {
 		return StatusUnknown, nil
 	}
 
-	namespace := fmt.Sprintf(NamespaceFormat, strings.ReplaceAll(name, "_", "-"))
+	// Get application to determine the correct namespace
+	application, err := getApplication(owner, name)
+	if err != nil {
+		return StatusUnknown, err
+	}
+	if application == nil {
+		return StatusUnknown, fmt.Errorf("application not found: %s/%s", owner, name)
+	}
+
+	// Use application's namespace instead of generating one
+	namespace := application.Namespace
 
 	ns, err := k8sClient.clientSet.CoreV1().Namespaces().Get(
 		context.TODO(),
@@ -488,4 +508,250 @@ func deployManifest(manifest, namespace string) error {
 	}
 
 	return nil
+}
+
+// SyncApplications syncs applications from k8s if more than 180 seconds have passed
+func SyncApplications(owner string) {
+	// Skip if synced within last 180 seconds
+	if time.Since(lastSyncTime) < 180*time.Second {
+		return
+	}
+
+	if err := ensureK8sClient(); err != nil {
+		return
+	}
+
+	if !k8sClient.connected {
+		return
+	}
+
+	dbApps, err := GetApplications(owner)
+	if err != nil {
+		return
+	}
+
+	k8sApps, err := getK8sApplications(owner)
+	if err != nil {
+		return
+	}
+
+	toAdd, toUpdate, toDelete := mergeApplications(dbApps, k8sApps, owner)
+
+	for _, app := range toAdd {
+		_, err := AddApplication(app)
+		if err != nil {
+			return
+		}
+	}
+
+	for _, app := range toUpdate {
+		_, err := UpdateApplication(util.GetIdFromOwnerAndName(app.Owner, app.Name), app)
+		if err != nil {
+			return
+		}
+	}
+
+	for _, app := range toDelete {
+		_, err := DeleteApplication(app)
+		if err != nil {
+			return
+		}
+	}
+
+	lastSyncTime = time.Now()
+}
+
+func getK8sApplications(owner string) ([]*Application, error) {
+	if err := ensureK8sClient(); err != nil {
+		return nil, err
+	}
+
+	if !k8sClient.connected {
+		return nil, fmt.Errorf("k8s client not connected")
+	}
+
+	// Get all namespaces
+	namespaces, err := k8sClient.clientSet.CoreV1().Namespaces().List(
+		context.TODO(),
+		metav1.ListOptions{},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	// Filter out system namespaces
+	systemNamespaces := map[string]bool{
+		"default":              true,
+		"kube-system":          true,
+		"kube-public":          true,
+		"kube-node-lease":      true,
+		"kubernetes-dashboard": true,
+		"metallb-system":       true,
+		"ingress-nginx":        true,
+		"cert-manager":         true,
+		"monitoring":           true,
+		"logging":              true,
+	}
+
+	var applications []*Application
+	for _, ns := range namespaces.Items {
+		// Skip system namespaces
+		if systemNamespaces[ns.Name] {
+			continue
+		}
+
+		// Check if namespace has deployments, services, or other workloads
+		deployments, err := k8sClient.clientSet.AppsV1().Deployments(ns.Name).List(context.TODO(), metav1.ListOptions{})
+		if err != nil {
+			continue
+		}
+
+		statefulSets, err := k8sClient.clientSet.AppsV1().StatefulSets(ns.Name).List(context.TODO(), metav1.ListOptions{})
+		if err != nil {
+			continue
+		}
+
+		daemonSets, err := k8sClient.clientSet.AppsV1().DaemonSets(ns.Name).List(context.TODO(), metav1.ListOptions{})
+		if err != nil {
+			continue
+		}
+
+		// If namespace has workloads, consider it as an application
+		if len(deployments.Items) > 0 || len(statefulSets.Items) > 0 || len(daemonSets.Items) > 0 {
+
+			// Get application status
+			status, err := getNamespaceStatus(ns.Name)
+			if err != nil {
+				return nil, fmt.Errorf("failed to get namespace status for %s: %v", ns.Name, err)
+			}
+
+			application := &Application{
+				Owner:     owner,
+				Name:      ns.Name,
+				Namespace: ns.Name,
+				Status:    status,
+				Managed:   false,
+			}
+			applications = append(applications, application)
+		}
+	}
+
+	return applications, nil
+}
+
+// Helper function to get namespace status based on workloads
+func getNamespaceStatus(namespace string) (string, error) {
+	if err := ensureK8sClient(); err != nil {
+		return StatusUnknown, err
+	}
+
+	if !k8sClient.connected {
+		return StatusUnknown, nil
+	}
+
+	// Check deployments status
+	deployments, err := k8sClient.clientSet.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		return StatusUnknown, err
+	}
+
+	totalReplicas := int32(0)
+	readyReplicas := int32(0)
+
+	for _, deployment := range deployments.Items {
+		totalReplicas += deployment.Status.Replicas
+		readyReplicas += deployment.Status.ReadyReplicas
+	}
+
+	// Check statefulsets status
+	statefulSets, err := k8sClient.clientSet.AppsV1().StatefulSets(namespace).List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		return StatusUnknown, err
+	}
+
+	for _, statefulSet := range statefulSets.Items {
+		totalReplicas += statefulSet.Status.Replicas
+		readyReplicas += statefulSet.Status.ReadyReplicas
+	}
+
+	// Check daemonsets status
+	daemonSets, err := k8sClient.clientSet.AppsV1().DaemonSets(namespace).List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		return StatusUnknown, err
+	}
+
+	for _, daemonSet := range daemonSets.Items {
+		totalReplicas += daemonSet.Status.DesiredNumberScheduled
+		readyReplicas += daemonSet.Status.NumberReady
+	}
+
+	if totalReplicas == 0 {
+		return StatusNotDeployed, nil
+	}
+
+	if readyReplicas == totalReplicas {
+		return StatusRunning, nil
+	}
+
+	if readyReplicas == 0 {
+		return StatusFailed, nil
+	}
+
+	return StatusPending, nil
+}
+
+func mergeApplications(dbApps, k8sApps []*Application, owner string) ([]*Application, []*Application, []*Application) {
+	k8sNamespaces := make(map[string]bool)
+	for _, k8sApp := range k8sApps {
+		k8sNamespaces[k8sApp.Namespace] = true
+	}
+
+	dbNamespaces := make(map[string]*Application)
+	for _, app := range dbApps {
+		dbNamespaces[app.Namespace] = app
+	}
+
+	var toAdd []*Application    // New k8s apps to add to database
+	var toUpdate []*Application // Existing apps to update
+	var toDelete []*Application // Apps to delete from database
+
+	// Check database applications
+	for _, app := range dbApps {
+		// Determine if this is a system-managed application
+		isManaged := app.Template != ""
+		app.Managed = isManaged
+
+		if !k8sNamespaces[app.Namespace] {
+			// Application not found in k8s
+			if isManaged {
+				// For managed applications, update status to Not Deployed
+				if app.Status != StatusNotDeployed {
+					app.Status = StatusNotDeployed
+					app.UpdatedTime = util.GetCurrentTime()
+					toUpdate = append(toUpdate, app)
+				}
+			} else {
+				// For unmanaged applications, mark for deletion
+				toDelete = append(toDelete, app)
+			}
+		}
+	}
+
+	// Check k8s applications
+	for _, k8sApp := range k8sApps {
+		if existingApp, exists := dbNamespaces[k8sApp.Namespace]; exists {
+			// Update existing application status from k8s
+			if existingApp.Status != k8sApp.Status {
+				existingApp.Status = k8sApp.Status
+				existingApp.UpdatedTime = util.GetCurrentTime()
+				toUpdate = append(toUpdate, existingApp)
+			}
+		} else {
+			// New k8s application not in database
+			k8sApp.Managed = false
+			toAdd = append(toAdd, k8sApp)
+		}
+	}
+
+	return toAdd, toUpdate, toDelete
 }

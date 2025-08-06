@@ -32,7 +32,8 @@ type Application struct {
 	Description string `xorm:"varchar(255)" json:"description"`
 	Template    string `xorm:"varchar(100)" json:"template"` // Reference to Template.Name
 	Parameters  string `xorm:"mediumtext" json:"parameters"`
-	Status      string `xorm:"varchar(50)" json:"status"`     // Running, Pending, Failed, Not Deployed
+	Status      string `xorm:"varchar(50)" json:"status"` // Running, Pending, Failed, Not Deployed
+	Managed     bool   `xorm:"bool" json:"managed"`
 	Namespace   string `xorm:"varchar(100)" json:"namespace"` // Kubernetes namespace (auto-generated)
 }
 
@@ -108,7 +109,9 @@ func AddApplication(application *Application) (bool, error) {
 	}
 
 	// Generate namespace name based on application owner and name
-	application.Namespace = fmt.Sprintf(NamespaceFormat, strings.ReplaceAll(application.Name, "_", "-"))
+	if application.Namespace == "" {
+		application.Namespace = fmt.Sprintf(NamespaceFormat, strings.ReplaceAll(application.Name, "_", "-"))
+	}
 
 	// Set initial status
 	if application.Status == "" {

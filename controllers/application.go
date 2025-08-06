@@ -26,7 +26,7 @@ import (
 // GetApplications
 // @Title GetApplications
 // @Tag Application API
-// @Description get applications
+// @Description get applications including k8s applications
 // @Param owner query string true "The owner of applications"
 // @Success 200 {array} object.Application The Response object
 // @router /get-applications [get]
@@ -38,6 +38,8 @@ func (c *ApiController) GetApplications() {
 	value := c.Input().Get("value")
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
+
+	go object.SyncApplications(owner)
 
 	if limit == "" || page == "" {
 		applications, err := object.GetApplications(owner)
