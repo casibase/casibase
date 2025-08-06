@@ -55,7 +55,7 @@ type Record struct {
 	// ExtendedUser *User  `xorm:"-" json:"extendedUser"`
 
 	Provider    string `xorm:"varchar(100)" json:"provider"`
-	Block       string `xorm:"varchar(100)" json:"block"`
+	Block       string `xorm:"varchar(100) index" json:"block"`
 	BlockHash   string `xorm:"varchar(500)" json:"blockHash"`
 	Transaction string `xorm:"varchar(500)" json:"transaction"`
 
@@ -66,7 +66,7 @@ type Record struct {
 	// For cross-chain records
 
 	IsTriggered bool `json:"isTriggered"`
-	NeedCommit  bool `json:"needCommit"`
+	NeedCommit  bool `xorm:"index" json:"needCommit"`
 }
 
 type Response struct {
@@ -139,22 +139,32 @@ func GetPaginationRecords(owner string, offset, limit int, field, value, sortFie
 	return records, nil
 }
 
-func getRecord(owner string, name string) (*Record, error) {
-	if owner == "" || name == "" {
-		return nil, nil
-	}
+// GetRecord retrieves a record by its ID or owner/name format.
+func GetRecord(id string) (*Record, error) {
+	record := &Record{}
 
-	record := Record{Name: name}
-	existed, err := adapter.engine.Get(&record)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
 	if err != nil {
-		return &record, err
+		return nil, fmt.Errorf("failed to parse record identifier '%s': neither a valid owner/[id|name] format", id)
+	}
+	// Try to parse as integer ID first
+	if recordId, err := util.ParseIntWithError(name); err == nil && recordId > 0 {
+		// Valid integer ID
+		record.Id = recordId
+	} else {
+		record.Owner = owner
+		record.Name = name
 	}
 
-	if existed {
-		return &record, nil
-	} else {
-		return nil, nil
+	existed, err := adapter.engine.Get(record)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get record with id '%s': %w", id, err)
 	}
+	if existed {
+		return record, nil
+	}
+
+	return nil, nil
 }
 
 func prepareRecord(record *Record, providerFirst, providerSecond *Provider) (bool, error) {
@@ -184,19 +194,14 @@ func prepareRecord(record *Record, providerFirst, providerSecond *Provider) (boo
 		}
 	}
 
+	record.Id = 0
 	record.Owner = record.Organization
 
 	return true, nil
 }
 
-func GetRecord(id string) (*Record, error) {
-	owner, name := util.GetOwnerAndNameFromIdNoCheck(id)
-	return getRecord(owner, name)
-}
-
 func UpdateRecord(id string, record *Record) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	p, err := getRecord(owner, name)
+	p, err := GetRecord(id)
 	if err != nil {
 		return false, err
 	} else if p == nil {
@@ -215,7 +220,7 @@ func UpdateRecord(id string, record *Record) (bool, error) {
 		record.Transaction2 = ""
 	}
 
-	affected, err := adapter.engine.Where("name = ?", name).AllCols().Update(record)
+	affected, err := adapter.engine.Where("id = ?", p.Id).AllCols().Update(record)
 	if err != nil {
 		return false, err
 	}
@@ -232,14 +237,14 @@ func UpdateRecordInternal(id int, record Record) error {
 }
 
 func UpdateRecordFields(id string, fields map[string]interface{}) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	if p, err := getRecord(owner, name); err != nil {
+	p, err := GetRecord(id)
+	if err != nil {
 		return false, err
 	} else if p == nil {
 		return false, nil
 	}
 
-	affected, err := adapter.engine.Table(&Record{}).Where("name = ?", name).Update(fields)
+	affected, err := adapter.engine.Table(&Record{}).Where("id = ?", p.Id).Update(fields)
 	if err != nil {
 		return false, err
 	}
@@ -385,12 +390,16 @@ func AddRecords(records []*Record) (bool, interface{}, error) {
 }
 
 func DeleteRecord(record *Record) (bool, error) {
-	affected, err := adapter.engine.Where("name = ?", record.Name).Delete(&Record{})
+	affected, err := adapter.engine.Where("id = ?", record.Id).Delete(&Record{})
 	if err != nil {
 		return false, err
 	}
 
 	return affected != 0, nil
+}
+
+func (record *Record) getUniqueId() string {
+	return fmt.Sprintf("%s/%d", record.Owner, record.Id)
 }
 
 func (record *Record) getId() string {

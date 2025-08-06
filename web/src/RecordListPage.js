@@ -95,7 +95,7 @@ class RecordListPage extends BaseListPage {
     RecordBackend.addRecord(newRecord)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/records/${newRecord.owner}/${newRecord.name}`, mode: "add"});
+          this.props.history.push({pathname: `/records/${newRecord.owner}/${newRecord.id}`, mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
@@ -151,7 +151,7 @@ class RecordListPage extends BaseListPage {
 
   queryRecord(record, isFirst = true) {
     const queryMethod = isFirst ? RecordBackend.queryRecord : RecordBackend.queryRecordSecond;
-    queryMethod(record.owner, record.name)
+    queryMethod(record.owner, record.id)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage(res.data.includes("Mismatched") ? "error" : "success", `${i18next.t("record:Query")}: ${res.data}`);
@@ -195,7 +195,7 @@ class RecordListPage extends BaseListPage {
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
-            <Link to={`/records/${record.organization}/${record.name}`}>{text}</Link>
+            <Link to={`/records/${record.organization}/${record.id}`}>{text}</Link>
           );
         },
       },
@@ -543,7 +543,7 @@ class RecordListPage extends BaseListPage {
               }
               <Button
                 // disabled={record.owner !== this.props.account.owner}
-                onClick={() => this.props.history.push(`/records/${record.owner}/${record.name}`)}
+                onClick={() => this.props.history.push(`/records/${record.owner}/${record.id}`)}
               >{i18next.t("general:View")}
               </Button>
               <PopconfirmModal
