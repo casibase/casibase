@@ -48,7 +48,11 @@ func (c *ApiController) GetRecords() {
 
 		c.ResponseOk(records)
 	} else {
-		limit := util.ParseInt(limit)
+		limit, err := util.ParseIntWithError(limit)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
 
 		count, err := object.GetRecordCount(owner, field, value)
 		if err != nil {

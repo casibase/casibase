@@ -120,7 +120,7 @@ func (record *Record) toParam() string {
 
 func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 	if record.Block != "" {
-		return false, nil, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getId(), record.Block)
+		return false, nil, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getUniqueId(), record.Block)
 	}
 
 	client, provider, err := record.getRecordChainClient(record.Provider)
@@ -142,13 +142,13 @@ func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 	}
 
 	// Update the record fields to avoid concurrent update race conditions
-	affected, err := UpdateRecordFields(record.getId(), data)
+	affected, err := UpdateRecordFields(record.getUniqueId(), data)
 	return affected, data, err
 }
 
 func CommitRecordSecond(record *Record) (bool, error) {
 	if record.Block2 != "" {
-		return false, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getId(), record.Block2)
+		return false, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getUniqueId(), record.Block2)
 	}
 
 	client, provider, err := record.getRecordChainClient(record.Provider2)
@@ -162,13 +162,16 @@ func CommitRecordSecond(record *Record) (bool, error) {
 		return false, err
 	}
 
-	// Update the record fields to avoid concurrent update race conditions
-	return UpdateRecordFields(record.getId(), map[string]interface{}{
+	data := map[string]interface{}{
 		"provider2":    record.Provider2,
 		"block2":       blockId,
 		"transaction2": transactionId,
 		"block_hash2":  blockHash,
-	})
+	}
+
+	// Update the record fields to avoid concurrent update race conditions
+	affected, err := UpdateRecordFields(record.getUniqueId(), data)
+	return affected, err
 }
 
 func QueryRecord(id string) (string, error) {
@@ -181,7 +184,7 @@ func QueryRecord(id string) (string, error) {
 	}
 
 	if record.Block == "" {
-		return "", fmt.Errorf("the record: %s's block ID should not be empty", record.getId())
+		return "", fmt.Errorf("the record: %s's block ID should not be empty", id)
 	}
 
 	client, _, err := record.getRecordChainClient(record.Provider)
@@ -207,7 +210,7 @@ func QueryRecordSecond(id string) (string, error) {
 	}
 
 	if record.Block2 == "" {
-		return "", fmt.Errorf("the record: %s's block ID should not be empty", record.getId())
+		return "", fmt.Errorf("the record: %s's block ID should not be empty", id)
 	}
 
 	client, _, err := record.getRecordChainClient(record.Provider2)
