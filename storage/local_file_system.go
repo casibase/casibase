@@ -53,7 +53,7 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 		if err == nil && !info.IsDir() {
 			modTime := info.ModTime()
 			path = strings.ReplaceAll(path, "\\", "/")
-			relativePath := strings.TrimPrefix(path, fullPath)
+			relativePath := strings.TrimPrefix(path, p.path)
 			relativePath = strings.TrimPrefix(relativePath, "/")
 
 			objects = append(objects, &Object{
@@ -87,5 +87,9 @@ func (p *LocalFileSystemStorageProvider) PutObject(user string, parent string, k
 }
 
 func (p *LocalFileSystemStorageProvider) DeleteObject(key string) error {
-	return os.Remove(filepath.Join(p.path, key))
+	fullPath := filepath.Join(p.path, key)
+	if strings.HasSuffix(key, "_hidden.ini") {
+		fullPath = filepath.Dir(fullPath)
+	}
+	return os.RemoveAll(fullPath)
 }
