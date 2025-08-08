@@ -67,7 +67,7 @@ func (p *CasdoorProvider) DeleteObject(key string) error {
 		Name: key,
 	}
 
-	_, err := casdoorsdk.DeleteResource(&resource)
+	_, err := casdoorsdk.DeleteResourceWithTag(&resource, "Direct")
 	if err != nil {
 		return err
 	}

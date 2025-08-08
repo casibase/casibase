@@ -149,8 +149,8 @@ github.com/carmel/gooxml v0.0.0-20220216072414-40ff56130850 h1:5HOeLYzNkwXRWppRF
 github.com/carmel/gooxml v0.0.0-20220216072414-40ff56130850/go.mod h1:2u6ODG4PzDELX8qnX0wOGCdPJpWxnC5hBM7542SFrYc=
 github.com/casbin/casbin v1.7.0/go.mod h1:c67qKN6Oum3UF5Q1+BByfFxkwKvhwW57ITjqwtzR1KE=
 github.com/casbin/casbin/v2 v2.1.2/go.mod h1:YcPU1XXisHhLzuxH9coDNf2FbKpjGlbCg3n9yuLkIJQ=
-github.com/casdoor/casdoor-go-sdk v0.37.0 h1:Vx6V25m7xa8SAG1xZfEjQCAGwtpoCE+UAP0YZIwC4RQ=
-github.com/casdoor/casdoor-go-sdk v0.37.0/go.mod h1:hVSgmSdwTCsBEJNt9r2K5aLVsoeMc37/N4Zzescy5SA=
+github.com/casdoor/casdoor-go-sdk v1.14.0 h1:HrvwBxF0Vt+BSuNsf5MfhCvqSfETolpv4hzvP5XcCXc=
+github.com/casdoor/casdoor-go-sdk v1.14.0/go.mod h1:cMnkCQJgMYpgAlgEx8reSt1AVaDIQLcJ1zk5pzBaz+4=
 github.com/casibase/dashscope-go-sdk v0.0.2 h1:8J24x5g2N5eDslELPAHs0uflHjfpgtBqLGrqxbTx7QM=
 github.com/casibase/dashscope-go-sdk v0.0.2/go.mod h1:bpoto3SbZoci9vOM8mjskQl+IEfn+R1QHXrbvEMtGtc=
 github.com/casibase/go-openai v1.39.0 h1:oWIcjwCULAgYj+Nzmn3djUv5oLD+p6C91kYgW8J/ZpU=
