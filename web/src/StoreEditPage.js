@@ -144,6 +144,13 @@ class StoreEditPage extends React.Component {
       store: store,
     });
   }
+  isAIStorageProvider(storageProvider) {
+    const providerSelected = this.state.storageProviders.concat(this.state.casdoorStorageProviders).find(v => v.name === storageProvider);
+    if (providerSelected && providerSelected.type === "OpenAI File System") {
+      return true;
+    }
+    return false;
+  }
 
   renderStore() {
     return (
@@ -239,6 +246,25 @@ class StoreEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
+        {this.isAIStorageProvider(this.state.store.storageProvider) ? (
+          <>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Mirror storage provider"), i18next.t("store:Mirror storage provider - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: "100%"}} value={this.state.store.mirrorStorageProvider} onChange={(value => {this.updateStoreField("mirrorStorageProvider", value);})}
+                >
+                  {
+                    this.state.storageProviders.concat(this.state.casdoorStorageProviders).filter(provider => provider.name !== this.state.store.storageProvider).map((provider, index) =>
+                      this.renderProviderOption(provider, index)
+                    )
+                  }
+                </Select>
+              </Col>
+            </Row>
+          </>
+        ) : null}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Storage subpath"), i18next.t("store:Storage subpath - Tooltip"))} :

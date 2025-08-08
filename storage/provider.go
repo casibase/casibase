@@ -29,11 +29,17 @@ type StorageProvider interface {
 	DeleteObject(key string) error
 }
 
-func GetStorageProvider(typ string, clientId string, providerName string) (StorageProvider, error) {
+func GetStorageProvider(typ string, path string, clientSecret string, providerName string, mirrorProviderType string, mirrorProviderName string, storeId string, vectorStoreId string) (StorageProvider, error) {
 	var p StorageProvider
 	var err error
 	if typ == "Local File System" {
-		p, err = NewLocalFileSystemStorageProvider(clientId)
+		p, err = NewLocalFileSystemStorageProvider(path)
+	} else if typ == "OpenAI File System" {
+		mirrorP, err := getMirrorProvider(mirrorProviderType, mirrorProviderName, path)
+		if err != nil {
+			return nil, err
+		}
+		p, err = NewOpenAIFileSystemStorageProvider(vectorStoreId, clientSecret, mirrorP, storeId)
 	} else {
 		p, err = NewCasdoorProvider(providerName)
 	}
@@ -42,4 +48,20 @@ func GetStorageProvider(typ string, clientId string, providerName string) (Stora
 		return nil, err
 	}
 	return p, nil
+}
+
+func getMirrorProvider(mirrorProviderType string, mirrorProviderName string, path string) (StorageProvider, error) {
+	var (
+		mirrorP StorageProvider
+		err     error
+	)
+	if mirrorProviderType == "Local File System" {
+		mirrorP, err = NewLocalFileSystemStorageProvider(path)
+	} else {
+		mirrorP, err = NewCasdoorProvider(mirrorProviderName)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return mirrorP, nil
 }

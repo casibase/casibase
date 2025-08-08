@@ -15,11 +15,14 @@
 package object
 
 import (
+	"context"
 	"fmt"
 	"time"
 
+	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/storage"
 	"github.com/casibase/casibase/util"
+	"github.com/sashabaranov/go-openai"
 	"xorm.io/core"
 )
 
@@ -58,17 +61,19 @@ type Store struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
-	StorageProvider      string `xorm:"varchar(100)" json:"storageProvider"`
-	StorageSubpath       string `xorm:"varchar(100)" json:"storageSubpath"`
-	ImageProvider        string `xorm:"varchar(100)" json:"imageProvider"`
-	SplitProvider        string `xorm:"varchar(100)" json:"splitProvider"`
-	SearchProvider       string `xorm:"varchar(100)" json:"searchProvider"`
-	ModelProvider        string `xorm:"varchar(100)" json:"modelProvider"`
-	EmbeddingProvider    string `xorm:"varchar(100)" json:"embeddingProvider"`
-	TextToSpeechProvider string `xorm:"varchar(100)" json:"textToSpeechProvider"`
-	EnableTtsStreaming   bool   `xorm:"bool" json:"enableTtsStreaming"`
-	SpeechToTextProvider string `xorm:"varchar(100)" json:"speechToTextProvider"`
-	AgentProvider        string `xorm:"varchar(100)" json:"agentProvider"`
+	StorageProvider       string `xorm:"varchar(100)" json:"storageProvider"`
+	MirrorStorageProvider string `xorm:"varchar(100)" json:"mirrorStorageProvider"`
+	StorageSubpath        string `xorm:"varchar(100)" json:"storageSubpath"`
+	ImageProvider         string `xorm:"varchar(100)" json:"imageProvider"`
+	SplitProvider         string `xorm:"varchar(100)" json:"splitProvider"`
+	SearchProvider        string `xorm:"varchar(100)" json:"searchProvider"`
+	ModelProvider         string `xorm:"varchar(100)" json:"modelProvider"`
+	EmbeddingProvider     string `xorm:"varchar(100)" json:"embeddingProvider"`
+	TextToSpeechProvider  string `xorm:"varchar(100)" json:"textToSpeechProvider"`
+	EnableTtsStreaming    bool   `xorm:"bool" json:"enableTtsStreaming"`
+	SpeechToTextProvider  string `xorm:"varchar(100)" json:"speechToTextProvider"`
+	AgentProvider         string `xorm:"varchar(100)" json:"agentProvider"`
+	ThirdVectorStoreId    string `xorm:"varchar(100)" json:"vectorStoreId"`
 
 	MemoryLimit         int      `json:"memoryLimit"`
 	Frequency           int      `json:"frequency"`
@@ -171,6 +176,11 @@ func UpdateStore(id string, store *Store) (bool, error) {
 		return false, nil
 	}
 
+	err = store.addThirdVectorStore()
+	if err != nil {
+		return false, err
+	}
+
 	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(store)
 	if err != nil {
 		return false, err
@@ -190,6 +200,16 @@ func AddStore(store *Store) (bool, error) {
 }
 
 func DeleteStore(store *Store) (bool, error) {
+	if store.ThirdVectorStoreId != "" {
+		provider, err := getProvider(store.Owner, store.StorageProvider)
+		if err != nil {
+			return false, err
+		}
+		err = storage.DeleteThirdVectorStoreStorage(provider.Type, provider.ClientSecret, store.ThirdVectorStoreId, store.GetId())
+		if err != nil {
+			return false, err
+		}
+	}
 	affected, err := adapter.engine.ID(core.PK{store.Owner, store.Name}).Delete(&Store{})
 	if err != nil {
 		return false, err
@@ -217,7 +237,7 @@ func (store *Store) GetStorageProviderObj() (storage.StorageProvider, error) {
 
 	var storageProvider storage.StorageProvider
 	if provider != nil {
-		storageProvider, err = provider.GetStorageProviderObj()
+		storageProvider, err = provider.GetStorageProviderObj(store)
 		if err != nil {
 			return nil, err
 		}
@@ -273,6 +293,26 @@ func (store *Store) GetEmbeddingProvider() (*Provider, error) {
 
 	providerId := util.GetIdFromOwnerAndName(store.Owner, store.EmbeddingProvider)
 	return GetProvider(providerId)
+}
+
+func (store *Store) addThirdVectorStore() error {
+	p, err := getProvider(store.Owner, store.StorageProvider)
+	if err != nil {
+		return err
+	}
+	if p != nil && store.ThirdVectorStoreId == "" && p.Category == "Storage" && p.Type == "OpenAI File System" {
+		client := model.GetOpenAiClientFromToken(p.ClientSecret)
+		ctx := context.Background()
+		id := util.GetIdFromOwnerAndName(p.Owner, p.Name)
+		vectorStore, err := client.CreateVectorStore(ctx, openai.VectorStoreRequest{
+			Name: id,
+		})
+		if err != nil {
+			return err
+		}
+		store.ThirdVectorStoreId = vectorStore.ID
+	}
+	return nil
 }
 
 func RefreshStoreVectors(store *Store) (bool, error) {

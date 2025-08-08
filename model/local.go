@@ -298,7 +298,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		client = getAzureClientFromToken(p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
 		flushData = flushDataAzure
 	} else if p.typ == "OpenAI" {
-		client = getOpenAiClientFromToken(p.secretKey)
+		client = GetOpenAiClientFromToken(p.secretKey)
 		flushData = flushDataOpenai
 	} else if p.typ == "GitHub" {
 		client = getGitHubClientFromToken(p.secretKey, p.providerUrl)

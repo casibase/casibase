@@ -896,6 +896,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_cucloud.png`,
         url: "https://www.cucloud.cn/product/oss.html",
       },
+      "OpenAI File System": {
+        logo: `${StaticBaseUrl}/img/social_openai.svg`,
+        url: "https://platform.openai.com",
+      },
     },
     Blockchain: {
       "Hyperledger Fabric": {
@@ -1095,6 +1099,7 @@ export function getProviderTypeOptions(category) {
     return (
       [
         {id: "Local File System", name: "Local File System"},
+        {id: "OpenAI File System", name: "OpenAI File System"},
       ]
     );
   } else if (category === "Model") {

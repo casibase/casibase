@@ -89,7 +89,7 @@ class StoreListPage extends BaseListPage {
       <img width={20} height={20} src={Setting.getProviderLogoURL(provider)} alt={provider.name} />
     );
 
-    const isLocalStorage = provider.type === "Local File System";
+    const isLocalStorage = ["Local File System", "OpenAI File System"].includes(provider.type);
     const providerType = provider.category;
 
     if (providerType === "Image" || (providerType === "Storage" && !isLocalStorage)) {
