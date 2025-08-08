@@ -100,6 +100,8 @@ class App extends Component {
     } catch {
       storageThemeAlgorithm = ["default"];
     }
+    const cachedEnableLeftNavBar = localStorage.getItem("enableLeftNavBar");
+    const initialEnableLeftNavBar = cachedEnableLeftNavBar !== null ? (cachedEnableLeftNavBar === "true") : Conf.EnableLeftNavBarDefault;
     this.state = {
       classes: props,
       selectedMenuKey: 0,
@@ -109,6 +111,7 @@ class App extends Component {
       themeData: Conf.ThemeDefault,
       menuVisible: false,
       forms: [],
+      enableLeftNavBar: initialEnableLeftNavBar,
     };
     this.initConfig();
   }
@@ -145,6 +148,9 @@ class App extends Component {
           Setting.setThemeColor(color);
           localStorage.setItem("themeColor", color);
         }
+        const nextEnableLeftNavBar = res.data.enableLeftNavBar ? res.data.enableLeftNavBar : Conf.EnableLeftNavBarDefault;
+        localStorage.setItem("enableLeftNavBar", String(nextEnableLeftNavBar));
+        this.setState({enableLeftNavBar: nextEnableLeftNavBar});
       } else {
         Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -778,19 +784,78 @@ class App extends Component {
       );
     }
 
+    if (this.state.enableLeftNavBar && !Setting.isMobile()) {
+      return (
+        <Layout id="parent-area">
+          {this.renderSidebar()}
+          <Layout>
+            {this.renderHeader()}
+            <Content>
+              {this.isWithoutCard() ?
+                this.renderRouter() :
+                <Card className="content-warp-card">
+                  {this.renderRouter()}
+                </Card>
+              }
+            </Content>
+            {this.renderFooter()}
+          </Layout>
+        </Layout>
+      );
+    } else {
+      return (
+        <Layout id="parent-area">
+          {this.renderHeader()}
+          <Content style={{
+            margin: "0 16px",
+          }}>
+            {this.isWithoutCard() ?
+              this.renderRouter() :
+              <Card className="content-warp-card">
+                {this.renderRouter()}
+              </Card>
+            }
+          </Content>
+          {this.renderFooter()}
+        </Layout>
+      );
+    }
+  }
+
+  renderSidebar() {
+    if (!this.state.enableLeftNavBar || Setting.isMobile()) {
+      return null;
+    }
+
+    const onClick = ({key}) => {
+      this.setState({
+        uri: location.pathname,
+        selectedMenuKey: key,
+      });
+    };
+
     return (
-      <Layout id="parent-area">
-        {this.renderHeader()}
-        <Content style={{display: "flex", flexDirection: "column"}}>
-          {this.isWithoutCard() ?
-            this.renderRouter() :
-            <Card className="content-warp-card">
-              {this.renderRouter()}
-            </Card>
-          }
-        </Content>
-        {this.renderFooter()}
-      </Layout>
+      <Layout.Sider
+        width={200}
+        style={{
+          backgroundColor: this.state.themeAlgorithm.includes("dark") ? "#001529" : "#fff",
+        }}
+      >
+        <Link to={"/"}>
+          <img
+            className="logo"
+            src={Setting.getLogo(this.state.themeAlgorithm)}
+            alt="logo"
+          />
+        </Link>
+        <Menu
+          items={this.getMenuItems()}
+          mode={"inline"}
+          selectedKeys={[this.state.selectedMenuKey]}
+          style={{lineHeight: "64px", borderRight: 0}}
+          onClick={onClick}
+        />
+      </Layout.Sider>
     );
   }
 
@@ -821,31 +886,33 @@ class App extends Component {
     return (
       <Header style={{padding: "0", marginBottom: "3px", backgroundColor: this.state.themeAlgorithm.includes("dark") ? "black" : "white", display: "flex", justifyContent: "space-between"}}>
         <div style={{display: "flex", alignItems: "center", flex: 1, overflow: "hidden"}}>
-          {Setting.isMobile() ? null : (
+          {(!this.state.enableLeftNavBar && !Setting.isMobile()) ? (
             <Link to={"/"}>
               <img className="logo" src={Setting.getLogo(this.state.themeAlgorithm)} alt="logo" />
             </Link>
-          )}
-          {Setting.isMobile() ? (
-            <React.Fragment>
-              <Drawer title={i18next.t("general:Close")} placement="left" open={this.state.menuVisible} onClose={this.onClose}>
-                <Menu
-                  items={this.getMenuItems()}
-                  mode={"inline"}
-                  selectedKeys={[this.state.selectedMenuKey]}
-                  style={{lineHeight: "64px"}}
-                  onClick={onClick}
-                >
-                </Menu>
-              </Drawer>
-              <Button icon={<BarsOutlined />} onClick={showMenu} type="text">
-                {i18next.t("general:Menu")}
-              </Button>
-            </React.Fragment>
-          ) : (
-            <div style={{display: "flex", marginLeft: "10px", flex: 1, minWidth: 0, overflow: "auto", paddingRight: "20px"}}>
-              <Menu style={{minWidth: 0, width: "100%"}} onClick={onClick} items={this.getMenuItems()} mode={"horizontal"} selectedKeys={[this.state.selectedMenuKey]} />
-            </div>
+          ) : null}
+          {(!this.state.enableLeftNavBar || Setting.isMobile()) && (
+            Setting.isMobile() ? (
+              <React.Fragment>
+                <Drawer title={i18next.t("general:Close")} placement="left" open={this.state.menuVisible} onClose={this.onClose}>
+                  <Menu
+                    items={this.getMenuItems()}
+                    mode={"inline"}
+                    selectedKeys={[this.state.selectedMenuKey]}
+                    style={{lineHeight: "64px"}}
+                    onClick={onClick}
+                  >
+                  </Menu>
+                </Drawer>
+                <Button icon={<BarsOutlined />} onClick={showMenu} type="text">
+                  {i18next.t("general:Menu")}
+                </Button>
+              </React.Fragment>
+            ) : (
+              <div style={{display: "flex", marginLeft: "10px", flex: 1, minWidth: 0, overflow: "auto", paddingRight: "20px"}}>
+                <Menu style={{minWidth: 0, width: "100%"}} onClick={onClick} items={this.getMenuItems()} mode={"horizontal"} selectedKeys={[this.state.selectedMenuKey]} />
+              </div>
+            )
           )}
         </div>
         <div style={{flexShrink: 0}}>

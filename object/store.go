@@ -81,6 +81,7 @@ type Store struct {
 	Prompt              string   `xorm:"mediumtext" json:"prompt"`
 	Prompts             []Prompt `xorm:"mediumtext" json:"prompts"`
 	ThemeColor          string   `xorm:"varchar(100)" json:"themeColor"`
+	EnableLeftNavBar    bool     `xorm:"bool" json:"enableLeftNavBar"`
 	Avatar              string   `xorm:"varchar(200)" json:"avatar"`
 	Title               string   `xorm:"varchar(100)" json:"title"`
 	ChildStores         []string `xorm:"varchar(500)" json:"childStores"`

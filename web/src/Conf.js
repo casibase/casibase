@@ -33,6 +33,7 @@ export let IsDemoMode = false;
 // eslint-disable-next-line
 export let ThemeDefault = {};
 export let AvatarErrorUrl = "";
+export let EnableLeftNavBarDefault = false;
 
 export function setConfig(config) {
   if (config === null || config === undefined) {
@@ -68,4 +69,5 @@ export function setConfig(config) {
   }
 
   if (config.avatarErrorUrl !== undefined) {AvatarErrorUrl = config.avatarErrorUrl;}
+  if (config.enableLeftNavBarDefault !== undefined) {EnableLeftNavBarDefault = config.enableLeftNavBarDefault;}
 }

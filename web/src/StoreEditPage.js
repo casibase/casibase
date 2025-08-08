@@ -488,6 +488,16 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("store:Use sidebar navigation"), i18next.t("store:Use sidebar navigation - Tooltip"))} :
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.store.enableLeftNavBar} onChange={checked => {
+              this.updateStoreField("enableLeftNavBar", checked);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Child stores"), i18next.t("store:Child stores - Tooltip"))} :
           </Col>
           <Col span={22} >

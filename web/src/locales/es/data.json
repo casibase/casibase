@@ -614,6 +614,8 @@
     "Theme color": "Color de tema",
     "Theme color - Tooltip": "Color de tema de la interfaz",
     "Upload file": "Cargar archivo",
+    "Use sidebar navigation": "Usar navegación lateral",
+    "Use sidebar navigation - Tooltip": "Usar navegación lateral",
     "Welcome": "Indicador de bienvenida",
     "Welcome - Tooltip": "Mensaje de bienvenida mostrado cuando el usuario ingresa al chat por primera vez",
     "Welcome text": "Texto de bienvenida",

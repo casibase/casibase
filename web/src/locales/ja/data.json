@@ -614,6 +614,8 @@
     "Theme color": "テーマカラー",
     "Theme color - Tooltip": "界面テーマ色",
     "Upload file": "ファイルをアップロード",
+    "Use sidebar navigation": "サイドバーを使用",
+    "Use sidebar navigation - Tooltip": "サイドバーを使用",
     "Welcome": "歓迎プロンプト",
     "Welcome - Tooltip": "ユーザーが初めてチャットに入ったときに表示する歓迎メッセージ",
     "Welcome text": "歓迎テキスト",

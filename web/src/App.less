@@ -30,9 +30,16 @@ img {
 
 #parent-area {
   display: flex;
-  flex-direction: column;
   height: 100%;
   min-height: 100vh;
+}
+
+#parent-area.ant-layout-has-sider {
+  flex-direction: row;
+}
+
+#parent-area:not(.ant-layout-has-sider) {
+  flex-direction: column;
 }
 
 .content-warp-card {
