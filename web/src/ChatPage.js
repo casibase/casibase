@@ -56,6 +56,11 @@ class ChatPage extends BaseListPage {
       paneCount: 1,
     });
 
+    if (Setting.getUrlParam("isRaw") !== null) {
+      const urlMessageContent = Setting.getUrlParam("newMessage");
+      this.sendMessage(urlMessageContent);
+    }
+
     this.fetch();
   }
 
