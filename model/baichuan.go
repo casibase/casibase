@@ -42,17 +42,25 @@ https://platform.baichuan-ai.com/price
 | Model      | sub-type             | Input Price per 1K characters    | Output Price per 1K characters |
 |------------|----------------------|----------------------------------|--------------------------------|
 | Baichuan   | Baichuan2-Turbo      | 0.008yuan/1,000 tokens           | 0.008yuan/1,000 tokens         |
+| Baichuan   | Baichuan2-53B        | 0.010yuan/1,000 tokens           | 0.010yuan/1,000 tokens         |
 | Baichuan   | Baichuan3-Turbo      | 0.012yuan/1,000 tokens           | 0.012yuan/1,000 tokens         |
+| Baichuan   | Baichuan3-Turbo-128k | 0.024yuan/1,000 tokens           | 0.024yuan/1,000 tokens         |
 | Baichuan   | Baichuan4            | 0.100yuan/1,000 tokens           | 0.100yuan/1,000 tokens         |
+| Baichuan   | Baichuan4-Air        | 0.00098yuan/1,000 tokens         | 0.00098yuan/1,000 tokens       |
+| Baichuan   | Baichuan4-Turbo      | 0.015yuan/1,000 tokens           | 0.015yuan/1,000 tokens         |
 `
 }
 
 func (p *BaichuanModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
-		"Baichuan2-Turbo": {0.008, 0.008},
-		"Baichuan3-Turbo": {0.012, 0.012},
-		"Baichuan4":       {0.1, 0.1},
+		"Baichuan2-Turbo":      {0.008, 0.008},
+		"Baichuan2-53B":        {0.1, 0.1},
+		"Baichuan3-Turbo":      {0.012, 0.012},
+		"Baichuan3-Turbo-128k": {0.024, 0.024},
+		"Baichuan4":            {0.1, 0.1},
+		"Baichuan4-Air":        {0.00098, 0.00098},
+		"Baichuan4-Turbo":      {0.015, 0.015},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
