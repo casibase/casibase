@@ -42,22 +42,22 @@ https://platform.stepfun.com/docs/pricing/details
 |--------------|----------------------------------|--------------------------------|
 | step-1-8k    | 0.005yuan/1,000 tokens           | 0.02yuan/1,000 tokens          |
 | step-1-32k   | 0.015yuan/1,000 tokens           | 0.07yuan/1,000 tokens          |
-| step-1-128k  | 0.04yuan/1,000 tokens            | 0.2yuan/1,000 tokens           |
 | step-1-256k  | 0.095yuan/1,000 tokens           | 0.3yuan/1,000 tokens           |
-| step-1-flash | 0.001yuan/1,000 tokens           | 0.004yuan/1,000 tokens         |
+| step-2-mini  | 0.001yuan/1,000 tokens           | 0.002yuan/1,000 tokens         |
 | step-2-16k   | 0.038yuan/1,000 tokens           | 0.12yuan/1,000 tokens          |
+| step-2-16k-exp   | 0.038yuan/1,000 tokens       | 0.12yuan/1,000 tokens          |
 `
 }
 
 func (p *StepFunModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
-		"step-1-8k":    {0.005, 0.02},
-		"step-1-32k":   {0.015, 0.07},
-		"step-1-128k":  {0.04, 0.2},
-		"step-1-256k":  {0.095, 0.3},
-		"step-1-flash": {0.001, 0.004},
-		"step-2-16k":   {0.038, 0.12},
+		"step-1-8k":      {0.005, 0.02},
+		"step-1-32k":     {0.015, 0.07},
+		"step-1-256k":    {0.095, 0.3},
+		"step-2-mini":    {0.001, 0.002},
+		"step-2-16k":     {0.038, 0.12},
+		"step-2-16k-exp": {0.038, 0.12},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {

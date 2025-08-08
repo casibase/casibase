@@ -1510,8 +1510,12 @@ export function getModelSubTypeOptions(type) {
   } else if (type === "Baichuan") {
     return [
       {id: "Baichuan2-Turbo", name: "Baichuan2-Turbo"},
+      {id: "Baichuan2-53B", name: "Baichuan2-53B"},
       {id: "Baichuan3-Turbo", name: "Baichuan3-Turbo"},
+      {id: "Baichuan3-Turbo-128k", name: "Baichuan3-Turbo-128k"},
       {id: "Baichuan4", name: "Baichuan4"},
+      {id: "Baichuan4-Air", name: "Baichuan4-Air"},
+      {id: "Baichuan4-Turbo", name: "Baichuan4-Turbo"},
     ];
   } else if (type === "Volcano Engine") {
     return [
@@ -1573,10 +1577,10 @@ export function getModelSubTypeOptions(type) {
     return [
       {id: "step-1-8k", name: "step-1-8k"},
       {id: "step-1-32k", name: "step-1-32k"},
-      {id: "step-1-128k", name: "step-1-128k"},
       {id: "step-1-256k", name: "step-1-256k"},
-      {id: "step-1-flash", name: "step-1-flash"},
+      {id: "step-2-mini", name: "step-2-mini"},
       {id: "step-2-16k", name: "step-2-16k"},
+      {id: "step-2-16k-exp", name: "step-2-16k-exp"},
     ];
   } else if (type === "Tencent Cloud") {
     return [
