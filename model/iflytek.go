@@ -254,17 +254,11 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 func (p *iFlytekModelProvider) getChatMessages(question string, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) []messages.ChatMessage {
 	var result []messages.ChatMessage
 
-	if prompt != "" {
+	systemMsgs := getSystemMessages(prompt, knowledgeMessages)
+	for _, msg := range systemMsgs {
 		result = append(result, &messages.GenericChatMessage{
 			Role:    "system",
-			Content: prompt,
-		})
-	}
-
-	for _, km := range knowledgeMessages {
-		result = append(result, &messages.GenericChatMessage{
-			Role:    "system",
-			Content: km.Text,
+			Content: msg.Text,
 		})
 	}
 
