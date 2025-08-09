@@ -254,7 +254,6 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 func (p *iFlytekModelProvider) getChatMessages(question string, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) []messages.ChatMessage {
 	var result []messages.ChatMessage
 
-	// 添加系统提示信息
 	if prompt != "" {
 		result = append(result, &messages.GenericChatMessage{
 			Role:    "system",
@@ -262,7 +261,6 @@ func (p *iFlytekModelProvider) getChatMessages(question string, history []*RawMe
 		})
 	}
 
-	// 添加知识库信息
 	for _, km := range knowledgeMessages {
 		result = append(result, &messages.GenericChatMessage{
 			Role:    "system",
@@ -270,7 +268,6 @@ func (p *iFlytekModelProvider) getChatMessages(question string, history []*RawMe
 		})
 	}
 
-	// 添加历史对话记录
 	for i := len(history) - 1; i >= 0; i-- {
 		msg := history[i]
 		role := "user"
@@ -283,7 +280,6 @@ func (p *iFlytekModelProvider) getChatMessages(question string, history []*RawMe
 		})
 	}
 
-	// 添加当前问题
 	result = append(result, &messages.GenericChatMessage{
 		Role:    "user",
 		Content: question,
