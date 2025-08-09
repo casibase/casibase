@@ -99,20 +99,21 @@ func getAllRecords() ([]*Record, error) {
 	return records, nil
 }
 
-func getValidAndNeedCommitRecords(records []*Record) ([]*Record, bool, error) {
+func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []interface{}, bool, error) {
 	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider("admin")
 	if err != nil {
-		return nil, false, err
+		return nil, nil, false, err
 	}
 
 	var validRecords []*Record
+	var data []interface{}
 	needCommit := false
 	recordTime := util.GetCurrentTimeWithMilli()
 
 	for _, record := range records {
 		ok, err := prepareRecord(record, providerFirst, providerSecond)
 		if err != nil {
-			return nil, false, err
+			return nil, nil, false, err
 		}
 		if !ok {
 			continue
@@ -121,11 +122,12 @@ func getValidAndNeedCommitRecords(records []*Record) ([]*Record, bool, error) {
 		recordTime = record.CreatedTime
 
 		validRecords = append(validRecords, record)
+		data = append(data, map[string]interface{}{"name": record.Name})
 		if record.NeedCommit {
 			needCommit = true
 		}
 	}
-	return validRecords, needCommit, nil
+	return validRecords, data, needCommit, nil
 }
 
 func GetPaginationRecords(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Record, error) {
@@ -195,6 +197,7 @@ func prepareRecord(record *Record, providerFirst, providerSecond *Provider) (boo
 	}
 
 	record.Id = 0
+	record.Name = util.GenerateId()
 	record.Owner = record.Organization
 
 	return true, nil
@@ -338,7 +341,8 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 		return affected2, data, nil
 	}
 
-	return affected != 0, nil, nil
+	data := map[string]interface{}{"name": record.Name}
+	return affected != 0, data, nil
 }
 
 func AddRecords(records []*Record) (bool, interface{}, error) {
@@ -346,7 +350,7 @@ func AddRecords(records []*Record) (bool, interface{}, error) {
 		return false, nil, nil
 	}
 
-	validRecords, needCommit, err := getValidAndNeedCommitRecords(records)
+	validRecords, data, needCommit, err := getValidAndNeedCommitRecords(records)
 	if err != nil {
 		return false, nil, err
 	}
@@ -386,7 +390,7 @@ func AddRecords(records []*Record) (bool, interface{}, error) {
 		ScanNeedCommitRecords()
 	}
 
-	return totalAffected != 0, nil, nil
+	return totalAffected != 0, data, nil
 }
 
 func DeleteRecord(record *Record) (bool, error) {
