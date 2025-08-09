@@ -198,6 +198,16 @@ func CommitRecords(records []*Record) (int, []map[string]interface{}, error) {
 	defer scanNeedCommitRecordsMutex.Unlock()
 
 	for _, record := range records {
+		// Get the record from the database to ensure it is up-to-date
+		record, err := GetRecord(record.getId())
+		if err != nil {
+			errors = append(errors, err.Error())
+			continue
+		}
+		if record.Block != "" {
+			continue
+		}
+
 		if recordAffected, commitResult, err := CommitRecord(record); err != nil {
 			errors = append(errors, err.Error())
 		} else {
