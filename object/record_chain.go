@@ -125,12 +125,20 @@ func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 
 	client, provider, err := record.getRecordChainClient(record.Provider)
 	if err != nil {
+		_, updateErr := record.updateErrorText(err.Error())
+		if updateErr != nil {
+			err = updateErr
+		}
 		return false, nil, err
 	}
 	record.Provider = provider.Name
 
 	blockId, transactionId, blockHash, err := client.Commit(record.toParam())
 	if err != nil {
+		_, updateErr := record.updateErrorText(err.Error())
+		if updateErr != nil {
+			err = updateErr
+		}
 		return false, nil, err
 	}
 
@@ -141,6 +149,10 @@ func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 		"block_hash":  blockHash,
 	}
 
+	if record.ErrorText != "" {
+		data["error_text"] = ""
+	}
+
 	// Update the record fields to avoid concurrent update race conditions
 	var affected bool
 	if record.Id == 0 {
@@ -149,6 +161,8 @@ func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 	} else {
 		affected, err = UpdateRecordFields(record.getUniqueId(), data)
 	}
+
+	delete(data, "error_text")
 
 	// attach the name to the data for consistency
 	data["name"] = record.Name
@@ -185,12 +199,11 @@ func CommitRecordSecond(record *Record) (bool, error) {
 }
 
 // CommitRecords commits multiple records to the blockchain.
-func CommitRecords(records []*Record) (int, []map[string]interface{}, error) {
+func CommitRecords(records []*Record) (int, []map[string]interface{}) {
 	if len(records) == 0 {
-		return 0, nil, nil
+		return 0, nil
 	}
 
-	var errors []string
 	var data []map[string]interface{}
 	affected := 0
 	// Lock the mutex to prevent concurrent
@@ -201,7 +214,10 @@ func CommitRecords(records []*Record) (int, []map[string]interface{}, error) {
 		// Get the record from the database to ensure it is up-to-date
 		record, err := GetRecord(record.getId())
 		if err != nil {
-			errors = append(errors, err.Error())
+			data = append(data, map[string]interface{}{
+				"name":       record.Name,
+				"error_text": err.Error(),
+			})
 			continue
 		}
 		if record.Block != "" {
@@ -215,8 +231,12 @@ func CommitRecords(records []*Record) (int, []map[string]interface{}, error) {
 			continue
 		}
 
-		if recordAffected, commitResult, err := CommitRecord(record); err != nil {
-			errors = append(errors, err.Error())
+		recordAffected, commitResult, err := CommitRecord(record)
+		if err != nil {
+			data = append(data, map[string]interface{}{
+				"name":       record.Name,
+				"error_text": err.Error(),
+			})
 		} else {
 			if recordAffected {
 				affected++
@@ -225,11 +245,7 @@ func CommitRecords(records []*Record) (int, []map[string]interface{}, error) {
 		}
 	}
 
-	if len(errors) > 0 {
-		return affected, data, fmt.Errorf("failed to commit %d/%d records: %v", len(errors), len(records), errors)
-	}
-
-	return affected, data, nil
+	return affected, data
 }
 
 func QueryRecord(id string) (string, error) {
