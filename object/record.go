@@ -336,13 +336,12 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 	data := map[string]interface{}{"name": record.Name}
 
 	if record.NeedCommit {
-		affected2, data, err := CommitRecord(record)
+		_, commitResult, err := CommitRecord(record)
 		if err != nil {
 			data["error_text"] = err.Error()
 			return false, data, nil
 		}
-
-		return affected2, data, nil
+		data = commitResult
 	}
 
 	return affected != 0, data, nil
@@ -395,9 +394,9 @@ func AddRecords(records []*Record, syncEnabled bool) (bool, interface{}, error) 
 			for _, idx := range needCommitRecordsIdx {
 				needCommitRecords = append(needCommitRecords, records[idx])
 			}
-			_, recordsResult := CommitRecords(needCommitRecords)
+			_, commitResults := CommitRecords(needCommitRecords)
 			for i, idx := range needCommitRecordsIdx {
-				data[idx] = recordsResult[i]
+				data[idx] = commitResults[i]
 			}
 		} else {
 			go ScanNeedCommitRecords()
