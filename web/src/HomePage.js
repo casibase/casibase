@@ -69,7 +69,11 @@ class HomePage extends React.Component {
         return null;
       } else {
         if (this.props.account.name === "admin" || this.props.account.type === "chat-admin") {
-          return <OsDesktop account={this.props.account} />;
+          if (this.state.store.siteMode === "desktop") {
+            return <OsDesktop account={this.props.account} />;
+          } else {
+            return <FileTreePage account={this.props.account} storeName={this.state.store.name} />;
+          }
         }
 
         return <FileTreePage account={this.props.account} storeName={this.state.store.name} />;

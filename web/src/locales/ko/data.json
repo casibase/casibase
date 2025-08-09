@@ -596,6 +596,8 @@
     "Search provider - Tooltip": "Search provider - Tooltip",
     "Show auto read": "자동 읽기 표시",
     "Show auto read - Tooltip": "AI 응답을 자동으로 읽을지 여부를 표시함(TTS 서비스를 활성화해야 함)",
+    "Site mode": "사이트 모드",
+    "Site mode - Tooltip": "사이트 모드 - Tooltip",
     "Sorry, you are unauthorized to access this file or folder": "죄송합니다. 이 파일 또는 폴더에 액세스할 권한이 없습니다",
     "Speech-to-Text provider": "음성 인식 서비스 공급자",
     "Speech-to-Text provider - Tooltip": "음성 인식 서비스 공급자(STT)",

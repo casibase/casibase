@@ -122,6 +122,11 @@ class App extends Component {
       Setting.setThemeColor(cachedThemeColor);
     }
 
+    const cachedSiteMode = localStorage.getItem("siteMode");
+    if (cachedSiteMode) {
+      Setting.setSiteMode(cachedSiteMode);
+    }
+
     FetchFilter.initDemoMode();
     Setting.initCasdoorSdk(Conf.AuthConfig);
     if (!Conf.DisablePreviewMode) {
@@ -145,8 +150,16 @@ class App extends Component {
           Setting.setThemeColor(color);
           localStorage.setItem("themeColor", color);
         }
+
+        const siteMode = res.data.siteMode ? res.data.siteMode : Conf.SiteModeDefault;
+        const currentSiteMode = localStorage.getItem("siteMode");
+        if (currentSiteMode !== siteMode) {
+          Setting.setSiteMode(siteMode);
+          localStorage.setItem("siteMode", siteMode);
+        }
       } else {
         Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
+        Setting.setSiteMode(Conf.SiteModeDefault);
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
       }
     });

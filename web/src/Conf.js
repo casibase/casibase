@@ -32,6 +32,7 @@ export let DisablePreviewMode = false;
 export let IsDemoMode = false;
 // eslint-disable-next-line
 export let ThemeDefault = {};
+export let SiteModeDefault = "default";
 export let AvatarErrorUrl = "";
 
 export function setConfig(config) {
@@ -66,6 +67,8 @@ export function setConfig(config) {
   if (config.themeDefault) {
     Object.assign(ThemeDefault, config.themeDefault);
   }
+
+  if (config.siteModeDefault) {SiteModeDefault = config.siteModeDefault;}
 
   if (config.avatarErrorUrl !== undefined) {AvatarErrorUrl = config.avatarErrorUrl;}
 }

@@ -596,6 +596,8 @@
     "Search provider - Tooltip": "ウェブ検索およびドキュメント検索サービスプロバイダ",
     "Show auto read": "自動読み上げを表示",
     "Show auto read - Tooltip": "AIの返答を自動的に読み上げるかどうか（TTSサービスを有効化する必要があります）",
+    "Site mode": "サイトモード",
+    "Site mode - Tooltip": "サイトモード - Tooltip",
     "Sorry, you are unauthorized to access this file or folder": "申し訳ありませんが、このファイルまたはフォルダにアクセスする権限がありません",
     "Speech-to-Text provider": "音声認識サービスプロバイダ",
     "Speech-to-Text provider - Tooltip": "音声認識サービスプロバイダ（STT）",

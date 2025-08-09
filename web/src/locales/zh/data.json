@@ -596,6 +596,8 @@
     "Search provider - Tooltip": "网络搜索和文档搜索服务提供商",
     "Show auto read": "显示自动朗读",
     "Show auto read - Tooltip": "是否自动朗读AI回复（需要启用TTS服务）",
+    "Site mode": "站点模式",
+    "Site mode - Tooltip": "站点模式 - Tooltip",
     "Sorry, you are unauthorized to access this file or folder": "抱歉，您无权访问此文件或文件夹",
     "Speech-to-Text provider": "语音识别服务提供商",
     "Speech-to-Text provider - Tooltip": "语音识别服务提供商（STT）",

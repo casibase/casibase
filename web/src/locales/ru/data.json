@@ -596,6 +596,8 @@
     "Search provider - Tooltip": "Поставщик услуг веб-поиска и поиска документов",
     "Show auto read": "Показать автоматическое чтение",
     "Show auto read - Tooltip": "Показывать ли автоматическое чтение ответов ИИ (требуется включить службу TTS)",
+    "Site mode": "Режим сайта",
+    "Site mode - Tooltip": "Режим сайта - Tooltip",
     "Sorry, you are unauthorized to access this file or folder": "Извините, у вас нет прав на доступ к этому файлу или папке",
     "Speech-to-Text provider": "Услуговый провайдер преобразования речи в текст",
     "Speech-to-Text provider - Tooltip": "Услуговый провайдер преобразования речи в текст (STT)",
