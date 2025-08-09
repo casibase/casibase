@@ -205,6 +205,13 @@ func CommitRecords(records []*Record) (int, []map[string]interface{}, error) {
 			continue
 		}
 		if record.Block != "" {
+			data = append(data, map[string]interface{}{
+				"name":        record.Name,
+				"provider":    record.Provider,
+				"block":       record.Block,
+				"transaction": record.Transaction,
+				"block_hash":  record.BlockHash,
+			})
 			continue
 		}
 
