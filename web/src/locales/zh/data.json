@@ -22,6 +22,7 @@
     "Parameters": "参数",
     "Parameters - Tooltip": "应用参数",
     "Pending": "等待中",
+    "Replicas": "副本",
     "Running": "运行中",
     "Terminating": "正在终止",
     "Undeploy": "取消部署",

@@ -115,6 +115,7 @@ func initAPI() {
 	beego.Router("/api/deploy-application", &controllers.ApiController{}, "POST:DeployApplication")
 	beego.Router("/api/undeploy-application", &controllers.ApiController{}, "POST:UndeployApplication")
 	beego.Router("/api/get-application-status", &controllers.ApiController{}, "GET:GetApplicationStatus")
+	beego.Router("/api/get-application-view", &controllers.ApiController{}, "GET:GetApplicationView")
 
 	beego.Router("/api/get-usages", &controllers.ApiController{}, "GET:GetUsages")
 	beego.Router("/api/get-range-usages", &controllers.ApiController{}, "GET:GetRangeUsages")

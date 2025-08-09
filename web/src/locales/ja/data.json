@@ -22,6 +22,7 @@
     "Parameters": "パラメータ",
     "Parameters - Tooltip": "アプリケーションのパラメータ",
     "Pending": "保留中",
+    "Replicas": "レプリカ",
     "Running": "実行中",
     "Terminating": "終了中",
     "Undeploy": "アンデプロイ",
