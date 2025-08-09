@@ -345,7 +345,7 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 	return affected != 0, data, nil
 }
 
-func AddRecords(records []*Record) (bool, interface{}, error) {
+func AddRecords(records []*Record, syncEnabled bool) (bool, interface{}, error) {
 	if len(records) == 0 {
 		return false, nil, nil
 	}
@@ -387,7 +387,16 @@ func AddRecords(records []*Record) (bool, interface{}, error) {
 
 	// Send commit event for records that need to be committed
 	if needCommit {
-		ScanNeedCommitRecords()
+		if syncEnabled {
+			affected, recordsResult, err := CommitRecords(validRecords)
+			if affected == 0 || err != nil {
+				return false, nil, err
+			}
+			// Some errors will not be processed for the time being
+			return affected != 0, recordsResult, nil
+		} else {
+			go ScanNeedCommitRecords()
+		}
 	}
 
 	return totalAffected != 0, data, nil
