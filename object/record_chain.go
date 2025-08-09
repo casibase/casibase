@@ -143,6 +143,10 @@ func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 
 	// Update the record fields to avoid concurrent update race conditions
 	affected, err := UpdateRecordFields(record.getUniqueId(), data)
+
+	// attach the name to the data for consistency
+	data["name"] = record.Name
+
 	return affected, data, err
 }
 
