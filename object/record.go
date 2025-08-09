@@ -339,9 +339,9 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 		_, commitResult, err := CommitRecord(record)
 		if err != nil {
 			data["error_text"] = err.Error()
-			return false, data, nil
+		} else {
+			data = commitResult
 		}
-		data = commitResult
 	}
 
 	return affected != 0, data, nil
