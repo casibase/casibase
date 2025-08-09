@@ -303,6 +303,10 @@ export function setThemeColor(color) {
   updateTheme(color);
 }
 
+export function setSiteMode(siteMode) {
+  localStorage.setItem("siteMode", siteMode);
+}
+
 export function getThemeColor() {
   return localStorage.getItem("themeColor") ?? "#5734d3";
 }

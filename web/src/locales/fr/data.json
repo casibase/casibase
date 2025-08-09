@@ -596,6 +596,8 @@
     "Search provider - Tooltip": "Fournisseur de services de recherche web et de documents",
     "Show auto read": "Afficher la lecture automatique",
     "Show auto read - Tooltip": "Afficher si la réponse IA doit être lue automatiquement (nécessite l'activation du service TTS)",
+    "Site mode": "Mode du site",
+    "Site mode - Tooltip": "Mode du site - Tooltip",
     "Sorry, you are unauthorized to access this file or folder": "Désolé, vous n'êtes pas autorisé à accéder à ce fichier ou dossier",
     "Speech-to-Text provider": "Fournisseur de reconnaissance vocale",
     "Speech-to-Text provider - Tooltip": "Fournisseur de service de reconnaissance vocale (STT)",

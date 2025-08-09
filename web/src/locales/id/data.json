@@ -596,6 +596,8 @@
     "Search provider - Tooltip": "Penyedia layanan pencarian web dan dokumen",
     "Show auto read": "Tampilkan bacaan otomatis",
     "Show auto read - Tooltip": "Apakah membaca ulang AI secara otomatis (memerlukan layanan TTS diaktifkan)",
+    "Site mode": "Mode situs",
+    "Site mode - Tooltip": "Mode situs - Tooltip",
     "Sorry, you are unauthorized to access this file or folder": "Maaf, Anda tidak berhak mengakses file atau folder ini",
     "Speech-to-Text provider": "Penyedia pengenalan suara-ke-teks",
     "Speech-to-Text provider - Tooltip": "Penyedia layanan pengenalan suara-ke-teks (STT)",

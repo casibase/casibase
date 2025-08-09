@@ -54,7 +54,8 @@ type WebConfig struct {
 		BorderRadius int    `json:"borderRadius"`
 		IsCompact    bool   `json:"isCompact"`
 	} `json:"themeDefault"`
-	AvatarErrorUrl string `json:"avatarErrorUrl"`
+	SiteModeDefault string `json:"siteModeDefault"`
+	AvatarErrorUrl  string `json:"avatarErrorUrl"`
 }
 
 func init() {
@@ -230,6 +231,8 @@ func GetWebConfig() *WebConfig {
 	config.ThemeDefault.ColorPrimary = GetConfigString("defaultColorPrimary")
 	config.ThemeDefault.BorderRadius = GetConfigInt("defaultBorderRadius")
 	config.ThemeDefault.IsCompact = GetConfigBool("defaultIsCompact")
+
+	config.SiteModeDefault = GetConfigString("defaultSiteMode")
 
 	config.AvatarErrorUrl = GetConfigString("avatarErrorUrl")
 

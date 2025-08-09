@@ -488,6 +488,23 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("store:Site mode"), i18next.t("store:Site mode - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Select virtual={false}
+              style={{width: "100%"}}
+              value={Array.isArray(this.state.store.siteMode) ? this.state.store.siteMode : (this.state.store.siteMode ? [this.state.store.siteMode] : [])}
+              onChange={value => {
+                this.updateStoreField("siteMode", value);
+              }}
+            >
+              <Option key="default" value="default">default</Option>
+              <Option key="desktop" value="desktop">desktop</Option>
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Child stores"), i18next.t("store:Child stores - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -561,6 +578,7 @@ class StoreEditPage extends React.Component {
         if (res.status === "ok") {
           if (res.data) {
             Setting.setThemeColor(this.state.store.themeColor);
+            Setting.setSiteMode(this.state.store.siteMode);
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               storeName: this.state.store.name,
