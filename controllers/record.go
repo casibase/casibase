@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
@@ -142,10 +143,19 @@ func (c *ApiController) AddRecord() {
 // @Title AddRecords
 // @Tag Record API
 // @Description add multiple records
-// @Param   body    body   []object.Record  true        "The details of the record"
+// @Param   body    body   []object.Record  true        "The details of the records"
+// @Param   sync    query  string           false       "Set to 'true' or '1' to enable synchronous processing"
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-records [post]
 func (c *ApiController) AddRecords() {
+	// Determine synchronous processing
+	var syncEnabled bool
+	syncParam := strings.ToLower(c.Input().Get("sync"))
+	if syncParam == "true" || syncParam == "1" {
+		syncEnabled = true
+	} else {
+		syncEnabled = false
+	}
 	var records []*object.Record
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &records)
 	if err != nil {
@@ -170,7 +180,7 @@ func (c *ApiController) AddRecords() {
 		}
 	}
 
-	c.Data["json"] = wrapActionResponse2(object.AddRecords(records))
+	c.Data["json"] = wrapActionResponse2(object.AddRecords(records, syncEnabled))
 	c.ServeJSON()
 }
 
