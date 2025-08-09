@@ -208,7 +208,7 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 		}
 	}
 
-	chatMessages := p.getChatMessages(question, history)
+	chatMessages := p.getChatMessages(question, history, prompt, knowledgeMessages)
 
 	r := &sparkclient.ChatRequest{
 		Domain:   &domain,
@@ -251,8 +251,16 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 	return modelResult, nil
 }
 
-func (p *iFlytekModelProvider) getChatMessages(question string, history []*RawMessage) []messages.ChatMessage {
+func (p *iFlytekModelProvider) getChatMessages(question string, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) []messages.ChatMessage {
 	var result []messages.ChatMessage
+
+	systemMsgs := getSystemMessages(prompt, knowledgeMessages)
+	for _, msg := range systemMsgs {
+		result = append(result, &messages.GenericChatMessage{
+			Role:    "system",
+			Content: msg.Text,
+		})
+	}
 
 	for i := len(history) - 1; i >= 0; i-- {
 		msg := history[i]
