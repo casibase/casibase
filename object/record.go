@@ -50,8 +50,9 @@ type Record struct {
 	Unit         string `xorm:"varchar(100)" json:"unit"`
 	Section      string `xorm:"varchar(100)" json:"section"`
 
-	Object   string `xorm:"mediumtext" json:"object"`
-	Response string `xorm:"mediumtext" json:"response"`
+	Object    string `xorm:"mediumtext" json:"object"`
+	Response  string `xorm:"mediumtext" json:"response"`
+	ErrorText string `xorm:"mediumtext" json:"errorText"`
 	// ExtendedUser *User  `xorm:"-" json:"extendedUser"`
 
 	Provider    string `xorm:"varchar(100)" json:"provider"`
@@ -99,21 +100,21 @@ func getAllRecords() ([]*Record, error) {
 	return records, nil
 }
 
-func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []interface{}, bool, error) {
+func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []int, []interface{}, error) {
 	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider("admin")
 	if err != nil {
-		return nil, nil, false, err
+		return nil, nil, nil, err
 	}
 
 	var validRecords []*Record
+	var needCommitIdx []int
 	var data []interface{}
-	needCommit := false
 	recordTime := util.GetCurrentTimeWithMilli()
 
-	for _, record := range records {
+	for i, record := range records {
 		ok, err := prepareRecord(record, providerFirst, providerSecond)
 		if err != nil {
-			return nil, nil, false, err
+			return nil, nil, nil, err
 		}
 		if !ok {
 			continue
@@ -124,10 +125,10 @@ func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []interface{}, 
 		validRecords = append(validRecords, record)
 		data = append(data, map[string]interface{}{"name": record.Name})
 		if record.NeedCommit {
-			needCommit = true
+			needCommitIdx = append(needCommitIdx, i)
 		}
 	}
-	return validRecords, data, needCommit, nil
+	return validRecords, needCommitIdx, data, nil
 }
 
 func GetPaginationRecords(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Record, error) {
@@ -332,16 +333,17 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 		return false, nil, err
 	}
 
-	if record.NeedCommit {
-		affected2, data, err := CommitRecord(record)
-		if err != nil {
-			return false, nil, err
-		}
+	data := map[string]interface{}{"name": record.Name}
 
-		return affected2, data, nil
+	if record.NeedCommit {
+		_, commitResult, err := CommitRecord(record)
+		if err != nil {
+			data["error_text"] = err.Error()
+		} else {
+			data = commitResult
+		}
 	}
 
-	data := map[string]interface{}{"name": record.Name}
 	return affected != 0, data, nil
 }
 
@@ -350,7 +352,7 @@ func AddRecords(records []*Record, syncEnabled bool) (bool, interface{}, error) 
 		return false, nil, nil
 	}
 
-	validRecords, data, needCommit, err := getValidAndNeedCommitRecords(records)
+	validRecords, needCommitRecordsIdx, data, err := getValidAndNeedCommitRecords(records)
 	if err != nil {
 		return false, nil, err
 	}
@@ -386,14 +388,16 @@ func AddRecords(records []*Record, syncEnabled bool) (bool, interface{}, error) 
 	}
 
 	// Send commit event for records that need to be committed
-	if needCommit {
+	if len(needCommitRecordsIdx) > 0 {
 		if syncEnabled {
-			affected, recordsResult, err := CommitRecords(validRecords)
-			if affected == 0 || err != nil {
-				return false, nil, err
+			var needCommitRecords []*Record
+			for _, idx := range needCommitRecordsIdx {
+				needCommitRecords = append(needCommitRecords, records[idx])
 			}
-			// Some errors will not be processed for the time being
-			return affected != 0, recordsResult, nil
+			_, commitResults := CommitRecords(needCommitRecords)
+			for i, idx := range needCommitRecordsIdx {
+				data[idx] = commitResults[i]
+			}
 		} else {
 			go ScanNeedCommitRecords()
 		}
@@ -417,4 +421,21 @@ func (record *Record) getUniqueId() string {
 
 func (record *Record) getId() string {
 	return fmt.Sprintf("%s/%s", record.Owner, record.Name)
+}
+
+func (r *Record) updateErrorText(errText string) (bool, error) {
+	r.ErrorText = errText
+	if r.Id != 0 {
+		affected, err := adapter.engine.Where("owner = ? AND name = ?", r.Owner, r.Name).Cols("error_text").Update(r)
+		if err != nil {
+			return affected > 0, fmt.Errorf("failed to update error text for record %s: %s", r.getId(), err)
+		}
+		return affected > 0, nil
+	} else {
+		affected, err := adapter.engine.ID(r.Id).Cols("error_text").Update(r)
+		if err != nil {
+			return affected > 0, fmt.Errorf("failed to update error text for record %s: %s", r.getUniqueId(), err)
+		}
+		return affected > 0, nil
+	}
 }

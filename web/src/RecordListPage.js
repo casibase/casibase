@@ -22,7 +22,7 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
-import {DeleteOutlined} from "@ant-design/icons";
+import {CloseCircleFilled, DeleteOutlined} from "@ant-design/icons";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css";
@@ -430,6 +430,17 @@ class RecordListPage extends BaseListPage {
               </div>
             </Popover>
           );
+        },
+      },
+      {
+        title: i18next.t("message:Error text"),
+        dataIndex: "errorText",
+        key: "errorText",
+        width: "120px",
+        sorter: true,
+        ...this.getColumnSearchProps("errorText"),
+        render: (text, record, index) => {
+          return (text !== "" ? <Alert description={text} type="error" showIcon style={{padding: "4px"}} icon={<CloseCircleFilled style={{fontSize: "16px", margin: "4px 8px 0 4px"}} />} /> : null);
         },
       },
       {
