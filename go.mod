@@ -35,7 +35,7 @@ require (
 	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674
 	github.com/henomis/lingoose v0.1.0
 	github.com/hupe1980/go-huggingface v0.0.15
-	github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80
+	github.com/casibase/pdf v1.2.0
 	github.com/leverly/ChatGLM v1.2.0
 	github.com/lib/pq v1.10.2
 	github.com/luthermonson/go-proxmox v0.2.1

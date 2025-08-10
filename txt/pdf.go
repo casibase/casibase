@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ledongthuc/pdf"
+	"github.com/casibase/pdf"
 )
 
 func getPageTexts(p pdf.Page) (texts []pdf.Text, err error) {
