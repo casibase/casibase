@@ -177,6 +177,8 @@ class App extends Component {
     });
   }
 
+
+
   updateMenuKey() {
     // eslint-disable-next-line no-restricted-globals
     const uri = location.pathname;
@@ -252,19 +254,12 @@ class App extends Component {
     else {
       this.setState({ selectedMenuKey: "null" });
     }
+    this.setOpenMenuKeysForParentMenu(uri);
 
-    
-    // 更新展开的菜单键
-      let openKeys = [];
-      if (uri === "/yolov8mi" || uri === "/sr") {
-        openKeys = ["/img"]; // "Image Operation" 菜单的 key
-      } else if (uri.includes("/stores") || uri.includes("/providers")) {
-        openKeys = ["/ai-setting"]; // "AI Setting" 菜单的 key
-      } else if (uri.includes("/sysinfo") || uri.includes("/sessions") || uri.includes("/records")) {
-        openKeys = ["/admin"]; // "Admin" 菜单的 key
-      } 
-      this.setState({ openMenuKeys: openKeys });
+
   }
+
+  
 
   onUpdateAccount(account) {
     this.setState({
@@ -475,6 +470,62 @@ class App extends Component {
         </React.Fragment>
       );
     }
+  }
+
+    /**
+   * 为父菜单设置展开键, 方便存在展开内容的菜单, 点击子菜单时, 可以展开父菜单
+   *
+   * by jjq
+   * @param {*} uri 
+   */
+  setOpenMenuKeysForParentMenu(uri){
+    // 更新展开的菜单键
+    const pathToMenuKeyMap = this.buildPathToMenuKeyMap();
+    let openKeys = [];
+
+    // 精确匹配路径
+    if (pathToMenuKeyMap[uri]) {
+      openKeys = [pathToMenuKeyMap[uri]];
+    } else {
+      // 查找包含子路径的匹配
+      const matchingParentKey = Object.keys(pathToMenuKeyMap).find(path => 
+        uri.includes(path) && pathToMenuKeyMap[path]
+      );
+      if (matchingParentKey) {
+        openKeys = [pathToMenuKeyMap[matchingParentKey]];
+      }
+    }
+
+    this.setState({ openMenuKeys: openKeys });
+  }
+
+  /**
+   * 构建路径到父菜单key的映射, 方便存在展开内容的菜单, 点击子菜单时, 可以展开父菜单
+   *
+   * by jjq
+   * @returns 
+   */
+  buildPathToMenuKeyMap() {
+    const menuItems = this.getMenuItems();
+    const pathToMenuKeyMap = {};
+
+    // 递归遍历菜单结构，构建路径映射
+    const traverseMenuItems = (items, parentKey = null) => {
+      items.forEach(item => {
+        // 如果是带有子菜单的项
+        if (item.children && item.children.length > 0) {
+          traverseMenuItems(item.children, item.key);
+        } 
+        // 如果是叶子节点且有路径
+        else if (item.key && !item.key.startsWith('#')) {
+          // 存储路径到父菜单key的映射
+          pathToMenuKeyMap[item.key] = parentKey;
+        }
+      });
+    };
+
+    traverseMenuItems(menuItems);
+    return pathToMenuKeyMap;
   }
 
   getMenuItems() {
