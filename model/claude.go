@@ -110,13 +110,10 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 	maxTokens := getContextLength(p.subType)
 
 	var textBlockList []anthropic.TextBlockParam
-	textBlockList = append(textBlockList, anthropic.TextBlockParam{
-		Text: prompt,
-		Type: "text",
-	})
-	for _, knowledgeMessage := range knowledgeMessages {
+	systemMessages := getSystemMessages(prompt, knowledgeMessages)
+	for _, systemMessage := range systemMessages {
 		textBlockList = append(textBlockList, anthropic.TextBlockParam{
-			Text: knowledgeMessage.Text,
+			Text: systemMessage.Text,
 			Type: "text",
 		})
 	}
