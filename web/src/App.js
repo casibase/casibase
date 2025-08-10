@@ -16,7 +16,7 @@ import React, { Component } from "react";
 import { Link, Redirect, Route, Switch, withRouter } from "react-router-dom";
 import { StyleProvider, legacyLogicalPropertiesTransformer } from "@ant-design/cssinjs";
 import { Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu, Result } from "antd";
-import { AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone, BuildTwoTone, CameraTwoTone, SecurityScanTwoTone } from "@ant-design/icons";
+import { AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone, BuildTwoTone, CameraTwoTone, SecurityScanTwoTone,ToolTwoTone } from "@ant-design/icons";
 import "./App.less";
 import { Helmet } from "react-helmet";
 import * as Setting from "./Setting";
@@ -591,6 +591,12 @@ class App extends Component {
             {i18next.t("general:Permissions")}
             {Setting.renderExternalLink()}
           </a>, "/permissions"),
+      ]));
+
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/stores">{i18next.t("general:Setting")}</Link>, "/ai-setting", <ToolTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"),
+        Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"),
+        // Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"),
       ]));
 
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />,

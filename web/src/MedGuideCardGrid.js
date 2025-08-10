@@ -7,8 +7,8 @@ const cardGroups = [
         color: "#0984e3",
         cards: [
             { title: "数据看板", icon: "🔢", router: "/dashboard", desc: "纵览全局数据" },
-            { title: "上链", icon: "🔗", router: "/chain", desc: "可信存证" },
-            { title: "数据使用控制", icon: "🛡️", router: "/data-control", desc: "权限与追踪" },
+            // { title: "上链", icon: "🔗", router: "/chain", desc: "可信存证" },
+            // { title: "数据使用控制", icon: "🛡️", router: "/data-control", desc: "权限与追踪" },
         ]
     },
     {
@@ -16,7 +16,11 @@ const cardGroups = [
         color: "#6242d5",
         cards: [
             { title: "临床路径", icon: "🩺", router: "/workflows", desc: "智能诊疗" },
-            { title: "联邦学习", icon: "🤝", router: "/federated-learning", desc: "多方协作" },
+            // { title: "联邦学习", icon: "🤝", router: "/federated-learning", desc: "多方协作" },
+            { title: "医学影像分析", icon: "🖼️", router: "/yolov8mi", desc: "智能分析" },
+            { title: "图像超分", icon: "📷", router: "/sr", desc: "提升图像质量" },
+
+
         ]
     },
     {
@@ -24,15 +28,15 @@ const cardGroups = [
         color: "#40739e",
         cards: [
             { title: "复杂查询审计", icon: "🔍", router: "/audit", desc: "灵活分析" },
-            { title: "数据质量控制", icon: "📊", router: "/data-quality", desc: "数据治理" },
+            // { title: "数据质量控制", icon: "📊", router: "/data-quality", desc: "数据治理" },
         ]
     },
     {
-        groupTitle: "安全与扩展",
+        groupTitle: "平台管理",
         color: "#00b894",
         cards: [
-            { title: "密文计算", icon: "🔒", router: "/crypto", desc: "隐私保护" },
-            { title: "其他", icon: "✨", router: "/other", desc: "更多功能" }
+            // { title: "密文计算", icon: "🔒", router: "/crypto", desc: "隐私保护" },
+            { title: "提供商", icon: "🌐", router: "/providers", desc: "" }
         ]
     }
 ];
