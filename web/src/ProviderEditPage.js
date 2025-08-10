@@ -411,7 +411,12 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "paraformer-realtime-v1");
                 }
               }
-            })}>
+            })}
+            showSearch
+            filterOption={(input, option) =>
+              option.children[1].toLowerCase().includes(input.toLowerCase())
+            }
+            >
               {
                 Setting.getProviderTypeOptions(this.state.provider.category)
                 // .sort((a, b) => a.name.localeCompare(b.name))
@@ -448,6 +453,10 @@ class ProviderEditPage extends React.Component {
                     onChange={(value) => {
                       this.updateProviderField("subType", value);
                     }}
+                    showSearch
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().includes(input.toLowerCase())
+                    }
                   >
                     {Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type)
                       .map((item, index) => (
