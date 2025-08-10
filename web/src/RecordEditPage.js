@@ -339,7 +339,7 @@ class RecordEditPage extends React.Component {
             if (willExist) {
               this.props.history.push("/records");
             } else {
-              this.props.history.push(`/records/${this.state.record.owner}/${encodeURIComponent(this.state.record.name)}`);
+              this.props.history.push(`/records/${this.state.record.owner}/${encodeURIComponent(this.state.record.id)}`);
             }
           } else {
             Setting.showMessage("error", i18next.t("general:Failed to connect to server"));

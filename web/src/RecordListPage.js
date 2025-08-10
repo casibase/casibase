@@ -22,7 +22,7 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
-import {DeleteOutlined} from "@ant-design/icons";
+import {CloseCircleFilled, DeleteOutlined} from "@ant-design/icons";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css";
@@ -95,7 +95,7 @@ class RecordListPage extends BaseListPage {
     RecordBackend.addRecord(newRecord)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/records/${newRecord.owner}/${newRecord.name}`, mode: "add"});
+          this.props.history.push({pathname: `/records/${newRecord.owner}/${newRecord.id}`, mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
@@ -151,7 +151,7 @@ class RecordListPage extends BaseListPage {
 
   queryRecord(record, isFirst = true) {
     const queryMethod = isFirst ? RecordBackend.queryRecord : RecordBackend.queryRecordSecond;
-    queryMethod(record.owner, record.name)
+    queryMethod(record.owner, record.id)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage(res.data.includes("Mismatched") ? "error" : "success", `${i18next.t("record:Query")}: ${res.data}`);
@@ -195,7 +195,7 @@ class RecordListPage extends BaseListPage {
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
-            <Link to={`/records/${record.organization}/${record.name}`}>{text}</Link>
+            <Link to={`/records/${record.organization}/${record.id}`}>{text}</Link>
           );
         },
       },
@@ -433,6 +433,17 @@ class RecordListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("message:Error text"),
+        dataIndex: "errorText",
+        key: "errorText",
+        width: "120px",
+        sorter: true,
+        ...this.getColumnSearchProps("errorText"),
+        render: (text, record, index) => {
+          return (text !== "" ? <Alert description={text} type="error" showIcon style={{padding: "4px"}} icon={<CloseCircleFilled style={{fontSize: "16px", margin: "4px 8px 0 4px"}} />} /> : null);
+        },
+      },
+      {
         title: i18next.t("general:Is triggered"),
         dataIndex: "isTriggered",
         key: "isTriggered",
@@ -543,7 +554,7 @@ class RecordListPage extends BaseListPage {
               }
               <Button
                 // disabled={record.owner !== this.props.account.owner}
-                onClick={() => this.props.history.push(`/records/${record.owner}/${record.name}`)}
+                onClick={() => this.props.history.push(`/records/${record.owner}/${record.id}`)}
               >{i18next.t("general:View")}
               </Button>
               <PopconfirmModal

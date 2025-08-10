@@ -50,12 +50,13 @@ type Record struct {
 	Unit         string `xorm:"varchar(100)" json:"unit"`
 	Section      string `xorm:"varchar(100)" json:"section"`
 
-	Object   string `xorm:"mediumtext" json:"object"`
-	Response string `xorm:"mediumtext" json:"response"`
+	Object    string `xorm:"mediumtext" json:"object"`
+	Response  string `xorm:"mediumtext" json:"response"`
+	ErrorText string `xorm:"mediumtext" json:"errorText"`
 	// ExtendedUser *User  `xorm:"-" json:"extendedUser"`
 
 	Provider    string `xorm:"varchar(100)" json:"provider"`
-	Block       string `xorm:"varchar(100)" json:"block"`
+	Block       string `xorm:"varchar(100) index" json:"block"`
 	BlockHash   string `xorm:"varchar(500)" json:"blockHash"`
 	Transaction string `xorm:"varchar(500)" json:"transaction"`
 
@@ -66,7 +67,7 @@ type Record struct {
 	// For cross-chain records
 
 	IsTriggered bool `json:"isTriggered"`
-	NeedCommit  bool `json:"needCommit"`
+	NeedCommit  bool `xorm:"index" json:"needCommit"`
 }
 
 type Response struct {
@@ -99,20 +100,21 @@ func getAllRecords() ([]*Record, error) {
 	return records, nil
 }
 
-func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []string, error) {
+func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []int, []interface{}, error) {
 	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider("admin")
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	var validRecords []*Record
-	var commitRecordIds []string
+	var needCommitIdx []int
+	var data []interface{}
 	recordTime := util.GetCurrentTimeWithMilli()
 
-	for _, record := range records {
+	for i, record := range records {
 		ok, err := prepareRecord(record, providerFirst, providerSecond)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, nil, err
 		}
 		if !ok {
 			continue
@@ -121,12 +123,12 @@ func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []string, error
 		recordTime = record.CreatedTime
 
 		validRecords = append(validRecords, record)
-
+		data = append(data, map[string]interface{}{"name": record.Name})
 		if record.NeedCommit {
-			commitRecordIds = append(commitRecordIds, record.getId())
+			needCommitIdx = append(needCommitIdx, i)
 		}
 	}
-	return validRecords, commitRecordIds, nil
+	return validRecords, needCommitIdx, data, nil
 }
 
 func GetPaginationRecords(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Record, error) {
@@ -140,22 +142,32 @@ func GetPaginationRecords(owner string, offset, limit int, field, value, sortFie
 	return records, nil
 }
 
-func getRecord(owner string, name string) (*Record, error) {
-	if owner == "" || name == "" {
-		return nil, nil
-	}
+// GetRecord retrieves a record by its ID or owner/name format.
+func GetRecord(id string) (*Record, error) {
+	record := &Record{}
 
-	record := Record{Name: name}
-	existed, err := adapter.engine.Get(&record)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
 	if err != nil {
-		return &record, err
+		return nil, fmt.Errorf("failed to parse record identifier '%s': neither a valid owner/[id|name] format", id)
+	}
+	// Try to parse as integer ID first
+	if recordId, err := util.ParseIntWithError(name); err == nil && recordId > 0 {
+		// Valid integer ID
+		record.Id = recordId
+	} else {
+		record.Owner = owner
+		record.Name = name
 	}
 
-	if existed {
-		return &record, nil
-	} else {
-		return nil, nil
+	existed, err := adapter.engine.Get(record)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get record with id '%s': %w", id, err)
 	}
+	if existed {
+		return record, nil
+	}
+
+	return nil, nil
 }
 
 func prepareRecord(record *Record, providerFirst, providerSecond *Provider) (bool, error) {
@@ -185,19 +197,15 @@ func prepareRecord(record *Record, providerFirst, providerSecond *Provider) (boo
 		}
 	}
 
+	record.Id = 0
+	record.Name = util.GenerateId()
 	record.Owner = record.Organization
 
 	return true, nil
 }
 
-func GetRecord(id string) (*Record, error) {
-	owner, name := util.GetOwnerAndNameFromIdNoCheck(id)
-	return getRecord(owner, name)
-}
-
 func UpdateRecord(id string, record *Record) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	p, err := getRecord(owner, name)
+	p, err := GetRecord(id)
 	if err != nil {
 		return false, err
 	} else if p == nil {
@@ -216,7 +224,7 @@ func UpdateRecord(id string, record *Record) (bool, error) {
 		record.Transaction2 = ""
 	}
 
-	affected, err := adapter.engine.Where("name = ?", name).AllCols().Update(record)
+	affected, err := adapter.engine.Where("id = ?", p.Id).AllCols().Update(record)
 	if err != nil {
 		return false, err
 	}
@@ -233,14 +241,14 @@ func UpdateRecordInternal(id int, record Record) error {
 }
 
 func UpdateRecordFields(id string, fields map[string]interface{}) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	if p, err := getRecord(owner, name); err != nil {
+	p, err := GetRecord(id)
+	if err != nil {
 		return false, err
 	} else if p == nil {
 		return false, nil
 	}
 
-	affected, err := adapter.engine.Table(&Record{}).Where("name = ?", name).Update(fields)
+	affected, err := adapter.engine.Table(&Record{}).Where("id = ?", p.Id).Update(fields)
 	if err != nil {
 		return false, err
 	}
@@ -325,24 +333,26 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 		return false, nil, err
 	}
 
-	if record.NeedCommit {
-		affected2, data, err := CommitRecord(record)
-		if err != nil {
-			return false, nil, err
-		}
+	data := map[string]interface{}{"name": record.Name}
 
-		return affected2, data, nil
+	if record.NeedCommit {
+		_, commitResult, err := CommitRecord(record)
+		if err != nil {
+			data["error_text"] = err.Error()
+		} else {
+			data = commitResult
+		}
 	}
 
-	return affected != 0, nil, nil
+	return affected != 0, data, nil
 }
 
-func AddRecords(records []*Record) (bool, interface{}, error) {
+func AddRecords(records []*Record, syncEnabled bool) (bool, interface{}, error) {
 	if len(records) == 0 {
 		return false, nil, nil
 	}
 
-	validRecords, commitRecordIds, err := getValidAndNeedCommitRecords(records)
+	validRecords, needCommitRecordsIdx, data, err := getValidAndNeedCommitRecords(records)
 	if err != nil {
 		return false, nil, err
 	}
@@ -378,18 +388,26 @@ func AddRecords(records []*Record) (bool, interface{}, error) {
 	}
 
 	// Send commit event for records that need to be committed
-	if len(commitRecordIds) > 0 {
-		// Use goroutine to avoid blocking when channel is full
-		go func() {
-			eventTaskChan <- commitRecordIds
-		}()
+	if len(needCommitRecordsIdx) > 0 {
+		if syncEnabled {
+			var needCommitRecords []*Record
+			for _, idx := range needCommitRecordsIdx {
+				needCommitRecords = append(needCommitRecords, records[idx])
+			}
+			_, commitResults := CommitRecords(needCommitRecords)
+			for i, idx := range needCommitRecordsIdx {
+				data[idx] = commitResults[i]
+			}
+		} else {
+			go ScanNeedCommitRecords()
+		}
 	}
 
-	return totalAffected != 0, nil, nil
+	return totalAffected != 0, data, nil
 }
 
 func DeleteRecord(record *Record) (bool, error) {
-	affected, err := adapter.engine.Where("name = ?", record.Name).Delete(&Record{})
+	affected, err := adapter.engine.Where("id = ?", record.Id).Delete(&Record{})
 	if err != nil {
 		return false, err
 	}
@@ -397,6 +415,27 @@ func DeleteRecord(record *Record) (bool, error) {
 	return affected != 0, nil
 }
 
+func (record *Record) getUniqueId() string {
+	return fmt.Sprintf("%s/%d", record.Owner, record.Id)
+}
+
 func (record *Record) getId() string {
 	return fmt.Sprintf("%s/%s", record.Owner, record.Name)
+}
+
+func (r *Record) updateErrorText(errText string) (bool, error) {
+	r.ErrorText = errText
+	if r.Id != 0 {
+		affected, err := adapter.engine.Where("owner = ? AND name = ?", r.Owner, r.Name).Cols("error_text").Update(r)
+		if err != nil {
+			return affected > 0, fmt.Errorf("failed to update error text for record %s: %s", r.getId(), err)
+		}
+		return affected > 0, nil
+	} else {
+		affected, err := adapter.engine.ID(r.Id).Cols("error_text").Update(r)
+		if err != nil {
+			return affected > 0, fmt.Errorf("failed to update error text for record %s: %s", r.getUniqueId(), err)
+		}
+		return affected > 0, nil
+	}
 }

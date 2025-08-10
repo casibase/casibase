@@ -748,8 +748,8 @@ class App extends Component {
         <Route exact path="/chats/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/usages" render={(props) => this.renderSigninIfNotSignedIn(<UsagePage account={this.state.account} {...props} />)} />
-        <Route exact path="/activities" render={(props) => this.renderSigninIfNotSignedIn(<ActivityPage account={this.state.account} {...props} />)} />
+        <Route exact path="/usages" render={(props) => this.renderSigninIfNotSignedIn(<UsagePage account={this.state.account} themeAlgorithm={this.state.themeAlgorithm} {...props} />)} />
+        <Route exact path="/activities" render={(props) => this.renderSigninIfNotSignedIn(<ActivityPage account={this.state.account} themeAlgorithm={this.state.themeAlgorithm} {...props} />)} />
         <Route exact path="/desktop" render={(props) => <OsDesktop account={this.state.account} {...props} />} />
         <Route exact path="/templates" render={(props) => this.renderSigninIfNotSignedIn(<TemplateListPage account={this.state.account} {...props} />)} />
         <Route exact path="/templates/:templateName" render={(props) => this.renderSigninIfNotSignedIn(<TemplateEditPage account={this.state.account} {...props} />)} />

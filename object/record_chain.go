@@ -16,10 +16,11 @@ package object
 
 import (
 	"fmt"
-	"time"
+	"sync"
 
 	"github.com/casibase/casibase/chain"
 	"github.com/casibase/casibase/util"
+	"github.com/robfig/cron/v3"
 )
 
 type Param struct {
@@ -30,7 +31,7 @@ type Param struct {
 
 // Global variables for commit task
 var (
-	eventTaskChan chan []string
+	scanNeedCommitRecordsMutex sync.Mutex
 )
 
 func (record *Record) getRecordProvider(chainProvider string) (*Provider, error) {
@@ -119,17 +120,25 @@ func (record *Record) toParam() string {
 
 func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 	if record.Block != "" {
-		return false, nil, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getId(), record.Block)
+		return false, nil, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getUniqueId(), record.Block)
 	}
 
 	client, provider, err := record.getRecordChainClient(record.Provider)
 	if err != nil {
+		_, updateErr := record.updateErrorText(err.Error())
+		if updateErr != nil {
+			err = updateErr
+		}
 		return false, nil, err
 	}
 	record.Provider = provider.Name
 
 	blockId, transactionId, blockHash, err := client.Commit(record.toParam())
 	if err != nil {
+		_, updateErr := record.updateErrorText(err.Error())
+		if updateErr != nil {
+			err = updateErr
+		}
 		return false, nil, err
 	}
 
@@ -140,14 +149,30 @@ func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 		"block_hash":  blockHash,
 	}
 
+	if record.ErrorText != "" {
+		data["error_text"] = ""
+	}
+
 	// Update the record fields to avoid concurrent update race conditions
-	affected, err := UpdateRecordFields(record.getId(), data)
+	var affected bool
+	if record.Id == 0 {
+		// If the record ID is 0, it means batch insert, so using getId()
+		affected, err = UpdateRecordFields(record.getId(), data)
+	} else {
+		affected, err = UpdateRecordFields(record.getUniqueId(), data)
+	}
+
+	delete(data, "error_text")
+
+	// attach the name to the data for consistency
+	data["name"] = record.Name
+
 	return affected, data, err
 }
 
 func CommitRecordSecond(record *Record) (bool, error) {
 	if record.Block2 != "" {
-		return false, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getId(), record.Block2)
+		return false, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getUniqueId(), record.Block2)
 	}
 
 	client, provider, err := record.getRecordChainClient(record.Provider2)
@@ -161,13 +186,66 @@ func CommitRecordSecond(record *Record) (bool, error) {
 		return false, err
 	}
 
-	// Update the record fields to avoid concurrent update race conditions
-	return UpdateRecordFields(record.getId(), map[string]interface{}{
+	data := map[string]interface{}{
 		"provider2":    record.Provider2,
 		"block2":       blockId,
 		"transaction2": transactionId,
 		"block_hash2":  blockHash,
-	})
+	}
+
+	// Update the record fields to avoid concurrent update race conditions
+	affected, err := UpdateRecordFields(record.getUniqueId(), data)
+	return affected, err
+}
+
+// CommitRecords commits multiple records to the blockchain.
+func CommitRecords(records []*Record) (int, []map[string]interface{}) {
+	if len(records) == 0 {
+		return 0, nil
+	}
+
+	var data []map[string]interface{}
+	affected := 0
+	// Lock the mutex to prevent concurrent
+	scanNeedCommitRecordsMutex.Lock()
+	defer scanNeedCommitRecordsMutex.Unlock()
+
+	for _, record := range records {
+		// Get the record from the database to ensure it is up-to-date
+		record, err := GetRecord(record.getId())
+		if err != nil {
+			data = append(data, map[string]interface{}{
+				"name":       record.Name,
+				"error_text": err.Error(),
+			})
+			continue
+		}
+		if record.Block != "" {
+			data = append(data, map[string]interface{}{
+				"name":        record.Name,
+				"provider":    record.Provider,
+				"block":       record.Block,
+				"transaction": record.Transaction,
+				"block_hash":  record.BlockHash,
+			})
+			continue
+		}
+
+		recordAffected, commitResult, err := CommitRecord(record)
+		if err != nil {
+			data = append(data, map[string]interface{}{
+				"name":       record.Name,
+				"error_text": err.Error(),
+			})
+		} else {
+			if recordAffected {
+				affected++
+			}
+			data = append(data, commitResult)
+		}
+	}
+
+	return affected, data
 }
 
 func QueryRecord(id string) (string, error) {
@@ -180,7 +258,7 @@ func QueryRecord(id string) (string, error) {
 	}
 
 	if record.Block == "" {
-		return "", fmt.Errorf("the record: %s's block ID should not be empty", record.getId())
+		return "", fmt.Errorf("the record: %s's block ID should not be empty", id)
 	}
 
 	client, _, err := record.getRecordChainClient(record.Provider)
@@ -206,7 +284,7 @@ func QueryRecordSecond(id string) (string, error) {
 	}
 
 	if record.Block2 == "" {
-		return "", fmt.Errorf("the record: %s's block ID should not be empty", record.getId())
+		return "", fmt.Errorf("the record: %s's block ID should not be empty", id)
 	}
 
 	client, _, err := record.getRecordChainClient(record.Provider2)
@@ -222,51 +300,19 @@ func QueryRecordSecond(id string) (string, error) {
 	return res, nil
 }
 
-// BatchCommitRecords commits multiple records in a batch.
-func BatchCommitRecords(recordIds []string) (bool, error) {
-	if len(recordIds) == 0 {
-		return false, nil
-	}
-
-	var errors []string
-
-	for _, recordId := range recordIds {
-		// Get the record by ID
-		record, err := getRecord(util.GetOwnerAndNameFromId(recordId))
-		if err != nil {
-			errors = append(errors, fmt.Sprintf("failed to get record %s: %v", recordId, err))
-			continue
-		}
-		if record == nil {
-			errors = append(errors, fmt.Sprintf("failed to get record %s: not exist", recordId))
-			continue
-		}
-
-		// Commit the record
-		if _, _, err := CommitRecord(record); err != nil {
-			errors = append(errors, err.Error())
-			continue
-		}
-	}
-
-	if len(errors) > 0 {
-		return false, fmt.Errorf("failed to commit %d/%d records: %v", len(errors), len(recordIds), errors)
-	}
-
-	return true, nil
-}
-
 // ScanNeedCommitRecords scans the database table for records that
 // need to be committed but have not yet been committed.
-func ScanNeedCommitRecords() (bool, error) {
+func ScanNeedCommitRecords() {
+	scanNeedCommitRecordsMutex.Lock()
+	defer scanNeedCommitRecordsMutex.Unlock()
 	records := []*Record{}
 	err := adapter.engine.Where("need_commit = ? AND block = ?", true, "").Asc("id").Find(&records)
 	if err != nil {
-		return false, fmt.Errorf("failed to scan records that need to be committed: %v", err)
+		fmt.Printf("ScanNeedCommitRecords() failed to scan records that need to be committed: %v", err)
 	}
 
 	if len(records) == 0 {
-		return true, nil
+		return
 	}
 
 	var errors []string
@@ -278,38 +324,21 @@ func ScanNeedCommitRecords() (bool, error) {
 	}
 
 	if len(errors) > 0 {
-		return false, fmt.Errorf("failed to commit %d/%d records: %v", len(errors), len(records), errors)
+		fmt.Printf("ScanNeedCommitRecords() failed to commit %d/%d records: %v", len(errors), len(records), errors)
 	}
-
-	return true, nil
 }
 
 func InitCommitRecordsTask() {
-	// Initialize channels
-	eventTaskChan = make(chan []string, 100)
+	// Run once immediately on startup
+	go ScanNeedCommitRecords()
 
-	go func() {
-		// Create timer for first execution
-		timer := time.NewTimer(5 * time.Minute)
-		defer timer.Stop()
+	// Create cron job
+	cronJob := cron.New()
+	schedule := "@every 5m"
+	_, err := cronJob.AddFunc(schedule, ScanNeedCommitRecords)
+	if err != nil {
+		panic(err)
+	}
 
-		for {
-			select {
-			case <-timer.C:
-				// Execute the periodic task to scan and commit records
-				if _, err := ScanNeedCommitRecords(); err != nil {
-					fmt.Printf("Error scanning records: %v\n", err)
-				}
-
-				// Reset timer for next execution
-				timer.Reset(5 * time.Minute)
-
-			case recordIds := <-eventTaskChan:
-				// Execute the event task to commit records
-				if _, err := BatchCommitRecords(recordIds); err != nil {
-					fmt.Printf("Error in event task: %v\n", err)
-				}
-			}
-		}
-	}()
+	cronJob.Start()
 }

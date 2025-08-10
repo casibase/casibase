@@ -18,7 +18,7 @@ import {Redirect} from "react-router-dom";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 import ChatPage from "./ChatPage";
-import OsDesktop from "./OsDesktop";
+import UsagePage from "./UsagePage";
 import i18next from "i18next";
 
 class HomePage extends React.Component {
@@ -69,7 +69,7 @@ class HomePage extends React.Component {
         return null;
       } else {
         if (this.props.account.name === "admin" || this.props.account.type === "chat-admin") {
-          return <OsDesktop account={this.props.account} />;
+          return <UsagePage account={this.props.account} />;
         }
 
         return <FileTreePage account={this.props.account} storeName={this.state.store.name} />;

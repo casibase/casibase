@@ -425,7 +425,7 @@ class ActivityPage extends BaseListPage {
 
   render() {
     return (
-      <div>
+      <div style={{backgroundColor: this.props.themeAlgorithm && this.props.themeAlgorithm.includes("dark") ? "black" : "white"}}>
         <Row style={{marginTop: "20px"}} >
           <Col span={1} />
           <Col span={17} >
