@@ -157,6 +157,8 @@ github.com/casibase/go-openai v1.39.0 h1:oWIcjwCULAgYj+Nzmn3djUv5oLD+p6C91kYgW8J
 github.com/casibase/go-openai v1.39.0/go.mod h1:JBjQ23LwLVOPHDDnZRyhac3U1VVL/joTBscisis6Jm0=
 github.com/casibase/go-openrouter v1.0.0 h1:xWtKUXXZMdk1xZod8EGc7jrbSpAKGGhbKtqSGvr1a1k=
 github.com/casibase/go-openrouter v1.0.0/go.mod h1:QvTckANaf6eO/iIxAjOOI/A4FsTOF+FYUfWZ/PcNk7A=
+github.com/casibase/pdf v1.2.0 h1:tXN62unSEtzYyA3S9Yk6Q6g4EkCobTUs0hqsR0j1/lk=
+github.com/casibase/pdf v1.2.0/go.mod h1:bT/mHU65g3emcqN5TULf7UYg5BpXV/EfdPUe//ggqyg=
 github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
 github.com/cenkalti/backoff/v4 v4.3.0 h1:MyRJ/UdXutAwSAT+s3wNd7MfTIcy71VQueUuFK343L8=
 github.com/cenkalti/backoff/v4 v4.3.0/go.mod h1:Y3VNntkOUPxTVeUxJ/G5vcM//AlwfmyYozVcomhLiZE=
@@ -609,8 +611,6 @@ github.com/kylelemons/godebug v1.1.0/go.mod h1:9/0rRGxNHcop5bhtWyNeEfOS8JIWk580+
 github.com/leanovate/gopter v0.2.11 h1:vRjThO1EKPb/1NsDXuDrzldR28RLkBflWYcU9CvzWu4=
 github.com/leanovate/gopter v0.2.11/go.mod h1:aK3tzZP/C+p1m3SPRE4SYZFGP7jjkuSI4f7Xvpt0S9c=
 github.com/ledisdb/ledisdb v0.0.0-20200510135210-d35789ec47e6/go.mod h1:n931TsDuKuq+uX4v1fulaMbA/7ZLLhjc85h7chZGBCQ=
-github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80 h1:6Yzfa6GP0rIo/kULo2bwGEkFvCePZ3qHDDTC3/J9Swo=
-github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80/go.mod h1:imJHygn/1yfhB7XSJJKlFZKl/J+dCPAknuiaGOshXAs=
 github.com/leverly/ChatGLM v1.2.0 h1:CLXD0+sqUabADMwEDoZP22qoLInY9BjQl/jZ2hZG0M0=
 github.com/leverly/ChatGLM v1.2.0/go.mod h1:DoxwOIyOup0Ct+dhm2FxKrakCB5AscJ0N0jkW+XuU8Q=
 github.com/lib/pq v1.0.0/go.mod h1:5WUZQaWbwv1U+lTReE5YruASi9Al49XbQIvNi/34Woo=
