@@ -110,6 +110,7 @@ class App extends Component {
       themeData: Conf.ThemeDefault,
       menuVisible: false,
       forms: [],
+      openMenuKeys: [], // 控制菜单展开状态
     };
     this.initConfig();
   }
@@ -182,6 +183,8 @@ class App extends Component {
     this.setState({
       uri: uri,
     });
+    
+    // 更新选中的菜单键
     if (uri === "/" || uri === "/home") {
       this.setState({ selectedMenuKey: "/" });
     } else if (uri.includes("/stores")) {
@@ -198,7 +201,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/usages"});
     } else if (uri.includes("/activities")) {
       this.setState({selectedMenuKey: "/activities"});
-    } else if (uri.includes("/nodes")) {
+    } 
+    else if (uri.includes("/nodes")) {
       this.setState({ selectedMenuKey: "/nodes" });
     } else if (uri.includes("/machines")) {
       this.setState({ selectedMenuKey: "/machines" });
@@ -248,6 +252,18 @@ class App extends Component {
     else {
       this.setState({ selectedMenuKey: "null" });
     }
+
+    
+    // 更新展开的菜单键
+      let openKeys = [];
+      if (uri === "/yolov8mi" || uri === "/sr") {
+        openKeys = ["/img"]; // "Image Operation" 菜单的 key
+      } else if (uri.includes("/stores") || uri.includes("/providers")) {
+        openKeys = ["/ai-setting"]; // "AI Setting" 菜单的 key
+      } else if (uri.includes("/sysinfo") || uri.includes("/sessions") || uri.includes("/records")) {
+        openKeys = ["/admin"]; // "Admin" 菜单的 key
+      } 
+      this.setState({ openMenuKeys: openKeys });
   }
 
   onUpdateAccount(account) {
@@ -840,10 +856,14 @@ class App extends Component {
               <Menu
                 mode="inline"
                 selectedKeys={[this.state.selectedMenuKey]}
+                openKeys={this.state.openMenuKeys}
                 style={{ height: "100%", borderRight: 0 }}
                 items={this.getMenuItems()}
                 onClick={({ key }) => {
                   this.setState({ selectedMenuKey: key });
+                }}
+                onOpenChange={(openKeys) => {
+                  this.setState({ openMenuKeys: openKeys });
                 }}
               />
             </Sider>
