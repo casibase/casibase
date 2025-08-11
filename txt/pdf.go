@@ -20,6 +20,7 @@ import (
 	"strings"
 
 	"github.com/casibase/pdf"
+	"github.com/pdfcpu/pdfcpu/pkg/api"
 )
 
 func getPageTexts(p pdf.Page) (texts []pdf.Text, err error) {
@@ -41,6 +42,14 @@ func getPageTexts(p pdf.Page) (texts []pdf.Text, err error) {
 }
 
 func getTextFromPdf(path string) (string, error) {
+	err := api.ValidateFile(path, nil)
+	if err != nil {
+		err = api.OptimizeFile(path, path, nil)
+		if err != nil {
+			return "", err
+		}
+	}
+
 	f, r, err := pdf.Open(path)
 	if err != nil {
 		return "", err
@@ -51,7 +60,7 @@ func getTextFromPdf(path string) (string, error) {
 	var mergedTexts []string
 	for pageIndex := 1; pageIndex <= totalPage; pageIndex++ {
 		p := r.Page(pageIndex)
-		if p.V.IsNull() {
+		if p.V.IsNull() || p.V.Key("Contents").Kind() == pdf.Null {
 			continue
 		}
 		var lastTextStyle pdf.Text
