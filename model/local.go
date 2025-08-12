@@ -95,9 +95,12 @@ Language models:
 | o1                    | 200K    | $0.015                   | $0.060                   |
 | o1-pro                | 200K    | $0.15                    | $0.6                     |
 | o3                    | 200K    | $0.002                   | $0.008                   |
-| o3-mini               | 200K    | $0.0011                  | $0.0044                   |
+| o3-mini               | 200K    | $0.0011                  | $0.0044                  |
 | o4-mini               | 200K    | $0.0011                  | $0.0044                  |
-
+| GPT-5                 | 400K    | $0.00125                 | $0.01                    |
+| GPT-5-mini            | 400K    | $0.00025                 | $0.002                   |
+| GPT-5-nano            | 400K    | $0.00005                 | $0.0004                  |
+| GPT-5-chat-latest     | 400K    | $0.00125                 | $0.01                    |
 Image models:
 
 | Models   | Quality | Resolution               | Price (per image) |
@@ -118,17 +121,6 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 	case strings.Contains(model, "gpt-3.5"):
 		inputPricePerThousandTokens = 0.0005
 		outputPricePerThousandTokens = 0.0015
-		modelResult.Currency = "USD"
-
-	// gpt 4.5 model
-	case strings.Contains(model, "gpt-4.5"):
-		if strings.Contains(model, "preview") {
-			inputPricePerThousandTokens = 0.0375
-			outputPricePerThousandTokens = 0.075
-		} else {
-			inputPricePerThousandTokens = 0.03
-			outputPricePerThousandTokens = 0.06
-		}
 		modelResult.Currency = "USD"
 
 	// gpt 4.1 model
@@ -192,6 +184,20 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 		} else {
 			inputPricePerThousandTokens = 0.0011
 			outputPricePerThousandTokens = 0.0044
+		}
+		modelResult.Currency = "USD"
+
+	// gpt 5.0 model
+	case strings.Contains(model, "gpt-5"):
+		if strings.Contains(model, "5-mini") {
+			inputPricePerThousandTokens = 0.00025
+			outputPricePerThousandTokens = 0.002
+		} else if strings.Contains(model, "5-nano") {
+			inputPricePerThousandTokens = 0.00005
+			outputPricePerThousandTokens = 0.0004
+		} else {
+			inputPricePerThousandTokens = 0.00125
+			outputPricePerThousandTokens = 0.01
 		}
 		modelResult.Currency = "USD"
 
