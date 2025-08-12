@@ -125,6 +125,10 @@ func GetConfigString(key string) string {
 		}
 	}
 
+	if key == "frontendBaseDir" && os.Getenv("RUNNING_IN_DOCKER") == "true" {
+		res = ""
+	}
+
 	return res
 }
 
