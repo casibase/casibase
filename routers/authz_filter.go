@@ -73,7 +73,7 @@ func permissionFilter(ctx *context.Context) {
 	}
 
 	exemptedPaths := []string{
-		"get-account", "get-chats", "get-forms", "get-global-videos", "get-videos", "get-messages",
+		"get-account", "get-chats", "get-forms", "get-global-videos", "get-videos", "get-video", "get-messages",
 		"delete-welcome-message", "get-message-answer", "get-answer",
 		"get-storage-providers", "get-store", "get-providers", "get-global-stores",
 		"update-chat", "add-chat", "delete-chat", "update-message", "add-message",
