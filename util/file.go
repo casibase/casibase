@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/casibase/casibase/conf"
@@ -160,12 +161,12 @@ func downloadMaxmindFiles(cityExists, asnExists bool) {
 
 	// Helper function to download and save a file
 	downloadAndSave := func(filename string) error {
-		filePath := fmt.Sprintf(frontendBaseDir+"/data/%s.mmdb", filename)
-		fileUrl := fmt.Sprintf("%s/raw/master/%s.mmdb", repoURL, filename)
+		filePath := filepath.Join(frontendBaseDir, "data", filename+".mmdb")
+		fileUrl := filepath.Join(repoURL, "raw", "master", filename+".mmdb")
 
 		EnsureFileFolderExists(filePath)
 
-		fmt.Printf("Downloading %s database...\n", filename)
+		fmt.Printf("Downloading %s database from %s\n", filename, fileUrl)
 		buffer, err := DownloadFile(fileUrl)
 		if err != nil {
 			return err
@@ -211,11 +212,11 @@ func downloadMaxmindFiles(cityExists, asnExists bool) {
 func InitMaxmindFiles() {
 	frontendBaseDir := conf.GetConfigString("frontendBaseDir")
 
-	cityDbPath := frontendBaseDir + "/data/GeoLite2-City.mmdb"
-	asnDbPath := frontendBaseDir + "/data/GeoLite2-ASN.mmdb"
+	cityDbPath := filepath.Join(frontendBaseDir, "data", "GeoLite2-City.mmdb")
+	asnDbPath := filepath.Join(frontendBaseDir, "data", "GeoLite2-ASN.mmdb")
 
-	cityDbPathAlt := frontendBaseDir + "/../data/GeoLite2-City.mmdb"
-	asnDbPathAlt := frontendBaseDir + "/../data/GeoLite2-ASN.mmdb"
+	cityDbPathAlt := filepath.Join(frontendBaseDir, "..", "data", "GeoLite2-City.mmdb")
+	asnDbPathAlt := filepath.Join(frontendBaseDir, "..", "data", "GeoLite2-ASN.mmdb")
 
 	// Check if files exist in either location
 	cityExists := FileExist(cityDbPath) || FileExist(cityDbPathAlt)
