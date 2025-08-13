@@ -113,7 +113,7 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
 			price = float64(tokenCount) / 10000 * 0.065
 		} else if tokenCount <= 1000000000 {
 			price = float64(tokenCount) / 10000 * 0.060
-		} else if tokenCount <= int64(10000000000) {
+		} else if int64(tokenCount) <= int64(10000000000) {
 			price = float64(tokenCount) / 10000 * 0.055
 		} else {
 			price = float64(tokenCount) / 10000 * 0.050
@@ -127,7 +127,7 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
 			price = float64(tokenCount) / 10000 * 0.027
 		} else if tokenCount <= 1000000000 {
 			price = float64(tokenCount) / 10000 * 0.025
-		} else if tokenCount <= int64(10000000000) {
+		} else if int64(tokenCount) <= int64(10000000000) {
 			price = float64(tokenCount) / 10000 * 0.023
 		} else {
 			price = float64(tokenCount) / 10000 * 0.021
@@ -141,7 +141,7 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
 			price = float64(tokenCount) / 10000 * 0.029
 		} else if tokenCount <= 1000000000 {
 			price = float64(tokenCount) / 10000 * 0.027
-		} else if tokenCount <= int64(10000000000) {
+		} else if int64(tokenCount) <= int64(10000000000) {
 			price = float64(tokenCount) / 10000 * 0.025
 		} else {
 			price = float64(tokenCount) / 10000 * 0.023
@@ -155,7 +155,7 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
 			price = float64(tokenCount) / 10000 * 0.0065
 		} else if tokenCount <= 1000000000 {
 			price = float64(tokenCount) / 10000 * 0.0060
-		} else if tokenCount <= int64(10000000000) {
+		} else if int64(tokenCount) <= int64(10000000000) {
 			price = float64(tokenCount) / 10000 * 0.0055
 		} else {
 			price = float64(tokenCount) / 10000 * 0.0050
@@ -169,7 +169,7 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
 			price = float64(tokenCount) / 10000 * 0.012
 		} else if tokenCount <= 1000000000 {
 			price = float64(tokenCount) / 10000 * 0.0115
-		} else if tokenCount <= int64(10000000000) {
+		} else if int64(tokenCount) <= int64(10000000000) {
 			price = float64(tokenCount) / 10000 * 0.0108
 		} else {
 			price = float64(tokenCount) / 10000 * 0.0100
