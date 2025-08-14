@@ -37,6 +37,10 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
+    files:
+      - web/build/**/*
+      - conf/app.conf
+      - data/**/*
 
 changelog:
   sort: asc

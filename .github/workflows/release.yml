@@ -25,6 +25,20 @@ jobs:
         name: Set up Go
         uses: actions/setup-go@v5
       -
+        name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'yarn'
+          cache-dependency-path: ./web/yarn.lock
+      -
+        name: Build Frontend
+        run: |
+          cd web
+          yarn install --frozen-lockfile
+          yarn build
+          cd ..
+      -
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
