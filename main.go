@@ -20,6 +20,7 @@ import (
 	"github.com/beego/beego"
 	"github.com/beego/beego/plugins/cors"
 	_ "github.com/beego/beego/session/redis"
+	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/proxy"
 	"github.com/casibase/casibase/routers"
@@ -58,12 +59,12 @@ func main() {
 
 	beego.BConfig.WebConfig.Session.SessionOn = true
 	beego.BConfig.WebConfig.Session.SessionName = "casibase_session_id"
-	if beego.AppConfig.String("redisEndpoint") == "" {
+	if conf.GetConfigString("redisEndpoint") == "" {
 		beego.BConfig.WebConfig.Session.SessionProvider = "file"
 		beego.BConfig.WebConfig.Session.SessionProviderConfig = "./tmp"
 	} else {
 		beego.BConfig.WebConfig.Session.SessionProvider = "redis"
-		beego.BConfig.WebConfig.Session.SessionProviderConfig = beego.AppConfig.String("redisEndpoint")
+		beego.BConfig.WebConfig.Session.SessionProviderConfig = conf.GetConfigString("redisEndpoint")
 	}
 	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
 

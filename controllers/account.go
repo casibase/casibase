@@ -21,6 +21,7 @@ import (
 
 	"github.com/beego/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -30,11 +31,11 @@ func init() {
 }
 
 func InitAuthConfig() {
-	casdoorEndpoint := beego.AppConfig.String("casdoorEndpoint")
-	clientId := beego.AppConfig.String("clientId")
-	clientSecret := beego.AppConfig.String("clientSecret")
-	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
-	casdoorApplication := beego.AppConfig.String("casdoorApplication")
+	casdoorEndpoint := conf.GetConfigString("casdoorEndpoint")
+	clientId := conf.GetConfigString("clientId")
+	clientSecret := conf.GetConfigString("clientSecret")
+	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
+	casdoorApplication := conf.GetConfigString("casdoorApplication")
 
 	if casdoorEndpoint == "" {
 		return
@@ -259,7 +260,7 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 func (c *ApiController) anonymousSignin() {
 	username := c.getAnonymousUsername()
 
-	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
 	user := casdoorsdk.User{
 		Owner:           casdoorOrganization,
 		Name:            username,
@@ -298,7 +299,7 @@ func (c *ApiController) getAnonymousUsername() string {
 }
 
 func (c *ApiController) isPublicDomain() bool {
-	configPublicDomain := beego.AppConfig.String("publicDomain")
+	configPublicDomain := conf.GetConfigString("publicDomain")
 	if configPublicDomain == "" {
 		return false
 	}

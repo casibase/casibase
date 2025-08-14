@@ -18,8 +18,8 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/beego/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/casibase/casibase/conf"
 )
 
 type CasdoorProvider struct {
@@ -35,8 +35,8 @@ func NewCasdoorProvider(providerName string) (*CasdoorProvider, error) {
 }
 
 func (p *CasdoorProvider) ListObjects(prefix string) ([]*Object, error) {
-	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
-	casdoorApplication := beego.AppConfig.String("casdoorApplication")
+	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
+	casdoorApplication := conf.GetConfigString("casdoorApplication")
 	resources, err := casdoorsdk.GetResources(casdoorOrganization, casdoorApplication, "provider", p.providerName, "Direct", prefix)
 	if err != nil {
 		return nil, err
