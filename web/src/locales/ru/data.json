@@ -22,6 +22,7 @@
     "Parameters": "Параметры",
     "Parameters - Tooltip": "Параметры приложения",
     "Pending": "В ожидании",
+    "Replicas": "Реплики",
     "Running": "Выполняется",
     "Terminating": "Завершается",
     "Undeploy": "Отменить развертывание",

@@ -220,7 +220,6 @@ func (c *ApiController) DeployApplication() {
 		c.ResponseError(err.Error())
 		return
 	}
-
 	c.ResponseOk(success)
 }
 
@@ -278,6 +277,36 @@ func (c *ApiController) GetApplicationStatus() {
 		c.ResponseError(err.Error())
 		return
 	}
+	application, err := object.GetApplication(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	if application == nil {
+		c.ResponseError(fmt.Sprintf("The application: %s is not found", id))
+		return
+	}
+	url := application.URL
 
-	c.ResponseOk(status)
+	c.ResponseOk(status, url)
+}
+
+// GetApplicationView
+// @Title GetApplicationView
+// @Tag Application API
+// @Description get application connection view
+// @Param id query string true "The id (owner/name) of the application"
+// @Success 200 {object} object.ApplicationView The Response object
+// @router /get-application-details [get]
+func (c *ApiController) GetApplicationView() {
+	id := c.Input().Get("id")
+	owner, name := util.GetOwnerAndNameFromId(id)
+
+	details, err := object.GetApplicationView(owner, name)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(details)
 }
