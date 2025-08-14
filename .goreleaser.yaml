@@ -37,7 +37,10 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
+    # data is in .gitignore
+    disable_glob_gitignore: true
     files:
+      - web/build/*
       - web/build/**/*
       - conf/app.conf
       - data/**/*
