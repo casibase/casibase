@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Alert, Button, Popconfirm, Table, Tooltip} from "antd";
+import {Alert, Button, Popconfirm, Switch, Table, Tooltip} from "antd";
 import {DeleteOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
@@ -77,8 +77,6 @@ class ApplicationListPage extends BaseListPage {
   updateApplicationStatus(record) {
     ApplicationBackend.getApplicationStatus(`${record.owner}/${record.name}`)
       .then((statusRes) => {
-        // eslint-disable-next-line no-console
-        console.log(`Application status for ${record.name}:`, statusRes);
         if (statusRes && statusRes.status === "ok") {
           this.setState(prevState => ({
             data: prevState.data.map(item =>
@@ -180,6 +178,7 @@ spec:
       template: this.state.templates[0]?.name || "",
       namespace: `casibase-application-${randomName}`,
       parameters: defaultParameters,
+      managed: true,
       status: "Not Deployed",
     };
   }
@@ -308,6 +307,18 @@ spec:
         },
       },
       {
+        title: i18next.t("general:Active"),
+        dataIndex: "managed",
+        key: "managed",
+        width: "100px",
+        sorter: (a, b) => a.managed.localeCompare(b.managed),
+        render: (text, record, index) => {
+          return (
+            <Switch checked={record.managed} disabled={true} />
+          );
+        },
+      },
+      {
         title: i18next.t("general:Namespace"),
         dataIndex: "namespace",
         key: "namespace",
@@ -322,29 +333,41 @@ spec:
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, record, index) => {
           return (
-            <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/applications/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+            <div style={{minHeight: "55px"}}>
               {
-                record.status === "Not Deployed" ? (
-                  <Button style={{marginBottom: "10px", marginRight: "10px"}} loading={this.state.deploying[index]} onClick={() => this.deployApplication(record, index)}>
-                    {i18next.t("application:Deploy")}
+                record.managed ? (
+                  <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/applications/${record.name}`)}>
+                    {i18next.t("general:Edit")}
                   </Button>
-                ) : (
-                  <Popconfirm title={`${i18next.t("general:Sure to undeploy")}: ${record.name} ?`} onConfirm={() => this.undeployApplication(record, index)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
-                    <Button style={{marginBottom: "10px", marginRight: "10px"}} loading={this.state.deploying[index]} danger>
-                      {i18next.t("application:Undeploy")}
-                    </Button>
-                  </Popconfirm>
-                )
+                ) : null
               }
-              <Popconfirm
-                title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteApplication(record)}
-                okText={i18next.t("general:OK")}
-                cancelText={i18next.t("general:Cancel")}
-              >
-                <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
-              </Popconfirm>
+              {
+                record.managed ? (
+                  record.status === "Not Deployed" ? (
+                    <Button style={{marginBottom: "10px", marginRight: "10px"}} loading={this.state.deploying[index]} onClick={() => this.deployApplication(record, index)}>
+                      {i18next.t("application:Deploy")}
+                    </Button>
+                  ) : (
+                    <Popconfirm title={`${i18next.t("general:Sure to undeploy")}: ${record.name} ?`} onConfirm={() => this.undeployApplication(record, index)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
+                      <Button style={{marginBottom: "10px", marginRight: "10px"}} loading={this.state.deploying[index]} danger>
+                        {i18next.t("application:Undeploy")}
+                      </Button>
+                    </Popconfirm>
+                  )
+                ) : null
+              }
+              {
+                record.managed ? (
+                  <Popconfirm
+                    title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
+                    onConfirm={() => this.deleteApplication(record)}
+                    okText={i18next.t("general:OK")}
+                    cancelText={i18next.t("general:Cancel")}
+                  >
+                    <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
+                  </Popconfirm>
+                ) : null
+              }
             </div>
           );
         },
