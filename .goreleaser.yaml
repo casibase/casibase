@@ -39,11 +39,11 @@ archives:
         format: zip
     files:
       - src: 'web/build'
-        dst: '.'
+        dst: './web/build'
       - src: 'conf/app.conf'
-        dst: '.'
+        dst: './conf/app.conf'
       - src: 'data'
-        dst: '.'
+        dst: './data'
 
 changelog:
   sort: asc
