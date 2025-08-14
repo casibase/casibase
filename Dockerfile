@@ -27,7 +27,9 @@ RUN adduser -D $USER -u 1000 \
     && echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER \
     && chmod 0440 /etc/sudoers.d/$USER \
     && mkdir logs \
-    && chown -R $USER:$USER logs
+    && mkdir files \
+    && chown -R $USER:$USER logs \
+    && chown -R $USER:$USER files
 
 USER 1000
 WORKDIR /
