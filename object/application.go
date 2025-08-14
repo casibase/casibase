@@ -124,10 +124,10 @@ func AddApplication(application *Application) (bool, error) {
 }
 
 func DeleteApplication(application *Application) (bool, error) {
-	owner, name := application.Owner, application.Name
+	owner, name, namespace := application.Owner, application.Name, application.Namespace
 	// First, delete the deployment if it exists
 	go func() {
-		_, err := UndeployApplication(owner, name)
+		_, err := UndeployApplication(owner, name, namespace)
 		if err != nil {
 			return
 		}

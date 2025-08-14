@@ -248,7 +248,7 @@ func (c *ApiController) UndeployApplication() {
 	owner, name := util.GetOwnerAndNameFromId(id)
 
 	// Undeploy the application synchronously and wait for completion
-	success, err := object.UndeployApplicationSync(owner, name)
+	success, err := object.UndeployApplicationSync(owner, name, application.Namespace)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -267,8 +267,13 @@ func (c *ApiController) UndeployApplication() {
 func (c *ApiController) GetApplicationStatus() {
 	id := c.Input().Get("id")
 	owner, name := util.GetOwnerAndNameFromId(id)
+	application, err := object.GetApplication(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 
-	status, err := object.GetApplicationStatus(owner, name)
+	status, err := object.GetApplicationStatus(owner, name, application.Namespace)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
