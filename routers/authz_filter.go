@@ -27,7 +27,7 @@ func AuthzFilter(ctx *context.Context) {
 	method := ctx.Request.Method
 	urlPath := ctx.Request.URL.Path
 
-	adminDomain := beego.AppConfig.String("adminDomain")
+	adminDomain := conf.GetConfigString("adminDomain")
 	if adminDomain != "" && ctx.Request.Host == adminDomain {
 		return
 	}

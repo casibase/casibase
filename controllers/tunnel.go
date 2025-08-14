@@ -19,8 +19,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/beego/beego"
 	"github.com/beego/beego/logs"
+	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 	"github.com/casibase/casibase/util/guacamole"
@@ -152,7 +152,7 @@ func (c *ApiController) GetNodeTunnel() {
 	configuration.SetParameter("height", height)
 	configuration.SetParameter("dpi", dpi)
 
-	addr := beego.AppConfig.String("guacamoleEndpoint")
+	addr := conf.GetConfigString("guacamoleEndpoint")
 	if addr == "" {
 		guacamole.Disconnect(ws, NewTunnelError, "guacamoleEndpoint in app.conf should not be empty")
 		return
@@ -249,7 +249,7 @@ func (c *ApiController) TunnelMonitor() {
 	configuration.SetParameter("dpi", "96")
 	configuration.SetReadOnlyMode()
 
-	addr := beego.AppConfig.String("guacamoleEndpoint")
+	addr := conf.GetConfigString("guacamoleEndpoint")
 	if addr == "" {
 		guacamole.Disconnect(ws, NewTunnelError, "guacamoleEndpoint in app.conf should not be empty")
 		return

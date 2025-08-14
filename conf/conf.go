@@ -57,19 +57,6 @@ type WebConfig struct {
 	AvatarErrorUrl string `json:"avatarErrorUrl"`
 }
 
-func init() {
-	// this array contains the beego configuration items that may be modified via env
-	presetConfigItems := []string{"httpport", "appname"}
-	for _, key := range presetConfigItems {
-		if value, ok := os.LookupEnv(key); ok {
-			err := beego.AppConfig.Set(key, value)
-			if err != nil {
-				panic(err)
-			}
-		}
-	}
-}
-
 func ReadGlobalConfigTokens() []string {
 	dbName := beego.AppConfig.String("dbName")
 	if strings.Count(dbName, "_") < 2 {
