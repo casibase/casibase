@@ -15,43 +15,250 @@
 import React, { Component } from "react";
 import { Card, Row, Col, Statistic, Image } from "antd";
 import ReactEcharts from "echarts-for-react";
+import * as DashboardBackend from "../backend/DashboardBackend.js"
 
-// 模拟数据
-const mockData = {
-  totalRecords: 35000000, // 3500万就诊记录
-  hospitals: [
-    { name: '协和医院', value: 8500000 },
-    { name: '同济医院', value: 7200000 },
-    { name: '华西医院', value: 6800000 },
-    { name: '湘雅医院', value: 5400000 },
-    { name: '齐鲁医院', value: 4600000 },
-    { name: '其他医院', value: 2500000 }
-  ],
-  diseases: [
-    { name: '高血压', value: 6200000 },
-    { name: '糖尿病', value: 4800000 },
-    { name: '冠心病', value: 3500000 },
-    { name: '脑卒中', value: 2800000 },
-    { name: '肺炎', value: 2500000 },
-    { name: '胃炎', value: 2100000 },
-    { name: '哮喘', value: 1800000 },
-    { name: '关节炎', value: 1500000 },
-    { name: '抑郁症', value: 1200000 },
-    { name: '其他疾病', value: 8600000 }
-  ],
-  hospitalSubmissions: {
-    names: ['协和医院', '同济医院', '华西医院', '湘雅医院', '齐鲁医院', '其他医院'],
-    values: [152000, 138000, 125000, 98000, 85000, 62000]
-  }
-};
+const mockData ={
+    "status": "ok",
+    "msg": "",
+    "data": {
+        "action": [
+
+            {
+                "date": "2025-08-14",
+                "FieldCount": {
+                    "add-application": 8,
+                    "add-chat": 78,
+                    "add-message": 987,
+                    "add-node-tunnel": 7,
+                    "add-provider": 1,
+                    "add-template": 7,
+                    "add-workflow": 2,
+                    "delete-application": 8,
+                    "delete-chat": 7,
+                    "delete-template": 4,
+                    "delete-workflow": 2,
+                    "deploy-application": 29,
+                    "generate-text-to-speech-audio": 28,
+                    "signin": 152,
+                    "signout": 34,
+                    "undeploy-application": 4,
+                    "update-application": 9,
+                    "update-chat": 126,
+                    "update-message": 119,
+                    "update-provider": 23,
+                    "update-store": 1,
+                    "update-template": 6,
+                    "update-workflow": 1
+                }
+            },
+            {
+                "date": "2025-08-15",
+                "FieldCount": {
+                    "add-application": 8,
+                    "add-chat": 83,
+                    "add-message": 1038,
+                    "add-node-tunnel": 8,
+                    "add-provider": 1,
+                    "add-template": 7,
+                    "add-workflow": 2,
+                    "delete-application": 8,
+                    "delete-chat": 7,
+                    "delete-template": 4,
+                    "delete-workflow": 2,
+                    "deploy-application": 29,
+                    "generate-text-to-speech-audio": 30,
+                    "signin": 155,
+                    "signout": 34,
+                    "undeploy-application": 4,
+                    "update-application": 9,
+                    "update-chat": 126,
+                    "update-message": 131,
+                    "update-provider": 23,
+                    "update-store": 1,
+                    "update-template": 6,
+                    "update-workflow": 1
+                }
+            },
+            {
+                "date": "2025-08-16",
+                "FieldCount": {
+                    "add-application": 8,
+                    "add-chat": 83,
+                    "add-message": 1057,
+                    "add-node-tunnel": 8,
+                    "add-provider": 1,
+                    "add-template": 7,
+                    "add-workflow": 2,
+                    "delete-application": 8,
+                    "delete-chat": 7,
+                    "delete-template": 4,
+                    "delete-workflow": 2,
+                    "deploy-application": 29,
+                    "generate-text-to-speech-audio": 30,
+                    "signin": 157,
+                    "signout": 34,
+                    "undeploy-application": 4,
+                    "update-application": 9,
+                    "update-chat": 126,
+                    "update-message": 132,
+                    "update-provider": 23,
+                    "update-store": 1,
+                    "update-template": 6,
+                    "update-workflow": 1
+                }
+            }
+        ],
+        "section": [
+            
+            {
+                "date": "2025-08-14",
+                "FieldCount": {
+                    "呼吸外科": 95,
+                    "消化内科": 157,
+                    "血管外科": 118,
+                    "骨科": 44
+                }
+            },
+            {
+                "date": "2025-08-15",
+                "FieldCount": {
+                    "呼吸外科": 95,
+                    "消化内科": 157,
+                    "血管外科": 118,
+                    "骨科": 44
+                }
+            },
+            {
+                "date": "2025-08-16",
+                "FieldCount": {
+                    "呼吸外科": 95,
+                    "消化内科": 157,
+                    "血管外科": 118,
+                    "骨科": 44
+                }
+            }
+        ],
+        "unit": [
+           
+            {
+                "date": "2025-08-14",
+                "FieldCount": {
+                    "北京协和医院": 104,
+                    "医大一院": 65,
+                    "广东省人民医院": 120,
+                    "江苏省人民医院": 91,
+                    "深圳中医院": 58,
+                    "第六医院": 31
+                }
+            },
+            {
+                "date": "2025-08-15",
+                "FieldCount": {
+                    "北京协和医院": 104,
+                    "医大一院": 65,
+                    "广东省人民医院": 120,
+                    "江苏省人民医院": 91,
+                    "深圳中医院": 58,
+                    "第六医院": 31
+                }
+            },
+            {
+                "date": "2025-08-16",
+                "FieldCount": {
+                    "北京协和医院": 104,
+                    "医大一院": 65,
+                    "广东省人民医院": 120,
+                    "江苏省人民医院": 91,
+                    "深圳中医院": 58,
+                    "第六医院": 31
+                }
+            }
+        ]
+    },
+    "data2": null
+}
 
 class DashboardPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      totalRecords: 0,
+      hospitals: [],
+      diseases: [],
+      hospitalSubmissions: {
+        names: [],
+        values: []
+      },
+      loading: true
+    };
+  }
+
+  componentDidMount() {
+    this.fetchDashboardData();
+  }
+
+  // 处理数据的辅助方法
+  processData = (data) => {
+    // 取最后一天的数据
+    const lastDayAction = data.action.length > 0 ? data.action[data.action.length - 1] : null;
+    const lastDayUnit = data.unit.length > 0 ? data.unit[data.unit.length - 1] : null;
+    const lastDaySection = data.section.length > 0 ? data.section[data.section.length - 1] : null;
+
+    // 处理总就诊记录数（action的signin）
+    const totalRecords = lastDayAction?.FieldCount?.["test-action"] || 0;
+
+    // 处理医院记录数（unit）
+    const hospitals = [];
+    if (lastDayUnit?.FieldCount) {
+      Object.entries(lastDayUnit.FieldCount).forEach(([name, value]) => {
+        hospitals.push({ name, value });
+      });
+    }
+
+    // 处理病种记录（使用section）
+    const diseases = [];
+    if (lastDaySection?.FieldCount) {
+      Object.entries(lastDaySection.FieldCount).forEach(([name, value]) => {
+        diseases.push({ name, value });
+      });
+    }
+
+    // 处理医院提交量
+    const hospitalNames = hospitals.map(item => item.name);
+    const hospitalValues = hospitals.map(item => item.value);
+
+    this.setState({
+      totalRecords,
+      hospitals,
+      diseases,
+      hospitalSubmissions: {
+        names: hospitalNames,
+        values: hospitalValues
+      },
+      loading: false
+    });
+  }
+
+  fetchDashboardData = async () => {
+    try {
+      const response = await DashboardBackend.getDashBoardData("100","All","unit,section,action");
+
+      if (response.status === "ok" && response.data) {
+        this.processData(response.data);
+      } else {
+        console.error("Failed to fetch dashboard data");
+        // 使用mock数据
+        this.processData(mockData.data);
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      // 使用mock数据
+      this.processData(mockData.data);
+    }
   }
 
   renderHospitalPieChart() {
+    const { hospitals } = this.state;
     const option = {
       title: {
         text: "各家医院数据量占比",
@@ -64,7 +271,7 @@ class DashboardPage extends Component {
       legend: {
         orient: 'vertical',
         left: 10,
-        data: mockData.hospitals.map(item => item.name)
+        data: hospitals.map(item => item.name)
       },
       series: [
         {
@@ -91,7 +298,7 @@ class DashboardPage extends Component {
           labelLine: {
             show: false
           },
-          data: mockData.hospitals
+          data: hospitals
         }
       ]
     };
@@ -100,6 +307,7 @@ class DashboardPage extends Component {
   }
 
   renderDiseasePieChart() {
+    const { diseases } = this.state;
     const option = {
       title: {
         text: "专病种数据分布",
@@ -112,7 +320,7 @@ class DashboardPage extends Component {
       legend: {
         orient: 'vertical',
         left: 10,
-        data: mockData.diseases.map(item => item.name)
+        data: diseases.map(item => item.name)
       },
       series: [
         {
@@ -139,7 +347,7 @@ class DashboardPage extends Component {
           labelLine: {
             show: false
           },
-          data: mockData.diseases
+          data: diseases
         }
       ]
     };
@@ -148,6 +356,7 @@ class DashboardPage extends Component {
   }
 
   renderHospitalSubmissionChart() {
+    const { hospitalSubmissions } = this.state;
     const option = {
       title: {
         text: "各家医院提交量",
@@ -169,7 +378,7 @@ class DashboardPage extends Component {
       xAxis: [
         {
           type: 'category',
-          data: mockData.hospitalSubmissions.names,
+          data: hospitalSubmissions.names,
           axisTick: {
             alignWithLabel: true
           }
@@ -186,7 +395,7 @@ class DashboardPage extends Component {
           name: '提交量',
           type: 'bar',
           barWidth: '60%',
-          data: mockData.hospitalSubmissions.values,
+          data: hospitalSubmissions.values,
           itemStyle: {
             // 从深到浅的蓝色渐变
             color: function(params) {
@@ -199,8 +408,6 @@ class DashboardPage extends Component {
                 "#339af0",
                 "#4dabf7",
                 "#74c0fc"
-                
-                // 浅蓝
               ];
               // 根据数据索引循环使用颜色
               return colorList[params.dataIndex % colorList.length];
@@ -213,9 +420,9 @@ class DashboardPage extends Component {
     return <ReactEcharts option={option} style={{ height: '400px' }} />;
   }
 
-
-
   render() {
+    const { totalRecords, loading } = this.state;
+
     return (
       <div className="dashboard-page">
         <h1>数据看板</h1>
@@ -233,31 +440,29 @@ class DashboardPage extends Component {
               <div style={{ maxWidth: '60%' }}>
                 <Statistic
                   title="总就诊记录数"
-                  value={mockData.totalRecords}
+                  value={totalRecords}
                   valueStyle={{ fontSize: 36, color: '#1890ff' }}
-                  formatter={(value) => `${(value / 10000).toFixed(1)}万`}
-                  
+                  formatter={(value) => `${(value)}`}
+                  loading={loading}
                 />
                 {/* <p style={{ marginTop: 16 }}>按患者就诊记录统计（非身份证号）</p> */}
               </div>
-              
             </Card>
-            
           </Col>
-         
+          
           <Col span={24} lg={12}>
-            <Card title="各家医院数据量占比" bordered={true}>
-              {this.renderHospitalPieChart()}
+            <Card title="各家医院数据量占比" bordered={true} loading={loading}>
+              {!loading && this.renderHospitalPieChart()}
             </Card>
           </Col>
           <Col span={24} lg={12}>
-            <Card title="专病种数据分布" bordered={true}>
-              {this.renderDiseasePieChart()}
+            <Card title="专病种数据分布" bordered={true} loading={loading}>
+              {!loading && this.renderDiseasePieChart()}
             </Card>
           </Col>
           <Col span={24}>
-            <Card title="各家医院提交量" bordered={true}>
-              {this.renderHospitalSubmissionChart()}
+            <Card title="各家医院提交量" bordered={true} loading={loading}>
+              {!loading && this.renderHospitalSubmissionChart()}
             </Card>
           </Col>
         </Row>
