@@ -76,8 +76,55 @@ jobs:
           args: --disable-all -c dummy.yml -E=gofumpt --max-same-issues=0 --timeout 5m --modules-download-mode=mod
 
 
-  release-and-push:
-    name: Release And Push
+  github-release:
+    name: GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    if: github.repository == 'casibase/casibase' && github.event_name == 'push'
+    needs: [ frontend, backend, linter]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Build Frontend
+        run: |
+          cd web
+          yarn install --frozen-lockfile
+          yarn build
+          cd ..
+
+      - name: Fetch Previous version
+        id: get-previous-tag
+        uses: actions-ecosystem/action-get-latest-tag@v1.6.0
+
+      - name: Release
+        run: yarn global add semantic-release@17.4.4 && semantic-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch Current version
+        id: get-current-tag
+        uses: actions-ecosystem/action-get-latest-tag@v1.6.0
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: '~> v2'
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  docker-release:
+    name: Docker Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
