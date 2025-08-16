@@ -207,7 +207,7 @@ class ChatPage extends BaseListPage {
       displayName: `${i18next.t("chat:New Chat")} - ${this.getNextChatIndex(chat?.displayName) ?? randomName}`,
       type: "AI",
       user: this.props.account.name,
-      category: chat?.category ?? i18next.t("chat:Default Category"),
+      category: chat !== undefined ? chat.category : i18next.t("chat:Default Category"),
       user1: "",
       user2: "",
       users: [],
