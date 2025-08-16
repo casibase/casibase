@@ -75,6 +75,13 @@ class ChatPage extends BaseListPage {
     if (this.props.onCreateChatPage) {
       this.props.onCreateChatPage(this);
     }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const newMessage = urlParams.get("newMessage");
+
+    if (newMessage && newMessage.trim() !== "") {
+      this.sendMessage(newMessage);
+    }
   }
 
   toggleChatMenu = () => {
@@ -200,7 +207,7 @@ class ChatPage extends BaseListPage {
       displayName: `${i18next.t("chat:New Chat")} - ${this.getNextChatIndex(chat?.displayName) ?? randomName}`,
       type: "AI",
       user: this.props.account.name,
-      category: chat !== undefined ? chat.category : i18next.t("chat:Default Category"),
+      category: chat?.category ?? i18next.t("chat:Default Category"),
       user1: "",
       user2: "",
       users: [],
@@ -265,6 +272,16 @@ class ChatPage extends BaseListPage {
   };
 
   sendMessage(text, fileName, isHidden, isRegenerated) {
+    if (!this.state.chat) {
+      const newChat = this.newChat(null, {});
+      this.setState({chat: newChat});
+      ChatBackend.addChat(newChat).then((res) => {
+        if (res.status === "ok") {
+          this.sendMessage(text, fileName, isHidden, isRegenerated);
+        }
+      });
+      return;
+    }
     const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
     MessageBackend.addMessage(newMessage)
       .then((res) => {
