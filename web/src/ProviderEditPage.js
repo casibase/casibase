@@ -24,6 +24,7 @@ import McpToolsTable from "./table/McpToolsTable";
 import ModelTestWidget from "./common/TestModelWidget";
 import TtsTestWidget from "./common/TestTtsWidget";
 
+import ProviderEmbeddingTest from "./ProviderEmbeddingTest";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
@@ -1046,6 +1047,12 @@ class ProviderEditPage extends React.Component {
             </>
           ) : null
         }
+        {/* --- vvvvvvvvvvvv FIX START vvvvvvvvvvvv --- */}
+        {/* Corrected Indentation */}
+        <ProviderEmbeddingTest
+          provider={this.state.provider}
+        />
+        {/* --- ^^^^^^^^^^^^ FIX END ^^^^^^^^^^^^ --- */}
         <ModelTestWidget
           provider={this.state.provider}
           originalProvider={this.state.originalProvider}
