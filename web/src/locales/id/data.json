@@ -204,6 +204,7 @@
     "Language - Tooltip": "Lingkungan bahasa (seperti zh-CN/en-US)",
     "Like": "Suka",
     "Loading...": "Sedang memuat...",
+    "Local": "Lokal",
     "Logging & Auditing": "Pencatatan & audit",
     "Machines": "Host",
     "Menu": "Menu",
@@ -519,11 +520,12 @@
     "Top P - Tooltip": "Ambang sampling probabilitas (0-1)"
   },
   "record": {
-    "Commit": "Masuk rantai",
-    "Enable cross-chain": "Enable cross-chain",
+    "Commit": "Komit",
+    "Data Verification": "Data Verification",
+    "Enable cross-chain": "Aktifkan lintas rantai",
     "New Record": "Catatan baru",
     "Object": "Objek",
-    "Query": "Query",
+    "Query": "Kueri",
     "View Record": "Lihat catatan"
   },
   "store": {
