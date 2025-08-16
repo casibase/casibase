@@ -82,7 +82,7 @@ jobs:
     permissions:
       contents: write
       issues: write
-    if: github.repository == 'MartinRepo/casibase' && github.event_name == 'push'
+    if: github.repository == 'casibase/casibase' && github.event_name == 'push'
     needs: [ frontend, backend, linter]
     steps:
       - name: Checkout
@@ -129,7 +129,7 @@ jobs:
     permissions:
       contents: write
       issues: write
-    if: github.repository == 'MartinRepo/casibase' && github.event_name == 'push'
+    if: github.repository == 'casibase/casibase' && github.event_name == 'push'
     needs: [ frontend, backend, linter]
     steps:
       - name: Checkout
