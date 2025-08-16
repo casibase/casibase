@@ -1047,7 +1047,6 @@ class ProviderEditPage extends React.Component {
             </>
           ) : null
         }
-        {/* --- vvvvvvvvvvvv FIX START vvvvvvvvvvvv --- */}
         <ProviderEmbeddingTest
           provider={this.state.provider}
         />
