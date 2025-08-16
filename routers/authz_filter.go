@@ -27,7 +27,7 @@ func AuthzFilter(ctx *context.Context) {
 	method := ctx.Request.Method
 	urlPath := ctx.Request.URL.Path
 
-	adminDomain := beego.AppConfig.String("adminDomain")
+	adminDomain := conf.GetConfigString("adminDomain")
 	if adminDomain != "" && ctx.Request.Host == adminDomain {
 		return
 	}
@@ -73,7 +73,7 @@ func permissionFilter(ctx *context.Context) {
 	}
 
 	exemptedPaths := []string{
-		"get-account", "get-chats", "get-forms", "get-messages",
+		"get-account", "get-chats", "get-forms", "get-global-videos", "get-videos", "get-video", "get-messages",
 		"delete-welcome-message", "get-message-answer", "get-answer",
 		"get-storage-providers", "get-store", "get-providers", "get-global-stores",
 		"update-chat", "add-chat", "delete-chat", "update-message", "add-message",

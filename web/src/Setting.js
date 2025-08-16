@@ -1062,7 +1062,6 @@ export function getCompatibleProviderOptions(category) {
         {"id": "gpt-4.1-mini", "name": "gpt-4.1-mini"},
         {"id": "gpt-4.1-nano", "name": "gpt-4.1-nano"},
         {"id": "gpt-4.5-preview", "name": "gpt-4.5-preview"},
-        {"id": "gpt-4.5-preview-2025-02-27", "name": "gpt-4.5-preview-2025-02-27"},
         {"id": "o1", "name": "o1"},
         {"id": "o1-pro", "name": "o1-pro"},
         {"id": "o3", "name": "o3"},
@@ -1217,13 +1216,15 @@ const openaiModels = [
   {id: "gpt-4.1", name: "gpt-4.1"},
   {id: "gpt-4.1-mini", name: "gpt-4.1-mini"},
   {id: "gpt-4.1-nano", name: "gpt-4.1-nano"},
-  {id: "gpt-4.5-preview", name: "gpt-4.5-preview"},
-  {id: "gpt-4.5-preview-2025-02-27", name: "gpt-4.5-preview-2025-02-27"},
   {id: "o1", name: "o1"},
   {id: "o1-pro", name: "o1-pro"},
   {id: "o3", name: "o3"},
   {id: "o3-mini", name: "o3-mini"},
   {id: "o4-mini", name: "o4-mini"},
+  {id: "gpt-5", name: "gpt-5"},
+  {id: "gpt-5-mini", name: "gpt-5-mini"},
+  {id: "gpt-5-nano", name: "gpt-5-nano"},
+  {id: "gpt-5-chat-latest", name: "gpt-5-chat-latest"},
 ];
 
 const openaiEmbeddings = [
@@ -1345,6 +1346,7 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "Claude") {
     return [
+      {id: "claude-opus-4-1", name: "claude-opus-4-1"},
       {id: "claude-opus-4-0", name: "claude-opus-4-0"},
       {id: "claude-opus-4-20250514", name: "claude-opus-4-20250514"},
       {id: "claude-4-opus-20250514", name: "claude-4-opus-20250514"},
@@ -1356,11 +1358,7 @@ export function getModelSubTypeOptions(type) {
       {id: "claude-3-5-haiku-latest", name: "claude-3-5-haiku-latest"},
       {id: "claude-3-5-haiku-20241022", name: "claude-3-5-haiku-20241022"},
       {id: "claude-3-5-sonnet-latest", name: "claude-3-5-sonnet-latest"},
-      {id: "claude-3-5-sonnet-20241022", name: "claude-3-5-sonnet-20241022"},
-      {id: "claude-3-5-sonnet-20240620", name: "claude-3-5-sonnet-20240620"},
       {id: "claude-3-opus-latest", name: "claude-3-opus-latest"},
-      {id: "claude-3-opus-20240229", name: "claude-3-opus-20240229"},
-      {id: "claude-3-sonnet-20240229", name: "claude-3-sonnet-20240229"},
       {id: "claude-3-haiku-20240307", name: "claude-3-haiku-20240307"},
     ];
   } else if (type === "OpenRouter") {

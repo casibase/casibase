@@ -24,7 +24,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/beego/beego"
 	"github.com/beego/beego/context"
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/util"
@@ -52,7 +51,7 @@ func StaticFilter(ctx *context.Context) {
 		return
 	}
 
-	landingFolder := beego.AppConfig.String("landingFolder")
+	landingFolder := conf.GetConfigString("landingFolder")
 	if landingFolder != "" {
 		if urlPath == "" || urlPath == "/" || urlPath == "/about" {
 			makeGzipResponse(ctx.ResponseWriter, ctx.Request, fmt.Sprintf("../%s/web/build/index.html", landingFolder))
@@ -140,10 +139,10 @@ func serveFileWithReplace(w http.ResponseWriter, r *http.Request, path string) {
 	oldContent := util.ReadStringFromPath(path)
 	newContent := oldContent
 
-	serverUrl := beego.AppConfig.String("casdoorEndpoint")
-	clientId := beego.AppConfig.String("clientId")
-	appName := beego.AppConfig.String("casdoorApplication")
-	organizationName := beego.AppConfig.String("casdoorOrganization")
+	serverUrl := conf.GetConfigString("casdoorEndpoint")
+	clientId := conf.GetConfigString("clientId")
+	appName := conf.GetConfigString("casdoorApplication")
+	organizationName := conf.GetConfigString("casdoorOrganization")
 
 	newContent = regexp.MustCompile(`serverUrl:"[^"]*"`).ReplaceAllString(newContent, fmt.Sprintf(`serverUrl:"%s"`, serverUrl))
 	newContent = regexp.MustCompile(`clientId:"[^"]*"`).ReplaceAllString(newContent, fmt.Sprintf(`clientId:"%s"`, clientId))

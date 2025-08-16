@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/beego/beego"
+	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
@@ -377,7 +377,7 @@ func (c *ApiController) GetAnswer() {
 		return
 	}
 	if chat == nil {
-		casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+		casdoorOrganization := conf.GetConfigString("casdoorOrganization")
 		currentTime := util.GetCurrentTime()
 		chat = &object.Chat{
 			Owner:        "admin",

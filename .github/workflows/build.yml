@@ -163,3 +163,33 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: casbin/casibase-all-in-one:${{steps.get-current-tag.outputs.tag }},casbin/casibase-all-in-one:latest
+
+      - uses: actions/checkout@v3
+        if: steps.should_push.outputs.push=='true'
+        with:
+          repository: casibase/casibase-helm
+          ref: 'master'
+          token: ${{ secrets.GH_BOT_TOKEN }}
+
+      - name: Update Helm Chart
+        if: steps.should_push.outputs.push=='true'
+        run: |
+          # Set the appVersion and version of the chart to the current tag
+          sed -i "s/appVersion: .*/appVersion: ${{steps.get-current-tag.outputs.tag }}/g" ./casibase-helm-chart/Chart.yaml
+          sed -i "s/version: .*/version: ${{steps.get-current-tag.outputs.tag }}/g" ./casibase-helm-chart/Chart.yaml
+
+          REGISTRY=oci://registry-1.docker.io/casbin
+          cd casibase-helm-chart
+          helm package .
+          PKG_NAME=$(ls *.tgz)
+          helm repo index . --url $REGISTRY --merge index.yaml
+          helm push $PKG_NAME $REGISTRY
+          rm $PKG_NAME
+
+          # Commit and push the changes back to the repository
+          git config --global user.name "casbin-bot"
+          git config --global user.email "bot@casbin.org"
+          git add Chart.yaml index.yaml
+          git commit -m "chore(helm): bump helm charts appVersion to ${{steps.get-current-tag.outputs.tag }}"
+          git tag ${{steps.get-current-tag.outputs.tag }}
+          git push origin HEAD:master --follow-tags

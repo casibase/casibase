@@ -179,7 +179,7 @@ func DeployApplication(application *Application) (bool, error) {
 	return true, nil
 }
 
-func UndeployApplication(owner, name string) (bool, error) {
+func UndeployApplication(owner, name, namespace string) (bool, error) {
 	if err := ensureK8sClient(); err != nil {
 		return false, fmt.Errorf("failed to initialize k8s client: %v", err)
 	}
@@ -187,8 +187,6 @@ func UndeployApplication(owner, name string) (bool, error) {
 	if !k8sClient.connected {
 		return false, fmt.Errorf("k8s client not connected to cluster")
 	}
-
-	namespace := fmt.Sprintf(NamespaceFormat, strings.ReplaceAll(name, "_", "-"))
 
 	// Delete the entire namespace
 	err := k8sClient.clientSet.CoreV1().Namespaces().Delete(
@@ -240,7 +238,7 @@ func DeployApplicationSync(application *Application) (bool, error) {
 			}
 			return false, fmt.Errorf("deployment failed: %s", reason)
 		case <-ticker.C:
-			status, err := GetApplicationStatus(application.Owner, application.Name)
+			status, err := GetApplicationStatus(application.Owner, application.Name, application.Namespace)
 			if err != nil {
 				continue
 			}
@@ -258,9 +256,9 @@ func DeployApplicationSync(application *Application) (bool, error) {
 }
 
 // UndeployApplicationSync undeploys application and waits for it to be completely removed
-func UndeployApplicationSync(owner, name string) (bool, error) {
+func UndeployApplicationSync(owner, name, namespace string) (bool, error) {
 	// First undeploy the application
-	success, err := UndeployApplication(owner, name)
+	success, err := UndeployApplication(owner, name, namespace)
 	if err != nil {
 		return false, err
 	}
@@ -280,7 +278,7 @@ func UndeployApplicationSync(owner, name string) (bool, error) {
 		case <-ctx.Done():
 			return false, fmt.Errorf("undeployment timeout: application did not undeploy within 10 minutes")
 		case <-ticker.C:
-			status, err := GetApplicationStatus(owner, name)
+			status, err := GetApplicationStatus(owner, name, namespace)
 			if err != nil {
 				continue
 			}
@@ -383,7 +381,7 @@ func analyzeContainerStatus(podName, containerName, containerType string, state 
 }
 
 // GetApplicationStatus returns application status as string
-func GetApplicationStatus(owner, name string) (string, error) {
+func GetApplicationStatus(owner, name, namespace string) (string, error) {
 	if err := ensureK8sClient(); err != nil {
 		return StatusUnknown, err
 	}
@@ -391,8 +389,6 @@ func GetApplicationStatus(owner, name string) (string, error) {
 	if !k8sClient.connected {
 		return StatusUnknown, nil
 	}
-
-	namespace := fmt.Sprintf(NamespaceFormat, strings.ReplaceAll(name, "_", "-"))
 
 	ns, err := k8sClient.clientSet.CoreV1().Namespaces().Get(
 		context.TODO(),

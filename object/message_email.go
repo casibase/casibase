@@ -18,13 +18,13 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/beego/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/util"
 )
 
 func (message *Message) SendEmail() error {
-	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
 	organization, err := casdoorsdk.GetOrganization(casdoorOrganization)
 	if err != nil {
 		return err
@@ -34,7 +34,7 @@ func (message *Message) SendEmail() error {
 	}
 	sender := organization.DisplayName
 
-	casdoorApplication := beego.AppConfig.String("casdoorApplication")
+	casdoorApplication := conf.GetConfigString("casdoorApplication")
 	application, err := casdoorsdk.GetApplication(casdoorApplication)
 	if err != nil {
 		return err
@@ -44,7 +44,7 @@ func (message *Message) SendEmail() error {
 	}
 	title := application.DisplayName
 
-	logoUrl := beego.AppConfig.String("logoUrl")
+	logoUrl := conf.GetConfigString("logoUrl")
 
 	user, err := casdoorsdk.GetUser(message.User)
 	if err != nil {
@@ -126,7 +126,7 @@ func (message *Message) SendErrorEmail(errorText string) error {
 		return nil
 	}
 
-	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
 	organization, err := casdoorsdk.GetOrganization(casdoorOrganization)
 	if err != nil {
 		return err
@@ -144,7 +144,7 @@ func (message *Message) SendErrorEmail(errorText string) error {
 
 	title := fmt.Sprintf("AI-Error: %s - %s - %s - %s", sender, username, message.Chat, message.Name)
 
-	logoUrl := beego.AppConfig.String("logoUrl")
+	logoUrl := conf.GetConfigString("logoUrl")
 
 	questionMessage, err := GetMessage(util.GetId("admin", message.ReplyTo))
 	if err != nil {

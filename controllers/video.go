@@ -25,9 +25,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/beego/beego"
 	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/audio"
+	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/storage"
 	"github.com/casibase/casibase/util"
@@ -267,7 +267,7 @@ func getSpeaker(s string) string {
 }
 
 func getAudioSegments(userName string, filename string, fileBuffer *bytes.Buffer) (string, []*object.Label, error) {
-	audioStorageProviderName := beego.AppConfig.String("audioStorageProvider")
+	audioStorageProviderName := conf.GetConfigString("audioStorageProvider")
 	if audioStorageProviderName == "" {
 		return "", []*object.Label{}, nil
 	}

@@ -43,6 +43,7 @@ https://docs.anthropic.com/en/docs/about-claude/pricing
 
 | Model family        | Context window | Input Pricing         | Output Pricing        |
 |---------------------|----------------|-----------------------|-----------------------|
+| Claude Opus 4.1     | 200,000 tokens | $15.00/million tokens | $75.00/million tokens |
 | Claude Opus 4       | 200,000 tokens | $15.00/million tokens | $75.00/million tokens |
 | Claude Sonnet 4     | 200,000 tokens | $3.00/million tokens  | $15.00/million tokens |
 | Claude Sonnet 3.7   | 200,000 tokens | $3.00/million tokens  | $15.00/million tokens |
@@ -56,6 +57,7 @@ https://docs.anthropic.com/en/docs/about-claude/pricing
 func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	priceTable := map[string][]float64{
+		"claude-opus-4-1":            {0.015, 0.075},
 		"claude-opus-4-0":            {0.015, 0.075},
 		"claude-opus-4-20250514":     {0.015, 0.075},
 		"claude-4-opus-20250514":     {0.015, 0.075},
@@ -67,11 +69,7 @@ func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
 		"claude-3-5-haiku-latest":    {0.0008, 0.004},
 		"claude-3-5-haiku-20241022":  {0.0008, 0.004},
 		"claude-3-5-sonnet-latest":   {0.003, 0.015},
-		"claude-3-5-sonnet-20241022": {0.003, 0.015},
-		"claude-3-5-sonnet-20240620": {0.003, 0.015},
 		"claude-3-opus-latest":       {0.015, 0.075},
-		"claude-3-opus-20240229":     {0.015, 0.075},
-		"claude-3-sonnet-20240229":   {0.003, 0.015},
 		"claude-3-haiku-20240307":    {0.00025, 0.00125},
 	}
 

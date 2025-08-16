@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/beego/beego"
+	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/util"
 )
 
@@ -29,8 +29,8 @@ var (
 )
 
 func init() {
-	cacheDir = beego.AppConfig.String("cacheDir")
-	appDir = beego.AppConfig.String("appDir")
+	cacheDir = conf.GetConfigString("cacheDir")
+	appDir = conf.GetConfigString("appDir")
 }
 
 func getAppPath(filename string) string {

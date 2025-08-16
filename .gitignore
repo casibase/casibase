@@ -27,3 +27,5 @@ tmpFiles/
 logs/
 lastupdate.tmp
 commentsRouter*.go
+
+dist/
