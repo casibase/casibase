@@ -204,6 +204,7 @@
     "Language - Tooltip": "Entorno de idioma (por ejemplo, zh-CN/en-US)",
     "Like": "Me gusta",
     "Loading...": "Cargando...",
+    "Local": "Local",
     "Logging & Auditing": "Registro & Auditoría",
     "Machines": "Hosts",
     "Menu": "Menú",
@@ -520,6 +521,7 @@
   },
   "record": {
     "Commit": "Encadenar",
+    "Data Verification": "Verificación de datos",
     "Enable cross-chain": "Enable cross-chain",
     "New Record": "Nuevo registro",
     "Object": "Objeto",

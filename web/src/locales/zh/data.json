@@ -204,6 +204,7 @@
     "Language - Tooltip": "语言环境（如 zh-CN/en-US）",
     "Like": "喜欢",
     "Loading...": "加载中...",
+    "Local": "本地",
     "Logging & Auditing": "日志 & 审计",
     "Machines": "主机",
     "Menu": "菜单",
@@ -520,6 +521,7 @@
   },
   "record": {
     "Commit": "上链",
+    "Data Verification": "数据验证",
     "Enable cross-chain": "启用跨链",
     "New Record": "新建日志",
     "Object": "对象",
