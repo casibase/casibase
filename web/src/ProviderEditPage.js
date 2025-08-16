@@ -1048,11 +1048,9 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {/* --- vvvvvvvvvvvv FIX START vvvvvvvvvvvv --- */}
-        {/* Corrected Indentation */}
         <ProviderEmbeddingTest
           provider={this.state.provider}
         />
-        {/* --- ^^^^^^^^^^^^ FIX END ^^^^^^^^^^^^ --- */}
         <ModelTestWidget
           provider={this.state.provider}
           originalProvider={this.state.originalProvider}
