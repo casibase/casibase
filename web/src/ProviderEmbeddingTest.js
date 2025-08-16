@@ -6,7 +6,7 @@ import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
 
 const {TextArea} = Input;
-const {Text, Paragraph} = Typography;
+const {Text} = Typography;
 
 class ProviderEmbeddingTest extends React.Component {
   constructor(props) {
@@ -35,8 +35,6 @@ class ProviderEmbeddingTest extends React.Component {
     const vectorName = `test-vector-${Setting.getRandomName()}`;
     const owner = this.props.provider.owner;
 
-    // This logic uses a placeholder to trigger the vectorization in the backend.
-    // Step 1: Create a placeholder vector with empty text.
     const placeholderVector = {
       owner: owner,
       name: vectorName,
@@ -45,25 +43,22 @@ class ProviderEmbeddingTest extends React.Component {
       store: "",
       provider: this.props.provider.name,
       file: "",
-      text: "", // Text is empty to ensure the backend's "if text changed" condition is met.
+      text: "",
       data: [],
       dimension: 0,
       tokenCount: 0,
     };
 
-    // Step 2: Create the final vector object with the actual text to be embedded.
     const finalVector = {
       ...placeholderVector,
       displayName: `Test: ${this.state.text.slice(0, 50)}`,
       text: this.state.text,
     };
 
-    // First, add the placeholder vector to the database.
     VectorBackend.addVector(placeholderVector)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({debug: "Placeholder vector created, now triggering vectorization..."});
-          // Then, update it with the final vector to trigger the embedding calculation on the backend.
           return VectorBackend.updateVector(owner, vectorName, finalVector);
         } else {
           throw new Error(res.msg || "Failed to add placeholder vector");
@@ -72,7 +67,6 @@ class ProviderEmbeddingTest extends React.Component {
       .then((updateRes) => {
         if (updateRes.status === "ok") {
           this.setState({debug: "Vectorization request sent, fetching results..."});
-          // Wait a moment for the backend to process the embedding.
           return new Promise(resolve => setTimeout(resolve, 1500))
             .then(() => VectorBackend.getVector(owner, vectorName));
         } else {
@@ -84,12 +78,9 @@ class ProviderEmbeddingTest extends React.Component {
           const vectorData = getRes.data;
           if (Array.isArray(vectorData.data) && vectorData.data.length > 0) {
             message.success(i18next.t("general:Successfully calculated vector"));
-
-            // Frontend fix: If backend returns dimension 0 but data exists, use the actual data length.
             if (vectorData.dimension === 0 && vectorData.data.length > 0) {
               vectorData.dimension = vectorData.data.length;
             }
-
             this.setState({
               vector: vectorData,
               debug: "Vector calculation successful!",
@@ -110,59 +101,11 @@ class ProviderEmbeddingTest extends React.Component {
       })
       .finally(() => {
         this.setState({loading: false});
-        // Cleanup the temporary vector after a delay.
         setTimeout(() => {
           VectorBackend.deleteVector({owner: owner, name: vectorName})
             .catch(() => {});
         }, 30000);
       });
-  }
-
-  renderProviderInfo() {
-    const {provider} = this.props;
-    const supportedTypes = [
-      "OpenAI", "Azure", "Cohere", "Ernie", "HuggingFace", "Gemini",
-      "Baidu Cloud", "Ollama", "Local", "MiniMax", "Alibaba Cloud", "Tencent Cloud", "Jina",
-    ];
-    const isSupported = supportedTypes.includes(provider.type);
-
-    return (
-      <div style={{marginBottom: "15px"}}>
-        <Typography.Title level={5}>Provider Configuration</Typography.Title>
-        <div style={{
-          padding: "10px",
-          backgroundColor: "#f9f9f9",
-          borderRadius: "4px",
-          border: isSupported ? "1px solid #d9d9d9" : "1px solid #ffccc7",
-        }}>
-          <Paragraph>
-            <Text strong>Name:</Text> {provider.name}<br />
-            <Text strong>Type:</Text> <Text type={isSupported ? "success" : "danger"}>
-              {provider.type} {isSupported ? "✓" : "✗"}
-            </Text><br />
-            <Text strong>Sub Type/Model:</Text> {provider.subType || "Not set"}<br />
-            {provider.type === "Ernie" ? (
-              <>
-                <Text strong>Client ID:</Text> {provider.clientId ? "Set ✓" : "Not set ✗"}<br />
-                <Text strong>Client Secret:</Text> {provider.clientSecret ? "Set ✓" : "Not set ✗"}<br />
-              </>
-            ) : (
-              <>
-                <Text strong>API Key:</Text> {provider.apiKey ? "Set ✓" : "Not set ✗"}<br />
-              </>
-            )}
-            {["Azure", "HuggingFace", "Ollama", "Local"].includes(provider.type) && (
-              <><Text strong>Endpoint:</Text> {provider.endpoint || (provider.type === "HuggingFace" ? "Not set ✗" : "Default")}<br /></>
-            )}
-          </Paragraph>
-          {!isSupported && (
-            <Paragraph type="danger">
-              ❌ Error: Provider type &quot;{provider.type}&quot; does not support the Embedding function.
-            </Paragraph>
-          )}
-        </div>
-      </div>
-    );
   }
 
   renderResult() {
@@ -213,9 +156,10 @@ class ProviderEmbeddingTest extends React.Component {
   }
 
   render() {
-    if (this.props.provider.category !== "Embedding") {
+    if (!this.props.provider || this.props.provider.category !== "Embedding") {
       return null;
     }
+
     return (
       <App>
         <Card
@@ -229,8 +173,6 @@ class ProviderEmbeddingTest extends React.Component {
           style={{marginTop: "20px"}}
           type="inner"
         >
-          {this.renderProviderInfo()}
-          <Divider />
           <Typography.Title level={5}>Test Text</Typography.Title>
           <TextArea
             value={this.state.text}
