@@ -12,7 +12,7 @@ class ProviderEmbeddingTest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: "Hello, Casibase!",
+      text: i18next.t("provider:Hello, Casibase!"),
       vector: null,
       loading: false,
       debug: "",
@@ -22,14 +22,14 @@ class ProviderEmbeddingTest extends React.Component {
   calculateVector() {
     const account = Setting.getItem("account");
     if (!account) {
-      message.error("Failed to get current user, please login again.");
+      message.error(i18next.t("general:Failed to get current user, please login again."));
       return;
     }
 
     this.setState({
       loading: true,
       vector: null,
-      debug: "Calculating vector using the provider...",
+      debug: i18next.t("provider:Calculating vector using the provider..."),
     });
 
     const vectorName = `test-vector-${Setting.getRandomName()}`;
@@ -58,19 +58,19 @@ class ProviderEmbeddingTest extends React.Component {
     VectorBackend.addVector(placeholderVector)
       .then((res) => {
         if (res.status === "ok") {
-          this.setState({debug: "Placeholder vector created, now triggering vectorization..."});
+          this.setState({debug: i18next.t("provider:Placeholder vector created, now triggering vectorization...")});
           return VectorBackend.updateVector(owner, vectorName, finalVector);
         } else {
-          throw new Error(res.msg || "Failed to add placeholder vector");
+          throw new Error(res.msg || i18next.t("provider:Failed to add placeholder vector"));
         }
       })
       .then((updateRes) => {
         if (updateRes.status === "ok") {
-          this.setState({debug: "Vectorization request sent, fetching results..."});
+          this.setState({debug: i18next.t("provider:Vectorization request sent, fetching results...")});
           return new Promise(resolve => setTimeout(resolve, 1500))
             .then(() => VectorBackend.getVector(owner, vectorName));
         } else {
-          throw new Error(updateRes.msg || "Failed to update vector to trigger calculation");
+          throw new Error(updateRes.msg || i18next.t("provider:Failed to update vector to trigger calculation"));
         }
       })
       .then((getRes) => {
@@ -83,19 +83,19 @@ class ProviderEmbeddingTest extends React.Component {
             }
             this.setState({
               vector: vectorData,
-              debug: "Vector calculation successful!",
+              debug: i18next.t("provider:Vector calculation successful!"),
             });
           } else {
-            throw new Error("Vectorization failed: The returned vector data is empty. Please check your Provider configuration.");
+            throw new Error(i18next.t("provider:Vectorization failed: The returned vector data is empty. Please check your Provider configuration."));
           }
         } else {
-          throw new Error(getRes.msg || "Failed to get vectorization result");
+          throw new Error(getRes.msg || i18next.t("provider:Failed to get vectorization result"));
         }
       })
       .catch((error) => {
         this.setState({
           vector: null,
-          debug: `Error: ${error.message}\n\nPossible reasons:\n1. Incorrect Provider configuration (API key, endpoint, etc.)\n2. Network connectivity issues`,
+          debug: `${i18next.t("general:Error")}: ${error.message}\n\n${i18next.t("provider:Possible reasons")}:\n1. ${i18next.t("provider:Incorrect Provider configuration")}\n2. ${i18next.t("provider:Network connectivity issues")}`,
         });
         message.error(`${i18next.t("general:Failed to calculate vector")}: ${error.message}`);
       })
@@ -125,20 +125,20 @@ class ProviderEmbeddingTest extends React.Component {
               borderRadius: "4px",
               marginBottom: "10px",
             }}>
-              <Text strong>✓ Vectorization Successful</Text><br />
-              <Text strong>Dimension:</Text> {vector.dimension} &nbsp;&nbsp;
-              <Text strong>Provider:</Text> {vector.provider} &nbsp;&nbsp;
-              {vector.tokenCount > 0 && <><br /><Text strong>Token Count:</Text> {vector.tokenCount}</>}
+              <Text strong>{i18next.t("provider:✓ Vectorization Successful")}</Text><br />
+              <Text strong>{i18next.t("vector:Dimension")}:</Text> {vector.dimension} &nbsp;&nbsp;
+              <Text strong>{i18next.t("general:Provider")}:</Text> {vector.provider} &nbsp;&nbsp;
+              {vector.tokenCount > 0 && <><br /><Text strong>{i18next.t("chat:Token count")}:</Text> {vector.tokenCount}</>}
             </div>
             <div style={{marginBottom: "10px"}}>
-              <Text strong>Vector Data Preview (first 10 values):</Text>
+              <Text strong>{i18next.t("provider:Vector Data Preview (first 10 values):")}</Text>
             </div>
             <pre style={{
               maxHeight: "150px", overflow: "auto", padding: "10px", backgroundColor: "#f5f5f5",
               border: "1px solid #d9d9d9", borderRadius: "4px", fontSize: "12px", fontFamily: "monospace",
             }}>
               [{vector.data.slice(0, 10).map(v => v.toFixed(6)).join(",\n ")}
-              {vector.data.length > 10 ? `,\n ... (total ${vector.data.length} values)` : ""}]
+              {vector.data.length > 10 ? `,\n ... ${i18next.t("provider:(total {{count}} values)", {count: vector.data.length})}` : ""}]
             </pre>
           </>
         )}
@@ -173,11 +173,11 @@ class ProviderEmbeddingTest extends React.Component {
           style={{marginTop: "20px"}}
           type="inner"
         >
-          <Typography.Title level={5}>Test Text</Typography.Title>
+          <Typography.Title level={5}>{i18next.t("provider:Test Text")}</Typography.Title>
           <TextArea
             value={this.state.text}
             onChange={e => this.setState({text: e.target.value})}
-            placeholder={i18next.t("provider:Enter text to test embedding") || "Please enter the text to test..."}
+            placeholder={i18next.t("provider:Enter text to test embedding")}
             autoSize={{minRows: 3, maxRows: 6}}
             style={{marginBottom: "10px"}}
             showCount
@@ -190,11 +190,11 @@ class ProviderEmbeddingTest extends React.Component {
             disabled={!this.state.text.trim() || this.state.text.length < 5 || this.state.loading}
             icon={<i className="fas fa-calculator" style={{marginRight: "5px"}} />}
           >
-            {this.state.loading ? "Calculating..." : i18next.t("provider:Calculate Vector")}
+            {this.state.loading ? i18next.t("provider:Calculating...") : i18next.t("provider:Calculate Vector")}
           </Button>
           {this.state.text.trim() && this.state.text.length < 5 && (
             <Text type="secondary" style={{marginLeft: "10px", fontSize: "12px"}}>
-              Text is too short, please enter at least 5 characters.
+              {i18next.t("provider:Text is too short, please enter at least 5 characters.")}
             </Text>
           )}
           {this.renderResult()}
