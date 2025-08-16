@@ -272,16 +272,6 @@ class ChatPage extends BaseListPage {
   };
 
   sendMessage(text, fileName, isHidden, isRegenerated) {
-    if (!this.state.chat) {
-      const newChat = this.newChat(null, {});
-      this.setState({chat: newChat});
-      ChatBackend.addChat(newChat).then((res) => {
-        if (res.status === "ok") {
-          this.sendMessage(text, fileName, isHidden, isRegenerated);
-        }
-      });
-      return;
-    }
     const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
     MessageBackend.addMessage(newMessage)
       .then((res) => {
