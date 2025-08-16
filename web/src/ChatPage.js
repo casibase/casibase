@@ -75,13 +75,6 @@ class ChatPage extends BaseListPage {
     if (this.props.onCreateChatPage) {
       this.props.onCreateChatPage(this);
     }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const newMessage = urlParams.get("newMessage");
-
-    if (newMessage && newMessage.trim() !== "") {
-      this.sendMessage(newMessage);
-    }
   }
 
   toggleChatMenu = () => {
@@ -337,7 +330,7 @@ class ChatPage extends BaseListPage {
   }
 
   getMessages(chat) {
-    MessageBackend.getChatMessages("admin", chat.name)
+    MessageBackend.getChatMessages("admin", chat ? chat.name : "")
       .then((res) => {
         if (this.getMessageAnswerFromURL(res.data)) {
           return;
@@ -818,11 +811,11 @@ class ChatPage extends BaseListPage {
 
           if (chatName !== undefined && chats.length > 0) {
             const chat = chats.find(chat => chat.name === chatName);
-            this.getMessages(chat);
             this.setState({
               chat: chat,
             });
           }
+          this.getMessages(this.state.chat);
           this.getGlobalStores();
 
           if (!setLoading) {
