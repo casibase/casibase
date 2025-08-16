@@ -204,6 +204,7 @@
     "Language - Tooltip": "언어 환경(예: zh-CN/en-US)",
     "Like": "좋아요",
     "Loading...": "로딩 중...",
+    "Local": "로컬",
     "Logging & Auditing": "로깅 & 감사",
     "Machines": "호스트",
     "Menu": "메뉴",
@@ -520,11 +521,12 @@
   },
   "record": {
     "Commit": "체인 등록",
-    "Enable cross-chain": "Enable cross-chain",
-    "New Record": "새 로그 생성",
+    "Data Verification": "데이터 검증",
+    "Enable cross-chain": "크로스체인 활성화",
+    "New Record": "새 레코드 생성",
     "Object": "객체",
     "Query": "조회",
-    "View Record": "로그 보기"
+    "View Record": "레코드 보기"
   },
   "store": {
     "Add Permission": "권한 추가",

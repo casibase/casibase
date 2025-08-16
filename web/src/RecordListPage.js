@@ -34,6 +34,9 @@ class RecordListPage extends BaseListPage {
       ...this.state,
       providerMap: {},
       enableCrossChain: this.getEnableCrossChainFromStorage(),
+      queryResult: "",
+      comparisonResult: null,
+      isComparing: false,
     };
   }
 
@@ -149,16 +152,189 @@ class RecordListPage extends BaseListPage {
       });
   }
 
-  queryRecord(record, isFirst = true) {
-    const queryMethod = isFirst ? RecordBackend.queryRecord : RecordBackend.queryRecordSecond;
-    queryMethod(record.owner, record.id)
-      .then((res) => {
-        if (res.status === "ok") {
-          Setting.showMessage(res.data.includes("Mismatched") ? "error" : "success", `${i18next.t("record:Query")}: ${res.data}`);
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to query record")}: ${res.msg}`);
+  parseQueryResult(queryResult) {
+    try {
+      const lines = queryResult.split("\n");
+      const blockMatch = lines[0].match(/block \[(\d+)\]/);
+      const blockId = blockMatch ? blockMatch[1] : "Unknown";
+
+      const isMatched = lines[0].includes("Matched");
+
+      if (isMatched) {
+        const dataStartIndex = lines.findIndex(line => line.includes("Data:"));
+        if (dataStartIndex !== -1) {
+          const data = lines.slice(dataStartIndex + 2).join("\n").trim();
+          return {
+            status: "matched",
+            blockId,
+            data: data,
+            parsedData: this.tryParseJSON(data),
+          };
         }
-      });
+      } else {
+        const chainDataStart = lines.findIndex(line => line.includes("Chain data:"));
+        const localDataStart = lines.findIndex(line => line.includes("Local data:"));
+
+        if (chainDataStart !== -1 && localDataStart !== -1) {
+          const chainData = lines.slice(chainDataStart + 2, localDataStart - 1).join("\n").trim();
+          const localData = lines.slice(localDataStart + 2).join("\n").trim();
+
+          return {
+            status: "mismatched",
+            blockId,
+            chainData: chainData,
+            localData: localData,
+            parsedChainData: this.tryParseJSON(chainData),
+            parsedLocalData: this.tryParseJSON(localData),
+          };
+        }
+      }
+
+      return {
+        status: "unknown",
+        blockId: "Unknown",
+        rawData: queryResult,
+      };
+    } catch (error) {
+      return {
+        status: "error",
+        blockId: "Error",
+        error: error.message,
+        rawData: queryResult,
+      };
+    }
+  }
+
+  tryParseJSON(jsonString) {
+    try {
+      return JSON.parse(jsonString);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  formatFieldPath(path) {
+    if (path.startsWith("value.")) {
+      return path.substring(6);
+    }
+    return path;
+  }
+
+  formatFieldValue(value) {
+    if (value === null || value === undefined) {
+      return "null";
+    }
+    if (typeof value === "string") {
+      if (value.length > 50) {
+        return value.substring(0, 50) + "...";
+      }
+      return value;
+    }
+    if (typeof value === "object") {
+      return JSON.stringify(value);
+    }
+    return String(value);
+  }
+
+  detectDifferences(chainData, localData) {
+    const differences = [];
+
+    if (!chainData || !localData) {
+      return differences;
+    }
+
+    const compareObjects = (chainObj, localObj, path = "") => {
+      for (const key in chainObj) {
+        const currentPath = path ? `${path}.${key}` : key;
+
+        if (!(key in localObj)) {
+          differences.push({
+            path: currentPath,
+            chainValue: chainObj[key],
+            localValue: i18next.t("general:Error"),
+            type: "missing",
+          });
+        } else if (typeof chainObj[key] !== typeof localObj[key]) {
+          differences.push({
+            path: currentPath,
+            chainValue: chainObj[key],
+            localValue: localObj[key],
+            type: "type_mismatch",
+          });
+        } else if (typeof chainObj[key] === "object" && chainObj[key] !== null && !Array.isArray(chainObj[key])) {
+          compareObjects(chainObj[key], localObj[key], currentPath);
+        } else if (chainObj[key] !== localObj[key]) {
+          differences.push({
+            path: currentPath,
+            chainValue: chainObj[key],
+            localValue: localObj[key],
+            type: "value_mismatch",
+          });
+        }
+      }
+    };
+
+    try {
+      let chainValueObj = chainData;
+      let localValueObj = localData;
+
+      if (chainData.value && typeof chainData.value === "string") {
+        try {
+          chainValueObj = JSON.parse(chainData.value);
+        } catch (e) {
+          // console.warn("Failed to parse chain data value:", e);
+        }
+      }
+
+      if (localData.value && typeof localData.value === "string") {
+        try {
+          localValueObj = JSON.parse(localData.value);
+        } catch (e) {
+          // console.warn("Failed to parse local data value:", e);
+        }
+      }
+
+      compareObjects(chainValueObj, localValueObj);
+    } catch (error) {
+      // console.error("Error comparing objects:", error);
+      compareObjects(chainData, localData);
+    }
+
+    return differences;
+  }
+
+  queryRecord(record, isFirst = true) {
+    this.setState({
+      isComparing: true,
+      comparisonResult: null,
+    });
+
+    const queryMethod = isFirst ? RecordBackend.queryRecord : RecordBackend.queryRecordSecond;
+    queryMethod(record.owner, record.name).then((res) => {
+      if (res.status === "ok") {
+        const queryResult = res.data;
+        const comparisonResult = this.parseQueryResult(queryResult);
+
+        if (comparisonResult.status === "mismatched" && comparisonResult.parsedChainData && comparisonResult.parsedLocalData) {
+          comparisonResult.differences = this.detectDifferences(
+            comparisonResult.parsedChainData,
+            comparisonResult.parsedLocalData
+          );
+        }
+
+        this.setState({
+          queryResult: queryResult,
+          comparisonResult: comparisonResult,
+          isComparing: false,
+        });
+      } else {
+        Setting.showMessage("error", `${i18next.t("general:Failed to query record")}: ${res.msg}`);
+        this.setState({isComparing: false});
+      }
+    }).catch((error) => {
+      Setting.showMessage("error", `Query failed: ${error.message}`);
+      this.setState({isComparing: false});
+    });
   }
 
   renderTable(records) {
@@ -524,16 +700,34 @@ class RecordListPage extends BaseListPage {
                     >{i18next.t("record:Commit")}
                     </Button>
                   ) : (
-                    <Button
-                      disabled={record.block === ""}
-                      type="primary"
-                      onClick={() => this.queryRecord(record, true)}
-                    >{i18next.t("record:Query")}
-                    </Button>
+                    <Popover
+                      placement="left"
+                      title={i18next.t("general:Result")}
+                      content={
+                        <div style={{width: "800px", maxHeight: "600px", overflow: "auto"}}>
+                          {this.state.isComparing ? (
+                            <div style={{textAlign: "center", padding: "40px"}}>
+                              <div style={{fontSize: "24px", marginBottom: "16px"}}>🔄</div>
+                              <div>{i18next.t("general:Loading...")}</div>
+                            </div>
+                          ) : (
+                            this.renderComparisonResult(this.state.comparisonResult)
+                          )}
+                        </div>
+                      }
+                      trigger="click"
+                    >
+                      <Button
+                        disabled={record.block === ""}
+                        type="primary"
+                        onClick={() => this.queryRecord(record, true)}
+                      >{i18next.t("record:Query")}
+                      </Button>
+                    </Popover>
                   )}
                   {this.state.enableCrossChain && (
                     (record.block2 === "") ? (
-                      <Tooltip title={record.provider2 === "" ? "Provider 2 should not be empty" : ""}>
+                      <Tooltip title={record.provider2 === "" ? i18next.t("general:Error") : ""}>
                         <Button
                           disabled={record.provider2 === ""}
                           type="primary" danger
@@ -542,12 +736,30 @@ class RecordListPage extends BaseListPage {
                         </Button>
                       </Tooltip>
                     ) : (
-                      <Button
-                        disabled={record.block2 === ""}
-                        type="primary"
-                        onClick={() => this.queryRecord(record, false)}
-                      >{i18next.t("record:Query") + " 2"}
-                      </Button>
+                      <Popover
+                        placement="left"
+                        title={i18next.t("general:Result") + " 2"}
+                        content={
+                          <div style={{width: "800px", maxHeight: "600px", overflow: "auto"}}>
+                            {this.state.isComparing ? (
+                              <div style={{textAlign: "center", padding: "40px"}}>
+                                <div style={{fontSize: "24px", marginBottom: "16px"}}>🔄</div>
+                                <div>{i18next.t("general:Loading...")}</div>
+                              </div>
+                            ) : (
+                              this.renderComparisonResult(this.state.comparisonResult)
+                            )}
+                          </div>
+                        }
+                        trigger="click"
+                      >
+                        <Button
+                          disabled={record.block2 === ""}
+                          type="primary"
+                          onClick={() => this.queryRecord(record, false)}
+                        >{i18next.t("record:Query") + " 2"}
+                        </Button>
+                      </Popover>
                     )
                   )}
                 </>
@@ -607,6 +819,128 @@ class RecordListPage extends BaseListPage {
     );
   }
 
+  renderComparisonResult(comparisonResult) {
+    if (!comparisonResult) {
+      return null;
+    }
+
+    const {status, blockId, differences} = comparisonResult;
+
+    if (status === "matched") {
+      return (
+        <div className="comparison-result matched">
+          <div className="result-header success">
+            <div className="status-icon">🟢</div>
+            <div className="status-info">
+              <h3>{i18next.t("record:Data Verification")}</h3>
+              <p>{i18next.t("general:Success")}</p>
+            </div>
+          </div>
+
+          <div className="result-details">
+            <div className="detail-item">
+              <span className="label">📍 {i18next.t("general:Block")}:</span>
+              <span className="value">{blockId}</span>
+            </div>
+            <div className="detail-item">
+              <span className="label">✅ {i18next.t("general:Status")}:</span>
+              <span className="value success">{i18next.t("general:Success")}</span>
+            </div>
+          </div>
+
+          <div className="data-section">
+            <h4>📋 {i18next.t("general:Data")}</h4>
+            <div className="json-display">
+              <pre>{comparisonResult.data}</pre>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (status === "mismatched") {
+      return (
+        <div className="comparison-result mismatched">
+          <div className="result-header error">
+            <div className="status-icon">🔴</div>
+            <div className="status-info">
+              <h3>{i18next.t("record:Data Verification")}</h3>
+              <p>{i18next.t("general:Error")}</p>
+            </div>
+          </div>
+
+          <div className="result-details">
+            <div className="detail-item">
+              <span className="label">📍 {i18next.t("general:Block")}:</span>
+              <span className="value">{blockId}</span>
+            </div>
+            <div className="detail-item">
+              <span className="label">❌ {i18next.t("general:Status")}:</span>
+              <span className="value error">{i18next.t("general:Error")}</span>
+            </div>
+          </div>
+
+          <div className="data-comparison">
+            <div className="comparison-section">
+              <h4>🔗 {i18next.t("provider:Chain")}</h4>
+              <div className="json-display">
+                <pre>{comparisonResult.chainData}</pre>
+              </div>
+            </div>
+
+            <div className="comparison-section">
+              <h4>💾 {i18next.t("general:Local")}</h4>
+              <div className="json-display">
+                <pre>{comparisonResult.localData}</pre>
+              </div>
+            </div>
+          </div>
+
+          {differences && differences.length > 0 && (
+            <div className="differences-section">
+              <h4>🔍 {i18next.t("general:Result")}</h4>
+              <div className="differences-list">
+                {differences.map((diff, index) => (
+                  <div key={index} className="difference-item">
+                    <div className="difference-path">
+                      <strong>{i18next.t("general:Data")} &quot;{this.formatFieldPath(diff.path)}&quot;:</strong>
+                    </div>
+                    <div className="difference-values">
+                      <span className="chain-value">
+                        {i18next.t("provider:Chain")}: <code>{this.formatFieldValue(diff.chainValue)}</code>
+                      </span>
+                      <span className="separator">→</span>
+                      <span className="local-value">
+                        {i18next.t("general:Local")}: <code>{this.formatFieldValue(diff.localValue)}</code>
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div className="comparison-result unknown">
+        <div className="result-header warning">
+          <div className="status-icon">🟡</div>
+          <div className="status-info">
+            <h3>{i18next.t("general:Error")}</h3>
+            <p>{i18next.t("general:Error")}</p>
+          </div>
+        </div>
+
+        <div className="raw-data">
+          <h4>{i18next.t("general:Data")}</h4>
+          <pre>{comparisonResult.rawData || i18next.t("general:Data")}</pre>
+        </div>
+      </div>
+    );
+  }
+
   fetch = (params = {}) => {
     let field = params.searchedColumn, value = params.searchText;
     const sortField = params.sortField, sortOrder = params.sortOrder;
@@ -641,6 +975,245 @@ class RecordListPage extends BaseListPage {
         }
       });
   };
+}
+
+const styles = `
+  .comparison-result {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .comparison-result.matched {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 2px solid #22c55e;
+  }
+
+  .comparison-result.mismatched {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border: 2px solid #ef4444;
+    animation: pulse 2s infinite;
+  }
+
+  .comparison-result.unknown {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 2px solid #f59e0b;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 16px;
+    border-radius: 8px;
+  }
+
+  .result-header.success {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    border: 1px solid #22c55e;
+  }
+
+  .result-header.error {
+    background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+    border: 1px solid #ef4444;
+  }
+
+  .result-header.warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #f59e0b;
+  }
+
+  .status-icon {
+    font-size: 32px;
+    margin-right: 16px;
+  }
+
+  .status-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .status-info p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  .result-details {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+  }
+
+  .detail-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .detail-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .detail-item .label {
+    font-weight: 600;
+    color: #374151;
+    min-width: 80px;
+    margin-right: 12px;
+  }
+
+  .detail-item .value {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  .detail-item .value.success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #22c55e;
+  }
+
+  .detail-item .value.error {
+    background: #fecaca;
+    color: #991b1b;
+    border: 1px solid #ef4444;
+  }
+
+  .data-section, .data-comparison, .differences-section {
+    margin-bottom: 20px;
+  }
+
+  .data-section h4, .data-comparison h4, .differences-section h4 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+  }
+
+  .json-display {
+    background: #1e1e1e;
+    border-radius: 6px;
+    padding: 16px;
+    overflow: auto;
+    max-height: 200px;
+    border: 1px solid #374151;
+  }
+
+  .json-display pre {
+    margin: 0;
+    color: #e5e7eb;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .comparison-section {
+    margin-bottom: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+  }
+
+  .comparison-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .differences-list {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+  }
+
+  .difference-item {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #fef2f2;
+    border-radius: 6px;
+    border-left: 4px solid #ef4444;
+  }
+
+  .difference-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .difference-path {
+    margin-bottom: 8px;
+    color: #991b1b;
+    font-size: 14px;
+  }
+
+  .difference-values {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .chain-value, .local-value {
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  }
+
+  .chain-value {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #22c55e;
+  }
+
+  .local-value {
+    background: #fecaca;
+    color: #991b1b;
+    border: 1px solid #ef4444;
+  }
+
+  .separator {
+    color: #6b7280;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .raw-data {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+  }
+
+  .raw-data pre {
+    background: #f3f4f6;
+    padding: 12px;
+    border-radius: 4px;
+    overflow: auto;
+    max-height: 200px;
+    font-size: 12px;
+    line-height: 1.4;
+    border: 1px solid #d1d5db;
+  }
+`;
+
+if (typeof document !== "undefined") {
+  const styleElement = document.createElement("style");
+  styleElement.textContent = styles;
+  document.head.appendChild(styleElement);
 }
 
 export default RecordListPage;

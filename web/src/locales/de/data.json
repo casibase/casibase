@@ -204,6 +204,7 @@
     "Language - Tooltip": "Sprachumgebung (z.B. zh-CN/en-US)",
     "Like": "Mögen",
     "Loading...": "Lade...",
+    "Local": "Lokal",
     "Logging & Auditing": "Protokollierung & Auditing",
     "Machines": "Server",
     "Menu": "Menü",
@@ -520,6 +521,7 @@
   },
   "record": {
     "Commit": "On-Chain",
+    "Data Verification": "Datenverifikation",
     "Enable cross-chain": "Enable cross-chain",
     "New Record": "Neues Protokoll erstellen",
     "Object": "Objekt",
