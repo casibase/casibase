@@ -154,6 +154,7 @@ func initBuiltInProviders() (string, string, string, string) {
 			Category:    "Storage",
 			Type:        "Local File System",
 			ClientId:    path,
+			IsDefault:   true,
 		}
 		_, err = AddProvider(storageProvider)
 		if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
@@ -170,6 +171,7 @@ func initBuiltInProviders() (string, string, string, string) {
 			Category:    "Model",
 			Type:        "Dummy",
 			SubType:     "Dummy",
+			IsDefault:   true,
 		}
 		_, err = AddProvider(modelProvider)
 		if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
@@ -186,6 +188,7 @@ func initBuiltInProviders() (string, string, string, string) {
 			Category:    "Embedding",
 			Type:        "Dummy",
 			SubType:     "Dummy",
+			IsDefault:   true,
 		}
 		_, err = AddProvider(embeddingProvider)
 		if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
