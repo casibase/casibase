@@ -311,6 +311,10 @@ class ChatPage extends BaseListPage {
   }
 
   getMessages(chat) {
+    this.setState({
+      messageError: false,
+    });
+
     MessageBackend.getChatMessages("admin", chat.name)
       .then((res) => {
         res.data.map((message) => {
@@ -493,6 +497,7 @@ class ChatPage extends BaseListPage {
           this.setState({
             chat: newChat,
             messages: null,
+            messageError: false,
           });
           this.getMessages(newChat);
 
@@ -649,6 +654,7 @@ class ChatPage extends BaseListPage {
         chat: chat,
         // messages: null,
         chatMenuVisible: false,
+        messageError: false,
       });
       this.getMessages(chat);
       this.goToLinkSoft(this.generateChatUrl(chat.name, chat.store));
@@ -783,6 +789,7 @@ class ChatPage extends BaseListPage {
             loading: false,
             data: chats,
             messages: [],
+            messageError: false,
             searchText: params.searchText,
             searchedColumn: params.searchedColumn,
           });
