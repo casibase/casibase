@@ -18,7 +18,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"net/http"
 	"strings"
 
 	"github.com/beego/beego/context"
@@ -52,20 +51,6 @@ func getUsername(ctx *context.Context) (username string) {
 		username, _ = getUsernameByClientIdSecret(ctx)
 	}
 	return
-}
-
-func requestDeny(ctx *context.Context) {
-	ctx.ResponseWriter.WriteHeader(http.StatusForbidden)
-
-	response := &Response{
-		Status: "error",
-		Msg:    "Unauthorized operation",
-	}
-
-	err := ctx.Output.JSON(response, false, false)
-	if err != nil {
-		return
-	}
 }
 
 func responseError(ctx *context.Context, error string, data ...interface{}) {

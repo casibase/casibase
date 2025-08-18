@@ -35,7 +35,7 @@ type Article struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
-	Provider    string `xorm:"varchar(100)" json:"provider"`
+	Workflow    string `xorm:"varchar(100)" json:"workflow"`
 	Type        string `xorm:"varchar(100)" json:"type"`
 
 	Text     string   `xorm:"mediumtext" json:"text"`
