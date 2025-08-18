@@ -130,7 +130,7 @@ class LabelTable extends React.Component {
   }
 
   requireSelfOrAdmin(row) {
-    if (this.props.account.type === "video-admin-user") {
+    if (!this.requireAdmin()) {
       return false;
     }
 

@@ -475,7 +475,7 @@ class VideoEditPage extends React.Component {
   }
 
   requireUserOrAdmin(video) {
-    if (this.props.account.type === "video-admin-user") {
+    if (!this.requireAdmin()) {
       return false;
     } else if (this.props.account.type !== "video-normal-user") {
       return true;
@@ -497,15 +497,15 @@ class VideoEditPage extends React.Component {
   }
 
   requireReviewerOrAdmin() {
-    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
+    return !(!this.requireAdmin() || this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
   }
 
   requireReviewer1OrAdmin() {
-    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer1-user");
+    return !(!this.requireAdmin() || this.props.account.type === "video-reviewer1-user");
   }
 
   requireReviewer2OrAdmin() {
-    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer2-user");
+    return !(!this.requireAdmin() || this.props.account.type === "video-reviewer2-user");
   }
 
   requireReviewer2OrAdminOrPublic() {
@@ -513,7 +513,7 @@ class VideoEditPage extends React.Component {
       return false;
     }
 
-    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer2-user");
+    return !(!this.requireAdmin() || this.props.account.type === "video-reviewer2-user");
   }
 
   requireAdmin() {
