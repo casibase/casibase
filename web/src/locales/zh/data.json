@@ -358,7 +358,9 @@
     "Zone - Tooltip": "可用区域",
     "empty": "空",
     "items": "项",
-    "{total} in total": "{total} 总计"
+    "{total} in total": "{total} 总计",
+    "DiseaseCategory": "病种",
+    "DiseaseCategory - Tooltip": "疾病病种"
   },
   "image": {
     "Arch": "架构",
@@ -753,8 +755,6 @@
     "Topic - Tooltip": "项目主题",
     "Unit": "单元",
     "Unit - Tooltip": "教学单元编号",
-    "DiseaseCategory": "病种",
-    "DiseaseCategory - Tooltip": "疾病病种",
     "Unreviewed": "未评审",
     "Upload Video": "上传录像",
     "Video": "录像",
