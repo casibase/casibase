@@ -108,7 +108,7 @@ const mockData ={
                 }
             }
         ],
-        "section": [
+        "diseaseCategory": [
             
             {
                 "date": "2025-08-14",
@@ -202,7 +202,7 @@ class DashboardPage extends Component {
     // 取最后一天的数据
     const lastDayAction = data.action.length > 0 ? data.action[data.action.length - 1] : null;
     const lastDayUnit = data.unit.length > 0 ? data.unit[data.unit.length - 1] : null;
-    const lastDaySection = data.section.length > 0 ? data.section[data.section.length - 1] : null;
+    const lastDayDiseaseCategory = data.diseaseCategory.length > 0 ? data.diseaseCategory[data.diseaseCategory.length - 1] : null;
 
     // 处理总就诊记录数（units各医院的和）
     // const totalRecords = lastDayAction?.FieldCount?.["test-action"] || 0;
@@ -222,8 +222,8 @@ class DashboardPage extends Component {
 
     // 处理病种记录（使用section）
     const diseases = [];
-    if (lastDaySection?.FieldCount) {
-      Object.entries(lastDaySection.FieldCount).forEach(([name, value]) => {
+    if (lastDayDiseaseCategory?.FieldCount) {
+      Object.entries(lastDayDiseaseCategory.FieldCount).forEach(([name, value]) => {
         diseases.push({ name, value });
       });
     }
@@ -246,7 +246,7 @@ class DashboardPage extends Component {
 
   fetchDashboardData = async () => {
     try {
-      const response = await DashboardBackend.getDashBoardData("100","All","unit,section,action");
+      const response = await DashboardBackend.getDashBoardData("100","All","unit,diseaseCategory,action");
 
       if (response.status === "ok" && response.data) {
         this.processData(response.data);
