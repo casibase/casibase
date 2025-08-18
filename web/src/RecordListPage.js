@@ -26,6 +26,7 @@ import {CloseCircleFilled, DeleteOutlined} from "@ant-design/icons";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css";
+import CommitResultWidget from "./component/record/CommitResultWidget";
 
 class RecordListPage extends BaseListPage {
   constructor(props) {
@@ -34,6 +35,8 @@ class RecordListPage extends BaseListPage {
       ...this.state,
       providerMap: {},
       enableCrossChain: this.getEnableCrossChainFromStorage(),
+      queryResult: "",
+      isComparing: false,
     };
   }
 
@@ -149,17 +152,32 @@ class RecordListPage extends BaseListPage {
       });
   }
 
-  queryRecord(record, isFirst = true) {
+  queryRecord = (record, isFirst = true) => {
     const queryMethod = isFirst ? RecordBackend.queryRecord : RecordBackend.queryRecordSecond;
-    queryMethod(record.owner, record.id)
-      .then((res) => {
-        if (res.status === "ok") {
-          Setting.showMessage(res.data.includes("Mismatched") ? "error" : "success", `${i18next.t("record:Query")}: ${res.data}`);
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to query record")}: ${res.msg}`);
-        }
+    this.setState({
+      isComparing: true,
+      queryResult: "",
+    });
+    queryMethod(record.owner, record.name).then((res) => {
+      if (res.status === "ok") {
+        const queryResult = res.data;
+        this.setState({
+          queryResult: queryResult,
+          isComparing: false,
+        });
+      } else {
+        Setting.showMessage("error", `${i18next.t("general:Failed to query")}: ${res.msg}`);
+        this.setState({
+          isComparing: false,
+        });
+      }
+    }).catch(error => {
+      Setting.showMessage("error", `${i18next.t("general:Failed to query")}: ${error}`);
+      this.setState({
+        isComparing: false,
       });
-  }
+    });
+  };
 
   renderTable(records) {
     const columns = [
@@ -524,16 +542,38 @@ class RecordListPage extends BaseListPage {
                     >{i18next.t("record:Commit")}
                     </Button>
                   ) : (
-                    <Button
-                      disabled={record.block === ""}
-                      type="primary"
-                      onClick={() => this.queryRecord(record, true)}
-                    >{i18next.t("record:Query")}
-                    </Button>
+                    <Popover
+                      placement="left"
+                      title={i18next.t("general:Result")}
+                      content={
+                        <div style={{width: "800px", maxHeight: "600px", overflow: "auto"}}>
+                          {this.state.isComparing ? (
+                            <div style={{textAlign: "center", padding: "40px"}}>
+                              <div style={{fontSize: "24px", marginBottom: "16px"}}>🔄</div>
+                              <div>{i18next.t("general:Loading...")}</div>
+                            </div>
+                          ) : (
+                            <CommitResultWidget
+                              queryResult={this.state.queryResult}
+                            />
+                          )}
+                        </div>
+                      }
+                      trigger="click"
+                    >
+                      <Button
+                        disabled={record.block === ""}
+                        type="primary"
+                        onClick={() => {
+                          this.queryRecord(record, true);
+                        }}
+                      >{i18next.t("record:Query")}
+                      </Button>
+                    </Popover>
                   )}
                   {this.state.enableCrossChain && (
                     (record.block2 === "") ? (
-                      <Tooltip title={record.provider2 === "" ? "Provider 2 should not be empty" : ""}>
+                      <Tooltip title={record.provider2 === "" ? i18next.t("general:Error") : ""}>
                         <Button
                           disabled={record.provider2 === ""}
                           type="primary" danger
@@ -542,12 +582,34 @@ class RecordListPage extends BaseListPage {
                         </Button>
                       </Tooltip>
                     ) : (
-                      <Button
-                        disabled={record.block2 === ""}
-                        type="primary"
-                        onClick={() => this.queryRecord(record, false)}
-                      >{i18next.t("record:Query") + " 2"}
-                      </Button>
+                      <Popover
+                        placement="left"
+                        title={i18next.t("general:Result") + " 2"}
+                        content={
+                          <div style={{width: "800px", maxHeight: "600px", overflow: "auto"}}>
+                            {this.state.isComparing ? (
+                              <div style={{textAlign: "center", padding: "40px"}}>
+                                <div style={{fontSize: "24px", marginBottom: "16px"}}>🔄</div>
+                                <div>{i18next.t("general:Loading...")}</div>
+                              </div>
+                            ) : (
+                              <CommitResultWidget
+                                queryResult={this.state.queryResult}
+                              />
+                            )}
+                          </div>
+                        }
+                        trigger="click"
+                      >
+                        <Button
+                          disabled={record.block2 === ""}
+                          type="primary"
+                          onClick={() => {
+                            this.queryRecord(record, false);
+                          }}
+                        >{i18next.t("record:Query") + " 2"}
+                        </Button>
+                      </Popover>
                     )
                   )}
                 </>

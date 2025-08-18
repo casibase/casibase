@@ -204,6 +204,7 @@
     "Language - Tooltip": "Языковая среда (например, zh-CN/en-US)",
     "Like": "Нравится",
     "Loading...": "Загрузка...",
+    "Local": "Локальный",
     "Logging & Auditing": "Журналирование & Аудит",
     "Machines": "Хосты",
     "Menu": "Меню",
@@ -519,12 +520,13 @@
     "Top P - Tooltip": "Порог вероятностного сэмплирования (0-1)"
   },
   "record": {
-    "Commit": "Запись в блокчейн",
-    "Enable cross-chain": "Enable cross-chain",
+    "Commit": "Записать в блокчейн",
+    "Data Verification": "Проверка данных",
+    "Enable cross-chain": "Включить кросс-чейн",
     "New Record": "Новая запись",
     "Object": "Объект",
     "Query": "Запрос",
-    "View Record": "Посмотреть запись"
+    "View Record": "Просмотреть запись"
   },
   "store": {
     "Add Permission": "Добавить право",

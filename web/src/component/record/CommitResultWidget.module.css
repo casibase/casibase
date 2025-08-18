@@ -1,0 +1,236 @@
+.comparison-result {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+}
+
+.comparison-result.matched {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 2px solid #22c55e;
+}
+
+.comparison-result.mismatched {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border: 2px solid #ef4444;
+  animation: pulse 2s infinite;
+}
+
+.comparison-result.unknown {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 2px solid #f59e0b;
+}
+
+@keyframes pulse {
+  0%,
+  100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.result-header.success {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border: 1px solid #22c55e;
+}
+
+.result-header.error {
+  background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+  border: 1px solid #ef4444;
+}
+
+.result-header.warning {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 1px solid #f59e0b;
+}
+
+.status-icon {
+  font-size: 32px;
+  margin-right: 16px;
+}
+
+.status-info h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.status-info p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.result-details {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: rgb(255 255 255 / 70%);
+  border-radius: 6px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.detail-item .label {
+  font-weight: 600;
+  color: #374151;
+  min-width: 80px;
+  margin-right: 12px;
+}
+
+.detail-item .value {
+  font-family: Monaco, Menlo, "Ubuntu Mono", monospace;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.detail-item .value.success {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #22c55e;
+}
+
+.detail-item .value.error {
+  background: #fecaca;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+.data-section,
+.data-comparison,
+.differences-section {
+  margin-bottom: 20px;
+}
+
+.data-section h4,
+.data-comparison h4,
+.differences-section h4 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+}
+
+.json-display {
+  background: #1e1e1e;
+  border-radius: 6px;
+  padding: 16px;
+  overflow: auto;
+  max-height: 200px;
+  border: 1px solid #374151;
+}
+
+.json-display pre {
+  margin: 0;
+  color: #e5e7eb;
+  font-family: Monaco, Menlo, "Ubuntu Mono", monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.comparison-section {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: rgb(255 255 255 / 50%);
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.comparison-section:last-child {
+  margin-bottom: 0;
+}
+
+.differences-list {
+  background: rgb(255 255 255 / 70%);
+  border-radius: 6px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.difference-item {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #fef2f2;
+  border-radius: 6px;
+  border-left: 4px solid #ef4444;
+}
+
+.difference-item:last-child {
+  margin-bottom: 0;
+}
+
+.difference-path {
+  margin-bottom: 8px;
+  color: #991b1b;
+  font-size: 14px;
+}
+
+.difference-values {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.chain-value,
+.local-value {
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: Monaco, Menlo, "Ubuntu Mono", monospace;
+}
+
+.chain-value {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #22c55e;
+}
+
+.local-value {
+  background: #fecaca;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+.separator {
+  color: #6b7280;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.raw-data {
+  background: rgb(255 255 255 / 70%);
+  border-radius: 6px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.raw-data pre {
+  background: #f3f4f6;
+  padding: 12px;
+  border-radius: 4px;
+  overflow: auto;
+  max-height: 200px;
+  font-size: 12px;
+  line-height: 1.4;
+  border: 1px solid #d1d5db;
+}
