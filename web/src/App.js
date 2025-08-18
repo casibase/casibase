@@ -87,6 +87,7 @@ import TemplateListPage from "./TemplateListPage";
 import TemplateEditPage from "./TemplateEditPage";
 import ApplicationListPage from "./ApplicationListPage";
 import ApplicationEditPage from "./ApplicationEditPage";
+import StoreSelect from "./StoreSelect";
 
 const {Header, Footer, Content} = Layout;
 
@@ -453,6 +454,17 @@ class App extends Component {
           {this.renderRightDropdown()}
           <ThemeSelect themeAlgorithm={this.state.themeAlgorithm} onChange={this.setLogoAndThemeAlgorithm} />
           <LanguageSelect />
+          {Setting.isLocalAdminUser(this.state.account) &&
+                <StoreSelect
+                  className="store-select"
+                  initValue={Setting.getStore()}
+                  withAll={true}
+                  style={{display: Setting.isMobile() ? "none" : "flex"}}
+                  onChange={(value) => {
+                    Setting.setStore(value);
+                  }}
+                />
+          }
           <div style={{float: "right", marginRight: "20px", padding: "0px"}}>
             <div dangerouslySetInnerHTML={{__html: Conf.NavbarHtml}} />
           </div>

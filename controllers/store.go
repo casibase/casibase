@@ -30,6 +30,7 @@ import (
 // @Success 200 {array} object.Store The Response object
 // @router /get-global-stores [get]
 func (c *ApiController) GetGlobalStores() {
+	name := c.Input().Get("name")
 	limit := c.Input().Get("pageSize")
 	page := c.Input().Get("p")
 	field := c.Input().Get("field")
@@ -51,14 +52,14 @@ func (c *ApiController) GetGlobalStores() {
 		}
 
 		limit := util.ParseInt(limit)
-		count, err := object.GetStoreCount(field, value)
+		count, err := object.GetStoreCount(name, field, value)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		stores, err := object.GetPaginationStores(paginator.Offset(), limit, field, value, sortField, sortOrder)
+		stores, err := object.GetPaginationStores(paginator.Offset(), limit, name, field, value, sortField, sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -285,4 +286,22 @@ func (c *ApiController) RefreshStoreVectors() {
 	}
 
 	c.ResponseOk(ok)
+}
+
+// GetStoreNames ...
+// @Title GetStoreNames
+// @Tag Store API
+// @Param   owner     query    string    true   "owner"
+// @Description get all store name and displayName
+// @Success 200 {array} object.Store The Response object
+// @router /get-store-names [get]
+func (c *ApiController) GetStoreNames() {
+	owner := c.Input().Get("owner")
+	storeNames, err := object.GetStoresByFields(owner, []string{"name", "display_name"}...)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(storeNames)
 }

@@ -1794,6 +1794,30 @@ export function getRequestOrganization(account) {
   return account.owner;
 }
 
+export function setStore(store) {
+  localStorage.setItem("store", store);
+  window.dispatchEvent(new Event("storeChanged"));
+}
+
+export function getStore() {
+  const store = localStorage.getItem("store");
+  return store !== null ? store : "All";
+}
+
+export function getRequestStore(account) {
+  if (isLocalAdminUser(account)) {
+    return getStore() === "All" ? "" : getStore();
+  }
+  return "";
+}
+
+export function isDefaultStoreSelected(account) {
+  if (isLocalAdminUser(account)) {
+    return getStore() === "All";
+  }
+  return true;
+}
+
 export function getBoolValue(key, defaultValue) {
   const value = localStorage.getItem(key);
   if (value === null) {

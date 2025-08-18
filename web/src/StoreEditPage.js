@@ -565,6 +565,7 @@ class StoreEditPage extends React.Component {
             this.setState({
               storeName: this.state.store.name,
             });
+            window.dispatchEvent(new Event("storesChanged"));
             if (exitAfterSave) {
               this.props.history.push("/stores");
             } else {
