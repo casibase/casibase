@@ -151,6 +151,10 @@ class VideoListPage extends BaseListPage {
   }
 
   requireAdmin() {
+    if (Setting.isAdminUser(this.props.account)) {
+      return false;
+    }
+
     return !(this.props.account.type === "video-admin-user");
   }
 

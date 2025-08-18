@@ -142,6 +142,10 @@ class LabelTable extends React.Component {
   }
 
   requireAdmin() {
+    if (Setting.isAdminUser(this.props.account)) {
+      return false;
+    }
+
     return !(this.props.account.type === "video-admin-user");
   }
 
