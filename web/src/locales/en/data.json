@@ -206,6 +206,7 @@
     "Language - Tooltip": "Language locale (e.g., zh-CN/en-US)",
     "Like": "Like",
     "Loading...": "Loading...",
+    "Local": "Local",
     "Logging & Auditing": "Logging & Auditing",
     "Machines": "Machines",
     "Menu": "Menu",
@@ -522,6 +523,7 @@
   },
   "record": {
     "Commit": "Commit",
+    "Data Verification": "Data Verification",
     "Enable cross-chain": "Enable cross-chain",
     "New Record": "New Record",
     "Object": "Object",
