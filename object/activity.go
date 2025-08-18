@@ -53,6 +53,9 @@ func getTargetfieldValue(record *Record, fieldName string) (string, error) {
 		return record.City, nil
 	case "region":
 		return record.Region, nil
+	case "diseaseCategory":
+		return record.DiseaseCategory, nil
+
 	}
 	return "", errors.New("no matched field")
 }

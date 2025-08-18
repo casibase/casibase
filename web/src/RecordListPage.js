@@ -374,6 +374,14 @@ class RecordListPage extends BaseListPage {
         ...this.getColumnSearchProps("section"),
       },
       {
+        title: i18next.t("general:DiseaseCategory"),
+        dataIndex: "diseaseCategory",
+        key: "diseaseCategory",
+        width: "90px",
+        sorter: true,
+        ...this.getColumnSearchProps("diseaseCategory"),
+      },
+      {
         title: i18next.t("general:Response"),
         dataIndex: "response",
         key: "response",

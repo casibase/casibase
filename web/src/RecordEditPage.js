@@ -284,6 +284,14 @@ class RecordEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:DiseaseCategory"), i18next.t("general:DiseaseCategory - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input disabled={false} value={this.state.record.diseaseCategory} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Object"), i18next.t("general:Object - Tooltip"))} :
           </Col>
           <Col span={22} >

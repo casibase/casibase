@@ -753,6 +753,8 @@
     "Topic - Tooltip": "Project topic title",
     "Unit": "Unit",
     "Unit - Tooltip": "Teaching unit identifier",
+    "DiseaseCategory": "Disease Category",
+    "DiseaseCategory - Tooltip": "Disease category",
     "Unreviewed": "Unreviewed",
     "Upload Video": "Upload Video",
     "Video": "Video",

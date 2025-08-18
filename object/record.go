@@ -49,6 +49,8 @@ type Record struct {
 	City         string `xorm:"varchar(100)" json:"city"`
 	Unit         string `xorm:"varchar(100)" json:"unit"`
 	Section      string `xorm:"varchar(100)" json:"section"`
+	DiseaseCategory      string `xorm:"varchar(256)" json:"diseaseCategory"`
+
 
 	Object    string `xorm:"mediumtext" json:"object"`
 	Response  string `xorm:"mediumtext" json:"response"`
