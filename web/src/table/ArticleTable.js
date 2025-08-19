@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Button, Col, Row, Select, Table, Tag} from "antd";
-import {DeleteOutlined, DeploymentUnitOutlined, DownOutlined, FileAddOutlined, OrderedListOutlined, TranslationOutlined, UnorderedListOutlined, UpOutlined} from "@ant-design/icons";
+import {DeleteOutlined, DeploymentUnitOutlined, DownOutlined, FileAddOutlined, OrderedListOutlined, UnorderedListOutlined, UpOutlined} from "@ant-design/icons";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import * as MessageBackend from "../backend/MessageBackend";
@@ -178,21 +178,23 @@ class ArticleTable extends React.Component {
   }
 
   expandBlock(article, table, i) {
-    const provider = article.provider;
-    const text = table[i].text;
-    const question = `Expand the following academic paper content in a creative manner, only respond with the expanded text:\n${text}`;
-    const framework = article.name;
-    const video = "";
-    this.updateField(this.props.table, i, "isLoadingExpand", true);
-    MessageBackend.getAnswer(provider, question, framework, video)
-      .then((res) => {
-        this.updateField(this.props.table, i, "isLoadingExpand", false);
-        if (res.status === "ok") {
-          this.updateField(this.props.table, i, "text", res.data);
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
-        }
-      });
+    Setting.openLink(`/workflows/${article.workflow}`);
+
+    // const provider = article.provider;
+    // const text = table[i].text;
+    // const question = `Expand the following academic paper content in a creative manner, only respond with the expanded text:\n${text}`;
+    // const framework = article.name;
+    // const video = "";
+    // this.updateField(this.props.table, i, "isLoadingExpand", true);
+    // MessageBackend.getAnswer(provider, question, framework, video)
+    //   .then((res) => {
+    //     this.updateField(this.props.table, i, "isLoadingExpand", false);
+    //     if (res.status === "ok") {
+    //       this.updateField(this.props.table, i, "text", res.data);
+    //     } else {
+    //       Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+    //     }
+    //   });
   }
 
   renderTable(table) {
@@ -228,16 +230,16 @@ class ArticleTable extends React.Component {
                 {
                   [
                     {id: "Title", name: i18next.t("general:Title")},
-                    {id: "Abstract", name: i18next.t("article:Abstract")},
-                    {id: "Header 1", name: i18next.t("article:Header 1")},
-                    {id: "Header 2", name: i18next.t("article:Header 2")},
-                    {id: "Header 3", name: i18next.t("article:Header 3")},
+                    // {id: "Abstract", name: i18next.t("article:Abstract")},
+                    // {id: "Header 1", name: i18next.t("article:Header 1")},
+                    // {id: "Header 2", name: i18next.t("article:Header 2")},
+                    // {id: "Header 3", name: i18next.t("article:Header 3")},
                     {id: "Text", name: i18next.t("general:Text")},
                   ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
                 }
               </Select>
               <Button type="primary" style={{marginTop: "10px", marginBottom: "10px", marginRight: "5px"}} disabled={record.text === ""} loading={record.isLoadingExpand === true} icon={<DeploymentUnitOutlined />} onClick={() => this.expandBlock(this.props.article, table, index)} >
-                {i18next.t("article:Expand")}
+                {i18next.t("store:Workflow")}
               </Button>
             </div>
           );
@@ -257,7 +259,7 @@ class ArticleTable extends React.Component {
         },
       },
       {
-        title: i18next.t("article:Text En"),
+        title: i18next.t("general:Text2"),
         dataIndex: "textEn",
         key: "textEn",
         // width: '300px',
@@ -289,12 +291,12 @@ class ArticleTable extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button type="primary" style={{marginTop: "10px", marginBottom: "10px", marginRight: "5px"}} disabled={record.text === ""} loading={record.isLoadingEn === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToEn(this.props.article, table, index)} >
-                {i18next.t("article:ZH 🡲 EN")}
-              </Button>
-              <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.textEn === ""} loading={record.isLoading === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToZh(this.props.article, table, index)} >
-                {i18next.t("article:ZH 🡰 EN")}
-              </Button>
+              {/* <Button type="primary" style={{marginTop: "10px", marginBottom: "10px", marginRight: "5px"}} disabled={record.text === ""} loading={record.isLoadingEn === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToEn(this.props.article, table, index)} >*/}
+              {/*  {i18next.t("article:ZH 🡲 EN")}*/}
+              {/* </Button>*/}
+              {/* <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.textEn === ""} loading={record.isLoading === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToZh(this.props.article, table, index)} >*/}
+              {/*  {i18next.t("article:ZH 🡰 EN")}*/}
+              {/* </Button>*/}
               <Button style={{marginBottom: "5px", marginRight: "5px"}} disabled={!record.text.includes("\n")} icon={<OrderedListOutlined />} size="small" onClick={() => this.parseTable(table, index)} />
               <Button style={{marginBottom: "5px", marginRight: "5px"}} disabled={!record.textEn.includes("\n")} icon={<UnorderedListOutlined />} size="small" onClick={() => this.parseTableEn(table, index)} />
               <Button style={{marginBottom: "5px", marginRight: "5px"}} icon={<FileAddOutlined />} size="small" onClick={() => this.insertRow(table, index)} />

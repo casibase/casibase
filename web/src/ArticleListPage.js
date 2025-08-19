@@ -112,26 +112,26 @@ class ArticleListPage extends BaseListPage {
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
-        title: i18next.t("store:Model provider"),
-        dataIndex: "provider",
-        key: "provider",
+        title: i18next.t("store:Workflow"),
+        dataIndex: "workflow",
+        key: "workflow",
         width: "250px",
-        sorter: (a, b) => a.provider.localeCompare(b.provider),
+        sorter: (a, b) => a.workflow.localeCompare(b.workflow),
         render: (text, record, index) => {
           return (
-            <Link to={`/providers/${text}`}>
+            <Link to={`/workflows/${text}`}>
               {text}
             </Link>
           );
         },
       },
-      {
-        title: i18next.t("general:Type"),
-        dataIndex: "type",
-        key: "type",
-        width: "90px",
-        sorter: (a, b) => a.type.localeCompare(b.type),
-      },
+      // {
+      //   title: i18next.t("general:Type"),
+      //   dataIndex: "type",
+      //   key: "type",
+      //   width: "90px",
+      //   sorter: (a, b) => a.type.localeCompare(b.type),
+      // },
       {
         title: i18next.t("article:Content"),
         dataIndex: "content",

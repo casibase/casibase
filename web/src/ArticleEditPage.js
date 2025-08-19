@@ -17,7 +17,7 @@ import {Affix, Button, Card, Col, Input, Popover, Row, Select} from "antd";
 import * as ArticleBackend from "./backend/ArticleBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import * as ProviderBackend from "./backend/ProviderBackend";
+import * as WorkflowBackend from "./backend/WorkflowBackend";
 import ArticleTable from "./table/ArticleTable";
 import ArticleMenu from "./ArticleMenu";
 
@@ -30,7 +30,7 @@ class ArticleEditPage extends React.Component {
     this.state = {
       classes: props,
       articleName: props.match.params.articleName,
-      modelProviders: [],
+      workflows: [],
       article: null,
       chatPageObj: null,
       loading: false,
@@ -41,7 +41,7 @@ class ArticleEditPage extends React.Component {
 
   UNSAFE_componentWillMount() {
     this.getArticle();
-    this.getModelProviders();
+    this.getWorkflows();
   }
 
   componentDidMount() {
@@ -73,12 +73,12 @@ class ArticleEditPage extends React.Component {
       });
   }
 
-  getModelProviders() {
-    ProviderBackend.getProviders(this.props.account.name)
+  getWorkflows() {
+    WorkflowBackend.getWorkflows(this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
-            modelProviders: res.data.filter(provider => provider.category === "Model"),
+            workflows: res.data,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -362,11 +362,11 @@ class ArticleEditPage extends React.Component {
               <React.Fragment>
                 <Col span={1} />
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("store:Model provider"), i18next.t("store:Model provider - Tooltip"))} :
+                  {Setting.getLabel(i18next.t("store:Workflow"), i18next.t("store:Workflow - Tooltip"))} :
                 </Col>
                 <Col span={5} >
-                  <Select virtual={false} style={{width: "100%"}} value={this.state.article.provider} onChange={(value => {this.updateArticleField("provider", value);})}
-                    options={this.state.modelProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.article.workflow} onChange={(value => {this.updateArticleField("workflow", value);})}
+                    options={this.state.workflows.map((item) => Setting.getOption(`${item.displayName} (${item.name})`, `${item.name}`))
                     } />
                 </Col>
               </React.Fragment>
