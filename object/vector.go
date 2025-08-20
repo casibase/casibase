@@ -161,15 +161,20 @@ func (vector *Vector) GetId() string {
 	return fmt.Sprintf("%s/%s", vector.Owner, vector.Name)
 }
 
-func GetVectorCount(owner string, field string, value string) (int64, error) {
+func GetVectorCount(owner string, storeName string, field string, value string) (int64, error) {
 	session := GetDbSession(owner, -1, -1, field, value, "", "")
-	return session.Count(&Vector{})
+	return session.Count(&Vector{Store: storeName})
 }
 
-func GetPaginationVectors(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Vector, error) {
+func GetPaginationVectors(owner string, storeName string, offset, limit int, field, value, sortField, sortOrder string) ([]*Vector, error) {
 	vectors := []*Vector{}
 	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
-	err := session.Find(&vectors)
+	var err error
+	if storeName != "" {
+		err = session.Find(&vectors, &Vector{Store: storeName})
+	} else {
+		err = session.Find(&vectors)
+	}
 	if err != nil {
 		return vectors, err
 	}

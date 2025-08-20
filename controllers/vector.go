@@ -46,6 +46,7 @@ func (c *ApiController) GetGlobalVectors() {
 // @router /get-vectors [get]
 func (c *ApiController) GetVectors() {
 	owner := "admin"
+	storeName := c.Input().Get("store")
 	limit := c.Input().Get("pageSize")
 	page := c.Input().Get("p")
 	field := c.Input().Get("field")
@@ -63,14 +64,14 @@ func (c *ApiController) GetVectors() {
 		c.ResponseOk(vectors)
 	} else {
 		limit := util.ParseInt(limit)
-		count, err := object.GetVectorCount(owner, field, value)
+		count, err := object.GetVectorCount(owner, storeName, field, value)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		vectors, err := object.GetPaginationVectors(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		vectors, err := object.GetPaginationVectors(owner, storeName, paginator.Offset(), limit, field, value, sortField, sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
