@@ -316,6 +316,31 @@ class App extends Component {
     }
   }
 
+  isStoreSelectEnabled() {
+    const uri = this.state.uri || window.location.pathname;
+
+    if (uri.includes("/chat")) {
+      return true;
+    }
+    const enabledStartsWith = ["/stores", "/providers", "/vectors", "/chats", "/messages", "/usages"];
+    if (enabledStartsWith.some(prefix => uri.startsWith(prefix))) {
+      return true;
+    }
+
+    if (uri === "/" || uri === "/home") {
+      if (
+        Setting.isAnonymousUser(this.state.account) ||
+        Setting.isChatUser(this.state.account) ||
+        Setting.isAdminUser(this.state.account) ||
+        this.state.account?.type === "chat-admin" ||
+        Setting.getUrlParam("isRaw") !== null
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   onClose = () => {
     this.setState({
       menuVisible: false,
@@ -460,6 +485,7 @@ class App extends Component {
                   initValue={Setting.getStore()}
                   withAll={true}
                   style={{display: Setting.isMobile() ? "none" : "flex"}}
+                  disabled={!this.isStoreSelectEnabled()}
                   onChange={(value) => {
                     Setting.setStore(value);
                   }}
