@@ -117,6 +117,15 @@ func initAPI() {
 	beego.Router("/api/undeploy-application", &controllers.ApiController{}, "POST:UndeployApplication")
 	beego.Router("/api/get-application-status", &controllers.ApiController{}, "GET:GetApplicationStatus")
 
+	beego.Router("/api/get-application-charts", &controllers.ApiController{}, "GET:GetApplicationCharts")
+	beego.Router("/api/get-application-chart", &controllers.ApiController{}, "GET:GetApplicationChart")
+	beego.Router("/api/update-application-chart", &controllers.ApiController{}, "POST:UpdateApplicationChart")
+	beego.Router("/api/add-application-chart", &controllers.ApiController{}, "POST:AddApplicationChart")
+	beego.Router("/api/add-application-charts", &controllers.ApiController{}, "POST:AddApplicationCharts")
+	beego.Router("/api/delete-application-chart", &controllers.ApiController{}, "POST:DeleteApplicationChart")
+	beego.Router("/api/get-application-chart-content", &controllers.ApiController{}, "GET:GetApplicationChartContent")
+	beego.Router("/api/update-application-chart-content", &controllers.ApiController{}, "POST:UpdateApplicationChartContent")
+
 	beego.Router("/api/get-usages", &controllers.ApiController{}, "GET:GetUsages")
 	beego.Router("/api/get-range-usages", &controllers.ApiController{}, "GET:GetRangeUsages")
 	beego.Router("/api/get-users", &controllers.ApiController{}, "GET:GetUsers")
