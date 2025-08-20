@@ -40,10 +40,6 @@ class UsagePage extends BaseListPage {
     };
   }
 
-  UNSAFE_componentWillMount() {
-    this.getUsers("");
-  }
-
   getHost() {
     let res = window.location.host;
     if (res === "localhost:13001") {
@@ -53,7 +49,7 @@ class UsagePage extends BaseListPage {
   }
 
   getUsages(serverUrl) {
-    UsageBackend.getUsages(serverUrl, this.state.selectedUser, 30)
+    UsageBackend.getUsages(serverUrl, Setting.getRequestStore(this.props.account), this.state.selectedUser, 30)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -96,7 +92,7 @@ class UsagePage extends BaseListPage {
   }
 
   getUsers(serverUrl) {
-    UsageBackend.getUsers(serverUrl, this.props.account.name)
+    UsageBackend.getUsers(serverUrl, this.props.account.name, Setting.getRequestStore(this.props.account))
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -115,7 +111,7 @@ class UsagePage extends BaseListPage {
   }
   getRangeUsages(serverUrl, rangeType) {
     const count = this.getCountFromRangeType(rangeType);
-    UsageBackend.getRangeUsages(serverUrl, rangeType, count, this.state.selectedUser)
+    UsageBackend.getRangeUsages(serverUrl, rangeType, count, Setting.getRequestStore(this.props.account), this.state.selectedUser)
       .then((res) => {
         if (res.status === "ok") {
           const state = {};
@@ -127,11 +123,13 @@ class UsagePage extends BaseListPage {
       });
   }
   getUserTableInfos(serverUrl) {
-    UsageBackend.getUserTableInfos(serverUrl, this.props.account.name)
+    UsageBackend.getUserTableInfos(serverUrl, Setting.getRequestStore(this.props.account), this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
             userTableInfo: res.data,
+          }, () => {
+            this.updateTableInfo("All");
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -764,6 +762,10 @@ class UsagePage extends BaseListPage {
       </div>
     );
   }
+
+  fetch = (params = {}) => {
+    this.getUsers("");
+  };
 }
 
 export default UsagePage;

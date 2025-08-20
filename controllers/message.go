@@ -91,7 +91,7 @@ func (c *ApiController) GetMessages() {
 	}
 
 	if chat == "" {
-		messages, err := object.GetMessages("admin", user)
+		messages, err := object.GetMessages("admin", user, "")
 		if err != nil {
 			c.ResponseError(err.Error())
 			return

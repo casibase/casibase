@@ -30,14 +30,6 @@ class MessageListPage extends BaseListPage {
     super(props);
   }
 
-  getStore() {
-    if (this.props.match) {
-      return this.props.match.params.storeName;
-    } else {
-      return undefined;
-    }
-  }
-
   newMessage() {
     const randomName = Setting.getRandomName();
     return {
@@ -53,6 +45,7 @@ class MessageListPage extends BaseListPage {
       tokenCount: 0,
       textTokenCount: 0,
       price: 0.0,
+      store: this.state.storeName,
     };
   }
 
@@ -492,9 +485,8 @@ class MessageListPage extends BaseListPage {
       field = "type";
       value = params.type;
     }
-    const store = this.getStore();
     this.setState({loading: true});
-    MessageBackend.getGlobalMessages(params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder, store)
+    MessageBackend.getGlobalMessages(params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder, this.state.storeName)
       .then((res) => {
         this.setState({
           loading: false,

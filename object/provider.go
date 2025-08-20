@@ -419,14 +419,72 @@ func GetAgentClients(agentProviderObj agent.AgentProvider) (*agent.AgentClients,
 	return agentProviderObj.GetAgentClients()
 }
 
-func GetProviderCount(owner, field, value string) (int64, error) {
+func GetProviderCount(owner, storeName, field, value string) (int64, error) {
 	session := GetDbSession(owner, -1, -1, field, value, "", "")
+	if storeName != "" {
+		store, err := GetStore(util.GetIdFromOwnerAndName(owner, storeName))
+		if err != nil {
+			return 0, err
+		}
+		providerNames := collectProviderNames(store)
+		if len(providerNames) > 0 {
+			session = session.In("name", providerNames)
+		}
+	}
 	return session.Count(&Provider{})
 }
 
-func GetPaginationProviders(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Provider, error) {
+func collectProviderNames(store *Store) []string {
+	var providerNames []string
+
+	if store.StorageProvider != "" {
+		providerNames = append(providerNames, store.StorageProvider)
+	}
+	if store.ImageProvider != "" {
+		providerNames = append(providerNames, store.ImageProvider)
+	}
+	if store.SplitProvider != "" {
+		providerNames = append(providerNames, store.SplitProvider)
+	}
+	if store.SearchProvider != "" {
+		providerNames = append(providerNames, store.SearchProvider)
+	}
+	if store.ModelProvider != "" {
+		providerNames = append(providerNames, store.ModelProvider)
+	}
+	if store.EmbeddingProvider != "" {
+		providerNames = append(providerNames, store.EmbeddingProvider)
+	}
+	if store.TextToSpeechProvider != "" {
+		providerNames = append(providerNames, store.TextToSpeechProvider)
+	}
+	if store.SpeechToTextProvider != "" {
+		providerNames = append(providerNames, store.SpeechToTextProvider)
+	}
+	if store.AgentProvider != "" {
+		providerNames = append(providerNames, store.AgentProvider)
+	}
+	if store.ChildModelProviders != nil {
+		providerNames = append(providerNames, store.ChildModelProviders...)
+	}
+
+	return providerNames
+}
+
+func GetPaginationProviders(owner, storeName string, offset, limit int, field, value, sortField, sortOrder string) ([]*Provider, error) {
 	providers := []*Provider{}
 	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
+	if storeName != "" {
+		store, err := GetStore(util.GetIdFromOwnerAndName(owner, storeName))
+		if err != nil {
+			return providers, err
+		}
+		providerNames := collectProviderNames(store)
+		if len(providerNames) > 0 {
+			session = session.In("name", providerNames)
+		}
+	}
+
 	err := session.Find(&providers)
 	if err != nil {
 		return providers, err
