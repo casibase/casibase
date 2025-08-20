@@ -91,18 +91,17 @@ class ApplicationDetailComponent extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (
-      prevProps.owner !== this.props.owner ||
-      prevProps.name !== this.props.name
+      prevProps.applicationName !== this.props.applicationName
     ) {
       this.fetchChartContent();
     }
   }
 
   fetchChartContent = () => {
-    const {owner, name} = this.props;
+    const {applicationName} = this.props;
     this.setState({loading: true});
 
-    ApplicationStoreBackend.getApplicationChartContent(owner, name)
+    ApplicationStoreBackend.getApplicationChartContent(this.props.account.name, applicationName)
       .then((res) => {
         this.setState({loading: false});
         if (res.status === "ok") {
@@ -117,6 +116,7 @@ class ApplicationDetailComponent extends React.Component {
       .catch((error) => {
         this.setState({loading: false});
         message.error(`${i18next.t("general:Failed to get")}: ${error}`);
+        this.props.history.push("/application-store");
       });
   };
 
@@ -139,13 +139,13 @@ class ApplicationDetailComponent extends React.Component {
   };
 
   handleRenderClick = () => {
-    const {owner, name} = this.props;
+    const {applicationName} = this.props;
     const {configForm} = this.state;
     const {chartContent} = this.state;
 
     this.setState({loading: true});
 
-    ApplicationStoreBackend.updateApplicationChartContent(owner, name, configForm, chartContent)
+    ApplicationStoreBackend.updateApplicationChartContent(this.props.account.name, applicationName, configForm, chartContent)
       .then((res) => {
         this.setState({loading: false});
         if (res.status === "ok") {
@@ -154,7 +154,7 @@ class ApplicationDetailComponent extends React.Component {
             activeTab: "render-result",
             parsedResources: this.parseKubernetesResources(res.data),
           });
-          message.success(`${i18next.t("application:Successfully rendered")} ${name}`);
+          message.success(`${i18next.t("application:Successfully rendered")} ${applicationName}`);
         } else {
           message.error(`${i18next.t("general:Failed to deploy")}: ${res.msg}`);
         }
@@ -269,13 +269,13 @@ class ApplicationDetailComponent extends React.Component {
     const {account} = this.props;
     const {renderResult} = this.state;
     const randomName = Setting.getRandomName();
-    const templateName = `${renderResult.chartName}-template-${randomName}`;
+    const templateName = `${renderResult.chartName}-app-template-${randomName}`;
 
     const newTemplate = {
       owner: account.name,
       name: templateName,
       createdTime: new Date().toISOString(),
-      displayName: `${renderResult.chartName} Template - ${randomName}`,
+      displayName: `${renderResult.chartName} Application Template`,
       description: `Auto-generated template for ${renderResult.chartName} (${renderResult.chartVersion})`,
       version: renderResult.chartVersion || "1.0.0",
       icon: Setting.getDefaultAiAvatar(),
@@ -302,7 +302,7 @@ class ApplicationDetailComponent extends React.Component {
       owner: account.name,
       name: applicationName,
       createdTime: new Date().toISOString(),
-      displayName: `${renderResult.chartName} Application - ${randomName}`,
+      displayName: `${renderResult.chartName} Application`,
       description: `Auto-generated application for ${renderResult.chartName} (${renderResult.chartVersion})`,
       template: templateName,
       namespace: renderResult.namespace || `${renderResult.chartName}-${randomName}`,
@@ -497,7 +497,6 @@ class ApplicationDetailComponent extends React.Component {
   renderOverviewTab = () => {
     const {chartContent} = this.state;
     const metadata = chartContent?.metadata;
-    const token = this.props.token;
     const readmeContent = this.getReadmeContent();
     const shortItems = [
       {label: i18next.t("general:Name"), children: metadata?.name},
@@ -524,11 +523,8 @@ class ApplicationDetailComponent extends React.Component {
           {Object.entries(metadata.annotations).map(([k, v]) => (
             <div key={k}>
               <strong>{k}</strong>
-              {k === "images" && typeof v === "string" ? (
-                <pre style={{whiteSpace: "pre-wrap", margin: "6px 0"}}>{v}</pre>
-              ) : (
-                <div style={{marginTop: 4}}>{typeof v === "object" ? JSON.stringify(v) : String(v)}</div>
-              )}
+              <div style={{marginLeft: 8}}>
+                {typeof v === "object" ? JSON.stringify(v) : String(v)}</div>
             </div>
           ))}
         </div>
@@ -539,16 +535,12 @@ class ApplicationDetailComponent extends React.Component {
             <div key={i}>
               <strong>{dep.name || `dependency-${i}`}</strong>
               <div>
-                {Object.entries(dep).map(([k, v]) => k === "name" ? null : (
+                {Object.entries(dep).map(([k, v]) => (
                   <div key={k}>
-                    <strong style={{fontSize: 12}}>{k}</strong>
-                    {k === "images" && typeof v === "string" ? (
-                      <pre style={{whiteSpace: "pre-wrap", margin: "6px 0"}}>{v}</pre>
-                    ) : (
-                      <div style={{marginTop: 4, fontSize: 12, color: token?.colorTextSecondary}}>
-                        {typeof v === "object" ? JSON.stringify(v) : String(v)}
-                      </div>
-                    )}
+                    <strong style={{marginLeft: 8}}>{k}</strong>
+                    <div style={{marginLeft: 16}}>
+                      {typeof v === "object" ? JSON.stringify(v) : String(v)}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -586,7 +578,7 @@ class ApplicationDetailComponent extends React.Component {
             }
             size="small"
           >
-            <div style={{width: "100%"}}>
+            <div style={{wordBreak: "break-word"}}>
               {renderText(readmeContent)}
             </div>
           </Card>

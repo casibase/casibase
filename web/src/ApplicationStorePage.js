@@ -38,10 +38,12 @@ import {
 import {
   AppstoreOutlined,
   DeleteOutlined,
+  DoubleLeftOutlined,
   EditOutlined,
   FolderOutlined,
   MoreOutlined,
-  PlusOutlined
+  PlusOutlined,
+  SearchOutlined
 } from "@ant-design/icons";
 import * as ApplicationStoreBackend from "./backend/ApplicationStoreBackend";
 import i18next from "i18next";
@@ -63,19 +65,31 @@ class ApplicationStorePage extends React.Component {
       selectedCategory: "all",
       addRepoModalVisible: false,
       addRepoForm: {},
+      siderCollapsed: false,
       pagination: {
         current: 1,
         pageSize: 20,
         total: 0,
       },
     };
-    this.tagScrollerRef = React.createRef();
-    this._touchStartX = 0;
-    this._touchStartY = 0;
   }
 
+  toggleSider = () => {
+    this.setState((prev) => ({siderCollapsed: !prev.siderCollapsed}));
+  };
+
   componentDidMount() {
-    this.fetchApplicationCharts();
+    if (this.props.location.pathname === "/application-store") {
+      this.fetchApplicationCharts();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const prevPath = prevProps.location?.pathname;
+    const currPath = this.props.location?.pathname;
+    if (this.state.applicationCharts.length === 0 && prevPath !== currPath && currPath === "/application-store") {
+      this.fetchApplicationCharts();
+    }
   }
 
   fetchApplicationCharts = () => {
@@ -127,6 +141,7 @@ class ApplicationStorePage extends React.Component {
       pagination: {...this.state.pagination, current: 1},
     }, () => {
       this.fetchApplicationCharts();
+      this.props.history.push({pathname: "/application-store"});
     });
   };
 
@@ -173,11 +188,11 @@ class ApplicationStorePage extends React.Component {
   };
 
   handleCardClick = (chart) => {
-    this.props.history.push(`/application-store/${chart.owner}/${chart.name}`);
+    this.props.history.push(`/application-store/${chart.name}`);
   };
   handleEditApplication = (chart) => {
     // navigate to edit via query param ?edit=true
-    this.props.history.push(`/application-store/${chart.owner}/${chart.name}?edit=true`);
+    this.props.history.push(`/application-store/${chart.name}?edit=true`);
   };
 
   handleDeleteApplication = (chart) => {
@@ -253,7 +268,8 @@ class ApplicationStorePage extends React.Component {
   };
 
   renderSidebar = () => {
-    const {searchText} = this.state;
+    const {searchText, siderCollapsed} = this.state;
+    const {token} = this.props;
     const isMobile = Setting.isMobile();
     const menuItems = [
       {
@@ -263,6 +279,7 @@ class ApplicationStorePage extends React.Component {
     ];
 
     if (isMobile) {
+      // Mobile layout
       return (
         <Sider
           width={"100%"}
@@ -301,48 +318,63 @@ class ApplicationStorePage extends React.Component {
     // Desktop layout
     return (
       <Sider
+        collapsed={siderCollapsed}
+        breakpoint="md"
+        onBreakpoint={(broken) => this.setState({siderCollapsed: broken})}
         width={280}
         style={{
           padding: "24px",
-          backgroundColor: "transparent",
+          paddingRight: 0,
+          backgroundColor: token.colorBgLayout,
           position: "sticky",
           top: 0,
-          height: "100%",
+          height: "calc(100vh - 135px)",
           overflowY: "auto",
+          textAlign: siderCollapsed ? "center" : "left",
         }}
         theme="light"
       >
         <div style={{marginBottom: 24}}>
-          <Title level={4} style={{margin: 0, marginBottom: 16}}>
-            <AppstoreOutlined style={{marginRight: 8}} />
-            {i18next.t("application:Application Store")}
+          <Title level={4} ellipsis={{rows: 1, expandable: false}}
+            style={{margin: 0, marginBottom: 16, cursor: "pointer"}}
+            onClick={() => this.props.history.push("/application-store")}>
+            <AppstoreOutlined style={{marginRight: siderCollapsed ? 0 : 8}} />
+            {!siderCollapsed && i18next.t("application:Application Store")}
           </Title>
 
-          <Search
-            placeholder={i18next.t("general:Search")}
-            allowClear
-            value={searchText}
-            onChange={(e) => this.setState({searchText: e.target.value})}
-            onSearch={this.handleSearch}
-            style={{marginBottom: 16}}
-          />
+          {!siderCollapsed ? (
+            <Search
+              placeholder={i18next.t("general:Search")}
+              allowClear
+              value={searchText}
+              onChange={(e) => this.setState({searchText: e.target.value})}
+              onSearch={this.handleSearch}
+              style={{marginBottom: 16}}
+            />) : (
+            <Button
+              type="text"
+              icon={<SearchOutlined />}
+              onClick={this.toggleSider}
+              style={{marginBottom: 16}}
+            />
+          )}
 
           <Button
-            type="primary"
+            type={siderCollapsed ? "text" : "primary"}
             icon={<PlusOutlined />}
             onClick={this.showAddRepoModal}
             block
           >
-            {i18next.t("application:Add Repository")}
+            {!siderCollapsed && i18next.t("application:Add Repository")}
           </Button>
         </div>
 
         <Divider />
 
         <div>
-          <Title level={5} style={{marginBottom: 16, marginTop: 0}}>
-            <FolderOutlined style={{marginRight: 8}} />
-            {i18next.t("general:Category")}
+          <Title level={5} ellipsis={{rows: 1, expandable: false}} style={{marginTop: 0}}>
+            <FolderOutlined style={{marginRight: siderCollapsed ? 0 : 8}} />
+            {!siderCollapsed && i18next.t("general:Category")}
           </Title>
 
           <Menu
@@ -452,7 +484,6 @@ class ApplicationStorePage extends React.Component {
           </div>
 
           <div
-            ref={this.tagScrollerRef}
             style={{display: "flex", overflowX: "auto", overflowY: "hidden", scrollbarWidth: "none", WebkitOverflowScrolling: "touch"}}
             onClick={(e) => e.stopPropagation()}
           >
@@ -481,13 +512,13 @@ class ApplicationStorePage extends React.Component {
 
   renderContent = () => {
     const {applicationCharts, loading} = this.state;
-    const {owner, name} = this.props.match.params;
+    const {applicationName} = this.props.match.params;
 
     const search = this.props.location?.search || "";
     const params = new URLSearchParams(search);
     const editMode = params.get("edit") === "true";
 
-    if (owner && name) {
+    if (applicationName) {
       if (editMode) {
         // Application edit component
         return (
@@ -504,8 +535,7 @@ class ApplicationStorePage extends React.Component {
             <ApplicationDetailComponent
               {...this.props}
               token={this.props.token}
-              owner={owner}
-              name={name}
+              applicationName={applicationName}
               account={this.props.account}
             />
           </Card>
@@ -553,21 +583,9 @@ class ApplicationStorePage extends React.Component {
   };
 
   render() {
-    const {addRepoModalVisible, loading} = this.state;
-    const {owner, name} = this.props.match.params;
-
+    const {addRepoModalVisible, loading, siderCollapsed} = this.state;
+    const {applicationName} = this.props.match.params;
     const isMobile = Setting.isMobile();
-
-    const layoutStyle = {
-      minHeight: "calc(100vh - 135px)",
-      background: "transparent",
-      display: "flex",
-      flexDirection: isMobile ? "column" : "row",
-    };
-
-    const contentLayoutStyle = isMobile
-      ? {padding: "12px", paddingBottom: 0, flex: 1, width: "100%"}
-      : {padding: "24px", paddingBottom: 0, flex: 1};
 
     const search = this.props.location?.search || "";
     const params = new URLSearchParams(search);
@@ -583,32 +601,56 @@ class ApplicationStorePage extends React.Component {
       },
     ];
 
-    if (owner && name) {
+    if (applicationName) {
       breadcrumbItems.push({
-        title: name,
-        path: `/${owner}/${name}`,
+        title: applicationName,
+        path: `/${applicationName}`,
       });
     }
 
     if (editMode) {
       breadcrumbItems.push({
         title: i18next.t("general:Edit"),
-        path: `/${owner}/${name}?edit=true`,
+        path: `/${applicationName}?edit=true`,
       });
     }
 
+    const layoutStyle = {
+      minHeight: "calc(100vh - 135px)",
+      background: "transparent",
+      display: "flex",
+      flexDirection: isMobile ? "column" : "row",
+    };
+
+    const contentLayoutStyle = isMobile
+      ? {padding: "12px", paddingBottom: 0, flex: 1, width: "100%"}
+      : {padding: "24px", paddingBottom: 0, flex: 1};
+
     return (
       <Layout style={layoutStyle}>
-        {!(isMobile && owner && name) && this.renderSidebar()}
+        {!(isMobile && applicationName) && this.renderSidebar()}
 
         <Layout style={contentLayoutStyle}>
-          {(!isMobile || owner && name) && (
-            <Breadcrumb
-              style={{marginBottom: isMobile ? 12 : 24}}
-              items={breadcrumbItems}
-              itemRender={this.breadcrumbItemRender}
-            />
-          )}
+          <div style={{display: "flex", flexDirection: "row", alignItems: "center", marginBottom: isMobile ? 12 : 22, gap: 12}}>
+            {!isMobile && (
+              <Button
+                type="text"
+                size="small"
+                onClick={this.toggleSider}
+                icon={
+                  <DoubleLeftOutlined
+                    rotate={siderCollapsed ? 180 : 0}
+                  />
+                }
+              />
+            )}
+            {(!isMobile || applicationName) && (
+              <Breadcrumb
+                items={breadcrumbItems}
+                itemRender={this.breadcrumbItemRender}
+              />
+            )}
+          </div>
 
           {this.renderContent()}
         </Layout>

@@ -29,8 +29,7 @@ class ApplicationStoreEditPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      owner: props.match.params.owner,
-      name: props.match.params.name,
+      applicationName: props.match.params.applicationName,
       applicationChart: null,
       loading: false,
       defaultStore: null,
@@ -43,7 +42,7 @@ class ApplicationStoreEditPage extends React.Component {
   }
 
   getApplicationChart() {
-    ApplicationStoreBackend.getApplicationChart(this.state.owner, this.state.name)
+    ApplicationStoreBackend.getApplicationChart(this.props.account.name, this.state.applicationName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -95,7 +94,7 @@ class ApplicationStoreEditPage extends React.Component {
     const chart = Setting.deepCopy(this.state.applicationChart);
 
     this.setState({loading: true});
-    ApplicationStoreBackend.updateApplicationChart(this.state.owner, this.state.name, chart)
+    ApplicationStoreBackend.updateApplicationChart(this.props.account.name, this.state.applicationName, chart)
       .then((res) => {
         this.setState({loading: false});
         if (res.status === "ok") {

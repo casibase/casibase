@@ -261,6 +261,21 @@ routeManager.registerApp("applications", {
   ],
 });
 
+routeManager.registerApp("application-store", {
+  title: "Application Store",
+  gradient: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+  routes: [
+    {
+      path: "/application-store",
+      component: () => import("../ApplicationStorePage"),
+    },
+    {
+      path: "/application-store/:applicationName",
+      component: () => import("../ApplicationStorePage"),
+    },
+  ],
+});
+
 routeManager.registerApp("machines", {
   title: "Machines",
   gradient: "linear-gradient(135deg, rgb(81 167 200) 0%, rgb(245 251 255) 100%)",

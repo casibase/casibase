@@ -755,7 +755,7 @@ class App extends Component {
         <Route exact path="/applications" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationListPage account={this.state.account} {...props} />)} />
         <Route exact path="/applications/:applicationName" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/application-store" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationStorePage account={this.state.account} {...props} />)} />
-        <Route exact path="/application-store/:owner/:name" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationStorePage account={this.state.account} {...props} />)} />
+        <Route exact path="/application-store/:applicationName" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationStorePage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes" render={(props) => this.renderSigninIfNotSignedIn(<NodeListPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes/:nodeName" render={(props) => this.renderSigninIfNotSignedIn(<NodeEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/sessions" render={(props) => this.renderSigninIfNotSignedIn(<SessionListPage account={this.state.account} {...props} />)} />
