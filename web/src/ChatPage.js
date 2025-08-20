@@ -60,6 +60,7 @@ class ChatPage extends BaseListPage {
   }
 
   componentDidMount() {
+    super.componentDidMount();
     window.addEventListener("message", event => {
       if ((event.data.source !== undefined && event.data.source.includes("react-devtools")) || event.data.wappalyzer !== undefined) {
         return;
@@ -130,7 +131,7 @@ class ChatPage extends BaseListPage {
   };
 
   getGlobalStores() {
-    StoreBackend.getGlobalStores("", "", "", "", "", "").then((res) => {
+    StoreBackend.getGlobalStores().then((res) => {
       if (res.status === "ok") {
         const stores = res?.data;
         const defaultStore = stores?.find(store => store.isDefault);
@@ -283,14 +284,11 @@ class ChatPage extends BaseListPage {
           const field = "user";
           const value = this.props.account.name;
           const sortField = "", sortOrder = "";
-          const storeName = this.getStore();
-          ChatBackend.getChats(value, -1, -1, field, value, sortField, sortOrder)
+          const storeName = this.state.storeName;
+          ChatBackend.getChats(value, storeName, -1, -1, field, value, sortField, sortOrder)
             .then((res) => {
               if (res.status === "ok") {
-                let chats = res.data;
-                if (storeName) {
-                  chats = chats.filter(chat => chat.store === storeName);
-                }
+                const chats = res.data;
                 this.setState({
                   data: chats,
                 });
@@ -675,7 +673,7 @@ class ChatPage extends BaseListPage {
       this.updateChatName(chats, i, chat, newName);
     };
 
-    const currentStoreName = this.getStore();
+    const currentStoreName = this.state.storeName;
 
     if (this.state.loading) {
       return (
@@ -773,18 +771,15 @@ class ChatPage extends BaseListPage {
     const value = this.props.account.name;
     const sortField = params.sortField, sortOrder = params.sortOrder;
     const chatName = this.getChat();
-    const storeName = this.getStore();
+    const storeName = this.state.storeName;
 
     if (setLoading) {
       this.setState({loading: true});
     }
-    ChatBackend.getChats(value, -1, -1, field, value, sortField, sortOrder)
+    ChatBackend.getChats(value, storeName, -1, -1, field, value, sortField, sortOrder)
       .then((res) => {
         if (res.status === "ok") {
-          let chats = res.data;
-          if (storeName) {
-            chats = chats.filter(chat => chat.store === storeName);
-          }
+          const chats = res.data;
           this.setState({
             loading: false,
             data: chats,
@@ -795,7 +790,11 @@ class ChatPage extends BaseListPage {
           });
 
           if (chatName !== undefined && chats.length > 0) {
-            const chat = chats.find(chat => chat.name === chatName);
+            let chat = chats.find(chat => chat.name === chatName);
+            if (!chat) {
+              chat = chats[0];
+              this.goToLinkSoft(this.generateChatUrl(chat.name, chat.store));
+            }
             this.getMessages(chat);
             this.setState({
               chat: chat,

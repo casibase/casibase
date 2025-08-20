@@ -31,12 +31,13 @@ class VectorListPage extends BaseListPage {
 
   newVector() {
     const randomName = Setting.getRandomName();
+    const storeName = Setting.isDefaultStoreSelected(this.props.account) ? "store-built-in" : Setting.getRequestStore(this.props.account);
     return {
       owner: "admin",
       name: `vector_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Vector - ${randomName}`,
-      store: "store-built-in",
+      store: storeName,
       file: "/aaa/casibase.txt",
       text: "The text of vector",
       data: [0.1, 0.2, 0.3],
@@ -293,7 +294,7 @@ class VectorListPage extends BaseListPage {
     const field = params.searchedColumn, value = params.searchText;
     const sortField = params.sortField, sortOrder = params.sortOrder;
     this.setState({loading: true});
-    VectorBackend.getVectors("admin", params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    VectorBackend.getVectors("admin", Setting.getRequestStore(this.props.account), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,
