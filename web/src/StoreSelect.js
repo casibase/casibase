@@ -19,7 +19,7 @@ import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 
 function StoreSelect(props) {
-  const {onChange, initValue, style, onSelect, withAll, className} = props;
+  const {onChange, initValue, style, onSelect, withAll, className, disabled} = props;
   const [stores, setStores] = React.useState([]);
   const [value, setValue] = React.useState(initValue);
 
@@ -78,6 +78,7 @@ function StoreSelect(props) {
       style={style}
       onSelect={onSelect}
       className={className}
+      disabled={disabled}
     >
     </Select>
   );
