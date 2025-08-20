@@ -61,6 +61,7 @@ func initAPI() {
 	beego.Router("/api/delete-store", &controllers.ApiController{}, "POST:DeleteStore")
 	beego.Router("/api/refresh-store-vectors", &controllers.ApiController{}, "POST:RefreshStoreVectors")
 	beego.Router("/api/get-storage-providers", &controllers.ApiController{}, "GET:GetStorageProviders")
+	beego.Router("/api/get-store-names", &controllers.ApiController{}, "GET:GetStoreNames")
 
 	beego.Router("/api/get-global-providers", &controllers.ApiController{}, "GET:GetGlobalProviders")
 	beego.Router("/api/get-providers", &controllers.ApiController{}, "GET:GetProviders")
