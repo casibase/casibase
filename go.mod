@@ -7,6 +7,7 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.8.2
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute v1.0.0
 	github.com/ConnectAI-E/go-minimax v0.0.1
+	github.com/D1m7asis/casibase-aimlapi-go v1.0.0
 	github.com/ThinkInAIXYZ/go-mcp v0.2.10
 	github.com/WqyJh/go-cosyvoice v0.1.0
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1585
