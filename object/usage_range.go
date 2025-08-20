@@ -21,8 +21,8 @@ import (
 	"github.com/casibase/casibase/model"
 )
 
-func GetRangeUsages(rangeType string, count int, user string) ([]*Usage, error) {
-	messages, err := GetGlobalMessagesByCreatedTime()
+func GetRangeUsages(rangeType string, count int, user string, storeName string) ([]*Usage, error) {
+	messages, err := GetGlobalMessagesByStoreName(storeName)
 	if err != nil {
 		return nil, err
 	}

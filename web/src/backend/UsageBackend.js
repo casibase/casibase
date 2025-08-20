@@ -14,12 +14,12 @@
 
 import * as Setting from "../Setting";
 
-export function getUsages(serverUrl, selectedUser, days) {
+export function getUsages(serverUrl, storeName, selectedUser, days) {
   if (serverUrl === "") {
     serverUrl = Setting.ServerUrl;
   }
 
-  return fetch(`${serverUrl}/api/get-usages?days=${days}&selectedUser=${selectedUser}`, {
+  return fetch(`${serverUrl}/api/get-usages?days=${days}&store=${storeName}&selectedUser=${selectedUser}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -28,12 +28,12 @@ export function getUsages(serverUrl, selectedUser, days) {
   }).then(res => res.json());
 }
 
-export function getRangeUsages(serverUrl, rangeType, count, selectedUser) {
+export function getRangeUsages(serverUrl, rangeType, count, storeName, selectedUser) {
   if (serverUrl === "") {
     serverUrl = Setting.ServerUrl;
   }
 
-  return fetch(`${serverUrl}/api/get-range-usages?rangeType=${rangeType}&count=${count}&user=${selectedUser}`, {
+  return fetch(`${serverUrl}/api/get-range-usages?rangeType=${rangeType}&count=${count}&store=${storeName}&user=${selectedUser}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -42,12 +42,12 @@ export function getRangeUsages(serverUrl, rangeType, count, selectedUser) {
   }).then(res => res.json());
 }
 
-export function getUsers(serverUrl, user) {
+export function getUsers(serverUrl, user, storeName = "") {
   if (serverUrl === "") {
     serverUrl = Setting.ServerUrl;
   }
 
-  return fetch(`${serverUrl}/api/get-users?user=${user}`, {
+  return fetch(`${serverUrl}/api/get-users?user=${user}&store=${storeName}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -56,11 +56,11 @@ export function getUsers(serverUrl, user) {
   }).then(res => res.json());
 }
 
-export function getUserTableInfos(serverUrl, user) {
+export function getUserTableInfos(serverUrl, storeName, user) {
   if (serverUrl === "") {
     serverUrl = Setting.ServerUrl;
   }
-  return fetch(`${serverUrl}/api/get-user-table-infos?user=${user}`, {
+  return fetch(`${serverUrl}/api/get-user-table-infos?user=${user}&store=${storeName}`, {
     method: "GET",
     credentials: "include",
     headers: {

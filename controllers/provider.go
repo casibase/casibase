@@ -54,6 +54,7 @@ func (c *ApiController) GetProviders() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 	user := c.GetSessionUser()
+	storeName := c.Input().Get("store")
 
 	if limit == "" || page == "" {
 		providers, err := object.GetProviders(owner)
@@ -69,14 +70,14 @@ func (c *ApiController) GetProviders() {
 			return
 		}
 		limit := util.ParseInt(limit)
-		count, err := object.GetProviderCount(owner, field, value)
+		count, err := object.GetProviderCount(owner, storeName, field, value)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		providers, err := object.GetPaginationProviders(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		providers, err := object.GetPaginationProviders(owner, storeName, paginator.Offset(), limit, field, value, sortField, sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
