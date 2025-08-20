@@ -16,6 +16,8 @@ package util
 
 import (
 	"encoding/json"
+	"net/http"
+	"net/url"
 
 	"github.com/beego/beego/context"
 
@@ -29,6 +31,29 @@ func AppendWebConfigCookie(ctx *context.Context) error {
 	if err != nil {
 		return err
 	}
-	ctx.SetCookie("jsonWebConfig", string(jsonWebConfig))
+
+	return SetCookieWithAttributes(ctx, "jsonWebConfig", string(jsonWebConfig))
+}
+
+func SetCookieWithAttributes(ctx *context.Context, name string, value string) error {
+	encodedValue := url.QueryEscape(value)
+
+	cookie := &http.Cookie{
+		Name:     name,
+		Value:    encodedValue,
+		Path:     "/",
+		HttpOnly: false,
+	}
+
+	isHTTPS := ctx.Request.TLS != nil || ctx.Request.Header.Get("X-Forwarded-Proto") == "https"
+	if isHTTPS {
+		cookie.SameSite = http.SameSiteNoneMode
+		cookie.Secure = true
+	} else {
+		cookie.SameSite = http.SameSiteLaxMode
+		cookie.Secure = false
+	}
+
+	http.SetCookie(ctx.ResponseWriter, cookie)
 	return nil
 }
