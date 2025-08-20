@@ -335,6 +335,9 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 		return false, nil, err
 	}
 
+	// 将记录添加到IPFS归档队列
+	// AddRecordToArchiveQueue(record)
+
 	data := map[string]interface{}{"name": record.Name}
 
 	if record.NeedCommit {
