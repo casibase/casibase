@@ -71,7 +71,6 @@ function StoreSelect(props) {
       options={getStoreItems()}
       virtual={false}
       popupMatchSelectWidth={false}
-      placeholder={i18next.t("store:Please select a store")}
       value={value}
       onChange={handleOnChange}
       filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
