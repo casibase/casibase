@@ -14,8 +14,8 @@
 
 import * as Setting from "../Setting";
 
-export function getGlobalStores(page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
-  return fetch(`${Setting.ServerUrl}/api/get-global-stores?p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
+export function getGlobalStores(name = "", page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
+  return fetch(`${Setting.ServerUrl}/api/get-global-stores?name=${name}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -36,6 +36,16 @@ export function getStores(owner) {
 
 export function getStore(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-store?id=${owner}/${encodeURIComponent(name)}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}
+
+export function getStoreNames(owner) {
+  return fetch(`${Setting.ServerUrl}/api/get-store-names?owner=${owner}`, {
     method: "GET",
     credentials: "include",
     headers: {

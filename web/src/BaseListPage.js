@@ -26,6 +26,7 @@ class BaseListPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
+      storeName: this.props.match?.params.storeName || Setting.getRequestStore(this.props.account),
       data: [],
       pagination: {
         current: 1,
@@ -38,6 +39,30 @@ class BaseListPage extends React.Component {
       selectedRowKeys: [],
       selectedRows: [],
     };
+  }
+
+  handleStoreChange = () => {
+    this.setState({
+      storeName: this.props.match?.params.storeName || Setting.getRequestStore(this.props.account),
+    },
+    () => {
+      const {pagination} = this.state;
+      this.fetch({pagination});
+    });
+  };
+
+  componentDidMount() {
+    window.addEventListener("storeChanged", this.handleStoreChange);
+    if (!Setting.isLocalAdminUser(this.props.account)) {
+      Setting.setStore("All");
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.state.intervalId !== null) {
+      clearInterval(this.state.intervalId);
+    }
+    window.removeEventListener("storeChanged", this.handleStoreChange);
   }
 
   UNSAFE_componentWillMount() {

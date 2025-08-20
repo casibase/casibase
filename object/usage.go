@@ -46,8 +46,8 @@ type UserUsage struct {
 	Price        float64 `json:"price"`
 }
 
-func GetUsages(days int, user string) ([]*Usage, error) {
-	messages, err := GetGlobalMessagesByCreatedTime()
+func GetUsages(days int, user string, storeName string) ([]*Usage, error) {
+	messages, err := GetGlobalMessagesByStoreName(storeName)
 	if err != nil {
 		return nil, err
 	}
@@ -215,11 +215,11 @@ func GetUsageMetadata() (*UsageMetadata, error) {
 	return res, nil
 }
 
-func GetUsers(user string) ([]string, error) {
+func GetUsers(storeName, user string) ([]string, error) {
 	users := []string{}
 	userMap := map[string]bool{}
 
-	messages, err := GetMessages("admin", user)
+	messages, err := GetMessages("admin", user, storeName)
 	if err != nil {
 		return nil, err
 	}
@@ -234,8 +234,8 @@ func GetUsers(user string) ([]string, error) {
 	return users, nil
 }
 
-func GetUserTableInfos(user string) ([]*UserUsage, error) {
-	messages, err := GetMessages("admin", user)
+func GetUserTableInfos(storeName, user string) ([]*UserUsage, error) {
+	messages, err := GetMessages("admin", user, storeName)
 	if err != nil {
 		return nil, err
 	}

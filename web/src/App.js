@@ -16,7 +16,7 @@ import React, { Component } from "react";
 import { Link, Redirect, Route, Switch, withRouter } from "react-router-dom";
 import { StyleProvider, legacyLogicalPropertiesTransformer } from "@ant-design/cssinjs";
 import { Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu, Result } from "antd";
-import { AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone, BuildTwoTone, CameraTwoTone, SecurityScanTwoTone,ToolTwoTone } from "@ant-design/icons";
+import { AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone, BuildTwoTone, CameraTwoTone, SecurityScanTwoTone, ToolTwoTone } from "@ant-design/icons";
 import "./App.less";
 import { Helmet } from "react-helmet";
 import * as Setting from "./Setting";
@@ -88,6 +88,7 @@ import TemplateListPage from "./TemplateListPage";
 import TemplateEditPage from "./TemplateEditPage";
 import ApplicationListPage from "./ApplicationListPage";
 import ApplicationEditPage from "./ApplicationEditPage";
+import StoreSelect from "./StoreSelect";
 
 const { Header, Footer, Content, Sider } = Layout;
 
@@ -172,7 +173,7 @@ class App extends Component {
     forms.forEach(form => {
       const path = `/forms/${form.name}/data`;
       if (uri.includes(path)) {
-        this.setState({selectedMenuKey: path});
+        this.setState({ selectedMenuKey: path });
       }
     });
   }
@@ -185,7 +186,7 @@ class App extends Component {
     this.setState({
       uri: uri,
     });
-    
+
     // 更新选中的菜单键
     if (uri === "/" || uri === "/home") {
       this.setState({ selectedMenuKey: "/" });
@@ -200,10 +201,10 @@ class App extends Component {
     } else if (uri.includes("/messages")) {
       this.setState({ selectedMenuKey: "/messages" });
     } else if (uri.includes("/usages")) {
-      this.setState({selectedMenuKey: "/usages"});
+      this.setState({ selectedMenuKey: "/usages" });
     } else if (uri.includes("/activities")) {
-      this.setState({selectedMenuKey: "/activities"});
-    } 
+      this.setState({ selectedMenuKey: "/activities" });
+    }
     else if (uri.includes("/nodes")) {
       this.setState({ selectedMenuKey: "/nodes" });
     } else if (uri.includes("/machines")) {
@@ -213,15 +214,15 @@ class App extends Component {
     } else if (uri.includes("/containers")) {
       this.setState({ selectedMenuKey: "/containers" });
     } else if (uri.includes("/pods")) {
-      this.setState({selectedMenuKey: "/pods"});
+      this.setState({ selectedMenuKey: "/pods" });
     } else if (uri.includes("/templates")) {
-      this.setState({selectedMenuKey: "/templates"});
+      this.setState({ selectedMenuKey: "/templates" });
     } else if (uri.includes("/applications")) {
-      this.setState({selectedMenuKey: "/applications"});
+      this.setState({ selectedMenuKey: "/applications" });
     } else if (uri.includes("/sessions")) {
-      this.setState({selectedMenuKey: "/sessions"});
+      this.setState({ selectedMenuKey: "/sessions" });
     } else if (uri.includes("/connections")) {
-      this.setState({selectedMenuKey: "/connections"});
+      this.setState({ selectedMenuKey: "/connections" });
     } else if (uri.includes("/records")) {
       this.setState({ selectedMenuKey: "/records" });
     } else if (uri.includes("/workflows")) {
@@ -233,9 +234,9 @@ class App extends Component {
     } else if (uri.includes("/sr")) {
       this.setState({ selectedMenuKey: "/sr" });
     } else if (uri.includes("/tasks")) {
-      this.setState({selectedMenuKey: "/tasks"});
+      this.setState({ selectedMenuKey: "/tasks" });
     } else if (uri.includes("/forms")) {
-      this.setState({selectedMenuKey: "/forms"});
+      this.setState({ selectedMenuKey: "/forms" });
     } else if (uri.includes("/articles")) {
       this.setState({ selectedMenuKey: "/articles" });
     } else if (uri.includes("/public-videos")) {
@@ -259,7 +260,7 @@ class App extends Component {
 
   }
 
-  
+
 
   onUpdateAccount(account) {
     this.setState({
@@ -328,6 +329,31 @@ class App extends Component {
     } else if (e.key === "/logout") {
       this.signout();
     }
+  }
+
+  isStoreSelectEnabled() {
+    const uri = this.state.uri || window.location.pathname;
+
+    if (uri.includes("/chat")) {
+      return true;
+    }
+    const enabledStartsWith = ["/stores", "/providers", "/vectors", "/chats", "/messages", "/usages"];
+    if (enabledStartsWith.some(prefix => uri.startsWith(prefix))) {
+      return true;
+    }
+
+    if (uri === "/" || uri === "/home") {
+      if (
+        Setting.isAnonymousUser(this.state.account) ||
+        Setting.isChatUser(this.state.account) ||
+        Setting.isAdminUser(this.state.account) ||
+        this.state.account?.type === "chat-admin" ||
+        Setting.getUrlParam("isRaw") !== null
+      ) {
+        return true;
+      }
+    }
+    return false;
   }
 
   onClose = () => {
@@ -464,6 +490,18 @@ class App extends Component {
         <React.Fragment>
           {this.renderRightDropdown()}
           {/* <LanguageSelect /> */}
+          {Setting.isLocalAdminUser(this.state.account) &&
+            <StoreSelect
+              className="store-select"
+              initValue={Setting.getStore()}
+              withAll={true}
+              style={{ display: Setting.isMobile() ? "none" : "flex" }}
+              disabled={!this.isStoreSelectEnabled()}
+              onChange={(value) => {
+                Setting.setStore(value);
+              }}
+            />
+          }
           <div style={{ float: "right", marginRight: "20px", padding: "0px" }}>
             <div dangerouslySetInnerHTML={{ __html: Conf.NavbarHtml }} />
           </div>
@@ -472,13 +510,13 @@ class App extends Component {
     }
   }
 
-    /**
-   * 为父菜单设置展开键, 方便存在展开内容的菜单, 点击子菜单时, 可以展开父菜单
-   *
-   * by jjq
-   * @param {*} uri 
-   */
-  setOpenMenuKeysForParentMenu(uri){
+  /**
+ * 为父菜单设置展开键, 方便存在展开内容的菜单, 点击子菜单时, 可以展开父菜单
+ *
+ * by jjq
+ * @param {*} uri 
+ */
+  setOpenMenuKeysForParentMenu(uri) {
     // 更新展开的菜单键
     const pathToMenuKeyMap = this.buildPathToMenuKeyMap();
     let openKeys = [];
@@ -488,7 +526,7 @@ class App extends Component {
       openKeys = [pathToMenuKeyMap[uri]];
     } else {
       // 查找包含子路径的匹配
-      const matchingParentKey = Object.keys(pathToMenuKeyMap).find(path => 
+      const matchingParentKey = Object.keys(pathToMenuKeyMap).find(path =>
         uri.includes(path) && pathToMenuKeyMap[path]
       );
       if (matchingParentKey) {
@@ -515,7 +553,7 @@ class App extends Component {
         // 如果是带有子菜单的项
         if (item.children && item.children.length > 0) {
           traverseMenuItems(item.children, item.key);
-        } 
+        }
         // 如果是叶子节点且有路径
         else if (item.key && !item.key.startsWith('#')) {
           // 存储路径到父菜单key的映射

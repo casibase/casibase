@@ -79,6 +79,7 @@ func (c *ApiController) GetChats() {
 	field := c.Input().Get("field")
 	value := c.Input().Get("value")
 	selectedUser := c.Input().Get("selectedUser")
+	storeName := c.Input().Get("store")
 
 	if c.IsAdmin() {
 		user = ""
@@ -96,9 +97,9 @@ func (c *ApiController) GetChats() {
 	var chats []*object.Chat
 	var err error
 	if field == "user" {
-		chats, err = object.GetChats("admin", value)
+		chats, err = object.GetChats("admin", storeName, value)
 	} else {
-		chats, err = object.GetChats("admin", user)
+		chats, err = object.GetChats("admin", storeName, user)
 	}
 	if err != nil {
 		c.ResponseError(err.Error())

@@ -29,8 +29,9 @@ import (
 func (c *ApiController) GetUsages() {
 	days := util.ParseInt(c.Input().Get("days"))
 	user := c.Input().Get("selectedUser")
+	storeName := c.Input().Get("store")
 
-	usages, err := object.GetUsages(days, user)
+	usages, err := object.GetUsages(days, user, storeName)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -56,8 +57,9 @@ func (c *ApiController) GetRangeUsages() {
 	rangeType := c.Input().Get("rangeType")
 	count := util.ParseInt(c.Input().Get("count"))
 	user := c.Input().Get("user")
+	storeName := c.Input().Get("store")
 
-	usages, err := object.GetRangeUsages(rangeType, count, user)
+	usages, err := object.GetRangeUsages(rangeType, count, user, storeName)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -80,10 +82,11 @@ func (c *ApiController) GetRangeUsages() {
 // @router /get-users [get]
 func (c *ApiController) GetUsers() {
 	user := c.Input().Get("user")
+	storeName := c.Input().Get("store")
 	if c.IsAdmin() {
 		user = ""
 	}
-	users, err := object.GetUsers(user)
+	users, err := object.GetUsers(storeName, user)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -100,10 +103,11 @@ func (c *ApiController) GetUsers() {
 // @router /get-usages [get]
 func (c *ApiController) GetUserTableInfos() {
 	user := c.Input().Get("user")
+	storeName := c.Input().Get("store")
 	if c.IsAdmin() {
 		user = ""
 	}
-	userInfos, err := object.GetUserTableInfos(user)
+	userInfos, err := object.GetUserTableInfos(storeName, user)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

@@ -322,15 +322,30 @@ func refreshVector(vector *Vector) (bool, error) {
 	return true, nil
 }
 
-func GetStoreCount(field, value string) (int64, error) {
-	session := GetDbSession("", -1, -1, field, value, "", "")
-	return session.Count(&Store{})
+func GetStoresByFields(owner string, fields ...string) ([]*Store, error) {
+	var stores []*Store
+	err := adapter.engine.Desc("created_time").Cols(fields...).Find(&stores, &Store{Owner: owner})
+	if err != nil {
+		return nil, err
+	}
+
+	return stores, nil
 }
 
-func GetPaginationStores(offset, limit int, field, value, sortField, sortOrder string) ([]*Store, error) {
+func GetStoreCount(name, field, value string) (int64, error) {
+	session := GetDbSession("", -1, -1, field, value, "", "")
+	return session.Count(&Store{Name: name})
+}
+
+func GetPaginationStores(offset, limit int, name, field, value, sortField, sortOrder string) ([]*Store, error) {
 	stores := []*Store{}
 	session := GetDbSession("", offset, limit, field, value, sortField, sortOrder)
-	err := session.Find(&stores)
+	var err error
+	if name != "" {
+		err = session.Find(&stores, &Store{Name: name})
+	} else {
+		err = session.Find(&stores)
+	}
 	if err != nil {
 		return stores, err
 	}

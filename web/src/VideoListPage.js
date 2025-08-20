@@ -129,7 +129,7 @@ class VideoListPage extends BaseListPage {
   }
 
   requireUserOrAdmin(video) {
-    if (this.props.account.type === "video-admin-user") {
+    if (!this.requireAdmin()) {
       return false;
     } else if (this.props.account.type !== "video-normal-user") {
       return true;
@@ -143,7 +143,7 @@ class VideoListPage extends BaseListPage {
   }
 
   requireReviewerOrAdmin() {
-    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
+    return !(!this.requireAdmin() || this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
   }
 
   requireReviewer() {
@@ -151,6 +151,10 @@ class VideoListPage extends BaseListPage {
   }
 
   requireAdmin() {
+    if (Setting.isAdminUser(this.props.account)) {
+      return false;
+    }
+
     return !(this.props.account.type === "video-admin-user");
   }
 
