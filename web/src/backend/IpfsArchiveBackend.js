@@ -1,0 +1,88 @@
+
+// Copyright 2023 The Casibase Authors.. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+import * as Setting from "../Setting";
+
+/**
+ * 获取ipfs_archive记录列表
+ * @param {string} page - 页码
+ * @param {string} pageSize - 每页条数
+ * @param {string} field - 搜索字段
+ * @param {string} value - 搜索值
+ * @param {string} sortField - 排序字段
+ * @param {string} sortOrder - 排序顺序
+ * @returns {Promise}
+ */
+export function getIpfsArchives(page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
+  return fetch(`${Setting.ServerUrl}/api/get-ipfs-archives?p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
+/**
+ * 获取单个ipfs_archive记录
+ * @param {string} correlationId - 索引id
+ * @returns {Promise}
+ */
+export function getIpfsArchive(correlationId) {
+  return fetch(`${Setting.ServerUrl}/api/get-ipfs-archive?correlation_id=${encodeURIComponent(correlationId)}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
+/**
+ * 添加ipfs_archive记录
+ * @param {Object} archive - ipfs_archive记录对象
+ * @returns {Promise}
+ */
+export function addIpfsArchive(archive) {
+  const newArchive = Setting.deepCopy(archive);
+  return fetch(`${Setting.ServerUrl}/api/add-ipfs-archive`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(newArchive),
+  }).then(res => res.json());
+}
+
+/**
+ * 更新ipfs_archive记录
+ * @param {string} correlationId - 索引id
+ * @param {Object} archive - ipfs_archive记录对象
+ * @returns {Promise}
+ */
+export function updateIpfsArchive(correlationId, archive) {
+  const newArchive = Setting.deepCopy(archive);
+  return fetch(`${Setting.ServerUrl}/api/update-ipfs-archive?correlation_id=${encodeURIComponent(correlationId)}`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(newArchive),
+  }).then(res => res.json());
+}
+
+/**
+ * 删除ipfs_archive记录
+ * @param {Object} archive - ipfs_archive记录对象
+ * @returns {Promise}
+ */
+export function deleteIpfsArchive(archive) {
+  const newArchive = Setting.deepCopy(archive);
+  return fetch(`${Setting.ServerUrl}/api/delete-ipfs-archive`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(newArchive),
+  }).then(res => res.json());
+}

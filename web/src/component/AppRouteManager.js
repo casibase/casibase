@@ -499,6 +499,21 @@ routeManager.registerApp("records", {
   ],
 });
 
+  routeManager.registerApp("ipfs-archives", {
+  title: "IPFS Archives",
+  gradient: "linear-gradient(135deg, #6e91da 0%, #c0e8ff 100%)",
+  routes: [
+    {
+      path: "/ipfs-archives",
+      component: () => import("../IpfsArchiveListPage"),
+    },
+    {
+      path: "/ipfs-archive/edit/:correlationId",
+      component: () => import("../IpfsArchiveEditPage"),
+    },
+  ],
+});
+
 export const DynamicRouteComponent = ({appType, match, location, ...props}) => {
   const [Component, setComponent] = useState(null);
   const [loading, setLoading] = useState(true);

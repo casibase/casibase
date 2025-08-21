@@ -89,6 +89,10 @@ import TemplateEditPage from "./TemplateEditPage";
 import ApplicationListPage from "./ApplicationListPage";
 import ApplicationEditPage from "./ApplicationEditPage";
 import StoreSelect from "./StoreSelect";
+import IpfsArchiveListPage from "./IpfsArchiveListPage";
+import IpfsArchiveEditPage from "./IpfsArchiveEditPage";
+
+
 
 const { Header, Footer, Content, Sider } = Layout;
 
@@ -872,6 +876,8 @@ class App extends Component {
         <Route exact path="/connections" render={(props) => this.renderSigninIfNotSignedIn(<ConnectionListPage account={this.state.account} {...props} />)} />
         <Route exact path="/records" render={(props) => this.renderSigninIfNotSignedIn(<RecordListPage account={this.state.account} {...props} />)} />
         <Route exact path="/records/:organizationName/:recordName" render={(props) => this.renderSigninIfNotSignedIn(<RecordEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/ipfs-archives" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/ipfs-archive/edit/:correlationId" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)} />
         <Route exact path="/machines/:organizationName/:machineName" render={(props) => this.renderSigninIfNotSignedIn(<MachineEditPage account={this.state.account} {...props} />)} />
