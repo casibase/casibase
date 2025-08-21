@@ -51,12 +51,12 @@ class IpfsArchiveEditPage extends React.Component {
       // 新建模式
       this.setState({
         archive: {
-            correlation_id: '',
-            ipfs_address: '',
-            update_time: new Date().toISOString().slice(0, 19).replace('T', ' '),
-            create_time: new Date().toISOString().slice(0, 19).replace('T', ' '),
-            upload_time: '',
-            data_type: 1
+            correlationId: '',
+            ipfsAddress: '',
+            updateTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            createTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            uploadTime: '',
+            dataType: 0
           },
         mode: "add"
       });
@@ -85,9 +85,9 @@ class IpfsArchiveEditPage extends React.Component {
           <Col span={22} >
             <Input 
               disabled={this.state.mode !== "add"} 
-              value={this.state.archive.correlation_id} 
+              value={this.state.archive.correlationId} 
               onChange={e => {
-                this.updateArchiveField("correlation_id", e.target.value);
+                this.updateArchiveField("correlationId", e.target.value);
               }} 
             />
           </Col>
@@ -98,10 +98,10 @@ class IpfsArchiveEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <Input 
-              disabled={false} 
-              value={this.state.archive.ipfs_address} 
+              disabled={this.state.mode === "view"} 
+              value={this.state.archive.ipfsAddress} 
               onChange={e => {
-                this.updateArchiveField("ipfs_address", e.target.value);
+                this.updateArchiveField("ipfsAddress", e.target.value);
               }} 
             />
           </Col>
@@ -113,7 +113,7 @@ class IpfsArchiveEditPage extends React.Component {
           <Col span={22} >
             <Input 
               disabled={true} 
-              value={this.state.archive.update_time} 
+              value={this.state.archive.updateTime} 
             />
           </Col>
         </Row>
@@ -123,9 +123,9 @@ class IpfsArchiveEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <Select 
-              disabled={false} 
+              disabled={this.state.mode !== "add"} 
               style={{width: "100%"}} 
-              value={this.state.archive.data_type} 
+              value={this.state.archive.dataType} 
               onChange={(value) => {
                 this.updateArchiveField("data_type", parseInt(value));
               }} 
@@ -142,7 +142,7 @@ class IpfsArchiveEditPage extends React.Component {
           <Col span={22} >
             <Input 
               disabled={true} 
-              value={this.state.archive.create_time} 
+              value={this.state.archive.createTime} 
             />
           </Col>
         </Row>
@@ -153,7 +153,7 @@ class IpfsArchiveEditPage extends React.Component {
           <Col span={22} >
             <Input 
               disabled={true} 
-              value={this.state.archive.upload_time} 
+              value={this.state.archive.uploadTime} 
             />
           </Col>
         </Row>
@@ -232,7 +232,9 @@ class IpfsArchiveEditPage extends React.Component {
       <div>
         {this.state.archive !== null ? this.renderArchive() : null}
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          {this.state.mode === "add" ? (
+          {this.state.mode === "view" ? (
+            <Button size="large" onClick={() => this.props.history.push("/ipfs-archives")}>{i18next.t("general:Back")}</Button>
+          ) : this.state.mode === "add" ? (
             <React.Fragment>
               <Button type="primary" size="large" onClick={() => this.submitArchiveEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
               <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.submitArchiveEdit(false)}>{i18next.t("general:Save")}</Button>

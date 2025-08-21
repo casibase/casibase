@@ -83,12 +83,12 @@ class IpfsArchiveListPage extends BaseListPage {
 
   viewItem = (record) => {
     // 查看详情的实现，可以导航到详情页或显示模态框
-    Setting.goToLink(`/ipfs-archive/view/${encodeURIComponent(record.correlation_id)}`);
+    this.props.history.push(`/ipfs-archive/view/${encodeURIComponent(record.correlationId)}`);
   };
 
   editItem = (record) => {
     // 编辑记录的实现，可以导航到编辑页
-    Setting.goToLink(`/ipfs-archive/edit/${encodeURIComponent(record.correlation_id)}`);
+    this.props.history.push(`/ipfs-archive/edit/${encodeURIComponent(record.correlationId)}`);
   };
 
   getColumns = () => [
@@ -226,6 +226,15 @@ class IpfsArchiveListPage extends BaseListPage {
         <div style={{ color: 'red', fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' }}>
           页面灰度测试中！请勿进行操作！
         </div>
+        {/* 按钮区域 */}
+        <div style={{ marginBottom: '16px', textAlign: 'right' }}>
+          <Button
+            type="primary"
+            onClick={() => this.fetch({pagination: this.state.pagination})}
+          >
+            {i18next.t("general:Refresh")}
+          </Button>
+        </div>
         <Table
           scroll={{x: "max-content"}}
           columns={columns}
@@ -235,19 +244,7 @@ class IpfsArchiveListPage extends BaseListPage {
           size="middle"
           bordered
           pagination={this.state.pagination}
-          title={() => (
-            <div>
-              {this.state.title}
-              <div style={{float: 'right'}}>
-                <Button
-                  type="primary"
-                  onClick={() => this.fetch({pagination: this.state.pagination})}
-                >
-                  {i18next.t("general:Refresh")}
-                </Button>
-              </div>
-            </div>
-          )}
+          title={() => this.state.title}
           loading={this.state.loading}
           onChange={this.handleTableChange}
         />
