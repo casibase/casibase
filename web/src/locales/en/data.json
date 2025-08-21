@@ -359,7 +359,9 @@
     "items": "items",
     "{total} in total": "{total} in total",
     "DiseaseCategory": "Disease Category",
-    "DiseaseCategory - Tooltip": "Disease category"
+    "DiseaseCategory - Tooltip": "Disease category",
+    "CorrelationId":"CorrelationId",
+    "CorrelationId - Tooltip": "CorrelationId"
   },
   "image": {
     "Arch": "Arch",

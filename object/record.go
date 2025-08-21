@@ -70,6 +70,9 @@ type Record struct {
 
 	IsTriggered bool `json:"isTriggered"`
 	NeedCommit  bool `xorm:"index" json:"needCommit"`
+
+
+	CorrelationId string `xorm:"varchar(256)" json:"correlationId"`
 }
 
 type Response struct {
