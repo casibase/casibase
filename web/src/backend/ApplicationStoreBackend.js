@@ -18,20 +18,23 @@ import * as Setting from "../Setting";
  * @typedef {Object} ApplicationChart
  * @property {string} owner - The owner of the application chart
  * @property {string} name - The name of the application chart
- * @property {string} displayName - The display name of the application chart
- * @property {string} description - The description of the application chart
- * @property {string} version - The version of the application chart
- * @property {string} appVersion - The application version
- * @property {string} repoUrl - The repository URL
- * @property {string} chartUrl - The chart URL
- * @property {string} icon - The icon URL
- * @property {string[]} keywords - The keywords array
- * @property {string} maintainers - The maintainers information
- * @property {string} source - The source information
- * @property {string} home - The home page URL
- * @property {Object} annotations - The annotations object
  * @property {string} createdTime - The creation time
  * @property {string} updatedTime - The last update time
+ * @property {string} repositoryUrl - The repository URL
+ * @property {string} displayName - The display name of the application chart
+ * @property {string} description - The description of the application chart
+ * @property {string} status - The status of the application chart
+ * @property {string} namespace - The namespace for the chart
+ * @property {string} apiVersion - The API version
+ * @property {string} version - The chart version
+ * @property {string} appVersion - The application version
+ * @property {string} type - The chart type
+ * @property {string} chartUrl - The chart URL
+ * @property {string} iconUrl - The icon URL
+ * @property {string} keywords - The keywords (comma-separated or raw string)
+ * @property {string} home - The home page URL
+ * @property {string} sources - The sources information
+ * @property {string} maintainers - The maintainers information
  */
 
 /**
@@ -169,12 +172,11 @@ export function getApplicationChartContent(owner, name) {
  * @param {string} owner - The owner of the application chart
  * @param {string} name - The name of the application chart
  * @param {Object} valuesJson - The custom values JSON object
- * @param {Object} chart - The chart object previously fetched from getApplicationChartContent
  * @returns {Promise<ApiResponse>} Promise that resolves to API response with rendered chart data
  */
-export function updateApplicationChartContent(owner, name, valuesJson, chart) {
+export function updateApplicationChartContent(owner, name, valuesJson) {
   // Backend expects ChartReleaseOptions JSON with `chart` and `values` fields
-  const payload = {values: valuesJson, chart: chart};
+  const payload = {values: valuesJson};
   return fetch(`${Setting.ServerUrl}/api/update-application-chart-content?owner=${owner}&name=${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",

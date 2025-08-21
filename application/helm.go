@@ -32,19 +32,14 @@ type ReleaseOptions struct {
 	chartutil.ReleaseOptions
 	Values       map[string]interface{}
 	Capabilities *chartutil.Capabilities
-	ReleaseName  string
-	IncludeCrds  bool
-	SkipTests    bool
-	DisableHooks bool
-	DryRun       bool
 }
 
 // RenderedChart represents the result of rendering a chart
 type RenderedChart struct {
-	ChartName    string `json:"chartName"`
-	ChartVersion string `json:"chartVersion"`
 	ReleaseName  string `json:"releaseName"`
 	Namespace    string `json:"namespace"`
+	ChartName    string `json:"chartName"`
+	ChartVersion string `json:"chartVersion"`
 	RenderedYaml string `json:"renderedYaml"`
 }
 
@@ -165,10 +160,10 @@ func GetRenderChart(chart *chart.Chart, options *ReleaseOptions) (*RenderedChart
 	}
 
 	return &RenderedChart{
+		ReleaseName:  options.Name,
+		Namespace:    options.Namespace,
 		ChartName:    chart.Metadata.Name,
 		ChartVersion: chart.Metadata.Version,
-		ReleaseName:  options.ReleaseName,
-		Namespace:    options.Namespace,
 		RenderedYaml: renderedYaml.String(),
 	}, nil
 }

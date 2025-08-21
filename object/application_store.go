@@ -60,7 +60,6 @@ type ChartContent struct {
 // ChartReleaseOptions
 type ChartReleaseOptions struct {
 	chartutil.ReleaseOptions
-	Chart  *chart.Chart           `json:"chart"`
 	Values map[string]interface{} `json:"values"`
 }
 
@@ -380,7 +379,7 @@ func ReleaseApplicationChart(owner, name string, options *ChartReleaseOptions) (
 	// Get the chart content from the URL
 	// Current json Marshaling chart when GetApplicationChartContent have limited fields,
 	// so we need to load the full chart
-	options.Chart, err = application.GetChartContentFromUrl(app.ChartUrl)
+	applicationChart, err := application.GetChartContentFromUrl(app.ChartUrl)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get chart content: %v", err)
 	}
@@ -406,5 +405,5 @@ func ReleaseApplicationChart(owner, name string, options *ChartReleaseOptions) (
 		ReleaseOptions: options.ReleaseOptions,
 	}
 
-	return application.GetRenderChart(options.Chart, renderOptions)
+	return application.GetRenderChart(applicationChart, renderOptions)
 }

@@ -80,7 +80,7 @@ class ApplicationStorePage extends React.Component {
 
   componentDidMount() {
     if (this.props.location.pathname === "/application-store") {
-      this.fetchApplicationCharts();
+      this.getApplicationCharts();
     }
   }
 
@@ -88,11 +88,11 @@ class ApplicationStorePage extends React.Component {
     const prevPath = prevProps.location?.pathname;
     const currPath = this.props.location?.pathname;
     if (this.state.applicationCharts.length === 0 && prevPath !== currPath && currPath === "/application-store") {
-      this.fetchApplicationCharts();
+      this.getApplicationCharts();
     }
   }
 
-  fetchApplicationCharts = () => {
+  getApplicationCharts = () => {
     this.setState({loading: true});
     const {pagination, searchText} = this.state;
     ApplicationStoreBackend.getApplicationCharts(
@@ -140,7 +140,7 @@ class ApplicationStorePage extends React.Component {
       searchText: value,
       pagination: {...this.state.pagination, current: 1},
     }, () => {
-      this.fetchApplicationCharts();
+      this.getApplicationCharts();
       this.props.history.push({pathname: "/application-store"});
     });
   };
@@ -176,7 +176,7 @@ class ApplicationStorePage extends React.Component {
         if (res.status === "ok") {
           message.success(i18next.t("general:Successfully added"));
           this.setState({addRepoModalVisible: false});
-          this.fetchApplicationCharts();
+          this.getApplicationCharts();
         } else {
           message.error(`${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
@@ -209,7 +209,7 @@ class ApplicationStorePage extends React.Component {
             this.setState({loading: false});
             if (res.status === "ok") {
               message.success(`${i18next.t("general:Successfully deleted")} ${chart.displayName || chart.name}`);
-              this.fetchApplicationCharts();
+              this.getApplicationCharts();
             } else {
               message.error(`${i18next.t("general:Failed to delete")}: ${res.msg}`);
             }
@@ -257,13 +257,13 @@ class ApplicationStorePage extends React.Component {
 
   handlePageChange = (page, pageSize) => {
     this.setState({pagination: {...this.state.pagination, current: page, pageSize: pageSize}}, () => {
-      this.fetchApplicationCharts();
+      this.getApplicationCharts();
     });
   };
 
   handlePageSizeChange = (value) => {
     this.setState({pagination: {...this.state.pagination, pageSize: value, current: 1}}, () => {
-      this.fetchApplicationCharts();
+      this.getApplicationCharts();
     });
   };
 

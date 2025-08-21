@@ -76,7 +76,7 @@ class ApplicationDetailComponent extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchChartContent();
+    this.getApplicationChartContent();
   }
 
   // Simplified color detection
@@ -93,11 +93,11 @@ class ApplicationDetailComponent extends React.Component {
     if (
       prevProps.applicationName !== this.props.applicationName
     ) {
-      this.fetchChartContent();
+      this.getApplicationChartContent();
     }
   }
 
-  fetchChartContent = () => {
+  getApplicationChartContent = () => {
     const {applicationName} = this.props;
     this.setState({loading: true});
 
@@ -141,11 +141,9 @@ class ApplicationDetailComponent extends React.Component {
   handleRenderClick = () => {
     const {applicationName} = this.props;
     const {configForm} = this.state;
-    const {chartContent} = this.state;
-
     this.setState({loading: true});
 
-    ApplicationStoreBackend.updateApplicationChartContent(this.props.account.name, applicationName, configForm, chartContent)
+    ApplicationStoreBackend.updateApplicationChartContent(this.props.account.name, applicationName, configForm)
       .then((res) => {
         this.setState({loading: false});
         if (res.status === "ok") {
@@ -465,7 +463,6 @@ class ApplicationDetailComponent extends React.Component {
       );
     }
 
-    // Fallback for arrays or other types
     return (
       <Input
         value={String(this.getNestedValue(this.state.configForm, key) || "")}
@@ -617,6 +614,7 @@ class ApplicationDetailComponent extends React.Component {
   renderConfirmTab = () => {
     const {renderResult, parsedResources} = this.state;
     const {token} = this.props;
+    const isMobile = Setting.isMobile();
     const isDarkMode = this.isDarkColor(token.colorBgContainer);
 
     if (!renderResult) {
@@ -637,14 +635,14 @@ class ApplicationDetailComponent extends React.Component {
               icon={<CopyOutlined />}
               onClick={() => this.handleCopyYamlClick(renderResult.renderedYaml)}
             >
-              {this.state.isMobile ? "" : i18next.t("general:Copy")}
+              {isMobile ? "" : i18next.t("general:Copy")}
             </Button>
 
             <Button
               icon={<DownloadOutlined />}
               onClick={this.handleDownloadYamlClick}
             >
-              {this.state.isMobile ? "" : i18next.t("application:Download YAML")}
+              {isMobile ? "" : i18next.t("general:Download") + " YAML"}
             </Button>
 
             <Button
