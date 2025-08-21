@@ -379,8 +379,14 @@ class UsagePage extends BaseListPage {
     if (rangeType === "") {
       rangeType = this.state.rangeType;
     }
-    this.getRangeUsagesAll(serverUrl);
-    this.getUsages(serverUrl);
+    const stateReset = {usages: null};
+    if (rangeType !== "All") {
+      stateReset[`rangeUsages${rangeType}`] = null;
+    }
+    this.setState(stateReset, () => {
+      this.getRangeUsagesAll(serverUrl);
+      this.getUsages(serverUrl);
+    });
     // if (rangeType === "All") {
     //   this.getUsages(serverUrl);
     // } else {
@@ -763,8 +769,12 @@ class UsagePage extends BaseListPage {
     );
   }
 
-  fetch = (params = {}) => {
-    this.getUsers("");
+  fetch = () => {
+    const reset = {usages: null, selectedTableInfo: null};
+    if (this.state.rangeType !== "All") {
+      reset[`rangeUsages${this.state.rangeType}`] = null;
+    }
+    this.setState(reset, () => this.getUsers(""));
   };
 }
 

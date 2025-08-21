@@ -41,10 +41,6 @@ class ActivityPage extends BaseListPage {
     };
   }
 
-  UNSAFE_componentWillMount() {
-    this.getUsers("");
-  }
-
   getHost() {
     let res = window.location.host;
     if (res === "localhost:13001") {
@@ -233,6 +229,11 @@ class ActivityPage extends BaseListPage {
     this.getActivitiesAll(serverUrl);
   }
 
+  buildActivitiesLoadingReset() {
+    return ["action", "response", ...this.subPieCharts]
+      .reduce((acc, key) => ({...acc, [`activities${key}`]: undefined}), {});
+  }
+
   renderRadio() {
     return (
       <div style={{marginTop: "-10px", float: "right"}}>
@@ -273,8 +274,10 @@ class ActivityPage extends BaseListPage {
       } else {
         user = this.state.users[value];
       }
+      const reset = this.buildActivitiesLoadingReset();
       this.setState({
         selectedUser: user,
+        ...reset,
       }, () => {
         this.getActivitiesForAllCases("", this.state.rangeType);
       });
@@ -444,6 +447,10 @@ class ActivityPage extends BaseListPage {
       </div>
     );
   }
+
+  fetch = () => {
+    this.getUsers("");
+  };
 }
 
 export default ActivityPage;
