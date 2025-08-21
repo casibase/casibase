@@ -397,9 +397,18 @@
   },
   "med": {
     "Audit": "审计",
+    "AuditSearch": "查询审计",
+    "IpfsArchives": "数据归档",
     "Medical Image Analysis": "医学影像分析",
     "Super Resolution": "图像超分",
     "Image Operation": "图像处理"
+  },
+  "ipfsArchive":{
+    "Ipfs Archive List": "IPFS数据归档列表",
+    "Correlation ID": "索引",
+    "IPFS Address": "IPFS地址",
+    "Update Time":"更新时间",
+    "Data Type":"数据类型"
   },
   "message": {
     "Author": "作者",

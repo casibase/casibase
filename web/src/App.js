@@ -676,10 +676,9 @@ class App extends Component {
       // res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
       res.push(Setting.getItem(<Link to="/dashboard">{i18next.t("dashboard:Dashboard")}</Link>, "/dashboard", <AppstoreTwoTone twoToneColor={twoToneColor} />));
       res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows", <BuildTwoTone twoToneColor={twoToneColor} />));
-      // res.push(Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />));
-      res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:Audit")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:AuditSearch")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"),
-        Setting.getItem(<Link to="/ipfs-archives">{i18next.t("med:Ipfs Archives")}</Link>, "/ipfs-archives")
+        Setting.getItem(<Link to="/ipfs-archives">{i18next.t("med:IpfsArchives")}</Link>, "/ipfs-archives")
 
       ]));
       

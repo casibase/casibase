@@ -398,8 +398,17 @@
   },
   "med": {
     "Audit": "Audit",
+    "AuditSearch": "Search & Audit",
+    "IpfsArchives": "Data Archives",
     "Medical Image Analysis": "Medical Image Analysis",
     "Super Resolution": "Super Resolution"
+  },
+  "ipfsArchive":{
+    "Ipfs Archive List": "IPFS Archive List",
+    "Correlation ID": "Correlation ID",
+    "IPFS Address": "IPFS Address",
+    "Update Time": "Update Time",
+    "Data Type": "Data Type"
   },
   "message": {
     "Author": "Author",
