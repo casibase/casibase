@@ -408,7 +408,16 @@
     "Correlation ID": "Correlation ID",
     "IPFS Address": "IPFS Address",
     "Update Time": "Update Time",
-    "Data Type": "Data Type"
+    "Create Time": "Create Time",
+    "Upload Time": "Upload Time",
+    "Data Type": "Data Type",
+    "Create Time - Tooltip": "Creation time of the IPFS archive",
+    "Upload Time - Tooltip": "Time when data was uploaded to IPFS",
+    "Archive Status": "Archive Status",
+    "Archived": "Archived",
+    "Not Archived": "Not Archived"
+
+
   },
   "message": {
     "Author": "Author",

@@ -51,11 +51,13 @@ class IpfsArchiveEditPage extends React.Component {
       // 新建模式
       this.setState({
         archive: {
-          correlation_id: '',
-          ipfs_address: '',
-          update_time: new Date().toISOString().slice(0, 19).replace('T', ' '),
-          data_type: 1
-        },
+            correlation_id: '',
+            ipfs_address: '',
+            update_time: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            create_time: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            upload_time: '',
+            data_type: 1
+          },
         mode: "add"
       });
     }
@@ -131,6 +133,28 @@ class IpfsArchiveEditPage extends React.Component {
               <Option value={1}>{i18next.t("ipfsArchive:Record Data")}</Option>
               <Option value={2}>{i18next.t("ipfsArchive:Other Data")}</Option>
             </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("ipfsArchive:Create Time"), i18next.t("ipfsArchive:Create Time - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input 
+              disabled={true} 
+              value={this.state.archive.create_time} 
+            />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("ipfsArchive:Upload Time"), i18next.t("ipfsArchive:Upload Time - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input 
+              disabled={true} 
+              value={this.state.archive.upload_time} 
+            />
           </Col>
         </Row>
       </Card>

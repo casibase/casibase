@@ -224,6 +224,13 @@ func initAPI() {
 	beego.Router("/api/add-records", &controllers.ApiController{}, "POST:AddRecords")
 	beego.Router("/api/delete-record", &controllers.ApiController{}, "POST:DeleteRecord")
 
+	// IPFS Archive API
+	beego.Router("/api/get-ipfs-archives", &controllers.ApiController{}, "GET:GetIpfsArchives")
+	beego.Router("/api/get-ipfs-archive", &controllers.ApiController{}, "GET:GetIpfsArchive")
+	beego.Router("/api/add-ipfs-archive", &controllers.ApiController{}, "POST:AddIpfsArchive")
+	beego.Router("/api/update-ipfs-archive", &controllers.ApiController{}, "POST:UpdateIpfsArchive")
+	beego.Router("/api/delete-ipfs-archive", &controllers.ApiController{}, "POST:DeleteIpfsArchive")
+
 	beego.Router("/api/commit-record", &controllers.ApiController{}, "POST:CommitRecord")
 	beego.Router("/api/commit-record-second", &controllers.ApiController{}, "POST:CommitRecordSecond")
 	beego.Router("/api/query-record", &controllers.ApiController{}, "GET:QueryRecord")

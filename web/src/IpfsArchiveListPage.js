@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Modal, Popconfirm, Space, Table, Tooltip} from "antd";
+import {Button, Modal, Popconfirm, Space, Table, Tag, Tooltip} from "antd";
 import {DeleteOutlined, EditOutlined, EyeOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
@@ -94,37 +94,17 @@ class IpfsArchiveListPage extends BaseListPage {
   getColumns = () => [
     {
       title: i18next.t("ipfsArchive:Correlation ID"),
-      dataIndex: "correlation_id",
-      key: "correlation_id",
-      width: "25%",
-      ...this.getColumnSearchProps("correlation_id"),
-    },
-    {
-      title: i18next.t("ipfsArchive:IPFS Address"),
-      dataIndex: "ipfs_address",
-      key: "ipfs_address",
-      width: "30%",
-      ...this.getColumnSearchProps("ipfs_address"),
-      render: (text) => (
-        <Tooltip title={text} placement="topLeft" arrow>
-          <div style={{wordBreak: "break-all", maxWidth: "100%"}}>{text}</div>
-        </Tooltip>
-      ),
-    },
-    {
-      title: i18next.t("ipfsArchive:Update Time"),
-      dataIndex: "update_time",
-      key: "update_time",
-      width: "20%",
-      sorter: true,
-      sortDirections: ["descend", "ascend"],
+      dataIndex: "correlationId",
+      key: "correlationId",
+      width: "250px",
+      ...this.getColumnSearchProps("correlationId"),
     },
     {
       title: i18next.t("ipfsArchive:Data Type"),
-      dataIndex: "data_type",
-      key: "data_type",
-      width: "10%",
-      ...this.getColumnSearchProps("data_type"),
+      dataIndex: "dataType",
+      key: "dataType",
+      width: "200px",
+      ...this.getColumnSearchProps("dataType"),
       render: (text) => {
         // 根据实际数据类型定义显示的文本
         const typeMap = {
@@ -135,9 +115,60 @@ class IpfsArchiveListPage extends BaseListPage {
       },
     },
     {
+      title: i18next.t("ipfsArchive:Archive Status"),
+      dataIndex: "ipfsAddress",
+      key: "archiveStatus",
+      width: "100px",
+      render: (text) => {
+          if (text && text !== "") {
+            return <Tag color="success">{i18next.t("ipfsArchive:Archived")}</Tag>;
+          } else {
+            return <Tag color="error">{i18next.t("ipfsArchive:Not Archived")}</Tag>;
+          }
+        },
+    },
+    {
+      title: i18next.t("ipfsArchive:IPFS Address"),
+      dataIndex: "ipfsAddress",
+      key: "ipfsAddress",
+      width: "300px",
+      ...this.getColumnSearchProps("ipfsAddress"),
+      render: (text) => (
+        <Tooltip title={text} placement="topLeft" arrow>
+          <div style={{wordBreak: "break-all", maxWidth: "100%"}}>{text}</div>
+        </Tooltip>
+      ),
+    },
+    {      
+      title: i18next.t("ipfsArchive:Update Time"),      
+      dataIndex: "updateTime",      
+      key: "updateTime",      
+      width: "150px",      
+      sorter: true,      
+      sortDirections: ["descend", "ascend"],      
+      render: (text) => text || "--",    
+    },
+    {      
+      title: i18next.t("ipfsArchive:Create Time"),      
+      dataIndex: "createTime",      
+      key: "createTime",      
+      width: "150px",      
+      sorter: true,      
+      sortDirections: ["descend", "ascend"],      
+      render: (text) => text || "--",    
+    },    
+    {      
+      title: i18next.t("ipfsArchive:Upload Time"),      
+      dataIndex: "uploadTime",      
+      key: "uploadTime",      
+      width: "150px",      
+      sorter: true,      
+      sortDirections: ["descend", "ascend"],      
+      render: (text) => text || "--",    
+    },
+    {
       title: i18next.t("general:Actions"),
       key: "actions",
-      width: "15%",
       fixed: "right",
       render: (_, record) => (
         <Space size="middle">

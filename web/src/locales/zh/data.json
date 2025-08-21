@@ -408,7 +408,15 @@
     "Correlation ID": "索引",
     "IPFS Address": "IPFS地址",
     "Update Time":"更新时间",
-    "Data Type":"数据类型"
+    "Create Time":"创建时间",
+    "Upload Time":"上传时间",
+    "Data Type":"数据类型",
+    "Create Time - Tooltip":"数据归档的创建时间",
+    "Upload Time - Tooltip":"数据上传到IPFS的时间",
+    "Archive Status":"归档状态",
+    "Archived":"已归档",
+    "Not Archived":"未归档"
+
   },
   "message": {
     "Author": "作者",
