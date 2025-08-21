@@ -87,7 +87,7 @@ class IpfsArchiveListPage extends BaseListPage {
   };
 
   editItem = (record) => {
-    // 编辑记录的实现，可以导航到编辑页
+    // 编辑记录的实现，可以导航到编辑页。
     this.props.history.push(`/ipfs-archive/edit/${encodeURIComponent(record.correlationId)}`);
   };
 
