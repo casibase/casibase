@@ -45,14 +45,8 @@ func SetCookieWithAttributes(ctx *context.Context, name string, value string) er
 		HttpOnly: false,
 	}
 
-	isHTTPS := ctx.Request.TLS != nil || ctx.Request.Header.Get("X-Forwarded-Proto") == "https"
-	if isHTTPS {
-		cookie.SameSite = http.SameSiteNoneMode
-		cookie.Secure = true
-	} else {
-		cookie.SameSite = http.SameSiteLaxMode
-		cookie.Secure = false
-	}
+	cookie.SameSite = http.SameSiteNoneMode
+	cookie.Secure = true
 
 	http.SetCookie(ctx.ResponseWriter, cookie)
 	return nil
