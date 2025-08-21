@@ -676,7 +676,13 @@ class App extends Component {
       // res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
       res.push(Setting.getItem(<Link to="/dashboard">{i18next.t("dashboard:Dashboard")}</Link>, "/dashboard", <AppstoreTwoTone twoToneColor={twoToneColor} />));
       res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows", <BuildTwoTone twoToneColor={twoToneColor} />));
-      res.push(Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />));
+      // res.push(Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />));
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:Audit")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"),
+        Setting.getItem(<Link to="/ipfs-archives">{i18next.t("med:Ipfs Archives")}</Link>, "/ipfs-archives")
+
+      ]));
+      
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:Image Operation")}</Link>, "/img", <CameraTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
         Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr")

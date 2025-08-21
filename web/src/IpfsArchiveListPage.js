@@ -192,6 +192,9 @@ class IpfsArchiveListPage extends BaseListPage {
 
     return (
       <div>
+        <div style={{ color: 'red', fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' }}>
+          页面灰度测试中！请勿进行操作！
+        </div>
         <Table
           scroll={{x: "max-content"}}
           columns={columns}
