@@ -1,0 +1,140 @@
+.ipfs-search-layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 40px 24px;
+  min-height: 100vh;
+}
+
+.ipfs-search-content {
+  width: 100%;
+  max-width: 600px;
+}
+
+.ipfs-search-header {
+  text-align: center;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.ipfs-search-title {
+  color: black;
+  font-weight: 700;
+  font-size: 32px !important;
+  margin-bottom: 16px;
+  background: black;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+.ipfs-search-body {
+  width: 100%;
+}
+
+.ipfs-search-space {
+  width: 100%;
+}
+
+.ipfs-search-input-wrapper {
+  width: 100%;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.ipfs-search-input-wrapper.focused {
+  transform: translateY(-5px);
+}
+
+.ipfs-search-input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 0 20px;
+  height: 64px;
+  border: 2px solid #e0e0e0;
+  box-shadow: 0 4px 35px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.ipfs-search-input-wrapper.focused .ipfs-search-input-container {
+  box-shadow: 0 8px 45px rgba(0, 0, 0, 0.2);
+  border: 2px solid #5036d3;
+}
+
+.ipfs-search-icon {
+  
+  font-size: 20px;
+  margin-right: 16px;
+  transition: all 0.3s ease;
+}
+
+.ipfs-search-input-wrapper.focused .ipfs-search-icon {
+  transform: scale(1.1);
+}
+
+.ipfs-search-input {
+  flex: 1;
+  height: 100%;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.ipfs-search-button {
+  margin-left: 16px;
+  padding: 0 28px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  background-color: #000000;
+  color: white;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+
+
+
+
+.ipfs-search-button:disabled {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .ipfs-search-content {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  .ipfs-search-title {
+    font-size: 24px !important;
+  }
+
+  .ipfs-search-input-container {
+    height: 56px;
+  }
+
+  .ipfs-search-button {
+    padding: 0 20px;
+    height: 36px;
+    font-size: 14px;
+  }
+}
+
+.ipfs-search-title {
+  font-size: 20px;
+}

@@ -91,6 +91,7 @@ import ApplicationEditPage from "./ApplicationEditPage";
 import StoreSelect from "./StoreSelect";
 import IpfsArchiveListPage from "./auditSearch/IpfsArchiveListPage";
 import IpfsArchiveEditPage from "./auditSearch/IpfsArchiveEditPage";
+import IpfsSearchPage from "./auditSearch/IpfsSearchPage";
 
 
 
@@ -255,6 +256,10 @@ class App extends Component {
       this.setState({ selectedMenuKey: "/swagger" });
     } else if (uri.includes("/dashboard")) {
       this.setState({ selectedMenuKey: "/dashboard" });
+    }else if(uri.includes("/ipfs-archive")){
+      this.setState({ selectedMenuKey: "/ipfs-archive" });
+    }else if(uri.includes("/ipfs-search")){
+      this.setState({ selectedMenuKey: "/ipfs-search" });
     }
     else {
       this.setState({ selectedMenuKey: "null" });
@@ -678,6 +683,8 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows", <BuildTwoTone twoToneColor={twoToneColor} />));
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:AuditSearch")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"),
+        Setting.getItem(<Link to="/ipfs-search">{i18next.t("med:IpfsSearch")}</Link>, "/ipfs-search"),
+
         Setting.getItem(<Link to="/ipfs-archive">{i18next.t("med:IpfsArchives")}</Link>, "/ipfs-archive")
 
       ]));
@@ -885,6 +892,8 @@ class App extends Component {
         <Route exact path="/ipfs-archive/edit/:id" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-archive/view/:id" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-archive/add" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/ipfs-search" render={(props) => this.renderSigninIfNotSignedIn(<IpfsSearchPage account={this.state.account} {...props} />)} />
+
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)} />
         <Route exact path="/machines/:organizationName/:machineName" render={(props) => this.renderSigninIfNotSignedIn(<MachineEditPage account={this.state.account} {...props} />)} />
@@ -913,6 +922,7 @@ class App extends Component {
         <Route exact path="/:owner/:storeName/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/sysinfo" render={(props) => this.renderSigninIfNotSignedIn(<SystemInfo account={this.state.account} {...props} />)} />
+        <Route exact path="/ipfs-search" render={(props) => this.renderSigninIfNotSignedIn(<IPFSSearchPage account={this.state.account} {...props} />)} />
         <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
       </Switch>
     );
