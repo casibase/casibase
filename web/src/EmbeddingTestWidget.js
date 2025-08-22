@@ -82,11 +82,11 @@ class EmbeddingTestWidget extends React.Component {
     return (
       <Row style={{marginTop: "20px"}}>
         <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-          {Setting.getLabel(i18next.t("provider:Provider test"), i18next.t("provider:Provider test"))} :
+          {Setting.getLabel(i18next.t("general:Vectors"), i18next.t("general:Vectors"))} :
         </Col>
         <Col span={22}>
           <Button type="primary" onClick={this.generateTestVector} loading={this.state.loading}>
-            {i18next.t("provider:Provider test")}
+            {i18next.t("general:Vectors")}
           </Button>
         </Col>
       </Row>
