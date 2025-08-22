@@ -18,6 +18,7 @@ import {ExclamationCircleOutlined} from "@ant-design/icons";
 import * as IpfsArchiveBackend from "../backend/IpfsArchiveBackend";
 import * as Setting from "../Setting";
 import i18next from "i18next";
+import DataTypeConverter from "../common/DataTypeConverter";
 
 const {Option} = Select;
 
@@ -140,8 +141,10 @@ class IpfsArchiveEditPage extends React.Component {
                 this.updateArchiveField("dataType", parseInt(value));
               }} 
             >
-              <Option value={1}>{i18next.t("ipfsArchive:Record Data")}</Option>
-              <Option value={2}>{i18next.t("ipfsArchive:Other Data")}</Option>
+              <Option value={1}>{DataTypeConverter.convertToChinese(1)}</Option>
+              <Option value={2}>{DataTypeConverter.convertToChinese(2)}</Option>
+              <Option value={3}>{DataTypeConverter.convertToChinese(3)}</Option>
+              <Option value={4}>{DataTypeConverter.convertToChinese(4)}</Option>
             </Select>
           </Col>
         </Row>
@@ -180,7 +183,7 @@ class IpfsArchiveEditPage extends React.Component {
             <Col span={22} >
               <Input 
                 disabled={true} 
-                value={this.state.archive.uploadTime} 
+                value={this.state.archive.uploadTime === "0000-00-00 00:00:00" ? "---" : this.state.archive.uploadTime} 
               />
             </Col>
           </Row>

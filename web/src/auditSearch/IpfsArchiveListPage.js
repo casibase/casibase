@@ -19,6 +19,7 @@ import i18next from "i18next";
 import BaseListPage from "../BaseListPage";
 import * as Setting from "../Setting";
 import * as IpfsArchiveBackend from "../backend/IpfsArchiveBackend";
+import DataTypeConverter from "../common/DataTypeConverter";
 
 class IpfsArchiveListPage extends BaseListPage {
   constructor(props) {
@@ -122,13 +123,9 @@ class IpfsArchiveListPage extends BaseListPage {
       width: "200px",
       ...this.getColumnSearchProps("dataType"),
       render: (text) => {
-        // 根据实际数据类型定义显示的文本
-        const typeMap = {
-          1: i18next.t("ipfsArchive:Record Data"),
-          2: i18next.t("ipfsArchive:Other Data"),
-        };
-        return typeMap[text] || text;
-      },
+          // 使用DataTypeConverter工具类将dataType转换为中文
+          return DataTypeConverter.convertToChinese(text);
+        },
     },
     {
       title: i18next.t("ipfsArchive:Archive Status"),
@@ -162,7 +159,8 @@ class IpfsArchiveListPage extends BaseListPage {
       width: "150px",      
       sorter: true,      
       sortDirections: ["descend", "ascend"],      
-      render: (text) => text || "--",    
+      render: (text) => text==null||text === "0000-00-00 00:00:00" ? "---" : text,    
+
     },
     {      
       title: i18next.t("ipfsArchive:Create Time"),      
@@ -171,7 +169,8 @@ class IpfsArchiveListPage extends BaseListPage {
       width: "150px",      
       sorter: true,      
       sortDirections: ["descend", "ascend"],      
-      render: (text) => text || "--",    
+      render: (text) => text==null||text === "0000-00-00 00:00:00" ? "---" : text,
+
     },    
     {      
       title: i18next.t("ipfsArchive:Upload Time"),      
@@ -180,7 +179,9 @@ class IpfsArchiveListPage extends BaseListPage {
       width: "150px",      
       sorter: true,      
       sortDirections: ["descend", "ascend"],      
-      render: (text) => text || "--",    
+      render: (text) => text==null||text === "0000-00-00 00:00:00" ? "---" : text,
+
+
     },
     {
       title: i18next.t("general:Actions"),
