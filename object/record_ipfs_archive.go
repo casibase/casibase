@@ -24,7 +24,9 @@ import (
 
 // IpfsArchive 表示IPFS归档记录
 type IpfsArchive struct {
-	CorrelationId string `xorm:"varchar(256) notnull pk index" json:"correlationId"`
+	Id            int64  `xorm:"id pk autoincr" json:"id"`
+	RecordId      int64 `xorm:"int index" json:"recordId"`
+	CorrelationId string `xorm:"varchar(256) notnull index" json:"correlationId"`
 	IpfsAddress   string `xorm:"varchar(500)" json:"ipfsAddress"`
 	UpdateTime    string `xorm:"varchar(100)" json:"updateTime"`
 	DataType      int    `xorm:"int" json:"dataType"`
@@ -41,10 +43,6 @@ var (
 
 // AddIpfsArchive 添加IPFS归档记录
 func AddIpfsArchive(archive *IpfsArchive) (bool, error) {
-	if archive.CorrelationId == "" {
-		return false, fmt.Errorf("correlation_id cannot be empty")
-	}
-
 	// 设置创建时间和更新时间
 	currentTime := util.GetCurrentTimeWithMilli()
 	if archive.CreateTime == "" {
@@ -58,6 +56,20 @@ func AddIpfsArchive(archive *IpfsArchive) (bool, error) {
 	}
 
 	return affected != 0, nil
+}
+
+// GetIpfsArchiveById 根据Id获取IPFS归档记录
+func GetIpfsArchiveById(id int64) (*IpfsArchive, error) {
+	archive := &IpfsArchive{Id: id}
+	existed, err := adapter.engine.Get(archive)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get ipfs archive: %w", err)
+	}
+	if !existed {
+		return nil, nil
+	}
+
+	return archive, nil
 }
 
 // GetIpfsArchiveByCorrelationId 根据correlation_id获取IPFS归档记录
@@ -86,7 +98,7 @@ func GetIpfsArchives(offset, limit int, field, value string) ([]*IpfsArchive, er
 	return archives, nil
 }
 
-// UpdateIpfsArchive 更新IPFS归档记录
+// UpdateIpfsArchive 更新IPFS归档记录(基于CorrelationId)
 func UpdateIpfsArchive(archive *IpfsArchive) (bool, error) {
 	if archive.CorrelationId == "" {
 		return false, fmt.Errorf("correlation_id cannot be empty")
@@ -103,8 +115,25 @@ func UpdateIpfsArchive(archive *IpfsArchive) (bool, error) {
 	return affected != 0, nil
 }
 
-// DeleteIpfsArchive 删除IPFS归档记录
-func DeleteIpfsArchive(correlationId string) (bool, error) {
+// UpdateIpfsArchiveById 根据Id更新IPFS归档记录
+func UpdateIpfsArchiveById(archive *IpfsArchive) (bool, error) {
+	if archive.Id <= 0 {
+		return false, fmt.Errorf("id cannot be empty or less than zero")
+	}
+
+	// 更新时间
+	archive.UpdateTime = util.GetCurrentTimeWithMilli()
+
+	affected, err := adapter.engine.ID(archive.Id).AllCols().Update(archive)
+	if err != nil {
+		return false, fmt.Errorf("failed to update ipfs archive by id: %w", err)
+	}
+
+	return affected != 0, nil
+}
+
+// DeleteIpfsArchive 删除IPFS归档记录(基于CorrelationId)
+func DeleteIpfsArchiveByCorrelationId(correlationId string) (bool, error) {
 	if correlationId == "" {
 		return false, fmt.Errorf("correlation_id cannot be empty")
 	}
@@ -112,6 +141,34 @@ func DeleteIpfsArchive(correlationId string) (bool, error) {
 	affected, err := adapter.engine.Where("correlation_id = ?", correlationId).Delete(&IpfsArchive{})
 	if err != nil {
 		return false, fmt.Errorf("failed to delete ipfs archive: %w", err)
+	}
+
+	return affected != 0, nil
+}
+
+// DeleteIpfsArchiveByRecordId 根据id删除IPFS归档记录
+func DeleteIpfsArchiveByRecordId(id int64) (bool, error) {
+	if id <= 0 {
+		return false, fmt.Errorf("id cannot be empty or less than zero")
+	}
+
+	affected, err := adapter.engine.Where("id = ?", id).Delete(&IpfsArchive{})
+	if err != nil {
+		return false, fmt.Errorf("failed to delete ipfs archive by id: %w", err)
+	}
+
+	return affected != 0, nil
+}
+
+// DeleteIpfsArchiveById 根据Id删除IPFS归档记录
+func DeleteIpfsArchiveById(id int64) (bool, error) {
+	if id <= 0 {
+		return false, fmt.Errorf("id cannot be empty or less than zero")
+	}
+
+	affected, err := adapter.engine.ID(id).Delete(&IpfsArchive{})
+	if err != nil {
+		return false, fmt.Errorf("failed to delete ipfs archive by id: %w", err)
 	}
 
 	return affected != 0, nil

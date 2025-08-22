@@ -16,9 +16,9 @@ import React from "react";
 import {Button, Modal, Popconfirm, Space, Table, Tag, Tooltip} from "antd";
 import {DeleteOutlined, EditOutlined, EyeOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
 import i18next from "i18next";
-import BaseListPage from "./BaseListPage";
-import * as Setting from "./Setting";
-import * as IpfsArchiveBackend from "./backend/IpfsArchiveBackend";
+import BaseListPage from "../BaseListPage";
+import * as Setting from "../Setting";
+import * as IpfsArchiveBackend from "../backend/IpfsArchiveBackend";
 
 class IpfsArchiveListPage extends BaseListPage {
   constructor(props) {
@@ -67,9 +67,12 @@ class IpfsArchiveListPage extends BaseListPage {
   deleteItem = async(index) => {
     const record = this.state.data[index];
     try {
-      const response = await IpfsArchiveBackend.deleteIpfsArchive(record);
+      console.log(record);
+      const response = await IpfsArchiveBackend.deleteIpfsArchiveById(record);
       if (response.status === "ok") {
         Setting.showMessage("success", i18next.t("general:Deleted successfully"));
+        // 刷新一下
+        this.fetch({pagination: this.state.pagination});
         return {status: "ok"};
       } else {
         Setting.showMessage("error", response.message || i18next.t("general:Failed to delete"));
@@ -83,15 +86,28 @@ class IpfsArchiveListPage extends BaseListPage {
 
   viewItem = (record) => {
     // 查看详情的实现，可以导航到详情页或显示模态框
-    this.props.history.push(`/ipfs-archive/view/${encodeURIComponent(record.correlationId)}`);
+    this.props.history.push({
+      pathname: `/ipfs-archive/view/${encodeURIComponent(record.id)}`,
+      mode: "view"
+    });
   };
 
   editItem = (record) => {
     // 编辑记录的实现，可以导航到编辑页。
-    this.props.history.push(`/ipfs-archive/edit/${encodeURIComponent(record.correlationId)}`);
+    this.props.history.push({
+      pathname: `/ipfs-archive/edit/${encodeURIComponent(record.id)}`,
+      mode: "edit"
+    });
   };
 
   getColumns = () => [
+    {
+      title: i18next.t("ipfsArchive:Record ID"),
+      dataIndex: "recordId",
+      key: "recordId",
+      width: "250px",
+      ...this.getColumnSearchProps("recordId"),
+    },
     {
       title: i18next.t("ipfsArchive:Correlation ID"),
       dataIndex: "correlationId",
@@ -174,19 +190,19 @@ class IpfsArchiveListPage extends BaseListPage {
         <Space size="middle">
           <Tooltip title={i18next.t("general:View")}>
             <Button
-              type="primary"
-              icon={<EyeOutlined />}
-              size="small"
-              onClick={() => this.viewItem(record)}
-            />
+                type="primary"
+                icon={<EyeOutlined />}
+                size="small"
+                onClick={() => this.viewItem(record)}
+              />
           </Tooltip>
           <Tooltip title={i18next.t("general:Edit")}>
             <Button
-              type="default"
-              icon={<EditOutlined />}
-              size="small"
-              onClick={() => this.editItem(record)}
-            />
+                type="default"
+                icon={<EditOutlined />}
+                size="small"
+                onClick={() => this.editItem(record)}
+              />
           </Tooltip>
           <Tooltip title={i18next.t("general:Delete")}>
             <Button
@@ -228,6 +244,16 @@ class IpfsArchiveListPage extends BaseListPage {
         </div>
         {/* 按钮区域 */}
         <div style={{ marginBottom: '16px', textAlign: 'right' }}>
+          <Button
+            type="primary"
+            style={{ marginRight: '8px' }}
+            onClick={() => this.props.history.push({
+              pathname: '/ipfs-archive/add',
+              mode: 'add'
+            })}
+          >
+            {i18next.t("general:Add")}
+          </Button>
           <Button
             type="primary"
             onClick={() => this.fetch({pagination: this.state.pagination})}

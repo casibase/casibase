@@ -37,8 +37,20 @@ export function getIpfsArchives(page = "", pageSize = "", field = "", value = ""
  * @param {string} correlationId - 索引id
  * @returns {Promise}
  */
-export function getIpfsArchive(correlationId) {
-  return fetch(`${Setting.ServerUrl}/api/get-ipfs-archive?correlation_id=${encodeURIComponent(correlationId)}`, {
+export function getIpfsArchiveByCorrelationId(correlationId) {
+  return fetch(`${Setting.ServerUrl}/api/get-ipfs-archive-by-correlation-id?correlation_id=${encodeURIComponent(correlationId)}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
+/**
+ * 获取单个ipfs_archive记录
+ * @param {int} id - id
+ * @returns {Promise}
+ */
+export function getIpfsArchiveById(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-ipfs-archive-by-id?id=${encodeURIComponent(id)}`, {
     method: "GET",
     credentials: "include",
   }).then(res => res.json());
@@ -60,13 +72,13 @@ export function addIpfsArchive(archive) {
 
 /**
  * 更新ipfs_archive记录
- * @param {string} correlationId - 索引id
+ * @param {int} id - id
  * @param {Object} archive - ipfs_archive记录对象
  * @returns {Promise}
  */
-export function updateIpfsArchive(correlationId, archive) {
+export function updateIpfsArchive(id, archive) {
   const newArchive = Setting.deepCopy(archive);
-  return fetch(`${Setting.ServerUrl}/api/update-ipfs-archive?correlation_id=${encodeURIComponent(correlationId)}`, {
+  return fetch(`${Setting.ServerUrl}/api/update-ipfs-archive?id=${encodeURIComponent(id)}`, {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newArchive),
@@ -78,9 +90,9 @@ export function updateIpfsArchive(correlationId, archive) {
  * @param {Object} archive - ipfs_archive记录对象
  * @returns {Promise}
  */
-export function deleteIpfsArchive(archive) {
+export function deleteIpfsArchiveById(archive) {
   const newArchive = Setting.deepCopy(archive);
-  return fetch(`${Setting.ServerUrl}/api/delete-ipfs-archive`, {
+  return fetch(`${Setting.ServerUrl}/api/delete-ipfs-archive-by-id`, {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newArchive),

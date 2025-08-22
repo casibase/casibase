@@ -504,12 +504,12 @@ routeManager.registerApp("records", {
   gradient: "linear-gradient(135deg, #6e91da 0%, #c0e8ff 100%)",
   routes: [
     {
-      path: "/ipfs-archives",
-      component: () => import("../IpfsArchiveListPage"),
+      path: "/ipfs-archive",
+      component: () => import("../auditSearch/IpfsArchiveListPage"),
     },
     {
       path: "/ipfs-archive/edit/:correlationId",
-      component: () => import("../IpfsArchiveEditPage"),
+      component: () => import("../auditSearch/IpfsArchiveEditPage"),
     },
   ],
 });

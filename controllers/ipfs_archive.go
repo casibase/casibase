@@ -80,17 +80,41 @@ func (c *ApiController) GetIpfsArchives() {
 	}
 }
 
-// GetIpfsArchive
+// GetIpfsArchiveByCorrelationId
 // @Title GetIpfsArchive
 // @Tag IpfsArchive API
 // @Description get ipfs archive
 // @Param   correlation_id     query    string  true        "The correlation_id of the ipfs archive"
 // @Success 200 {object} object.IpfsArchive The Response object
-// @router /get-ipfs-archive [get]
-func (c *ApiController) GetIpfsArchive() {
+// @router /get-ipfs-archive-by-correlation-id [get]
+func (c *ApiController) GetIpfsArchiveByCorrelationId() {
 	correlationId := c.Input().Get("correlation_id")
 
 	archive, err := object.GetIpfsArchiveByCorrelationId(correlationId)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(archive)
+}
+
+// GetIpfsArchiveById
+// @Title GetIpfsArchiveById
+// @Tag IpfsArchive API
+// @Description get ipfs archive by id
+// @Param   id     query    int  true        "The id of the ipfs archive"
+// @Success 200 {object} object.IpfsArchive The Response object
+// @router /get-ipfs-archive-by-id [get]
+func (c *ApiController) GetIpfsArchiveById() {
+	idStr := c.Input().Get("id")
+	idInt, err := util.ParseIntWithError(idStr)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	archive, err := object.GetIpfsArchiveById(int64(idInt))
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -122,22 +146,27 @@ func (c *ApiController) AddIpfsArchive() {
 // @Title UpdateIpfsArchive
 // @Tag IpfsArchive API
 // @Description update ipfs archive
-// @Param   correlation_id     query    string  true        "The correlation_id of the ipfs archive"
+// @Param   id     query    int  true        "The id of the ipfs archive"
 // @Param   body    body   object.IpfsArchive  true        "The details of the ipfs archive"
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-ipfs-archive [post]
 func (c *ApiController) UpdateIpfsArchive() {
-	correlationId := c.Input().Get("correlation_id")
-
-	var archive object.IpfsArchive
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &archive)
+	idStr := c.Input().Get("id")
+	idInt, err := util.ParseIntWithError(idStr)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	// 确保correlation_id匹配
-	archive.CorrelationId = correlationId
+	var archive object.IpfsArchive
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &archive)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	// 确保id匹配
+	archive.Id = int64(idInt)
 
 	c.Data["json"] = wrapActionResponse(object.UpdateIpfsArchive(&archive))
 	c.ServeJSON()
@@ -149,8 +178,8 @@ func (c *ApiController) UpdateIpfsArchive() {
 // @Description delete a ipfs archive
 // @Param   body    body   object.IpfsArchive  true        "The details of the ipfs archive"
 // @Success 200 {object} controllers.Response The Response object
-// @router /delete-ipfs-archive [post]
-func (c *ApiController) DeleteIpfsArchive() {
+// @router /delete-ipfs-archive-by-id [post]
+func (c *ApiController) DeleteIpfsArchiveById() {
 	var archive object.IpfsArchive
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &archive)
 	if err != nil {
@@ -158,6 +187,6 @@ func (c *ApiController) DeleteIpfsArchive() {
 		return
 	}
 
-	c.Data["json"] = wrapActionResponse(object.DeleteIpfsArchive(archive.CorrelationId))
+	c.Data["json"] = wrapActionResponse(object.DeleteIpfsArchiveById(archive.Id))
 	c.ServeJSON()
 }

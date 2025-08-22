@@ -89,8 +89,8 @@ import TemplateEditPage from "./TemplateEditPage";
 import ApplicationListPage from "./ApplicationListPage";
 import ApplicationEditPage from "./ApplicationEditPage";
 import StoreSelect from "./StoreSelect";
-import IpfsArchiveListPage from "./IpfsArchiveListPage";
-import IpfsArchiveEditPage from "./IpfsArchiveEditPage";
+import IpfsArchiveListPage from "./auditSearch/IpfsArchiveListPage";
+import IpfsArchiveEditPage from "./auditSearch/IpfsArchiveEditPage";
 
 
 
@@ -678,7 +678,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows", <BuildTwoTone twoToneColor={twoToneColor} />));
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:AuditSearch")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"),
-        Setting.getItem(<Link to="/ipfs-archives">{i18next.t("med:IpfsArchives")}</Link>, "/ipfs-archives")
+        Setting.getItem(<Link to="/ipfs-archive">{i18next.t("med:IpfsArchives")}</Link>, "/ipfs-archive")
 
       ]));
       
@@ -881,9 +881,10 @@ class App extends Component {
         <Route exact path="/connections" render={(props) => this.renderSigninIfNotSignedIn(<ConnectionListPage account={this.state.account} {...props} />)} />
         <Route exact path="/records" render={(props) => this.renderSigninIfNotSignedIn(<RecordListPage account={this.state.account} {...props} />)} />
         <Route exact path="/records/:organizationName/:recordName" render={(props) => this.renderSigninIfNotSignedIn(<RecordEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/ipfs-archives" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveListPage account={this.state.account} {...props} />)} />
-        <Route exact path="/ipfs-archive/edit/:correlationId" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/ipfs-archive/view/:correlationId" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/ipfs-archive" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/ipfs-archive/edit/:id" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/ipfs-archive/view/:id" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/ipfs-archive/add" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)} />
         <Route exact path="/machines/:organizationName/:machineName" render={(props) => this.renderSigninIfNotSignedIn(<MachineEditPage account={this.state.account} {...props} />)} />
