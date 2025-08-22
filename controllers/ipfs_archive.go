@@ -39,9 +39,11 @@ func (c *ApiController) GetIpfsArchives() {
 	page := c.Input().Get("p")
 	field := c.Input().Get("field")
 	value := c.Input().Get("value")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
 
 	if limit == "" || page == "" {
-		archives, err := object.GetIpfsArchives(0, 0, field, value)
+		archives, err := object.GetIpfsArchives(0, 0, field, value,sortField,sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -62,7 +64,7 @@ func (c *ApiController) GetIpfsArchives() {
 		// }
 
 		// Temporarily get all archives for pagination (to be replaced with proper count function)
-		allArchives, err := object.GetIpfsArchives(0, 0, field, value)
+		allArchives, err := object.GetIpfsArchives(0, 0, field, value,sortField,sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -70,7 +72,7 @@ func (c *ApiController) GetIpfsArchives() {
 		count := len(allArchives)
 
 		paginator := pagination.SetPaginator(c.Ctx, limit, int64(count))
-		archives, err := object.GetIpfsArchives(paginator.Offset(), limit, field, value)
+		archives, err := object.GetIpfsArchives(paginator.Offset(), limit, field, value,sortField,sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -97,6 +99,60 @@ func (c *ApiController) GetIpfsArchiveByCorrelationId() {
 	}
 
 	c.ResponseOk(archive)
+}
+
+// GetIpfsArchivesByCorrelationIdAndDataType
+// @Title GetIpfsArchivesByCorrelationIdAndDataType
+// @Tag IpfsArchive API
+// @Description get ipfs archives by correlation_id and data_type
+// @Param   correlation_id     query    string  true        "The correlation_id of the ipfs archive"
+// @Param   data_type     query    int  true        "The data_type of the ipfs archive"
+// @Param   pageSize     query    string  false        "The size of each page"
+// @Param   p     query    string  false        "The number of the page"
+// @Success 200 {object} []object.IpfsArchive The Response object
+// @router /get-ipfs-archives-by-correlation-id-and-data-type [get]
+func (c *ApiController) GetIpfsArchivesByCorrelationIdAndDataType() {
+	correlationId := c.Input().Get("correlationId")
+	dataTypeStr := c.Input().Get("dataType")
+	pageSize := c.Input().Get("pageSize")
+	page := c.Input().Get("p")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
+
+	dataType, err := util.ParseIntWithError(dataTypeStr)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	var limit, offset int
+	if pageSize != "" && page != "" {
+		limit, err = util.ParseIntWithError(pageSize)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		pageNum, err := util.ParseIntWithError(page)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		offset = (pageNum - 1) * limit
+	} else {
+		// Default to get all records if no pagination is specified
+		offset = 0
+		limit = 0
+	}
+
+	archives, err := object.GetIpfsArchivesByCorrelationIdAndDataType(correlationId, dataType, offset, limit,sortField,sortOrder)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(archives)
 }
 
 // GetIpfsArchiveById

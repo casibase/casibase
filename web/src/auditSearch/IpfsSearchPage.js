@@ -23,7 +23,7 @@ export class IPFSSearchPage extends Component {
     const { correlationId } = this.state;
     if (correlationId.trim()) {
       // 跳转到结果页面
-      this.props.history.push(`/ipfs-archive-edit?correlationId=${correlationId}`);
+      this.props.history.push(`/ipfs-search/result/${correlationId}`);
     } else {
       // 提示用户输入
       message.error('请输入有效的索引(correlationId)');

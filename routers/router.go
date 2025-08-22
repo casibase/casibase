@@ -227,6 +227,7 @@ func initAPI() {
 	// IPFS Archive API
 	beego.Router("/api/get-ipfs-archives", &controllers.ApiController{}, "GET:GetIpfsArchives")
 	beego.Router("/api/get-ipfs-archive-by-correlation-id", &controllers.ApiController{}, "GET:GetIpfsArchiveByCorrelationId")
+	beego.Router("/api/get-ipfs-archives-by-correlation-id-and-data-type", &controllers.ApiController{}, "GET:GetIpfsArchivesByCorrelationIdAndDataType")
 	beego.Router("/api/get-ipfs-archive-by-id", &controllers.ApiController{}, "GET:GetIpfsArchiveById")
 	beego.Router("/api/add-ipfs-archive", &controllers.ApiController{}, "POST:AddIpfsArchive")
 	beego.Router("/api/update-ipfs-archive", &controllers.ApiController{}, "POST:UpdateIpfsArchive")

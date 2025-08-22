@@ -92,6 +92,7 @@ import StoreSelect from "./StoreSelect";
 import IpfsArchiveListPage from "./auditSearch/IpfsArchiveListPage";
 import IpfsArchiveEditPage from "./auditSearch/IpfsArchiveEditPage";
 import IpfsSearchPage from "./auditSearch/IpfsSearchPage";
+import IpfsSearchResultPage from "./auditSearch/IpfsSearchResultPage";
 
 
 
@@ -923,6 +924,7 @@ class App extends Component {
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/sysinfo" render={(props) => this.renderSigninIfNotSignedIn(<SystemInfo account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-search" render={(props) => this.renderSigninIfNotSignedIn(<IPFSSearchPage account={this.state.account} {...props} />)} />
+        <Route exact path="/ipfs-search/result/:correlationId" render={(props) => this.renderSigninIfNotSignedIn(<IpfsSearchResultPage account={this.state.account} {...props} />)} />
         <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
       </Switch>
     );

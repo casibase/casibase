@@ -86,10 +86,47 @@ func GetIpfsArchiveByCorrelationId(correlationId string) (*IpfsArchive, error) {
 	return archive, nil
 }
 
-// GetIpfsArchives 获取多个IPFS归档记录
-func GetIpfsArchives(offset, limit int, field, value string) ([]*IpfsArchive, error) {
+// GetIpfsArchiveByCorrelationIdAndDataType 根据correlationId和dataType获取IPFS归档记录列表
+func GetIpfsArchivesByCorrelationIdAndDataType(correlationId string, dataType int, offset, limit int,sortField,sortOrder string) ([]*IpfsArchive, error) {
 	archives := []*IpfsArchive{}
-	session := GetDbSession("", offset, limit, field, value, "update_time", "DESC")
+	session := adapter.engine.NewSession()
+	session = session.And("correlation_id=?", correlationId)
+	session = session.And("data_type=?", dataType)
+	
+	// 添加分页
+	if offset >= 0 && limit > 0 {
+		session = session.Limit(limit, offset)
+	}
+	
+	if sortField == "" || sortOrder == "" {
+		sortField = "update_time"
+	}
+	if sortOrder == "ascend" {
+		session = session.Asc(util.SnakeString(sortField))
+	} else {
+		session = session.Desc(util.SnakeString(sortField))
+	}
+	
+	err := session.Find(&archives)
+	if err != nil {
+		return archives, fmt.Errorf("failed to get ipfs archives by correlation_id and data_type: %w", err)
+	}
+	
+	return archives, nil
+}
+
+// GetIpfsArchives 获取多个IPFS归档记录
+func GetIpfsArchives(offset, limit int, field, value,sortField,sortOrder string) ([]*IpfsArchive, error) {
+	archives := []*IpfsArchive{}
+
+	if sortField == "" {
+		sortField = "update_time"
+	}
+	if sortOrder == "" {
+		sortOrder = "descend"
+	}
+
+	session := GetDbSession("", offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&archives)
 	if err != nil {
 		return archives, fmt.Errorf("failed to get ipfs archives: %w", err)
