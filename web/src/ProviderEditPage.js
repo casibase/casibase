@@ -23,6 +23,7 @@ import FileSaver from "file-saver";
 import McpToolsTable from "./table/McpToolsTable";
 import ModelTestWidget from "./common/TestModelWidget";
 import TtsTestWidget from "./common/TestTtsWidget";
+import EmbeddingTestWidget from "./EmbeddingTestWidget";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -1057,6 +1058,7 @@ class ProviderEditPage extends React.Component {
           account={this.props.account}
           onUpdateProvider={this.updateProviderField.bind(this)}
         />
+        <EmbeddingTestWidget provider={this.state.provider} />
         {
           this.state.provider.category === "Model" ? (
             <Row style={{marginTop: "20px"}} >
