@@ -502,7 +502,7 @@ class App extends Component {
       return (
         <React.Fragment>
           {this.renderRightDropdown()}
-          <ThemeSelect className="select-box" themeAlgorithm={this.state.themeAlgorithm} onChange={this.setLogoAndThemeAlgorithm} />
+          {/* <ThemeSelect className="select-box" themeAlgorithm={this.state.themeAlgorithm} onChange={this.setLogoAndThemeAlgorithm} /> */}
           <LanguageSelect className="select-box" />
           {Setting.isLocalAdminUser(this.state.account) &&
             <StoreSelect
