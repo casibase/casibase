@@ -31,30 +31,30 @@ class QueueDetailModal extends React.Component {
     };
   }
 
-  showModal = async () => {
-    this.setState({ loading: true });
-    try {
-      const response = await IpfsArchiveBackend.getAllQueueData();
-      if (response.status === "ok") {
-        const queueData = response.data || {};
-        const dataTypes = Object.keys(queueData);
-        this.setState({
-          visible: true,
-          queueData,
-          loading: false
-        });
-        if (dataTypes.length > 0) {
-          this.fetchQueueDataByType(dataTypes[0]);
-        }
-      } else {
-        Setting.showMessage("error", response.message || i18next.t("general:Failed to fetch queue data"));
-        this.setState({ loading: false });
-      }
-    } catch (error) {
-      Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
-      this.setState({ loading: false });
-    }
-  };
+  // showModal = async () => {
+  //   this.setState({ loading: true });
+  //   try {
+  //     const response = await IpfsArchiveBackend.getAllQueueData();
+  //     if (response.status === "ok") {
+  //       const queueData = response.data || {};
+  //       const dataTypes = Object.keys(queueData);
+  //       this.setState({
+  //         visible: true,
+  //         queueData,
+  //         loading: false
+  //       });
+  //       if (dataTypes.length > 0) {
+  //         this.fetchQueueDataByType(dataTypes[0]);
+  //       }
+  //     } else {
+  //       Setting.showMessage("error", response.message || i18next.t("general:Failed to fetch queue data"));
+  //       this.setState({ loading: false });
+  //     }
+  //   } catch (error) {
+  //     Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+  //     this.setState({ loading: false });
+  //   }
+  // };
 
   /**
    * 按类型显示队列详情
@@ -97,6 +97,58 @@ class QueueDetailModal extends React.Component {
   };
 
 
+  /**
+   * 移除队列中的记录
+   * @param {Object} record - 要移除的记录
+   */
+  handleRemoveRecord = async (record) => {
+    try {
+      this.setState({ loading: true });
+      const response = await IpfsArchiveBackend.removeRecordFromQueueByRecordIdAndDataType(
+        record.id, 
+        this.state.dataType
+      );
+      if (response.status === "ok") {
+        Setting.showMessage("success", i18next.t("ipfsArchive:Remove record successfully"));
+        // 刷新当前队列数据
+        this.setState(prevState => ({
+          dataSource: prevState.dataSource.filter(item => item.id !== record.id),
+          loading: false
+        }));
+      } else {
+        Setting.showMessage("error", response.message || i18next.t("ipfsArchive:Failed to remove record"));
+        this.setState({ loading: false });
+      }
+    } catch (error) {
+      Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      this.setState({ loading: false });
+    }
+  };
+
+  /**
+   * 上传当前类型的队列数据到IPFS
+   */
+  handleUploadToIPFS = async () => {
+    try {
+      this.setState({ loading: true });
+      const response = await IpfsArchiveBackend.archiveToIPFS(this.state.dataType);
+      if (response.status === "ok") {
+        Setting.showMessage("success", i18next.t("ipfsArchive:Upload to IPFS successfully"));
+        // 上传成功后清空当前队列数据
+        this.setState({
+          dataSource: [],
+          loading: false
+        });
+      } else {
+        Setting.showMessage("error", response.message || i18next.t("ipfsArchive:Failed to upload to IPFS"));
+        this.setState({ loading: false });
+      }
+    } catch (error) {
+      Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      this.setState({ loading: false });
+    }
+  };
+
   getColumns = () => [
     {
       title: i18next.t("ipfsArchive:Record ID"),
@@ -122,6 +174,23 @@ class QueueDetailModal extends React.Component {
           </div>
         </Tooltip>
       )
+    },
+    {
+      title: i18next.t("ipfsArchive:Action"),
+      key: "action",
+      width: "100px",
+      render: (_, record) => (
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            this.handleRemoveRecord(record);
+          }}
+          style={{ color: '#ff4d4f' }}
+        >
+          {i18next.t("ipfsArchive:Remove")}
+        </a>
+      )
     }
   ];
 
@@ -136,13 +205,30 @@ class QueueDetailModal extends React.Component {
       <React.Fragment>
         <Modal
           title={
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center",marginRight:"20px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginRight: "20px" }}>
               <span>{i18next.t("ipfsArchive:Queue Detail")}</span>
-              <Tag color="blue">
-                类型：{typeCn} &nbsp;&nbsp;
-                {i18next.t("ipfsArchive:Total")}：{totalCount}
-                
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <button
+                  onClick={this.handleUploadToIPFS}
+                  disabled={totalCount === 0 || loading}
+                  style={{
+                    backgroundColor: '#1890ff',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    padding: '4px 15px',
+                    marginRight: '10px',
+                    cursor: totalCount === 0 || loading ? 'not-allowed' : 'pointer',
+                    opacity: totalCount === 0 || loading ? 0.6 : 1
+                  }}
+                >
+                  {i18next.t("ipfsArchive:Upload to IPFS")}
+                </button>
+                <Tag color="blue">
+                  类型：{typeCn} &nbsp;&nbsp;
+                  {i18next.t("ipfsArchive:Total")}：{totalCount}
                 </Tag>
+              </div>
             </div>
           }
           visible={visible}

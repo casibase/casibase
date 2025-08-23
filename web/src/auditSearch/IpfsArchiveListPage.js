@@ -30,14 +30,29 @@ class IpfsArchiveListPage extends BaseListPage {
       title: i18next.t("ipfsArchive:Ipfs Archive List"),
       queueData: {},
       loadingQueue: false,
-       selectedRowKeys: []
+      selectedRowKeys: []
     };
     this.queueDetailModal = React.createRef();
+    this.refreshIntervalId = null;
   }
 
   componentDidMount() {
     super.componentDidMount();
     this.fetchQueueData();
+    // 设置每30秒自动刷新
+    this.refreshIntervalId = setInterval(() => {
+      this.fetch({pagination: this.state.pagination});
+      this.fetchQueueData();
+    }, 30000);
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    // 清除定时器
+    if (this.refreshIntervalId) {
+      clearInterval(this.refreshIntervalId);
+      this.refreshIntervalId = null;
+    }
   }
 
   fetchQueueData = async () => {
@@ -373,12 +388,22 @@ class IpfsArchiveListPage extends BaseListPage {
           title={
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span>{i18next.t("ipfsArchive:Current Queue Status")}</span>
-              <Tag color="geekblue">{i18next.t("ipfsArchive:Total")}: {totalCount}</Tag>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Tag color="geekblue">{i18next.t("ipfsArchive:Total")}: {totalCount}</Tag>
+                <Button
+                  variant="dashed"
+                  size="small"
+                  style={{ marginRight: '8px' }}
+                  onClick={this.handleAddUnUploadQueueData}
+                >
+                  {i18next.t("ipfsArchive:Add Unupload Data to Queue")}
+                </Button>
+              </div>
             </div>
           }
-          bordered
+          variant="outlined"
           style={{ marginBottom: '24px' }}
-          loading={loadingQueue}
+          // loading={loadingQueue}
         >
           <Row gutter={[16, 16]}>
               {allDataTypeKeys.map((type) => (
@@ -414,13 +439,7 @@ class IpfsArchiveListPage extends BaseListPage {
           }>
             {i18next.t("general:Add")}
           </Button>
-          <Button
-            type="primary"
-            style={{ marginRight: '8px' }}
-            onClick={this.handleAddUnUploadQueueData}
-          >
-            {i18next.t("ipfsArchive:Add Unupload Data to Queue")}
-          </Button>
+
           <Button
             type="primary"
             style={{ marginRight: '8px' }}
@@ -430,8 +449,10 @@ class IpfsArchiveListPage extends BaseListPage {
             {i18next.t("ipfsArchive:Add Selected to Queue")}
           </Button>
           <Button
-            type="primary"
-            onClick={() => this.fetch({pagination: this.state.pagination})}
+            onClick={async () => {
+              this.fetch({pagination: this.state.pagination});
+              this.fetchQueueData();
+            }}
           >
             {i18next.t("general:Refresh")}
           </Button>

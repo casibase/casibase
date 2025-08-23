@@ -267,7 +267,7 @@ class IpfsArchiveEditPage extends React.Component {
         {this.state.archive !== null ? this.renderArchive() : null}
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           {this.state.mode === "view" ? (
-            <Button size="large" onClick={() => this.props.history.push("/ipfs-archive")}>{i18next.t("general:Back")}</Button>
+            <Button size="large" onClick={() => this.props.history.goBack()}>{i18next.t("general:Back")}</Button>
           ) : this.state.mode === "add" ? (
             <React.Fragment>
               <Button type="primary" size="large" onClick={() => this.submitArchiveEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
@@ -278,6 +278,7 @@ class IpfsArchiveEditPage extends React.Component {
             <React.Fragment>
               <Button type="primary" size="large" onClick={() => this.submitArchiveEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
               <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.submitArchiveEdit(false)}>{i18next.t("general:Save")}</Button>
+              <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.props.history.goBack()}>{i18next.t("general:Back")}</Button>
               {/* <Button style={{marginLeft: "20px"}} type="danger" size="large" onClick={() => this.deleteArchive()}>{i18next.t("general:Delete")}</Button> */}
             </React.Fragment>
           )}

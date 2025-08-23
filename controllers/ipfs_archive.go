@@ -35,7 +35,8 @@ import (
 // @Param   value     query    string  false        "The value to search"
 // @Param   sortField     query    string  false        "The field to sort"
 // @Param   sortOrder     query    string  false        "The order to sort"
-// @Success 200 {object} object.IpfsArchive The Response object
+// @Success 200 {object// RemoveRecordFromQueueByRecordIdAndDataType
+// object.IpfsArchive The Response object
 // @router /get-ipfs-archives [get]
 func (c *ApiController) GetIpfsArchives() {
 	limit := c.Input().Get("pageSize")
@@ -323,9 +324,15 @@ func (c *ApiController) AddRecordsWithDataTypesToQueue() {
 	}
 
 	// 创建记录数组
-	records := make([]struct{RecordId int64; DataType int}, len(recordIds))
+	records := make([]struct {
+		RecordId int64
+		DataType int
+	}, len(recordIds))
 	for i := range recordIds {
-		records[i] = struct{RecordId int64; DataType int}{
+		records[i] = struct {
+			RecordId int64
+			DataType int
+		}{
 			RecordId: recordIds[i],
 			DataType: dataTypes[i],
 		}
@@ -338,4 +345,64 @@ func (c *ApiController) AddRecordsWithDataTypesToQueue() {
 	}
 
 	c.ResponseOk("Successfully added records to queue")
+}
+
+// @Title RemoveRecordFromQueueByRecordIdAndDataType
+// @Tag IpfsArchive API
+// @Description remove a record from queue by recordId and dataType
+// @Param   recordId     query    int64  true        "The recordId of the record to remove"
+// @Param   dataType     query    int  true        "The dataType of the record to remove"
+// @Success 200 {object} controllers.Response The Response object
+// @router /api/remove-ipfs-archive-queue-data-by-record-id-and-data-type [post]
+func (c *ApiController) RemoveRecordFromQueueByRecordIdAndDataType() {
+	// 获取recordId和dataType参数
+	recordIdStr := c.Input().Get("recordId")
+	dataTypeStr := c.Input().Get("dataType")
+
+	// 解析recordId字符串为int64
+	recordId, err := strconv.ParseInt(strings.TrimSpace(recordIdStr), 10, 64)
+	if err != nil {
+		c.ResponseError(fmt.Sprintf("Invalid recordId: %s", recordIdStr))
+		return
+	}
+
+	// 解析dataType字符串为int
+	dataType, err := strconv.Atoi(strings.TrimSpace(dataTypeStr))
+	if err != nil {
+		c.ResponseError(fmt.Sprintf("Invalid dataType: %s", dataTypeStr))
+		return
+	}
+
+	// 调用object包中的函数移除记录
+	err = object.RemoveRecordFromQueueByRecordIdAndDataType(recordId, dataType)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk("Successfully removed record from queue")
+}
+
+// ArchiveToIPFS
+// @Title ArchiveToIPFS
+// @Tag IpfsArchive API
+// @Description manually trigger IPFS archiving for a specific data type
+// @Param   dataType     query    int  true        "The data type to archive"
+// @Success 200 {object} controllers.Response The Response object
+// @router /api/archive-to-ipfs [post]
+func (c *ApiController) ArchiveToIPFS() {
+	// 获取dataType参数
+	dataTypeStr := c.Input().Get("dataType")
+
+	// 解析dataType字符串为int
+	dataType, err := strconv.Atoi(strings.TrimSpace(dataTypeStr))
+	if err != nil {
+		c.ResponseError(fmt.Sprintf("Invalid dataType: %s", dataTypeStr))
+		return
+	}
+
+	// 调用object包中的函数执行归档
+	go object.ArchiveToIPFS(dataType)
+
+	c.ResponseOk("IPFS archiving process has been triggered")
 }

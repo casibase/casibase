@@ -235,7 +235,8 @@ func initAPI() {
 	beego.Router("/api/get-ipfs-archive-all-queue-data", &controllers.ApiController{}, "Get:GetAllQueueData")
 	beego.Router("/api/add-ipfs-archive-unupload-queue-data", &controllers.ApiController{}, "Get:AddUnUploadIpfsDataToQueue")
 	beego.Router("/api/add-ipfs-archive-queue-data-by-record-id", &controllers.ApiController{}, "Post:AddRecordsWithDataTypesToQueue")
-
+	beego.Router("/api/remove-ipfs-archive-queue-data-by-record-id-and-data-type", &controllers.ApiController{}, "Post:RemoveRecordFromQueueByRecordIdAndDataType")
+	beego.Router("/api/archive-to-ipfs", &controllers.ApiController{}, "Post:ArchiveToIPFS")
 
 	beego.Router("/api/commit-record", &controllers.ApiController{}, "POST:CommitRecord")
 	beego.Router("/api/commit-record-second", &controllers.ApiController{}, "POST:CommitRecordSecond")

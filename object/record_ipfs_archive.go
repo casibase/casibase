@@ -17,7 +17,7 @@ package object
 import (
 	"fmt"
 	"sync"
-	
+
 	"github.com/casibase/casibase/util"
 )
 
@@ -249,14 +249,14 @@ func AddRecordToArchiveQueue(record *Record, dataType int) error {
 	// 检查队列大小是否达到阈值
 	if len(recordArchiveQueues[dataType]) >= maxQueueSize {
 		// 触发IPFS归档流程
-		go archiveToIPFS(dataType)
+		go ArchiveToIPFS(dataType)
 	}
 
 	return nil
 }
 
-// archiveToIPFS 执行IPFS归档操作
-func archiveToIPFS(dataType int) {
+// ArchiveToIPFS 执行IPFS归档操作
+func ArchiveToIPFS(dataType int) {
 	// 创建一个临时队列副本，避免长时间持有锁
 	var tempQueue []*Record
 
@@ -333,9 +333,6 @@ func AddRecordsWithDataTypesToQueue(records []struct {
 	queueMutex.Lock()
 	defer queueMutex.Unlock()
 
-	// 用于跟踪哪些dataType队列需要检查大小
-	modifiedDataTypes := make(map[int]bool)
-
 	// 处理每条记录
 	for _, item := range records {
 		recordId := item.RecordId
@@ -364,22 +361,6 @@ func AddRecordsWithDataTypesToQueue(records []struct {
 		// 添加到队列
 		recordArchiveQueues[dataType][recordId] = record
 
-		// 标记该dataType队列已修改
-		modifiedDataTypes[dataType] = true
-
-		// 将记录信息保存到数据库
-		archive := &IpfsArchive{
-			RecordId:      recordId,
-			CorrelationId: record.CorrelationId,
-			DataType:      dataType,
-			CreateTime:    util.GetCurrentTimeWithMilli(),
-			UpdateTime:    util.GetCurrentTimeWithMilli(),
-		}
-
-		_, err = AddIpfsArchive(archive)
-		if err != nil {
-			return fmt.Errorf("failed to add record to archive database: %w", err)
-		}
 	}
 
 	return nil
@@ -456,4 +437,32 @@ func GetRecordByRecordId(recordId string) (*Record, error) {
 	}
 
 	return record, nil
+}
+
+// RemoveRecordFromQueueByRecordIdAndDataType 从队列中移除指定recordId和dataType的记录
+// 并从数据库中删除对应的归档记录
+func RemoveRecordFromQueueByRecordIdAndDataType(recordId int64, dataType int) error {
+	// 加锁处理队列
+	queueMutex.Lock()
+	defer queueMutex.Unlock()
+
+	// 检查该dataType的队列是否存在
+	queue, exists := recordArchiveQueues[dataType]
+	if !exists {
+		return nil // 队列为空，无需操作
+	}
+
+	// 检查记录是否在队列中
+	if _, exists := queue[recordId]; !exists {
+		return nil // 记录不在队列中，无需操作
+	}
+
+	// 从队列中删除记录
+	delete(queue, recordId)
+
+	// 如果队列为空，则删除该队列
+	if len(queue) == 0 {
+		delete(recordArchiveQueues, dataType)
+	}
+	return nil
 }

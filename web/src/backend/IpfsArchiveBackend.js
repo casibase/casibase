@@ -157,3 +157,37 @@ export function addRecordsWithDataTypesToQueue(recordIds, dataTypes) {
     credentials: "include",
   }).then(res => res.json());
 }
+
+/**
+ * 按记录ID和数据类型从队列中移除记录
+ * @param {string} recordId - 记录ID
+ * @param {string} dataType - 数据类型
+ * @returns {Promise}
+ */
+export function removeRecordFromQueueByRecordIdAndDataType(recordId, dataType) {
+  // 构建查询字符串
+  const params = new URLSearchParams();
+  params.append('recordId', recordId);
+  params.append('dataType', dataType);
+
+  return fetch(`${Setting.ServerUrl}/api/remove-ipfs-archive-queue-data-by-record-id-and-data-type?${params}`, {
+    method: "POST",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
+/**
+ * 触发特定数据类型的IPFS归档
+ * @param {string} dataType - 数据类型
+ * @returns {Promise}
+ */
+export function archiveToIPFS(dataType) {
+  // 构建查询字符串
+  const params = new URLSearchParams();
+  params.append('dataType', dataType);
+
+  return fetch(`${Setting.ServerUrl}/api/archive-to-ipfs?${params}`, {
+    method: "POST",
+    credentials: "include",
+  }).then(res => res.json());
+}
