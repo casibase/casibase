@@ -13,13 +13,14 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Modal, Popconfirm, Space, Table, Tag, Tooltip} from "antd";
-import {DeleteOutlined, EditOutlined, EyeOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
+import {Button, Card, Col, Row, Modal, Popconfirm, Space, Table, Tag, Tooltip} from "antd";
+import {DeleteOutlined, EditOutlined, EyeOutlined, ExclamationCircleOutlined, FileTextOutlined} from "@ant-design/icons";
 import i18next from "i18next";
 import BaseListPage from "../BaseListPage";
 import * as Setting from "../Setting";
 import * as IpfsArchiveBackend from "../backend/IpfsArchiveBackend";
 import DataTypeConverter from "../common/DataTypeConverter";
+import QueueDetailModal from "./QueueDetailModal";
 
 class IpfsArchiveListPage extends BaseListPage {
   constructor(props) {
@@ -27,8 +28,52 @@ class IpfsArchiveListPage extends BaseListPage {
     this.state = {
       ...this.state,
       title: i18next.t("ipfsArchive:Ipfs Archive List"),
+      queueData: {},
+      loadingQueue: false,
+       selectedRowKeys: []
     };
+    this.queueDetailModal = React.createRef();
   }
+
+  componentDidMount() {
+    super.componentDidMount();
+    this.fetchQueueData();
+  }
+
+  fetchQueueData = async () => {
+    this.setState({ loadingQueue: true });
+    try {
+      const response = await IpfsArchiveBackend.getAllQueueData();
+      if (response.status === "ok") {
+        this.setState({
+          queueData: response.data || {},
+          loadingQueue: false
+        });
+      } else {
+        Setting.showMessage("error", response.message || i18next.t("general:Failed to fetch queue data"));
+        this.setState({ loadingQueue: false });
+      }
+    } catch (error) {
+      Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      this.setState({ loadingQueue: false });
+    }
+  };
+
+  showQueueDetail = () => {
+    if (this.queueDetailModal.current) {
+      this.queueDetailModal.current.showModal();
+    }
+  };
+
+  /**
+   * 按类型显示队列详情
+   * @param {string} type - 数据类型
+   */
+  showQueueDetailByType = (type) => {
+    if (this.queueDetailModal.current) {
+      this.queueDetailModal.current.showModalByType(type);
+    }
+  };
 
   fetch = async(params) => {
     const {page, pageSize, sortField, sortOrder, searchText, searchedColumn} = params;
@@ -205,14 +250,14 @@ class IpfsArchiveListPage extends BaseListPage {
                 onClick={() => this.editItem(record)}
               />
           </Tooltip>
-          <Tooltip title={i18next.t("general:Delete")}>
+          {/* <Tooltip title={i18next.t("general:Delete")}>
             <Button
               type="danger"
               icon={<DeleteOutlined />}
               size="small"
               onClick={() => this.handleDelete(record)}
             />
-          </Tooltip>
+          </Tooltip> */}
         </Space>
       ),
     },
@@ -221,13 +266,13 @@ class IpfsArchiveListPage extends BaseListPage {
   handleDelete = (record) => {
     const {confirm} = Modal;
     confirm({
-      title: `${i18next.t("general:Sure to delete")}: ${record.correlation_id} ?`,
+      title: `${i18next.t("general:Sure to delete")}: ${record.correlationId} ?`,
       icon: <ExclamationCircleOutlined />,
       okText: i18next.t("general:OK"),
       okType: "danger",
       cancelText: i18next.t("general:Cancel"),
       onOk: () => {
-        const index = this.state.data.findIndex(item => item.correlation_id === record.correlation_id);
+        const index = this.state.data.findIndex(item => item.correlationId === record.correlationId);
         if (index !== -1) {
           this.deleteItem(index);
         }
@@ -235,14 +280,128 @@ class IpfsArchiveListPage extends BaseListPage {
     });
   };
 
+  getRowSelection = () => {
+    return {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
+  };
+
+  handleAddUnUploadQueueData = async () => {
+    try {
+      this.setState({ loading: true });
+      const response = await IpfsArchiveBackend.addUnUploadIpfsDataToQueue();
+      if (response.status === 'ok') {
+        Setting.showMessage('success', i18next.t('ipfsArchive:Successfully added unuploaded data to queue'));
+        this.fetchQueueData(); // 刷新队列数据
+      } else {
+        Setting.showMessage('error', response.message || i18next.t('ipfsArchive:Failed to add unuploaded data to queue'));
+      }
+    } catch (error) {
+      Setting.showMessage('error', `${i18next.t('general:Failed to connect to server')}: ${error}`);
+    } finally {
+      this.setState({ loading: false });
+    }
+  };
+
+  handleAddSelectedRecordsToQueue = async () => {
+    const { selectedRowKeys } = this.state;
+    if (selectedRowKeys.length === 0) {
+      Setting.showMessage('warning', i18next.t('ipfsArchive:Please select records first'));
+      return;
+    }
+
+    try {
+      this.setState({ loading: true });
+      // 获取选中的记录
+      const selectedRecords = this.state.data.filter(record =>
+          selectedRowKeys.includes(record.id)
+        );
+
+      // 验证selectedRecords是数组且不为空
+      if (!Array.isArray(selectedRecords) || selectedRecords.length === 0) {
+        console.error('Error: No records selected or selectedRecords is not an array');
+        Setting.showMessage('error', i18next.t('ipfsArchive:Failed to process selected records'));
+        this.setState({ loading: false });
+        return;
+      }
+
+      // 构建recordIds和dataTypes逗号分隔字符串
+      const recordIds = selectedRecords.map(record => record.recordId).join(',');
+      const dataTypes = selectedRecords.map(record => record.dataType).join(',');
+
+      console.log('recordIds:', recordIds);
+      console.log('dataTypes:', dataTypes);
+
+      const response = await IpfsArchiveBackend.addRecordsWithDataTypesToQueue(recordIds, dataTypes);
+      if (response.status === 'ok') {
+        Setting.showMessage('success', i18next.t('ipfsArchive:Successfully added selected records to queue'));
+        this.fetchQueueData(); // 刷新队列数据
+        this.setState({ selectedRowKeys: [] }); // 清空选中状态
+      } else {
+        Setting.showMessage('error', response.message || i18next.t('ipfsArchive:Failed to add selected records to queue'));
+      }
+    } catch (error) {
+      Setting.showMessage('error', `${i18next.t('general:Failed to connect to server')}: ${error}`);
+    } finally {
+      this.setState({ loading: false });
+    }
+  };
+
   renderTable = (data) => {
     const columns = this.getColumns();
+    const { queueData, loadingQueue } = this.state;
+    // 获取所有可能的数据类型
+    const allDataTypes = DataTypeConverter.getAllDataTypes();
+    const allDataTypeKeys = Object.keys(allDataTypes);
+    // 计算总数
+    const totalCount = allDataTypeKeys.reduce((total, type) => {
+      const records = queueData[type] || [];
+      return total + (Array.isArray(records) ? records.length : 0);
+    }, 0);
 
     return (
       <div>
         <div style={{ color: 'red', fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' }}>
           页面灰度测试与编码中！！仅部分功能可用！
         </div>
+
+        {/* 队列信息卡片 */}
+        <Card
+          title={
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span>{i18next.t("ipfsArchive:Current Queue Status")}</span>
+              <Tag color="geekblue">{i18next.t("ipfsArchive:Total")}: {totalCount}</Tag>
+            </div>
+          }
+          bordered
+          style={{ marginBottom: '24px' }}
+          loading={loadingQueue}
+        >
+          <Row gutter={[16, 16]}>
+              {allDataTypeKeys.map((type) => (
+                <Col xs={24} sm={12} md={8} lg={6} key={type}>
+                  <Card
+                    size="small"
+                    bordered
+                    style={{ height: "100%", cursor: "pointer" }}
+                    onClick={() => this.showQueueDetailByType(type)}
+                    hoverable
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span>{DataTypeConverter.convertToChinese(type)}</span>
+                      <Tag color={Array.isArray(queueData[type]) && queueData[type].length > 0 ? "blue" : "default"}>
+                        {Array.isArray(queueData[type]) ? queueData[type].length : 0}
+                      </Tag>
+                    </div>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+        </Card>
+
         {/* 按钮区域 */}
         <div style={{ marginBottom: '16px', textAlign: 'right' }}>
           <Button
@@ -251,9 +410,24 @@ class IpfsArchiveListPage extends BaseListPage {
             onClick={() => this.props.history.push({
               pathname: '/ipfs-archive/add',
               mode: 'add'
-            })}
-          >
+            })
+          }>
             {i18next.t("general:Add")}
+          </Button>
+          <Button
+            type="primary"
+            style={{ marginRight: '8px' }}
+            onClick={this.handleAddUnUploadQueueData}
+          >
+            {i18next.t("ipfsArchive:Add Unupload Data to Queue")}
+          </Button>
+          <Button
+            type="primary"
+            style={{ marginRight: '8px' }}
+            onClick={this.handleAddSelectedRecordsToQueue}
+            disabled={this.state.selectedRowKeys.length === 0}
+          >
+            {i18next.t("ipfsArchive:Add Selected to Queue")}
           </Button>
           <Button
             type="primary"
@@ -266,7 +440,7 @@ class IpfsArchiveListPage extends BaseListPage {
           scroll={{x: "max-content"}}
           columns={columns}
           dataSource={data}
-          rowKey={(record) => record.correlation_id}
+          rowKey={(record) => record.id}
           rowSelection={this.getRowSelection()}
           size="middle"
           bordered
@@ -275,8 +449,10 @@ class IpfsArchiveListPage extends BaseListPage {
           loading={this.state.loading}
           onChange={this.handleTableChange}
         />
+      
+      <QueueDetailModal ref={this.queueDetailModal} />
       </div>
-    );
+   )
   };
 }
 

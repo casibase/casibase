@@ -17,7 +17,7 @@ package object
 import (
 	"fmt"
 	"sync"
-
+	
 	"github.com/casibase/casibase/util"
 )
 
@@ -352,7 +352,7 @@ func AddRecordsWithDataTypesToQueue(records []struct {
 		}
 
 		// 获取对应的Record对象
-		record, err := GetRecord(fmt.Sprintf("%d", recordId))
+		record, err := GetRecordByRecordId(fmt.Sprintf("%d", recordId))
 		if err != nil {
 			return fmt.Errorf("failed to get record by id %d: %w", recordId, err)
 		}
@@ -389,7 +389,7 @@ func AddRecordsWithDataTypesToQueue(records []struct {
 func AddUnUploadIpfsDataToQueue() error {
 	// 查询数据库中ipfsAddress为空的所有记录
 	var archives []*IpfsArchive
-	err := adapter.engine.Where("ipfs_address = ? OR ipfs_address = ''", nil).Find(&archives)
+	err := adapter.engine.Where("ipfs_address is NULL OR ipfs_address = ''").Find(&archives)
 	if err != nil {
 		return fmt.Errorf("failed to query unuploaded ipfs data: %w", err)
 	}
@@ -417,7 +417,7 @@ func AddUnUploadIpfsDataToQueue() error {
 		}
 
 		// 获取对应的Record对象
-		record, err := GetRecord(fmt.Sprintf("%d", archive.RecordId))
+		record, err := GetRecordByRecordId(fmt.Sprintf("%d", archive.RecordId))
 		if err != nil {
 			return fmt.Errorf("failed to get record by id %d: %w", archive.RecordId, err)
 		}
@@ -431,4 +431,29 @@ func AddUnUploadIpfsDataToQueue() error {
 	}
 
 	return nil
+}
+
+// GetRecordByRecordId 根据recordId查询记录
+func GetRecordByRecordId(recordId string) (*Record, error) {
+	// 尝试将recordId解析为整数
+	id, err := util.ParseIntWithError(recordId)
+	if err != nil {
+		return nil, fmt.Errorf("invalid recordId format: %s, error: %w", recordId, err)
+	}
+
+	// 创建Record对象并设置Id
+	record := &Record{Id: id}
+
+	// 查询数据库
+	existed, err := adapter.engine.Get(record)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get record by id %d: %w", id, err)
+	}
+
+	// 检查记录是否存在
+	if !existed {
+		return nil, nil
+	}
+
+	return record, nil
 }

@@ -278,7 +278,7 @@ class IpfsArchiveEditPage extends React.Component {
             <React.Fragment>
               <Button type="primary" size="large" onClick={() => this.submitArchiveEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
               <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.submitArchiveEdit(false)}>{i18next.t("general:Save")}</Button>
-              <Button style={{marginLeft: "20px"}} type="danger" size="large" onClick={() => this.deleteArchive()}>{i18next.t("general:Delete")}</Button>
+              {/* <Button style={{marginLeft: "20px"}} type="danger" size="large" onClick={() => this.deleteArchive()}>{i18next.t("general:Delete")}</Button> */}
             </React.Fragment>
           )}
         </div>

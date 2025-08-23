@@ -117,3 +117,43 @@ export function deleteIpfsArchiveById(archive) {
     body: JSON.stringify(newArchive),
   }).then(res => res.json());
 }
+
+/**
+ * 获取所有队列数据
+ * @returns {Promise}
+ */
+export function getAllQueueData() {
+  return fetch(`${Setting.ServerUrl}/api/get-ipfs-archive-all-queue-data`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
+/**
+ * 添加未上传IPFS数据到队列
+ * @returns {Promise}
+ */
+export function addUnUploadIpfsDataToQueue() {
+  return fetch(`${Setting.ServerUrl}/api/add-ipfs-archive-unupload-queue-data`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
+/**
+ * 按记录ID和数据类型添加到队列
+ * @param {string} recordIds - 记录ID的逗号分隔字符串
+ * @param {string} dataTypes - 数据类型的逗号分隔字符串
+ * @returns {Promise}
+ */
+export function addRecordsWithDataTypesToQueue(recordIds, dataTypes) {
+  // 构建查询字符串
+  const params = new URLSearchParams();
+  params.append('recordIds', recordIds);
+  params.append('dataTypes', dataTypes);
+
+  return fetch(`${Setting.ServerUrl}/api/add-ipfs-archive-queue-data-by-record-id?${params}`, {
+    method: "POST",
+    credentials: "include",
+  }).then(res => res.json());
+}

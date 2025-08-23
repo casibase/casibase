@@ -1,0 +1,170 @@
+// Copyright 2023 The Casibase Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+import React, { useState, useEffect } from "react";
+import { Modal, Tabs, Table, Tag, Tooltip } from "antd";
+import i18next from "i18next";
+import * as Setting from "../Setting";
+import * as IpfsArchiveBackend from "../backend/IpfsArchiveBackend";
+import DataTypeConverter from "../common/DataTypeConverter";
+
+class QueueDetailModal extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+      queueData: {},
+      loading: false,
+      dataSource: [],
+      dataType: 0,
+    };
+  }
+
+  showModal = async () => {
+    this.setState({ loading: true });
+    try {
+      const response = await IpfsArchiveBackend.getAllQueueData();
+      if (response.status === "ok") {
+        const queueData = response.data || {};
+        const dataTypes = Object.keys(queueData);
+        this.setState({
+          visible: true,
+          queueData,
+          loading: false
+        });
+        if (dataTypes.length > 0) {
+          this.fetchQueueDataByType(dataTypes[0]);
+        }
+      } else {
+        Setting.showMessage("error", response.message || i18next.t("general:Failed to fetch queue data"));
+        this.setState({ loading: false });
+      }
+    } catch (error) {
+      Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      this.setState({ loading: false });
+    }
+  };
+
+  /**
+   * 按类型显示队列详情
+   * @param {string} type - 数据类型
+   */
+  showModalByType = async (type) => {
+    this.setState({ loading: true });
+    try {
+      // 先获取所有队列数据以显示总数
+      const queueResponse = await IpfsArchiveBackend.getAllQueueData();
+      if (queueResponse.status === "ok") {
+        const queueData = queueResponse.data || {};
+        this.setState({
+          visible: true,
+          queueData,
+          dataType: type,
+          loading: false
+        });
+        this.setState({
+          dataSource: queueData[type] || []
+        });
+      } else {
+        Setting.showMessage("error", queueResponse.message || i18next.t("general:Failed to fetch queue data"));
+        this.setState({ loading: false });
+      }
+    } catch (error) {
+      Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      this.setState({ loading: false });
+    }
+  };
+
+  
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+      queueData: {},
+      dataSource: []
+    });
+  };
+
+
+  getColumns = () => [
+    {
+      title: i18next.t("ipfsArchive:Record ID"),
+      dataIndex: "id",
+      key: "id",
+      width: "200px"
+    },
+    {
+      title: i18next.t("ipfsArchive:Correlation ID"),
+      dataIndex: "correlationId",
+      key: "correlationId",
+      width: "200px"
+    },
+    {
+      title: i18next.t("ipfsArchive:Object"),
+      dataIndex: "object",
+      key: "object",
+      width: "500px",
+      render: (text) => (
+        <Tooltip title={text} placement="topLeft" arrow>
+          <div style={{ wordBreak: "break-all", maxHeight: "100px", overflow: "auto" }}>
+            {text}
+          </div>
+        </Tooltip>
+      )
+    }
+  ];
+
+  render() {
+    const { visible, queueData, loading, dataSource, dataType } = this.state;
+    const typeCn = DataTypeConverter.convertToChinese(dataType);
+
+    // 计算总队列元素数量
+    const totalCount = dataSource.length;
+
+    return (
+      <React.Fragment>
+        <Modal
+          title={
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center",marginRight:"20px" }}>
+              <span>{i18next.t("ipfsArchive:Queue Detail")}</span>
+              <Tag color="blue">
+                类型：{typeCn} &nbsp;&nbsp;
+                {i18next.t("ipfsArchive:Total")}：{totalCount}
+                
+                </Tag>
+            </div>
+          }
+          visible={visible}
+          onCancel={this.handleCancel}
+          width={1000}
+          footer={null}
+        >
+          <Table
+            columns={this.getColumns()}
+            dataSource={dataSource}
+            rowKey={(record) => record.correlationId}
+            size="middle"
+            bordered
+            loading={loading}
+            pagination={{ pageSize: 10 }}
+            style={{ marginTop: "16px" }}
+            scroll={{ x: 'max-content' }}
+                  />
+        </Modal>
+      </React.Fragment>
+    );
+  }
+}
+
+export default QueueDetailModal;

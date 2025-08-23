@@ -16,6 +16,9 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
@@ -43,7 +46,7 @@ func (c *ApiController) GetIpfsArchives() {
 	sortOrder := c.Input().Get("sortOrder")
 
 	if limit == "" || page == "" {
-		archives, err := object.GetIpfsArchives(0, 0, field, value,sortField,sortOrder)
+		archives, err := object.GetIpfsArchives(0, 0, field, value, sortField, sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -64,7 +67,7 @@ func (c *ApiController) GetIpfsArchives() {
 		// }
 
 		// Temporarily get all archives for pagination (to be replaced with proper count function)
-		allArchives, err := object.GetIpfsArchives(0, 0, field, value,sortField,sortOrder)
+		allArchives, err := object.GetIpfsArchives(0, 0, field, value, sortField, sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -72,7 +75,7 @@ func (c *ApiController) GetIpfsArchives() {
 		count := len(allArchives)
 
 		paginator := pagination.SetPaginator(c.Ctx, limit, int64(count))
-		archives, err := object.GetIpfsArchives(paginator.Offset(), limit, field, value,sortField,sortOrder)
+		archives, err := object.GetIpfsArchives(paginator.Offset(), limit, field, value, sortField, sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -159,7 +162,7 @@ func (c *ApiController) GetIpfsArchivesByCorrelationIdAndDataType() {
 		limit = 0
 	}
 
-	archives, err := object.GetIpfsArchivesByCorrelationIdAndDataType(correlationId, dataType, offset, limit,sortField,sortOrder)
+	archives, err := object.GetIpfsArchivesByCorrelationIdAndDataType(correlationId, dataType, offset, limit, sortField, sortOrder)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -258,4 +261,81 @@ func (c *ApiController) DeleteIpfsArchiveById() {
 
 	c.Data["json"] = wrapActionResponse(object.DeleteIpfsArchiveById(archive.Id))
 	c.ServeJSON()
+}
+
+// AddUnUploadIpfsDataToQueue
+// @Title AddUnUploadIpfsDataToQueue
+// @Tag IpfsArchive API
+// @Description add unuploaded ipfs data to queue
+// @Success 200 {object} controllers.Response The Response object
+// @router /api/add-ipfs-archive-unupload-queue-data [get]
+func (c *ApiController) AddUnUploadIpfsDataToQueue() {
+	err := object.AddUnUploadIpfsDataToQueue()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk("Successfully added unuploaded ipfs data to queue")
+}
+
+// AddRecordsWithDataTypesToQueue
+// @Title AddRecordsWithDataTypesToQueue
+// @Tag IpfsArchive API
+// @Description add records with data types to queue
+// @Param   body    body   []struct{RecordId int64; DataType int}  true        "The records with data types"
+// @Success 200 {object} controllers.Response The Response object
+// @router /api/add-ipfs-archive-queue-data-by-record-id [post]
+func (c *ApiController) AddRecordsWithDataTypesToQueue() {
+	// 获取recordIds和dataTypes参数
+	recordIdsStr := c.GetString("recordIds")
+	dataTypesStr := c.GetString("dataTypes")
+
+	// 解析recordIds字符串为int64数组
+	recordIdsStrs := strings.Split(recordIdsStr, ",")
+
+	recordIds := make([]int64, 0, len(recordIdsStrs))
+	for _, idStr := range recordIdsStrs {
+		id, err := strconv.ParseInt(strings.TrimSpace(idStr), 10, 64)
+		if err != nil {
+			c.ResponseError(fmt.Sprintf("Invalid recordId: %s", idStr))
+			return
+		}
+		recordIds = append(recordIds, id)
+	}
+
+	// 解析dataTypes字符串为int数组
+	dataTypesStrs := strings.Split(dataTypesStr, ",")
+	dataTypes := make([]int, 0, len(dataTypesStrs))
+	for _, typeStr := range dataTypesStrs {
+		typ, err := strconv.Atoi(strings.TrimSpace(typeStr))
+		if err != nil {
+			c.ResponseError(fmt.Sprintf("Invalid dataType: %s", typeStr))
+			return
+		}
+		dataTypes = append(dataTypes, typ)
+	}
+
+	// 验证两个数组长度是否一致
+	if len(recordIds) != len(dataTypes) {
+		c.ResponseError("The number of recordIds and dataTypes must be the same")
+		return
+	}
+
+	// 创建记录数组
+	records := make([]struct{RecordId int64; DataType int}, len(recordIds))
+	for i := range recordIds {
+		records[i] = struct{RecordId int64; DataType int}{
+			RecordId: recordIds[i],
+			DataType: dataTypes[i],
+		}
+	}
+
+	err := object.AddRecordsWithDataTypesToQueue(records)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk("Successfully added records to queue")
 }
