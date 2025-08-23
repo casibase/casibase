@@ -88,6 +88,7 @@ import TemplateEditPage from "./TemplateEditPage";
 import ApplicationListPage from "./ApplicationListPage";
 import ApplicationEditPage from "./ApplicationEditPage";
 import StoreSelect from "./StoreSelect";
+import KnowledgeGraphPage from "./KnowledgeGraphPage";
 
 const {Header, Footer, Content} = Layout;
 
@@ -615,6 +616,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/chats">{i18next.t("general:Chats & Messages")}</Link>, "/ai-chat", <BulbTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"),
         Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"),
+        Setting.getItem(<Link to="/knowledge-graph">{i18next.t("knowledge:Knowledge Graph")}</Link>, "/knowledge-graph"),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:AI Setting")}</Link>, "/ai-setting", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
@@ -742,6 +744,7 @@ class App extends Component {
         <Route exact path="/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />
         <Route exact path="/chats/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/knowledge-graph" render={(props) => this.renderSigninIfNotSignedIn(<KnowledgeGraphPage account={this.state.account} {...props} />)} />
         <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/usages" render={(props) => this.renderSigninIfNotSignedIn(<UsagePage account={this.state.account} themeAlgorithm={this.state.themeAlgorithm} {...props} />)} />
         <Route exact path="/activities" render={(props) => this.renderSigninIfNotSignedIn(<ActivityPage account={this.state.account} themeAlgorithm={this.state.themeAlgorithm} {...props} />)} />
