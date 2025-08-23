@@ -131,7 +131,7 @@ class WorkflowEditPage extends React.Component {
           <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
           </Col>
-          {/* <Col span={10} >
+          <Col span={10} >
             <div style={{height: "500px"}}>
               <CodeMirror
                 value={this.state.workflow.text}
@@ -141,9 +141,9 @@ class WorkflowEditPage extends React.Component {
                 }}
               />
             </div>
-          </Col> */}
+          </Col>
           <Col span={1} />
-          <Col span={21} >
+          <Col span={10} >
             <div>
               <BpmnComponent
                 diagramXML={this.state.workflow.text}
@@ -164,7 +164,7 @@ class WorkflowEditPage extends React.Component {
           <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Text2"), i18next.t("general:Text2 - Tooltip"))} :
           </Col>
-          {/* <Col span={10} >
+          <Col span={10} >
             <div style={{ height: "500px" }}>
               <CodeMirror
                 value={this.state.workflow.text2}
@@ -174,9 +174,9 @@ class WorkflowEditPage extends React.Component {
                 }}
               />
             </div>
-          </Col> */}
+          </Col>
           <Col span={1} />
-          <Col span={21} >
+          <Col span={10} >
             <div>
               <BpmnComponent
                 diagramXML={this.state.workflow.text2}

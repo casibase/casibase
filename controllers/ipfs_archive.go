@@ -82,6 +82,19 @@ func (c *ApiController) GetIpfsArchives() {
 	}
 }
 
+// GetAllQueueData
+// @Title GetAllQueueData
+// @Tag IpfsArchive API
+// @Description get all queue data
+// @Success 200 object map[int][]*object.Record The Response object
+// @router /get-ipfs-archive-all-queue-data [get]
+func (c *ApiController) GetAllQueueData() {
+	// 获取所有队列数据
+	queueData := object.GetAllQueueData()
+
+	c.ResponseOk(queueData)
+}
+
 // GetIpfsArchiveByCorrelationId
 // @Title GetIpfsArchive
 // @Tag IpfsArchive API

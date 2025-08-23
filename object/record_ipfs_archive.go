@@ -17,7 +17,6 @@ package object
 import (
 	"fmt"
 	"sync"
-	"time"
 
 	"github.com/casibase/casibase/util"
 )
@@ -25,7 +24,7 @@ import (
 // IpfsArchive 表示IPFS归档记录
 type IpfsArchive struct {
 	Id            int64  `xorm:"id pk autoincr" json:"id"`
-	RecordId      int64 `xorm:"int index" json:"recordId"`
+	RecordId      int64  `xorm:"int index" json:"recordId"`
 	CorrelationId string `xorm:"varchar(256) notnull index" json:"correlationId"`
 	IpfsAddress   string `xorm:"varchar(500)" json:"ipfsAddress"`
 	UpdateTime    string `xorm:"varchar(100)" json:"updateTime"`
@@ -34,11 +33,12 @@ type IpfsArchive struct {
 	CreateTime    string `xorm:"varchar(100)" json:"createTime"`
 }
 
-// 定义全局数组和互斥锁
+// 定义全局map队列和互斥锁
 var (
-	recordArchiveQueue []*Record
-	queueMutex         sync.Mutex
-	maxQueueSize       = 1000
+	// 使用map[int]map[int64]*Record代替map[int][]*Record以提高查找效率
+	recordArchiveQueues = make(map[int]map[int64]*Record)
+	queueMutex          sync.Mutex
+	maxQueueSize        = 1000
 )
 
 // AddIpfsArchive 添加IPFS归档记录
@@ -87,17 +87,17 @@ func GetIpfsArchiveByCorrelationId(correlationId string) (*IpfsArchive, error) {
 }
 
 // GetIpfsArchiveByCorrelationIdAndDataType 根据correlationId和dataType获取IPFS归档记录列表
-func GetIpfsArchivesByCorrelationIdAndDataType(correlationId string, dataType int, offset, limit int,sortField,sortOrder string) ([]*IpfsArchive, error) {
+func GetIpfsArchivesByCorrelationIdAndDataType(correlationId string, dataType int, offset, limit int, sortField, sortOrder string) ([]*IpfsArchive, error) {
 	archives := []*IpfsArchive{}
 	session := adapter.engine.NewSession()
 	session = session.And("correlation_id=?", correlationId)
 	session = session.And("data_type=?", dataType)
-	
+
 	// 添加分页
 	if offset >= 0 && limit > 0 {
 		session = session.Limit(limit, offset)
 	}
-	
+
 	if sortField == "" || sortOrder == "" {
 		sortField = "update_time"
 	}
@@ -106,17 +106,17 @@ func GetIpfsArchivesByCorrelationIdAndDataType(correlationId string, dataType in
 	} else {
 		session = session.Desc(util.SnakeString(sortField))
 	}
-	
+
 	err := session.Find(&archives)
 	if err != nil {
 		return archives, fmt.Errorf("failed to get ipfs archives by correlation_id and data_type: %w", err)
 	}
-	
+
 	return archives, nil
 }
 
 // GetIpfsArchives 获取多个IPFS归档记录
-func GetIpfsArchives(offset, limit int, field, value,sortField,sortOrder string) ([]*IpfsArchive, error) {
+func GetIpfsArchives(offset, limit int, field, value, sortField, sortOrder string) ([]*IpfsArchive, error) {
 	archives := []*IpfsArchive{}
 
 	if sortField == "" {
@@ -211,18 +211,22 @@ func DeleteIpfsArchiveById(id int64) (bool, error) {
 	return affected != 0, nil
 }
 
+// ============== 队列信息 ==================
+
 // AddRecordToArchiveQueue 将记录添加到归档队列
 // 当队列大小达到1000时，触发IPFS归档流程
-func AddRecordToArchiveQueue(record *Record) error {
+func AddRecordToArchiveQueue(record *Record, dataType int) error {
 	if record == nil || record.CorrelationId == "" {
 		return fmt.Errorf("invalid record or correlation_id")
 	}
 
 	// 先将记录信息保存到数据库
 	archive := &IpfsArchive{
+		RecordId:      int64(record.Id),
 		CorrelationId: record.CorrelationId,
-		DataType:      1, // 假设1表示记录类型
+		DataType:      dataType,
 		CreateTime:    util.GetCurrentTimeWithMilli(),
+		UpdateTime:    util.GetCurrentTimeWithMilli(),
 	}
 
 	_, err := AddIpfsArchive(archive)
@@ -234,28 +238,37 @@ func AddRecordToArchiveQueue(record *Record) error {
 	queueMutex.Lock()
 	defer queueMutex.Unlock()
 
-	recordArchiveQueue = append(recordArchiveQueue, record)
+	// 确保该dataType的队列已初始化
+	if _, exists := recordArchiveQueues[dataType]; !exists {
+		recordArchiveQueues[dataType] = make(map[int64]*Record)
+	}
+
+	// 使用record.Id作为键添加到set中
+	recordArchiveQueues[dataType][int64(record.Id)] = record
 
 	// 检查队列大小是否达到阈值
-	if len(recordArchiveQueue) >= maxQueueSize {
+	if len(recordArchiveQueues[dataType]) >= maxQueueSize {
 		// 触发IPFS归档流程
-		go archiveToIPFS()
+		go archiveToIPFS(dataType)
 	}
 
 	return nil
 }
 
 // archiveToIPFS 执行IPFS归档操作
-func archiveToIPFS() {
+func archiveToIPFS(dataType int) {
 	// 创建一个临时队列副本，避免长时间持有锁
 	var tempQueue []*Record
 
 	queueMutex.Lock()
-	if len(recordArchiveQueue) > 0 {
-		tempQueue = make([]*Record, len(recordArchiveQueue))
-		copy(tempQueue, recordArchiveQueue)
+	if queue, exists := recordArchiveQueues[dataType]; exists && len(queue) > 0 {
+		// 将map转换为slice用于处理
+		tempQueue = make([]*Record, 0, len(queue))
+		for _, record := range queue {
+			tempQueue = append(tempQueue, record)
+		}
 		// 清空原队列
-		recordArchiveQueue = []*Record{}
+		recordArchiveQueues[dataType] = make(map[int64]*Record)
 	}
 	queueMutex.Unlock()
 
@@ -267,22 +280,155 @@ func archiveToIPFS() {
 
 }
 
-// uploadToIPFS 将记录上传到IPFS
-// 实际应用中需要实现与IPFS的交互
-func uploadToIPFS(record *Record) string {
-	// 这里是IPFS上传逻辑的占位符
-	// 模拟上传过程
-	time.Sleep(100 * time.Millisecond)
-
-	// 生成模拟的IPFS地址
-	// 实际应用中，这里应该返回真实的IPFS地址
-	return fmt.Sprintf("ipfs://Qm%s", util.GenerateId()[:10])
-}
-
-// GetQueueSize 返回当前队列大小（主要用于测试）
-func GetQueueSize() int {
+// GetQueueSize 返回指定dataType的队列大小（主要用于测试）
+func GetQueueSize(dataType int) int {
 	queueMutex.Lock()
 	defer queueMutex.Unlock()
 
-	return len(recordArchiveQueue)
+	if queue, exists := recordArchiveQueues[dataType]; exists {
+		return len(queue)
+	}
+	return 0
+}
+
+// GetAllQueueSizes 返回所有dataType的队列大小（主要用于测试）
+func GetAllQueueSizes() map[int]int {
+	queueMutex.Lock()
+	defer queueMutex.Unlock()
+
+	sizes := make(map[int]int)
+	for dataType, queue := range recordArchiveQueues {
+		sizes[dataType] = len(queue)
+	}
+	return sizes
+}
+
+// GetAllQueueData 获取所有队列的数据
+func GetAllQueueData() map[int][]*Record {
+	queueMutex.Lock()
+	defer queueMutex.Unlock()
+
+	data := make(map[int][]*Record)
+	for dataType, queue := range recordArchiveQueues {
+		// 将map转换为slice返回
+		data[dataType] = make([]*Record, 0, len(queue))
+		for _, record := range queue {
+			data[dataType] = append(data[dataType], record)
+		}
+	}
+	return data
+}
+
+// AddRecordsWithDataTypesToQueue 将指定的recordId数组添加到对应的dataType队列中
+// records: 包含recordId和对应dataType的切片
+func AddRecordsWithDataTypesToQueue(records []struct {
+	RecordId int64
+	DataType int
+}) error {
+	if len(records) == 0 {
+		return nil // 没有需要添加的记录
+	}
+
+	// 加锁处理队列
+	queueMutex.Lock()
+	defer queueMutex.Unlock()
+
+	// 用于跟踪哪些dataType队列需要检查大小
+	modifiedDataTypes := make(map[int]bool)
+
+	// 处理每条记录
+	for _, item := range records {
+		recordId := item.RecordId
+		dataType := item.DataType
+
+		// 确保该dataType的队列已初始化
+		if _, exists := recordArchiveQueues[dataType]; !exists {
+			recordArchiveQueues[dataType] = make(map[int64]*Record)
+		}
+
+		// 检查记录是否已在队列中
+		if _, exists := recordArchiveQueues[dataType][recordId]; exists {
+			continue // 记录已在队列中，跳过
+		}
+
+		// 获取对应的Record对象
+		record, err := GetRecord(fmt.Sprintf("%d", recordId))
+		if err != nil {
+			return fmt.Errorf("failed to get record by id %d: %w", recordId, err)
+		}
+
+		if record == nil {
+			continue // 记录不存在，跳过
+		}
+
+		// 添加到队列
+		recordArchiveQueues[dataType][recordId] = record
+
+		// 标记该dataType队列已修改
+		modifiedDataTypes[dataType] = true
+
+		// 将记录信息保存到数据库
+		archive := &IpfsArchive{
+			RecordId:      recordId,
+			CorrelationId: record.CorrelationId,
+			DataType:      dataType,
+			CreateTime:    util.GetCurrentTimeWithMilli(),
+			UpdateTime:    util.GetCurrentTimeWithMilli(),
+		}
+
+		_, err = AddIpfsArchive(archive)
+		if err != nil {
+			return fmt.Errorf("failed to add record to archive database: %w", err)
+		}
+	}
+
+	return nil
+}
+
+// AddUnUploadIpfsDataToQueue 从数据库取出ipfsAddress空的并加入到队列中（id重复的不重复加入到队列）
+func AddUnUploadIpfsDataToQueue() error {
+	// 查询数据库中ipfsAddress为空的所有记录
+	var archives []*IpfsArchive
+	err := adapter.engine.Where("ipfs_address = ? OR ipfs_address = ''", nil).Find(&archives)
+	if err != nil {
+		return fmt.Errorf("failed to query unuploaded ipfs data: %w", err)
+	}
+
+	if len(archives) == 0 {
+		return nil // 没有需要处理的记录
+	}
+
+	// 加锁处理队列
+	queueMutex.Lock()
+	defer queueMutex.Unlock()
+
+	// 处理每个未上传的记录
+	for _, archive := range archives {
+		dataType := archive.DataType
+
+		// 确保该dataType的队列已初始化
+		if _, exists := recordArchiveQueues[dataType]; !exists {
+			recordArchiveQueues[dataType] = make(map[int64]*Record)
+		}
+
+		// 检查记录是否已在队列中 (O(1)复杂度)
+		if _, exists := recordArchiveQueues[dataType][archive.RecordId]; exists {
+			continue // 记录已在队列中，跳过
+		}
+
+		// 获取对应的Record对象
+		record, err := GetRecord(fmt.Sprintf("%d", archive.RecordId))
+		if err != nil {
+			return fmt.Errorf("failed to get record by id %d: %w", archive.RecordId, err)
+		}
+
+		if record == nil {
+			continue // 记录不存在，跳过
+		}
+
+		// 添加到队列
+		recordArchiveQueues[dataType][archive.RecordId] = record
+	}
+
+	return nil
 }

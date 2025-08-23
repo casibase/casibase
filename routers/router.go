@@ -232,7 +232,7 @@ func initAPI() {
 	beego.Router("/api/add-ipfs-archive", &controllers.ApiController{}, "POST:AddIpfsArchive")
 	beego.Router("/api/update-ipfs-archive", &controllers.ApiController{}, "POST:UpdateIpfsArchive")
 	beego.Router("/api/delete-ipfs-archive-by-id", &controllers.ApiController{}, "POST:DeleteIpfsArchiveById")
-
+	beego.Router("/api/get-ipfs-archive-all-queue-data", &controllers.ApiController{}, "Get:GetAllQueueData")
 
 	beego.Router("/api/commit-record", &controllers.ApiController{}, "POST:CommitRecord")
 	beego.Router("/api/commit-record-second", &controllers.ApiController{}, "POST:CommitRecordSecond")
