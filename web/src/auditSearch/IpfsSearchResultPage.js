@@ -120,23 +120,23 @@ class IPFSSearchResultPage extends BaseListPage {
       dataIndex: "recordId",
       key: "recordId",
       width: "250px",
-      ...this.getColumnSearchProps("recordId"),
+      ...this.getColumnSearchProps(null),
       render: (text) => text || "---"
     },
-    {
-      title: i18next.t("ipfsArchive:Correlation ID"),
-      dataIndex: "correlationId",
-      key: "correlationId",
-      width: "250px",
-      ...this.getColumnSearchProps("correlationId"),
-      render: (text) => text || "---"
-    },
+    // {
+    //   title: i18next.t("ipfsArchive:Correlation ID"),
+    //   dataIndex: "correlationId",
+    //   key: "correlationId",
+    //   width: "250px",
+    //   ...this.getColumnSearchProps("correlationId"),
+    //   render: (text) => text || "---"
+    // },
     {
       title: i18next.t("ipfsArchive:IPFS Address"),
       dataIndex: "ipfsAddress",
       key: "ipfsAddress",
       width: "300px",
-      ...this.getColumnSearchProps("ipfsAddress"),
+      ...this.getColumnSearchProps(null),
       render: (text) => (
         <Tooltip title={text} placement="topLeft" arrow>
           <div style={{wordBreak: "break-all", maxWidth: "100%"}}>{text}</div>
@@ -161,8 +161,8 @@ class IPFSSearchResultPage extends BaseListPage {
       dataIndex: "uploadTime",
       key: "uploadTime",
       width: "150px",
-      sorter: true,
-      sortDirections: ["descend", "ascend"],
+      // sorter: true,
+      // sortDirections: ["descend", "ascend"],
       render: (text) => text === "0000-00-00 00:00:00" ? "---" : text
     },
     {

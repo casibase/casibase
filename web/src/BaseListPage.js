@@ -70,7 +70,13 @@ class BaseListPage extends React.Component {
     this.fetch({pagination});
   }
 
-  getColumnSearchProps = dataIndex => ({
+  getColumnSearchProps = dataIndex => {
+    // 当dataIndex为null或空字符串时不展示搜索功能
+    if (dataIndex === null || dataIndex === '') {
+      return {};
+    }
+
+    return ({
     filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
       <div style={{padding: 8}}>
         <Input
@@ -134,7 +140,9 @@ class BaseListPage extends React.Component {
       ) : (
         text
       ),
-  });
+        
+    })
+  };
 
   getRowSelection = () => ({
     selectedRowKeys: this.state.selectedRowKeys,
