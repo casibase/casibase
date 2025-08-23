@@ -37,20 +37,19 @@ type Record struct {
 	Name        string `xorm:"varchar(100) index" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	Organization string `xorm:"varchar(100)" json:"organization"`
-	ClientIp     string `xorm:"varchar(100)" json:"clientIp"`
-	UserAgent    string `xorm:"varchar(200)" json:"userAgent"`
-	User         string `xorm:"varchar(100)" json:"user"`
-	Method       string `xorm:"varchar(100)" json:"method"`
-	RequestUri   string `xorm:"varchar(1000)" json:"requestUri"`
-	Action       string `xorm:"varchar(1000)" json:"action"`
-	Language     string `xorm:"varchar(100)" json:"language"`
-	Region       string `xorm:"varchar(100)" json:"region"`
-	City         string `xorm:"varchar(100)" json:"city"`
-	Unit         string `xorm:"varchar(100)" json:"unit"`
-	Section      string `xorm:"varchar(100)" json:"section"`
-	DiseaseCategory      string `xorm:"varchar(256)" json:"diseaseCategory"`
-
+	Organization    string `xorm:"varchar(100)" json:"organization"`
+	ClientIp        string `xorm:"varchar(100)" json:"clientIp"`
+	UserAgent       string `xorm:"varchar(200)" json:"userAgent"`
+	User            string `xorm:"varchar(100)" json:"user"`
+	Method          string `xorm:"varchar(100)" json:"method"`
+	RequestUri      string `xorm:"varchar(1000)" json:"requestUri"`
+	Action          string `xorm:"varchar(1000)" json:"action"`
+	Language        string `xorm:"varchar(100)" json:"language"`
+	Region          string `xorm:"varchar(100)" json:"region"`
+	City            string `xorm:"varchar(100)" json:"city"`
+	Unit            string `xorm:"varchar(100)" json:"unit"`
+	Section         string `xorm:"varchar(100)" json:"section"`
+	DiseaseCategory string `xorm:"varchar(256)" json:"diseaseCategory"`
 
 	Object    string `xorm:"mediumtext" json:"object"`
 	Response  string `xorm:"mediumtext" json:"response"`
@@ -70,7 +69,6 @@ type Record struct {
 
 	IsTriggered bool `json:"isTriggered"`
 	NeedCommit  bool `xorm:"index" json:"needCommit"`
-
 
 	CorrelationId string `xorm:"varchar(256)" json:"correlationId"`
 }
@@ -339,7 +337,7 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 	}
 
 	// 将记录添加到IPFS归档队列
-	// AddRecordToArchiveQueue(record)
+	// AddRecordToArchiveQueue(record,userId)
 
 	data := map[string]interface{}{"name": record.Name}
 

@@ -15,8 +15,15 @@
 package object
 
 import (
+	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strings"
 	"sync"
+	"time"
 
 	"github.com/casibase/casibase/util"
 )
@@ -56,6 +63,20 @@ func AddIpfsArchive(archive *IpfsArchive) (bool, error) {
 	}
 
 	return affected != 0, nil
+}
+
+// GetIpfsArchiveByRecordId 根据Id获取IPFS归档记录
+func GetIpfsArchiveByRecordId(recordId int64) (*IpfsArchive, error) {
+	archive := &IpfsArchive{RecordId: recordId}
+	existed, err := adapter.engine.Get(archive)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get ipfs archive: %w", err)
+	}
+	if !existed {
+		return nil, nil
+	}
+
+	return archive, nil
 }
 
 // GetIpfsArchiveById 根据Id获取IPFS归档记录
@@ -215,7 +236,7 @@ func DeleteIpfsArchiveById(id int64) (bool, error) {
 
 // AddRecordToArchiveQueue 将记录添加到归档队列
 // 当队列大小达到1000时，触发IPFS归档流程
-func AddRecordToArchiveQueue(record *Record, dataType int) error {
+func AddRecordToArchiveQueue(record *Record, dataType int, userId string) error {
 	if record == nil || record.CorrelationId == "" {
 		return fmt.Errorf("invalid record or correlation_id")
 	}
@@ -249,35 +270,10 @@ func AddRecordToArchiveQueue(record *Record, dataType int) error {
 	// 检查队列大小是否达到阈值
 	if len(recordArchiveQueues[dataType]) >= maxQueueSize {
 		// 触发IPFS归档流程
-		go ArchiveToIPFS(dataType)
+		go ArchiveToIPFS(dataType, userId)
 	}
 
 	return nil
-}
-
-// ArchiveToIPFS 执行IPFS归档操作
-func ArchiveToIPFS(dataType int) {
-	// 创建一个临时队列副本，避免长时间持有锁
-	var tempQueue []*Record
-
-	queueMutex.Lock()
-	if queue, exists := recordArchiveQueues[dataType]; exists && len(queue) > 0 {
-		// 将map转换为slice用于处理
-		tempQueue = make([]*Record, 0, len(queue))
-		for _, record := range queue {
-			tempQueue = append(tempQueue, record)
-		}
-		// 清空原队列
-		recordArchiveQueues[dataType] = make(map[int64]*Record)
-	}
-	queueMutex.Unlock()
-
-	if len(tempQueue) == 0 {
-		return
-	}
-
-	// 这里实现IPFS归档逻辑
-
 }
 
 // GetQueueSize 返回指定dataType的队列大小（主要用于测试）
@@ -465,4 +461,257 @@ func RemoveRecordFromQueueByRecordIdAndDataType(recordId int64, dataType int) er
 		delete(recordArchiveQueues, dataType)
 	}
 	return nil
+}
+
+// ================== 上传IPFS ==================
+
+// ArchiveToIPFS 执行IPFS归档操作
+func ArchiveToIPFS(dataType int, userId string) (string, error) {
+	// 创建一个临时队列副本，避免长时间持有锁
+	var tempQueue []*Record
+
+	queueMutex.Lock()
+	if queue, exists := recordArchiveQueues[dataType]; exists && len(queue) > 0 {
+		// 将map转换为slice用于处理
+		tempQueue = make([]*Record, 0, len(queue))
+		for _, record := range queue {
+			tempQueue = append(tempQueue, record)
+		}
+		// 清空原队列
+		recordArchiveQueues[dataType] = make(map[int64]*Record)
+	}
+	queueMutex.Unlock()
+
+	if len(tempQueue) == 0 {
+		return "", errors.New(fmt.Sprintf("queue is empty"))
+	}
+
+	// 这里实现IPFS归档逻辑
+	ipfsAddress, err := sendIpfsUploadReq(tempQueue, dataType)
+	if err != nil {
+		// 失败了，将内容重新加入队列中
+		queueMutex.Lock()
+		for _, record := range tempQueue {
+			recordArchiveQueues[dataType][int64(record.Id)] = record
+		}
+		queueMutex.Unlock()
+		return "", errors.New(fmt.Sprintf("Failed: %v\n", err))
+	}
+
+	for _, record := range tempQueue {
+
+		// 更新IPFS归档记录
+		archive, err := GetIpfsArchiveByRecordId(int64(record.Id))
+		if err != nil {
+			fmt.Printf("Failed to get ipfs archive: %v\n", err)
+			continue
+		}
+
+		if archive != nil {
+			// 这里可以更新归档记录的IPFS地址等信息
+			archive.IpfsAddress = ipfsAddress
+			archive.UploadTime = util.GetCurrentTimeWithMilli()
+			_, err = UpdateIpfsArchiveById(archive)
+			if err != nil {
+				fmt.Printf("Failed to update ipfs archive: %v\n", err)
+			}
+		}
+		fmt.Printf("Successfully archived record %d to IPFS\n", record.Id)
+	}
+	return ipfsAddress, nil
+}
+
+func sendIpfsUploadReq(queueData []*Record, dataType int) (string, error) {
+	content, contentErr := generateExcelFromRecords(queueData)
+	if contentErr != nil {
+		return "", contentErr
+	}
+	// 构造请求体
+	requestBody := map[string]interface{}{
+		"uId":         "casbin",
+		"aesKey":      generateAESKey(32),
+		"fileContent": content,
+		"fileName":    fmt.Sprintf("%d-%s", dataType, util.GetCurrentTimeWithMilli()),
+		"apiUrl": map[string]string{
+			"ipfsServiceUrl":  "http://47.113.204.64:5001",
+			"chainServiceUrl": "http://47.113.204.64:9001/tencent-chainapi/exec",
+			"contractName":    "tencentChainqaContractV221demo01",
+		},
+	}
+
+	// 转换为JSON
+	jsonData, err := json.Marshal(requestBody)
+	if err != nil {
+		fmt.Printf("Failed to marshal request body: %v\n", err)
+		return "", err
+	}
+
+	fmt.Printf("上传IPFS: " + string(jsonData))
+
+	// 发送POST请求
+	url := "https://47.113.204.64:23554/api/upload/uploadFile"
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		fmt.Printf("Failed to send POST request: %v\n", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	// 读取响应
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("Failed to read response body: %v\n", err)
+		return "", err
+	}
+
+	// 处理响应
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf("Request failed with status code: %d, response: %s\n", resp.StatusCode, string(body))
+		return "", err
+	}
+
+	// 解析响应
+	var response map[string]interface{}
+	if err := json.Unmarshal(body, &response); err != nil {
+		fmt.Printf("Failed to unmarshal response: %v\n", err)
+		return "", err
+	}
+
+	// 检查响应状态
+	code, ok := response["code"].(float64)
+	if !ok {
+		fmt.Printf("Invalid response format: code not found or not a number\n")
+		return "", errors.New("invalid response format")
+	}
+
+	if code == 0 {
+		// 成功响应，提取pos
+		data, ok := response["data"].(map[string]interface{})
+		if !ok {
+			fmt.Printf("Invalid response format: data not found or not an object\n")
+			return "", errors.New("invalid response data format")
+		}
+
+		pos, ok := data["pos"].(string)
+		if !ok {
+			fmt.Printf("Invalid response format: pos not found or not a string\n")
+			return "", errors.New("pos not found in response")
+		}
+
+		return pos, nil
+	} else {
+		// 错误响应，提取error
+		data, ok := response["data"].(map[string]interface{})
+		if !ok {
+			fmt.Printf("Invalid response format: data not found or not an object\n")
+			return "", errors.New("invalid response data format")
+		}
+
+		// 先获取msg和errorMsg
+		msg, msgOk := response["msg"].(string)
+		errorMsg, ok := data["error"].(string)
+
+		// 按照msg -> errorMsg的优先级设置错误消息
+		if msgOk && ok {
+			// 如果msg和error都存在，返回"msg——errorMsg"格式
+			errorMsg = fmt.Sprintf("%s——%s", msg, errorMsg)
+		} else if msgOk {
+			// 如果只有msg存在，使用msg
+			errorMsg = msg
+		} else if !ok {
+			// 如果msg和error都不存在，使用默认错误消息
+			errorMsg = fmt.Sprintf("request failed with code: %v", code)
+		}
+
+		return "", errors.New(errorMsg)
+	}
+}
+
+// generateAESKey 生成指定长度的随机AES密钥
+func generateAESKey(length int) string {
+	const chars = "abcdefghijklmnopqrstuvwxyz0123456789"
+	result := make([]byte, length)
+	for i := range result {
+		result[i] = chars[time.Now().UnixNano()%int64(len(chars))]
+	}
+	return string(result)
+}
+
+// generateExcelFromRecords 从记录队列生成Excel格式字符串
+func generateExcelFromRecords(queueData []*Record) (string, error) {
+	if len(queueData) == 0 {
+		return "", nil
+	}
+
+	// 解析所有object字段，收集所有可能的key
+	var allKeys []string
+	keyMap := make(map[string]bool)
+	recordsData := make([]map[string]interface{}, len(queueData))
+
+	for i, record := range queueData {
+		// 解析object字段为map
+		var data map[string]interface{}
+		if err := json.Unmarshal([]byte(record.Object), &data); err != nil {
+			// 打印，继续处理
+			fmt.Printf("failed to unmarshal object for record %d: %w", record.Id, err)
+			continue
+		}
+		recordsData[i] = data
+
+		// 收集key
+		for key := range data {
+			if !keyMap[key] {
+				keyMap[key] = true
+				allKeys = append(allKeys, key)
+			}
+		}
+	}
+
+	// 生成表格字符串
+	var result strings.Builder
+
+	// 第一行：key
+	for i, key := range allKeys {
+		result.WriteString(key)
+		if i < len(allKeys)-1 {
+			result.WriteString(" ")
+		}
+	}
+	result.WriteString("\n")
+
+	// 后续行：value
+	for _, data := range recordsData {
+		for i, key := range allKeys {
+			value, exists := data[key]
+			if !exists {
+				result.WriteString("--")
+			} else {
+				// 将value转换为字符串
+				valueStr := fmt.Sprintf("%v", value)
+
+				// 如果字符串为空，强制设为"_"
+				if valueStr == "" {
+					valueStr = "_"
+				}
+
+				// 将换行符替换为<br>
+				valueStr = strings.ReplaceAll(valueStr, "\n", "<br>")
+
+				// 替换空格为下划线
+				result.WriteString(strings.ReplaceAll(valueStr, " ", "_"))
+			}
+			if i < len(allKeys)-1 {
+				result.WriteString(" ")
+			}
+		}
+		result.WriteString("\n")
+	}
+
+	// 如果末尾有换行符，去掉
+	resultStr := result.String()
+	if len(resultStr) > 0 && resultStr[len(resultStr)-1] == '\n' {
+		resultStr = resultStr[:len(resultStr)-1]
+	}
+
+	return resultStr, nil
 }

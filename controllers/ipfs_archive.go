@@ -393,6 +393,11 @@ func (c *ApiController) RemoveRecordFromQueueByRecordIdAndDataType() {
 func (c *ApiController) ArchiveToIPFS() {
 	// 获取dataType参数
 	dataTypeStr := c.Input().Get("dataType")
+	userId, flag := c.CheckSignedIn()
+	if flag == false {
+		c.ResponseError("User not signed in")
+		return
+	}
 
 	// 解析dataType字符串为int
 	dataType, err := strconv.Atoi(strings.TrimSpace(dataTypeStr))
@@ -402,7 +407,7 @@ func (c *ApiController) ArchiveToIPFS() {
 	}
 
 	// 调用object包中的函数执行归档
-	go object.ArchiveToIPFS(dataType)
+	go object.ArchiveToIPFS(dataType, userId)
 
 	c.ResponseOk("IPFS archiving process has been triggered")
 }
