@@ -13,11 +13,14 @@
 // limitations under the License.
 
 import React, { useState, useEffect } from "react";
-import { Modal, Tabs, Table, Tag, Tooltip } from "antd";
+import { Modal, Tabs, Table, Tag, Tooltip,Typography,Popover  } from "antd";
 import i18next from "i18next";
 import * as Setting from "../Setting";
 import * as IpfsArchiveBackend from "../backend/IpfsArchiveBackend";
 import DataTypeConverter from "../common/DataTypeConverter";
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/material-darker.css";
 
 class QueueDetailModal extends React.Component {
   constructor(props) {
@@ -154,7 +157,7 @@ class QueueDetailModal extends React.Component {
       title: i18next.t("ipfsArchive:Record ID"),
       dataIndex: "id",
       key: "id",
-      width: "200px"
+      width: "100px"
     },
     {
       title: i18next.t("ipfsArchive:Correlation ID"),
@@ -166,15 +169,69 @@ class QueueDetailModal extends React.Component {
       title: i18next.t("ipfsArchive:Object"),
       dataIndex: "object",
       key: "object",
-      width: "500px",
-      render: (text) => (
-        <Tooltip title={text} placement="topLeft" arrow>
-          <div style={{ wordBreak: "break-all", maxHeight: "100px", overflow: "auto" }}>
-            {text}
-          </div>
-        </Tooltip>
-      )
-    },
+      width: "200px",
+      render: (text, record, index) => {
+          if (!text || text === "") {
+            return (
+              <div style={{maxWidth: "200px"}}>
+                {Setting.getShortText(text, 50)}
+              </div>
+            );
+          }
+
+          let formattedText;
+          let isValidJson = false;
+          let errorMessage;
+
+          try {
+            // Try to parse and format JSON
+            const parsedJson = JSON.parse(text);
+            formattedText = JSON.stringify(parsedJson, null, 2);
+            isValidJson = true;
+          } catch (error) {
+            // If parsing fails, use original text
+            formattedText = text;
+            isValidJson = false;
+            errorMessage = error.message;
+          }
+
+          return (
+            <Popover
+              placement="right"
+              content={
+                <div style={{width: "600px", height: "400px", display: "flex", flexDirection: "column", gap: "12px"}}>
+                  {!isValidJson && (
+                    <Alert type="error" showIcon message={
+                      <Typography.Paragraph ellipsis={{expandable: "collapsible"}} style={{margin: 0}}>{errorMessage}</Typography.Paragraph>}
+                    />)}
+                  <CodeMirror
+                    value={formattedText}
+                    options={{
+                      mode: isValidJson ? "application/json" : "text/plain",
+                      theme: "material-darker",
+                      readOnly: true,
+                      lineNumbers: true,
+                    }}
+                    editorDidMount={(editor) => {
+                      if (window.ResizeObserver) {
+                        const resizeObserver = new ResizeObserver(() => {
+                          editor.refresh();
+                        });
+                        resizeObserver.observe(editor.getWrapperElement().parentNode);
+                      }
+                    }}
+                  />
+                </div>
+              }
+              trigger="hover"
+            >
+              <div style={{maxWidth: "200px", cursor: "pointer"}}>
+                {Setting.getShortText(text, 50)}
+              </div>
+            </Popover>
+          );
+        },
+      },
     {
       title: i18next.t("ipfsArchive:Action"),
       key: "action",
