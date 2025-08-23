@@ -414,7 +414,7 @@ class App extends Component {
   renderRightDropdown() {
     if ((Setting.isAnonymousUser(this.state.account) && Conf.DisablePreviewMode) || Setting.getUrlParam("isRaw") !== null) {
       return (
-        <div className="rightDropDown">
+        <div className="rightDropDown select-box">
           {
             this.renderAvatar()
           }
@@ -490,16 +490,20 @@ class App extends Component {
               {i18next.t("account:Sign In")}
             </a>
           </div>
-          {/* <div style={{ float: "right", margin: "0px", padding: "0px" }}>
-            <LanguageSelect />
+          {/* <div className="select-box" style={{float: "right", margin: "0px", padding: "0px"}}>
+            <ThemeSelect themeAlgorithm={this.state.themeAlgorithm} onChange={this.setLogoAndThemeAlgorithm} />
           </div> */}
+          <div className="select-box" style={{float: "right", margin: "0px", padding: "0px"}}>
+            <LanguageSelect />
+          </div> 
         </React.Fragment>
       );
     } else {
       return (
         <React.Fragment>
           {this.renderRightDropdown()}
-          {/* <LanguageSelect /> */}
+          <ThemeSelect className="select-box" themeAlgorithm={this.state.themeAlgorithm} onChange={this.setLogoAndThemeAlgorithm} />
+          <LanguageSelect className="select-box" />
           {Setting.isLocalAdminUser(this.state.account) &&
             <StoreSelect
               className="store-select"
@@ -512,7 +516,7 @@ class App extends Component {
               }}
             />
           }
-          <div style={{ float: "right", marginRight: "20px", padding: "0px" }}>
+          <div className="select-box" style={{ float: "right", marginRight: "20px", padding: "0px" }}>
             <div dangerouslySetInnerHTML={{ __html: Conf.NavbarHtml }} />
           </div>
         </React.Fragment>
