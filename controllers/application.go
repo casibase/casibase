@@ -45,6 +45,7 @@ func (c *ApiController) GetApplications() {
 			c.ResponseError(err.Error())
 			return
 		}
+		object.AddDetails(applications)
 		c.ResponseOk(applications)
 	} else {
 		limit := util.ParseInt(limit)
@@ -61,6 +62,7 @@ func (c *ApiController) GetApplications() {
 			return
 		}
 
+		object.AddDetails(applications)
 		c.ResponseOk(applications, paginator.Nums())
 	}
 }
@@ -79,6 +81,10 @@ func (c *ApiController) GetApplication() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	if res != nil {
+		object.AddDetails([]*object.Application{res})
 	}
 
 	c.ResponseOk(res)
@@ -272,12 +278,17 @@ func (c *ApiController) GetApplicationStatus() {
 		c.ResponseError(err.Error())
 		return
 	}
+	if application == nil {
+		c.ResponseError(fmt.Sprintf("The application: %s is not found", id))
+		return
+	}
 
 	status, err := object.GetApplicationStatus(owner, name, application.Namespace)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
+	url := application.URL
 
-	c.ResponseOk(status)
+	c.ResponseOk(status, url)
 }
