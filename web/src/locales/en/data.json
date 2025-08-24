@@ -448,7 +448,10 @@
     "Failed to add selected records to queue": "Failed to add selected records to queue",
     "Confirm Add Unuploaded Data Title": "Confirm Add Unuploaded Data to Queue?",
     "Confirm Add Unuploaded Data Content": "When new corresponding records are added, the system will automatically add them to the queue. However, if there are any that were missed, this button can be used. This process will traverse the relevant database and may take a long time. Records that have already been added to the queue will not be added again.",
-    "Auto refresh tip in queue modal": "Data refreshes every 30s"
+    "Auto refresh tip in queue modal": "Data refreshes every 30s",
+
+    "NotArchivedTip": "This data has not been archived to IPFS",
+    "Please select the records you want to query": "Please select the records to query, then click the Query button in the upper right corner."
 
   },
   "message": {

@@ -449,7 +449,11 @@
     "Record ID - Tooltip": "记录编号",
     "Please enter integer": "请输入整数",
 
-    "Auto refresh tip in queue modal": "数据每30s刷新一次"
+    "Auto refresh tip in queue modal": "数据每30s刷新一次",
+
+    "NotArchivedTip": "该数据未归档至ipfs",
+
+    "Please select the records you want to query": "请先勾择要查询的记录，随后点击右上角【查询】。暂不支持跨数据类型查询"
 
   },
   "message": {

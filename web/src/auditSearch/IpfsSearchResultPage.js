@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { Button, Table, Typography, Tabs, Tag, Tooltip, Space, Empty, Badge, message } from "antd";
+import { Button, Table, Typography, Tabs, Tag, Tooltip, Space, Empty, Badge, message, Alert } from "antd";
 import { EyeOutlined, FileTextOutlined } from "@ant-design/icons";
 import * as IpfsArchiveBackend from "../backend/IpfsArchiveBackend";
 import * as Setting from "../Setting";
@@ -122,12 +122,24 @@ class IPFSSearchResultPage extends BaseListPage {
 
   renderTable = (data) => {
     const columns = this.getColumns();
+    // 自定义checkbox，禁用时加tooltip
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onSelectChange,
       getCheckboxProps: (record) => ({
         disabled: !record.ipfsAddress || record.ipfsAddress === "",
       }),
+      renderCell: (checked, record, index, originNode) => {
+        const disabled = !record.ipfsAddress || record.ipfsAddress === "";
+        if (disabled) {
+          return (
+            <Tooltip title={i18next.t("ipfsArchive:NotArchivedTip", "该数据未归档至ipfs")}>
+              <span>{originNode}</span>
+            </Tooltip>
+          );
+        }
+        return originNode;
+      },
     };
     return (
       <Table
@@ -248,7 +260,7 @@ class IPFSSearchResultPage extends BaseListPage {
     return (
       <div className="ipfs-search-result-page">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "20px 0" }}>
-          <Title level={2} style={{ margin: 0 }}>查询索引：{correlationId}</Title>
+          <Title level={2} style={{ margin: 0 }}>索引 <span style={{ color: "#1890ff", background: "#e6f7ff", borderRadius: "12px", padding: "3px 14px" }}>{correlationId}</span> 的归档记录：</Title>
           <div>
             <Button
               type="default"
@@ -267,6 +279,13 @@ class IPFSSearchResultPage extends BaseListPage {
               </Button>
             </Badge>
           </div>
+        </div>
+        <div style={{ marginBottom: 16 }}>
+          <Alert
+            message={i18next.t("ipfsArchive:Please select the records you want to query", "先勾选要查询的记录，随后点击右上角查询")}
+            type="info"
+            showIcon
+          />
         </div>
         <Tabs defaultActiveKey={allDataTypes[0]?.toString() || "1"} type="line" onChange={this.handleTabChange} activeKey={activeDataType?.toString()}>
           {allDataTypes.map((dataType) => (
