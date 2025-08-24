@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Row, Modal, Popconfirm, Space, Table, Tag, Tooltip} from "antd";
-import {DeleteOutlined, EditOutlined, EyeOutlined, ExclamationCircleOutlined, FileTextOutlined} from "@ant-design/icons";
+import { Button, Card, Col, Row, Modal, Popconfirm, Space, Table, Tag, Tooltip } from "antd";
+import { DeleteOutlined, EditOutlined, EyeOutlined, ExclamationCircleOutlined, FileTextOutlined } from "@ant-design/icons";
 import i18next from "i18next";
 import BaseListPage from "../BaseListPage";
 import * as Setting from "../Setting";
@@ -41,7 +41,7 @@ class IpfsArchiveListPage extends BaseListPage {
     this.fetchQueueData();
     // 设置每30秒自动刷新
     this.refreshIntervalId = setInterval(() => {
-      this.fetch({pagination: this.state.pagination});
+      this.fetch({ pagination: this.state.pagination });
       this.fetchQueueData();
     }, 30000);
   }
@@ -90,9 +90,9 @@ class IpfsArchiveListPage extends BaseListPage {
     }
   };
 
-  fetch = async(params) => {
-    const {page, pageSize, sortField, sortOrder, searchText, searchedColumn} = params;
-    this.setState({loading: true});
+  fetch = async (params) => {
+    const { page, pageSize, sortField, sortOrder, searchText, searchedColumn } = params;
+    this.setState({ loading: true });
 
     try {
       const response = await IpfsArchiveBackend.getIpfsArchives(
@@ -117,15 +117,15 @@ class IpfsArchiveListPage extends BaseListPage {
         });
       } else {
         Setting.showMessage("error", response.message || i18next.t("general:Failed to fetch data"));
-        this.setState({loading: false});
+        this.setState({ loading: false });
       }
     } catch (error) {
       Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
-      this.setState({loading: false});
+      this.setState({ loading: false });
     }
   };
 
-  deleteItem = async(index) => {
+  deleteItem = async (index) => {
     const record = this.state.data[index];
     try {
       console.log(record);
@@ -133,15 +133,15 @@ class IpfsArchiveListPage extends BaseListPage {
       if (response.status === "ok") {
         Setting.showMessage("success", i18next.t("general:Deleted successfully"));
         // 刷新一下
-        this.fetch({pagination: this.state.pagination});
-        return {status: "ok"};
+        this.fetch({ pagination: this.state.pagination });
+        return { status: "ok" };
       } else {
         Setting.showMessage("error", response.message || i18next.t("general:Failed to delete"));
-        return {status: "error"};
+        return { status: "error" };
       }
     } catch (error) {
       Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
-      return {status: "error"};
+      return { status: "error" };
     }
   };
 
@@ -183,9 +183,9 @@ class IpfsArchiveListPage extends BaseListPage {
       width: "200px",
       ...this.getColumnSearchProps("dataType"),
       render: (text) => {
-          // 使用DataTypeConverter工具类将dataType转换为中文
-          return DataTypeConverter.convertToChinese(text);
-        },
+        // 使用DataTypeConverter工具类将dataType转换为中文
+        return DataTypeConverter.convertToChinese(text);
+      },
     },
     {
       title: i18next.t("ipfsArchive:Archive Status"),
@@ -193,12 +193,12 @@ class IpfsArchiveListPage extends BaseListPage {
       key: "archiveStatus",
       width: "100px",
       render: (text) => {
-          if (text && text !== "") {
-            return <Tag color="success">{i18next.t("ipfsArchive:Archived")}</Tag>;
-          } else {
-            return <Tag color="error">{i18next.t("ipfsArchive:Not Archived")}</Tag>;
-          }
-        },
+        if (text && text !== "") {
+          return <Tag color="success">{i18next.t("ipfsArchive:Archived")}</Tag>;
+        } else {
+          return <Tag color="error">{i18next.t("ipfsArchive:Not Archived")}</Tag>;
+        }
+      },
     },
     {
       title: i18next.t("ipfsArchive:IPFS Address"),
@@ -208,38 +208,38 @@ class IpfsArchiveListPage extends BaseListPage {
       ...this.getColumnSearchProps("ipfsAddress"),
       render: (text) => (
         <Tooltip title={text} placement="topLeft" arrow>
-          <div style={{wordBreak: "break-all", maxWidth: "100%"}}>{text}</div>
+          <div style={{ wordBreak: "break-all", maxWidth: "100%" }}>{text}</div>
         </Tooltip>
       ),
     },
-    {      
-      title: i18next.t("ipfsArchive:Update Time"),      
-      dataIndex: "updateTime",      
-      key: "updateTime",      
-      width: "150px",      
-      sorter: true,      
-      sortDirections: ["descend", "ascend"],      
-      render: (text) => text==null||text === "0000-00-00 00:00:00" ? "---" : text,    
+    {
+      title: i18next.t("ipfsArchive:Update Time"),
+      dataIndex: "updateTime",
+      key: "updateTime",
+      width: "150px",
+      sorter: true,
+      sortDirections: ["descend", "ascend"],
+      render: (text) => text == null || text === "0000-00-00 00:00:00" ? "---" : text,
 
     },
-    {      
-      title: i18next.t("ipfsArchive:Create Time"),      
-      dataIndex: "createTime",      
-      key: "createTime",      
-      width: "150px",      
-      sorter: true,      
-      sortDirections: ["descend", "ascend"],      
-      render: (text) => text==null||text === "0000-00-00 00:00:00" ? "---" : text,
+    {
+      title: i18next.t("ipfsArchive:Create Time"),
+      dataIndex: "createTime",
+      key: "createTime",
+      width: "150px",
+      sorter: true,
+      sortDirections: ["descend", "ascend"],
+      render: (text) => text == null || text === "0000-00-00 00:00:00" ? "---" : text,
 
-    },    
-    {      
-      title: i18next.t("ipfsArchive:Upload Time"),      
-      dataIndex: "uploadTime",      
-      key: "uploadTime",      
-      width: "150px",      
-      sorter: true,      
-      sortDirections: ["descend", "ascend"],      
-      render: (text) => text==null||text === "0000-00-00 00:00:00" ? "---" : text,
+    },
+    {
+      title: i18next.t("ipfsArchive:Upload Time"),
+      dataIndex: "uploadTime",
+      key: "uploadTime",
+      width: "150px",
+      sorter: true,
+      sortDirections: ["descend", "ascend"],
+      render: (text) => text == null || text === "0000-00-00 00:00:00" ? "---" : text,
 
 
     },
@@ -251,19 +251,31 @@ class IpfsArchiveListPage extends BaseListPage {
         <Space size="middle">
           <Tooltip title={i18next.t("general:View")}>
             <Button
-                type="primary"
-                icon={<EyeOutlined />}
-                size="small"
-                onClick={() => this.viewItem(record)}
-              />
+              type="primary"
+              icon={<EyeOutlined />}
+              size="small"
+              onClick={() => this.viewItem(record)}
+            />
           </Tooltip>
           <Tooltip title={i18next.t("general:Edit")}>
             <Button
-                type="default"
-                icon={<EditOutlined />}
-                size="small"
-                onClick={() => this.editItem(record)}
-              />
+              type="default"
+              icon={<EditOutlined />}
+              size="small"
+              onClick={() => this.editItem(record)}
+            />
+          </Tooltip>
+          <Tooltip title={i18next.t("ipfsArchive:Open in Records")}>
+            <Button
+              type="default"
+              icon={<FileTextOutlined />}
+              size="small"
+              onClick={() => {
+                const org = this.props.account && this.props.account.owner ? this.props.account.owner : Setting.getRequestOrganization(this.props.account);
+                const rid = record.recordId;
+                this.props.history.push(`records/${org}/${encodeURIComponent(rid)}`);
+              }}
+            />
           </Tooltip>
           {/* <Tooltip title={i18next.t("general:Delete")}>
             <Button
@@ -279,7 +291,7 @@ class IpfsArchiveListPage extends BaseListPage {
   ];
 
   handleDelete = (record) => {
-    const {confirm} = Modal;
+    const { confirm } = Modal;
     confirm({
       title: `${i18next.t("general:Sure to delete")}: ${record.correlationId} ?`,
       icon: <ExclamationCircleOutlined />,
@@ -302,6 +314,19 @@ class IpfsArchiveListPage extends BaseListPage {
         this.setState({ selectedRowKeys });
       },
     };
+  };
+
+  // 弹出确认框，确认后执行将未上传数据加入队列
+  showConfirmAddUnUploadQueueData = () => {
+    Modal.confirm({
+      title: i18next.t('ipfsArchive:Confirm Add Unuploaded Data Title'),
+      content: i18next.t('ipfsArchive:Confirm Add Unuploaded Data Content'),
+      okText: i18next.t('general:OK'),
+      cancelText: i18next.t('general:Cancel'),
+      onOk: async () => {
+        await this.handleAddUnUploadQueueData();
+      }
+    });
   };
 
   handleAddUnUploadQueueData = async () => {
@@ -332,8 +357,8 @@ class IpfsArchiveListPage extends BaseListPage {
       this.setState({ loading: true });
       // 获取选中的记录
       const selectedRecords = this.state.data.filter(record =>
-          selectedRowKeys.includes(record.id)
-        );
+        selectedRowKeys.includes(record.id)
+      );
 
       // 验证selectedRecords是数组且不为空
       if (!Array.isArray(selectedRecords) || selectedRecords.length === 0) {
@@ -394,7 +419,7 @@ class IpfsArchiveListPage extends BaseListPage {
                   variant="dashed"
                   size="small"
                   style={{ marginRight: '8px' }}
-                  onClick={this.handleAddUnUploadQueueData}
+                  onClick={this.showConfirmAddUnUploadQueueData}
                 >
                   {i18next.t("ipfsArchive:Add Unupload Data to Queue")}
                 </Button>
@@ -403,28 +428,28 @@ class IpfsArchiveListPage extends BaseListPage {
           }
           variant="outlined"
           style={{ marginBottom: '24px' }}
-          // loading={loadingQueue}
+        // loading={loadingQueue}
         >
           <Row gutter={[16, 16]}>
-              {allDataTypeKeys.map((type) => (
-                <Col xs={24} sm={12} md={8} lg={6} key={type}>
-                  <Card
-                    size="small"
-                    bordered
-                    style={{ height: "100%", cursor: "pointer" }}
-                    onClick={() => this.showQueueDetailByType(type)}
-                    hoverable
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span>{DataTypeConverter.convertToChinese(type)}</span>
-                      <Tag color={Array.isArray(queueData[type]) && queueData[type].length > 0 ? "blue" : "default"}>
-                        {Array.isArray(queueData[type]) ? queueData[type].length : 0}
-                      </Tag>
-                    </div>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
+            {allDataTypeKeys.map((type) => (
+              <Col xs={24} sm={12} md={8} lg={6} key={type}>
+                <Card
+                  size="small"
+                  bordered
+                  style={{ height: "100%", cursor: "pointer" }}
+                  onClick={() => this.showQueueDetailByType(type)}
+                  hoverable
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span>{DataTypeConverter.convertToChinese(type)}</span>
+                    <Tag color={Array.isArray(queueData[type]) && queueData[type].length > 0 ? "blue" : "default"}>
+                      {Array.isArray(queueData[type]) ? queueData[type].length : 0}
+                    </Tag>
+                  </div>
+                </Card>
+              </Col>
+            ))}
+          </Row>
         </Card>
 
         {/* 按钮区域 */}
@@ -436,7 +461,7 @@ class IpfsArchiveListPage extends BaseListPage {
               pathname: '/ipfs-archive/add',
               mode: 'add'
             })
-          }>
+            }>
             {i18next.t("general:Add")}
           </Button>
 
@@ -450,15 +475,15 @@ class IpfsArchiveListPage extends BaseListPage {
           </Button>
           <Button
             onClick={async () => {
-              this.fetch({pagination: this.state.pagination});
+              this.fetch({ pagination: this.state.pagination });
               this.fetchQueueData();
             }}
           >
-            {i18next.t("general:Refresh")}
+            {i18next.t("ipfsArchive:Refresh")}
           </Button>
         </div>
         <Table
-          scroll={{x: "max-content"}}
+          scroll={{ x: "max-content" }}
           columns={columns}
           dataSource={data}
           rowKey={(record) => record.id}
@@ -470,10 +495,10 @@ class IpfsArchiveListPage extends BaseListPage {
           loading={this.state.loading}
           onChange={this.handleTableChange}
         />
-      
-      <QueueDetailModal ref={this.queueDetailModal} />
+
+        <QueueDetailModal ref={this.queueDetailModal} />
       </div>
-   )
+    )
   };
 }
 

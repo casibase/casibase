@@ -13,15 +13,15 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Table, Typography, Tabs, Tag, Tooltip, Space, Empty} from "antd";
-import {EyeOutlined} from "@ant-design/icons";
+import { Button, Table, Typography, Tabs, Tag, Tooltip, Space, Empty, Badge, message } from "antd";
+import { EyeOutlined, FileTextOutlined } from "@ant-design/icons";
 import * as IpfsArchiveBackend from "../backend/IpfsArchiveBackend";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import DataTypeConverter from "../common/DataTypeConverter";
 import BaseListPage from "../BaseListPage";
 import "./IpfsSearchResultPage.less"
-const {Title} = Typography;
+const { Title } = Typography;
 
 class IPFSSearchResultPage extends BaseListPage {
   constructor(props) {
@@ -31,7 +31,9 @@ class IPFSSearchResultPage extends BaseListPage {
       correlationId: props.match.params.correlationId,
       groupedArchives: {},
       allDataTypes: [],
-      activeDataType: 1
+      activeDataType: 1,
+      selectedRowKeys: [],
+      selectedRows: [],
     };
   }
 
@@ -39,37 +41,41 @@ class IPFSSearchResultPage extends BaseListPage {
     // 获取所有数据类型
     const dataTypes = Object.keys(DataTypeConverter.getAllDataTypes()).map(Number);
     const initialDataType = dataTypes[0] || 1;
-    
+
     // 先设置状态
     this.setState({
       allDataTypes: dataTypes,
       activeDataType: initialDataType
     });
-    
+
     // 再调用基类的componentDidMount
     super.componentDidMount();
-    
+
     // 首次加载只加载第一个tab的数据
     if (initialDataType !== null) {
-      this.fetch({dataType: initialDataType});
+      this.fetch({ dataType: initialDataType });
     }
   }
 
   handleTabChange = (key) => {
-    // 点击tab时检索对应dataType的数据
+    // 点击tab时检索对应dataType的数据，切换tab时清空选择
     const dataType = parseInt(key);
-    this.setState({activeDataType: dataType}, () => {
-      this.fetch({dataType, pagination: this.state.pagination});
+    this.setState({ activeDataType: dataType, selectedRowKeys: [], selectedRows: [] }, () => {
+      this.fetch({ dataType, pagination: this.state.pagination });
     });
   }
 
-  fetch = async(params) => {
-    const {dataType = this.state.activeDataType, page, pageSize} = params;
-    const {correlationId} = this.state;
+  onSelectChange = (selectedRowKeys, selectedRows) => {
+    this.setState({ selectedRowKeys, selectedRows });
+  };
+
+  fetch = async (params) => {
+    const { dataType = this.state.activeDataType, page, pageSize } = params;
+    const { correlationId } = this.state;
     const currentPage = page || this.state.pagination.current || 1;
     const currentPageSize = pageSize || this.state.pagination.pageSize || 10;
 
-    this.setState({loading: true});
+    this.setState({ loading: true });
 
     try {
       const response = await IpfsArchiveBackend.getIpfsArchivesByCorrelationIdAndDataType(
@@ -80,7 +86,7 @@ class IPFSSearchResultPage extends BaseListPage {
       );
 
       if (response.status === "ok") {
-        const newGroupedArchives = {...this.state.groupedArchives};
+        const newGroupedArchives = { ...this.state.groupedArchives };
         if (response.data && response.data.length > 0) {
           newGroupedArchives[dataType] = response.data;
         } else {
@@ -106,20 +112,45 @@ class IPFSSearchResultPage extends BaseListPage {
         });
       } else {
         Setting.showMessage("error", response.message || i18next.t("general:Failed to fetch data"));
-        this.setState({loading: false});
+        this.setState({ loading: false });
       }
     } catch (error) {
       Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
-      this.setState({loading: false});
+      this.setState({ loading: false });
     }
   }
+
+  renderTable = (data) => {
+    const columns = this.getColumns();
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: this.onSelectChange,
+      getCheckboxProps: (record) => ({
+        disabled: !record.ipfsAddress || record.ipfsAddress === "",
+      }),
+    };
+    return (
+      <Table
+        rowSelection={rowSelection}
+        scroll={{ x: "max-content" }}
+        columns={columns}
+        dataSource={data}
+        rowKey="id"
+        size="middle"
+        bordered
+        pagination={this.state.pagination}
+        loading={this.state.loading}
+        onChange={this.handleTableChange}
+      />
+    );
+  };
 
   getColumns = () => [
     {
       title: i18next.t("ipfsArchive:Record ID"),
       dataIndex: "recordId",
       key: "recordId",
-      width: "250px",
+      width: "150px",
       ...this.getColumnSearchProps(null),
       render: (text) => text || "---"
     },
@@ -127,7 +158,7 @@ class IPFSSearchResultPage extends BaseListPage {
     //   title: i18next.t("ipfsArchive:Correlation ID"),
     //   dataIndex: "correlationId",
     //   key: "correlationId",
-    //   width: "250px",
+    //   width: "200px",
     //   ...this.getColumnSearchProps("correlationId"),
     //   render: (text) => text || "---"
     // },
@@ -139,7 +170,7 @@ class IPFSSearchResultPage extends BaseListPage {
       ...this.getColumnSearchProps(null),
       render: (text) => (
         <Tooltip title={text} placement="topLeft" arrow>
-          <div style={{wordBreak: "break-all", maxWidth: "100%"}}>{text}</div>
+          <div style={{ wordBreak: "break-all", maxWidth: "100%" }}>{text}</div>
         </Tooltip>
       )
     },
@@ -149,12 +180,12 @@ class IPFSSearchResultPage extends BaseListPage {
       key: "archiveStatus",
       width: "100px",
       render: (text) => {
-          if (text && text !== "") {
-            return <Tag color="success">{i18next.t("ipfsArchive:Archived")}</Tag>;
-          } else {
-            return <Tag color="error">{i18next.t("ipfsArchive:Not Archived")}</Tag>;
-          }
-        },
+        if (text && text !== "") {
+          return <Tag color="success">{i18next.t("ipfsArchive:Archived")}</Tag>;
+        } else {
+          return <Tag color="error">{i18next.t("ipfsArchive:Not Archived")}</Tag>;
+        }
+      },
     },
     {
       title: i18next.t("ipfsArchive:Upload Time"),
@@ -169,18 +200,33 @@ class IPFSSearchResultPage extends BaseListPage {
       title: i18next.t("general:Action"),
       key: "action",
       fixed: "right",
-      render: (_, record) => (
-        <Space size="middle">
-          <Tooltip title={i18next.t("general:View")}>
-            <Button
+      render: (_, record) => {
+        // 按钮不再禁用
+        return (
+          <Space size="middle">
+            <Tooltip title={i18next.t("general:View")}>
+              <Button
                 type="primary"
                 icon={<EyeOutlined />}
                 size="small"
                 onClick={() => this.viewItem(record)}
               />
-          </Tooltip>
-        </Space>
-      )
+            </Tooltip>
+            <Tooltip title={i18next.t("ipfsArchive:Open in Records")}>
+              <Button
+                type="default"
+                icon={<FileTextOutlined />}
+                size="small"
+                onClick={() => {
+                  const org = this.props.account && this.props.account.owner ? this.props.account.owner : Setting.getRequestOrganization(this.props.account);
+                  const rid = record.recordId;
+                  this.props.history.push(`records/${org}/${encodeURIComponent(rid)}`);
+                }}
+              />
+            </Tooltip>
+          </Space>
+        );
+      }
     }
   ];
 
@@ -191,32 +237,36 @@ class IPFSSearchResultPage extends BaseListPage {
     });
   };
 
-  renderTable = (data) => {
-    const columns = this.getColumns();
-
-    return (
-      <Table
-        scroll={{x: "max-content"}}
-        columns={columns}
-        dataSource={data}
-        rowKey="id"
-        size="middle"
-        bordered
-        pagination={this.state.pagination}
-        loading={this.state.loading}
-        onChange={this.handleTableChange}
-      />
-    );
+  handleQueryClick = () => {
+    message.info('功能未开发');
   };
 
   render() {
-    const {correlationId, groupedArchives, allDataTypes, activeDataType} = this.state;
-    const {TabPane} = Tabs;
+    const { correlationId, groupedArchives, allDataTypes, activeDataType, selectedRowKeys } = this.state;
+    const { TabPane } = Tabs;
 
     return (
       <div className="ipfs-search-result-page">
-        <div style={{margin: "20px 0"}}>
-          <Title level={2}>查询索引：{correlationId}</Title>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "20px 0" }}>
+          <Title level={2} style={{ margin: 0 }}>查询索引：{correlationId}</Title>
+          <div>
+            <Button
+              type="default"
+              onClick={() => this.fetch({ dataType: this.state.activeDataType, pagination: this.state.pagination })}
+              style={{ marginLeft: 16 }}
+            >
+              {i18next.t("ipfsSearch:Refresh", "刷新")}
+            </Button>
+            <Badge count={selectedRowKeys.length} offset={[0, 0]} style={{ marginLeft: 8 }}>
+              <Button
+                type="primary"
+                style={{ marginLeft: 8 }}
+                onClick={this.handleQueryClick}
+              >
+                {i18next.t("ipfsSearch:Query", "查询")}
+              </Button>
+            </Badge>
+          </div>
         </div>
         <Tabs defaultActiveKey={allDataTypes[0]?.toString() || "1"} type="line" onChange={this.handleTabChange} activeKey={activeDataType?.toString()}>
           {allDataTypes.map((dataType) => (
@@ -224,7 +274,7 @@ class IPFSSearchResultPage extends BaseListPage {
               {groupedArchives[dataType] ? (
                 this.renderTable(groupedArchives[dataType])
               ) : (
-                <Empty description={i18next.t("ipfsSearch:No results found")} style={{margin: "40px 0"}} />
+                <Empty description={i18next.t("ipfsSearch:No results found")} style={{ margin: "40px 0" }} />
               )}
             </TabPane>
           ))}

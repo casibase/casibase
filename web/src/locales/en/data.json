@@ -129,6 +129,7 @@
     "Avatar": "Avatar",
     "Avatar - Tooltip": "Icon URL for visual identification",
     "Back Home": "Back Home",
+    "Back": "Back",
     "Block": "Block",
     "Block - Tooltip": "Linked data block identifier",
     "Cancel": "Cancel",
@@ -400,6 +401,7 @@
     "Audit": "Audit",
     "AuditSearch": "Search & Audit",
     "IpfsArchives": "Data Archives",
+    "IpfsSearch": "Search Data",
     "Medical Image Analysis": "Medical Image Analysis",
     "Super Resolution": "Super Resolution"
   },
@@ -415,8 +417,38 @@
     "Upload Time - Tooltip": "Time when data was uploaded to IPFS",
     "Archive Status": "Archive Status",
     "Archived": "Archived",
-    "Not Archived": "Not Archived"
+    "Not Archived": "Not Archived",
 
+    "New Ipfs Archive": "New Ipfs Archive",
+    "View Ipfs Archive": "View Ipfs Archive",
+    "Record ID - Tooltip": "Unique record ID for the archive entry",
+    "Please enter integer": "Please enter integer",
+
+    "Queue Detail": "Queue Detail",
+    "Upload to IPFS": "Upload to IPFS",
+    "Upload to IPFS successfully": "Upload to IPFS task submit successfully",
+    "Failed to upload to IPFS": "Failed to upload to IPFS",
+    "Remove record successfully": "Remove record successfully",
+    "Failed to remove record": "Failed to remove record",
+    "Record ID": "Record ID",
+    "Object": "Object",
+    "Action": "Action",
+    "Remove": "Remove",
+    "Refresh": "Refresh",
+    "Open in Records": "Open in Records",
+
+    "Current Queue Status": "Current Queue Status",
+    "Total": "Total",
+    "Add Unupload Data to Queue": "Add Unuploaded Data to Queue",
+    "Add Selected to Queue": "Add Selected to Queue",
+    "Please select records first": "Please select records first",
+    "Successfully added unuploaded data to queue": "Successfully added unuploaded data to queue",
+    "Failed to add unuploaded data to queue": "Failed to add unuploaded data to queue",
+    "Successfully added selected records to queue": "Successfully added selected records to queue",
+    "Failed to add selected records to queue": "Failed to add selected records to queue",
+    "Confirm Add Unuploaded Data Title": "Confirm Add Unuploaded Data to Queue?",
+    "Confirm Add Unuploaded Data Content": "When new corresponding records are added, the system will automatically add them to the queue. However, if there are any that were missed, this button can be used. This process will traverse the relevant database and may take a long time. Records that have already been added to the queue will not be added again.",
+    "Auto refresh tip in queue modal": "Data refreshes every 30s"
 
   },
   "message": {

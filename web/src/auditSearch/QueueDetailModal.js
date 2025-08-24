@@ -13,12 +13,12 @@
 // limitations under the License.
 
 import React, { useState, useEffect } from "react";
-import { Modal, Tabs, Table, Tag, Tooltip,Typography,Popover  } from "antd";
+import { Modal, Tabs, Table, Tag, Tooltip, Typography, Popover } from "antd";
 import i18next from "i18next";
 import * as Setting from "../Setting";
 import * as IpfsArchiveBackend from "../backend/IpfsArchiveBackend";
 import DataTypeConverter from "../common/DataTypeConverter";
-import {Controlled as CodeMirror} from "react-codemirror2";
+import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css";
 
@@ -32,7 +32,53 @@ class QueueDetailModal extends React.Component {
       dataSource: [],
       dataType: 0,
     };
+    this.timer = null;
   }
+
+  componentWillUnmount() {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+  }
+
+  startAutoRefresh = (type) => {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+    this.timer = setInterval(() => {
+      this.fetchQueueDataByType(type);
+    }, 30000); // 每30秒刷新一次
+  };
+
+  stopAutoRefresh = () => {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+  };
+
+  fetchQueueDataByType = async (type) => {
+    this.setState({ loading: true });
+    try {
+      const queueResponse = await IpfsArchiveBackend.getAllQueueData();
+      if (queueResponse.status === "ok") {
+        const queueData = queueResponse.data || {};
+        this.setState({
+          queueData,
+          dataType: type,
+          loading: false,
+          dataSource: queueData[type] || []
+        });
+      } else {
+        Setting.showMessage("error", queueResponse.message || i18next.t("general:Failed to fetch queue data"));
+        this.setState({ loading: false });
+      }
+    } catch (error) {
+      Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      this.setState({ loading: false });
+    }
+  };
 
   // showModal = async () => {
   //   this.setState({ loading: true });
@@ -66,7 +112,6 @@ class QueueDetailModal extends React.Component {
   showModalByType = async (type) => {
     this.setState({ loading: true });
     try {
-      // 先获取所有队列数据以显示总数
       const queueResponse = await IpfsArchiveBackend.getAllQueueData();
       if (queueResponse.status === "ok") {
         const queueData = queueResponse.data || {};
@@ -74,11 +119,10 @@ class QueueDetailModal extends React.Component {
           visible: true,
           queueData,
           dataType: type,
-          loading: false
-        });
-        this.setState({
+          loading: false,
           dataSource: queueData[type] || []
         });
+        this.startAutoRefresh(type);
       } else {
         Setting.showMessage("error", queueResponse.message || i18next.t("general:Failed to fetch queue data"));
         this.setState({ loading: false });
@@ -89,14 +133,13 @@ class QueueDetailModal extends React.Component {
     }
   };
 
-  
-
   handleCancel = () => {
     this.setState({
       visible: false,
       queueData: {},
       dataSource: []
     });
+    this.stopAutoRefresh();
   };
 
 
@@ -108,7 +151,7 @@ class QueueDetailModal extends React.Component {
     try {
       this.setState({ loading: true });
       const response = await IpfsArchiveBackend.removeRecordFromQueueByRecordIdAndDataType(
-        record.id, 
+        record.id,
         this.state.dataType
       );
       if (response.status === "ok") {
@@ -136,10 +179,9 @@ class QueueDetailModal extends React.Component {
       this.setState({ loading: true });
       const response = await IpfsArchiveBackend.archiveToIPFS(this.state.dataType);
       if (response.status === "ok") {
-        Setting.showMessage("success", i18next.t("ipfsArchive:Upload to IPFS successfully"));
-        // 上传成功后清空当前队列数据
+        Setting.showMessage("info", i18next.t("ipfsArchive:Upload to IPFS successfully"));
         this.setState({
-          dataSource: [],
+          // dataSource: [],
           loading: false
         });
       } else {
@@ -159,79 +201,79 @@ class QueueDetailModal extends React.Component {
       key: "id",
       width: "100px"
     },
-    {
-      title: i18next.t("ipfsArchive:Correlation ID"),
-      dataIndex: "correlationId",
-      key: "correlationId",
-      width: "200px"
-    },
+    // {
+    //   title: i18next.t("ipfsArchive:Correlation ID"),
+    //   dataIndex: "correlationId",
+    //   key: "correlationId",
+    //   width: "200px"
+    // },
     {
       title: i18next.t("ipfsArchive:Object"),
       dataIndex: "object",
       key: "object",
       width: "200px",
       render: (text, record, index) => {
-          if (!text || text === "") {
-            return (
-              <div style={{maxWidth: "200px"}}>
-                {Setting.getShortText(text, 50)}
-              </div>
-            );
-          }
-
-          let formattedText;
-          let isValidJson = false;
-          let errorMessage;
-
-          try {
-            // Try to parse and format JSON
-            const parsedJson = JSON.parse(text);
-            formattedText = JSON.stringify(parsedJson, null, 2);
-            isValidJson = true;
-          } catch (error) {
-            // If parsing fails, use original text
-            formattedText = text;
-            isValidJson = false;
-            errorMessage = error.message;
-          }
-
+        if (!text || text === "") {
           return (
-            <Popover
-              placement="right"
-              content={
-                <div style={{width: "600px", height: "400px", display: "flex", flexDirection: "column", gap: "12px"}}>
-                  {!isValidJson && (
-                    <Alert type="error" showIcon message={
-                      <Typography.Paragraph ellipsis={{expandable: "collapsible"}} style={{margin: 0}}>{errorMessage}</Typography.Paragraph>}
-                    />)}
-                  <CodeMirror
-                    value={formattedText}
-                    options={{
-                      mode: isValidJson ? "application/json" : "text/plain",
-                      theme: "material-darker",
-                      readOnly: true,
-                      lineNumbers: true,
-                    }}
-                    editorDidMount={(editor) => {
-                      if (window.ResizeObserver) {
-                        const resizeObserver = new ResizeObserver(() => {
-                          editor.refresh();
-                        });
-                        resizeObserver.observe(editor.getWrapperElement().parentNode);
-                      }
-                    }}
-                  />
-                </div>
-              }
-              trigger="hover"
-            >
-              <div style={{maxWidth: "200px", cursor: "pointer"}}>
-                {Setting.getShortText(text, 50)}
-              </div>
-            </Popover>
+            <div style={{ maxWidth: "200px" }}>
+              {Setting.getShortText(text, 50)}
+            </div>
           );
-        },
+        }
+
+        let formattedText;
+        let isValidJson = false;
+        let errorMessage;
+
+        try {
+          // Try to parse and format JSON
+          const parsedJson = JSON.parse(text);
+          formattedText = JSON.stringify(parsedJson, null, 2);
+          isValidJson = true;
+        } catch (error) {
+          // If parsing fails, use original text
+          formattedText = text;
+          isValidJson = false;
+          errorMessage = error.message;
+        }
+
+        return (
+          <Popover
+            placement="right"
+            content={
+              <div style={{ width: "600px", height: "400px", display: "flex", flexDirection: "column", gap: "12px" }}>
+                {!isValidJson && (
+                  <Alert type="error" showIcon message={
+                    <Typography.Paragraph ellipsis={{ expandable: "collapsible" }} style={{ margin: 0 }}>{errorMessage}</Typography.Paragraph>}
+                  />)}
+                <CodeMirror
+                  value={formattedText}
+                  options={{
+                    mode: isValidJson ? "application/json" : "text/plain",
+                    theme: "material-darker",
+                    readOnly: true,
+                    lineNumbers: true,
+                  }}
+                  editorDidMount={(editor) => {
+                    if (window.ResizeObserver) {
+                      const resizeObserver = new ResizeObserver(() => {
+                        editor.refresh();
+                      });
+                      resizeObserver.observe(editor.getWrapperElement().parentNode);
+                    }
+                  }}
+                />
+              </div>
+            }
+            trigger="hover"
+          >
+            <div style={{ maxWidth: "200px", cursor: "pointer" }}>
+              {Setting.getShortText(text, 50)}
+            </div>
+          </Popover>
+        );
       },
+    },
     {
       title: i18next.t("ipfsArchive:Action"),
       key: "action",
@@ -303,8 +345,12 @@ class QueueDetailModal extends React.Component {
             pagination={{ pageSize: 10 }}
             style={{ marginTop: "16px" }}
             scroll={{ x: 'max-content' }}
-                  />
+          />
+          <div style={{ textAlign: "right", color: "#888", fontSize: 12, marginTop: 8 }}>
+            {i18next.t("ipfsArchive:Auto refresh tip in queue modal")}
+          </div>
         </Modal>
+
       </React.Fragment>
     );
   }
