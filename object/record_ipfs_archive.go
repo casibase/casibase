@@ -24,6 +24,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"sort"
 
 	"github.com/casibase/casibase/util"
 )
@@ -667,12 +668,32 @@ func generateExcelFromRecords(queueData []*Record) (string, error) {
 		}
 	}
 
+	// 收集所有key之后，进行升序排序,避免顺序不一致
+	sort.Strings(allKeys)
+
 	// 生成表格字符串
 	var result strings.Builder
 
 	// 第一行：key
 	for i, key := range allKeys {
-		result.WriteString(key)
+		// 处理key中的特殊字符：
+		// 1. 若包含空格，替换为下划线(_)
+		// 2. 若包含换行符(\n)，替换为HTML换行标签(<br>)
+		// 3. 若key仅由星号(*)组成，替换为井号(#)
+		
+		processedKey := key
+		
+		// 检查是否仅由星号组成（非空且移除所有*后为空）
+		if key != "" && strings.Trim(key, "*") == "" {
+			processedKey = "#"
+		} else {
+			// 替换空格为下划线
+			processedKey = strings.ReplaceAll(processedKey, " ", "-")
+			// 替换换行符为<br>
+			processedKey = strings.ReplaceAll(processedKey, "\n", "<br>")
+		}
+
+		result.WriteString(processedKey)
 		if i < len(allKeys)-1 {
 			result.WriteString(" ")
 		}
@@ -691,14 +712,14 @@ func generateExcelFromRecords(queueData []*Record) (string, error) {
 
 				// 如果字符串为空，强制设为"_"
 				if valueStr == "" {
-					valueStr = "_"
+					valueStr = "-"
 				}
 
 				// 将换行符替换为<br>
 				valueStr = strings.ReplaceAll(valueStr, "\n", "<br>")
 
 				// 替换空格为下划线
-				result.WriteString(strings.ReplaceAll(valueStr, " ", "_"))
+				result.WriteString(strings.ReplaceAll(valueStr, " ", "-"))
 			}
 			if i < len(allKeys)-1 {
 				result.WriteString(" ")

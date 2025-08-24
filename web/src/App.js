@@ -93,6 +93,7 @@ import IpfsArchiveListPage from "./auditSearch/IpfsArchiveListPage";
 import IpfsArchiveEditPage from "./auditSearch/IpfsArchiveEditPage";
 import IpfsSearchPage from "./auditSearch/IpfsSearchPage";
 import IpfsSearchResultPage from "./auditSearch/IpfsSearchResultPage";
+import QueryResultPage from "./auditSearch/QueryResultPage";
 
 
 
@@ -257,9 +258,9 @@ class App extends Component {
       this.setState({ selectedMenuKey: "/swagger" });
     } else if (uri.includes("/dashboard")) {
       this.setState({ selectedMenuKey: "/dashboard" });
-    }else if(uri.includes("/ipfs-archive")){
+    } else if (uri.includes("/ipfs-archive")) {
       this.setState({ selectedMenuKey: "/ipfs-archive" });
-    }else if(uri.includes("/ipfs-search")){
+    } else if (uri.includes("/ipfs-search")) {
       this.setState({ selectedMenuKey: "/ipfs-search" });
     }
     else {
@@ -493,9 +494,9 @@ class App extends Component {
           {/* <div className="select-box" style={{float: "right", margin: "0px", padding: "0px"}}>
             <ThemeSelect themeAlgorithm={this.state.themeAlgorithm} onChange={this.setLogoAndThemeAlgorithm} />
           </div> */}
-          <div className="select-box" style={{float: "right", margin: "0px", padding: "0px"}}>
+          <div className="select-box" style={{ float: "right", margin: "0px", padding: "0px" }}>
             <LanguageSelect />
-          </div> 
+          </div>
         </React.Fragment>
       );
     } else {
@@ -693,7 +694,7 @@ class App extends Component {
         Setting.getItem(<Link to="/ipfs-archive">{i18next.t("med:IpfsArchives")}</Link>, "/ipfs-archive")
 
       ]));
-      
+
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:Image Operation")}</Link>, "/img", <CameraTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
         Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr")
@@ -929,6 +930,7 @@ class App extends Component {
         <Route exact path="/sysinfo" render={(props) => this.renderSigninIfNotSignedIn(<SystemInfo account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-search" render={(props) => this.renderSigninIfNotSignedIn(<IPFSSearchPage account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-search/result/:correlationId" render={(props) => this.renderSigninIfNotSignedIn(<IpfsSearchResultPage account={this.state.account} {...props} />)} />
+        <Route exact path="/ipfs-search/query-result" render={(props) => this.renderSigninIfNotSignedIn(<QueryResultPage account={this.state.account} {...props} />)} />
         <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
       </Switch>
     );

@@ -21,6 +21,14 @@ import i18next from "i18next";
 import DataTypeConverter from "../common/DataTypeConverter";
 import BaseListPage from "../BaseListPage";
 import "./IpfsSearchResultPage.less"
+
+// 禁用查询按钮时去除hover效果
+const customButtonStyle = {
+  marginLeft: 8,
+  ...(window.matchMedia && window.matchMedia('(hover: hover)').matches ? {
+    pointerEvents: 'auto',
+  } : {}),
+};
 const { Title } = Typography;
 
 class IPFSSearchResultPage extends BaseListPage {
@@ -250,7 +258,26 @@ class IPFSSearchResultPage extends BaseListPage {
   };
 
   handleQueryClick = () => {
-    message.info('功能未开发');
+    const { selectedRows } = this.state;
+    // 取所有选中行的ipfsAddress，去重且非空
+    const ipfsAddresses = Array.from(new Set(selectedRows.map(row => row.ipfsAddress).filter(addr => !!addr)));
+    if (ipfsAddresses.length === 0) {
+      // 理论不会出现，按钮已禁用
+      return;
+    }
+
+    // 单表查询
+    const queryItemObj = {
+      queryConcatType: "single",
+      filePos: [ipfsAddresses],
+      returnField: [ipfsAddresses[0] + "_*"],
+      queryConditions: [[]],// TODO：correlationId的判断
+    };
+    const queryItem = JSON.stringify(queryItemObj);
+    this.props.history.push({
+      pathname: '/ipfs-search/query-result',
+      state: { queryItem },
+    });
   };
 
   render() {
@@ -272,8 +299,10 @@ class IPFSSearchResultPage extends BaseListPage {
             <Badge count={selectedRowKeys.length} offset={[0, 0]} style={{ marginLeft: 8 }}>
               <Button
                 type="primary"
-                style={{ marginLeft: 8 }}
+                style={selectedRowKeys.length === 0 ? { ...customButtonStyle, background: '#333', color: '#888', borderColor: '#333', cursor: 'not-allowed', boxShadow: 'none' } : customButtonStyle}
                 onClick={this.handleQueryClick}
+                disabled={selectedRowKeys.length === 0}
+                className={selectedRowKeys.length === 0 ? 'no-hover' : ''}
               >
                 {i18next.t("ipfsSearch:Query", "查询")}
               </Button>

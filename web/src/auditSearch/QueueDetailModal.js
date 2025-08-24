@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React, { useState, useEffect } from "react";
-import { Modal, Tabs, Table, Tag, Tooltip, Typography, Popover } from "antd";
+import { Modal, Tabs, Table, Tag, Tooltip, Typography, Popover, message } from "antd";
 import i18next from "i18next";
 import * as Setting from "../Setting";
 import * as IpfsArchiveBackend from "../backend/IpfsArchiveBackend";
@@ -179,7 +179,7 @@ class QueueDetailModal extends React.Component {
       this.setState({ loading: true });
       const response = await IpfsArchiveBackend.archiveToIPFS(this.state.dataType);
       if (response.status === "ok") {
-        Setting.showMessage("info", i18next.t("ipfsArchive:Upload to IPFS successfully"));
+        message.info(i18next.t("ipfsArchive:Upload to IPFS successfully"));
         this.setState({
           // dataSource: [],
           loading: false
