@@ -22,6 +22,7 @@
     "Parameters": "Parameter",
     "Parameters - Tooltip": "Parameter aplikasi",
     "Pending": "Tertunda",
+    "Replicas": "Replika",
     "Running": "Berjalan",
     "Terminating": "Menghentikan",
     "Undeploy": "Batal Deploy",

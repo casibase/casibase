@@ -17,6 +17,7 @@ package object
 import (
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
@@ -34,6 +35,51 @@ type Application struct {
 	Parameters  string `xorm:"mediumtext" json:"parameters"`
 	Status      string `xorm:"varchar(50)" json:"status"`     // Running, Pending, Failed, Not Deployed
 	Namespace   string `xorm:"varchar(100)" json:"namespace"` // Kubernetes namespace (auto-generated)
+	URL         string `xorm:"varchar(255)" json:"url"`       // Available service URL
+
+	Details *ApplicationView `xorm:"-" json:"details,omitempty"`
+}
+
+func AddDetails(apps []*Application) {
+	if len(apps) == 0 {
+		return
+	}
+
+	hasRunning := false
+	for _, app := range apps {
+		if isRunning(app.Status) {
+			hasRunning = true
+			break
+		}
+	}
+
+	if !hasRunning {
+		return
+	}
+
+	if ensureK8sClient() != nil {
+		return
+	}
+
+	var wg sync.WaitGroup
+
+	for _, app := range apps {
+		if isRunning(app.Status) {
+			wg.Add(1)
+			go func(app *Application) {
+				defer wg.Done()
+				if details, err := GetApplicationView(app.Namespace); err == nil {
+					app.Details = details
+				}
+			}(app)
+		}
+	}
+
+	wg.Wait()
+}
+
+func isRunning(status string) bool {
+	return status == "Running" || status == "running" || status == "Active" || status == "Started"
 }
 
 func GetApplications(owner string) ([]*Application, error) {

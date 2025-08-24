@@ -207,6 +207,23 @@ func UndeployApplication(owner, name, namespace string) (bool, error) {
 	return true, nil
 }
 
+// GetURL retrieves the access URL for an application
+func GetURL(namespace string) (string, error) {
+	nodeIPs := getNodeIPsFromCache()
+	services := getServicesFromCache(namespace, nodeIPs)
+
+	// Find first available access URL from services
+	for _, service := range services {
+		for _, port := range service.Ports {
+			if port.URL != "" {
+				return port.URL, nil
+			}
+		}
+	}
+
+	return "", fmt.Errorf("no accessible URL found for application")
+}
+
 func DeployApplicationSync(application *Application) (bool, error) {
 	// First deploy the application
 	success, err := DeployApplication(application)
@@ -218,7 +235,7 @@ func DeployApplicationSync(application *Application) (bool, error) {
 	}
 
 	// Wait for deployment to be ready (with timeout)
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	ticker := time.NewTicker(5 * time.Second)
@@ -245,6 +262,13 @@ func DeployApplicationSync(application *Application) (bool, error) {
 
 			switch status {
 			case StatusRunning:
+				if url, err := GetURL(application.Namespace); err == nil && url != "" {
+					application.URL = url
+					_, err := UpdateApplication(util.GetIdFromOwnerAndName(application.Owner, application.Name), application)
+					if err != nil {
+						return false, err
+					}
+				}
 				return true, nil
 			case StatusNotDeployed:
 				return false, fmt.Errorf("namespace %s is terminating and all resources have been cleaned up", application.Namespace)

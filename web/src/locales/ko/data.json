@@ -22,6 +22,7 @@
     "Parameters": "파라미터",
     "Parameters - Tooltip": "애플리케이션 파라미터",
     "Pending": "대기 중",
+    "Replicas": "복제본",
     "Running": "실행 중",
     "Terminating": "종료 중",
     "Undeploy": "배포 취소",
