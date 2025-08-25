@@ -38,6 +38,8 @@ github.com/AzureAD/microsoft-authentication-library-for-go v1.3.3/go.mod h1:wP83
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/ConnectAI-E/go-minimax v0.0.1 h1:sxz0kuRh+M5xjycpUmnBCrh+cctRSHMLBpdY/Wq2m8E=
 github.com/ConnectAI-E/go-minimax v0.0.1/go.mod h1:c+9xxqMgmtwdpZEq/lBtrwkbwlK7d6SNfMO79Mg0mUM=
+github.com/D1m7asis/casibase-aimlapi-go v1.0.0 h1:U2hP9Pb7dSc2p1K3CwFXK8SNG98Rx0UP99do4ReFsDY=
+github.com/D1m7asis/casibase-aimlapi-go v1.0.0/go.mod h1:ksqw0Cz0pgbmqOxXXugU22xIiXe84Z6tZbTTzPMqWoE=
 github.com/DataDog/zstd v1.4.5 h1:EndNeuB0l9syBZhut0wns3gV1hL8zX8LIu6ZiVHWLIQ=
 github.com/DataDog/zstd v1.4.5/go.mod h1:1jcaCB/ufaK+sKp1NBhlGmpz41jOoPQ35bpF36t7BBo=
 github.com/Knetic/govaluate v3.0.0+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=

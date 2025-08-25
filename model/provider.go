@@ -99,6 +99,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewGitHubModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty)
 	} else if typ == "Writer" {
 		p, err = NewWriterModelProvider(subType, clientSecret, temperature, topP)
+	} else if typ == "AI/ML API" {
+		p, err = NewAIMLAPIModelProvider(subType, clientSecret, temperature, topP)
 	} else {
 		return nil, nil
 	}
