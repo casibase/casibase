@@ -37,6 +37,7 @@ class StoreEditPage extends React.Component {
       stores: [],
       casdoorStorageProviders: [],
       storageProviders: [],
+      vectorStoreId: "",
       storageSubpath: "",
       modelProviders: [],
       embeddingProviders: [],
@@ -145,6 +146,14 @@ class StoreEditPage extends React.Component {
     });
   }
 
+  isAIStorageProvider(storageProvider) {
+    const providerSelected = this.state.storageProviders.concat(this.state.casdoorStorageProviders).find(v => v.name === storageProvider);
+    if (providerSelected && providerSelected.type === "OpenAI File System") {
+      return true;
+    }
+    return false;
+  }
+
   renderStore() {
     return (
       <Card size="small" title={
@@ -249,6 +258,20 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        {this.isAIStorageProvider(this.state.store.storageProvider) ? (
+          <>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Vector store id"), i18next.t("store:Vector store id - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.store.vectorStoreId} onChange={e => {
+                  this.updateStoreField("vectorStoreId", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          </>
+        ) : null}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Image provider"), i18next.t("store:Image provider - Tooltip"))} :

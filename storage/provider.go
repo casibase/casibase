@@ -29,11 +29,13 @@ type StorageProvider interface {
 	DeleteObject(key string) error
 }
 
-func GetStorageProvider(typ string, clientId string, providerName string) (StorageProvider, error) {
+func GetStorageProvider(typ string, clientId string, clientSecret string, providerName string, vectorStoreId string) (StorageProvider, error) {
 	var p StorageProvider
 	var err error
 	if typ == "Local File System" {
 		p, err = NewLocalFileSystemStorageProvider(clientId)
+	} else if typ == "OpenAI File System" {
+		p, err = NewOpenAIFileSystemStorageProvider(vectorStoreId, clientSecret)
 	} else {
 		p, err = NewCasdoorProvider(providerName)
 	}
