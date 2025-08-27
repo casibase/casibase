@@ -45,6 +45,7 @@ type Record struct {
 	RequestUri      string `xorm:"varchar(1000)" json:"requestUri"`
 	Action          string `xorm:"varchar(1000)" json:"action"`
 	Language        string `xorm:"varchar(100)" json:"language"`
+	Query        string `xorm:"varchar(100)" json:"query"`
 	Region          string `xorm:"varchar(100)" json:"region"`
 	City            string `xorm:"varchar(100)" json:"city"`
 	Unit            string `xorm:"varchar(100)" json:"unit"`
