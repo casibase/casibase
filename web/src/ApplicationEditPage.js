@@ -18,6 +18,7 @@ import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as TemplateBackend from "./backend/TemplateBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import TemplateInputTable from "./table/TemplateInputTable";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -168,7 +169,16 @@ class ApplicationEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Template"), i18next.t("general:Template - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.application.template} onChange={(value => {this.updateApplicationField("template", value);})}
+            <Select virtual={false} style={{width: "100%"}} value={this.state.application.template}
+              onChange={(value => {
+                this.setState({template: this.state.templates.find((template) => template.name === value)});
+                this.updateApplicationField("template", value);
+                this.updateApplicationField("inputValues", this.state.templates.find((template) => template.name === value)?.inputs?.map(input => ({
+                  "name": input.name,
+                  "value": input.default,
+                  "description": input.description || "",
+                })) || []);
+              })}
               options={this.state.templates.map((template) => Setting.getOption(`${template.displayName} (${template.name})`, `${template.name}`))
               } />
           </Col>
@@ -204,6 +214,45 @@ class ApplicationEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+
+        {this.state.templates && this.state.templates.find(template => template.name === this.state.application.template && template.needRender) ? (
+          <>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("application:Host"), i18next.t("application:Host - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.application.host} onChange={e => {
+                  this.updateApplicationField("host", e.target.value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("application:Tls secret name"), i18next.t("application:Tls secret name - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.application.tlsSecretName} onChange={e => {
+                  this.updateApplicationField("tlsSecretName", e.target.value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("application:Input values"), i18next.t("application:Input values - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <TemplateInputTable
+                  mode="edit"
+                  inputs={this.state.templates.find(template => template.name === this.state.application.template)?.inputs || []}
+                  values={this.state.application.inputValues}
+                  onUpdateValues={values => {this.updateApplicationField("inputValues", values);}}
+                />
+              </Col>
+            </Row>
+          </>
+        ) : null}
+
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("application:Parameters"), i18next.t("application:Parameters - Tooltip"))} :
@@ -239,6 +288,7 @@ class ApplicationEditPage extends React.Component {
               this.props.history.push("/applications");
             } else {
               this.props.history.push(`/applications/${this.state.application.name}`);
+              this.getApplication();
             }
           } else {
             Setting.showMessage("error", i18next.t("general:Failed to save"));

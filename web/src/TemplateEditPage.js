@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row} from "antd";
+import {Button, Card, Col, Input, Row, Switch} from "antd";
 import * as TemplateBackend from "./backend/TemplateBackend";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
@@ -23,6 +23,7 @@ import StoreAvatarUploader from "./AvatarUpload";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import TextArea from "antd/es/input/TextArea";
+import TemplateInputTable from "./table/TemplateInputTable";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/javascript/javascript");
 
@@ -154,6 +155,31 @@ class TemplateEditPage extends React.Component {
             />
           </Col>
         </Row>
+
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("template:Need Render"), i18next.t("template:Need Render - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Switch checked={this.state.template.needRender} onChange={checked => {
+              this.updateTemplateField("needRender", checked);
+            }} />
+          </Col>
+        </Row>
+
+        {this.state.template.needRender && (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              {Setting.getLabel(i18next.t("template:Render"), i18next.t("template:Render - Tooltip"))} :
+            </Col>
+            <Col span={22} >
+              <TemplateInputTable
+                inputs={this.state.template.inputs}
+                onUpdateInputs={inputs => {this.updateTemplateField("inputs", inputs);}} />
+            </Col>
+          </Row>
+        )}
+
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("template:Manifest"), i18next.t("template:Manifest - Tooltip"))} :

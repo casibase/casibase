@@ -1,0 +1,130 @@
+apiVersion: app.casibase.org/v1
+kind: Template
+metadata:
+  name: code-server
+spec:
+  displayName: 'code-server'
+  description: 'VS Code in the browser'
+  icon: 'https://raw.githubusercontent.com/coder/code-server/main/src/browser/media/favicon.svg'
+  inputs:
+    - name: PASSWORD
+      description: 'Access Password'
+      type: string
+      default: '123456'
+      required: true
+    - name: timeZone
+      description: 'Time Zone'
+      type: string
+      default: 'Asia/Shanghai'
+      required: true
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .application.name }}
+  annotations:
+    originImageName: codercom/code-server:4.90.3-39
+    casibase/minReplicas: '1'
+    casibase/maxReplicas: '1'
+  labels:
+    casibase/app-deploy-manager: {{ .application.name }}
+    app: {{ .application.name }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  minReadySeconds: 10
+  serviceName: {{ .application.name }}
+  selector:
+    matchLabels:
+      app: {{ .application.name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+  template:
+    metadata:
+      labels:
+        app: {{ .application.name }}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: {{ .application.name }}
+          image: codercom/code-server:4.90.3-39
+          env:
+            - name: TZ
+              value: {{ .inputs.timeZone }}
+            - name: PASSWORD
+              value: {{ .inputs.PASSWORD }}
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+          command:
+            - /bin/sh
+            - '-c'
+          args:
+            - |
+              mkdir -p /home/coder/workspace && /usr/bin/entrypoint.sh --bind-addr 0.0.0.0:8080 /home/coder/workspace
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: vn-homevn-coder
+              mountPath: /home/coder
+      volumes: []
+      securityContext:
+        fsGroup: 1000
+  volumeClaimTemplates:
+    - metadata:
+        annotations:
+          path: /home/coder
+          value: '1'
+        name: vn-homevn-coder
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .application.name }}
+  labels:
+    casibase/app-deploy-manager: {{ .application.name }}
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: {{ .application.name }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .application.name }}
+  labels:
+    casibase/app-deploy-manager: {{ .application.name }}
+    casibase/app-deploy-manager-domain: {{ .application.host }}
+spec:
+  rules:
+    - host: {{ .application.host }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: {{ .application.name }}
+                port:
+                  number: 8080
+  {{ if .application.tlsSecretName }}
+  tls:
+    - hosts:
+        - {{ .application.host }}
+      secretName: {{ .application.tlsSecretName }}
+  {{ end }}

@@ -1,0 +1,117 @@
+apiVersion: app.casibase.org/v1
+kind: Template
+metadata:
+  name: kuboard
+spec:
+  displayName: 'kuboard'
+  description: 'Kuboard 是一款专为 Kubernetes 设计的免费管理界面'
+  icon: 'https://kuboard.cn/favicon.png'
+  inputs:
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .application.name }}
+  annotations:
+    originImageName: eipwork/kuboard:v3
+    casibase/minReplicas: '1'
+    casibase/maxReplicas: '1'
+  labels:
+    casibase/app-deploy-manager: {{ .application.name }}
+    app: {{ .application.name }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  minReadySeconds: 10
+  serviceName: {{ .application.name }}
+  selector:
+    matchLabels:
+      app: {{ .application.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .application.name }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      automountServiceAccountToken: false
+      containers:
+        - name: {{ .application.name }}
+          image: eipwork/kuboard:v3
+          env:
+            - name: KUBOARD_ENDPOINT
+              value: http://{{ .application.name }}.{{ .application.namespace }}.svc.cluster.local:80
+            - name: KUBOARD_AGENT_SERVER_TCP_PORT
+              value: '10081'
+            - name: KUBOARD_DISABLE_AUDIT
+              value: 'true'
+            - name: TZ
+              value: Asia/Shanghai
+          resources:
+            requests:
+              cpu: 100m
+              memory: 204Mi
+            limits:
+              cpu: 1000m
+              memory: 2048Mi
+          command: []
+          args: []
+          ports:
+            - containerPort: 80
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: vn-data
+              mountPath: /data
+      volumes: []
+  volumeClaimTemplates:
+    - metadata:
+        annotations:
+          path: /data
+          value: '5'
+        name: vn-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .application.name }}
+  labels:
+    casibase/app-deploy-manager: {{ .application.name }}
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: {{ .application.name }}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .application.name }}
+  labels:
+    casibase/app-deploy-manager: {{ .application.name }}
+    casibase/app-deploy-manager-domain: {{ .application.host }}
+spec:
+  rules:
+    - host: {{ .application.host }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: {{ .application.name }}
+                port:
+                  number: 80
+  {{- if .application.tlsSecretName }}
+  tls:
+    - hosts:
+        - {{ .application.host }}
+      secretName: {{ .application.tlsSecretName }}
+  {{- end }}

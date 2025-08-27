@@ -37,6 +37,15 @@ type Application struct {
 	URL         string `xorm:"varchar(255)" json:"url"`       // Available service URL
 
 	Details *ApplicationView `xorm:"-" json:"details,omitempty"`
+
+	InputValues   []InputValue `xorm:"mediumtext" json:"inputValues"`
+	Host          string       `xorm:"varchar(100)" json:"host"`
+	TlsSecretName string       `xorm:"varchar(100)" json:"tlsSecretName"`
+}
+
+type InputValue struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
 }
 
 func GetApplications(owner string) ([]*Application, error) {
@@ -92,6 +101,37 @@ func UpdateApplication(id string, application *Application) (bool, error) {
 	}
 	if application == nil {
 		return false, nil
+	}
+
+	template, err := getTemplate(application.Owner, application.Template)
+	if err != nil {
+		return false, err
+	}
+
+	if template.NeedRender {
+		inputs := map[string]interface{}{}
+		for _, input := range application.InputValues {
+			inputs[input.Name] = input.Value
+		}
+
+		app := map[string]interface{}{
+			"name":          toK8sMetadataName(application.Name),
+			"host":          application.Host,
+			"namespace":     application.Namespace,
+			"tlsSecretName": application.TlsSecretName,
+		}
+
+		data := map[string]interface{}{
+			"inputs":      inputs,
+			"application": app,
+		}
+
+		manifest, err := template.Render(data)
+		if err != nil {
+			return false, fmt.Errorf("failed to render template: %v", err)
+		}
+
+		application.Parameters = manifest
 	}
 
 	affected, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(application)

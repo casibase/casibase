@@ -296,6 +296,30 @@ spec:
         },
       },
       {
+        title: i18next.t("application:Host"),
+        dataIndex: "host",
+        key: "host",
+        width: "150px",
+        sorter: (a, b) => a.host.localeCompare(b.host),
+        render: (text, record, index) => {
+          if (text === "") {
+            return null;
+          }
+          return (
+            <a target="_blank" rel="noreferrer" href={record.tlsSecretName === "" ? `http://${text}` : `https://${text}`}>
+              {text}
+            </a>
+          );
+        },
+      },
+      {
+        title: i18next.t("application:Tls secret name"),
+        dataIndex: "tlsSecretName",
+        key: "tlsSecretName",
+        width: "150px",
+        sorter: (a, b) => a.tlsSecretName.localeCompare(b.tlsSecretName),
+      },
+      {
         title: i18next.t("general:Status"),
         dataIndex: "status",
         key: "status",

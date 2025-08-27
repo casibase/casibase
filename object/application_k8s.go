@@ -17,6 +17,7 @@ package object
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
 
@@ -153,10 +154,15 @@ func DeployApplication(application *Application) (bool, error) {
 		return false, fmt.Errorf("template not found: %s", application.Template)
 	}
 
-	// Generate final manifest using simple template replacement
-	finalManifest, err := generateManifestWithKustomize(template.Manifest, application.Parameters)
-	if err != nil {
-		return false, fmt.Errorf("failed to generate manifest: %v", err)
+	var finalManifest string
+	if template.NeedRender {
+		finalManifest = application.Parameters
+	} else {
+		// Generate final manifest using simple template replacement
+		finalManifest, err = generateManifestWithKustomize(template.Manifest, application.Parameters)
+		if err != nil {
+			return false, fmt.Errorf("failed to generate manifest: %v", err)
+		}
 	}
 
 	// Create namespace if it doesn't exist
@@ -491,4 +497,23 @@ func deployManifest(manifest, namespace string) error {
 	}
 
 	return nil
+}
+
+func toK8sMetadataName(name string) string {
+	if len(name) == 0 {
+		name = "default-name"
+	}
+
+	name = strings.ToLower(name)
+
+	re := regexp.MustCompile(`[^a-z0-9.-]+`)
+	name = re.ReplaceAllString(name, "-")
+
+	name = strings.Trim(name, "-.")
+
+	if len(name) > 253 {
+		name = name[:253]
+	}
+
+	return name
 }
