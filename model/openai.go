@@ -32,7 +32,7 @@ func NewOpenAiModelProvider(typ string, subType string, secretKey string, temper
 	return p, nil
 }
 
-func getOpenAiClientFromToken(authToken string) *openai.Client {
+func GetOpenAiClientFromToken(authToken string) *openai.Client {
 	config := openai.DefaultConfig(authToken)
 	config.HTTPClient = proxy.ProxyHttpClient
 
