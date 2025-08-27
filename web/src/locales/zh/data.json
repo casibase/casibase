@@ -130,6 +130,7 @@
     "Avatar": "头像",
     "Avatar - Tooltip": "头像对应的URL",
     "Back Home": "返回首页",
+    "Back": "返回",
     "Block": "区块",
     "Block - Tooltip": "关联数据区块标识",
     "Cancel": "取消",
@@ -176,6 +177,7 @@
     "Failed to deploy": "部署失败",
     "Failed to get": "获取失败",
     "Failed to query record": "查询记录失败",
+    "Failed to query": "查询失败",
     "Failed to redirect": "重定向失败",
     "Failed to save": "保存失败",
     "Failed to start recording": "启动录音失败",
@@ -205,6 +207,7 @@
     "Language - Tooltip": "语言环境（如 zh-CN/en-US）",
     "Like": "喜欢",
     "Loading...": "加载中...",
+    "Local": "本地",
     "Logging & Auditing": "日志 & 审计",
     "Machines": "主机",
     "Menu": "菜单",
@@ -357,7 +360,12 @@
     "Zone - Tooltip": "可用区域",
     "empty": "空",
     "items": "项",
-    "{total} in total": "{total} 总计"
+    "{total} in total": "{total} 总计",
+
+    "DiseaseCategory": "病种",
+    "DiseaseCategory - Tooltip": "疾病病种",
+    "CorrelationId":"索引",
+    "CorrelationId - Tooltip": "数据索引"
   },
   "image": {
     "Arch": "架构",
@@ -396,7 +404,61 @@
     "Audit": "审计",
     "Medical Image Analysis": "医学影像分析",
     "Super Resolution": "图像超分",
-    "Image Operation": "图像处理"
+    "Image Operation": "图像处理",
+    "AuditSearch": "查询审计",
+    "IpfsArchives": "数据归档",
+    "IpfsSearch": "查询数据"
+  },
+   "ipfsArchive":{
+    "Ipfs Archive List": "IPFS数据归档列表",
+    "Correlation ID": "索引",
+    "IPFS Address": "IPFS地址",
+    "Update Time":"更新时间",
+    "Create Time":"创建时间",
+    "Upload Time":"上传时间",
+    "Data Type":"数据类型",
+    "Create Time - Tooltip":"数据归档的创建时间",
+    "Upload Time - Tooltip":"数据上传到IPFS的时间",
+    "Archive Status":"归档状态",
+    "Archived":"已归档",
+    "Not Archived":"未归档",
+    
+
+    "Current Queue Status": "待归档数据预备队列",
+    "Total": "总计",
+    "Add Unupload Data to Queue": "将未归档的数据全部加入队列",
+    "Add Selected to Queue": "将选中记录加入队列",
+    "Please select records first": "请先选择记录",
+    "Successfully added unuploaded data to queue": "已成功将未归档数据加入队列",
+    "Failed to add unuploaded data to queue": "将未归档数据加入队列失败",
+    "Successfully added selected records to queue": "已成功将选中记录加入队列",
+    "Failed to add selected records to queue": "将选中记录加入队列失败",
+    "Queue Detail": "队列详情",
+    "Upload to IPFS": "上传到IPFS",
+    "Upload to IPFS successfully": "上传IPFS任务提交成功，请稍后刷新。若上传失败，会自动重新归入队列。",
+    "Failed to upload to IPFS": "上传到IPFS失败",
+    "Remove record successfully": "移除记录成功",
+    "Failed to remove record": "移除记录失败",
+    "Record ID": "记录ID",
+    "Object": "对象",
+    "Action": "操作",
+    "Remove": "移除",
+    "Refresh": "刷新",
+    
+    "Open in Records": "在日志记录中查看",
+    "Confirm Add Unuploaded Data Title": "是否确定加入？",
+    "Confirm Add Unuploaded Data Content": "当新增相应记录时，系统已自动化加入队列（注：暂未实现！）。但若存在漏网之鱼/系统重启后队列丢失，可使用本按钮。该过程将遍历相关数据库，耗时较长。已加入队列记录不会重复加入。",
+    "New Ipfs Archive": "新建IPFS归档",
+    "View Ipfs Archive": "查看IPFS归档",
+    "Record ID - Tooltip": "记录编号",
+    "Please enter integer": "请输入整数",
+
+    "Auto refresh tip in queue modal": "数据每30s刷新一次",
+
+    "NotArchivedTip": "该数据未归档至ipfs",
+
+    "Please select the records you want to query": "请先勾择要查询的记录，随后点击右上角【查询】。暂不支持跨数据类型查询"
+
   },
   "message": {
     "Author": "作者",
@@ -522,10 +584,12 @@
   },
   "record": {
     "Commit": "上链",
+    "Data Verification": "数据验证",
     "Enable cross-chain": "启用跨链",
     "New Record": "新建日志",
     "Object": "对象",
     "Query": "查询",
+    "All": "全部",
     "View Record": "查看日志"
   },
   "store": {
@@ -622,6 +686,8 @@
     "Welcome text - Tooltip": "欢迎弹窗的正文内容",
     "Welcome title": "欢迎标题",
     "Welcome title - Tooltip": "欢迎弹窗的标题",
+    "Workflow": "工作流",
+    "Workflow - Tooltip": "所对应的工作流",
     "files and": "文件及",
     "folders are checked": "文件夹已选"
   },
