@@ -234,6 +234,31 @@ func DeleteIpfsArchiveById(id int64) (bool, error) {
 }
 
 // ============== 队列信息 ==================
+// 设定记录归档队列
+func AddRecordToArchiveQueueFromRecordAdd(record *Record, userId string) {
+    if record == nil {
+        return
+    }
+
+    var dataType int
+    switch record.Action {
+    case "add-outpatient":
+        dataType = 1
+    case "add-inpatient":
+        dataType = 2
+    case "add-knowledge":
+        dataType = 3
+    case "add-telemedicine":
+        dataType = 4
+    default:
+        // 其他类型action不处理
+        return
+    }
+
+    // 异步调用
+    go AddRecordToArchiveQueue(record, dataType, userId)
+}
+
 
 // AddRecordToArchiveQueue 将记录添加到归档队列
 // 当队列大小达到1000时，触发IPFS归档流程

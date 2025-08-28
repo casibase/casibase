@@ -338,7 +338,7 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 	}
 
 	// 将记录添加到IPFS归档队列
-	// AddRecordToArchiveQueue(record,userId)
+	AddRecordToArchiveQueueFromRecordAdd(record,userId)
 
 	data := map[string]interface{}{"name": record.Name}
 
@@ -408,6 +408,11 @@ func AddRecords(records []*Record, syncEnabled bool) (bool, interface{}, error) 
 		} else {
 			go ScanNeedCommitRecords()
 		}
+	}
+
+	// 将validRecords逐个加入到AddRecordToArchiveQueueFromRecordAdd
+	for _, record := range validRecords {
+		AddRecordToArchiveQueueFromRecordAdd(record, userId)
 	}
 
 	return totalAffected != 0, data, nil
