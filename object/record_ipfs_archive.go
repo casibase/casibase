@@ -263,14 +263,25 @@ func AddRecordToArchiveQueueFromRecordAdd(record *Record, userId string) {
 // AddRecordToArchiveQueue 将记录添加到归档队列
 // 当队列大小达到1000时，触发IPFS归档流程
 func AddRecordToArchiveQueue(record *Record, dataType int, userId string) error {
-	if record == nil || record.CorrelationId == "" {
+	if record == nil {
 		return fmt.Errorf("invalid record or correlation_id")
+	}
+
+	// CorrelationId 从record的object字段提取，object为json，json中若存在correlation_id则提取出来
+	var obj map[string]interface{}
+	correlationId := "--"
+	if err := json.Unmarshal([]byte(record.Object), &obj); err == nil {
+		if corrId, ok := obj["correlation_id"].(string); ok && corrId != "" {
+			correlationId = corrId
+		} else if corrId2, ok2 := obj["correlationId"].(string); ok2 && corrId2 != "" {
+			correlationId = corrId2
+		}
 	}
 
 	// 先将记录信息保存到数据库
 	archive := &IpfsArchive{
 		RecordId:      int64(record.Id),
-		CorrelationId: record.CorrelationId,
+		CorrelationId: correlationId,
 		DataType:      dataType,
 		CreateTime:    util.GetCurrentTimeWithMilli(),
 		UpdateTime:    util.GetCurrentTimeWithMilli(),
