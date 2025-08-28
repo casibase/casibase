@@ -10,7 +10,7 @@ spec:
     - name: PASSWORD
       description: 'Access Password'
       type: string
-      default: '123456'
+      default: 'a123456'
       required: true
     - name: timeZone
       description: 'Time Zone'
