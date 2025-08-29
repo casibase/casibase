@@ -264,14 +264,14 @@ func AddRecordToArchiveQueueFromRecordAdd(record *Record, userId string) {
 // 当队列大小达到1000时，触发IPFS归档流程
 func AddRecordToArchiveQueue(record *Record, dataType int, userId string) error {
 	if record == nil {
-		return fmt.Errorf("invalid record or correlation_id")
+		return fmt.Errorf("invalid record")
 	}
 
 
 	// 先将记录信息保存到数据库
 	archive := &IpfsArchive{
 		RecordId:      int64(record.Id),
-		CorrelationId: record.correlationId,
+		CorrelationId: record.CorrelationId,
 		DataType:      dataType,
 		CreateTime:    util.GetCurrentTimeWithMilli(),
 		UpdateTime:    util.GetCurrentTimeWithMilli(),
