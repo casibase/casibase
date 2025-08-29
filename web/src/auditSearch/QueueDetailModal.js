@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React, { useState, useEffect } from "react";
-import { Modal, Tabs, Table, Tag, Tooltip, Typography, Popover, message } from "antd";
+import { Modal, Tabs, Table, Tag, Tooltip, Typography, Popover, message,Alert  } from "antd";
 import i18next from "i18next";
 import * as Setting from "../Setting";
 import * as IpfsArchiveBackend from "../backend/IpfsArchiveBackend";

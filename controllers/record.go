@@ -163,6 +163,7 @@ func (c *ApiController) AddRecords() {
 		return
 	}
 
+
 	if len(records) == 0 {
 		c.ResponseError("No records to add")
 		return

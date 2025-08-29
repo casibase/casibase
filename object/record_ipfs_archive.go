@@ -235,7 +235,7 @@ func DeleteIpfsArchiveById(id int64) (bool, error) {
 
 // ============== 队列信息 ==================
 // 设定记录归档队列
-func AddRecordToArchiveQueueFromRecordAdd(record *Record, userId string) {
+func AddRecordToArchiveQueueFromRecordAdd(record *Record) {
     if record == nil {
         return
     }
@@ -256,13 +256,13 @@ func AddRecordToArchiveQueueFromRecordAdd(record *Record, userId string) {
     }
 
     // 异步调用
-    go AddRecordToArchiveQueue(record, dataType, userId)
+    go AddRecordToArchiveQueue(record, dataType)
 }
 
 
 // AddRecordToArchiveQueue 将记录添加到归档队列
 // 当队列大小达到1000时，触发IPFS归档流程
-func AddRecordToArchiveQueue(record *Record, dataType int, userId string) error {
+func AddRecordToArchiveQueue(record *Record, dataType int) error {
 	if record == nil {
 		return fmt.Errorf("invalid record")
 	}
@@ -293,6 +293,8 @@ func AddRecordToArchiveQueue(record *Record, dataType int, userId string) error 
 
 	// 使用record.Id作为键添加到set中
 	recordArchiveQueues[dataType][int64(record.Id)] = record
+
+	userId := record.User
 
 	// 检查队列大小是否达到阈值
 	if len(recordArchiveQueues[dataType]) >= maxQueueSize {
