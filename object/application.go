@@ -32,20 +32,19 @@ type Application struct {
 	Description string `xorm:"varchar(255)" json:"description"`
 	Template    string `xorm:"varchar(100)" json:"template"` // Reference to Template.Name
 	Parameters  string `xorm:"mediumtext" json:"parameters"`
+	Manifest    string `xorm:"mediumtext" json:"manifest"`    // Deployment manifest
 	Status      string `xorm:"varchar(50)" json:"status"`     // Running, Pending, Failed, Not Deployed
 	Namespace   string `xorm:"varchar(100)" json:"namespace"` // Kubernetes namespace (auto-generated)
 	URL         string `xorm:"varchar(255)" json:"url"`       // Available service URL
 
 	Details *ApplicationView `xorm:"-" json:"details,omitempty"`
 
-	InputValues   []InputValue `xorm:"mediumtext" json:"inputValues"`
-	Host          string       `xorm:"varchar(100)" json:"host"`
-	TlsSecretName string       `xorm:"varchar(100)" json:"tlsSecretName"`
+	BasicConfigOptions []applicationBasicOption `xorm:"mediumtext" json:"basicConfigOptions"`
 }
 
-type InputValue struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
+type applicationBasicOption struct {
+	Parameter string `json:"parameter"`
+	Value     string `json:"value"`
 }
 
 func GetApplications(owner string) ([]*Application, error) {
@@ -108,30 +107,38 @@ func UpdateApplication(id string, application *Application) (bool, error) {
 		return false, err
 	}
 
-	if template.NeedRender {
-		inputs := map[string]interface{}{}
-		for _, input := range application.InputValues {
-			inputs[input.Name] = input.Value
+	if template.EnableBasicConfig {
+		// Initialize the manifest using the basic configuration options
+		options := make(map[string]interface{}, len(application.BasicConfigOptions))
+		for _, option := range application.BasicConfigOptions {
+			options[option.Parameter] = option.Value
 		}
 
 		app := map[string]interface{}{
-			"name":          toK8sMetadataName(application.Name),
-			"host":          application.Host,
-			"namespace":     application.Namespace,
-			"tlsSecretName": application.TlsSecretName,
+			"name":      toK8sMetadataName(application.Name),
+			"namespace": application.Namespace,
 		}
 
 		data := map[string]interface{}{
-			"inputs":      inputs,
 			"application": app,
+			"options":     options,
 		}
 
 		manifest, err := template.Render(data)
 		if err != nil {
-			return false, fmt.Errorf("failed to render template: %v", err)
+			return false, fmt.Errorf("failed to generate manifest: %v", err)
 		}
 
-		application.Parameters = manifest
+		application.Manifest = manifest
+	} else {
+		// Initialize the manifest using the template
+		application.Manifest = template.Manifest
+	}
+
+	// Apply Kustomize overlays
+	application.Manifest, err = generateManifestWithKustomize(application.Manifest, application.Parameters)
+	if err != nil {
+		return false, fmt.Errorf("failed to generate manifest: %v", err)
 	}
 
 	affected, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(application)

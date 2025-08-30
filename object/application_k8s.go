@@ -145,34 +145,14 @@ func DeployApplication(application *Application) (bool, error) {
 		return false, fmt.Errorf("k8s client not connected to cluster")
 	}
 
-	// Get the template
-	template, err := getTemplate(application.Owner, application.Template)
-	if err != nil {
-		return false, fmt.Errorf("failed to get template: %v", err)
-	}
-	if template == nil {
-		return false, fmt.Errorf("template not found: %s", application.Template)
-	}
-
-	var finalManifest string
-	if template.NeedRender {
-		finalManifest = application.Parameters
-	} else {
-		// Generate final manifest using simple template replacement
-		finalManifest, err = generateManifestWithKustomize(template.Manifest, application.Parameters)
-		if err != nil {
-			return false, fmt.Errorf("failed to generate manifest: %v", err)
-		}
-	}
-
 	// Create namespace if it doesn't exist
-	err = k8sClient.createNamespaceIfNotExists(application.Namespace)
+	err := k8sClient.createNamespaceIfNotExists(application.Namespace)
 	if err != nil {
 		return false, fmt.Errorf("failed to create namespace: %v", err)
 	}
 
 	// Deploy the manifest
-	err = deployManifest(finalManifest, application.Namespace)
+	err = deployManifest(application.Manifest, application.Namespace)
 	if err != nil {
 		return false, fmt.Errorf("failed to deploy manifest: %v", err)
 	}
@@ -449,8 +429,15 @@ func GetApplicationStatus(owner, name, namespace string) (string, error) {
 	if err != nil {
 		return StatusUnknown, err
 	}
+	statefulSets, err := k8sClient.clientSet.AppsV1().StatefulSets(namespace).List(
+		context.TODO(),
+		metav1.ListOptions{},
+	)
+	if err != nil {
+		return StatusUnknown, err
+	}
 
-	if len(deployments.Items) == 0 {
+	if len(deployments.Items) == 0 && len(statefulSets.Items) == 0 {
 		err = UpdateApplicationStatus(owner, name, StatusNotDeployed)
 		if err != nil {
 			return "", err
@@ -462,6 +449,18 @@ func GetApplicationStatus(owner, name, namespace string) (string, error) {
 	// Check if all deployments are ready
 	for _, deployment := range deployments.Items {
 		if deployment.Status.ReadyReplicas < deployment.Status.Replicas {
+			err = UpdateApplicationStatus(owner, name, StatusPending)
+			if err != nil {
+				return "", err
+			}
+
+			return StatusPending, nil
+		}
+	}
+
+	// Check if all statefulsets are ready
+	for _, statefulSet := range statefulSets.Items {
+		if statefulSet.Status.ReadyReplicas < statefulSet.Status.Replicas {
 			err = UpdateApplicationStatus(owner, name, StatusPending)
 			if err != nil {
 				return "", err

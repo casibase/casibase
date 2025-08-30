@@ -16,59 +16,61 @@ import {Button, Input, Select, Switch, Table} from "antd";
 import i18next from "i18next";
 import React from "react";
 
-class TemplateInputTable extends React.Component {
+class TemplateOptionTable extends React.Component {
   constructor(props) {
     super(props);
   }
 
   componentDidMount() {
-    if (!this.props.inputs) {
-      this.props.onUpdateInputs([]);
-    }
-    if (this.props.mode === "edit" && !this.props.values) {
-      this.props.onUpdateValues(this.props.inputs.map(input => ({
-        name: input.name,
-        value: input.value,
-        description: input.description,
-      })));
+    if (this.props.mode === "edit") {
+      if (!this.props.templateOptions) {
+        this.props.onUpdateTemplateOptions([]);
+      }
+    } else {
+      if (!this.props.options) {
+        this.props.onUpdateOptions(this.props.templateOptions.map(option => ({
+          parameter: option.parameter,
+          value: option.default,
+        })));
+      }
     }
   }
 
-  updateInputs(index, field, value) {
-    const newInputs = this.props.inputs.map((input, i) => {
+  updateTemplateOptions(index, field, value) {
+    const newOptions = this.props.templateOptions.map((option, i) => {
       if (i === index) {
         return {
-          ...input,
+          ...option,
           [field]: value,
         };
       }
-      return input;
+      return option;
     });
-    this.props.onUpdateInputs(newInputs);
+    this.props.onUpdateTemplateOptions(newOptions);
   }
 
-  updateValues(index, field, value) {
-    const newValues = this.props.values?.map((v, i) => {
-      if (i === index) {
-        return {
-          ...v,
-          [field]: value,
-        };
-      }
-      return v;
-    });
-    this.props.onUpdateValues(newValues);
+  updateOptions(index, field, value) {
+    if (this.props.options === undefined) {
+      return;
+    }
+    const newOptions = this.props.options;
+    newOptions[index] = {
+      ...newOptions[index],
+      [field]: value,
+    };
+
+    this.props.onUpdateOptions(newOptions);
   }
 
   render() {
-    const inputsColumn = [
+    const editOptionsColumn = [
       {
-        title: i18next.t("general:Name"),
-        dataIndex: "name",
-        key: "name",
+        title: i18next.t("general:Parameter"),
+        dataIndex: "parameter",
+        key: "parameter",
         width: "200px",
         render: (text, record, index) => (
-          <Input value={text} onChange={e => this.updateInputs(index, "name", e.target.value)} />
+          <Input value={text} onChange={e => this.updateTemplateOptions(index, "parameter", e.target.value)} />
         ),
       },
       {
@@ -84,7 +86,7 @@ class TemplateInputTable extends React.Component {
             options={[
               {value: "string", label: "string"},
             ]}
-            onChange={value => this.updateInputs(index, "type", value)}
+            onChange={value => this.updateTemplateOptions(index, "type", value)}
           />
         ),
       },
@@ -94,7 +96,7 @@ class TemplateInputTable extends React.Component {
         key: "required",
         width: "100px",
         render: (text, record, index) => (
-          <Switch checked={text} onChange={checked => this.updateInputs(index, "required", checked)} />
+          <Switch checked={text} onChange={checked => this.updateTemplateOptions(index, "required", checked)} />
         ),
       },
       {
@@ -103,7 +105,7 @@ class TemplateInputTable extends React.Component {
         key: "default",
         width: "200px",
         render: (text, record, index) => (
-          <Input value={text} onChange={e => this.updateInputs(index, "default", e.target.value)} />
+          <Input value={text} onChange={e => this.updateTemplateOptions(index, "default", e.target.value)} />
         ),
       },
       {
@@ -112,7 +114,7 @@ class TemplateInputTable extends React.Component {
         key: "description",
         width: "300px",
         render: (text, record, index) => (
-          <Input value={text} onChange={e => this.updateInputs(index, "description", e.target.value)} />
+          <Input value={text} onChange={e => this.updateTemplateOptions(index, "description", e.target.value)} />
         ),
       },
       {
@@ -120,19 +122,19 @@ class TemplateInputTable extends React.Component {
         key: "action",
         render: (text, record, index) => (
           <Button type="primary" size="small" onClick={() => {
-            const inputs = [...this.props.inputs];
+            const inputs = [...this.props.templateOptions];
             inputs.splice(index, 1);
-            this.props.onUpdateInputs(inputs);
+            this.props.onUpdateTemplateOptions(inputs);
           }}>{i18next.t("general:Delete")}</Button>
         ),
       },
     ];
 
-    const editColumn = [
+    const optionsColumn = [
       {
-        title: i18next.t("general:Name"),
-        dataIndex: "name",
-        key: "name",
+        title: i18next.t("general:Parameter"),
+        dataIndex: "parameter",
+        key: "parameter",
         width: "200px",
         render: (text, record, index) => (
           <span>
@@ -145,12 +147,18 @@ class TemplateInputTable extends React.Component {
         title: i18next.t("general:Value"),
         dataIndex: "value",
         key: "value",
-        render: (text, record, index) => (
-          <Input value={text} onChange={e => {
-            this.updateValues(index, "value", e.target.value);
+        render: (text, record, index) => {
+          if (this.props.options?.[index]) {
+            return (
+              <Input value={this.props.options[index].value} onChange={e => {
+                this.updateOptions(index, "value", e.target.value);
+              }} />
+            );
+          } else if (this.props.options) {
+            this.updateOptions(index, "parameter", record.parameter);
+            this.updateOptions(index, "value", "");
           }
-          } />
-        ),
+        },
       },
       {
         title: i18next.t("general:Description"),
@@ -167,20 +175,23 @@ class TemplateInputTable extends React.Component {
         flexDirection: "row",
       }}>
         <Table rowKey="index" size="middle" bordered
-          columns={this.props.mode === "edit" ? editColumn : inputsColumn}
-          dataSource={this.props.mode === "edit" ? this.props.values : this.props.inputs}
+          columns={this.props.mode === "edit" ? editOptionsColumn : optionsColumn}
+          dataSource={this.props.templateOptions}
           pagination={false}
           title={() => (
             <div>
-              {i18next.t("template:Template inputs")}&nbsp;&nbsp;&nbsp;&nbsp;
-              {this.props.mode !== "edit" &&
+              {i18next.t("template:Basic config options")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {this.props.mode === "edit" &&
                 <Button style={{marginRight: "5px"}} type="primary" size="small"
                   onClick={() => {
-                    const newInput = {
-                      title: "DefaultInput",
-                      text: "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems.",
+                    const newOption = {
+                      parameter: "",
+                      type: "string",
+                      required: false,
+                      default: "",
+                      description: "",
                     };
-                    this.props.onUpdateInputs([...this.props.inputs, newInput]);
+                    this.props.onUpdateTemplateOptions([...this.props.templateOptions, newOption]);
                   }}>{i18next.t("general:Add")}
                 </Button>
               }
@@ -192,4 +203,4 @@ class TemplateInputTable extends React.Component {
   }
 }
 
-export default TemplateInputTable;
+export default TemplateOptionTable;

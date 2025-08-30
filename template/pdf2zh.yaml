@@ -6,6 +6,17 @@ spec:
   displayName: 'PDFMathTranslate'
   description: 'PDFMathTranslate is an open-source PDF scientific paper translation with preserved formats.'
   icon: 'https://raw.githubusercontent.com/Byaidu/PDFMathTranslate/main/docs/images/banner.png'
+  readme: 'https://raw.githubusercontent.com/coder/code-server/main/docs/README.md'
+  options:
+    - parameter: host
+      type: string
+      required: true
+      default: ''
+      description: 'Domain name for accessing PDFMathTranslate'
+    - parameter: tlsSecretName
+      type: string
+      required: false
+      description: 'TLS secret name in Kubernetes secret for https'
 
 ---
 apiVersion: apps/v1
@@ -71,10 +82,10 @@ metadata:
   name: {{ .application.name }}
   labels:
     casibase/app-deploy-manager: {{ .application.name }}
-    casibase/app-deploy-manager-domain: {{ .application.host }}
+    casibase/app-deploy-manager-domain: {{ .options.host }}
 spec:
   rules:
-    - host: {{ .application.host }}
+    - host: {{ .options.host }}
       http:
         paths:
           - pathType: Prefix
@@ -84,7 +95,9 @@ spec:
                 name: {{ .application.name }}
                 port:
                   number: 7860
+  {{- if .options.tlsSecretName }}
   tls:
     - hosts:
-        - {{ .application.host }}
-      secretName: {{ .application.tlsSecretName }}
+        - {{ .options.host }}
+      secretName: {{ .options.tlsSecretName }}
+  {{- end }}

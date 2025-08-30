@@ -18,7 +18,7 @@ import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as TemplateBackend from "./backend/TemplateBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import TemplateInputTable from "./table/TemplateInputTable";
+import TemplateOptionTable from "./table/TemplateOptionTable";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -173,10 +173,9 @@ class ApplicationEditPage extends React.Component {
               onChange={(value => {
                 this.setState({template: this.state.templates.find((template) => template.name === value)});
                 this.updateApplicationField("template", value);
-                this.updateApplicationField("inputValues", this.state.templates.find((template) => template.name === value)?.inputs?.map(input => ({
-                  "name": input.name,
-                  "value": input.default,
-                  "description": input.description || "",
+                this.updateApplicationField("basicConfigOptions", this.state.templates.find((template) => template.name === value)?.basicConfigOptions?.map(option => ({
+                  parameter: option.parameter,
+                  value: option.default,
                 })) || []);
               })}
               options={this.state.templates.map((template) => Setting.getOption(`${template.displayName} (${template.name})`, `${template.name}`))
@@ -215,38 +214,17 @@ class ApplicationEditPage extends React.Component {
           </Col>
         </Row>
 
-        {this.state.templates && this.state.templates.find(template => template.name === this.state.application.template && template.needRender) ? (
+        {this.state.templates && this.state.templates.find(template => template.name === this.state.application.template && template.enableBasicConfig) ? (
           <>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("application:Host"), i18next.t("application:Host - Tooltip"))} :
+                {Setting.getLabel(i18next.t("template:Basic config"), i18next.t("template:Basic config - Tooltip"))} :
               </Col>
               <Col span={22} >
-                <Input value={this.state.application.host} onChange={e => {
-                  this.updateApplicationField("host", e.target.value);
-                }} />
-              </Col>
-            </Row>
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("application:Tls secret name"), i18next.t("application:Tls secret name - Tooltip"))} :
-              </Col>
-              <Col span={22} >
-                <Input value={this.state.application.tlsSecretName} onChange={e => {
-                  this.updateApplicationField("tlsSecretName", e.target.value);
-                }} />
-              </Col>
-            </Row>
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("application:Input values"), i18next.t("application:Input values - Tooltip"))} :
-              </Col>
-              <Col span={22} >
-                <TemplateInputTable
-                  mode="edit"
-                  inputs={this.state.templates.find(template => template.name === this.state.application.template)?.inputs || []}
-                  values={this.state.application.inputValues}
-                  onUpdateValues={values => {this.updateApplicationField("inputValues", values);}}
+                <TemplateOptionTable
+                  templateOptions={this.state.templates.find(template => template.name === this.state.application.template)?.basicConfigOptions || []}
+                  options={this.state.application.basicConfigOptions}
+                  onUpdateOptions={options => {this.updateApplicationField("basicConfigOptions", options);}}
                 />
               </Col>
             </Row>
@@ -265,6 +243,20 @@ class ApplicationEditPage extends React.Component {
                 onBeforeChange={(editor, data, value) => {
                   this.updateApplicationField("parameters", value);
                 }}
+              />
+            </div>
+          </Col>
+        </Row>
+
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("application:Deployment Manifest"), i18next.t("application:Deployment Manifest - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <div style={{height: "500px"}}>
+              <CodeMirror
+                value={this.state.application.manifest}
+                options={{mode: "yaml", theme: "material-darker", readOnly: true}}
               />
             </div>
           </Col>

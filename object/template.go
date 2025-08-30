@@ -39,13 +39,14 @@ type Template struct {
 	Version     string `xorm:"varchar(50)" json:"version"`
 	Icon        string `xorm:"varchar(255)" json:"icon"`
 	Manifest    string `xorm:"mediumtext" json:"manifest"`
+	Readme      string `xorm:"mediumtext" json:"readme"`
 
-	NeedRender bool            `xorm:"bool" json:"needRender"`
-	Inputs     []TemplateInput `xorm:"json" json:"inputs"`
+	EnableBasicConfig  bool                  `xorm:"bool" json:"enableBasicConfig"`
+	BasicConfigOptions []templateBasicOption `xorm:"json" json:"basicConfigOptions"`
 }
 
-type TemplateInput struct {
-	Name        string   `json:"name"`
+type templateBasicOption struct {
+	Parameter   string   `json:"parameter"`
 	Description string   `json:"description"`
 	Type        string   `json:"type"` // string
 	Options     []string `json:"options"`
@@ -180,6 +181,7 @@ func initTemplates() {
 		tpl, err := parseTemplateFromFile(owner, filepath.Join(dir, file.Name()))
 		if err != nil {
 			fmt.Printf("Failed to parse template file %s: %v\n", file.Name(), err)
+			continue
 		}
 		if tpl != nil {
 			upsertTemplate(tpl)
@@ -236,14 +238,15 @@ func parseTemplateFromFile(owner, path string) (*Template, error) {
 			Description string `yaml:"description"`
 			Version     string `yaml:"version"`
 			Icon        string `yaml:"icon"`
-			Inputs      []struct {
-				Name        string   `yaml:"name"`
+			Readme      string `yaml:"readme"`
+			Options     []struct {
+				Parameter   string   `yaml:"parameter"`
 				Description string   `yaml:"description"`
 				Type        string   `yaml:"type"`
 				Options     []string `yaml:"options"`
 				Default     string   `yaml:"default"`
 				Required    bool     `yaml:"required"`
-			} `yaml:"inputs"`
+			} `yaml:"options"`
 		} `yaml:"spec"`
 	}
 
@@ -261,24 +264,25 @@ func parseTemplateFromFile(owner, path string) (*Template, error) {
 	template.Description = templateYaml.Spec.Description
 	template.Version = templateYaml.Spec.Version
 	template.Icon = templateYaml.Spec.Icon
-	template.NeedRender = true
+	template.Readme = templateYaml.Spec.Readme
+	template.EnableBasicConfig = true
 
-	if len(templateYaml.Spec.Inputs) > 0 {
-		inputs := make([]TemplateInput, 0, len(templateYaml.Spec.Inputs))
-		for _, input := range templateYaml.Spec.Inputs {
-			templateInput := TemplateInput{
-				Name:        input.Name,
-				Description: input.Description,
-				Type:        input.Type,
-				Options:     input.Options,
-				Required:    input.Required,
+	if len(templateYaml.Spec.Options) > 0 {
+		options := make([]templateBasicOption, 0, len(templateYaml.Spec.Options))
+		for _, option := range templateYaml.Spec.Options {
+			templateOption := templateBasicOption{
+				Parameter:   option.Parameter,
+				Description: option.Description,
+				Type:        option.Type,
+				Options:     option.Options,
+				Required:    option.Required,
 			}
-			if input.Default != "" {
-				templateInput.Default = input.Default
+			if option.Default != "" {
+				templateOption.Default = option.Default
 			}
-			inputs = append(inputs, templateInput)
+			options = append(options, templateOption)
 		}
-		template.Inputs = inputs
+		template.BasicConfigOptions = options
 	}
 
 	if len(yamls) > 1 {

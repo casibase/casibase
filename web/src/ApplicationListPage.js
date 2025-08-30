@@ -16,6 +16,8 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {Alert, Button, Popconfirm, Table, Tooltip} from "antd";
 import {DeleteOutlined, LinkOutlined} from "@ant-design/icons";
+import {Alert, Button, Popconfirm, Table, Tag, Tooltip} from "antd";
+import {DeleteOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -162,12 +164,7 @@ class ApplicationListPage extends BaseListPage {
 
   newApplication() {
     const randomName = Setting.getRandomName();
-    const defaultParameters = `apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-spec:
-  replicas: 3`;
+    const defaultParameters = "";
 
     return {
       owner: this.props.account.name,
@@ -296,28 +293,21 @@ spec:
         },
       },
       {
-        title: i18next.t("application:Host"),
-        dataIndex: "host",
-        key: "host",
-        width: "150px",
-        sorter: (a, b) => a.host.localeCompare(b.host),
+        title: i18next.t("general:Basic configuration"),
+        dataIndex: "basicConfigOptions",
+        key: "basicConfigOptions",
+        width: "200px",
         render: (text, record, index) => {
-          if (text === "") {
-            return null;
-          }
           return (
-            <a target="_blank" rel="noreferrer" href={record.tlsSecretName === "" ? `http://${text}` : `https://${text}`}>
-              {text}
-            </a>
+            text?.length > 0 ? text.map((option, i) => {
+              if (option.parameter === "host") {
+                return <Tag key={i}>{option.parameter}: <a href={"http://" + option.value} style={{textDecoration: "underline"}}>{option.value}</a></Tag>;
+              } else {
+                return <Tag key={i}>{option.parameter}: {option.value}</Tag>;
+              }
+            }) : null
           );
         },
-      },
-      {
-        title: i18next.t("application:Tls secret name"),
-        dataIndex: "tlsSecretName",
-        key: "tlsSecretName",
-        width: "150px",
-        sorter: (a, b) => a.tlsSecretName.localeCompare(b.tlsSecretName),
       },
       {
         title: i18next.t("general:Status"),

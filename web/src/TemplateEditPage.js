@@ -23,7 +23,7 @@ import StoreAvatarUploader from "./AvatarUpload";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import TextArea from "antd/es/input/TextArea";
-import TemplateInputTable from "./table/TemplateInputTable";
+import TemplateOptionTable from "./table/TemplateOptionTable";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/javascript/javascript");
 
@@ -130,6 +130,16 @@ class TemplateEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Readme"), i18next.t("general:Readme - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.template.readme} onChange={e => {
+              this.updateTemplateField("readme", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Version"), i18next.t("general:Version - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -158,24 +168,25 @@ class TemplateEditPage extends React.Component {
 
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("template:Need Render"), i18next.t("template:Need Render - Tooltip"))} :
+            {Setting.getLabel(i18next.t("template:Enable basic config"), i18next.t("template:Enable basic config - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Switch checked={this.state.template.needRender} onChange={checked => {
-              this.updateTemplateField("needRender", checked);
+            <Switch checked={this.state.template.enableBasicConfig} onChange={checked => {
+              this.updateTemplateField("enableBasicConfig", checked);
             }} />
           </Col>
         </Row>
 
-        {this.state.template.needRender && (
+        {this.state.template.enableBasicConfig && (
           <Row style={{marginTop: "20px"}} >
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-              {Setting.getLabel(i18next.t("template:Render"), i18next.t("template:Render - Tooltip"))} :
+              {Setting.getLabel(i18next.t("template:Basic config"), i18next.t("template:Basic config - Tooltip"))} :
             </Col>
             <Col span={22} >
-              <TemplateInputTable
-                inputs={this.state.template.inputs}
-                onUpdateInputs={inputs => {this.updateTemplateField("inputs", inputs);}} />
+              <TemplateOptionTable
+                mode="edit"
+                templateOptions={this.state.template.basicConfigOptions}
+                onUpdateTemplateOptions={options => {this.updateTemplateField("basicConfigOptions", options);}} />
             </Col>
           </Row>
         )}
