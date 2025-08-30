@@ -41,11 +41,11 @@ type Template struct {
 	Manifest    string `xorm:"mediumtext" json:"manifest"`
 	Readme      string `xorm:"mediumtext" json:"readme"`
 
-	EnableBasicConfig  bool                  `xorm:"bool" json:"enableBasicConfig"`
-	BasicConfigOptions []templateBasicOption `xorm:"json" json:"basicConfigOptions"`
+	EnableBasicConfig  bool                   `xorm:"bool" json:"enableBasicConfig"`
+	BasicConfigOptions []templateConfigOption `xorm:"json" json:"basicConfigOptions"`
 }
 
-type templateBasicOption struct {
+type templateConfigOption struct {
 	Parameter   string   `json:"parameter"`
 	Description string   `json:"description"`
 	Type        string   `json:"type"` // string
@@ -268,9 +268,9 @@ func parseTemplateFromFile(owner, path string) (*Template, error) {
 	template.EnableBasicConfig = true
 
 	if len(templateYaml.Spec.Options) > 0 {
-		options := make([]templateBasicOption, 0, len(templateYaml.Spec.Options))
+		options := make([]templateConfigOption, 0, len(templateYaml.Spec.Options))
 		for _, option := range templateYaml.Spec.Options {
-			templateOption := templateBasicOption{
+			templateOption := templateConfigOption{
 				Parameter:   option.Parameter,
 				Description: option.Description,
 				Type:        option.Type,

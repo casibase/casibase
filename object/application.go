@@ -39,10 +39,10 @@ type Application struct {
 
 	Details *ApplicationView `xorm:"-" json:"details,omitempty"`
 
-	BasicConfigOptions []applicationBasicOption `xorm:"mediumtext" json:"basicConfigOptions"`
+	BasicConfigOptions []applicationConfigOption `xorm:"mediumtext" json:"basicConfigOptions"`
 }
 
-type applicationBasicOption struct {
+type applicationConfigOption struct {
 	Parameter string `json:"parameter"`
 	Value     string `json:"value"`
 }
