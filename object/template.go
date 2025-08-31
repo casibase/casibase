@@ -258,17 +258,9 @@ func parseTemplateFromFile(owner, path string) (*Template, error) {
 		return nil, nil
 	}
 
-	template := &Template{Owner: owner}
-	template.Name = templateYaml.Metadata.Name
-	template.DisplayName = templateYaml.Spec.DisplayName
-	template.Description = templateYaml.Spec.Description
-	template.Version = templateYaml.Spec.Version
-	template.Icon = templateYaml.Spec.Icon
-	template.Readme = templateYaml.Spec.Readme
-	template.EnableBasicConfig = true
-
+	var options []templateConfigOption
 	if len(templateYaml.Spec.Options) > 0 {
-		options := make([]templateConfigOption, 0, len(templateYaml.Spec.Options))
+		options = make([]templateConfigOption, 0, len(templateYaml.Spec.Options))
 		for _, option := range templateYaml.Spec.Options {
 			templateOption := templateConfigOption{
 				Parameter:   option.Parameter,
@@ -276,17 +268,25 @@ func parseTemplateFromFile(owner, path string) (*Template, error) {
 				Type:        option.Type,
 				Options:     option.Options,
 				Required:    option.Required,
-			}
-			if option.Default != "" {
-				templateOption.Default = option.Default
+				Default:     option.Default,
 			}
 			options = append(options, templateOption)
 		}
-		template.BasicConfigOptions = options
 	}
 
-	if len(yamls) > 1 {
-		template.Manifest = strings.TrimSpace(strings.Join(yamls[1:], "\n---\n"))
+	manifest := strings.TrimSpace(strings.Join(yamls[1:], "\n---\n"))
+
+	template := &Template{
+		Owner:              owner,
+		Name:               templateYaml.Metadata.Name,
+		DisplayName:        templateYaml.Spec.DisplayName,
+		Description:        templateYaml.Spec.Description,
+		Version:            templateYaml.Spec.Version,
+		Icon:               templateYaml.Spec.Icon,
+		Readme:             templateYaml.Spec.Readme,
+		EnableBasicConfig:  true,
+		BasicConfigOptions: options,
+		Manifest:           manifest,
 	}
 
 	return template, nil
