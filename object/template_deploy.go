@@ -158,8 +158,13 @@ func ensureK8sClient() error {
 		}
 
 		// Initialize cache manager
-		initCacheManager()
-		startCacheManager()
+		if err := initCacheManager(); err != nil {
+			return fmt.Errorf("failed to initialize cache manager: %v", err)
+		}
+
+		if err := startCacheManager(); err != nil {
+			return fmt.Errorf("failed to start cache manager: %v", err)
+		}
 	}
 
 	return nil

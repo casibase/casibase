@@ -52,9 +52,9 @@ var (
 )
 
 // initCacheManager initializes the cache manager
-func initCacheManager() {
+func initCacheManager() error {
 	if cacheManager != nil {
-		return
+		return nil
 	}
 
 	factory := informers.NewSharedInformerFactory(k8sClient.clientSet, 30*time.Second)
@@ -69,16 +69,29 @@ func initCacheManager() {
 		stopCh:      make(chan struct{}),
 	}
 
-	if mgr.setupInformers() == nil {
-		cacheManager = mgr
+	if err := mgr.setupInformers(); err != nil {
+		return fmt.Errorf("failed to setup informers: %v", err)
 	}
+
+	cacheManager = mgr
+	return nil
 }
 
 // startCacheManager starts the cache manager if it exists
-func startCacheManager() {
-	if cacheManager != nil && !cacheManager.started {
-		cacheManager.Start()
+func startCacheManager() error {
+	if cacheManager == nil {
+		return fmt.Errorf("cache manager not initialized")
 	}
+
+	if cacheManager.started {
+		return nil
+	}
+
+	if err := cacheManager.Start(); err != nil {
+		return fmt.Errorf("failed to start cache manager: %v", err)
+	}
+
+	return nil
 }
 
 // setupInformers configures all required informers
@@ -329,26 +342,4 @@ func (cm *CacheManager) getNodes() []*v1.Node {
 		nodes = append(nodes, node)
 	}
 	return nodes
-}
-
-// GetCacheStats returns cache hit statistics
-func GetCacheStats() map[string]interface{} {
-	if cacheManager == nil {
-		return map[string]interface{}{
-			"enabled": false,
-		}
-	}
-
-	return map[string]interface{}{
-		"enabled":      true,
-		"started":      cacheManager.started,
-		"svc_hits":     atomic.LoadInt64(&cacheManager.svcHits),
-		"deploy_hits":  atomic.LoadInt64(&cacheManager.deployHits),
-		"node_hits":    atomic.LoadInt64(&cacheManager.nodeHits),
-		"ns_hits":      atomic.LoadInt64(&cacheManager.nsHits),
-		"svc_count":    len(cacheManager.svcCache),
-		"deploy_count": len(cacheManager.deployCache),
-		"node_count":   len(cacheManager.nodeCache),
-		"ns_count":     len(cacheManager.nsCache),
-	}
 }
