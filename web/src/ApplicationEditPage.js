@@ -57,7 +57,24 @@ class ApplicationEditPage extends React.Component {
       });
   }
 
+  checkBasicConfigOptions() {
+    const template = this.state.templates.find(template => template.name === this.state.application.template);
+    if (template && template.basicConfigOptions) {
+      for (const option of template.basicConfigOptions) {
+        const setting = this.state.application.basicConfigOptions.find(o => o.parameter === option.parameter)?.setting;
+        if (option.required && (!setting || setting === "")) {
+          Setting.showMessage("error", `${i18next.t("general:Missing required parameter in basic config")}: ${option.parameter}`);
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   deployApplication() {
+    if (!this.checkBasicConfigOptions()) {
+      return;
+    }
     this.setState({deploying: true});
 
     ApplicationBackend.deployApplication(this.state.application)
@@ -175,7 +192,7 @@ class ApplicationEditPage extends React.Component {
                 this.updateApplicationField("template", value);
                 this.updateApplicationField("basicConfigOptions", this.state.templates.find((template) => template.name === value)?.basicConfigOptions?.map(option => ({
                   parameter: option.parameter,
-                  value: option.default,
+                  setting: option.default,
                 })) || []);
               })}
               options={this.state.templates.map((template) => Setting.getOption(`${template.displayName} (${template.name})`, `${template.name}`))
@@ -266,6 +283,10 @@ class ApplicationEditPage extends React.Component {
   }
 
   submitApplicationEdit(exitAfterSave) {
+    if (!this.checkBasicConfigOptions()) {
+      return;
+    }
+
     const application = Setting.deepCopy(this.state.application);
     ApplicationBackend.updateApplication(this.state.application.owner, this.state.applicationName, application)
       .then((res) => {

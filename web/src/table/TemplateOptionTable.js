@@ -30,7 +30,7 @@ class TemplateOptionTable extends React.Component {
       if (!this.props.options) {
         this.props.onUpdateOptions(this.props.templateOptions.map(option => ({
           parameter: option.parameter,
-          value: option.default,
+          setting: option.default,
         })));
       }
     }
@@ -144,19 +144,33 @@ class TemplateOptionTable extends React.Component {
         ),
       },
       {
-        title: i18next.t("general:Value"),
-        dataIndex: "value",
-        key: "value",
+        title: i18next.t("general:Setting"),
+        dataIndex: "setting",
+        key: "setting",
         render: (text, record, index) => {
           if (this.props.options?.[index]) {
-            return (
-              <Input value={this.props.options[index].value} onChange={e => {
-                this.updateOptions(index, "value", e.target.value);
-              }} />
-            );
+            if (record.type === "option") {
+              return (
+                <Select
+                  style={{width: "100%"}}
+                  value={this.props.options[index].setting}
+                  onChange={value => {this.updateOptions(index, "setting", value);}}
+                  options={record.options.map(option => ({
+                    value: option,
+                    label: option,
+                  }))}
+                />
+              );
+            } else {
+              return (
+                <Input value={this.props.options[index].setting} onChange={e => {
+                  this.updateOptions(index, "setting", e.target.value);
+                }} />
+              );
+            }
           } else if (this.props.options) {
             this.updateOptions(index, "parameter", record.parameter);
-            this.updateOptions(index, "value", "");
+            this.updateOptions(index, "setting", "");
           }
         },
       },

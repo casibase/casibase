@@ -44,7 +44,7 @@ type Application struct {
 
 type applicationConfigOption struct {
 	Parameter string `json:"parameter"`
-	Value     string `json:"value"`
+	Setting   string `json:"setting"`
 }
 
 func GetApplications(owner string) ([]*Application, error) {
@@ -109,27 +109,10 @@ func UpdateApplication(id string, application *Application) (bool, error) {
 
 	if template.EnableBasicConfig {
 		// Initialize the manifest using the basic configuration options
-		options := make(map[string]interface{}, len(application.BasicConfigOptions))
-		for _, option := range application.BasicConfigOptions {
-			options[option.Parameter] = option.Value
-		}
-
-		app := map[string]interface{}{
-			"name":      toK8sMetadataName(application.Name),
-			"namespace": application.Namespace,
-		}
-
-		data := map[string]interface{}{
-			"application": app,
-			"options":     options,
-		}
-
-		manifest, err := template.Render(data)
+		application.Manifest, err = application.generateManifestWithBasicConfig(template)
 		if err != nil {
-			return false, fmt.Errorf("failed to generate manifest: %v", err)
+			return false, err
 		}
-
-		application.Manifest = manifest
 	} else {
 		// Initialize the manifest using the template
 		application.Manifest = template.Manifest
@@ -190,4 +173,24 @@ func DeleteApplication(application *Application) (bool, error) {
 	}
 
 	return affected != 0, nil
+}
+
+// generateManifestWithBasicConfig generates the manifest from the basic configuration options using the provided template.
+func (a *Application) generateManifestWithBasicConfig(template *Template) (string, error) {
+	app := map[string]interface{}{
+		"name":      toK8sMetadataName(a.Name),
+		"namespace": a.Namespace,
+	}
+
+	options := make(map[string]interface{}, len(a.BasicConfigOptions))
+	for _, option := range a.BasicConfigOptions {
+		options[option.Parameter] = option.Setting
+	}
+
+	data := map[string]interface{}{
+		"application": app,
+		"options":     options,
+	}
+
+	return template.Render(data)
 }

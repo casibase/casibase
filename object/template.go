@@ -48,7 +48,7 @@ type Template struct {
 type templateConfigOption struct {
 	Parameter   string   `json:"parameter"`
 	Description string   `json:"description"`
-	Type        string   `json:"type"` // string
+	Type        string   `json:"type"` // string, option
 	Options     []string `json:"options"`
 	Default     string   `json:"default"`
 	Required    bool     `json:"required"`
