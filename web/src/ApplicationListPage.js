@@ -301,9 +301,9 @@ class ApplicationListPage extends BaseListPage {
           return (
             text?.length > 0 ? text.map((option, i) => {
               if (option.parameter === "host") {
-                return <Tag key={i}>{option.parameter}: <a href={"http://" + option.value} style={{textDecoration: "underline"}}>{option.value}</a></Tag>;
+                return <Tag key={i}>{option.parameter}: <a href={"http://" + option.setting} style={{textDecoration: "underline"}}>{option.setting}</a></Tag>;
               } else {
-                return <Tag key={i}>{option.parameter}: {option.value}</Tag>;
+                return <Tag key={i}>{option.parameter}: {option.setting}</Tag>;
               }
             }) : null
           );
