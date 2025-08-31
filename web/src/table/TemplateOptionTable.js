@@ -82,11 +82,27 @@ class TemplateOptionTable extends React.Component {
           <Select
             defaultValue="string"
             value={text}
-            style={{width: 120}}
+            style={{width: "100%"}}
             options={[
               {value: "string", label: "string"},
+              {value: "number", label: "number"},
+              {value: "boolean", label: "boolean"},
+              {value: "option", label: "option"},
             ]}
-            onChange={value => this.updateTemplateOptions(index, "type", value)}
+            onChange={value => {
+              this.props.onUpdateTemplateOptions(
+                this.props.templateOptions.map((option, i) => {
+                  if (i === index) {
+                    return {
+                      ...option,
+                      type: value,
+                      options: value === "option" ? [String(record.default)] : null,
+                    };
+                  }
+                  return option;
+                })
+              );
+            }}
           />
         ),
       },
@@ -104,9 +120,59 @@ class TemplateOptionTable extends React.Component {
         dataIndex: "default",
         key: "default",
         width: "200px",
-        render: (text, record, index) => (
-          <Input value={text} onChange={e => this.updateTemplateOptions(index, "default", e.target.value)} />
-        ),
+        render: (text, record, index) => {
+          if (record.type === "option") {
+            return (
+              <Select
+                value={text}
+                style={{width: "100%"}}
+                options={record.options?.map(option => ({
+                  value: option,
+                  label: option,
+                }))}
+                onChange={value => this.updateTemplateOptions(index, "default", value)}
+              />
+            );
+          } else if (record.type === "number") {
+            return (
+              <Input
+                type="number"
+                value={text}
+                onChange={e => this.updateTemplateOptions(index, "default", e.target.value.toString())}
+              />
+            );
+          } else if (record.type === "boolean") {
+            return (
+              <Switch
+                checked={text === "true"}
+                onChange={checked => this.updateTemplateOptions(index, "default", checked.toString())}
+              />
+            );
+          }
+          return (
+            <Input value={text} onChange={e => this.updateTemplateOptions(index, "default", e.target.value)} />
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Options"),
+        dataIndex: "options",
+        key: "options",
+        width: "200px",
+        render: (text, record, index) => {
+          if (record.type === "option") {
+            return (
+              <Select
+                mode="tags"
+                style={{width: "100%"}}
+                value={Array.isArray(text) ? text : (text ? [text] : [])}
+                onChange={value => this.updateTemplateOptions(index, "options", value)}
+              />
+            );
+          }
+          return null;
+        }
+        ,
       },
       {
         title: i18next.t("general:Description"),
@@ -161,13 +227,27 @@ class TemplateOptionTable extends React.Component {
                   }))}
                 />
               );
-            } else {
+            } else if (record.type === "number") {
               return (
-                <Input value={this.props.options[index].setting} onChange={e => {
-                  this.updateOptions(index, "setting", e.target.value);
-                }} />
+                <Input
+                  type="number"
+                  value={this.props.options[index].setting}
+                  onChange={e => {this.updateOptions(index, "setting", e.target.value.toString());}}
+                />
+              );
+            } else if (record.type === "boolean") {
+              return (
+                <Switch
+                  checked={this.props.options[index].setting === "true"}
+                  onChange={checked => this.updateOptions(index, "setting", checked.toString())}
+                />
               );
             }
+            return (
+              <Input value={this.props.options[index].setting} onChange={e => {
+                this.updateOptions(index, "setting", e.target.value);
+              }} />
+            );
           } else if (this.props.options) {
             this.updateOptions(index, "parameter", record.parameter);
             this.updateOptions(index, "setting", "");

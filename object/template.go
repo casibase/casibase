@@ -48,7 +48,7 @@ type Template struct {
 type templateConfigOption struct {
 	Parameter   string   `json:"parameter"`
 	Description string   `json:"description"`
-	Type        string   `json:"type"` // string, option
+	Type        string   `json:"type"` // string, number, boolean, option
 	Options     []string `json:"options"`
 	Default     string   `json:"default"`
 	Required    bool     `json:"required"`
@@ -143,18 +143,19 @@ func DeleteTemplate(template *Template) (bool, error) {
 }
 
 // upsertTemplate inserts or updates the template in the database.
-func upsertTemplate(templates *Template) error {
-	existing, err := getTemplate(templates.Owner, templates.Name)
+func upsertTemplate(template *Template) error {
+	existing, err := getTemplate(template.Owner, template.Name)
 	if err != nil {
 		return err
 	}
 	if existing != nil {
-		_, err := UpdateTemplate(util.GetIdFromOwnerAndName(templates.Owner, templates.Name), templates)
+		template.CreatedTime = existing.CreatedTime
+		_, err := UpdateTemplate(util.GetIdFromOwnerAndName(template.Owner, template.Name), template)
 		if err != nil {
 			return err
 		}
 	} else {
-		_, err := AddTemplate(templates)
+		_, err := AddTemplate(template)
 		if err != nil {
 			return err
 		}
