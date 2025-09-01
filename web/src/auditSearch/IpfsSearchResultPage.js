@@ -266,6 +266,8 @@ class IPFSSearchResultPage extends BaseListPage {
       return;
     }
     // {\"field\":\"1\",\"pos\":\"11\",\"compare\":\"eq\",\"val\":\"1\",\"type\":\"int\"}
+
+    const correlationId = this.state.correlationId;
     const queryCond = [[
       {
         field: "correlationId",
