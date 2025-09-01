@@ -14,10 +14,16 @@
 import React, {useEffect, useRef, useState} from "react";
 import BpmnModeler from "bpmn-js/lib/Modeler";
 import {BpmnPropertiesPanelModule, BpmnPropertiesProviderModule, CamundaPlatformPropertiesProviderModule} from "bpmn-js-properties-panel";
+import BpmnColorPickerModule from "bpmn-js-color-picker";
+import {
+  CreateAppendAnythingModule
+} from "bpmn-js-create-append-anything";
+import {ElementTemplatesCoreModule} from "bpmn-js-element-templates";
 import camundaModdle from "camunda-bpmn-moddle/resources/camunda";
 import "@bpmn-io/properties-panel/assets/properties-panel.css";
 import "diagram-js/assets/diagram-js.css";
 import "bpmn-font/dist/css/bpmn.css";
+import "bpmn-js-color-picker/colors/color-picker.css";
 import {Button} from "antd";
 
 const DegaultDiagram = `<?xml version="1.0" encoding="UTF-8"?>
@@ -124,6 +130,36 @@ function BpmnComponent({diagramXML, onLoading, onError, onXMLChange}) {
     }
   };
 
+  const resetView = () => {
+    if (modelerRef.current) {
+      const canvas = modelerRef.current.get("canvas");
+      const container = canvas.getContainer();
+      const paletteWidth = getPaletteWidth();
+
+      const originalWidth = container.style.width;
+      const originalHeight = container.style.height;
+
+      container.style.width = `calc(100% - ${paletteWidth + 20}px)`;
+
+      canvas.zoom("fit-viewport");
+
+      container.style.width = originalWidth;
+      container.style.height = originalHeight;
+
+      const viewbox = canvas.viewbox();
+      viewbox.x = viewbox.x - paletteWidth - 100;
+      canvas.viewbox(viewbox);
+    }
+  };
+
+  const getPaletteWidth = () => {
+    const palette = document.querySelector(".djs-palette");
+    if (palette) {
+      return palette.offsetWidth;
+    }
+    return 100;
+  };
+
   useEffect(() => {
     // Ensure container exists
     if (!containerRef.current) {
@@ -140,6 +176,9 @@ function BpmnComponent({diagramXML, onLoading, onError, onXMLChange}) {
         BpmnPropertiesPanelModule,
         BpmnPropertiesProviderModule,
         CamundaPlatformPropertiesProviderModule,
+        BpmnColorPickerModule,
+        CreateAppendAnythingModule,
+        ElementTemplatesCoreModule,
       ],
       moddleExtensions: {
         camunda: camundaModdle,
@@ -166,6 +205,7 @@ function BpmnComponent({diagramXML, onLoading, onError, onXMLChange}) {
     const xmlToImport = diagramXML || DegaultDiagram;
     modelerRef.current.importXML(xmlToImport)
       .then(() => {
+        resetView();
         restoreViewbox();
       })
       .catch(err => {
@@ -192,6 +232,7 @@ function BpmnComponent({diagramXML, onLoading, onError, onXMLChange}) {
           {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
         </Button>
         <Button size="small" onClick={handleExport} style={{marginLeft: 4}}>Export</Button>
+        <Button size="small" onClick={resetView} style={{marginLeft: 4}}>Reset View</Button>
         <Button size="small" onClick={() => setShowShortcuts(!showShortcuts)} style={{marginLeft: 4}}>Shortcuts</Button>
       </div>
       <div style={{display: "flex", width: "100%", height: "100%", backgroundColor: "white"}}>

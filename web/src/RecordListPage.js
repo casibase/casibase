@@ -340,6 +340,14 @@ class RecordListPage extends BaseListPage {
         sorter: true,
         ...this.getColumnSearchProps("language"),
       },
+      {
+        title: i18next.t("general:Query"),
+        dataIndex: "query",
+        key: "query",
+        width: "90px",
+        sorter: true,
+        ...this.getColumnSearchProps("query"),
+      },
       // TODO i18n
       {
         title: i18next.t("general:Region"),

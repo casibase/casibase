@@ -69,6 +69,7 @@ type Store struct {
 	EnableTtsStreaming   bool   `xorm:"bool" json:"enableTtsStreaming"`
 	SpeechToTextProvider string `xorm:"varchar(100)" json:"speechToTextProvider"`
 	AgentProvider        string `xorm:"varchar(100)" json:"agentProvider"`
+	VectorStoreId        string `xorm:"varchar(100)" json:"vectorStoreId"`
 
 	MemoryLimit         int      `json:"memoryLimit"`
 	Frequency           int      `json:"frequency"`
@@ -217,7 +218,7 @@ func (store *Store) GetStorageProviderObj() (storage.StorageProvider, error) {
 
 	var storageProvider storage.StorageProvider
 	if provider != nil {
-		storageProvider, err = provider.GetStorageProviderObj()
+		storageProvider, err = provider.GetStorageProviderObj(store.VectorStoreId)
 		if err != nil {
 			return nil, err
 		}

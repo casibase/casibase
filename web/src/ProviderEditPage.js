@@ -23,6 +23,7 @@ import FileSaver from "file-saver";
 import McpToolsTable from "./table/McpToolsTable";
 import ModelTestWidget from "./common/TestModelWidget";
 import TtsTestWidget from "./common/TestTtsWidget";
+import EmbedTestWidget from "./common/TestEmbedWidget";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -489,12 +490,14 @@ class ProviderEditPage extends React.Component {
         {
           !(this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") &&
           (
-            ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
-              (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
-              (this.state.provider.category === "Model" && this.state.provider.type === "iFlytek") ||
-              (this.state.provider.category === "Blockchain" && !["ChainMaker", "Ethereum"].includes(this.state.provider.type)) ||
-              ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
-              (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent", "Blockchain"].includes(this.state.provider.category)))
+            ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") ||
+              (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") ||
+              (this.state.provider.category === "Storage" && this.state.provider.type !== "OpenAI File System")) ||
+            (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
+            (this.state.provider.category === "Model" && this.state.provider.type === "iFlytek") ||
+            (this.state.provider.category === "Blockchain" && !["ChainMaker", "Ethereum"].includes(this.state.provider.type)) ||
+            ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
+            (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent", "Blockchain"].includes(this.state.provider.category)))
           ) ? (
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -625,18 +628,23 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") || (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker")) ? null : (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {this.getClientSecretLabel(this.state.provider)} :
-              </Col>
-              <Col span={22} >
-                <Input value={this.state.provider.clientSecret} onChange={e => {
-                  this.updateProviderField("clientSecret", e.target.value);
-                }} />
-              </Col>
-            </Row>
-          )
+          (
+            (this.state.provider.category === "Storage" && this.state.provider.type !== "OpenAI File System") ||
+            (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") ||
+            (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker") ||
+            this.state.provider.type === "Dummy"
+          ) ? null : (
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {this.getClientSecretLabel(this.state.provider)} :
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.clientSecret} onChange={e => {
+                    this.updateProviderField("clientSecret", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+            )
         }
         {
           (this.state.provider.type === "iFlytek" && this.state.provider.category === "Model") && (
@@ -1050,6 +1058,12 @@ class ProviderEditPage extends React.Component {
           provider={this.state.provider}
           originalProvider={this.state.originalProvider}
           account={this.props.account}
+        />
+        <EmbedTestWidget
+          provider={this.state.provider}
+          originalProvider={this.state.originalProvider}
+          account={this.props.account}
+          onUpdateProvider={this.updateProviderField.bind(this)}
         />
         <TtsTestWidget
           provider={this.state.provider}
