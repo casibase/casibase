@@ -46,12 +46,12 @@ type Template struct {
 }
 
 type templateConfigOption struct {
-	Parameter   string   `json:"parameter"`
-	Description string   `json:"description"`
-	Type        string   `json:"type"` // string, number, boolean, option
-	Options     []string `json:"options"`
-	Default     string   `json:"default"`
-	Required    bool     `json:"required"`
+	Parameter   string   `json:"parameter" yaml:"parameter"`
+	Description string   `json:"description" yaml:"description"`
+	Type        string   `json:"type" yaml:"type"` // string, number, boolean, option
+	Options     []string `json:"options" yaml:"options"`
+	Default     string   `json:"default" yaml:"default"`
+	Required    bool     `json:"required" yaml:"required"`
 }
 
 func GetTemplates(owner string) ([]*Template, error) {
@@ -235,19 +235,12 @@ func parseTemplateFromFile(owner, path string) (*Template, error) {
 			Name string `yaml:"name"`
 		} `yaml:"metadata"`
 		Spec struct {
-			DisplayName string `yaml:"displayName"`
-			Description string `yaml:"description"`
-			Version     string `yaml:"version"`
-			Icon        string `yaml:"icon"`
-			Readme      string `yaml:"readme"`
-			Options     []struct {
-				Parameter   string   `yaml:"parameter"`
-				Description string   `yaml:"description"`
-				Type        string   `yaml:"type"`
-				Options     []string `yaml:"options"`
-				Default     string   `yaml:"default"`
-				Required    bool     `yaml:"required"`
-			} `yaml:"options"`
+			DisplayName string                 `yaml:"displayName"`
+			Description string                 `yaml:"description"`
+			Version     string                 `yaml:"version"`
+			Icon        string                 `yaml:"icon"`
+			Readme      string                 `yaml:"readme"`
+			Options     []templateConfigOption `yaml:"options"`
 		} `yaml:"spec"`
 	}
 
@@ -257,22 +250,6 @@ func parseTemplateFromFile(owner, path string) (*Template, error) {
 
 	if strings.ToLower(templateYaml.Kind) != "template" {
 		return nil, nil
-	}
-
-	var options []templateConfigOption
-	if len(templateYaml.Spec.Options) > 0 {
-		options = make([]templateConfigOption, 0, len(templateYaml.Spec.Options))
-		for _, option := range templateYaml.Spec.Options {
-			templateOption := templateConfigOption{
-				Parameter:   option.Parameter,
-				Description: option.Description,
-				Type:        option.Type,
-				Options:     option.Options,
-				Required:    option.Required,
-				Default:     option.Default,
-			}
-			options = append(options, templateOption)
-		}
 	}
 
 	manifest := strings.TrimSpace(strings.Join(yamls[1:], "\n---\n"))
@@ -286,7 +263,7 @@ func parseTemplateFromFile(owner, path string) (*Template, error) {
 		Icon:               templateYaml.Spec.Icon,
 		Readme:             templateYaml.Spec.Readme,
 		EnableBasicConfig:  true,
-		BasicConfigOptions: options,
+		BasicConfigOptions: templateYaml.Spec.Options,
 		Manifest:           manifest,
 	}
 
