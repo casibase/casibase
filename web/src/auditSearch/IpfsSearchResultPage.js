@@ -243,7 +243,7 @@ class IPFSSearchResultPage extends BaseListPage {
                 onClick={() => {
                   const org = this.props.account && this.props.account.owner ? this.props.account.owner : Setting.getRequestOrganization(this.props.account);
                   const rid = record.recordId;
-                  this.props.history.push(`records/${org}/${encodeURIComponent(rid)}`);
+                  this.props.history.push(`/ipfs-search/records/${org}/${encodeURIComponent(rid)}`);
                 }}
               />
             </Tooltip>
