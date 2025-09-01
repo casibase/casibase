@@ -14,10 +14,16 @@
 import React, {useEffect, useRef, useState} from "react";
 import BpmnModeler from "bpmn-js/lib/Modeler";
 import {BpmnPropertiesPanelModule, BpmnPropertiesProviderModule, CamundaPlatformPropertiesProviderModule} from "bpmn-js-properties-panel";
+import BpmnColorPickerModule from "bpmn-js-color-picker";
+import {
+  CreateAppendAnythingModule
+} from "bpmn-js-create-append-anything";
+import {ElementTemplatesCoreModule} from "bpmn-js-element-templates";
 import camundaModdle from "camunda-bpmn-moddle/resources/camunda";
 import "@bpmn-io/properties-panel/assets/properties-panel.css";
 import "diagram-js/assets/diagram-js.css";
 import "bpmn-font/dist/css/bpmn.css";
+import "bpmn-js-color-picker/colors/color-picker.css";
 import {Button} from "antd";
 
 const DegaultDiagram = `<?xml version="1.0" encoding="UTF-8"?>
@@ -170,6 +176,9 @@ function BpmnComponent({diagramXML, onLoading, onError, onXMLChange}) {
         BpmnPropertiesPanelModule,
         BpmnPropertiesProviderModule,
         CamundaPlatformPropertiesProviderModule,
+        BpmnColorPickerModule,
+        CreateAppendAnythingModule,
+        ElementTemplatesCoreModule,
       ],
       moddleExtensions: {
         camunda: camundaModdle,
