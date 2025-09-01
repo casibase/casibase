@@ -1,7 +1,37 @@
+
 import React from "react";
 import { Table, Typography, Alert, Spin, message } from "antd";
 import * as Setting from "../Setting";
 import i18next from "i18next";
+
+// 字段常量池和中英文映射
+const FIELD_CONFIG = [
+    { key: "name", label: "姓名" },
+    { key: "admTime", label: "入院时间" },
+    { key: "admHosName", label: "入院医院" },
+    { key: "admDepartment", label: "入院科室" },
+    { key: "admType", label: "入院类型" },
+    { key: "Diagnoses", label: "诊断" },
+    { key: "hospital", label: "医院" },
+];
+
+// 过滤并翻译字段，只保留常量池中且实际存在的字段
+function filterAndTranslateFields(dataArr) {
+    if (!Array.isArray(dataArr) || dataArr.length === 0) return [];
+    // 找出哪些字段实际存在
+    const presentFields = FIELD_CONFIG.filter(({ key }) =>
+        dataArr.some(item => item[key] !== undefined && item[key] !== null)
+    );
+    // 只保留这些字段
+    const filteredArr = dataArr.map(item => {
+        const filtered = {};
+        presentFields.forEach(({ key }) => {
+            filtered[key] = item[key] ?? "";
+        });
+        return filtered;
+    });
+    return { filteredArr, presentFields };
+}
 
 const { Title } = Typography;
 
@@ -102,20 +132,20 @@ class QueryResultPage extends React.Component {
                         columns: [],
                     });
                 } else if (dataObj.data) {
-                    // 正常数据
-                    const dataArr = dataObj.data || [];
-                    const columns = dataArr.length > 0 ? Object.keys(dataArr[0]).map(key => ({
-                        title: key,
+                    // 只展示常量池中实际存在的字段
+                    const { filteredArr, presentFields } = filterAndTranslateFields(dataObj.data || []);
+                    const columns = presentFields.map(({ key, label }) => ({
+                        title: label,
                         dataIndex: key,
                         key,
-                    })) : [];
+                    }));
                     this.setState({
                         loading: false,
-                        resultMsg: `查询成功，共找到 ${dataObj.counts || dataArr.length} 条结果。`,
+                        resultMsg: `查询成功，共找到 ${dataObj.counts || filteredArr.length} 条结果。`,
                         resultType: "success",
-                        tableData: dataArr,
+                        tableData: filteredArr,
                         columns,
-                        count: dataObj.counts || dataArr.length,
+                        count: dataObj.counts || filteredArr.length,
                     });
                 } else {
                     // 其它情况，展示data内容
