@@ -447,7 +447,7 @@
     
     "Open in Records": "在日志记录中查看",
     "Confirm Add Unuploaded Data Title": "是否确定加入？",
-    "Confirm Add Unuploaded Data Content": "当新增相应记录时，系统已自动化加入队列（注：暂未实现！）。但若存在漏网之鱼/系统重启后队列丢失，可使用本按钮。该过程将遍历相关数据库，耗时较长。已加入队列记录不会重复加入。",
+    "Confirm Add Unuploaded Data Content": "当新增相应记录时，系统已自动化加入队列。但若存在漏网之鱼/系统重启后队列丢失，可使用本按钮。该过程将遍历相关数据库，耗时较长。已加入队列记录不会重复加入。",
     "New Ipfs Archive": "新建IPFS归档",
     "View Ipfs Archive": "查看IPFS归档",
     "Record ID - Tooltip": "记录编号",
