@@ -404,9 +404,7 @@ class IpfsArchiveListPage extends BaseListPage {
 
     return (
       <div>
-        <div style={{ color: 'red', fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' }}>
-          页面灰度测试与编码中！！仅部分功能可用！
-        </div>
+
 
         {/* 队列信息卡片 */}
         <Card
