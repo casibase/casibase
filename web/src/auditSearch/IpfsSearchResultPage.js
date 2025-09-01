@@ -13,7 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import { Button, Table, Typography, Tabs, Tag, Tooltip, Space, Empty, Badge, message, Alert } from "antd";
+import { Button, Table, Typography, Tabs, Tag, Tooltip, Space, Empty, Badge, message, Alert, Dropdown, Menu } from "antd";
+import MultiConditionQueryModal from "./MultiConditionQueryModal";
 import { EyeOutlined, FileTextOutlined } from "@ant-design/icons";
 import * as IpfsArchiveBackend from "../backend/IpfsArchiveBackend";
 import * as Setting from "../Setting";
@@ -32,6 +33,7 @@ const customButtonStyle = {
 const { Title } = Typography;
 
 class IPFSSearchResultPage extends BaseListPage {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -43,6 +45,7 @@ class IPFSSearchResultPage extends BaseListPage {
       selectedRowKeys: [],
       selectedRows: [],
     };
+    this.multiCondModalRef = React.createRef();
   }
 
   componentDidMount() {
@@ -258,6 +261,23 @@ class IPFSSearchResultPage extends BaseListPage {
   };
 
   handleQueryClick = () => {
+    const { correlationId } = this.state;
+    const { selectedRows } = this.state;
+    // 取所有选中行的ipfsAddress，去重且非空
+    const ipfsAddresses = Array.from(new Set(selectedRows.map(row => row.ipfsAddress).filter(addr => !!addr)));
+    // 构造queryConditions，始终包含correlationId等于当前correlationId的条件
+    const queryCondFixed = [[{
+      field: "correlationId",
+      pos: ipfsAddresses[0],
+      compare: "eq",
+      val: correlationId,
+      type: "string"
+    }]];
+
+    this.handleQueryReq(queryCondFixed);
+  }
+
+  handleQueryReq = (queryCondJson) => {
     const { selectedRows } = this.state;
     // 取所有选中行的ipfsAddress，去重且非空
     const ipfsAddresses = Array.from(new Set(selectedRows.map(row => row.ipfsAddress).filter(addr => !!addr)));
@@ -265,26 +285,16 @@ class IPFSSearchResultPage extends BaseListPage {
       // 理论不会出现，按钮已禁用
       return;
     }
-    // {\"field\":\"1\",\"pos\":\"11\",\"compare\":\"eq\",\"val\":\"1\",\"type\":\"int\"}
-
-    const correlationId = this.state.correlationId;
-    const queryCond = [[
-      {
-        field: "correlationId",
-        pos: ipfsAddresses[0],
-        compare: "eq",
-        val: correlationId,
-        type: "string"
-      }
-    ]]
 
     // 单表查询
     const queryItemObj = {
       queryConcatType: "single",
       filePos: [ipfsAddresses],
       returnField: [ipfsAddresses[0] + "_*"],
-      queryConditions: queryCond,
+      queryConditions: queryCondJson,
     };
+
+    console.log('单表查询条件:', queryItemObj);
     const queryItem = JSON.stringify(queryItemObj);
     this.props.history.push({
       pathname: '/ipfs-search/query-result',
@@ -292,10 +302,44 @@ class IPFSSearchResultPage extends BaseListPage {
     });
   };
 
+
+  // 多条件查询回调
+  handleMultiCondQuery = (queryCond) => {
+    const { correlationId } = this.state;
+    const { selectedRows } = this.state;
+    const ipfsAddresses = Array.from(new Set(selectedRows.map(row => row.ipfsAddress).filter(addr => !!addr)));
+    if (ipfsAddresses.length === 0) {
+      // 理论不会出现，按钮已禁用
+      return;
+    }
+    // 每个一维数组（条件组）为：条件对象数组 + 一个queryCondFixed对象
+    const queryCondWithPos = queryCond.map(group => {
+      const groupWithPos = group.map(cond => ({ ...cond, pos: ipfsAddresses[0] }));
+      const queryCondFixed = {
+        field: "correlationId",
+        pos: ipfsAddresses[0],
+        compare: "eq",
+        val: correlationId,
+        type: "string"
+      };
+      return [...groupWithPos, queryCondFixed];
+    });
+    // 你可以在这里继续组装queryItem、跳转等
+    this.handleQueryReq(queryCondWithPos);
+
+  }
+
   render() {
     const { correlationId, groupedArchives, allDataTypes, activeDataType, selectedRowKeys } = this.state;
     const { TabPane } = Tabs;
 
+    const menu = (
+      <Menu>
+        <Menu.Item key="multi-cond-query" onClick={() => this.multiCondModalRef.current && this.multiCondModalRef.current.show()}>
+          多条件查询
+        </Menu.Item>
+      </Menu>
+    );
     return (
       <div className="ipfs-search-result-page">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "20px 0" }}>
@@ -308,19 +352,38 @@ class IPFSSearchResultPage extends BaseListPage {
             >
               {i18next.t("ipfsSearch:Refresh", "刷新")}
             </Button>
-            <Badge count={selectedRowKeys.length} offset={[0, 0]} style={{ marginLeft: 8 }}>
-              <Button
-                type="primary"
-                style={selectedRowKeys.length === 0 ? { ...customButtonStyle, background: '#333', color: '#888', borderColor: '#333', cursor: 'not-allowed', boxShadow: 'none' } : customButtonStyle}
-                onClick={this.handleQueryClick}
-                disabled={selectedRowKeys.length === 0}
-                className={selectedRowKeys.length === 0 ? 'no-hover' : ''}
-              >
-                {i18next.t("ipfsSearch:Query", "查询")}
-              </Button>
-            </Badge>
+            {selectedRowKeys.length > 0 ? (
+              <Dropdown overlay={menu} placement="bottomRight">
+                <Badge count={selectedRowKeys.length} offset={[0, 0]} style={{ marginLeft: 8 }}>
+                  <Button
+                    type="primary"
+                    style={customButtonStyle}
+                    onClick={this.handleQueryClick}
+                    className={''}
+                  >
+                    {i18next.t("ipfsSearch:Query", "查询")}
+                  </Button>
+                </Badge>
+              </Dropdown>
+            ) : (
+              <Badge count={0} offset={[0, 0]} style={{ marginLeft: 8 }}>
+                <Button
+                  type="primary"
+                  style={{ ...customButtonStyle, background: '#333', color: '#888', borderColor: '#333', cursor: 'not-allowed', boxShadow: 'none' }}
+                  disabled
+                  className={'no-hover'}
+                >
+                  {i18next.t("ipfsSearch:Query", "查询")}
+                </Button>
+              </Badge>
+            )}
           </div>
         </div>
+        <MultiConditionQueryModal
+          ref={this.multiCondModalRef}
+          selectedRows={this.state.selectedRows}
+          onOk={this.handleMultiCondQuery}
+        />
         <div style={{ marginBottom: 16 }}>
           <Alert
             message={i18next.t("ipfsArchive:Please select the records you want to query", "先勾选要查询的记录，随后点击右上角查询")}
