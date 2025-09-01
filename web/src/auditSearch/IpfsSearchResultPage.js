@@ -333,6 +333,11 @@ class IPFSSearchResultPage extends BaseListPage {
     const { correlationId, groupedArchives, allDataTypes, activeDataType, selectedRowKeys } = this.state;
     const { TabPane } = Tabs;
 
+    // correlationId 展示省略和 tooltip
+    const maxCorrLength = 24; // 超过24字符省略
+    const showEllipsis = correlationId && correlationId.length > maxCorrLength;
+    const displayCorr = showEllipsis ? correlationId.slice(0, maxCorrLength) + '...' : correlationId;
+
     const menu = (
       <Menu>
         <Menu.Item key="multi-cond-query" onClick={() => this.multiCondModalRef.current && this.multiCondModalRef.current.show()}>
@@ -343,7 +348,15 @@ class IPFSSearchResultPage extends BaseListPage {
     return (
       <div className="ipfs-search-result-page">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "20px 0" }}>
-          <Title level={2} style={{ margin: 0 }}>索引 <span style={{ color: "#1890ff", background: "#e6f7ff", borderRadius: "12px", padding: "3px 14px" }}>{correlationId}</span> 的归档记录：</Title>
+          <Title level={2} style={{ margin: 0 }}>
+            索引
+            <Tooltip title={showEllipsis ? correlationId : undefined} placement="top">
+              <span style={{ color: "#1890ff", background: "#e6f7ff", borderRadius: "12px", padding: "3px 14px", fontSize: "24px", margin: '0 6px', maxWidth: 350, display: 'inline-block', verticalAlign: 'middle', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {displayCorr}
+              </span>
+            </Tooltip>
+            的归档记录：
+          </Title>
           <div>
             <Button
               type="default"
