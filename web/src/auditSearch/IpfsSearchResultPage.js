@@ -265,13 +265,23 @@ class IPFSSearchResultPage extends BaseListPage {
       // 理论不会出现，按钮已禁用
       return;
     }
+    // {\"field\":\"1\",\"pos\":\"11\",\"compare\":\"eq\",\"val\":\"1\",\"type\":\"int\"}
+    const queryCond = [[
+      {
+        field: "correlationId",
+        pos: ipfsAddresses[0],
+        compare: "eq",
+        val: correlationId,
+        type: "string"
+      }
+    ]]
 
     // 单表查询
     const queryItemObj = {
       queryConcatType: "single",
       filePos: [ipfsAddresses],
       returnField: [ipfsAddresses[0] + "_*"],
-      queryConditions: [[]],// TODO：correlationId的判断
+      queryConditions: queryCond,
     };
     const queryItem = JSON.stringify(queryItemObj);
     this.props.history.push({
