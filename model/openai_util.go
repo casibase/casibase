@@ -107,7 +107,7 @@ func OpenaiRawMessagesToMessages(messages []*RawMessage) []openai.ChatCompletion
 		if role == openai.ChatMessageRoleTool {
 			item.ToolCallID = message.ToolCallID
 		} else if role == openai.ChatMessageRoleAssistant {
-			item.ToolCalls = message.ToolCalls
+			item.ToolCalls = []openai.ToolCall{message.ToolCall}
 		}
 
 		// Set non-empty message text due to that some AI models report error for empty message

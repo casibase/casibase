@@ -29,7 +29,7 @@ type RawMessage struct {
 	Text           string
 	Author         string
 	TextTokenCount int
-	ToolCalls      []openai.ToolCall
+	ToolCall       openai.ToolCall
 	ToolCallID     string
 }
 

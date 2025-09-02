@@ -127,9 +127,9 @@ func QueryTextWithTools(p ModelProvider, question string, writer io.Writer, hist
 			}
 
 			messages = append(messages, &RawMessage{
-				Text:      "Call result from " + toolCall.Function.Name,
-				Author:    "AI",
-				ToolCalls: []openai.ToolCall{toolCall},
+				Text:     "Call result from " + toolCall.Function.Name,
+				Author:   "AI",
+				ToolCall: toolCall,
 			})
 
 			messages, err = callTools(toolCall, toolName, mcpClient, messages)
