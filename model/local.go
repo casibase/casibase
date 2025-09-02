@@ -339,37 +339,6 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 	modelResult := &ModelResult{}
 	if getOpenAiModelType(p.subType) == "Chat" {
-		if p.subType == "dall-e-3" {
-			if strings.HasPrefix(question, "$CasibaseDryRun$") {
-				return modelResult, nil
-			}
-			reqUrl := openai.ImageRequest{
-				Prompt:         question,
-				Model:          openai.CreateImageModelDallE3,
-				Size:           openai.CreateImageSize1024x1024,
-				ResponseFormat: openai.CreateImageResponseFormatURL,
-				N:              1,
-			}
-
-			respUrl, err := client.CreateImage(ctx, reqUrl)
-			if err != nil {
-				return nil, err
-			}
-
-			url := fmt.Sprintf("<img src=\"%s\" width=\"100%%\" height=\"auto\">", respUrl.Data[0].URL)
-			fmt.Fprint(writer, url)
-			flusher.Flush()
-
-			modelResult.ImageCount = 1
-			modelResult.TotalTokenCount = modelResult.ImageCount
-			err = p.calculatePrice(modelResult)
-			if err != nil {
-				return nil, err
-			}
-
-			return modelResult, nil
-		}
-
 		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
 		if err != nil {
 			return nil, err
@@ -524,6 +493,34 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 		modelResult.ResponseTokenCount += responseTokenCount
 		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
+		err = p.calculatePrice(modelResult)
+		if err != nil {
+			return nil, err
+		}
+		return modelResult, nil
+	} else if getOpenAiModelType(p.subType) == "imagesGenerations" {
+		if strings.HasPrefix(question, "$CasibaseDryRun$") {
+			return modelResult, nil
+		}
+		reqUrl := openai.ImageRequest{
+			Prompt:         question,
+			Model:          openai.CreateImageModelDallE3,
+			Size:           openai.CreateImageSize1024x1024,
+			ResponseFormat: openai.CreateImageResponseFormatURL,
+			N:              1,
+		}
+
+		respUrl, err := client.CreateImage(ctx, reqUrl)
+		if err != nil {
+			return nil, err
+		}
+
+		url := fmt.Sprintf("<img src=\"%s\" width=\"100%%\" height=\"auto\">", respUrl.Data[0].URL)
+		fmt.Fprint(writer, url)
+		flusher.Flush()
+
+		modelResult.ImageCount = 1
+		modelResult.TotalTokenCount = modelResult.ImageCount
 		err = p.calculatePrice(modelResult)
 		if err != nil {
 			return nil, err
