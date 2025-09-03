@@ -364,17 +364,17 @@ func (c *ApiController) processMessagesToGraph(messages []*object.Message) objec
 			if nodeMap[topicNodeId] != nil {
 				linkId := userNodeId + "-" + topicNodeId
 
-							if linkMap[linkId] == nil {
-				linkMap[linkId] = &object.GraphLink{
-					Source: userNodeId,
-					Target: topicNodeId,
-					Value:  1,
+				if linkMap[linkId] == nil {
+					linkMap[linkId] = &object.GraphLink{
+						Source: userNodeId,
+						Target: topicNodeId,
+						Value:  1,
+					}
+				} else {
+					linkMap[linkId].Value += 1
 				}
-			} else {
-				linkMap[linkId].Value += 1
 			}
 		}
-	}
 
 		msgEntities := c.extractEntities([]*object.Message{msg})
 		for _, entity := range msgEntities {
@@ -383,17 +383,17 @@ func (c *ApiController) processMessagesToGraph(messages []*object.Message) objec
 			if nodeMap[entityNodeId] != nil {
 				linkId := userNodeId + "-" + entityNodeId
 
-							if linkMap[linkId] == nil {
-				linkMap[linkId] = &object.GraphLink{
-					Source: userNodeId,
-					Target: entityNodeId,
-					Value:  1,
+				if linkMap[linkId] == nil {
+					linkMap[linkId] = &object.GraphLink{
+						Source: userNodeId,
+						Target: entityNodeId,
+						Value:  1,
+					}
+				} else {
+					linkMap[linkId].Value += 1
 				}
-			} else {
-				linkMap[linkId].Value += 1
 			}
 		}
-	}
 	}
 
 	nodes := make([]object.GraphNode, 0, len(nodeMap))

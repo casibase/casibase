@@ -280,7 +280,7 @@ class GraphEditPage extends React.Component {
               this.setState({loading: false});
             }
             if (graph.store && graph.chats && graph.chats.length > 0) {
-              this.autoGenerateGraph(`${this.state.owner}/${this.state.graphName}`, exitAfterSave);
+              this.autoGenerateGraph(`${this.state.owner}/${graph.name}`, exitAfterSave);
             } else if (exitAfterSave) {
               this.props.history.push("/graphs");
             }
@@ -486,7 +486,7 @@ class GraphEditPage extends React.Component {
               <Button
                 style={{float: "right", marginTop: "-4px"}}
                 size="small"
-                onClick={() => this.autoGenerateGraph(`${this.state.owner}/${this.state.graphName}`)}
+                onClick={() => this.autoGenerateGraph(`${this.state.owner}/${this.state.graph.name}`)}
                 loading={this.state.generating}
               >
                 {i18next.t("general:Reset")}
@@ -515,7 +515,7 @@ class GraphEditPage extends React.Component {
               <Button
                 style={{float: "right", marginTop: "-4px"}}
                 size="small"
-                onClick={() => this.autoGenerateGraph(`${this.state.owner}/${this.state.graphName}`)}
+                onClick={() => this.autoGenerateGraph(`${this.state.owner}/${this.state.graph.name}`)}
                 loading={this.state.generating}
               >
                 {i18next.t("general:Reset")}
@@ -541,7 +541,7 @@ class GraphEditPage extends React.Component {
               <Button
                 style={{float: "right", marginTop: "-4px"}}
                 size="small"
-                onClick={() => this.autoGenerateGraph(`${this.state.owner}/${this.state.graphName}`)}
+                onClick={() => this.autoGenerateGraph(`${this.state.owner}/${this.state.graph.name}`)}
                 loading={this.state.generating}
               >
                 {i18next.t("general:Reset")}
@@ -565,7 +565,7 @@ class GraphEditPage extends React.Component {
           <Button
             style={{float: "right", marginTop: "-4px"}}
             size="small"
-            onClick={() => this.autoGenerateGraph(`${this.state.owner}/${this.state.graphName}`)}
+            onClick={() => this.autoGenerateGraph(`${this.state.owner}/${this.state.graph.name}`)}
             loading={this.state.generating}
           >
             {i18next.t("general:Reset")}
