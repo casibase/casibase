@@ -39,25 +39,85 @@ https://open.bigmodel.cn/pricing
 
 Generate Model:
 
-| Model        | Context Length | Unit Price (Per 1,000 tokens) |
-|--------------|----------------|-------------------------------|
-| GLM-3-Turbo  | 128K           | 0.005 yuan / K tokens         |
-| GLM-4        | 128K           | 0.1 yuan / K tokens           |
-| GLM-4V       | 2K             | 0.1 yuan / K tokens           |
+| Model         | Context Length | Input Price (Per 1,000 tokens) | Output Price (Per 1,000 tokens) |
+| ------------- | -------------- | ------------------------------ | ------------------------------- |
+| GLM-4.5       | 32K            | 0.003 yuan                     | 0.014 yuan                      |
+| GLM-4.5       | 128K           | 0.004 yuan                     | 0.016 yuan                      |
+| GLM-4.5-X     | 32K            | 0.012 yuan                     | 0.032 yuan                      |
+| GLM-4.5-X     | 128K           | 0.016 yuan                     | 0.064 yuan                      |
+| GLM-4.5-Air   | 32K            | 0.0008 yuan                    | 0.006 yuan                      |
+| GLM-4.5-Air   | 128K           | 0.0012 yuan                    | 0.008 yuan                      |
+| GLM-4.5-AirX  | 32K            | 0.004 yuan                     | 0.016 yuan                      |
+| GLM-4.5-AirX  | 128K           | 0.008 yuan                     | 0.032 yuan                      |
+| GLM-4.5-Flash | 128K           | 0                              | 0                               |
+| GLM-4.5V      | 32K            | 0.002 yuan                     | 0.006 yuan                      |
+| GLM-4.5V      | 64K            | 0.004 yuan                     | 0.012 yuan                      |
 `
 }
 
 func (p *ChatGLMModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
+	inputPrice := 0.0
+	outputPrice := 0.0
 	switch p.subType {
-	case "glm-3-turbo":
-		price = getPrice(modelResult.TotalTokenCount, 0.005)
-	case "glm-4", "glm-4v":
-		price = getPrice(modelResult.TotalTokenCount, 0.1)
+	case "glm-4.5":
+		if modelResult.PromptTokenCount <= 32000 {
+			inputPrice = 0.003
+			outputPrice = 0.014
+		} else if modelResult.PromptTokenCount <= 128000 {
+			inputPrice = 0.004
+			outputPrice = 0.016
+		} else {
+			return fmt.Errorf("calculatePrice() error: unsupported context length for model %s", p.subType)
+		}
+	case "glm-4.5-X":
+		if modelResult.PromptTokenCount == 32000 {
+			inputPrice = 0.012
+			outputPrice = 0.032
+		} else if modelResult.PromptTokenCount <= 128000 {
+			inputPrice = 0.016
+			outputPrice = 0.064
+		} else {
+			return fmt.Errorf("calculatePrice() error: unsupported context length for model %s", p.subType)
+		}
+	case "glm-4.5-Air":
+		if modelResult.PromptTokenCount <= 32000 {
+			inputPrice = 0.0008
+			outputPrice = 0.006
+		} else if modelResult.PromptTokenCount <= 128000 {
+			inputPrice = 0.0012
+			outputPrice = 0.008
+		} else {
+			return fmt.Errorf("calculatePrice() error: unsupported context length for model %s", p.subType)
+		}
+	case "glm-4.5-AirX":
+		if modelResult.PromptTokenCount <= 32000 {
+			inputPrice = 0.004
+			outputPrice = 0.016
+		} else if modelResult.PromptTokenCount <= 128000 {
+			inputPrice = 0.008
+			outputPrice = 0.032
+		} else {
+			return fmt.Errorf("calculatePrice() error: unsupported context length for model %s", p.subType)
+		}
+	case "glm-4.5-Flash":
+		inputPrice = 0.0
+		outputPrice = 0.0
+	case "glm-4.5V":
+		if modelResult.PromptTokenCount <= 32000 {
+			inputPrice = 0.002
+			outputPrice = 0.006
+		} else if modelResult.PromptTokenCount <= 64000 {
+			inputPrice = 0.004
+			outputPrice = 0.012
+		} else {
+			return fmt.Errorf("calculatePrice() error: unsupported context length for model %s", p.subType)
+		}
 	default:
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}
 
+	price = getPrice(modelResult.TotalTokenCount, inputPrice) + getPrice(modelResult.TotalTokenCount, outputPrice)
 	modelResult.TotalPrice = price
 	modelResult.Currency = "CNY"
 	return nil

@@ -1442,10 +1442,19 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "ChatGLM") {
     return [
-      {id: "glm-3-turbo", name: "glm-3-turbo"},
-      {id: "glm-4", name: "glm-4"},
-      {id: "glm-4V", name: "glm-4V"},
-    ];
+      {id: "GLM-4.5-32K", name: "GLM-4.5-32K"},
+      {id: "GLM-4.5-128K", name: "GLM-4.5-128K"},
+      {id: "GLM-4.5-X-32K", name: "GLM-4.5-X-32K"},
+      {id: "GLM-4.5-X-128K", name: "GLM-4.5-X-128K"},
+      {id: "GLM-4.5-Air-32K", name: "GLM-4.5-Air-32K"},
+      {id: "GLM-4.5-Air-128K", name: "GLM-4.5-Air-128K"},
+      {id: "GLM-4.5-AirX-32K", name: "GLM-4.5-AirX-32K"},
+      {id: "GLM-4.5-AirX-128K", name: "GLM-4.5-AirX-128K"},
+      {id: "GLM-4.5-Flash-128K", name: "GLM-4.5-Flash-128K"},
+      {id: "GLM-4.5V-32K", name: "GLM-4.5V-32K"},
+      {id: "GLM-4.5V-64K", name: "GLM-4.5V-64K"},
+    ]
+    ;
   } else if (type === "MiniMax") {
     return [
       {id: "abab5-chat", name: "abab5-chat"},
