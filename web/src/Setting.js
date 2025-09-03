@@ -1477,19 +1477,23 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "Amazon Bedrock") {
     return [
-      {id: "claude", name: "Claude"},
+      {id: "claude-opus-4", name: "Claude Opus 4"},
+      {id: "claude-sonnet-4", name: "Claude Sonnet 4"},
       {id: "claude-instant", name: "Claude Instant"},
-      {id: "command", name: "Command"},
-      {id: "command-light", name: "Command Light"},
+      {id: "command-r", name: "Command R"},
+      {id: "command-r-plus", name: "Command R+"},
+      {id: "command-light", name: "Command-Light"},
       {id: "embed-english", name: "Embed - English"},
       {id: "embed-multilingual", name: "Embed - Multilingual"},
       {id: "jurassic-2-mid", name: "Jurassic-2 Mid"},
       {id: "jurassic-2-ultra", name: "Jurassic-2 Ultra"},
-      {id: "llama-2-chat-13b", name: "Llama 2 Chat (13B)"},
-      {id: "llama-2-chat-70b", name: "Llama 2 Chat (70B)"},
+      {id: "llama-4-maverick-17b", name: "Llama 4 Maverick 17B"},
+      {id: "llama-4-scout-17b", name: "Llama 4 Scout 17B"},
+      {id: "titan-text-premier", name: "Titan Text Premier"},
       {id: "titan-text-lite", name: "Titan Text Lite"},
       {id: "titan-text-express", name: "Titan Text Express"},
       {id: "titan-embeddings", name: "Titan Embeddings"},
+      {id: "titan-embeddings-v2", name: "Titan Embeddings V2"},
       {id: "titan-multimodal-embeddings", name: "Titan Multimodal Embeddings"},
     ];
   } else if (type === "Alibaba Cloud") {
