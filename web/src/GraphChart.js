@@ -17,7 +17,7 @@ import ReactECharts from "echarts-for-react";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
-class KnowledgeGraphChart extends React.Component {
+class GraphChart extends React.Component {
   constructor(props) {
     super(props);
     this.chartRef = React.createRef();
@@ -151,7 +151,7 @@ class KnowledgeGraphChart extends React.Component {
         animationDuration: 1500,
         animationEasingUpdate: "quinticInOut",
         series: [{
-          name: i18next.t("knowledge:Knowledge Graph"),
+          name: i18next.t("knowledge:Graph"),
           type: "graph",
           layout: layout,
           data: filteredNodes,
@@ -314,4 +314,4 @@ class KnowledgeGraphChart extends React.Component {
   }
 }
 
-export default KnowledgeGraphChart;
+export default GraphChart;

@@ -1,34 +1,52 @@
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
-import * as KnowledgeGraphBackend from "./backend/KnowledgeGraphBackend";
+import * as GraphBackend from "./backend/GraphBackend";
 import i18next from "i18next";
 import {DeleteOutlined} from "@ant-design/icons";
-import KnowledgeGraphChart from "./KnowledgeGraphChart";
+import GraphChart from "./GraphChart";
 
-class KnowledgeGraphListPage extends BaseListPage {
+class GraphListPage extends BaseListPage {
   constructor(props) {
     super(props);
     this.state = {
       ...this.state,
-      knowledgeGraphs: null,
+      graphs: null,
     };
   }
 
   UNSAFE_componentWillMount() {
-    this.getKnowledgeGraphs();
+    this.getGraphs();
+  }
+
+  componentDidMount() {
+    this.getGraphs();
   }
 
   fetch = (params = {}) => {
-    this.getKnowledgeGraphs();
+    this.getGraphs();
   };
 
-  getKnowledgeGraphs() {
+  getGraphs() {
     this.setState({loading: true});
-    KnowledgeGraphBackend.getKnowledgeGraphs(this.props.account?.owner || "admin", this.props.account?.storeName || "")
+    GraphBackend.getGraphs(this.props.account?.owner || "admin", this.props.account?.storeName || "")
       .then((res) => {
         this.setState({
           loading: false,
@@ -36,7 +54,7 @@ class KnowledgeGraphListPage extends BaseListPage {
         if (res.status === "ok") {
           this.setState({
             data: res.data,
-            knowledgeGraphs: res.data,
+            graphs: res.data,
             pagination: {
               ...this.state.pagination,
               total: res.data.length,
@@ -58,15 +76,15 @@ class KnowledgeGraphListPage extends BaseListPage {
       });
   }
 
-  newKnowledgeGraph() {
+  newGraph() {
     const randomName = Setting.getRandomName();
     return {
       owner: this.props.account?.owner || "admin",
-      name: `knowledgegraph_${randomName}`,
+      name: `graph_${randomName}`,
       createdTime: moment().format(),
       updatedTime: moment().format(),
       organization: this.props.account?.owner || "admin",
-      displayName: `Knowledge Graph ${randomName}`,
+      displayName: `Graph ${randomName}`,
       store: "",
       chats: [],
       users: [],
@@ -77,13 +95,13 @@ class KnowledgeGraphListPage extends BaseListPage {
     };
   }
 
-  addKnowledgeGraph() {
-    const newKnowledgeGraph = this.newKnowledgeGraph();
-    KnowledgeGraphBackend.addKnowledgeGraph(newKnowledgeGraph)
+  addGraph() {
+    const newGraph = this.newGraph();
+    GraphBackend.addGraph(newGraph)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
-          this.getKnowledgeGraphs();
+          this.getGraphs();
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
@@ -94,15 +112,15 @@ class KnowledgeGraphListPage extends BaseListPage {
   }
 
   deleteItem = async(i) => {
-    return KnowledgeGraphBackend.deleteKnowledgeGraph(this.state.data[i]);
+    return GraphBackend.deleteGraph(this.state.data[i]);
   };
 
-  deleteKnowledgeGraph(record) {
-    KnowledgeGraphBackend.deleteKnowledgeGraph(record)
+  deleteGraph(record) {
+    GraphBackend.deleteGraph(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deleted"));
-          this.getKnowledgeGraphs();
+          this.getGraphs();
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
@@ -112,10 +130,34 @@ class KnowledgeGraphListPage extends BaseListPage {
       });
   }
 
-  renderTable(knowledgeGraphs) {
+  calculateTotalNodes(graphs) {
+    if (!graphs || graphs.length === 0) {return 0;}
+    let total = 0;
+    graphs.forEach(graph => {
+      if (graph.analysis && graph.analysis.trim() !== "") {
+        const analysis = JSON.parse(graph.analysis);
+        total += analysis.totalNodes || 0;
+      }
+    });
+    return total;
+  }
+
+  calculateTotalLinks(graphs) {
+    if (!graphs || graphs.length === 0) {return 0;}
+    let total = 0;
+    graphs.forEach(graph => {
+      if (graph.analysis && graph.analysis.trim() !== "") {
+        const analysis = JSON.parse(graph.analysis);
+        total += analysis.totalLinks || 0;
+      }
+    });
+    return total;
+  }
+
+  renderTable(graphs) {
     const columns = [
       {
-        title: i18next.t("general:Updated Time"),
+        title: i18next.t("general:Updated time"),
         dataIndex: "updatedTime",
         key: "updatedTime",
         width: "120px",
@@ -126,14 +168,14 @@ class KnowledgeGraphListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Graph"),
+        title: i18next.t("general:Graph Name"),
         dataIndex: "displayName",
         key: "graph",
         width: "150px",
         sorter: (a, b) => (a.displayName || a.name).localeCompare(b.displayName || b.name),
         render: (text, record, index) => {
           return (
-            <Link to={`/knowledgegraphs/${record.owner}/${record.name}`}>
+            <Link to={`/graphs/${record.owner}/${record.name}`}>
               {record.displayName || record.name}
             </Link>
           );
@@ -170,7 +212,6 @@ class KnowledgeGraphListPage extends BaseListPage {
       },
       {
         title: i18next.t("general:Nodes"),
-        dataIndex: "analysis.totalNodes",
         key: "totalNodes",
         width: "80px",
         sorter: (a, b) => {
@@ -208,7 +249,6 @@ class KnowledgeGraphListPage extends BaseListPage {
       },
       {
         title: i18next.t("general:Connections"),
-        dataIndex: "analysis.totalLinks",
         key: "totalLinks",
         width: "100px",
         sorter: (a, b) => {
@@ -245,7 +285,7 @@ class KnowledgeGraphListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("knowledge:Graph Data"),
+        title: i18next.t("general:Graph"),
         dataIndex: "graphData",
         key: "graphData",
         width: "500px",
@@ -285,7 +325,7 @@ class KnowledgeGraphListPage extends BaseListPage {
               borderRadius: "8px",
               overflow: "hidden",
             }}>
-              <KnowledgeGraphChart
+              <GraphChart
                 data={graphData}
                 layout={record.graphType || "force"}
                 onNodeClick={() => {}}
@@ -305,12 +345,12 @@ class KnowledgeGraphListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/knowledgegraphs/${record.owner}/${record.name}`)}>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/graphs/${record.owner}/${record.name}`)}>
                 {i18next.t("general:Edit")}
               </Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteKnowledgeGraph(record)}
+                onConfirm={() => this.deleteGraph(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
@@ -337,7 +377,7 @@ class KnowledgeGraphListPage extends BaseListPage {
         <Table
           scroll={{x: "max-content"}}
           columns={columns}
-          dataSource={knowledgeGraphs}
+          dataSource={graphs}
           rowKey="name"
           rowSelection={this.getRowSelection()}
           size="middle"
@@ -345,8 +385,8 @@ class KnowledgeGraphListPage extends BaseListPage {
           pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Knowledge Graphs")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button type="primary" size="small" onClick={this.addKnowledgeGraph.bind(this)}>
+              {i18next.t("general:Graphs")}&nbsp;&nbsp;&nbsp;&nbsp;
+              <Button type="primary" size="small" onClick={this.addGraph.bind(this)}>
                 {i18next.t("general:Add")}
               </Button>
               {this.state.selectedRowKeys.length > 0 && (
@@ -357,21 +397,21 @@ class KnowledgeGraphListPage extends BaseListPage {
                 </Popconfirm>
               )}
               &nbsp;&nbsp;&nbsp;&nbsp;
-              {i18next.t("general:Knowledge Graphs")}:
+              {i18next.t("general:Graphs")}:
               &nbsp;
               {Setting.getDisplayTag(this.state.pagination.total)}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               {i18next.t("general:Stores")}:
               &nbsp;
-              {Setting.getDisplayTag(Setting.uniqueFields(knowledgeGraphs, "store"))}
+              {Setting.getDisplayTag(Setting.uniqueFields(graphs, "store"))}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {i18next.t("general:Total Nodes")}:
+              {i18next.t("general:Nodes")}:
               &nbsp;
-              {Setting.getDisplayTag(Setting.sumFields(knowledgeGraphs, "totalNodes"))}
+              {Setting.getDisplayTag(this.calculateTotalNodes(graphs))}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {i18next.t("general:Total Connections")}:
+              {i18next.t("general:Connections")}:
               &nbsp;
-              {Setting.getDisplayTag(Setting.sumFields(knowledgeGraphs, "totalLinks"))}
+              {Setting.getDisplayTag(this.calculateTotalLinks(graphs))}
             </div>
           )}
           loading={this.state.loading}
@@ -390,4 +430,4 @@ class KnowledgeGraphListPage extends BaseListPage {
   }
 }
 
-export default KnowledgeGraphListPage;
+export default GraphListPage;

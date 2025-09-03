@@ -275,7 +275,7 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(KnowledgeGraph))
+	err = a.engine.Sync2(new(Graph))
 	if err != nil {
 		panic(err)
 	}

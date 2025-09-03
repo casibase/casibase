@@ -1,7 +1,7 @@
 import * as Setting from "../Setting";
 
-export function getKnowledgeGraphs(owner, storeName) {
-  return fetch(`${Setting.ServerUrl}/api/get-knowledge-graphs?owner=${owner}`, {
+export function getGraphs(owner, storeName) {
+  return fetch(`${Setting.ServerUrl}/api/get-graphs?owner=${owner}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -10,8 +10,8 @@ export function getKnowledgeGraphs(owner, storeName) {
   }).then(res => res.json());
 }
 
-export function getKnowledgeGraph(id) {
-  return fetch(`${Setting.ServerUrl}/api/get-knowledge-graph?id=${id}`, {
+export function getGraph(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-graph?id=${id}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -20,42 +20,42 @@ export function getKnowledgeGraph(id) {
   }).then(res => res.json());
 }
 
-export function updateKnowledgeGraph(id, knowledgeGraph) {
-  return fetch(`${Setting.ServerUrl}/api/update-knowledge-graph?id=${id}`, {
+export function updateGraph(id, graph) {
+  return fetch(`${Setting.ServerUrl}/api/update-graph?id=${id}`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(knowledgeGraph),
+    body: JSON.stringify(graph),
   }).then(res => res.json());
 }
 
-export function addKnowledgeGraph(knowledgeGraph) {
-  return fetch(`${Setting.ServerUrl}/api/add-knowledge-graph`, {
+export function addGraph(graph) {
+  return fetch(`${Setting.ServerUrl}/api/add-graph`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(knowledgeGraph),
+    body: JSON.stringify(graph),
   }).then(res => res.json());
 }
 
-export function deleteKnowledgeGraph(knowledgeGraph) {
-  return fetch(`${Setting.ServerUrl}/api/delete-knowledge-graph`, {
+export function deleteGraph(graph) {
+  return fetch(`${Setting.ServerUrl}/api/delete-graph`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(knowledgeGraph),
+    body: JSON.stringify(graph),
   }).then(res => res.json());
 }
 
-export function generateKnowledgeGraph(id) {
-  return fetch(`${Setting.ServerUrl}/api/generate-knowledge-graph?id=${id}`, {
-    method: "POST",
+export function generateGraph(id) {
+  return fetch(`${Setting.ServerUrl}/api/generate-graph?id=${id}`, {
+    method: "GET",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),

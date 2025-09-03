@@ -1,27 +1,41 @@
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React from "react";
 import {Button, Card, Col, Input, Row, Select, Typography} from "antd";
 import * as Setting from "./Setting";
-import * as KnowledgeGraphBackend from "./backend/KnowledgeGraphBackend";
+import * as GraphBackend from "./backend/GraphBackend";
 import * as ChatBackend from "./backend/ChatBackend";
 import * as StoreBackend from "./backend/StoreBackend";
 import i18next from "i18next";
 
 import * as MessageBackend from "./backend/MessageBackend";
-import KnowledgeGraphChart from "./KnowledgeGraphChart";
-import KnowledgeGraphAnalyzer from "./KnowledgeGraphAnalyzer";
+import GraphChart from "./GraphChart";
+import GraphAnalyzer from "./GraphAnalyzer";
 
 const {Option} = Select;
 const {TextArea} = Input;
 const {Text} = Typography;
 
-class KnowledgeGraphEditPage extends React.Component {
+class GraphEditPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
       owner: props.match.params.owner,
-      knowledgeGraphName: props.match.params.knowledgeGraphName,
-      knowledgeGraph: null,
+      graphName: props.match.params.graphName,
+      graph: null,
       stores: [],
       chats: [],
       allUsers: [],
@@ -31,21 +45,21 @@ class KnowledgeGraphEditPage extends React.Component {
   }
 
   UNSAFE_componentWillMount() {
-    this.getKnowledgeGraph();
+    this.getGraph();
     this.loadStores();
   }
 
-  getKnowledgeGraph() {
-    if (this.state.knowledgeGraphName === "new") {
+  getGraph() {
+    if (this.state.graphName === "new") {
       const randomName = Setting.getRandomName();
       this.setState({
-        knowledgeGraph: {
+        graph: {
           owner: this.state.owner,
-          name: `knowledgegraph_${randomName}`,
+          name: `graph_${randomName}`,
           createdTime: new Date().toISOString(),
           updatedTime: new Date().toISOString(),
           organization: this.state.owner,
-          displayName: `Knowledge Graph ${randomName}`,
+          displayName: `Graph ${randomName}`,
           store: "",
           chats: [],
           users: [],
@@ -58,11 +72,11 @@ class KnowledgeGraphEditPage extends React.Component {
       return;
     }
 
-    KnowledgeGraphBackend.getKnowledgeGraph(`${this.state.owner}/${this.state.knowledgeGraphName}`)
+    GraphBackend.getGraph(`${this.state.owner}/${this.state.graphName}`)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
-            knowledgeGraph: res.data,
+            graph: res.data,
           }, () => {
             if (res.data.store) {
               this.loadChats();
@@ -110,7 +124,7 @@ class KnowledgeGraphEditPage extends React.Component {
   }
 
   loadChats() {
-    if (!this.state.knowledgeGraph.store) {
+    if (!this.state.graph.store) {
       this.setState({
         chats: [],
         allUsers: [],
@@ -118,13 +132,13 @@ class KnowledgeGraphEditPage extends React.Component {
       return;
     }
 
-    ChatBackend.getChats(this.state.owner, this.state.knowledgeGraph.store)
+    ChatBackend.getChats(this.state.owner, this.state.graph.store)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
             chats: res.data,
           }, () => {
-            if (this.state.knowledgeGraph.chats && this.state.knowledgeGraph.chats.length > 0) {
+            if (this.state.graph.chats && this.state.graph.chats.length > 0) {
               this.loadUsers();
             }
           });
@@ -173,11 +187,11 @@ class KnowledgeGraphEditPage extends React.Component {
     });
   }
 
-  updateKnowledgeGraphField(key, value) {
-    const knowledgeGraph = this.state.knowledgeGraph;
-    knowledgeGraph[key] = value;
+  updateGraphField(key, value) {
+    const graph = this.state.graph;
+    graph[key] = value;
     this.setState({
-      knowledgeGraph: knowledgeGraph,
+      graph: graph,
     }, () => {
       if (key === "chats") {
         this.loadUsers();
@@ -185,25 +199,25 @@ class KnowledgeGraphEditPage extends React.Component {
     });
   }
 
-  generateKnowledgeGraph() {
-    if (!this.state.knowledgeGraph) {
+  generateGraph() {
+    if (!this.state.graph) {
       return;
     }
 
     this.setState({generating: true});
 
-    let knowledgeGraphId;
-    if (this.state.knowledgeGraphName === "new") {
-      knowledgeGraphId = `${this.state.knowledgeGraph.owner}/${this.state.knowledgeGraph.name}`;
+    let graphId;
+    if (this.state.graphName === "new") {
+      graphId = `${this.state.graph.owner}/${this.state.graph.name}`;
     } else {
-      knowledgeGraphId = `${this.state.owner}/${this.state.knowledgeGraphName}`;
+      graphId = `${this.state.owner}/${this.state.graphName}`;
     }
 
-    KnowledgeGraphBackend.generateKnowledgeGraph(knowledgeGraphId)
+    GraphBackend.generateGraph(graphId)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Knowledge graph generated successfully");
-          this.getKnowledgeGraph();
+          Setting.showMessage("success", "Graph generated successfully");
+          this.getGraph();
         } else {
           Setting.showMessage("error", res.msg);
         }
@@ -215,31 +229,33 @@ class KnowledgeGraphEditPage extends React.Component {
       });
   }
 
-  submitKnowledgeGraphEdit(exitAfterSave) {
-    if (!this.state.knowledgeGraph) {
+  submitGraphEdit(exitAfterSave) {
+    if (!this.state.graph) {
       return;
     }
 
-    const knowledgeGraph = this.state.knowledgeGraph;
-    if (knowledgeGraph.name === "") {
+    const graph = this.state.graph;
+    if (graph.name === "") {
       Setting.showMessage("error", "Name cannot be empty");
       return;
     }
 
     this.setState({loading: true});
 
-    if (this.state.knowledgeGraphName === "new") {
-      KnowledgeGraphBackend.addKnowledgeGraph(knowledgeGraph)
+    if (this.state.graphName === "new") {
+      GraphBackend.addGraph(graph)
         .then((res) => {
           if (res.status === "ok") {
-            Setting.showMessage("success", "Knowledge graph added successfully");
+            Setting.showMessage("success", "Graph added successfully");
             this.setState({
-              knowledgeGraphName: knowledgeGraph.name,
+              graphName: graph.name,
               loading: false,
             });
-            this.getKnowledgeGraph();
-            if (exitAfterSave) {
-              this.props.history.push("/knowledgegraphs");
+            this.getGraph();
+            if (graph.store && graph.chats && graph.chats.length > 0) {
+              this.autoGenerateGraph(`${graph.owner}/${graph.name}`, exitAfterSave);
+            } else if (exitAfterSave) {
+              this.props.history.push("/graphs");
             }
           } else {
             Setting.showMessage("error", res.msg);
@@ -251,20 +267,22 @@ class KnowledgeGraphEditPage extends React.Component {
           this.setState({loading: false});
         });
     } else {
-      KnowledgeGraphBackend.updateKnowledgeGraph(`${this.state.owner}/${this.state.knowledgeGraphName}`, knowledgeGraph)
+      GraphBackend.updateGraph(`${this.state.owner}/${this.state.graphName}`, graph)
         .then((res) => {
           if (res.status === "ok") {
-            Setting.showMessage("success", "Knowledge graph updated successfully");
-            if (knowledgeGraph.name !== this.state.knowledgeGraphName) {
+            Setting.showMessage("success", "Graph updated successfully");
+            if (graph.name !== this.state.graphName) {
               this.setState({
-                knowledgeGraphName: knowledgeGraph.name,
+                graphName: graph.name,
                 loading: false,
               });
             } else {
               this.setState({loading: false});
             }
-            if (exitAfterSave) {
-              this.props.history.push("/knowledgegraphs");
+            if (graph.store && graph.chats && graph.chats.length > 0) {
+              this.autoGenerateGraph(`${this.state.owner}/${this.state.graphName}`, exitAfterSave);
+            } else if (exitAfterSave) {
+              this.props.history.push("/graphs");
             }
           } else {
             Setting.showMessage("error", res.msg);
@@ -278,15 +296,42 @@ class KnowledgeGraphEditPage extends React.Component {
     }
   }
 
-  newKnowledgeGraph() {
+  autoGenerateGraph(graphId, exitAfterSave = false) {
+    this.setState({generating: true});
+    GraphBackend.generateGraph(graphId)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", "Graph generated successfully");
+          this.getGraph();
+          if (exitAfterSave) {
+            this.props.history.push("/graphs");
+          }
+        } else {
+          Setting.showMessage("error", res.msg);
+          if (exitAfterSave) {
+            this.props.history.push("/graphs");
+          }
+        }
+        this.setState({generating: false});
+      })
+      .catch(error => {
+        Setting.showMessage("error", error);
+        if (exitAfterSave) {
+          this.props.history.push("/graphs");
+        }
+        this.setState({generating: false});
+      });
+  }
+
+  newGraph() {
     const randomName = Setting.getRandomName();
     return {
       owner: this.state.owner,
-      name: `knowledgegraph_${randomName}`,
+      name: `graph_${randomName}`,
       createdTime: new Date().toISOString(),
       updatedTime: new Date().toISOString(),
       organization: this.state.owner,
-      displayName: `Knowledge Graph ${randomName}`,
+      displayName: `Graph ${randomName}`,
       store: "",
       chats: [],
       users: [],
@@ -297,13 +342,13 @@ class KnowledgeGraphEditPage extends React.Component {
     };
   }
 
-  renderKnowledgeGraph() {
+  renderGraph() {
     return (
       <Card size="small" title={
         <div>
-          {i18next.t("knowledge:Edit Knowledge Graph")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button onClick={() => this.submitKnowledgeGraphEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitKnowledgeGraphEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {i18next.t("knowledge:Edit Graph")}&nbsp;&nbsp;&nbsp;&nbsp;
+          <Button onClick={() => this.submitGraphEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitGraphEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={(Setting.isMobile()) ? {margin: "5px"} : {}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -311,8 +356,8 @@ class KnowledgeGraphEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.knowledgeGraph.name} onChange={e => {
-              this.updateKnowledgeGraphField("name", e.target.value);
+            <Input value={this.state.graph.name} onChange={e => {
+              this.updateGraphField("name", e.target.value);
             }} />
           </Col>
         </Row>
@@ -321,8 +366,8 @@ class KnowledgeGraphEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Display Name"), i18next.t("general:Display Name - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.knowledgeGraph.displayName} onChange={e => {
-              this.updateKnowledgeGraphField("displayName", e.target.value);
+            <Input value={this.state.graph.displayName} onChange={e => {
+              this.updateGraphField("displayName", e.target.value);
             }} />
           </Col>
         </Row>
@@ -333,10 +378,10 @@ class KnowledgeGraphEditPage extends React.Component {
           <Col span={22} >
             <Select
               style={{width: "100%"}}
-              value={this.state.knowledgeGraph.store}
+              value={this.state.graph.store}
               onChange={(value) => {
-                this.updateKnowledgeGraphField("store", value);
-                this.loadChats(); // Reload chats when store changes
+                this.updateGraphField("store", value);
+                this.loadChats();
               }}
               placeholder={i18next.t("general:Please select a store first")}
               notFoundContent={i18next.t("general:No stores available")}
@@ -357,13 +402,13 @@ class KnowledgeGraphEditPage extends React.Component {
             <Select
               mode="multiple"
               style={{width: "100%"}}
-              value={this.state.knowledgeGraph.chats}
+              value={this.state.graph.chats}
               onChange={(value) => {
-                this.updateKnowledgeGraphField("chats", value);
+                this.updateGraphField("chats", value);
               }}
-              placeholder={this.state.knowledgeGraph.store ? i18next.t("general:Select chats to analyze") : i18next.t("general:Please select a store first")}
-              disabled={!this.state.knowledgeGraph.store}
-              notFoundContent={this.state.knowledgeGraph.store ? i18next.t("general:No chats available") : i18next.t("general:Please select a store first")}
+              placeholder={this.state.graph.store ? i18next.t("general:Select chats to analyze") : i18next.t("general:Please select a store first")}
+              disabled={!this.state.graph.store}
+              notFoundContent={this.state.graph.store ? i18next.t("general:No chats available") : i18next.t("general:Please select a store first")}
             >
               {this.state.chats.map((chat, index) => (
                 <Option key={chat.name} value={chat.name}>
@@ -381,13 +426,13 @@ class KnowledgeGraphEditPage extends React.Component {
             <Select
               mode="multiple"
               style={{width: "100%"}}
-              value={this.state.knowledgeGraph.users}
+              value={this.state.graph.users}
               onChange={(value) => {
-                this.updateKnowledgeGraphField("users", value);
+                this.updateGraphField("users", value);
               }}
-              placeholder={this.state.knowledgeGraph.chats && this.state.knowledgeGraph.chats.length > 0 ? i18next.t("general:Select users to analyze") : i18next.t("general:Please select chats first")}
-              disabled={!this.state.knowledgeGraph.chats || this.state.knowledgeGraph.chats.length === 0}
-              notFoundContent={this.state.knowledgeGraph.chats && this.state.knowledgeGraph.chats.length > 0 ? i18next.t("general:No users available") : i18next.t("general:Please select chats first")}
+              placeholder={this.state.graph.chats && this.state.graph.chats.length > 0 ? i18next.t("general:Select users to analyze") : i18next.t("general:Please select chats first")}
+              disabled={!this.state.graph.chats || this.state.graph.chats.length === 0}
+              notFoundContent={this.state.graph.chats && this.state.graph.chats.length > 0 ? i18next.t("general:No users available") : i18next.t("general:Please select chats first")}
               allowClear
             >
               {this.state.allUsers.map((user, index) => (
@@ -403,22 +448,22 @@ class KnowledgeGraphEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Description"), i18next.t("general:Description - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <TextArea rows={3} value={this.state.knowledgeGraph.description} onChange={e => {
-              this.updateKnowledgeGraphField("description", e.target.value);
+            <TextArea rows={3} value={this.state.graph.description} onChange={e => {
+              this.updateGraphField("description", e.target.value);
             }} />
           </Col>
         </Row>
 
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("knowledge:Graph Type"), i18next.t("knowledge:Select the layout type for the knowledge graph"))} :
+            {Setting.getLabel(i18next.t("knowledge:Graph Type"), i18next.t("knowledge:Select the layout type for the graph"))} :
           </Col>
           <Col span={22} >
             <Select
               style={{width: "100%"}}
-              value={this.state.knowledgeGraph.graphType || "force"}
+              value={this.state.graph.graphType || "force"}
               onChange={(value) => {
-                this.updateKnowledgeGraphField("graphType", value);
+                this.updateGraphField("graphType", value);
               }}
               placeholder={i18next.t("knowledge:Select graph layout type")}
             >
@@ -427,36 +472,28 @@ class KnowledgeGraphEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("knowledge:Generate Graph"), i18next.t("knowledge:Generate knowledge graph from selected chats"))} :
-          </Col>
-          <Col span={22} >
-            <Button
-              type="primary"
-              loading={this.state.generating}
-              onClick={this.generateKnowledgeGraph.bind(this)}
-              disabled={!this.state.knowledgeGraph.store || !this.state.knowledgeGraph.chats || this.state.knowledgeGraph.chats.length === 0}
-            >
-              {this.state.generating ? i18next.t("knowledge:Generating...") : i18next.t("knowledge:Generate Graph")}
-            </Button>
-            {(!this.state.knowledgeGraph.store || !this.state.knowledgeGraph.chats || this.state.knowledgeGraph.chats.length === 0) && (
-              <div style={{marginTop: "8px", fontSize: "12px", color: "#999"}}>
-                {!this.state.knowledgeGraph.store ? i18next.t("general:Please select a store first") :
-                  !this.state.knowledgeGraph.chats || this.state.knowledgeGraph.chats.length === 0 ? i18next.t("general:Please select chats first") : ""}
-              </div>
-            )}
-          </Col>
-        </Row>
       </Card>
     );
   }
 
-  renderGraph() {
-    if (!this.state.knowledgeGraph || !this.state.knowledgeGraph.graphData) {
+  renderGraphChart() {
+    if (!this.state.graph || !this.state.graph.graphData) {
       return (
-        <Card title={i18next.t("knowledge:Knowledge Graph")}>
+        <Card title={
+          <div>
+            {i18next.t("knowledge:Graph")}
+            {this.state.graph && this.state.graph.store && this.state.graph.chats && this.state.graph.chats.length > 0 && (
+              <Button
+                style={{float: "right", marginTop: "-4px"}}
+                size="small"
+                onClick={() => this.autoGenerateGraph(`${this.state.owner}/${this.state.graphName}`)}
+                loading={this.state.generating}
+              >
+                {i18next.t("general:Reset")}
+              </Button>
+            )}
+          </div>
+        }>
           <div style={{textAlign: "center", padding: "50px"}}>
             <Text type="secondary">
               {i18next.t("knowledge:No graph data available. Please configure chats and generate the graph.")}
@@ -468,10 +505,24 @@ class KnowledgeGraphEditPage extends React.Component {
 
     let graphData;
     try {
-      graphData = JSON.parse(this.state.knowledgeGraph.graphData);
+      graphData = JSON.parse(this.state.graph.graphData);
     } catch (e) {
       return (
-        <Card title={i18next.t("knowledge:Knowledge Graph")}>
+        <Card title={
+          <div>
+            {i18next.t("knowledge:Graph")}
+            {this.state.graph && this.state.graph.store && this.state.graph.chats && this.state.graph.chats.length > 0 && (
+              <Button
+                style={{float: "right", marginTop: "-4px"}}
+                size="small"
+                onClick={() => this.autoGenerateGraph(`${this.state.owner}/${this.state.graphName}`)}
+                loading={this.state.generating}
+              >
+                {i18next.t("general:Reset")}
+              </Button>
+            )}
+          </div>
+        }>
           <div style={{textAlign: "center", padding: "50px"}}>
             <Text type="secondary">
               {i18next.t("knowledge:Invalid graph data format.")}
@@ -483,7 +534,21 @@ class KnowledgeGraphEditPage extends React.Component {
 
     if (!graphData.nodes || graphData.nodes.length === 0) {
       return (
-        <Card title={i18next.t("knowledge:Knowledge Graph")}>
+        <Card title={
+          <div>
+            {i18next.t("knowledge:Graph")}
+            {this.state.graph && this.state.graph.store && this.state.graph.chats && this.state.graph.chats.length > 0 && (
+              <Button
+                style={{float: "right", marginTop: "-4px"}}
+                size="small"
+                onClick={() => this.autoGenerateGraph(`${this.state.owner}/${this.state.graphName}`)}
+                loading={this.state.generating}
+              >
+                {i18next.t("general:Reset")}
+              </Button>
+            )}
+          </div>
+        }>
           <div style={{textAlign: "center", padding: "50px"}}>
             <Text type="secondary">
               {i18next.t("knowledge:No graph data available. Please configure chats and generate the graph.")}
@@ -494,10 +559,22 @@ class KnowledgeGraphEditPage extends React.Component {
     }
 
     return (
-      <Card title={i18next.t("knowledge:Knowledge Graph")}>
-        <KnowledgeGraphChart
+      <Card title={
+        <div>
+          {i18next.t("knowledge:Graph")}
+          <Button
+            style={{float: "right", marginTop: "-4px"}}
+            size="small"
+            onClick={() => this.autoGenerateGraph(`${this.state.owner}/${this.state.graphName}`)}
+            loading={this.state.generating}
+          >
+            {i18next.t("general:Reset")}
+          </Button>
+        </div>
+      }>
+        <GraphChart
           data={graphData}
-          layout={this.state.knowledgeGraph.graphType || "force"}
+          layout={this.state.graph.graphType || "force"}
           onNodeClick={() => {}}
           i18n={(key) => i18next.t(key) || key}
           style={{height: "500px"}}
@@ -507,15 +584,15 @@ class KnowledgeGraphEditPage extends React.Component {
   }
 
   renderAnalysis() {
-    if (!this.state.knowledgeGraph || !this.state.knowledgeGraph.analysis) {
+    if (!this.state.graph || !this.state.graph.analysis) {
       return null;
     }
 
     let analysis;
     let graphData;
     try {
-      analysis = JSON.parse(this.state.knowledgeGraph.analysis);
-      graphData = JSON.parse(this.state.knowledgeGraph.graphData);
+      analysis = JSON.parse(this.state.graph.analysis);
+      graphData = JSON.parse(this.state.graph.graphData);
     } catch (e) {
       return null;
     }
@@ -526,7 +603,7 @@ class KnowledgeGraphEditPage extends React.Component {
 
     return (
       <Card title={i18next.t("knowledge:Analysis")} style={{marginTop: "16px"}}>
-        <KnowledgeGraphAnalyzer
+        <GraphAnalyzer
           data={graphData}
           i18n={(key) => i18next.t(key) || key}
         />
@@ -535,7 +612,7 @@ class KnowledgeGraphEditPage extends React.Component {
   }
 
   render() {
-    if (this.state.knowledgeGraph === null) {
+    if (this.state.graph === null) {
       return (
         <div className="App">
           <div style={{paddingTop: "10%"}}>
@@ -549,18 +626,18 @@ class KnowledgeGraphEditPage extends React.Component {
 
     return (
       <div>
-        {this.renderKnowledgeGraph()}
+        {this.renderGraph()}
         <div style={{marginTop: "20px"}}>
-          {this.renderGraph()}
+          {this.renderGraphChart()}
           {this.renderAnalysis()}
         </div>
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button size="large" onClick={() => this.submitKnowledgeGraphEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitKnowledgeGraphEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          <Button size="large" onClick={() => this.submitGraphEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitGraphEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );
   }
 }
 
-export default KnowledgeGraphEditPage;
+export default GraphEditPage;

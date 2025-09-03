@@ -19,7 +19,7 @@ import i18next from "i18next";
 
 const {Text} = Typography;
 
-class KnowledgeGraphAnalyzer extends React.Component {
+class GraphAnalyzer extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -320,4 +320,4 @@ class KnowledgeGraphAnalyzer extends React.Component {
   }
 }
 
-export default KnowledgeGraphAnalyzer;
+export default GraphAnalyzer;

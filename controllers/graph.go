@@ -12,13 +12,13 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-// GetGlobalKnowledgeGraphs
-// @Title GetGlobalKnowledgeGraphs
-// @Tag KnowledgeGraph API
-// @Description get global knowledge graphs
-// @Success 200 {array} object.KnowledgeGraph The Response object
-// @router /get-global-knowledge-graphs [get]
-func (c *ApiController) GetGlobalKnowledgeGraphs() {
+// GetGlobalGraphs
+// @Title GetGlobalGraphs
+// @Tag Graph API
+// @Description get global graphs
+// @Success 200 {array} object.Graph The Response object
+// @router /get-global-graphs [get]
+func (c *ApiController) GetGlobalGraphs() {
 	limit := c.Input().Get("pageSize")
 	page := c.Input().Get("p")
 	field := c.Input().Get("field")
@@ -28,38 +28,38 @@ func (c *ApiController) GetGlobalKnowledgeGraphs() {
 	store := c.Input().Get("store")
 
 	if limit == "" || page == "" {
-		knowledgeGraphs, err := object.GetGlobalKnowledgeGraphs()
+		graphs, err := object.GetGlobalGraphs()
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
-		c.ResponseOk(knowledgeGraphs)
+		c.ResponseOk(graphs)
 	} else {
 		limit := util.ParseInt(limit)
-		count, err := object.GetKnowledgeGraphCount("", field, value, store)
+		count, err := object.GetGraphCount("", field, value, store)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		knowledgeGraphs, err := object.GetPaginationKnowledgeGraphs("", paginator.Offset(), limit, field, value, sortField, sortOrder, store)
+		graphs, err := object.GetPaginationGraphs("", paginator.Offset(), limit, field, value, sortField, sortOrder, store)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
-		c.ResponseOk(knowledgeGraphs, paginator.Nums())
+		c.ResponseOk(graphs, paginator.Nums())
 	}
 }
 
-// GetKnowledgeGraphs
-// @Title GetKnowledgeGraphs
-// @Tag KnowledgeGraph API
-// @Description get knowledge graphs
-// @Success 200 {array} object.KnowledgeGraph The Response object
-// @router /get-knowledge-graphs [get]
-func (c *ApiController) GetKnowledgeGraphs() {
+// GetGraphs
+// @Title GetGraphs
+// @Tag Graph API
+// @Description get graphs
+// @Success 200 {array} object.Graph The Response object
+// @router /get-graphs [get]
+func (c *ApiController) GetGraphs() {
 	user := c.Input().Get("user")
 	selectedUser := c.Input().Get("selectedUser")
 
@@ -72,17 +72,17 @@ func (c *ApiController) GetKnowledgeGraphs() {
 	}
 
 	if !c.IsAdmin() && user != selectedUser && selectedUser != "" {
-		c.ResponseError("You can only view your own knowledge graphs")
+		c.ResponseError("You can only view your own graphs")
 		return
 	}
 
-	var knowledgeGraphs []*object.KnowledgeGraph
+	var graphs []*object.Graph
 	var err error
 
 	if user == "" {
-		knowledgeGraphs, err = object.GetGlobalKnowledgeGraphs()
+		graphs, err = object.GetGlobalGraphs()
 	} else {
-		knowledgeGraphs, err = object.GetKnowledgeGraphs(user)
+		graphs, err = object.GetGraphs(user)
 	}
 
 	if err != nil {
@@ -90,59 +90,59 @@ func (c *ApiController) GetKnowledgeGraphs() {
 		return
 	}
 
-	c.ResponseOk(knowledgeGraphs)
+	c.ResponseOk(graphs)
 }
 
-// GetKnowledgeGraph
-// @Title GetKnowledgeGraph
-// @Tag KnowledgeGraph API
-// @Description get knowledge graph
-// @Success 200 {object} object.KnowledgeGraph The Response object
-// @router /get-knowledge-graph [get]
-func (c *ApiController) GetKnowledgeGraph() {
+// GetGraph
+// @Title GetGraph
+// @Tag Graph API
+// @Description get graph
+// @Success 200 {object} object.Graph The Response object
+// @router /get-graph [get]
+func (c *ApiController) GetGraph() {
 	id := c.Input().Get("id")
 	if id == "" {
 		c.ResponseError("id is empty")
 		return
 	}
 
-	knowledgeGraph, err := object.GetKnowledgeGraph(id)
+	graph, err := object.GetGraph(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	if knowledgeGraph == nil {
-		c.ResponseError("knowledge graph not found")
+	if graph == nil {
+		c.ResponseError("graph not found")
 		return
 	}
 
-	c.ResponseOk(knowledgeGraph)
+	c.ResponseOk(graph)
 }
 
-// UpdateKnowledgeGraph
-// @Title UpdateKnowledgeGraph
-// @Tag KnowledgeGraph API
-// @Description update knowledge graph
+// UpdateGraph
+// @Title UpdateGraph
+// @Tag Graph API
+// @Description update graph
 // @Success 200 {object} controllers.Response The Response object
-// @router /update-knowledge-graph [post]
-func (c *ApiController) UpdateKnowledgeGraph() {
+// @router /update-graph [post]
+func (c *ApiController) UpdateGraph() {
 	id := c.Input().Get("id")
 	if id == "" {
 		c.ResponseError("id is empty")
 		return
 	}
 
-	var knowledgeGraph object.KnowledgeGraph
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &knowledgeGraph)
+	var graph object.Graph
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &graph)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	knowledgeGraph.UpdatedTime = util.GetCurrentTime()
+	graph.UpdatedTime = util.GetCurrentTime()
 
-	success, err := object.UpdateKnowledgeGraph(id, &knowledgeGraph)
+	success, err := object.UpdateGraph(id, &graph)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -151,15 +151,15 @@ func (c *ApiController) UpdateKnowledgeGraph() {
 	c.ResponseOk(success)
 }
 
-// AddKnowledgeGraph
-// @Title AddKnowledgeGraph
-// @Tag KnowledgeGraph API
-// @Description add knowledge graph
+// AddGraph
+// @Title AddGraph
+// @Tag Graph API
+// @Description add graph
 // @Success 200 {object} controllers.Response The Response object
-// @router /add-knowledge-graph [post]
-func (c *ApiController) AddKnowledgeGraph() {
-	var knowledgeGraph object.KnowledgeGraph
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &knowledgeGraph)
+// @router /add-graph [post]
+func (c *ApiController) AddGraph() {
+	var graph object.Graph
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &graph)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -171,15 +171,15 @@ func (c *ApiController) AddKnowledgeGraph() {
 		return
 	}
 
-	knowledgeGraph.Owner = owner
-	knowledgeGraph.CreatedTime = util.GetCurrentTime()
-	knowledgeGraph.UpdatedTime = util.GetCurrentTime()
+	graph.Owner = owner
+	graph.CreatedTime = util.GetCurrentTime()
+	graph.UpdatedTime = util.GetCurrentTime()
 
-	if knowledgeGraph.GraphType == "" {
-		knowledgeGraph.GraphType = "force"
+	if graph.GraphType == "" {
+		graph.GraphType = "force"
 	}
 
-	success, err := object.AddKnowledgeGraph(&knowledgeGraph)
+	success, err := object.AddGraph(&graph)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -188,21 +188,21 @@ func (c *ApiController) AddKnowledgeGraph() {
 	c.ResponseOk(success)
 }
 
-// DeleteKnowledgeGraph
-// @Title DeleteKnowledgeGraph
-// @Tag KnowledgeGraph API
-// @Description delete knowledge graph
+// DeleteGraph
+// @Title DeleteGraph
+// @Tag Graph API
+// @Description delete graph
 // @Success 200 {object} controllers.Response The Response object
-// @router /delete-knowledge-graph [post]
-func (c *ApiController) DeleteKnowledgeGraph() {
-	var knowledgeGraph object.KnowledgeGraph
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &knowledgeGraph)
+// @router /delete-graph [post]
+func (c *ApiController) DeleteGraph() {
+	var graph object.Graph
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &graph)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := object.DeleteKnowledgeGraph(&knowledgeGraph)
+	success, err := object.DeleteGraph(&graph)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -211,31 +211,31 @@ func (c *ApiController) DeleteKnowledgeGraph() {
 	c.ResponseOk(success)
 }
 
-// GenerateKnowledgeGraph
-// @Title GenerateKnowledgeGraph
-// @Tag KnowledgeGraph API
-// @Description generate knowledge graph data and analysis
+// GenerateGraph
+// @Title GenerateGraph
+// @Tag Graph API
+// @Description generate graph data and analysis
 // @Success 200 {object} controllers.Response The Response object
-// @router /generate-knowledge-graph [get]
-func (c *ApiController) GenerateKnowledgeGraph() {
+// @router /generate-graph [get]
+func (c *ApiController) GenerateGraph() {
 	id := c.Input().Get("id")
 	if id == "" {
 		c.ResponseError("id is empty")
 		return
 	}
 
-	knowledgeGraph, err := object.GetKnowledgeGraph(id)
+	graph, err := object.GetGraph(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	if knowledgeGraph == nil {
-		c.ResponseError("knowledge graph not found")
+	if graph == nil {
+		c.ResponseError("graph not found")
 		return
 	}
 
-	graphData, analysis, err := c.generateGraphData(knowledgeGraph)
+	graphData, analysis, err := c.generateGraphData(graph)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -243,11 +243,11 @@ func (c *ApiController) GenerateKnowledgeGraph() {
 
 	graphDataJson, _ := json.Marshal(graphData)
 	analysisJson, _ := json.Marshal(analysis)
-	knowledgeGraph.GraphData = string(graphDataJson)
-	knowledgeGraph.Analysis = string(analysisJson)
-	knowledgeGraph.UpdatedTime = util.GetCurrentTime()
+	graph.GraphData = string(graphDataJson)
+	graph.Analysis = string(analysisJson)
+	graph.UpdatedTime = util.GetCurrentTime()
 
-	success, err := object.UpdateKnowledgeGraph(id, knowledgeGraph)
+	success, err := object.UpdateGraph(id, graph)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -260,20 +260,20 @@ func (c *ApiController) GenerateKnowledgeGraph() {
 	})
 }
 
-func (c *ApiController) generateGraphData(knowledgeGraph *object.KnowledgeGraph) (object.GraphData, object.Analysis, error) {
+func (c *ApiController) generateGraphData(graph *object.Graph) (object.GraphData, object.Analysis, error) {
 	var graphData object.GraphData
 	var analysis object.Analysis
 
 	allMessages := []*object.Message{}
 
-	for _, chatName := range knowledgeGraph.Chats {
+	for _, chatName := range graph.Chats {
 		messages, err := object.GetChatMessages(chatName)
 		if err != nil {
 			continue
 		}
 
 		for _, msg := range messages {
-			if len(knowledgeGraph.Users) == 0 || util.InSlice(knowledgeGraph.Users, msg.User) {
+			if len(graph.Users) == 0 || util.InSlice(graph.Users, msg.User) {
 				allMessages = append(allMessages, msg)
 			}
 		}
@@ -290,8 +290,8 @@ func (c *ApiController) generateGraphData(knowledgeGraph *object.KnowledgeGraph)
 }
 
 func (c *ApiController) processMessagesToGraph(messages []*object.Message) object.GraphData {
-	nodeMap := make(map[string]*object.KnowledgeGraphNode)
-	linkMap := make(map[string]*object.KnowledgeGraphLink)
+	nodeMap := make(map[string]*object.GraphNode)
+	linkMap := make(map[string]*object.GraphLink)
 
 	users := make(map[string]bool)
 	for _, msg := range messages {
@@ -302,7 +302,7 @@ func (c *ApiController) processMessagesToGraph(messages []*object.Message) objec
 
 	for user := range users {
 		nodeId := "user_" + user
-		nodeMap[nodeId] = &object.KnowledgeGraphNode{
+		nodeMap[nodeId] = &object.GraphNode{
 			ID:       nodeId,
 			Name:     user,
 			Category: 0,
@@ -324,7 +324,7 @@ func (c *ApiController) processMessagesToGraph(messages []*object.Message) objec
 			nodeId := "entity_" + entity.Name
 			usedWords[normalizedName] = true
 
-			nodeMap[nodeId] = &object.KnowledgeGraphNode{
+			nodeMap[nodeId] = &object.GraphNode{
 				ID:       nodeId,
 				Name:     entity.Name,
 				Category: 2,
@@ -342,7 +342,7 @@ func (c *ApiController) processMessagesToGraph(messages []*object.Message) objec
 			nodeId := "topic_" + topic.Name
 			usedWords[normalizedName] = true
 
-			nodeMap[nodeId] = &object.KnowledgeGraphNode{
+			nodeMap[nodeId] = &object.GraphNode{
 				ID:       nodeId,
 				Name:     topic.Name,
 				Category: 1,
@@ -364,17 +364,17 @@ func (c *ApiController) processMessagesToGraph(messages []*object.Message) objec
 			if nodeMap[topicNodeId] != nil {
 				linkId := userNodeId + "-" + topicNodeId
 
-				if linkMap[linkId] == nil {
-					linkMap[linkId] = &object.KnowledgeGraphLink{
-						Source: userNodeId,
-						Target: topicNodeId,
-						Value:  1,
-					}
-				} else {
-					linkMap[linkId].Value += 1
+							if linkMap[linkId] == nil {
+				linkMap[linkId] = &object.GraphLink{
+					Source: userNodeId,
+					Target: topicNodeId,
+					Value:  1,
 				}
+			} else {
+				linkMap[linkId].Value += 1
 			}
 		}
+	}
 
 		msgEntities := c.extractEntities([]*object.Message{msg})
 		for _, entity := range msgEntities {
@@ -383,25 +383,25 @@ func (c *ApiController) processMessagesToGraph(messages []*object.Message) objec
 			if nodeMap[entityNodeId] != nil {
 				linkId := userNodeId + "-" + entityNodeId
 
-				if linkMap[linkId] == nil {
-					linkMap[linkId] = &object.KnowledgeGraphLink{
-						Source: userNodeId,
-						Target: entityNodeId,
-						Value:  1,
-					}
-				} else {
-					linkMap[linkId].Value += 1
+							if linkMap[linkId] == nil {
+				linkMap[linkId] = &object.GraphLink{
+					Source: userNodeId,
+					Target: entityNodeId,
+					Value:  1,
 				}
+			} else {
+				linkMap[linkId].Value += 1
 			}
 		}
 	}
+	}
 
-	nodes := make([]object.KnowledgeGraphNode, 0, len(nodeMap))
+	nodes := make([]object.GraphNode, 0, len(nodeMap))
 	for _, node := range nodeMap {
 		nodes = append(nodes, *node)
 	}
 
-	links := make([]object.KnowledgeGraphLink, 0, len(linkMap))
+	links := make([]object.GraphLink, 0, len(linkMap))
 	for _, link := range linkMap {
 		links = append(links, *link)
 	}
