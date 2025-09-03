@@ -561,7 +561,7 @@ class GraphEditPage extends React.Component {
     return (
       <Card title={
         <div>
-          {i18next.t("knowledge:Graph")}
+          {i18next.t("general:Graph")}
           <Button
             style={{float: "right", marginTop: "-4px"}}
             size="small"
