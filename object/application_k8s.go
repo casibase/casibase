@@ -207,23 +207,6 @@ func UndeployApplication(owner, name, namespace string) (bool, error) {
 	return true, nil
 }
 
-// GetURL retrieves the access URL for an application
-func GetURL(namespace string) (string, error) {
-	nodeIPs := getNodeIPsFromCache()
-	services := getServicesFromCache(namespace, nodeIPs)
-
-	// Find first available access URL from services
-	for _, service := range services {
-		for _, port := range service.Ports {
-			if port.URL != "" {
-				return port.URL, nil
-			}
-		}
-	}
-
-	return "", fmt.Errorf("no accessible URL found for application")
-}
-
 func DeployApplicationSync(application *Application) (bool, error) {
 	// First deploy the application
 	success, err := DeployApplication(application)
