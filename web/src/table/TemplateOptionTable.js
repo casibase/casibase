@@ -65,7 +65,7 @@ class TemplateOptionTable extends React.Component {
   render() {
     const editOptionsColumn = [
       {
-        title: i18next.t("general:Parameter"),
+        title: i18next.t("application:Parameters"),
         dataIndex: "parameter",
         key: "parameter",
         width: "200px",
@@ -198,16 +198,23 @@ class TemplateOptionTable extends React.Component {
 
     const optionsColumn = [
       {
-        title: i18next.t("general:Parameter"),
+        title: i18next.t("application:Parameters"),
         dataIndex: "parameter",
         key: "parameter",
         width: "200px",
-        render: (text, record, index) => (
-          <span>
-            {text}
-            {record.required && <span style={{color: "red"}}>*</span>}
-          </span>
-        ),
+        render: (text, record, index) => {
+          if (text === "host") {
+            text = i18next.t("application:Host") + "(host)";
+          } else if (text === "tlsSecretName") {
+            text = i18next.t("application:TLS secret name") + "(tlsSecretName)";
+          }
+          return (
+            <span>
+              {text}
+              {record.required && <span style={{color: "red"}}>*</span>}
+            </span>
+          );
+        },
       },
       {
         title: i18next.t("general:Setting"),
@@ -274,7 +281,7 @@ class TemplateOptionTable extends React.Component {
           pagination={false}
           title={() => (
             <div>
-              {i18next.t("template:Basic config options")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("template:Basic config")}&nbsp;&nbsp;&nbsp;&nbsp;
               {this.props.mode === "edit" &&
                 <Button style={{marginRight: "5px"}} type="primary" size="small"
                   onClick={() => {
