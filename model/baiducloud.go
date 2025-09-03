@@ -45,72 +45,83 @@ func (p *BaiduCloudModelProvider) GetPricing() string {
 	return `URL:
 https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Blfmc9dlf
 
-| Model                                 | Input Price per 1K tokens (CNY)     | Output Price per 1K tokens (CNY)     |
-|-------------------------------------  |-------------------------------------|--------------------------------------|
-| ernie-4.0-8k                          | 0.03                                | 0.09                                 |
-| ernie-4.0-8k-latest                   | 0.03                                | 0.09                                 |
-| ernie-4.0-8k-preview                  | 0.03                                | 0.09                                 |
-| ernie-4.0-turbo-8k                    | 0.02                                | 0.06                                 |
-| ernie-4.0-turbo-128k                  | 0.02                                | 0.06                                 |
-| ernie-4.0-turbo-8k-preview            | 0.02                                | 0.06                                 |
-| ernie-4.0-turbo-8k-latest             | 0.02                                | 0.02                                 |
-| ernie-3.5-8k                          | 0.0008                              | 0.002                                |
-| ernie-3.5-128k                        | 0.0008                              | 0.002                                |
-| ernie-3.5-8k-preview                  | 0.0008                              | 0.002                                |
-| ernie-speed-8k                        | free                                | free                                 |
-| ernie-speed-128k                      | free                                | free                                 |
-| ernie-speed-pro-128k                  | 0.0003                              | 0.0006                               |
-| ernie-lite-8k                         | free                                | free                                 |
-| ernie-lite-pro-128k                   | 0.0002                              | 0.0004                               |
-| ernie-tiny-8k                         | free                                | free                                 |
-| ernie-character-8k                    | 0.0003                              | 0.008                                |
-| ernie-character-fiction-8k            | 0.004                               | 0.008                                |
-| ernie-novel-8k                        | 0.04                                | 0.12                                 |
-| deepseek-v3                           | 0.0008                              | 0.0016                               |
-| deepseek-r1                           | 0.002                               | 0.008                                |
-| deepseek-r1-distill-qwen-1.5b         | Free until March 12th,2025          | Free until March 12th,2025           |
-| deepseek-r1-distill-qwen-7b           | Free until March 12th,2025          | Free until March 12th,2025           |
-| deepseek-r1-distill-qwen-14b          | 0.0006                              | 0.0024                               |
-| deepseek-r1-distill-qwen-32b          | 0.0015                              | 0.006                                |
-| deepseek-r1-distill-llama-8b          | Free until March 12th,2025          | Free until March 12th,2025           |
-| deepseek-r1-distill-llama-70b         | 0.002                               | 0.008                                |
-| deepseek-r1-distill-qianfan-llama-8b  | Free until March 12th,2025          | Free until March 12th,2025           |
-| deepseek-r1-distill-qianfan-llama-70b | 0.002                               | 0.008                                |
+| Model                          | Input Price per 1K tokens (CNY) | Output Price per 1K tokens (CNY) |
+| ------------------------------ | ------------------------------- | -------------------------------- |
+| ERNIE-4.5-Turbo-128K-Preview   | 0.0008                          | 0.0032                           |
+| ERNIE-4.5-Turbo-128K           | 0.0008                          | 0.0032                           |
+| ERNIE-4.5-Turbo-32K            | 0.0008                          | 0.0032                           |
+| ERNIE-4.5-Turbo-Latest         | 0.0008                          | 0.0032                           |
+| ERNIE-4.5-Turbo-VL-Preview     | 0.003                           | 0.009                            |
+| ERNIE-4.5-Turbo-VL             | 0.003                           | 0.009                            |
+| ERNIE-4.5-Turbo-VL-32K         | 0.003                           | 0.009                            |
+| ERNIE-4.5-Turbo-VL-32K-Preview | 0.003                           | 0.009                            |
+| ERNIE-4.5-Turbo-VL-Latest      | 0.003                           | 0.009                            |
+| ERNIE-4.5-8K                   | 0.004                           | 0.016                            |
+| ERNIE-4.5-VL-28B-A3B           | 0.001                           | 0.004                            |
+| ERNIE-4.5-0.3B                 | 0.0001                          | 0.0004                           |
+| ERNIE-4.5-21B-A3B              | 0.0005                          | 0.002                            |
+| ERNIE-4.0-Turbo-8K             | 0.003                           | 0.009                            |
+| ERNIE-4.0-Turbo-128K           | 0.003                           | 0.009                            |
+| ERNIE-4.0-Turbo-8K-Preview     | 0.003                           | 0.009                            |
+| ERNIE-4.0-8K                   | 0.004                           | 0.016                            |
+| ERNIE-4.0-8K-Preview           | 0.004                           | 0.016                            |
+| ERNIE-3.5-8K                   | 0.0008                          | 0.002                            |
+| ERNIE-3.5-128K                 | 0.0008                          | 0.002                            |
+| ERNIE-3.5-8K-Preview           | 0.0008                          | 0.002                            |
+| DeepSeek-V3.1-250821           | 0.004                           | 0.012                            |
+| DeepSeek-V3                    | 0.002                           | 0.008                            |
+| Kimi-K2-Instruct               | 0.004                           | 0.016                            |
+| ERNIE-Speed-Pro-128K           | 0.0003                          | 0.0006                           |
+| ERNIE-Lite-Pro-128K            | 0.0002                          | 0.0004                           |
+| ernie-speed-128k               | 0                               | 0                                |
+| ernie-speed-8k                 | 0                               | 0                                |
+| ernie-lite-8k                  | 0                               | 0                                |
+| ernie-tiny-8k                  | 0                               | 0                                |
+| ernie-char-8k                  | 0.0003                          | 0.0006                           |
+| ernie-char-fiction-8k          | 0.0003                          | 0.0006                           |
+| ernie-char-fiction-8k-preview  | 0.0003                          | 0.0006                           |
+| ernie-novel-8k                 | 0.04                            | 0.12                             |
+
 `
 }
 
 func (p *BaiduCloudModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
-		"ernie-4.0-8k":                          {0.03, 0.09},
-		"ernie-4.0-8k-latest":                   {0.03, 0.09},
-		"ernie-4.0-8k-preview":                  {0.03, 0.09},
-		"ernie-4.0-turbo-8k":                    {0.02, 0.06},
-		"ernie-4.0-turbo-128k":                  {0.02, 0.06},
-		"ernie-4.0-turbo-8k-preview":            {0.02, 0.06},
-		"ernie-4.0-turbo-8k-latest":             {0.02, 0.02},
-		"ernie-3.5-8k":                          {0.0008, 0.002},
-		"ernie-3.5-128k":                        {0.0008, 0.002},
-		"ernie-3.5-8k-preview":                  {0.0008, 0.002},
-		"ernie-speed-8k":                        {0, 0},
-		"ernie-speed-128k":                      {0, 0},
-		"ernie-speed-pro-128k":                  {0.0003, 0.0006},
-		"ernie-lite-8k":                         {0, 0},
-		"ernie-lite-pro-128k":                   {0.0002, 0.0004},
-		"ernie-tiny-8k":                         {0, 0},
-		"ernie-character-8k":                    {0.0003, 0.008},
-		"ernie-character-fiction-8k":            {0.004, 0.008},
-		"ernie-novel-8k":                        {0.04, 0.12},
-		"deepseek-v3":                           {0.0008, 0.0016},
-		"deepseek-r1":                           {0.002, 0.008},
-		"deepseek-r1-distill-qwen-1.5b":         {0, 0},
-		"deepseek-r1-distill-qwen-7b":           {0, 0},
-		"deepseek-r1-distill-qwen-14b":          {0.0006, 0.0024},
-		"deepseek-r1-distill-qwen-32b":          {0.0015, 0.006},
-		"deepseek-r1-distill-llama-8b":          {0, 0},
-		"deepseek-r1-distill-llama-70b":         {0.002, 0.008},
-		"deepseek-r1-distill-qianfan-llama-8b":  {0, 0},
-		"deepseek-r1-distill-qianfan-llama-70b": {0.002, 0.008},
+		"ERNIE-4.5-Turbo-128K-Preview":   {0.0008, 0.0032},
+		"ERNIE-4.5-Turbo-128K":           {0.0008, 0.0032},
+		"ERNIE-4.5-Turbo-32K":            {0.0008, 0.0032},
+		"ERNIE-4.5-Turbo-Latest":         {0.0008, 0.0032},
+		"ERNIE-4.5-Turbo-VL-Preview":     {0.003, 0.009},
+		"ERNIE-4.5-Turbo-VL":             {0.003, 0.009},
+		"ERNIE-4.5-Turbo-VL-32K":         {0.003, 0.009},
+		"ERNIE-4.5-Turbo-VL-32K-Preview": {0.003, 0.009},
+		"ERNIE-4.5-Turbo-VL-Latest":      {0.003, 0.009},
+		"ERNIE-4.5-8K":                   {0.004, 0.016},
+		"ERNIE-4.5-VL-28B-A3B":           {0.001, 0.004},
+		"ERNIE-4.5-0.3B":                 {0.0001, 0.0004},
+		"ERNIE-4.5-21B-A3B":              {0.0005, 0.002},
+		"ERNIE-4.0-Turbo-8K":             {0.003, 0.009},
+		"ERNIE-4.0-Turbo-128K":           {0.003, 0.009},
+		"ERNIE-4.0-Turbo-8K-Preview":     {0.003, 0.009},
+		"ERNIE-4.0-8K":                   {0.004, 0.016},
+		"ERNIE-4.0-8K-Preview":           {0.004, 0.016},
+		"ERNIE-3.5-8K":                   {0.0008, 0.002},
+		"ERNIE-3.5-128K":                 {0.0008, 0.002},
+		"ERNIE-3.5-8K-Preview":           {0.0008, 0.002},
+		"DeepSeek-V3.1-250821":           {0.004, 0.012},
+		"DeepSeek-V3":                    {0.002, 0.008},
+		"Kimi-K2-Instruct":               {0.004, 0.016},
+		"ERNIE-Speed-Pro-128K":           {0.0003, 0.0006},
+		"ERNIE-Lite-Pro-128K":            {0.0002, 0.0004},
+		"ernie-speed-128k":               {0, 0},
+		"ernie-speed-8k":                 {0, 0},
+		"ernie-lite-8k":                  {0, 0},
+		"ernie-tiny-8k":                  {0, 0},
+		"ernie-char-8k":                  {0.0003, 0.0006},
+		"ernie-char-fiction-8k":          {0.0003, 0.0006},
+		"ernie-char-fiction-8k-preview":  {0.0003, 0.0006},
+		"ernie-novel-8k":                 {0.04, 0.12},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
