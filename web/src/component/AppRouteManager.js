@@ -144,6 +144,21 @@ routeManager.registerApp("chats", {
   ],
 });
 
+routeManager.registerApp("knowledgegraphs", {
+  title: "Knowledge Graphs",
+  gradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+  routes: [
+    {
+      path: "/knowledgegraphs",
+      component: () => import("../KnowledgeGraphListPage"),
+    },
+    {
+      path: "/knowledgegraphs/:knowledgeGraphName",
+      component: () => import("../KnowledgeGraphEditPage"),
+    },
+  ],
+});
+
 routeManager.registerApp("messages", {
   title: "Messages",
   gradient: "linear-gradient(135deg, #7db6d8 0%, #47a6dc 100%)",

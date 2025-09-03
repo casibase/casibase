@@ -100,6 +100,14 @@ func initAPI() {
 	beego.Router("/api/delete-message", &controllers.ApiController{}, "POST:DeleteMessage")
 	beego.Router("/api/delete-welcome-message", &controllers.ApiController{}, "POST:DeleteWelcomeMessage")
 
+	beego.Router("/api/get-global-knowledge-graphs", &controllers.ApiController{}, "GET:GetGlobalKnowledgeGraphs")
+	beego.Router("/api/get-knowledge-graphs", &controllers.ApiController{}, "GET:GetKnowledgeGraphs")
+	beego.Router("/api/get-knowledge-graph", &controllers.ApiController{}, "GET:GetKnowledgeGraph")
+	beego.Router("/api/update-knowledge-graph", &controllers.ApiController{}, "POST:UpdateKnowledgeGraph")
+	beego.Router("/api/add-knowledge-graph", &controllers.ApiController{}, "POST:AddKnowledgeGraph")
+	beego.Router("/api/delete-knowledge-graph", &controllers.ApiController{}, "POST:DeleteKnowledgeGraph")
+	beego.Router("/api/generate-knowledge-graph", &controllers.ApiController{}, "POST:GenerateKnowledgeGraph")
+
 	beego.Router("/api/get-templates", &controllers.ApiController{}, "GET:GetTemplates")
 	beego.Router("/api/get-template", &controllers.ApiController{}, "GET:GetTemplate")
 	beego.Router("/api/update-template", &controllers.ApiController{}, "POST:UpdateTemplate")

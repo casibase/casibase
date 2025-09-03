@@ -97,11 +97,6 @@ class KnowledgeGraphChart extends React.Component {
 
       if (!filteredNodes.length) {
         return {
-          title: {
-            text: i18next.t("knowledge:Chat Knowledge Graph"),
-            top: "top",
-            left: "center",
-          },
           series: [{
             type: "graph",
             data: [],
@@ -111,18 +106,6 @@ class KnowledgeGraphChart extends React.Component {
       }
 
       const option = {
-        title: {
-          text: i18next.t("knowledge:Chat Knowledge Graph"),
-          top: "top",
-          left: "center",
-          textStyle: {
-            fontSize: 18,
-            fontWeight: "bold",
-          },
-          subtextStyle: {
-            fontSize: 12,
-          },
-        },
         tooltip: {
           trigger: "item",
           formatter: (params) => {
