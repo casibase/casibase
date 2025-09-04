@@ -21,7 +21,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/casibase/casibase/model"
+	"github.com/casibase/casibase/proxy"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -35,13 +35,21 @@ func NewOpenAIFileSystemStorageProvider(vectorStoreId string, clientSecret strin
 	return &OpenAIFileSystemStorageProvider{vectorStoreId: vectorStoreId, clientSecret: clientSecret}, nil
 }
 
+func GetOpenAiClientFromToken(authToken string) *openai.Client {
+	config := openai.DefaultConfig(authToken)
+	config.HTTPClient = proxy.ProxyHttpClient
+
+	c := openai.NewClientWithConfig(config)
+	return c
+}
+
 func (p *OpenAIFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, error) {
 	objects, _, err := p.getCachedFiles(prefix)
 	return objects, err
 }
 
 func (p *OpenAIFileSystemStorageProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) (string, error) {
-	client := model.GetOpenAiClientFromToken(p.clientSecret)
+	client := GetOpenAiClientFromToken(p.clientSecret)
 	ctx := context.Background()
 
 	fileName := key
@@ -76,7 +84,7 @@ func (p *OpenAIFileSystemStorageProvider) PutObject(user string, parent string, 
 
 func (p *OpenAIFileSystemStorageProvider) DeleteObject(key string) error {
 	ctx := context.Background()
-	client := model.GetOpenAiClientFromToken(p.clientSecret)
+	client := GetOpenAiClientFromToken(p.clientSecret)
 
 	fileId := getCachedFileId(p.storeId, key)
 	err := client.DeleteVectorStoreFile(ctx, p.vectorStoreId, fileId)
@@ -112,7 +120,7 @@ func (p *OpenAIFileSystemStorageProvider) getCachedFiles(prefix string) ([]*Obje
 }
 
 func getOpenaiFileObjects(clientSecret string, vectorStoreId string) (map[string]CachedFile, error) {
-	client := model.GetOpenAiClientFromToken(clientSecret)
+	client := GetOpenAiClientFromToken(clientSecret)
 	limit := 100
 	storeFiles, err := client.ListVectorStoreFiles(context.Background(), vectorStoreId, openai.Pagination{
 		Limit: &limit,
