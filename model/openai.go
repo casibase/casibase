@@ -198,7 +198,7 @@ func (p *OpenAiModelProvider) GetPricing() string {
 	return getOpenAIModelPrice()
 }
 
-func getOpenAiClientFromToken(authToken string) openai.Client {
+func GetOpenAiClientFromToken(authToken string) openai.Client {
 	httpClient := proxy.ProxyHttpClient
 	c := openai.NewClient(option.WithHTTPClient(httpClient), option.WithAPIKey(authToken))
 	return c
@@ -208,7 +208,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 	var client openai.Client
 	var flushData interface{}
 
-	client = getOpenAiClientFromToken(p.secretKey)
+	client = GetOpenAiClientFromToken(p.secretKey)
 	flushData = flushDataOpenai
 
 	ctx := context.Background()
