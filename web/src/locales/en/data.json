@@ -22,6 +22,7 @@
     "Parameters": "Parameters",
     "Parameters - Tooltip": "Application parameters",
     "Pending": "Pending",
+    "Replicas": "Replicas",
     "Running": "Running",
     "Terminating": "Terminating",
     "Undeploy": "Undeploy",

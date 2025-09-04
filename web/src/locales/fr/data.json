@@ -22,6 +22,7 @@
     "Parameters": "Paramètres",
     "Parameters - Tooltip": "Paramètres de l'application",
     "Pending": "En attente",
+    "Replicas": "Répliques",
     "Running": "En cours d'exécution",
     "Terminating": "En cours de terminaison",
     "Undeploy": "Annuler le déploiement",

@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -43,7 +44,10 @@ type K8sClient struct {
 	configText    string
 }
 
-var k8sClient *K8sClient
+var (
+	k8sClient      *K8sClient
+	k8sClientMutex sync.Mutex
+)
 
 func init() {
 	k8sClient = nil
@@ -116,19 +120,51 @@ func (k *K8sClient) testConnection() error {
 
 // Ensure k8s client is initialized, try to initialize if not
 func ensureK8sClient() error {
-	// Get current Kubernetes provider
+	// Quick check if client is already ready
+	if k8sClient != nil && k8sClient.connected {
+		return nil
+	}
+
+	k8sClientMutex.Lock()
+	defer k8sClientMutex.Unlock()
+
+	if k8sClient != nil && k8sClient.connected {
+		return nil
+	}
+
 	provider, err := GetDefaultKubernetesProvider()
 	if err != nil {
 		return fmt.Errorf("failed to get default Kubernetes provider: %v", err)
 	}
 
-	// Check if client needs to be created or updated
+	// Only recreate if config changed or client doesn't exist
 	if k8sClient == nil || k8sClient.configText != provider.ConfigText {
+		if cacheManager != nil {
+			cacheManager.Stop()
+			cacheManager = nil
+		}
+
 		client, err := createK8sClientFromProvider(provider)
 		if err != nil {
 			return err
 		}
 		k8sClient = client
+
+		host, parseErr := parseK8sHost(provider.ConfigText)
+		if parseErr != nil {
+			cachedK8sHost = ""
+		} else {
+			cachedK8sHost = host
+		}
+
+		// Initialize cache manager
+		if err := initCacheManager(); err != nil {
+			return fmt.Errorf("failed to initialize cache manager: %v", err)
+		}
+
+		if err := startCacheManager(); err != nil {
+			return fmt.Errorf("failed to start cache manager: %v", err)
+		}
 	}
 
 	return nil
