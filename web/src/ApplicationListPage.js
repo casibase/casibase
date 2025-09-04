@@ -14,10 +14,8 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Alert, Button, Popconfirm, Table, Tooltip} from "antd";
-import {DeleteOutlined, LinkOutlined} from "@ant-design/icons";
 import {Alert, Button, Popconfirm, Table, Tag, Tooltip} from "antd";
-import {DeleteOutlined} from "@ant-design/icons";
+import {DeleteOutlined, LinkOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";

@@ -16,15 +16,9 @@ package object
 
 import (
 	"bytes"
-	"fmt"
-	"os"
-	"path/filepath"
-	"regexp"
-	"strings"
 	"text/template"
 
 	"github.com/casibase/casibase/util"
-	"gopkg.in/yaml.v3"
 	"xorm.io/core"
 )
 
@@ -142,54 +136,6 @@ func DeleteTemplate(template *Template) (bool, error) {
 	return affected != 0, nil
 }
 
-// upsertTemplate inserts or updates the template in the database.
-func upsertTemplate(template *Template) error {
-	existing, err := getTemplate(template.Owner, template.Name)
-	if err != nil {
-		return err
-	}
-	if existing != nil {
-		template.CreatedTime = existing.CreatedTime
-		_, err := UpdateTemplate(util.GetIdFromOwnerAndName(template.Owner, template.Name), template)
-		if err != nil {
-			return err
-		}
-	} else {
-		_, err := AddTemplate(template)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// initTemplates load template files and upsert them into DB.
-func initTemplates() {
-	owner := "admin"
-	dir := "./template"
-	files, err := os.ReadDir(dir)
-	if err != nil {
-		fmt.Printf("Failed to read template directory: %v\n", err)
-	}
-
-	for _, file := range files {
-		if file.IsDir() {
-			continue
-		}
-		if !strings.HasSuffix(file.Name(), ".yaml") && !strings.HasSuffix(file.Name(), ".yml") {
-			continue
-		}
-		tpl, err := parseTemplateFromFile(owner, filepath.Join(dir, file.Name()))
-		if err != nil {
-			fmt.Printf("Failed to parse template file %s: %v\n", file.Name(), err)
-			continue
-		}
-		if tpl != nil {
-			upsertTemplate(tpl)
-		}
-	}
-}
-
 // Render the template with the given data.
 func (t *Template) Render(data map[string]interface{}) (string, error) {
 	if data == nil {
@@ -208,64 +154,4 @@ func (t *Template) Render(data map[string]interface{}) (string, error) {
 	}
 
 	return buf.String(), nil
-}
-
-// parseTemplateFromFile parses a single template file.
-func parseTemplateFromFile(owner, path string) (*Template, error) {
-	b, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	sepRe := regexp.MustCompile(`(?m)^\s*---\s*$`)
-	yamls := sepRe.Split(string(b), -1)
-	if len(yamls) == 0 {
-		return nil, nil
-	}
-
-	templateYamlString := strings.TrimSpace(yamls[0])
-	if templateYamlString == "" {
-		return nil, nil
-	}
-
-	var templateYaml struct {
-		APIVersion string `yaml:"apiVersion"`
-		Kind       string `yaml:"kind"`
-		Metadata   struct {
-			Name string `yaml:"name"`
-		} `yaml:"metadata"`
-		Spec struct {
-			DisplayName string                 `yaml:"displayName"`
-			Description string                 `yaml:"description"`
-			Version     string                 `yaml:"version"`
-			Icon        string                 `yaml:"icon"`
-			Readme      string                 `yaml:"readme"`
-			Options     []templateConfigOption `yaml:"options"`
-		} `yaml:"spec"`
-	}
-
-	if err := yaml.Unmarshal([]byte(templateYamlString), &templateYaml); err != nil {
-		return nil, err
-	}
-
-	if strings.ToLower(templateYaml.Kind) != "template" {
-		return nil, nil
-	}
-
-	manifest := strings.TrimSpace(strings.Join(yamls[1:], "\n---\n"))
-
-	template := &Template{
-		Owner:              owner,
-		Name:               templateYaml.Metadata.Name,
-		DisplayName:        templateYaml.Spec.DisplayName,
-		Description:        templateYaml.Spec.Description,
-		Version:            templateYaml.Spec.Version,
-		Icon:               templateYaml.Spec.Icon,
-		Readme:             templateYaml.Spec.Readme,
-		EnableBasicConfig:  true,
-		BasicConfigOptions: templateYaml.Spec.Options,
-		Manifest:           manifest,
-	}
-
-	return template, nil
 }

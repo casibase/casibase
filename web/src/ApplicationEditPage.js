@@ -267,7 +267,7 @@ class ApplicationEditPage extends React.Component {
 
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("application:Deployment Manifest"), i18next.t("application:Deployment Manifest - Tooltip"))} :
+            {Setting.getLabel(i18next.t("application:Deployment manifest"), i18next.t("application:Deployment manifest - Tooltip"))} :
           </Col>
           <Col span={22} >
             <div style={{height: "500px"}}>
