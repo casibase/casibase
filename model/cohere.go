@@ -57,16 +57,18 @@ https://cohere.com/pricing
 
 Generate Model:
 
-| Model         | Input Price (Per 1,000,000 tokens) | Output Price (Per 1,000,000 tokens) |
-|---------------|------------------------------------|-------------------------------------|
-| Command Light | $0.30                              | $0.60                               |
-| Command       | $1.00                              | $2.00                               |
+| Model       | Input Price (Per 1,000,000 tokens) | Output Price (Per 1,000,000 tokens) |
+| ----------- | ---------------------------------- | ----------------------------------- |
+| Command A   | $2.50                              | $10.00                              |
+| Command R   | $0.15                              | $0.60                               |
+| Command R7B | $0.0375                            | $0.15                               |
 
 Embed Model:
 
 | Model      | Cost (Per 1,000,000 tokens) |
-|------------|-----------------------------|
-| Default    | $0.10                       |
+| ---------- | --------------------------- |
+| Embed 4    | $0.12                       |
+| Rerank 3.5 | $2.00                       |
 `
 }
 
