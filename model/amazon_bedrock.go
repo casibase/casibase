@@ -47,29 +47,36 @@ func (a AmazonBedrockModelProvider) GetPricing() string {
 Model 
 | Model                       | Unit Of Charge                | Price    |
 |-----------------------------|-------------------------------|----------|
-| Claude                      | 1K input tokens               | $0.008   |
-| Claude                      | 1K output tokens              | $0.024   |
+| Claude Opus 4               | 1K input tokens               | $0.015   |
+| Claude Opus 4               | 1K output tokens              | $0.075   |
+| Claude Sonnet 4             | 1K input tokens               | $0.003   |
+| Claude Sonnet 4             | 1K output tokens              | $0.015   |
 | Claude Instant              | 1K input tokens               | $0.0008  |
 | Claude Instant              | 1K output tokens              | $0.0024  |
-| Command                     | 1K input tokens               | $0.0015  |
-| Command                     | 1K output tokens              | $0.002   |
-| Command Light               | 1K input tokens               | $0.0003  |
-| Command Light               | 1K output tokens              | $0.0006  |
+| Command R                   | 1K input tokens               | $0.0005  |
+| Command R                   | 1K output tokens              | $0.0015  |
+| Command R+                  | 1K input tokens               | $0.003   |
+| Command R+                  | 1K output tokens              | $0.015   |
+| Command-Light               | 1K input tokens               | $0.0003  |
+| Command-Light               | 1K output tokens              | $0.0006  |
 | Embed - English             | 1K input tokens               | $0.0001  |
 | Embed - Multilingual        | 1K input tokens               | $0.0001  |
 | Jurassic-2 Mid              | 1K input tokens               | $0.0125  |
 | Jurassic-2 Mid              | 1K output tokens              | $0.0125  |
 | Jurassic-2 Ultra            | 1K input tokens               | $0.0188  |
 | Jurassic-2 Ultra            | 1K output tokens              | $0.0188  |
-| Llama 2 Chat (13B)          | 1K input tokens               | $0.00075 |
-| Llama 2 Chat (13B)          | 1K output tokens              | $0.001   |
-| Llama 2 Chat (70B)          | 1K input tokens               | $0.00195 |
-| Llama 2 Chat (70B)          | 1K output tokens              | $0.00256 |
-| Titan Text Lite             | 1K input tokens               | $0.0003  |
-| Titan Text Lite             | 1K output tokens              | $0.0004  |
-| Titan Text Express          | 1K input tokens               | $0.0008  |
-| Titan Text Express          | 1K output tokens              | $0.0016  |
+| Llama 4 Maverick 17B        | 1K input tokens               | $0.00024 |
+| Llama 4 Maverick 17B        | 1K output tokens              | $0.00097 |
+| Llama 4 Scout 17B           | 1K input tokens               | $0.00017 |
+| Llama 4 Scout 17B           | 1K output tokens              | $0.00066 |
+| Titan Text Premier          | 1K input tokens               | $0.0005  |
+| Titan Text Premier          | 1K output tokens              | $0.0015  |
+| Titan Text Lite             | 1K input tokens               | $0.00015 |
+| Titan Text Lite             | 1K output tokens              | $0.0002  |
+| Titan Text Express          | 1K input tokens               | $0.0002  |
+| Titan Text Express          | 1K output tokens              | $0.0006  |
 | Titan Embeddings            | 1K input tokens               | $0.0001  |
+| Titan Embeddings V2         | 1K input tokens               | $0.00002 |
 | Titan Multimodal Embeddings | 1K input tokens               | $0.0008  |
 | Titan Multimodal Embeddings | 1 input image                 | $0.00006 |
 
@@ -81,19 +88,23 @@ func (p *AmazonBedrockModelProvider) calculatePrice(modelResult *ModelResult) er
 		InputTokenPrice  float64
 		OutputTokenPrice float64
 	}{
-		"Claude":                      {0.008, 0.024},
+		"Claude Opus4":                {0.015, 0.075},
+		"Claude Sonnet4":              {0.003, 0.015},
 		"Claude Instant":              {0.0008, 0.0024},
-		"Command":                     {0.0015, 0.002},
-		"Command Light":               {0.0003, 0.0006},
+		"Command R":                   {0.0005, 0.0015},
+		"Command R+":                  {0.003, 0.015},
+		"Command-Light":               {0.0003, 0.0006},
 		"Embed - English":             {0.0001, 0},
 		"Embed - Multilingual":        {0.0001, 0},
 		"Jurassic-2 Mid":              {0.0125, 0.0125},
 		"Jurassic-2 Ultra":            {0.0188, 0.0188},
-		"Llama 2 Chat (13B)":          {0.00075, 0.001},
-		"Llama 2 Chat (70B)":          {0.00195, 0.00256},
-		"Titan Text Lite":             {0.0003, 0.0004},
-		"Titan Text Express":          {0.0008, 0.0016},
+		"Llama4 Maverick17B":          {0.00024, 0.00097},
+		"Llama4 Scout17B":             {0.00017, 0.00066},
+		"Titan Text Premier":          {0.0005, 0.0015},
+		"Titan Text Lite":             {0.00015, 0.0002},
+		"Titan Text Express":          {0.0002, 0.0006},
 		"Titan Embeddings":            {0.0001, 0},
+		"Titan Embeddings V2":         {0.00002, 0},
 		"Titan Multimodal Embeddings": {0.0008, 0},
 	}
 	price, ok := prices[p.subType]
