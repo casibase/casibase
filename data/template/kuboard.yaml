@@ -1,0 +1,126 @@
+apiVersion: app.casibase.org/v1
+kind: Template
+metadata:
+  name: kuboard
+spec:
+  displayName: 'kuboard'
+  description: 'Kuboard is a free management interface specifically designed for Kubernetes. Note: the initial username is admin and the password is Kuboard123.'
+  icon: 'https://kuboard.cn/favicon.png'
+  readme: 'https://raw.githubusercontent.com/eip-work/kuboard-press/master/README.md'
+  options:
+    - parameter: host
+      description: 'Domain name for accessing Kuboard'
+      type: string
+      required: true
+    - parameter: tlsSecretName
+      description: 'TLS secret name in Kubernetes secret for https'
+      type: string
+      required: false
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .application.name }}
+  annotations:
+    originImageName: eipwork/kuboard:v3
+    casibase/minReplicas: '1'
+    casibase/maxReplicas: '1'
+  labels:
+    casibase/app-deploy-manager: {{ .application.name }}
+    app: {{ .application.name }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  minReadySeconds: 10
+  serviceName: {{ .application.name }}
+  selector:
+    matchLabels:
+      app: {{ .application.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .application.name }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      automountServiceAccountToken: false
+      containers:
+        - name: {{ .application.name }}
+          image: eipwork/kuboard:v3
+          env:
+            - name: KUBOARD_ENDPOINT
+              value: http://{{ .application.name }}.{{ .application.namespace }}.svc.cluster.local:80
+            - name: KUBOARD_AGENT_SERVER_TCP_PORT
+              value: '10081'
+            - name: KUBOARD_DISABLE_AUDIT
+              value: 'true'
+            - name: TZ
+              value: Asia/Shanghai
+          resources:
+            requests:
+              cpu: 100m
+              memory: 204Mi
+            limits:
+              cpu: 1000m
+              memory: 2048Mi
+          command: []
+          args: []
+          ports:
+            - containerPort: 80
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: vn-data
+              mountPath: /data
+      volumes: []
+  volumeClaimTemplates:
+    - metadata:
+        annotations:
+          path: /data
+          value: '5'
+        name: vn-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .application.name }}
+  labels:
+    casibase/app-deploy-manager: {{ .application.name }}
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: {{ .application.name }}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .application.name }}
+  labels:
+    casibase/app-deploy-manager: {{ .application.name }}
+    casibase/app-deploy-manager-domain: {{ .options.host }}
+spec:
+  rules:
+    - host: {{ .options.host }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: {{ .application.name }}
+                port:
+                  number: 80
+  {{- if .options.tlsSecretName }}
+  tls:
+    - hosts:
+        - {{ .options.host }}
+      secretName: {{ .options.tlsSecretName }}
+  {{- end }}

@@ -15,6 +15,9 @@
 package object
 
 import (
+	"bytes"
+	"text/template"
+
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -30,6 +33,19 @@ type Template struct {
 	Version     string `xorm:"varchar(50)" json:"version"`
 	Icon        string `xorm:"varchar(255)" json:"icon"`
 	Manifest    string `xorm:"mediumtext" json:"manifest"`
+	Readme      string `xorm:"mediumtext" json:"readme"`
+
+	EnableBasicConfig  bool                   `xorm:"bool" json:"enableBasicConfig"`
+	BasicConfigOptions []templateConfigOption `xorm:"json" json:"basicConfigOptions"`
+}
+
+type templateConfigOption struct {
+	Parameter   string   `json:"parameter" yaml:"parameter"`
+	Description string   `json:"description" yaml:"description"`
+	Type        string   `json:"type" yaml:"type"` // string, number, boolean, option
+	Options     []string `json:"options" yaml:"options"`
+	Default     string   `json:"default" yaml:"default"`
+	Required    bool     `json:"required" yaml:"required"`
 }
 
 func GetTemplates(owner string) ([]*Template, error) {
@@ -118,4 +134,24 @@ func DeleteTemplate(template *Template) (bool, error) {
 	}
 
 	return affected != 0, nil
+}
+
+// Render the template with the given data.
+func (t *Template) Render(data map[string]interface{}) (string, error) {
+	if data == nil {
+		data = map[string]interface{}{}
+	}
+
+	textTmpl := template.New("manifest")
+	tpl, err := textTmpl.Parse(t.Manifest)
+	if err != nil {
+		return "", err
+	}
+
+	var buf bytes.Buffer
+	if err := tpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
 }

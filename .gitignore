@@ -15,7 +15,9 @@ casibase
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-data/
+data/**
+!data/template/
+!data/template/**
 files/
 
 .idea/
