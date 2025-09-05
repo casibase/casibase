@@ -38,6 +38,12 @@ jobs:
           cache-dependency-path: ./web/yarn.lock
       - run: yarn install && CI=false yarn run build
         working-directory: ./web
+      - name: Upload build artifacts
+        if: github.repository == 'casibase/casibase' && github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: ./web/build
 
   backend:
     name: Back-end
@@ -94,12 +100,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Build Frontend
-        run: |
-          cd web
-          yarn install --frozen-lockfile
-          yarn build
-          cd ..
+      - name: Download frontend build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: ./web/build
 
       - name: Fetch Previous version
         id: get-previous-tag
