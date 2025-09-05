@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Alert, Button, Popconfirm, Table, Tooltip} from "antd";
+import {Alert, Button, Popconfirm, Table, Tag, Tooltip} from "antd";
 import {DeleteOutlined, LinkOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
@@ -162,12 +162,7 @@ class ApplicationListPage extends BaseListPage {
 
   newApplication() {
     const randomName = Setting.getRandomName();
-    const defaultParameters = `apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-spec:
-  replicas: 3`;
+    const defaultParameters = "";
 
     return {
       owner: this.props.account.name,
@@ -292,6 +287,23 @@ spec:
             <Link to={`/templates/${text}`}>
               {text}
             </Link>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Basic configuration"),
+        dataIndex: "basicConfigOptions",
+        key: "basicConfigOptions",
+        width: "200px",
+        render: (text, record, index) => {
+          return (
+            text?.length > 0 ? text.map((option, i) => {
+              if (option.parameter === "host") {
+                return <Tag key={i}>{option.parameter}: <a href={"http://" + option.setting} style={{textDecoration: "underline"}}>{option.setting}</a></Tag>;
+              } else {
+                return <Tag key={i}>{option.parameter}: {option.setting}</Tag>;
+              }
+            }) : null
           );
         },
       },
