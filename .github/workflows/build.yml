@@ -42,7 +42,7 @@ jobs:
         if: github.repository == 'casibase/casibase' && github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-build
+          name: frontend-build-${{ github.run_id }}
           path: ./web/build
 
   backend:
@@ -103,7 +103,7 @@ jobs:
       - name: Download frontend build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: frontend-build
+          name: frontend-build-${{ github.run_id }}
           path: ./web/build
 
       - name: Fetch Previous version
