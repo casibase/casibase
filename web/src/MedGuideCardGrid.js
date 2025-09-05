@@ -99,7 +99,7 @@ const MedGuideCardGrid = (props) => {
                         return { ...btn, route: Setting.getMyProfileUrl(account).replace("/account", "/users") };
                     }
                     if (btn.title === "权限管理") {
-                        return { ...btn, route: Setting.getMyProfileUrl(account).replace("/account", "/resources") };
+                        return { ...btn, route: Setting.getMyProfileUrl(account).replace("/account", "/permissions") };
                     }
                     return btn;
                 })
