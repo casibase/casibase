@@ -21,11 +21,13 @@ import (
 	"xorm.io/core"
 )
 
-type GraphItem struct {
-	Name  string `json:"name"`
-	Label string `json:"label"`
-	Type  string `json:"type"`
-	Width string `json:"width"`
+type GraphNode struct {
+	Id     string `json:"id"`
+	Name   string `json:"name"`
+	Value  int    `json:"val"`
+	Color  string `json:"color"`
+	Tag    string `json:"tag"`
+	Weight int    `json:"weight"`
 }
 
 type Graph struct {
