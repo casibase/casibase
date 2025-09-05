@@ -18,6 +18,7 @@ import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as TemplateBackend from "./backend/TemplateBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import TemplateOptionTable from "./table/TemplateOptionTable";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -56,7 +57,24 @@ class ApplicationEditPage extends React.Component {
       });
   }
 
+  checkBasicConfigOptions() {
+    const template = this.state.templates.find(template => template.name === this.state.application.template);
+    if (template && template.basicConfigOptions) {
+      for (const option of template.basicConfigOptions) {
+        const setting = this.state.application.basicConfigOptions.find(o => o.parameter === option.parameter)?.setting;
+        if (option.required && (!setting || setting === "")) {
+          Setting.showMessage("error", `${i18next.t("general:Missing required parameter in basic config")}: ${option.parameter}`);
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   deployApplication() {
+    if (!this.checkBasicConfigOptions()) {
+      return;
+    }
     this.setState({deploying: true});
 
     ApplicationBackend.deployApplication(this.state.application)
@@ -168,7 +186,15 @@ class ApplicationEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Template"), i18next.t("general:Template - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.application.template} onChange={(value => {this.updateApplicationField("template", value);})}
+            <Select virtual={false} style={{width: "100%"}} value={this.state.application.template}
+              onChange={(value => {
+                this.setState({template: this.state.templates.find((template) => template.name === value)});
+                this.updateApplicationField("template", value);
+                this.updateApplicationField("basicConfigOptions", this.state.templates.find((template) => template.name === value)?.basicConfigOptions?.map(option => ({
+                  parameter: option.parameter,
+                  setting: option.default,
+                })) || []);
+              })}
               options={this.state.templates.map((template) => Setting.getOption(`${template.displayName} (${template.name})`, `${template.name}`))
               } />
           </Col>
@@ -204,6 +230,24 @@ class ApplicationEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+
+        {this.state.templates && this.state.templates.find(template => template.name === this.state.application.template && template.enableBasicConfig) ? (
+          <>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("template:Basic config"), i18next.t("template:Basic config - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <TemplateOptionTable
+                  templateOptions={this.state.templates.find(template => template.name === this.state.application.template)?.basicConfigOptions || []}
+                  options={this.state.application.basicConfigOptions}
+                  onUpdateOptions={options => {this.updateApplicationField("basicConfigOptions", options);}}
+                />
+              </Col>
+            </Row>
+          </>
+        ) : null}
+
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("application:Parameters"), i18next.t("application:Parameters - Tooltip"))} :
@@ -220,11 +264,29 @@ class ApplicationEditPage extends React.Component {
             </div>
           </Col>
         </Row>
+
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("application:Deployment manifest"), i18next.t("application:Deployment manifest - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <div style={{height: "500px"}}>
+              <CodeMirror
+                value={this.state.application.manifest}
+                options={{mode: "yaml", theme: "material-darker", readOnly: true}}
+              />
+            </div>
+          </Col>
+        </Row>
       </Card>
     );
   }
 
   submitApplicationEdit(exitAfterSave) {
+    if (!this.checkBasicConfigOptions()) {
+      return;
+    }
+
     const application = Setting.deepCopy(this.state.application);
     ApplicationBackend.updateApplication(this.state.application.owner, this.state.applicationName, application)
       .then((res) => {
@@ -239,6 +301,7 @@ class ApplicationEditPage extends React.Component {
               this.props.history.push("/applications");
             } else {
               this.props.history.push(`/applications/${this.state.application.name}`);
+              this.getApplication();
             }
           } else {
             Setting.showMessage("error", i18next.t("general:Failed to save"));

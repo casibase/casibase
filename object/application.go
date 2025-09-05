@@ -32,8 +32,19 @@ type Application struct {
 	Description string `xorm:"varchar(255)" json:"description"`
 	Template    string `xorm:"varchar(100)" json:"template"` // Reference to Template.Name
 	Parameters  string `xorm:"mediumtext" json:"parameters"`
+	Manifest    string `xorm:"mediumtext" json:"manifest"`    // Deployment manifest
 	Status      string `xorm:"varchar(50)" json:"status"`     // Running, Pending, Failed, Not Deployed
 	Namespace   string `xorm:"varchar(100)" json:"namespace"` // Kubernetes namespace (auto-generated)
+	URL         string `xorm:"varchar(255)" json:"url"`       // Available service URL
+
+	Details *ApplicationView `xorm:"-" json:"details,omitempty"`
+
+	BasicConfigOptions []applicationConfigOption `xorm:"mediumtext" json:"basicConfigOptions"`
+}
+
+type applicationConfigOption struct {
+	Parameter string `json:"parameter"`
+	Setting   string `json:"setting"`
 }
 
 func GetApplications(owner string) ([]*Application, error) {
@@ -91,6 +102,28 @@ func UpdateApplication(id string, application *Application) (bool, error) {
 		return false, nil
 	}
 
+	template, err := getTemplate(application.Owner, application.Template)
+	if err != nil {
+		return false, err
+	}
+
+	if template.EnableBasicConfig {
+		// Initialize the manifest using the basic configuration options
+		application.Manifest, err = application.generateManifestWithBasicConfig(template)
+		if err != nil {
+			return false, err
+		}
+	} else {
+		// Initialize the manifest using the template
+		application.Manifest = template.Manifest
+	}
+
+	// Apply Kustomize overlays
+	application.Manifest, err = generateManifestWithKustomize(application.Manifest, application.Parameters)
+	if err != nil {
+		return false, fmt.Errorf("failed to generate manifest: %v", err)
+	}
+
 	affected, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(application)
 	if err != nil {
 		return false, err
@@ -140,4 +173,24 @@ func DeleteApplication(application *Application) (bool, error) {
 	}
 
 	return affected != 0, nil
+}
+
+// generateManifestWithBasicConfig generates the manifest from the basic configuration options using the provided template.
+func (a *Application) generateManifestWithBasicConfig(template *Template) (string, error) {
+	app := map[string]interface{}{
+		"name":      toK8sMetadataName(a.Name),
+		"namespace": a.Namespace,
+	}
+
+	options := make(map[string]interface{}, len(a.BasicConfigOptions))
+	for _, option := range a.BasicConfigOptions {
+		options[option.Parameter] = option.Setting
+	}
+
+	data := map[string]interface{}{
+		"application": app,
+		"options":     options,
+	}
+
+	return template.Render(data)
 }

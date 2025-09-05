@@ -106,7 +106,11 @@ func OpenaiRawMessagesToGptVisionMessages(messages []*RawMessage) ([]openai.Chat
 		if role == openai.ChatMessageRoleTool {
 			item.ToolCallID = message.ToolCallID
 		} else if role == openai.ChatMessageRoleAssistant {
-			item.ToolCalls = message.ToolCalls
+			if message.ToolCall.ID != "" {
+				item.ToolCalls = []openai.ToolCall{message.ToolCall}
+			} else {
+				item.ToolCalls = nil
+			}
 		}
 
 		if len(messageText) > 0 {

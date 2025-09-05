@@ -76,156 +76,19 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 }
 
 func (p *LocalModelProvider) GetPricing() string {
-	return `URL:
-https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/
-
-Language models:
-
-| Models                | Context | Input (Per 1,000 tokens) | Output (Per 1,000 tokens) |
-|-----------------------|---------|--------------------------|--------------------------|
-| GPT-3.5-Turbo         | 16K     | $0.0005                  | $0.0015                  |
-| GPT-4                 | 8K      | $0.03                    | $0.06                    |
-| GPT-4                 | 32K     | $0.06                    | $0.12                    |
-| GPT-4-Turbo           | 128K    | $0.01                    | $0.03                    |
-| GPT-4o                | 128K    | $0.0025                  | $0.0075                  |
-| GPT-4o-mini           | 128K    | $0.000075                | $0.0003                  |
-| GPT-4.1               | 100K    | $0.002                   | $0.008                   |
-| GPT-4.1-mini          | 100K    | $0.0004	                 | $0.0016                  |
-| GPT-4.1-nano          | 100K    | $0.0001                  | $0.0004                  |
-| o1                    | 200K    | $0.015                   | $0.060                   |
-| o1-pro                | 200K    | $0.15                    | $0.6                     |
-| o3                    | 200K    | $0.002                   | $0.008                   |
-| o3-mini               | 200K    | $0.0011                  | $0.0044                  |
-| o4-mini               | 200K    | $0.0011                  | $0.0044                  |
-| GPT-5                 | 400K    | $0.00125                 | $0.01                    |
-| GPT-5-mini            | 400K    | $0.00025                 | $0.002                   |
-| GPT-5-nano            | 400K    | $0.00005                 | $0.0004                  |
-| GPT-5-chat-latest     | 400K    | $0.00125                 | $0.01                    |
-Image models:
-
-| Models   | Quality | Resolution               | Price (per image) |
-|----------|---------|--------------------------|------------------|
-| Dall-E-3 | Standard| 1024 * 1024              | N/A              |
-|          | Standard| 1024 * 1792, 1792 * 1024 | $0.08            |
-| Dall-E-3 | HD      | 1024 * 1024              | N/A              |
-|          | HD      | 1024 * 1792, 1792 * 1024 | N/A              |
-| Dall-E-2 | Standard| 1024 * 1024              | N/A              |
-`
+	return getOpenAIModelPrice()
 }
 
 func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
-	model := p.subType
-	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
-	switch {
-	// gpt 3.5 turbo model Support:
-	case strings.Contains(model, "gpt-3.5"):
-		inputPricePerThousandTokens = 0.0005
-		outputPricePerThousandTokens = 0.0015
-		modelResult.Currency = "USD"
-
-	// gpt 4.1 model
-	case strings.Contains(model, "gpt-4.1"):
-		if strings.Contains(model, "4.1-mini") {
-			inputPricePerThousandTokens = 0.0004
-			outputPricePerThousandTokens = 0.0016
-		} else if strings.Contains(model, "4.1-nano") {
-			inputPricePerThousandTokens = 0.0001
-			outputPricePerThousandTokens = 0.0004
-		} else {
-			inputPricePerThousandTokens = 0.002
-			outputPricePerThousandTokens = 0.008
-		}
-		modelResult.Currency = "USD"
-
-	// gpt 4.0 model
-	case strings.Contains(model, "gpt-4"):
-		if strings.Contains(model, "turbo") {
-			inputPricePerThousandTokens = 0.01
-			outputPricePerThousandTokens = 0.03
-		} else if strings.Contains(model, "4o-mini") {
-			inputPricePerThousandTokens = 0.000075
-			outputPricePerThousandTokens = 0.0003
-		} else if strings.Contains(model, "4o") {
-			inputPricePerThousandTokens = 0.0025
-			outputPricePerThousandTokens = 0.0075
-		} else {
-			inputPricePerThousandTokens = 0.03
-			outputPricePerThousandTokens = 0.06
-		}
-		modelResult.Currency = "USD"
-
-	// o1 model
-	case strings.Contains(model, "o1"):
-		if strings.Contains(model, "pro") {
-			inputPricePerThousandTokens = 0.15
-			outputPricePerThousandTokens = 0.6
-		} else {
-			inputPricePerThousandTokens = 0.015
-			outputPricePerThousandTokens = 0.060
-		}
-		modelResult.Currency = "USD"
-
-	// o3 model
-	case strings.Contains(model, "o3"):
-		if strings.Contains(model, "mini") {
-			inputPricePerThousandTokens = 0.0011
-			outputPricePerThousandTokens = 0.0044
-		} else {
-			inputPricePerThousandTokens = 0.002
-			outputPricePerThousandTokens = 0.008
-		}
-		modelResult.Currency = "USD"
-
-	// o4 model
-	case strings.Contains(model, "o4"):
-		if strings.Contains(model, "o4-mini") {
-			inputPricePerThousandTokens = 0.0011
-			outputPricePerThousandTokens = 0.0044
-		} else {
-			inputPricePerThousandTokens = 0.0011
-			outputPricePerThousandTokens = 0.0044
-		}
-		modelResult.Currency = "USD"
-
-	// gpt 5.0 model
-	case strings.Contains(model, "gpt-5"):
-		if strings.Contains(model, "5-mini") {
-			inputPricePerThousandTokens = 0.00025
-			outputPricePerThousandTokens = 0.002
-		} else if strings.Contains(model, "5-nano") {
-			inputPricePerThousandTokens = 0.00005
-			outputPricePerThousandTokens = 0.0004
-		} else {
-			inputPricePerThousandTokens = 0.00125
-			outputPricePerThousandTokens = 0.01
-		}
-		modelResult.Currency = "USD"
-
 	// local custom model:
-	case model == "custom-model":
-		inputPricePerThousandTokens = p.inputPricePerThousandTokens
-		outputPricePerThousandTokens = p.outputPricePerThousandTokens
+	if p.subType == "custom-model" {
+		inputPrice := getPrice(modelResult.PromptTokenCount, p.inputPricePerThousandTokens)
+		outputPrice := getPrice(modelResult.ResponseTokenCount, p.outputPricePerThousandTokens)
+		modelResult.TotalPrice = AddPrices(inputPrice, outputPrice)
 		modelResult.Currency = p.currency
-
-	// dall-e model
-	case strings.Contains(model, "dall-e-3"):
-		modelResult.TotalPrice = float64(modelResult.ImageCount) * 0.08
-		modelResult.Currency = "USD"
 		return nil
-	default:
-		// inputPricePerThousandTokens = 0
-		// outputPricePerThousandTokens = 0
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", model)
 	}
-
-	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
-	outputPrice := getPrice(modelResult.ResponseTokenCount, outputPricePerThousandTokens)
-	modelResult.TotalPrice = AddPrices(inputPrice, outputPrice)
-	return nil
-}
-
-func (p *LocalModelProvider) CalculatePrice(modelResult *ModelResult) error {
-	return p.calculatePrice(modelResult)
+	return CalculateOpenAIModelPrice(p.subType, modelResult)
 }
 
 func flushDataAzure(data string, writer io.Writer) error {
@@ -303,9 +166,6 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	} else if p.typ == "Azure" {
 		client = getAzureClientFromToken(p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
 		flushData = flushDataAzure
-	} else if p.typ == "OpenAI" {
-		client = GetOpenAiClientFromToken(p.secretKey)
-		flushData = flushDataOpenai
 	} else if p.typ == "GitHub" {
 		client = getGitHubClientFromToken(p.secretKey, p.providerUrl)
 		flushData = flushDataOpenai
@@ -339,37 +199,6 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 	modelResult := &ModelResult{}
 	if getOpenAiModelType(p.subType) == "Chat" {
-		if p.subType == "dall-e-3" {
-			if strings.HasPrefix(question, "$CasibaseDryRun$") {
-				return modelResult, nil
-			}
-			reqUrl := openai.ImageRequest{
-				Prompt:         question,
-				Model:          openai.CreateImageModelDallE3,
-				Size:           openai.CreateImageSize1024x1024,
-				ResponseFormat: openai.CreateImageResponseFormatURL,
-				N:              1,
-			}
-
-			respUrl, err := client.CreateImage(ctx, reqUrl)
-			if err != nil {
-				return nil, err
-			}
-
-			url := fmt.Sprintf("<img src=\"%s\" width=\"100%%\" height=\"auto\">", respUrl.Data[0].URL)
-			fmt.Fprint(writer, url)
-			flusher.Flush()
-
-			modelResult.ImageCount = 1
-			modelResult.TotalTokenCount = modelResult.ImageCount
-			err = p.calculatePrice(modelResult)
-			if err != nil {
-				return nil, err
-			}
-
-			return modelResult, nil
-		}
-
 		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
 		if err != nil {
 			return nil, err
@@ -524,6 +353,34 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 		modelResult.ResponseTokenCount += responseTokenCount
 		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
+		err = p.calculatePrice(modelResult)
+		if err != nil {
+			return nil, err
+		}
+		return modelResult, nil
+	} else if getOpenAiModelType(p.subType) == "imagesGenerations" {
+		if strings.HasPrefix(question, "$CasibaseDryRun$") {
+			return modelResult, nil
+		}
+		reqUrl := openai.ImageRequest{
+			Prompt:         question,
+			Model:          openai.CreateImageModelDallE3,
+			Size:           openai.CreateImageSize1024x1024,
+			ResponseFormat: openai.CreateImageResponseFormatURL,
+			N:              1,
+		}
+
+		respUrl, err := client.CreateImage(ctx, reqUrl)
+		if err != nil {
+			return nil, err
+		}
+
+		url := fmt.Sprintf("<img src=\"%s\" width=\"100%%\" height=\"auto\">", respUrl.Data[0].URL)
+		fmt.Fprint(writer, url)
+		flusher.Flush()
+
+		modelResult.ImageCount = 1
+		modelResult.TotalTokenCount = modelResult.ImageCount
 		err = p.calculatePrice(modelResult)
 		if err != nil {
 			return nil, err

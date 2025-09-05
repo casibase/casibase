@@ -23,6 +23,7 @@ import (
 	"github.com/ThinkInAIXYZ/go-mcp/client"
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
 	"github.com/casibase/casibase/agent"
+	"github.com/openai/openai-go/v2/responses"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -115,7 +116,17 @@ func QueryTextWithTools(p ModelProvider, question string, writer io.Writer, hist
 		return modelResult, nil
 	}
 
-	toolCalls := agentInfo.AgentMessages.ToolCalls.([]openai.ToolCall)
+	toolCalls, ok := agentInfo.AgentMessages.ToolCalls.([]openai.ToolCall)
+	if !ok {
+		responseFunctionToolCalls := agentInfo.AgentMessages.ToolCalls.([]responses.ResponseFunctionToolCall)
+		for _, responseFunctionToolCall := range responseFunctionToolCalls {
+			toolCalls = append(toolCalls, openai.ToolCall{
+				ID:       responseFunctionToolCall.ID,
+				Type:     "function",
+				Function: openai.FunctionCall{Name: responseFunctionToolCall.Name, Arguments: responseFunctionToolCall.Arguments},
+			})
+		}
+	}
 
 	for len(toolCalls) > 0 {
 		for _, toolCall := range toolCalls {
@@ -127,9 +138,9 @@ func QueryTextWithTools(p ModelProvider, question string, writer io.Writer, hist
 			}
 
 			messages = append(messages, &RawMessage{
-				Text:      "Call result from " + toolCall.Function.Name,
-				Author:    "AI",
-				ToolCalls: []openai.ToolCall{toolCall},
+				Text:     "Call result from " + toolCall.Function.Name,
+				Author:   "AI",
+				ToolCall: toolCall,
 			})
 
 			messages, err = callTools(toolCall, toolName, mcpClient, messages)
@@ -142,7 +153,18 @@ func QueryTextWithTools(p ModelProvider, question string, writer io.Writer, hist
 		if err != nil {
 			return nil, err
 		}
-		toolCalls = agentInfo.AgentMessages.ToolCalls.([]openai.ToolCall)
+		toolCalls, ok = agentInfo.AgentMessages.ToolCalls.([]openai.ToolCall)
+		if !ok {
+			toolCalls = []openai.ToolCall{}
+			responseFunctionToolCalls := agentInfo.AgentMessages.ToolCalls.([]responses.ResponseFunctionToolCall)
+			for _, responseFunctionToolCall := range responseFunctionToolCalls {
+				toolCalls = append(toolCalls, openai.ToolCall{
+					ID:       responseFunctionToolCall.ID,
+					Type:     "function",
+					Function: openai.FunctionCall{Name: responseFunctionToolCall.Name, Arguments: responseFunctionToolCall.Arguments},
+				})
+			}
+		}
 	}
 
 	for _, mcpClient := range agentInfo.AgentClients.Clients {

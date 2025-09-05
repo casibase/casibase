@@ -22,7 +22,7 @@ import (
 	"time"
 
 	"github.com/casibase/casibase/model"
-	"github.com/sashabaranov/go-openai"
+	"github.com/openai/openai-go/v2"
 )
 
 type OpenAIFileSystemStorageProvider struct {
@@ -50,15 +50,14 @@ func (p *OpenAIFileSystemStorageProvider) PutObject(user string, parent string, 
 		fileBuffer.WriteString("this is a folder")
 	}
 
-	file, err := client.CreateFileBytes(ctx, openai.FileBytesRequest{
-		Name:    url.PathEscape(fileName),
-		Bytes:   fileBuffer.Bytes(),
-		Purpose: openai.PurposeAssistants,
+	file, err := client.Files.New(ctx, openai.FileNewParams{
+		File:    openai.File(fileBuffer, url.PathEscape(fileName), "application/json"),
+		Purpose: openai.FilePurposeAssistants,
 	})
 	if err != nil {
 		return "", err
 	}
-	_, err = client.CreateVectorStoreFile(ctx, p.vectorStoreId, openai.VectorStoreFileRequest{
+	_, err = client.VectorStores.Files.New(ctx, p.vectorStoreId, openai.VectorStoreFileNewParams{
 		FileID: file.ID,
 	})
 	if err != nil {
@@ -69,7 +68,7 @@ func (p *OpenAIFileSystemStorageProvider) PutObject(user string, parent string, 
 		Key:          key,
 		Url:          "",
 		LastModified: time.Now().Format(time.RFC3339),
-		Size:         int64(file.Bytes),
+		Size:         file.Bytes,
 	}
 	return addFileToCache(file.ID, p.storeId, object)
 }
@@ -79,12 +78,12 @@ func (p *OpenAIFileSystemStorageProvider) DeleteObject(key string) error {
 	client := model.GetOpenAiClientFromToken(p.clientSecret)
 
 	fileId := getCachedFileId(p.storeId, key)
-	err := client.DeleteVectorStoreFile(ctx, p.vectorStoreId, fileId)
+	_, err := client.VectorStores.Files.Delete(ctx, p.vectorStoreId, fileId)
 	if err != nil {
 		return err
 	}
 	removeFileFromCache(p.storeId, key)
-	err = client.DeleteFile(ctx, fileId)
+	_, err = client.Files.Delete(ctx, fileId)
 	if err != nil {
 		return err
 	}
@@ -112,58 +111,50 @@ func (p *OpenAIFileSystemStorageProvider) getCachedFiles(prefix string) ([]*Obje
 }
 
 func getOpenaiFileObjects(clientSecret string, vectorStoreId string) (map[string]CachedFile, error) {
+	ctx := context.Background()
 	client := model.GetOpenAiClientFromToken(clientSecret)
-	limit := 100
-	storeFiles, err := client.ListVectorStoreFiles(context.Background(), vectorStoreId, openai.Pagination{
-		Limit: &limit,
-	})
-	if err != nil {
+
+	FileMap := make(map[string]string)
+	fp := client.Files.ListAutoPaging(ctx, openai.FileListParams{})
+	for fp.Next() {
+		f := fp.Current()
+		FileMap[f.ID] = f.Filename
+	}
+	if err := fp.Err(); err != nil {
 		return nil, err
-	}
-
-	hasNext := storeFiles.HasMore
-	for hasNext {
-		files, err := client.ListVectorStoreFiles(context.Background(), vectorStoreId, openai.Pagination{
-			Limit: &limit,
-			After: storeFiles.LastID,
-		})
-		if err != nil {
-			return nil, err
-		}
-		storeFiles.VectorStoreFiles = append(storeFiles.VectorStoreFiles, files.VectorStoreFiles...)
-		hasNext = files.HasMore
-	}
-
-	allFiles, err := client.ListFiles(context.Background())
-	if err != nil {
-		return nil, err
-	}
-
-	allFileMap := make(map[string]string)
-	for _, file := range allFiles.Files {
-		allFileMap[file.ID] = file.FileName
 	}
 
 	currentFileMap := make(map[string]CachedFile)
-	for _, file := range storeFiles.VectorStoreFiles {
-		fileName, err := url.PathUnescape(allFileMap[file.ID])
+	vp := client.VectorStores.Files.ListAutoPaging(ctx, vectorStoreId, openai.VectorStoreFileListParams{
+		Limit: openai.Int(100),
+	})
+	for vp.Next() {
+		vf := vp.Current()
+
+		fileName := FileMap[vf.ID]
+		if fileName == "" {
+			continue
+		}
+		fileNameDecoded, err := url.PathUnescape(fileName)
 		if err != nil {
 			return nil, err
 		}
-
-		if strings.Contains(fileName, "_hidden.ini.txt") {
-			fileName = strings.Replace(fileName, "_hidden.ini.txt", "_hidden.ini", 1)
+		if strings.Contains(fileNameDecoded, "_hidden.ini.txt") {
+			fileNameDecoded = strings.Replace(fileNameDecoded, "_hidden.ini.txt", "_hidden.ini", 1)
 		}
 
-		currentFileMap[fileName] = CachedFile{
-			FileId: file.ID,
+		currentFileMap[fileNameDecoded] = CachedFile{
+			FileId: vf.ID,
 			Object: Object{
-				Key:          fileName,
-				LastModified: time.Unix(file.CreatedAt, 0).Format(time.RFC3339),
-				Size:         int64(file.UsageBytes),
+				Key:          fileNameDecoded,
+				LastModified: time.Unix(vf.CreatedAt, 0).Format(time.RFC3339),
+				Size:         vf.UsageBytes,
 				Url:          "",
 			},
 		}
+	}
+	if err := vp.Err(); err != nil {
+		return nil, err
 	}
 
 	return currentFileMap, nil

@@ -14,8 +14,8 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Alert, Button, Popconfirm, Table, Tooltip} from "antd";
-import {DeleteOutlined} from "@ant-design/icons";
+import {Alert, Button, Popconfirm, Table, Tag, Tooltip} from "antd";
+import {DeleteOutlined, LinkOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -77,12 +77,10 @@ class ApplicationListPage extends BaseListPage {
   updateApplicationStatus(record) {
     ApplicationBackend.getApplicationStatus(`${record.owner}/${record.name}`)
       .then((statusRes) => {
-        // eslint-disable-next-line no-console
-        console.log(`Application status for ${record.name}:`, statusRes);
         if (statusRes && statusRes.status === "ok") {
           this.setState(prevState => ({
             data: prevState.data.map(item =>
-              item.name === record.name ? {...item, status: statusRes.data} : item
+              item.name === record.name ? {...item, status: statusRes.data, url: statusRes.data2} : item
             ),
           }));
         } else {
@@ -164,12 +162,7 @@ class ApplicationListPage extends BaseListPage {
 
   newApplication() {
     const randomName = Setting.getRandomName();
-    const defaultParameters = `apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-spec:
-  replicas: 3`;
+    const defaultParameters = "";
 
     return {
       owner: this.props.account.name,
@@ -298,6 +291,23 @@ spec:
         },
       },
       {
+        title: i18next.t("general:Basic configuration"),
+        dataIndex: "basicConfigOptions",
+        key: "basicConfigOptions",
+        width: "200px",
+        render: (text, record, index) => {
+          return (
+            text?.length > 0 ? text.map((option, i) => {
+              if (option.parameter === "host") {
+                return <Tag key={i}>{option.parameter}: <a href={"http://" + option.setting} style={{textDecoration: "underline"}}>{option.setting}</a></Tag>;
+              } else {
+                return <Tag key={i}>{option.parameter}: {option.setting}</Tag>;
+              }
+            }) : null
+          );
+        },
+      },
+      {
         title: i18next.t("general:Status"),
         dataIndex: "status",
         key: "status",
@@ -305,6 +315,25 @@ spec:
         sorter: (a, b) => a.status.localeCompare(b.status),
         render: (text, record, index) => {
           return Setting.getApplicationStatusTag(text);
+        },
+      },
+      {
+        title: i18next.t("general:URL"),
+        dataIndex: "url",
+        key: "url",
+        width: "140px",
+        render: (text, record, index) => {
+          if (!text || record.status === "Not Deployed") {
+            return null;
+          }
+          return (
+            <a target="_blank" rel="noreferrer" href={`http://${text}`} style={{display: "flex", alignItems: "center"}}>
+              <LinkOutlined style={{marginRight: 4}} />
+              <Tooltip title={text}>
+                {text}
+              </Tooltip>
+            </a>
+          );
         },
       },
       {
@@ -335,6 +364,13 @@ spec:
                       {i18next.t("application:Undeploy")}
                     </Button>
                   </Popconfirm>
+                )
+              }
+              {
+                record.status !== "Not Deployed" && (
+                  <Button style={{marginBottom: "10px", marginRight: "10px"}} onClick={() => this.props.history.push(`/applications/${record.name}/view`, {application: record})}>
+                    {i18next.t("general:View")}
+                  </Button>
                 )
               }
               <Popconfirm

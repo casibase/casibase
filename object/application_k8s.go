@@ -17,6 +17,7 @@ package object
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
 
@@ -144,29 +145,14 @@ func DeployApplication(application *Application) (bool, error) {
 		return false, fmt.Errorf("k8s client not connected to cluster")
 	}
 
-	// Get the template
-	template, err := getTemplate(application.Owner, application.Template)
-	if err != nil {
-		return false, fmt.Errorf("failed to get template: %v", err)
-	}
-	if template == nil {
-		return false, fmt.Errorf("template not found: %s", application.Template)
-	}
-
-	// Generate final manifest using simple template replacement
-	finalManifest, err := generateManifestWithKustomize(template.Manifest, application.Parameters)
-	if err != nil {
-		return false, fmt.Errorf("failed to generate manifest: %v", err)
-	}
-
 	// Create namespace if it doesn't exist
-	err = k8sClient.createNamespaceIfNotExists(application.Namespace)
+	err := k8sClient.createNamespaceIfNotExists(application.Namespace)
 	if err != nil {
 		return false, fmt.Errorf("failed to create namespace: %v", err)
 	}
 
 	// Deploy the manifest
-	err = deployManifest(finalManifest, application.Namespace)
+	err = deployManifest(application.Manifest, application.Namespace)
 	if err != nil {
 		return false, fmt.Errorf("failed to deploy manifest: %v", err)
 	}
@@ -218,7 +204,7 @@ func DeployApplicationSync(application *Application) (bool, error) {
 	}
 
 	// Wait for deployment to be ready (with timeout)
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	ticker := time.NewTicker(5 * time.Second)
@@ -245,6 +231,13 @@ func DeployApplicationSync(application *Application) (bool, error) {
 
 			switch status {
 			case StatusRunning:
+				if url, err := GetURL(application.Namespace); err == nil && url != "" {
+					application.URL = url
+					_, err := UpdateApplication(util.GetIdFromOwnerAndName(application.Owner, application.Name), application)
+					if err != nil {
+						return false, err
+					}
+				}
 				return true, nil
 			case StatusNotDeployed:
 				return false, fmt.Errorf("namespace %s is terminating and all resources have been cleaned up", application.Namespace)
@@ -436,8 +429,15 @@ func GetApplicationStatus(owner, name, namespace string) (string, error) {
 	if err != nil {
 		return StatusUnknown, err
 	}
+	statefulSets, err := k8sClient.clientSet.AppsV1().StatefulSets(namespace).List(
+		context.TODO(),
+		metav1.ListOptions{},
+	)
+	if err != nil {
+		return StatusUnknown, err
+	}
 
-	if len(deployments.Items) == 0 {
+	if len(deployments.Items) == 0 && len(statefulSets.Items) == 0 {
 		err = UpdateApplicationStatus(owner, name, StatusNotDeployed)
 		if err != nil {
 			return "", err
@@ -449,6 +449,18 @@ func GetApplicationStatus(owner, name, namespace string) (string, error) {
 	// Check if all deployments are ready
 	for _, deployment := range deployments.Items {
 		if deployment.Status.ReadyReplicas < deployment.Status.Replicas {
+			err = UpdateApplicationStatus(owner, name, StatusPending)
+			if err != nil {
+				return "", err
+			}
+
+			return StatusPending, nil
+		}
+	}
+
+	// Check if all statefulsets are ready
+	for _, statefulSet := range statefulSets.Items {
+		if statefulSet.Status.ReadyReplicas < statefulSet.Status.Replicas {
 			err = UpdateApplicationStatus(owner, name, StatusPending)
 			if err != nil {
 				return "", err
@@ -484,4 +496,23 @@ func deployManifest(manifest, namespace string) error {
 	}
 
 	return nil
+}
+
+func toK8sMetadataName(name string) string {
+	if len(name) == 0 {
+		name = "default-name"
+	}
+
+	name = strings.ToLower(name)
+
+	re := regexp.MustCompile(`[^a-z0-9.-]+`)
+	name = re.ReplaceAllString(name, "-")
+
+	name = strings.Trim(name, "-.")
+
+	if len(name) > 253 {
+		name = name[:253]
+	}
+
+	return name
 }

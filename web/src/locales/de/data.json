@@ -22,6 +22,7 @@
     "Parameters": "Parameter",
     "Parameters - Tooltip": "Parameter der Anwendung",
     "Pending": "Ausstehend",
+    "Replicas": "Replikate",
     "Running": "Wird ausgeführt",
     "Terminating": "Wird beendet",
     "Undeploy": "Bereitstellung aufheben",

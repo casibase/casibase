@@ -60,7 +60,7 @@ func GetOpenAiMaxTokens(model string) int {
 
 func getOpenAiModelType(model string) string {
 	chatModels := []string{
-		"dall-e-3", "gpt-3.5-turbo", "gpt-4-turbo", "gpt-4", "gpt-4o",
+		"gpt-3.5-turbo", "gpt-4-turbo", "gpt-4", "gpt-4o",
 		"gpt-4o-2024-08-06", "gpt-4o-mini", "gpt-4o-mini-2024-07-18", "gpt-4.1",
 		"gpt-4.1-mini", "gpt-4.1-nano", "o1", "o1-pro", "o3", "o3-mini", "o4-mini", "gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-5-chat-latest", "custom-model",
 	}
@@ -69,6 +69,10 @@ func getOpenAiModelType(model string) string {
 		"text-davinci-003", "text-davinci-002", "text-curie-001",
 		"text-babbage-001", "text-ada-001", "text-davinci-001",
 		"davinci-instruct-beta", "davinci", "curie-instruct-beta", "curie", "ada", "babbage",
+	}
+
+	imageModels := []string{
+		"dall-e-3", "dall-e-2", "gpt-image-1",
 	}
 
 	for _, chatModel := range chatModels {
@@ -80,6 +84,12 @@ func getOpenAiModelType(model string) string {
 	for _, completionModel := range completionModels {
 		if model == completionModel {
 			return "Completion"
+		}
+	}
+
+	for _, imageModel := range imageModels {
+		if model == imageModel {
+			return "imagesGenerations"
 		}
 	}
 
@@ -107,7 +117,11 @@ func OpenaiRawMessagesToMessages(messages []*RawMessage) []openai.ChatCompletion
 		if role == openai.ChatMessageRoleTool {
 			item.ToolCallID = message.ToolCallID
 		} else if role == openai.ChatMessageRoleAssistant {
-			item.ToolCalls = message.ToolCalls
+			if message.ToolCall.ID != "" {
+				item.ToolCalls = []openai.ToolCall{message.ToolCall}
+			} else {
+				item.ToolCalls = nil
+			}
 		}
 
 		// Set non-empty message text due to that some AI models report error for empty message
