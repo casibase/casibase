@@ -180,6 +180,7 @@
     "Failed to undeploy": "Failed to undeploy",
     "Forms": "Формы",
     "Go to writable demo site?": "Перейти на демо-сайт для записи?",
+    "Graphs": "图谱",
     "Home": "Главная",
     "ID": "ID",
     "ID - Tooltip": "ID образа в облачной платформе",
@@ -251,6 +252,7 @@
     "Provider URL - Tooltip": "Основной URL API провайдера",
     "Providers": "Провайдеры",
     "Public Videos": "Открытые записи",
+    "Query": "Query",
     "Reasoning text": "Процесс рассуждений",
     "Reasoning text - Tooltip": "Внутренний процесс рассуждений модели ИИ",
     "Records": "Журналы",
@@ -356,6 +358,9 @@
     "empty": "Пустой",
     "items": "Пункты",
     "{total} in total": "{total} Итого"
+  },
+  "graph": {
+    "Edit Graph": "Edit Graph"
   },
   "image": {
     "Arch": "Архитектура",
@@ -615,6 +620,8 @@
     "Theme color": "Цвет темы",
     "Theme color - Tooltip": "Цвет темы интерфейса",
     "Upload file": "Загрузить файл",
+    "Vector store id": "Vector store id",
+    "Vector store id - Tooltip": "Vector store id - Tooltip",
     "Welcome": "Приветственная подсказка",
     "Welcome - Tooltip": "Приветствие, отображаемое пользователю при первом входе в чат",
     "Welcome text": "Приветственный текст",

@@ -1,7 +1,7 @@
 {
   "account": {
-    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. 아래의 \"내 계정\" 버튼을 클릭하여 설정 페이지로 이동하세요.",
-    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. \"비밀번호 변경...\" 버튼을 클릭하여 비밀번호를 변경하세요. 그런 다음 설정 페이지를 닫습니다.",
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
     "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. 이 페이지로 돌아가 F5 키를 눌러 새로 고칩니다. 이 경고 메시지가 사라질 것입니다.",
     "4. If you encounter any issues, please contact your administrator.": "4. 문제가 발생하면 관리자에게 문의하세요.",
     "My Account": "내 계정",
@@ -180,6 +180,7 @@
     "Failed to undeploy": "배포 취소 실패",
     "Forms": "폼",
     "Go to writable demo site?": "쓰기 가능한 데모 사이트로 이동하시겠습니까?",
+    "Graphs": "图谱",
     "Home": "홈",
     "ID": "ID",
     "ID - Tooltip": "클라우드 플랫폼의 이미지 ID",
@@ -251,6 +252,7 @@
     "Provider URL - Tooltip": "서비스 제공업체 API 기본 주소",
     "Providers": "제공자",
     "Public Videos": "공개 녹화",
+    "Query": "Query",
     "Reasoning text": "추론 텍스트",
     "Reasoning text - Tooltip": "AI 모델의 내부 추론 과정",
     "Records": "로그",
@@ -356,6 +358,9 @@
     "empty": "빈",
     "items": "항목",
     "{total} in total": "{total} 총계"
+  },
+  "graph": {
+    "Edit Graph": "Edit Graph"
   },
   "image": {
     "Arch": "아키텍처",
@@ -615,6 +620,8 @@
     "Theme color": "테마 색상",
     "Theme color - Tooltip": "테마 색상",
     "Upload file": "파일 업로드",
+    "Vector store id": "Vector store id",
+    "Vector store id - Tooltip": "Vector store id - Tooltip",
     "Welcome": "환영 프롬프트",
     "Welcome - Tooltip": "사용자가 처음으로 채팅에 들어갈 때 표시되는 환영 메시지",
     "Welcome text": "환영 텍스트",

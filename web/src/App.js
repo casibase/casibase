@@ -619,7 +619,6 @@ class App extends Component {
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/chats">{i18next.t("general:Chats & Messages")}</Link>, "/ai-chat", <BulbTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"),
         Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"),
-        Setting.getItem(<Link to="/graphs">{i18next.t("knowledge:Graphs")}</Link>, "/graphs"),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:AI Setting")}</Link>, "/ai-setting", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
@@ -649,6 +648,7 @@ class App extends Component {
         Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
         Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"),
         Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"),
+        Setting.getItem(<Link to="/graphs">{i18next.t("general:Graphs")}</Link>, "/graphs"),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
@@ -788,7 +788,7 @@ class App extends Component {
         <Route exact path="/:owner/:storeName/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/:owner/:storeName/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/graphs" render={(props) => this.renderSigninIfNotSignedIn(<GraphListPage account={this.state.account} {...props} />)} />
-        <Route exact path="/graphs/:owner/:graphName" render={(props) => this.renderSigninIfNotSignedIn(<GraphEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/graphs/:graphName" render={(props) => this.renderSigninIfNotSignedIn(<GraphEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/sysinfo" render={(props) => this.renderSigninIfNotSignedIn(<SystemInfo account={this.state.account} {...props} />)} />
         <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />

@@ -1,7 +1,7 @@
 {
   "account": {
-    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. 下記の「マイアカウント」ボタンをクリックして設定ページに移動してください。",
-    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. 「パスワードを変更...」ボタンをクリックしてパスワードを変更してください。その後、設定ページを閉じてください。",
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
     "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. このページに戻り、F5キーを押して更新してください。この警告メッセージが消えるはずです。",
     "4. If you encounter any issues, please contact your administrator.": "4. 問題が発生した場合は、管理者にご連絡ください。",
     "My Account": "マイアカウント",
@@ -180,6 +180,7 @@
     "Failed to undeploy": "アンデプロイに失敗しました",
     "Forms": "フォーム",
     "Go to writable demo site?": "書き込み可能なデモサイトに移動しますか？",
+    "Graphs": "图谱",
     "Home": "ホーム",
     "ID": "ID",
     "ID - Tooltip": "クラウドプラットフォーム内のイメージID",
@@ -251,6 +252,7 @@
     "Provider URL - Tooltip": "サービスプロバイダAPIの基礎アドレス",
     "Providers": "プロバイダ",
     "Public Videos": "公開ビデオ",
+    "Query": "Query",
     "Reasoning text": "推論テキスト",
     "Reasoning text - Tooltip": "AIモデルの内部推論過程",
     "Records": "ログ",
@@ -356,6 +358,9 @@
     "empty": "空",
     "items": "項目",
     "{total} in total": "{total} 合計"
+  },
+  "graph": {
+    "Edit Graph": "Edit Graph"
   },
   "image": {
     "Arch": "アーキテクチャ",
@@ -615,6 +620,8 @@
     "Theme color": "テーマカラー",
     "Theme color - Tooltip": "界面テーマ色",
     "Upload file": "ファイルをアップロード",
+    "Vector store id": "Vector store id",
+    "Vector store id - Tooltip": "Vector store id - Tooltip",
     "Welcome": "歓迎プロンプト",
     "Welcome - Tooltip": "ユーザーが初めてチャットに入ったときに表示する歓迎メッセージ",
     "Welcome text": "歓迎テキスト",

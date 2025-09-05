@@ -1,3 +1,17 @@
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package object
 
 import (
@@ -7,74 +21,43 @@ import (
 	"xorm.io/core"
 )
 
+type GraphItem struct {
+	Name  string `json:"name"`
+	Label string `json:"label"`
+	Type  string `json:"type"`
+	Width string `json:"width"`
+}
+
 type Graph struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
-	UpdatedTime string `xorm:"varchar(100)" json:"updatedTime"`
 
-	Organization string   `xorm:"varchar(100)" json:"organization"`
-	DisplayName  string   `xorm:"varchar(100)" json:"displayName"`
-	Store        string   `xorm:"varchar(100)" json:"store"`
-	Chats        []string `xorm:"varchar(500)" json:"chats"`
-	Users        []string `xorm:"varchar(500)" json:"users"`
-	Description  string   `xorm:"varchar(500)" json:"description"`
-	GraphType    string   `xorm:"varchar(50)" json:"graphType"`
-
-	GraphData string `xorm:"mediumtext" json:"graphData"`
-	Analysis  string `xorm:"mediumtext" json:"analysis"`
+	DisplayName string `xorm:"varchar(100)" json:"displayName"`
+	Text        string `xorm:"mediumtext" json:"text"`
 }
 
-type GraphData struct {
-	Nodes []GraphNode `json:"nodes"`
-	Links []GraphLink `json:"links"`
+func GetMaskedGraph(graph *Graph, isMaskEnabled bool) *Graph {
+	if !isMaskEnabled {
+		return graph
+	}
+
+	if graph == nil {
+		return nil
+	}
+
+	return graph
 }
 
-type GraphNode struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	Category  int       `json:"category"`
-	Value     int       `json:"value"`
-	ItemStyle ItemStyle `json:"itemStyle"`
-}
+func GetMaskedGraphs(graphs []*Graph, isMaskEnabled bool) []*Graph {
+	if !isMaskEnabled {
+		return graphs
+	}
 
-type GraphLink struct {
-	Source string `json:"source"`
-	Target string `json:"target"`
-	Value  int    `json:"value"`
-}
-
-type ItemStyle struct {
-	Color string `json:"color"`
-}
-
-type Analysis struct {
-	TotalNodes          int               `json:"totalNodes"`
-	TotalLinks          int               `json:"totalLinks"`
-	UserCount           int               `json:"userCount"`
-	TopicCount          int               `json:"topicCount"`
-	EntityCount         int               `json:"entityCount"`
-	AvgConnections      float64           `json:"avgConnections"`
-	MostActiveNodes     []ActiveNode      `json:"mostActiveNodes"`
-	TopicWeights        []TopicWeight     `json:"topicWeights"`
-	EntityFrequencies   []EntityFrequency `json:"entityFrequencies"`
-	Density             float64           `json:"density"`
-	GiantComponentRatio float64           `json:"giantComponentRatio"`
-}
-
-type ActiveNode struct {
-	Name        string `json:"name"`
-	Connections int    `json:"connections"`
-}
-
-type TopicWeight struct {
-	Name   string `json:"name"`
-	Weight int    `json:"weight"`
-}
-
-type EntityFrequency struct {
-	Name      string `json:"name"`
-	Frequency int    `json:"frequency"`
+	for _, graph := range graphs {
+		graph = GetMaskedGraph(graph, isMaskEnabled)
+	}
+	return graphs
 }
 
 func GetGlobalGraphs() ([]*Graph, error) {
@@ -89,29 +72,7 @@ func GetGlobalGraphs() ([]*Graph, error) {
 
 func GetGraphs(owner string) ([]*Graph, error) {
 	graphs := []*Graph{}
-	err := adapter.engine.Desc("updated_time").Find(&graphs, &Graph{Owner: owner})
-	if err != nil {
-		return graphs, err
-	}
-
-	return graphs, nil
-}
-
-func GetGraphCount(owner string, field string, value string, store string) (int64, error) {
-	session := GetDbSession(owner, -1, -1, field, value, "", "")
-	if store != "" {
-		session = session.And("store = ?", store)
-	}
-	return session.Count(&Graph{})
-}
-
-func GetPaginationGraphs(owner string, offset, limit int, field, value, sortField, sortOrder, store string) ([]*Graph, error) {
-	graphs := []*Graph{}
-	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
-	if store != "" {
-		session = session.And("store = ?", store)
-	}
-	err := session.Find(&graphs)
+	err := adapter.engine.Desc("created_time").Find(&graphs, &Graph{Owner: owner})
 	if err != nil {
 		return graphs, err
 	}
@@ -140,12 +101,21 @@ func GetGraph(id string) (*Graph, error) {
 
 func UpdateGraph(id string, graph *Graph) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	affected, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(graph)
+	_, err := getGraph(owner, name)
+	if err != nil {
+		return false, err
+	}
+	if graph == nil {
+		return false, nil
+	}
+
+	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(graph)
 	if err != nil {
 		return false, err
 	}
 
-	return affected != 0, nil
+	// return affected != 0
+	return true, nil
 }
 
 func AddGraph(graph *Graph) (bool, error) {
@@ -168,4 +138,20 @@ func DeleteGraph(graph *Graph) (bool, error) {
 
 func (graph *Graph) GetId() string {
 	return fmt.Sprintf("%s/%s", graph.Owner, graph.Name)
+}
+
+func GetGraphCount(owner string, field, value string) (int64, error) {
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&Graph{})
+}
+
+func GetPaginationGraphs(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Graph, error) {
+	graphs := []*Graph{}
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&graphs)
+	if err != nil {
+		return graphs, err
+	}
+
+	return graphs, nil
 }

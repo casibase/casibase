@@ -1,7 +1,7 @@
 {
   "account": {
-    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Gehen Sie zur Einstellungsseite, indem Sie auf die untere Schaltfläche \"Mein Konto\" klicken.",
-    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Klicken Sie auf die Schaltfläche \"Passwort ändern...\", um Ihr Passwort zu ändern. Schließen Sie anschließend die Einstellungsseite.",
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
     "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. kehren Sie zu dieser Seite zurück und aktualisieren Sie sie, indem Sie die F5-Taste drücken. Diese Warnung sollte verschwinden.",
     "4. If you encounter any issues, please contact your administrator.": "4. Bei Problemen wenden Sie sich bitte an Ihren Administrator.",
     "My Account": "Mein Konto",
@@ -180,6 +180,7 @@
     "Failed to undeploy": "Aufheben der Bereitstellung fehlgeschlagen",
     "Forms": "Formulare",
     "Go to writable demo site?": "Gehen Sie zur beschreibbaren Demoseite?",
+    "Graphs": "图谱",
     "Home": "Startseite",
     "ID": "ID",
     "ID - Tooltip": "Bild-ID in der Cloud-Plattform",
@@ -251,6 +252,7 @@
     "Provider URL - Tooltip": "Basisadresse der Anbieter-API",
     "Providers": "Anbieter",
     "Public Videos": "Öffentliche Aufzeichnungen",
+    "Query": "Query",
     "Reasoning text": "Denkprozess",
     "Reasoning text - Tooltip": "Interner Denkprozess des KI-Modells",
     "Records": "Protokolle",
@@ -356,6 +358,9 @@
     "empty": "leer",
     "items": "Elemente",
     "{total} in total": "{total} insgesamt"
+  },
+  "graph": {
+    "Edit Graph": "Edit Graph"
   },
   "image": {
     "Arch": "Architektur",
@@ -615,6 +620,8 @@
     "Theme color": "Themefarbe",
     "Theme color - Tooltip": "Oberflächen-Themefarbe",
     "Upload file": "Datei hochladen",
+    "Vector store id": "Vector store id",
+    "Vector store id - Tooltip": "Vector store id - Tooltip",
     "Welcome": "Willkommensprompt",
     "Welcome - Tooltip": "Willkommensnachricht, die beim ersten Eintreten in den Chat angezeigt wird",
     "Welcome text": "Willkommenstext",

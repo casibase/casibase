@@ -1,7 +1,7 @@
 {
   "account": {
-    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Klik tombol \"Akun Saya\" di bawah ini untuk masuk ke halaman pengaturan Anda.",
-    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Klik tombol \"Ubah kata sandi...\" untuk mengubah kata sandi Anda. Kemudian tutup halaman pengaturan.",
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
     "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. Kembali ke halaman ini dan perbarui dengan menekan tombol F5. Pesan peringatan ini seharusnya akan hilang.",
     "4. If you encounter any issues, please contact your administrator.": "4. Jika Anda menghadapi masalah, silakan hubungi administrator Anda.",
     "My Account": "Akun Saya",
@@ -180,6 +180,7 @@
     "Failed to undeploy": "Gagal membatalkan penerapan",
     "Forms": "Formulir",
     "Go to writable demo site?": "Masuk ke situs demo dapat ditulis?",
+    "Graphs": "图谱",
     "Home": "Halaman utama",
     "ID": "ID",
     "ID - Tooltip": "ID gambar di platform cloud",
@@ -251,6 +252,7 @@
     "Provider URL - Tooltip": "Alamat dasar API penyedia layanan",
     "Providers": "Penyedia",
     "Public Videos": "Video publik",
+    "Query": "Query",
     "Reasoning text": "Proses penalaran",
     "Reasoning text - Tooltip": "Proses penalaran internal model AI",
     "Records": "Catatan",
@@ -356,6 +358,9 @@
     "empty": "Kosong",
     "items": "Item",
     "{total} in total": "{total} total"
+  },
+  "graph": {
+    "Edit Graph": "Edit Graph"
   },
   "image": {
     "Arch": "Arsitektur",
@@ -615,6 +620,8 @@
     "Theme color": "Warna tema",
     "Theme color - Tooltip": "Warna tema antarmuka",
     "Upload file": "Unggah file",
+    "Vector store id": "Vector store id",
+    "Vector store id - Tooltip": "Vector store id - Tooltip",
     "Welcome": "Pemicu selamat datang",
     "Welcome - Tooltip": "Pesan selamat datang yang ditampilkan saat pengguna pertama kali masuk ke percakapan",
     "Welcome text": "Teks selamat datang",

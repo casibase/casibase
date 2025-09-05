@@ -153,7 +153,7 @@ routeManager.registerApp("graphs", {
       component: () => import("../GraphListPage"),
     },
     {
-      path: "/graphs/:owner/:graphName",
+      path: "/graphs/:graphName",
       component: () => import("../GraphEditPage"),
     },
   ],

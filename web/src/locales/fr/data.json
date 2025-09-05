@@ -180,6 +180,7 @@
     "Failed to undeploy": "Échec de l'annulation du déploiement",
     "Forms": "Formulaires",
     "Go to writable demo site?": "Aller au site de démonstration modifiable?",
+    "Graphs": "图谱",
     "Home": "Accueil",
     "ID": "ID",
     "ID - Tooltip": "ID de l'image dans la plateforme cloud",
@@ -251,6 +252,7 @@
     "Provider URL - Tooltip": "Adresse de base de l'API du fournisseur",
     "Providers": "Fournisseurs",
     "Public Videos": "Vidéos publiques",
+    "Query": "Query",
     "Reasoning text": "Processus de raisonnement",
     "Reasoning text - Tooltip": "Processus de raisonnement interne du modèle IA",
     "Records": "Journaux",
@@ -356,6 +358,9 @@
     "empty": "Vide",
     "items": "Éléments",
     "{total} in total": "{total} au total"
+  },
+  "graph": {
+    "Edit Graph": "Edit Graph"
   },
   "image": {
     "Arch": "Architecture",
@@ -615,6 +620,8 @@
     "Theme color": "Couleur de thème",
     "Theme color - Tooltip": "Couleur de thème de l'interface",
     "Upload file": "Télécharger un fichier",
+    "Vector store id": "Vector store id",
+    "Vector store id - Tooltip": "Vector store id - Tooltip",
     "Welcome": "Message de bienvenue",
     "Welcome - Tooltip": "Message de bienvenue affiché lors de la première entrée dans le chat",
     "Welcome text": "Texte de bienvenue",
