@@ -82,7 +82,7 @@ class HomePageMedGuide extends React.Component {
               <div style={{ fontSize: 24, fontWeight: 400, marginTop: 15, color: "#8c8c8c" }}> 请点击卡片进入各子功能  </div>
             </div>
             {/* 卡片区域 */}
-            <MedGuideCardGrid />
+            <MedGuideCardGrid account={this.props.account} />
           </div>
         );
       }

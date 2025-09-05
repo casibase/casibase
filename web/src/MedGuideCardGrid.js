@@ -1,5 +1,7 @@
+
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import * as Setting from "./Setting";
 
 // 分组与按钮数据
 const GROUPS = [
@@ -8,10 +10,10 @@ const GROUPS = [
         color: "#2d5af1",
         bg: "#fcfdff",
         buttons: [
-            { title: "系统设置", icon: "⚙️", desc: "平台参数配置", route: "/system/settings" },
-            { title: "资源状态", icon: "📊", desc: "各类资源监控", route: "/system/resources" },
-            { title: "用户管理", icon: "👤", desc: "账号与角色", route: "/system/users" },
-            { title: "权限管理", icon: "🔑", desc: "访问与操作权限", route: "/system/permissions" },
+            { title: "系统设置", icon: "⚙️", desc: "平台参数配置", route: "/stores" },
+            { title: "资源状态", icon: "📊", desc: "各类资源监控", route: "/sysinfo" },
+            { title: "用户管理", icon: "👤", desc: "账号与角色" },
+            { title: "权限管理", icon: "🔑", desc: "访问与操作权限" },
         ],
     },
     {
@@ -19,8 +21,9 @@ const GROUPS = [
         color: "#10b981",
         bg: "#fcfefd",
         buttons: [
-            { title: "患者上链数据", icon: "📝", desc: "患者数据上链明细", route: "/data/patient" },
-            { title: "专病知识图谱", icon: "🧠", desc: "专病知识结构化", route: "/data/kg" },
+            { title: "数据总揽", icon: "📊", desc: "可信共享数据总览", route: "/dashboard" },
+            { title: "患者上链数据", icon: "📝", desc: "患者数据上链明细", route: "/ipfs-search" },
+            { title: "专病知识图谱", icon: "🧠", desc: "专病知识结构化（内网）", route: "https://192.168.0.228:13001/forms/专病库知识图谱/data" },
         ],
     },
     {
@@ -28,10 +31,10 @@ const GROUPS = [
         color: "#f59e42",
         bg: "#fffcfa",
         buttons: [
-            { title: "医疗记录上联", icon: "📄", desc: "医疗文档上链", route: "/uplink/record" },
-            { title: "数据操作上联", icon: "🔗", desc: "数据操作上链", route: "/uplink/data" },
-            { title: "区块链浏览器", icon: "🌐", desc: "链上数据浏览", route: "/uplink/blockchain" },
-            { title: "查询与审计", icon: "🔍", desc: "链上数据查询与审计", route: "/uplink/audit" },
+            { title: "医疗记录上联", icon: "📄", desc: "医疗文档上链", route: "/records" },
+            { title: "数据操作上联", icon: "🔗", desc: "数据操作上链", route: "/records" },
+            { title: "区块链浏览器", icon: "🌐", desc: "链上数据浏览", route: "/forms/区块链浏览器/data" },
+            { title: "查询与审计", icon: "🔍", desc: "链上数据查询与审计", route: "/audit" },
         ],
     },
     {
@@ -39,10 +42,11 @@ const GROUPS = [
         color: "#8b5cf6",
         bg: "#fdfbff",
         buttons: [
-            { title: "图像超分", icon: "🖼️", desc: "医学影像超分辨率", route: "/share/sr" },
-            { title: "受控使用", icon: "🛡️", desc: "数据受控访问", route: "/share/usage" },
-            { title: "密文计算", icon: "🔒", desc: "隐私保护计算", route: "/share/crypto" },
-            { title: "可信解密", icon: "🔓", desc: "安全可信解密", route: "/share/decrypt" },
+            { title: "图像超分", icon: "🖼️", desc: "医学影像超分辨率", route: "/sr" },
+            { title: "医疗影像分析", icon: "🔎", desc: "智能检测分割", route: "/yolov8mi" },
+            { title: "受控使用", icon: "🛡️", desc: "数据受控访问（todo）", route: "/share/usage" },
+            { title: "密文计算", icon: "🔒", desc: "隐私保护计算（todo）", route: "/share/crypto" },
+            { title: "可信解密", icon: "🔓", desc: "安全可信解密（todo）", route: "/share/decrypt" },
         ],
     },
     {
@@ -50,9 +54,9 @@ const GROUPS = [
         color: "#ef4444",
         bg: "#fffdfd",
         buttons: [
-            { title: "质量控制", icon: "📈", desc: "医疗质量监控", route: "/scene/quality" },
-            { title: "临床路径监管", icon: "🩺", desc: "路径执行监管", route: "/scene/pathway" },
-            { title: "主动理赔", icon: "💰", desc: "理赔流程自动化", route: "/scene/claim" },
+            { title: "质量控制", icon: "📈", desc: "医疗质量监控（todo）", route: "/scene/quality" },
+            { title: "临床路径监管", icon: "🩺", desc: "路径执行监管", route: "/workflows" },
+            { title: "主动理赔", icon: "💰", desc: "理赔流程自动化（todo）", route: "/scene/claim" },
             { title: "多中心诊疗", icon: "🏥", desc: "多机构协作诊疗", route: "/scene/multicenter" },
         ],
     },
@@ -60,9 +64,11 @@ const GROUPS = [
 
 // 路由已合并到GROUPS配置中
 
-const MedGuideCardGrid = () => {
+
+const MedGuideCardGrid = (props) => {
     const history = useHistory();
     const [activeIdx, setActiveIdx] = useState(0); // 默认分组1
+    const account = props.account;
 
     useEffect(() => {
         const style = document.createElement("style");
@@ -82,18 +88,47 @@ const MedGuideCardGrid = () => {
         return () => { document.head.removeChild(style); };
     }, []);
 
+
+    // 动态处理系统管理分组的部分按钮route
+    const groups = GROUPS.map((g, idx) => {
+        if (g.name === "系统管理" && account) {
+            return {
+                ...g,
+                buttons: g.buttons.map(btn => {
+                    if (btn.title === "用户管理") {
+                        return { ...btn, route: Setting.getMyProfileUrl(account).replace("/account", "/users") };
+                    }
+                    if (btn.title === "权限管理") {
+                        return { ...btn, route: Setting.getMyProfileUrl(account).replace("/account", "/resources") };
+                    }
+                    return btn;
+                })
+            };
+        }
+        return g;
+    });
+
     const handleGroupClick = idx => setActiveIdx(idx);
     const handleBtnClick = btnObj => {
-        if (btnObj.route) history.push(btnObj.route);
+        if (btnObj.route) {
+            // 外链用window.open，内链用history
+            if (/^https?:\/\//.test(btnObj.route)) {
+                window.open(btnObj.route, '_blank');
+            } else if (btnObj.route.startsWith("/")) {
+                history.push(btnObj.route);
+            } else {
+                window.open(btnObj.route, '_blank');
+            }
+        }
     };
 
     // 当前分组色彩
-    const activeGroup = GROUPS[activeIdx];
+    const activeGroup = groups[activeIdx];
 
     return (
         <div className="mg-main-wrap">
             <div className="mg-group-list">
-                {GROUPS.map((g, idx) => (
+                {groups.map((g, idx) => (
                     <div
                         key={g.name}
                         className={"mg-group-item" + (activeIdx === idx ? " active" : "")}
