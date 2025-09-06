@@ -16,7 +16,7 @@
   "application": {
     "Deploy": "Deploy",
     "Deployment manifest": "Deployment manifest",
-    "Deployment manifest - Tooltip": "Deployment manifest - Tooltip",
+    "Deployment manifest - Tooltip": "Application deployment manifest, including resource allocation and deployment strategy",
     "Edit Application": "Edit Application",
     "Failed": "Failed",
     "Host": "Host",
@@ -631,7 +631,7 @@
     "Theme color - Tooltip": "Primary color for UI theme",
     "Upload file": "Upload file",
     "Vector store id": "Vector store id",
-    "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector store id - Tooltip": "The ID of the vector store that the files belong to",
     "Welcome": "Welcome",
     "Welcome - Tooltip": "Welcome message",
     "Welcome text": "Welcome text",
@@ -678,15 +678,15 @@
   },
   "template": {
     "Basic config": "Basic config",
-    "Basic config - Tooltip": "Basic config - Tooltip",
+    "Basic config - Tooltip": "Set the parameters in the Kubernetes manifest of the template",
     "Edit Template": "Edit Template",
     "Enable basic config": "Enable basic config",
-    "Enable basic config - Tooltip": "Enable basic config - Tooltip",
+    "Enable basic config - Tooltip": "Enable Kubernetes manifest parameter input with template (supporting Go Template syntax)",
     "Manifest": "Manifest",
     "Manifest - Tooltip": "Kubernetes manifest for the template",
     "New Template": "New Template",
     "Readme": "Readme",
-    "Readme - Tooltip": "Readme - Tooltip"
+    "Readme - Tooltip": "The URL address of the README file"
   },
   "theme": {
     "Compact": "Compact",
