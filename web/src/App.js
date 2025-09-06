@@ -45,6 +45,8 @@ import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
 import MessageListPage from "./MessageListPage";
 import MessageEditPage from "./MessageEditPage";
+import GraphListPage from "./GraphListPage";
+import GraphEditPage from "./GraphEditPage";
 import NodeListPage from "./NodeListPage";
 import NodeEditPage from "./NodeEditPage";
 import MachineListPage from "./MachineListPage";
@@ -120,6 +122,7 @@ class App extends Component {
       menuVisible: false,
       forms: [],
       openMenuKeys: [], // 控制菜单展开状态
+      store: undefined,
     };
     this.initConfig();
   }
@@ -156,6 +159,7 @@ class App extends Component {
           Setting.setThemeColor(color);
           localStorage.setItem("themeColor", color);
         }
+        this.setState({ store: res.data });
       } else {
         Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -208,6 +212,8 @@ class App extends Component {
       this.setState({ selectedMenuKey: "/chats" });
     } else if (uri.includes("/messages")) {
       this.setState({ selectedMenuKey: "/messages" });
+    } else if (uri.includes("/graphs")) {
+      this.setState({ selectedMenuKey: "/graphs" });
     } else if (uri.includes("/usages")) {
       this.setState({ selectedMenuKey: "/usages" });
     } else if (uri.includes("/activities")) {
@@ -392,7 +398,7 @@ class App extends Component {
   setLogoAndThemeAlgorithm = (nextThemeAlgorithm) => {
     this.setState({
       themeAlgorithm: nextThemeAlgorithm,
-      logo: Setting.getLogo(nextThemeAlgorithm),
+      logo: Setting.getLogo(nextThemeAlgorithm, this.state.store?.logoUrl),
     });
     localStorage.setItem("themeAlgorithm", JSON.stringify(nextThemeAlgorithm));
   };
@@ -782,6 +788,7 @@ class App extends Component {
         Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
         Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"),
         Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"),
+        Setting.getItem(<Link to="/graphs">{i18next.t("general:Graphs")}</Link>, "/graphs"),
       ]));
 
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
@@ -928,6 +935,8 @@ class App extends Component {
         <Route exact path="/stores/:owner/:storeName/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/:owner/:storeName/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/:owner/:storeName/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
+        <Route exact path="/graphs" render={(props) => this.renderSigninIfNotSignedIn(<GraphListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/graphs/:graphName" render={(props) => this.renderSigninIfNotSignedIn(<GraphEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/sysinfo" render={(props) => this.renderSigninIfNotSignedIn(<SystemInfo account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-search" render={(props) => this.renderSigninIfNotSignedIn(<IPFSSearchPage account={this.state.account} {...props} />)} />
@@ -1069,13 +1078,36 @@ class App extends Component {
     };
 
     return (
-      <Header style={{ padding: "0 24px", marginBottom: "3px", backgroundColor: "white", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Link to={"/"}>
-            <img className="logo" src={Conf.LogoUrl} alt="logo" />
-          </Link>
+      <Header style={{ padding: "0", marginBottom: "3px", backgroundColor: this.state.themeAlgorithm.includes("dark") ? "black" : "white", display: "flex", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", flex: 1, overflow: "hidden" }}>
+          {Setting.isMobile() ? null : (
+            <Link to={"/"}>
+              <img className="logo" src={this.state.logo || Setting.getLogo(this.state.themeAlgorithm, this.state.store?.logoUrl)} alt="logo" />
+            </Link>
+          )}
+          {Setting.isMobile() ? (
+            <React.Fragment>
+              <Drawer title={i18next.t("general:Close")} placement="left" open={this.state.menuVisible} onClose={this.onClose}>
+                <Menu
+                  items={this.getMenuItems()}
+                  mode={"inline"}
+                  selectedKeys={[this.state.selectedMenuKey]}
+                  style={{ lineHeight: "64px" }}
+                  onClick={onClick}
+                >
+                </Menu>
+              </Drawer>
+              <Button icon={<BarsOutlined />} onClick={showMenu} type="text">
+                {i18next.t("general:Menu")}
+              </Button>
+            </React.Fragment>
+          ) : (
+            <div style={{ display: "flex", marginLeft: "10px", flex: 1, minWidth: 0, overflow: "auto", paddingRight: "20px" }}>
+              <Menu style={{ minWidth: 0, width: "100%" }} onClick={onClick} items={this.getMenuItems()} mode={"horizontal"} selectedKeys={[this.state.selectedMenuKey]} />
+            </div>
+          )}
         </div>
-        <div>
+        <div style={{ flexShrink: 0 }}>
           {this.renderAccountMenu()}
         </div>
       </Header>
@@ -1098,7 +1130,7 @@ class App extends Component {
             height: "67px",
           }
         }>
-          <div dangerouslySetInnerHTML={{ __html: Conf.FooterHtml }} />
+          <div dangerouslySetInnerHTML={{ __html: Setting.getFooterHtml(this.state.themeAlgorithm, this.state.store?.footerHtml) }} />
         </Footer>
       </React.Fragment>
     );
@@ -1123,8 +1155,8 @@ class App extends Component {
     return (
       <React.Fragment>
         <Helmet>
-          <title>{Conf.HtmlTitle}</title>
-          <link rel="icon" href={Conf.FaviconUrl} />
+          <title>{Setting.getHtmlTitle(this.state.store?.htmlTitle)}</title>
+          <link rel="icon" href={Setting.getFaviconUrl(this.state.themeAlgorithm, this.state.store?.faviconUrl)} />
         </Helmet>
         <ConfigProvider theme={{
           token: {

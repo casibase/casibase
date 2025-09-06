@@ -144,6 +144,21 @@ routeManager.registerApp("chats", {
   ],
 });
 
+routeManager.registerApp("graphs", {
+  title: "Graphs",
+  gradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+  routes: [
+    {
+      path: "/graphs",
+      component: () => import("../GraphListPage"),
+    },
+    {
+      path: "/graphs/:graphName",
+      component: () => import("../GraphEditPage"),
+    },
+  ],
+});
+
 routeManager.registerApp("messages", {
   title: "Messages",
   gradient: "linear-gradient(135deg, #7db6d8 0%, #47a6dc 100%)",

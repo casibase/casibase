@@ -2146,22 +2146,52 @@ export function getAlgorithm(themeAlgorithmNames) {
   });
 }
 
-export function getLogo(themes) {
-  let defaultLogoUrl = Conf.LogoUrl;
-  defaultLogoUrl = defaultLogoUrl.replace("https://cdn.casibase.org", Conf.StaticBaseUrl);
+export function getHtmlTitle(storeHtmlTitle) {
+  const defaultHtmlTitle = "Casibase";
+  let htmlTitle = Conf.HtmlTitle;
+  if (storeHtmlTitle && storeHtmlTitle !== defaultHtmlTitle) {
+    htmlTitle = storeHtmlTitle;
+  }
+  return htmlTitle;
+}
+
+export function getFaviconUrl(themes, storeFaviconUrl) {
+  const defaultFaviconUrl = "https://cdn.casibase.com/static/favicon.png";
+  let faviconUrl = Conf.FaviconUrl;
+  if (storeFaviconUrl && storeFaviconUrl !== defaultFaviconUrl) {
+    faviconUrl = storeFaviconUrl;
+  }
   if (themes.includes("dark")) {
-    return defaultLogoUrl.replace(/\.png$/, "_white.png");
+    return faviconUrl.replace(/\.png$/, "_white.png");
   } else {
-    return defaultLogoUrl;
+    return faviconUrl;
   }
 }
 
-export function getFooterHtml(themes) {
-  let FooterHtml = Conf.FooterHtml;
-  FooterHtml = FooterHtml.replace("https://cdn.casibase.org", Conf.StaticBaseUrl);
+export function getLogo(themes, storeLogoUrl) {
+  const defaultLogoUrl = "https://cdn.casibase.org/img/casibase-logo_1200x256.png";
+  let logoUrl = Conf.LogoUrl;
+  if (storeLogoUrl && storeLogoUrl !== defaultLogoUrl) {
+    logoUrl = storeLogoUrl;
+  }
+  logoUrl = logoUrl.replace("https://cdn.casibase.org", Conf.StaticBaseUrl);
   if (themes.includes("dark")) {
-    return FooterHtml.replace(/(\.png)/g, "_white$1");
+    return logoUrl.replace(/\.png$/, "_white.png");
   } else {
-    return FooterHtml;
+    return logoUrl;
+  }
+}
+
+export function getFooterHtml(themes, storeFooterHtml) {
+  const defaultFooterHtml = "Powered by <a target=\"_blank\" href=\"https://github.com/casibase/casibase\" rel=\"noreferrer\"><img style=\"padding-bottom: 3px;\" height=\"20\" alt=\"Casibase\" src=\"https://cdn.casibase.org/img/casibase-logo_1200x256.png\" /></a>";
+  let footerHtml = Conf.FooterHtml;
+  if (storeFooterHtml && storeFooterHtml !== defaultFooterHtml) {
+    footerHtml = storeFooterHtml;
+  }
+  footerHtml = footerHtml.replace("https://cdn.casibase.org", Conf.StaticBaseUrl);
+  if (themes.includes("dark")) {
+    return footerHtml.replace(/(\.png)/g, "_white$1");
+  } else {
+    return footerHtml;
   }
 }

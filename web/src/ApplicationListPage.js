@@ -291,7 +291,7 @@ class ApplicationListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Basic configuration"),
+        title: i18next.t("template:Basic config"),
         dataIndex: "basicConfigOptions",
         key: "basicConfigOptions",
         width: "200px",

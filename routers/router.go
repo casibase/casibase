@@ -100,6 +100,13 @@ func initAPI() {
 	beego.Router("/api/delete-message", &controllers.ApiController{}, "POST:DeleteMessage")
 	beego.Router("/api/delete-welcome-message", &controllers.ApiController{}, "POST:DeleteWelcomeMessage")
 
+	beego.Router("/api/get-global-graphs", &controllers.ApiController{}, "GET:GetGlobalGraphs")
+	beego.Router("/api/get-graphs", &controllers.ApiController{}, "GET:GetGraphs")
+	beego.Router("/api/get-graph", &controllers.ApiController{}, "GET:GetGraph")
+	beego.Router("/api/update-graph", &controllers.ApiController{}, "POST:UpdateGraph")
+	beego.Router("/api/add-graph", &controllers.ApiController{}, "POST:AddGraph")
+	beego.Router("/api/delete-graph", &controllers.ApiController{}, "POST:DeleteGraph")
+
 	beego.Router("/api/get-templates", &controllers.ApiController{}, "GET:GetTemplates")
 	beego.Router("/api/get-template", &controllers.ApiController{}, "GET:GetTemplate")
 	beego.Router("/api/update-template", &controllers.ApiController{}, "POST:UpdateTemplate")

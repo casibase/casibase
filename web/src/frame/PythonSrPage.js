@@ -24,7 +24,7 @@ class PythonSrPage extends React.Component {
 
   render() {
     return (
-      <iframe id="PythonSrPage" title={"iframe"} src={"https://sr.casibase.com"} width="100%" height={window.innerHeight - 195} scrolling="no" frameBorder="no" />
+      <iframe id="PythonSrPage" title={"iframe"} src={"https://sr.casibase.com"} width="100%" height={window.innerHeight - 195} frameBorder="no" />
     );
   }
 }
