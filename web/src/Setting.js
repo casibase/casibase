@@ -51,8 +51,7 @@ export function initCasdoorSdk(config) {
 export function initWebConfig() {
   const curCookie = Cookie.parse(document.cookie);
   if (curCookie["jsonWebConfig"] && curCookie["jsonWebConfig"] !== "null") {
-    const encoded = curCookie["jsonWebConfig"];
-    const decoded = decodeURIComponent(encoded.replace(/\+/g, " "));
+    const decoded = atob(curCookie["jsonWebConfig"]);
     const config = JSON.parse(decoded);
     Conf.setConfig(config);
   }
