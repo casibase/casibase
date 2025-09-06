@@ -262,33 +262,3 @@ func (c *ApiController) UndeployApplication() {
 
 	c.ResponseOk(success)
 }
-
-// GetApplicationStatus
-// @Title GetApplicationStatus
-// @Tag Application API
-// @Description get application deployment status
-// @Param id query string true "The id (owner/name) of the application"
-// @Success 200 {object} object.DeploymentStatus The Response object
-// @router /get-application-status [get]
-func (c *ApiController) GetApplicationStatus() {
-	id := c.Input().Get("id")
-	owner, name := util.GetOwnerAndNameFromId(id)
-	application, err := object.GetApplication(id)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	if application == nil {
-		c.ResponseError(fmt.Sprintf("The application: %s is not found", id))
-		return
-	}
-
-	status, err := object.GetApplicationStatus(owner, name, application.Namespace)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	url := application.URL
-
-	c.ResponseOk(status, url)
-}

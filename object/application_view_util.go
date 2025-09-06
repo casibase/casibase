@@ -24,18 +24,6 @@ func AddDetails(apps []*Application) {
 		return
 	}
 
-	hasRunning := false
-	for _, app := range apps {
-		if isRunning(app.Status) {
-			hasRunning = true
-			break
-		}
-	}
-
-	if !hasRunning {
-		return
-	}
-
 	if ensureK8sClient() != nil {
 		return
 	}
@@ -43,22 +31,23 @@ func AddDetails(apps []*Application) {
 	var wg sync.WaitGroup
 
 	for _, app := range apps {
-		if isRunning(app.Status) {
-			wg.Add(1)
-			go func(app *Application) {
-				defer wg.Done()
-				if details, err := GetApplicationView(app.Namespace); err == nil {
-					app.Details = details
+		wg.Add(1)
+		go func(app *Application) {
+			defer wg.Done()
+			if details, err := GetApplicationView(app.Namespace); err == nil {
+				app.Status = details.Status
+				app.Details = details
+
+				if app.URL == "" {
+					if url, err := GetURL(app.Namespace); err == nil && url != "" {
+						app.URL = url
+					}
 				}
-			}(app)
-		}
+			}
+		}(app)
 	}
 
 	wg.Wait()
-}
-
-func isRunning(status string) bool {
-	return status == "Running" || status == "running" || status == "Active" || status == "Started"
 }
 
 // GetURL retrieves the access URL for an application
