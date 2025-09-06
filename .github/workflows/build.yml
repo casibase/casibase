@@ -82,42 +82,63 @@ jobs:
           args: --disable-all -c dummy.yml -E=gofumpt --max-same-issues=0 --timeout 5m --modules-download-mode=mod
 
 
+  tag-release:
+    name: Create Tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    if: github.repository == 'casibase/casibase' && github.event_name == 'push'
+    needs: [ frontend, backend, linter ]
+    outputs:
+      new-release-published: ${{ steps.semantic.outputs.new-release-published }}
+      current-version: ${{ steps.get-current-tag.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Fetch Previous version
+        id: get-previous-tag
+        uses: actions-ecosystem/action-get-latest-tag@v1.6.0
+
+      - name: Create Tag with Semantic Release
+        id: semantic
+        run: |
+          yarn global add semantic-release@17.4.4 && semantic-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch Current version
+        id: get-current-tag
+        if: steps.semantic.outputs.new-release-published == 'true'
+        uses: actions-ecosystem/action-get-latest-tag@v1.6.0
+
   github-release:
     name: GitHub Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
       issues: write
-    if: github.repository == 'casibase/casibase' && github.event_name == 'push'
-    needs: [ frontend, backend, linter]
+    if: github.repository == 'casibase/casibase' && github.event_name == 'push' && needs.tag-release.outputs.new-release-published == 'true'
+    needs: [ tag-release ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
+      
       - name: Download frontend build artifacts
         uses: actions/download-artifact@v4
         with:
           name: frontend-build-${{ github.run_id }}
           path: ./web/build
-
-      - name: Fetch Previous version
-        id: get-previous-tag
-        uses: actions-ecosystem/action-get-latest-tag@v1.6.0
-
-      - name: Release
-        run: yarn global add semantic-release@17.4.4 && semantic-release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Fetch Current version
-        id: get-current-tag
-        uses: actions-ecosystem/action-get-latest-tag@v1.6.0
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
@@ -134,51 +155,13 @@ jobs:
     permissions:
       contents: write
       issues: write
-    if: github.repository == 'casibase/casibase' && github.event_name == 'push'
-    needs: [ frontend, backend, linter]
+    if: github.repository == 'casibase/casibase' && github.event_name == 'push' && needs.tag-release.outputs.new-release-published == 'true'
+    needs: [ tag-release ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: -1
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      - name: Fetch Previous version
-        id: get-previous-tag
-        uses: actions-ecosystem/action-get-latest-tag@v1.6.0
-
-      - name: Release
-        run: yarn global add semantic-release@17.4.4 && semantic-release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Fetch Current version
-        id: get-current-tag
-        uses: actions-ecosystem/action-get-latest-tag@v1.6.0
-
-      - name: Decide Should_Push Or Not
-        id: should_push
-        run: |
-          old_version=${{steps.get-previous-tag.outputs.tag}}
-          new_version=${{steps.get-current-tag.outputs.tag }}
-
-          old_array=(${old_version//\./ })
-          new_array=(${new_version//\./ })
-
-          if [ ${old_array[0]} != ${new_array[0]} ]
-          then 
-              echo ::set-output name=push::'true'
-          elif [ ${old_array[1]} != ${new_array[1]} ]
-          then 
-              echo ::set-output name=push::'true'
-          
-          else
-              echo ::set-output name=push::'false'
-          
-          fi
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -191,44 +174,39 @@ jobs:
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
-        if: github.repository == 'casibase/casibase' && github.event_name == 'push' && steps.should_push.outputs.push=='true'
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Push to Docker Hub
         uses: docker/build-push-action@v3
-        if: github.repository == 'casibase/casibase' && github.event_name == 'push' && steps.should_push.outputs.push=='true'
         with:
           context: .
           target: STANDARD
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: casbin/casibase:${{steps.get-current-tag.outputs.tag }},casbin/casibase:latest
+          tags: casbin/casibase:${{ needs.tag-release.outputs.current-version }},casbin/casibase:latest
 
       - name: Push All In One Version to Docker Hub
         uses: docker/build-push-action@v3
-        if: github.repository == 'casibase/casibase' && github.event_name == 'push' && steps.should_push.outputs.push=='true'
         with:
           context: .
           target: ALLINONE
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: casbin/casibase-all-in-one:${{steps.get-current-tag.outputs.tag }},casbin/casibase-all-in-one:latest
+          tags: casbin/casibase-all-in-one:${{ needs.tag-release.outputs.current-version }},casbin/casibase-all-in-one:latest
 
       - uses: actions/checkout@v3
-        if: steps.should_push.outputs.push=='true'
         with:
           repository: casibase/casibase-helm
           ref: 'master'
           token: ${{ secrets.GH_BOT_TOKEN }}
 
       - name: Update Helm Chart
-        if: steps.should_push.outputs.push=='true'
         run: |
           # Set the appVersion and version of the chart to the current tag
-          sed -i "s/appVersion: .*/appVersion: ${{steps.get-current-tag.outputs.tag }}/g" ./casibase-helm-chart/Chart.yaml
-          sed -i "s/version: .*/version: ${{steps.get-current-tag.outputs.tag }}/g" ./casibase-helm-chart/Chart.yaml
+          sed -i "s/appVersion: .*/appVersion: ${{ needs.tag-release.outputs.current-version }}/g" ./casibase-helm-chart/Chart.yaml
+          sed -i "s/version: .*/version: ${{ needs.tag-release.outputs.current-version }}/g" ./casibase-helm-chart/Chart.yaml
 
           REGISTRY=oci://registry-1.docker.io/casbin
           cd casibase-helm-chart
@@ -242,6 +220,6 @@ jobs:
           git config --global user.name "casbin-bot"
           git config --global user.email "bot@casbin.org"
           git add Chart.yaml index.yaml
-          git commit -m "chore(helm): bump helm charts appVersion to ${{steps.get-current-tag.outputs.tag }}"
-          git tag ${{steps.get-current-tag.outputs.tag }}
+          git commit -m "chore(helm): bump helm charts appVersion to ${{ needs.tag-release.outputs.current-version }}"
+          git tag ${{ needs.tag-release.outputs.current-version }}
           git push origin HEAD:master --follow-tags
