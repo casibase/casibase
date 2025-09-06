@@ -113,6 +113,7 @@ class App extends Component {
       themeData: Conf.ThemeDefault,
       menuVisible: false,
       forms: [],
+      store: undefined,
     };
     this.initConfig();
   }
@@ -149,6 +150,7 @@ class App extends Component {
           Setting.setThemeColor(color);
           localStorage.setItem("themeColor", color);
         }
+        this.setState({store: res.data});
       } else {
         Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -370,7 +372,7 @@ class App extends Component {
   setLogoAndThemeAlgorithm = (nextThemeAlgorithm) => {
     this.setState({
       themeAlgorithm: nextThemeAlgorithm,
-      logo: Setting.getLogo(nextThemeAlgorithm),
+      logo: Setting.getLogo(nextThemeAlgorithm, this.state.store?.logoUrl),
     });
     localStorage.setItem("themeAlgorithm", JSON.stringify(nextThemeAlgorithm));
   };
@@ -870,7 +872,7 @@ class App extends Component {
         <div style={{display: "flex", alignItems: "center", flex: 1, overflow: "hidden"}}>
           {Setting.isMobile() ? null : (
             <Link to={"/"}>
-              <img className="logo" src={Setting.getLogo(this.state.themeAlgorithm)} alt="logo" />
+              <img className="logo" src={this.state.logo || Setting.getLogo(this.state.themeAlgorithm, this.state.store?.logoUrl)} alt="logo" />
             </Link>
           )}
           {Setting.isMobile() ? (
@@ -917,7 +919,7 @@ class App extends Component {
             height: "67px",
           }
         }>
-          <div dangerouslySetInnerHTML={{__html: Setting.getFooterHtml(this.state.themeAlgorithm)}} />
+          <div dangerouslySetInnerHTML={{__html: Setting.getFooterHtml(this.state.themeAlgorithm, this.state.store?.footerHtml)}} />
         </Footer>
       </React.Fragment>
     );
@@ -942,8 +944,8 @@ class App extends Component {
     return (
       <React.Fragment>
         <Helmet>
-          <title>{Conf.HtmlTitle}</title>
-          <link rel="icon" href={Conf.FaviconUrl} />
+          <title>{Setting.getHtmlTitle(this.state.store?.htmlTitle)}</title>
+          <link rel="icon" href={Setting.getFaviconUrl(this.state.themeAlgorithm, this.state.store?.faviconUrl)} />
         </Helmet>
         <ConfigProvider theme={{
           token: {
