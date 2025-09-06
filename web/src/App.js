@@ -1085,7 +1085,8 @@ class App extends Component {
               <img className="logo" src={this.state.logo || Setting.getLogo(this.state.themeAlgorithm, this.state.store?.logoUrl)} alt="logo" />
             </Link>
           )}
-          {Setting.isMobile() ? (
+          {/* 隐藏header菜单栏 按钮 */}
+          {/* {Setting.isMobile() ? (
             <React.Fragment>
               <Drawer title={i18next.t("general:Close")} placement="left" open={this.state.menuVisible} onClose={this.onClose}>
                 <Menu
@@ -1105,7 +1106,7 @@ class App extends Component {
             <div style={{ display: "flex", marginLeft: "10px", flex: 1, minWidth: 0, overflow: "auto", paddingRight: "20px" }}>
               <Menu style={{ minWidth: 0, width: "100%" }} onClick={onClick} items={this.getMenuItems()} mode={"horizontal"} selectedKeys={[this.state.selectedMenuKey]} />
             </div>
-          )}
+          )} */}
         </div>
         <div style={{ flexShrink: 0 }}>
           {this.renderAccountMenu()}
