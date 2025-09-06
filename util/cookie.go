@@ -15,11 +15,12 @@
 package util
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"net/http"
+	"net/url"
 
 	"github.com/beego/beego/context"
+
 	"github.com/casibase/casibase/conf"
 )
 
@@ -35,7 +36,7 @@ func AppendWebConfigCookie(ctx *context.Context) error {
 }
 
 func SetCookieWithAttributes(ctx *context.Context, name string, value string) error {
-	encodedValue := base64.StdEncoding.EncodeToString([]byte(value))
+	encodedValue := url.QueryEscape(value)
 
 	cookie := &http.Cookie{
 		Name:     name,
