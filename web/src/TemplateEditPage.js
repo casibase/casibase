@@ -130,7 +130,7 @@ class TemplateEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Readme"), i18next.t("general:Readme - Tooltip"))} :
+            {Setting.getLabel(i18next.t("template:Readme"), i18next.t("template:Readme - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.template.readme} onChange={e => {
