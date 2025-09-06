@@ -15,8 +15,11 @@
   },
   "application": {
     "Deploy": "部署",
+    "Deployment manifest": "Deployment manifest",
+    "Deployment manifest - Tooltip": "Deployment manifest - Tooltip",
     "Edit Application": "编辑应用",
     "Failed": "失败",
+    "Host": "Host",
     "New Application": "新建应用",
     "Not Deployed": "未部署",
     "Parameters": "参数",
@@ -24,6 +27,7 @@
     "Pending": "等待中",
     "Replicas": "副本",
     "Running": "运行中",
+    "TLS secret name": "TLS secret name",
     "Terminating": "正在终止",
     "Undeploy": "取消部署",
     "Unknown": "未知"
@@ -150,6 +154,7 @@
     "Created time - Tooltip": "创建时间",
     "Data": "数据",
     "Data - Tooltip": "数据文件URL",
+    "Default": "Default",
     "Delete": "删除",
     "Delete All": "删除全部",
     "Description": "描述",
@@ -181,6 +186,7 @@
     "Failed to undeploy": "取消部署失败",
     "Forms": "表单",
     "Go to writable demo site?": "前往可写的演示站点？",
+    "Graphs": "Graphs",
     "Home": "首页",
     "ID": "ID",
     "ID - Tooltip": "云平台中的镜像ID",
@@ -213,6 +219,7 @@
     "Messages - Tooltip": "查看历史消息记录",
     "Method": "方法",
     "Method - Tooltip": "HTTP请求方法类型",
+    "Missing required parameter in basic config": "Missing required parameter in basic config",
     "Model": "模型",
     "Multimedia": "多媒体",
     "Name": "名称",
@@ -232,6 +239,7 @@
     "Object": "对象",
     "Object - Tooltip": "结构化请求数据体",
     "Open": "打开",
+    "Options": "Options",
     "Org ID": "组织ID",
     "Org ID - Tooltip": "组织ID",
     "Organization": "组织",
@@ -252,6 +260,7 @@
     "Provider URL - Tooltip": "服务商API基础地址",
     "Providers": "提供商",
     "Public Videos": "公开录像",
+    "Query": "Query",
     "Reasoning text": "思维链",
     "Reasoning text - Tooltip": "AI模型的内部推理过程",
     "Records": "日志",
@@ -261,6 +270,7 @@
     "Region - Tooltip": "云服务区域",
     "Request URI": "请求URI",
     "Request URI - Tooltip": "完整请求路径",
+    "Required": "Required",
     "Resources": "资源",
     "Response": "响应",
     "Response - Tooltip": "结构化响应数据体",
@@ -277,6 +287,7 @@
     "Section": "单位",
     "Section - Tooltip": "内容的特定部分或分组",
     "Sessions": "会话",
+    "Setting": "Setting",
     "Size": "大小",
     "Size - Tooltip": "大小规格",
     "Sorry, the page you visited does not exist.": "抱歉，您访问的页面不存在。",
@@ -357,6 +368,9 @@
     "empty": "空",
     "items": "项",
     "{total} in total": "{total} 总计"
+  },
+  "graph": {
+    "Edit Graph": "Edit Graph"
   },
   "image": {
     "Arch": "架构",
@@ -616,6 +630,8 @@
     "Theme color": "主题颜色",
     "Theme color - Tooltip": "界面主题色",
     "Upload file": "上传文件",
+    "Vector store id": "Vector store id",
+    "Vector store id - Tooltip": "Vector store id - Tooltip",
     "Welcome": "欢迎提示词",
     "Welcome - Tooltip": "用户首次进入聊天时显示的欢迎语",
     "Welcome text": "欢迎文字",
@@ -661,10 +677,16 @@
     "Question - Tooltip": "自动生成的完整任务提示"
   },
   "template": {
+    "Basic config": "Basic config",
+    "Basic config - Tooltip": "Basic config - Tooltip",
     "Edit Template": "编辑模板",
+    "Enable basic config": "Enable basic config",
+    "Enable basic config - Tooltip": "Enable basic config - Tooltip",
     "Manifest": "配置清单",
     "Manifest - Tooltip": "模板的 Kubernetes 配置清单",
-    "New Template": "新建模板"
+    "New Template": "新建模板",
+    "Readme": "Readme",
+    "Readme - Tooltip": "Readme - Tooltip"
   },
   "theme": {
     "Compact": "紧凑",

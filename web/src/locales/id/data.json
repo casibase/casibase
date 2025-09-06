@@ -15,8 +15,11 @@
   },
   "application": {
     "Deploy": "Terapkan",
+    "Deployment manifest": "Deployment manifest",
+    "Deployment manifest - Tooltip": "Deployment manifest - Tooltip",
     "Edit Application": "Edit Aplikasi",
     "Failed": "Gagal",
+    "Host": "Host",
     "New Application": "Aplikasi Baru",
     "Not Deployed": "Tidak di-deploy",
     "Parameters": "Parameter",
@@ -24,6 +27,7 @@
     "Pending": "Tertunda",
     "Replicas": "Replika",
     "Running": "Berjalan",
+    "TLS secret name": "TLS secret name",
     "Terminating": "Menghentikan",
     "Undeploy": "Batal Deploy",
     "Unknown": "Tidak diketahui"
@@ -150,6 +154,7 @@
     "Created time - Tooltip": "Waktu dibuat",
     "Data": "Data",
     "Data - Tooltip": "URL file data",
+    "Default": "Default",
     "Delete": "Hapus",
     "Delete All": "Hapus semuanya",
     "Description": "Deskripsi",
@@ -181,6 +186,7 @@
     "Failed to undeploy": "Gagal membatalkan penerapan",
     "Forms": "Formulir",
     "Go to writable demo site?": "Masuk ke situs demo dapat ditulis?",
+    "Graphs": "Graphs",
     "Home": "Halaman utama",
     "ID": "ID",
     "ID - Tooltip": "ID gambar di platform cloud",
@@ -213,6 +219,7 @@
     "Messages - Tooltip": "Lihat catatan pesan historis",
     "Method": "Metode",
     "Method - Tooltip": "Tipe metode permintaan HTTP",
+    "Missing required parameter in basic config": "Missing required parameter in basic config",
     "Model": "Model",
     "Multimedia": "Multimedia",
     "Name": "Nama",
@@ -232,6 +239,7 @@
     "Object": "Objek",
     "Object - Tooltip": "Badan data permintaan terstruktur",
     "Open": "Buka",
+    "Options": "Options",
     "Org ID": "ID organisasi",
     "Org ID - Tooltip": "ID organisasi",
     "Organization": "Organisasi",
@@ -252,6 +260,7 @@
     "Provider URL - Tooltip": "Alamat dasar API penyedia layanan",
     "Providers": "Penyedia",
     "Public Videos": "Video publik",
+    "Query": "Query",
     "Reasoning text": "Proses penalaran",
     "Reasoning text - Tooltip": "Proses penalaran internal model AI",
     "Records": "Catatan",
@@ -261,6 +270,7 @@
     "Region - Tooltip": "Daerah layanan cloud",
     "Request URI": "URI permintaan",
     "Request URI - Tooltip": "Path permintaan lengkap",
+    "Required": "Required",
     "Resources": "Sumber daya",
     "Response": "Respons",
     "Response - Tooltip": "Badan data respons terstruktur",
@@ -277,6 +287,7 @@
     "Section": "Section",
     "Section - Tooltip": "Bagian atau pengelompokan konten tertentu. (Penjelasan: Digunakan untuk mengatur informasi ke dalam blok-blok logis, seperti bagian dalam dokumen atau halaman web.)",
     "Sessions": "Sessions",
+    "Setting": "Setting",
     "Size": "Ukuran",
     "Size - Tooltip": "Spesifikasi ukuran",
     "Sorry, the page you visited does not exist.": "Maaf, halaman yang Anda kunjungi tidak ada.",
@@ -357,6 +368,9 @@
     "empty": "Kosong",
     "items": "Item",
     "{total} in total": "{total} total"
+  },
+  "graph": {
+    "Edit Graph": "Edit Graph"
   },
   "image": {
     "Arch": "Arsitektur",
@@ -616,6 +630,8 @@
     "Theme color": "Warna tema",
     "Theme color - Tooltip": "Warna tema antarmuka",
     "Upload file": "Unggah file",
+    "Vector store id": "Vector store id",
+    "Vector store id - Tooltip": "Vector store id - Tooltip",
     "Welcome": "Pemicu selamat datang",
     "Welcome - Tooltip": "Pesan selamat datang yang ditampilkan saat pengguna pertama kali masuk ke percakapan",
     "Welcome text": "Teks selamat datang",
@@ -661,10 +677,16 @@
     "Question - Tooltip": "Pemicu tugas lengkap yang dihasilkan otomatis"
   },
   "template": {
+    "Basic config": "Basic config",
+    "Basic config - Tooltip": "Basic config - Tooltip",
     "Edit Template": "Edit Templat",
+    "Enable basic config": "Enable basic config",
+    "Enable basic config - Tooltip": "Enable basic config - Tooltip",
     "Manifest": "Manifes",
     "Manifest - Tooltip": "Manifes Kubernetes untuk templat",
-    "New Template": "Templat Baru"
+    "New Template": "Templat Baru",
+    "Readme": "Readme",
+    "Readme - Tooltip": "Readme - Tooltip"
   },
   "theme": {
     "Compact": "Compact",

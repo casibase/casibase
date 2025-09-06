@@ -15,8 +15,11 @@
   },
   "application": {
     "Deploy": "Развернуть",
+    "Deployment manifest": "Deployment manifest",
+    "Deployment manifest - Tooltip": "Deployment manifest - Tooltip",
     "Edit Application": "Редактировать приложение",
     "Failed": "Сбой",
+    "Host": "Host",
     "New Application": "Новое приложение",
     "Not Deployed": "Не развернуто",
     "Parameters": "Параметры",
@@ -24,6 +27,7 @@
     "Pending": "В ожидании",
     "Replicas": "Реплики",
     "Running": "Выполняется",
+    "TLS secret name": "TLS secret name",
     "Terminating": "Завершается",
     "Undeploy": "Отменить развертывание",
     "Unknown": "Неизвестно"
@@ -150,6 +154,7 @@
     "Created time - Tooltip": "Время создания",
     "Data": "Данные",
     "Data - Tooltip": "URL-адрес файла данных",
+    "Default": "Default",
     "Delete": "Удалить",
     "Delete All": "Удалить все",
     "Description": "Описание",
@@ -181,6 +186,7 @@
     "Failed to undeploy": "Failed to undeploy",
     "Forms": "Формы",
     "Go to writable demo site?": "Перейти на демо-сайт для записи?",
+    "Graphs": "Graphs",
     "Home": "Главная",
     "ID": "ID",
     "ID - Tooltip": "ID образа в облачной платформе",
@@ -213,6 +219,7 @@
     "Messages - Tooltip": "Просмотр истории сообщений",
     "Method": "Метод",
     "Method - Tooltip": "Тип HTTP-запроса",
+    "Missing required parameter in basic config": "Missing required parameter in basic config",
     "Model": "Модель",
     "Multimedia": "Мультимедиа",
     "Name": "Имя",
@@ -232,6 +239,7 @@
     "Object": "Объект",
     "Object - Tooltip": "Структурированное тело запроса",
     "Open": "Открыть",
+    "Options": "Options",
     "Org ID": "ID организации",
     "Org ID - Tooltip": "ID организации",
     "Organization": "Организация",
@@ -252,6 +260,7 @@
     "Provider URL - Tooltip": "Основной URL API провайдера",
     "Providers": "Провайдеры",
     "Public Videos": "Открытые записи",
+    "Query": "Query",
     "Reasoning text": "Процесс рассуждений",
     "Reasoning text - Tooltip": "Внутренний процесс рассуждений модели ИИ",
     "Records": "Журналы",
@@ -261,6 +270,7 @@
     "Region - Tooltip": "Облачная зона",
     "Request URI": "URI запроса",
     "Request URI - Tooltip": "Полный путь запроса",
+    "Required": "Required",
     "Resources": "Ресурсы",
     "Response": "Ответ",
     "Response - Tooltip": "Структурированное тело ответа",
@@ -277,6 +287,7 @@
     "Section": "Section",
     "Section - Tooltip": "Определенная часть или группа контента. (Пояснение: Используется для организации информации в логические блоки, например, раздел в документе или на веб-странице.)",
     "Sessions": "Sessions",
+    "Setting": "Setting",
     "Size": "Размер",
     "Size - Tooltip": "Размерный формат",
     "Sorry, the page you visited does not exist.": "Извините, страница, которую вы посетили, не существует.",
@@ -357,6 +368,9 @@
     "empty": "Пустой",
     "items": "Пункты",
     "{total} in total": "{total} Итого"
+  },
+  "graph": {
+    "Edit Graph": "Edit Graph"
   },
   "image": {
     "Arch": "Архитектура",
@@ -616,6 +630,8 @@
     "Theme color": "Цвет темы",
     "Theme color - Tooltip": "Цвет темы интерфейса",
     "Upload file": "Загрузить файл",
+    "Vector store id": "Vector store id",
+    "Vector store id - Tooltip": "Vector store id - Tooltip",
     "Welcome": "Приветственная подсказка",
     "Welcome - Tooltip": "Приветствие, отображаемое пользователю при первом входе в чат",
     "Welcome text": "Приветственный текст",
@@ -661,10 +677,16 @@
     "Question - Tooltip": "Автоматически сгенерированная полная подсказка задачи"
   },
   "template": {
+    "Basic config": "Basic config",
+    "Basic config - Tooltip": "Basic config - Tooltip",
     "Edit Template": "Редактировать шаблон",
+    "Enable basic config": "Enable basic config",
+    "Enable basic config - Tooltip": "Enable basic config - Tooltip",
     "Manifest": "Манифесты",
     "Manifest - Tooltip": "Манифесты Kubernetes для шаблона",
-    "New Template": "Новый шаблон"
+    "New Template": "Новый шаблон",
+    "Readme": "Readme",
+    "Readme - Tooltip": "Readme - Tooltip"
   },
   "theme": {
     "Compact": "Compact",
