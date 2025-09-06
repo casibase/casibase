@@ -15,8 +15,11 @@
   },
   "application": {
     "Deploy": "Deploy",
+    "Deployment manifest": "Deployment manifest",
+    "Deployment manifest - Tooltip": "Application deployment manifest, including resource allocation and deployment strategy",
     "Edit Application": "Edit Application",
     "Failed": "Failed",
+    "Host": "Host",
     "New Application": "New Application",
     "Not Deployed": "Not Deployed",
     "Parameters": "Parameters",
@@ -24,6 +27,7 @@
     "Pending": "Pending",
     "Replicas": "Replicas",
     "Running": "Running",
+    "TLS secret name": "TLS secret name",
     "Terminating": "Terminating",
     "Undeploy": "Undeploy",
     "Unknown": "Unknown"
@@ -150,6 +154,7 @@
     "Created time - Tooltip": "Creation timestamp",
     "Data": "Data",
     "Data - Tooltip": "Data file URL ",
+    "Default": "Default",
     "Delete": "Delete",
     "Delete All": "Delete All",
     "Description": "Description",
@@ -181,6 +186,7 @@
     "Failed to undeploy": "Failed to undeploy",
     "Forms": "Forms",
     "Go to writable demo site?": "Go to writable demo site?",
+    "Graphs": "Graphs",
     "Home": "Home",
     "ID": "ID",
     "ID - Tooltip": "Cloud provider's image identifier",
@@ -213,6 +219,7 @@
     "Messages - Tooltip": "View chat history",
     "Method": "Method",
     "Method - Tooltip": "HTTP request method",
+    "Missing required parameter in basic config": "Missing required parameter in basic config",
     "Model": "Model",
     "Multimedia": "Multimedia",
     "Name": "Name",
@@ -232,6 +239,7 @@
     "Object": "Object",
     "Object - Tooltip": "Structured request payload",
     "Open": "Open",
+    "Options": "Options",
     "Org ID": "Org ID",
     "Org ID - Tooltip": "Organization identifier",
     "Organization": "Organization",
@@ -252,6 +260,7 @@
     "Provider URL - Tooltip": "Base API endpoint URL",
     "Providers": "Providers",
     "Public Videos": "Public Videos",
+    "Query": "Query",
     "Reasoning text": "Reasoning text",
     "Reasoning text - Tooltip": "AI's internal reasoning steps",
     "Records": "Records",
@@ -261,6 +270,7 @@
     "Region - Tooltip": "Cloud service region",
     "Request URI": "Request URI",
     "Request URI - Tooltip": "Full request path",
+    "Required": "Required",
     "Resources": "Resources",
     "Response": "Response",
     "Response - Tooltip": "Structured response data",
@@ -277,6 +287,7 @@
     "Section": "Section",
     "Section - Tooltip": "Section - Tooltip",
     "Sessions": "Sessions",
+    "Setting": "Setting",
     "Size": "Size",
     "Size - Tooltip": "Total size",
     "Sorry, the page you visited does not exist.": "Sorry, the page you visited does not exist.",
@@ -357,6 +368,9 @@
     "empty": "empty",
     "items": "items",
     "{total} in total": "{total} in total"
+  },
+  "graph": {
+    "Edit Graph": "Edit Graph"
   },
   "image": {
     "Arch": "Arch",
@@ -616,6 +630,8 @@
     "Theme color": "Theme color",
     "Theme color - Tooltip": "Primary color for UI theme",
     "Upload file": "Upload file",
+    "Vector store id": "Vector store id",
+    "Vector store id - Tooltip": "The ID of the vector store that the files belong to",
     "Welcome": "Welcome",
     "Welcome - Tooltip": "Welcome message",
     "Welcome text": "Welcome text",
@@ -661,10 +677,16 @@
     "Question - Tooltip": "Dynamically generated task prompt"
   },
   "template": {
+    "Basic config": "Basic config",
+    "Basic config - Tooltip": "Set the parameters in the Kubernetes manifest of the template",
     "Edit Template": "Edit Template",
+    "Enable basic config": "Enable basic config",
+    "Enable basic config - Tooltip": "Enable Kubernetes manifest parameter input with template (supporting Go Template syntax)",
     "Manifest": "Manifest",
     "Manifest - Tooltip": "Kubernetes manifest for the template",
-    "New Template": "New Template"
+    "New Template": "New Template",
+    "Readme": "Readme",
+    "Readme - Tooltip": "The URL address of the README file"
   },
   "theme": {
     "Compact": "Compact",
