@@ -65,6 +65,7 @@ func applyData(data1 *I18nData, data2 *I18nData) {
 		pairs1 := (*data1)[namespace]
 
 		for key, value := range pairs2 {
+			key = strings.ReplaceAll(key, "\"", "\\\"")
 			if _, ok := pairs1[key]; !ok {
 				continue
 			}
