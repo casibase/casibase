@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, InputNumber, Row, Select, Switch} from "antd";
+import {Button, Card, Col, Input, InputNumber, Popover, Row, Select, Switch} from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -23,6 +23,8 @@ import FileTree from "./FileTree";
 import {ThemeDefault} from "./Conf";
 import PromptTable from "./table/PromptTable";
 import StoreAvatarUploader from "./AvatarUpload";
+import {LinkOutlined} from "@ant-design/icons";
+import {Controlled as CodeMirror} from "react-codemirror2";
 
 const {Option} = Select;
 const {TextArea} = Input;
@@ -501,12 +503,93 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Theme color"), i18next.t("store:Theme color - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Site setting"), i18next.t("general:Site setting - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <input type="color" value={this.state.store.themeColor} onChange={(e) => {
-              this.updateStoreField("themeColor", e.target.value);
-            }} />
+            <Row style={{marginTop: "20px"}}>
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Theme color"), i18next.t("store:Theme color - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <input type="color" value={this.state.store.themeColor} onChange={(e) => {
+                  this.updateStoreField("themeColor", e.target.value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:HTML title"), i18next.t("general:HTML title - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.store.htmlTitle} onChange={e => {
+                  this.updateStoreField("htmlTitle", e.target.value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Favicon URL"), i18next.t("general:Favicon URL - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input prefix={<LinkOutlined />} value={this.state.store.faviconUrl} onChange={e => {
+                  this.updateStoreField("faviconUrl", e.target.value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
+                {i18next.t("general:Preview")}:
+              </Col>
+              <Col span={23} >
+                <a target="_blank" rel="noreferrer" href={Setting.getFaviconUrl("", this.state.store.faviconUrl)}>
+                  <img src={Setting.getFaviconUrl("", this.state.store.faviconUrl)} alt={Setting.getFaviconUrl("", this.state.store.faviconUrl)} height={90} style={{marginBottom: "20px"}} />
+                </a>
+              </Col>
+            </Row>
+            <Col span={22} >
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("general:Logo URL"), i18next.t("general:Logo URL - Tooltip"))} :
+                </Col>
+                <Col span={22} >
+                  <Input prefix={<LinkOutlined />} value={this.state.store.logoUrl} onChange={e => {
+                    this.updateStoreField("logoUrl", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
+                  {i18next.t("general:Preview")}:
+                </Col>
+                <Col span={23} >
+                  <a target="_blank" rel="noreferrer" href={Setting.getLogo("", this.state.store.logoUrl)}>
+                    <img src={Setting.getLogo("", this.state.store.logoUrl)} alt={Setting.getLogo("", this.state.store.logoUrl)} height={90} style={{marginBottom: "20px"}} />
+                  </a>
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("general:Footer HTML"), i18next.t("general:Footer HTML - Tooltip"))} :
+                </Col>
+                <Col span={22} >
+                  <Popover placement="right" content={
+                    <div style={{width: "900px", height: "300px"}} >
+                      <CodeMirror
+                        value={this.state.store.footerHtml}
+                        options={{mode: "htmlmixed", theme: "material-darker"}}
+                        onBeforeChange={(editor, data, value) => {
+                          this.updateStoreField("footerHtml", value);
+                        }}
+                      />
+                    </div>
+                  } title={i18next.t("store:Footer HTML - Edit")} trigger="click">
+                    <Input value={this.state.store.footerHtml} style={{marginBottom: "10px"}} onChange={e => {
+                      this.updateStoreField("footerHtml", e.target.value);
+                    }} />
+                  </Popover>
+                </Col>
+              </Row>
+            </Col>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
