@@ -157,7 +157,7 @@ class FormEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div key={this.state.formCount}>
-              <iframe id="formData" title={"formData"} src={`${location.href}/data`} width="100%" height="700px" scrolling="no" style={{border: "1px solid #e0e0e0", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)"}} />
+              <iframe id="formData" title={"formData"} src={`${location.href}/data`} width="100%" height="700px" frameBorder="no" style={{border: "1px solid #e0e0e0", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)"}} />
             </div>
           </Col>
         </Row>

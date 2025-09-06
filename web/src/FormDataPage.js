@@ -59,7 +59,7 @@ class FormDataPage extends Component {
       return <FormDataTablePage {...this.props} />;
     } else if (this.state.form.type === "iFrame") {
       return (
-        <iframe id="formData" title="formData" src={this.state.form.url} style={{width: "100%", height: "calc(100vh - 134px)"}} scrolling="no" />
+        <iframe id="formData" title="formData" src={this.state.form.url} style={{width: "100%", height: "calc(100vh - 134px)"}} frameBorder="no" />
       );
     } else {
       return `Unsupported form type: ${this.state.form.type}`;
