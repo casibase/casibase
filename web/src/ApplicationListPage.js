@@ -74,24 +74,6 @@ class ApplicationListPage extends BaseListPage {
       });
   }
 
-  updateApplicationStatus(record) {
-    ApplicationBackend.getApplicationStatus(`${record.owner}/${record.name}`)
-      .then((statusRes) => {
-        if (statusRes && statusRes.status === "ok") {
-          this.setState(prevState => ({
-            data: prevState.data.map(item =>
-              item.name === record.name ? {...item, status: statusRes.data, url: statusRes.data2} : item
-            ),
-          }));
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${statusRes?.msg}`);
-        }
-      })
-      .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${error}`);
-      });
-  }
-
   deployApplication(record, index) {
     this.setState(prevState => ({
       deploying: {
@@ -104,7 +86,11 @@ class ApplicationListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deployed"));
-          this.updateApplicationStatus(record);
+          this.setState({
+            data: this.state.data.map((item) =>
+              item.name === record.name ? {...item, status: "Running"} : item
+            ),
+          });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to deploy")}: ${res.msg}`);
         }
@@ -138,7 +124,11 @@ class ApplicationListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully undeployed"));
-          this.updateApplicationStatus(record);
+          this.setState({
+            data: this.state.data.map((item) =>
+              item.name === record.name ? {...item, status: i18next.t("Not Deployed")} : item
+            ),
+          });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to undeploy")}: ${res.msg}`);
         }
