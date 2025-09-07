@@ -1,5 +1,6 @@
-
-import React from "react";
+import React, { Component } from "react";
+import { Button } from "antd";
+import { ArrowRightOutlined } from "@ant-design/icons";
 
 const steps = [
     {
@@ -24,65 +25,89 @@ const steps = [
     }
 ];
 
-export default function PatientChainDataIntro() {
-    return (
-        <div style={{ width: "100%", minHeight: 600, background: "#f7f8fa" }}>
-            {/* 顶部深色渐变横幅 */}
-            <div
-                style={{
-                    width: "100%",
-                    minHeight: 320,
-                    background: "linear-gradient(90deg, #23243a 0%, #2d3a5a 60%, #3a4a6d 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "0 0 0 64px",
-                    boxSizing: "border-box"
-                }}
-            >
-                {/* 左侧文字 */}
-                <div style={{ flex: 1, minWidth: 0, color: "#fff", padding: "0 0 0 0" }}>
-                    <div style={{ fontSize: 38, fontWeight: 800, marginBottom: 18, letterSpacing: 1 }}>患者上链数据</div>
-                    <div style={{ fontSize: 18, color: "#e5e7eb", marginBottom: 32, lineHeight: 1.8, maxWidth: 540 }}>
-                        患者上链数据功能，旨在将医疗机构采集的患者诊疗数据进行标准化、脱敏、加密处理后，安全高效地写入区块链，实现数据的不可篡改、可追溯与合规共享。平台严格遵循国家及行业数据安全规范，保障患者隐私与数据安全。
+class PatientChainDataIntro extends Component {
+    constructor(props) {
+        super(props);
+        this.handleIpfsSearch = this.handleIpfsSearch.bind(this);
+    }
+
+    handleIpfsSearch() {
+        this.props.history.push('/ipfs-search');
+    }
+
+    render() {
+        return (
+            <div style={{ width: "100%", minHeight: 600, background: "#f7f8fa" }}>
+                {/* 顶部深色渐变横幅 */}
+                <div
+                    style={{
+                        width: "100%",
+                        minHeight: 320,
+                        background: "linear-gradient(90deg, #23243a 0%, #2d3a5a 60%, #3a4a6d 100%)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "0 0 0 64px",
+                        boxSizing: "border-box"
+                    }}
+                >
+                    {/* 左侧文字 */}
+                    <div style={{ flex: 1, minWidth: 0, color: "#fff", padding: "0 0 0 0" }}>
+                        <div style={{ fontSize: 38, fontWeight: 800, marginBottom: 18, letterSpacing: 1 }}>患者上链数据</div>
+                        <div style={{ fontSize: 18, color: "#e5e7eb", marginBottom: 32, lineHeight: 1.8 }}>
+                            患者上链数据功能，旨在将医疗机构采集的患者诊疗数据进行标准化、脱敏、加密处理后，安全高效地写入区块链，实现数据的不可篡改、可追溯与合规共享。平台严格遵循国家及行业数据安全规范，保障患者隐私与数据安全。
+                        </div>
+                    </div>
+                    {/* 右侧按钮 */}
+                    <div style={{ flex: "0 0 380px", height: 260, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", marginRight: 64 }}>
+                        <Button
+                            type="primary"
+                            size="large"
+                            icon={<ArrowRightOutlined style={{ fontSize: 32 }} />}
+                            style={{
+                                fontSize: 28,
+                                borderRadius: 20,
+                                padding: "28px 64px",
+                                marginTop: 32,
+                                background: "white",
+                                color: "#3a4a6d",
+                                border: "none",
+                                height: 80,
+                                minWidth: 220,
+                                boxShadow: "0 6px 24px rgba(58,74,109,0.13)"
+                            }}
+                            onClick={this.handleIpfsSearch}
+                        >
+                            开始使用
+                        </Button>
                     </div>
                 </div>
-                {/* 右侧插图 */}
-                <div style={{ flex: "0 0 380px", height: 260, display: "flex", alignItems: "center", justifyContent: "center", marginRight: 64 }}>
-                    {/* 可替换为SVG或图片 */}
-                    <svg width="260" height="220" viewBox="0 0 260 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="20" y="40" width="220" height="140" rx="24" fill="#fff" fillOpacity="0.08" />
-                        <rect x="40" y="60" width="180" height="100" rx="18" fill="#fff" fillOpacity="0.13" />
-                        <rect x="60" y="80" width="140" height="60" rx="12" fill="#fff" fillOpacity="0.18" />
-                        <circle cx="130" cy="110" r="32" fill="#fff" fillOpacity="0.22" />
-                        <path d="M130 90v20l14 8" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity="0.7" />
-                        <text x="130" y="120" textAnchor="middle" fill="#fff" fontSize="18" fontWeight="bold" opacity="0.8">区块链</text>
-                    </svg>
+                {/* 下方白色介绍区块 */}
+                <div
+                    style={{
+                        background: "#fff",
+                        borderRadius: 18,
+                        boxShadow: "0 4px 18px rgba(0,0,0,0.08)",
+                        maxWidth: 900,
+                        margin: "-60px auto 0 auto",
+                        padding: "40px 48px 32px 48px",
+                        position: "relative",
+                        zIndex: 2
+                    }}
+                >
+                    <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 18, color: "#23243a" }}>操作步骤</div>
+                    <ol style={{ paddingLeft: 24, color: "#3a4a6d", fontSize: 16 }}>
+                        {steps.map(step => (
+                            <li key={step.title} style={{ marginBottom: 18 }}>
+                                <div style={{ fontWeight: 600, fontSize: 16, color: "#23243a", marginBottom: 4 }}>{step.title}</div>
+                                <div style={{ lineHeight: 1.7 }}>{step.desc}</div>
+                            </li>
+                        ))}
+                    </ol>
                 </div>
             </div>
-            {/* 下方白色介绍区块 */}
-            <div
-                style={{
-                    background: "#fff",
-                    borderRadius: 18,
-                    boxShadow: "0 4px 18px rgba(0,0,0,0.08)",
-                    maxWidth: 900,
-                    margin: "-60px auto 0 auto",
-                    padding: "40px 48px 32px 48px",
-                    position: "relative",
-                    zIndex: 2
-                }}
-            >
-                <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 18, color: "#23243a" }}>操作步骤</div>
-                <ol style={{ paddingLeft: 24, color: "#3a4a6d", fontSize: 16 }}>
-                    {steps.map(step => (
-                        <li key={step.title} style={{ marginBottom: 18 }}>
-                            <div style={{ fontWeight: 600, fontSize: 16, color: "#23243a", marginBottom: 4 }}>{step.title}</div>
-                            <div style={{ lineHeight: 1.7 }}>{step.desc}</div>
-                        </li>
-                    ))}
-                </ol>
-            </div>
-        </div>
-    );
+        );
+    }
 }
+
+export default PatientChainDataIntro;
