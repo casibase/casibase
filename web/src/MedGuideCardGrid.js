@@ -7,6 +7,7 @@ import * as Setting from "./Setting";
 const GROUPS = [
     {
         name: "系统管理",
+        subtitle: "平台基础配置与权限管理",
         color: "#2d5af1",
         bg: "#fcfdff",
         buttons: [
@@ -18,6 +19,7 @@ const GROUPS = [
     },
     {
         name: "数据管理",
+        subtitle: "数据全生命周期管理与分析",
         color: "#10b981",
         bg: "#fcfefd",
         buttons: [
@@ -28,6 +30,7 @@ const GROUPS = [
     },
     {
         name: "上链服务",
+        subtitle: "医疗数据可信上链与审计",
         color: "#f59e42",
         bg: "#fffcfa",
         buttons: [
@@ -39,6 +42,7 @@ const GROUPS = [
     },
     {
         name: "共享服务",
+        subtitle: "数据共享与隐私保护",
         color: "#8b5cf6",
         bg: "#fdfbff",
         buttons: [
@@ -51,6 +55,7 @@ const GROUPS = [
     },
     {
         name: "应用场景",
+        subtitle: "多元医疗业务创新应用",
         color: "#ef4444",
         bg: "#fffdfd",
         buttons: [
@@ -72,7 +77,7 @@ const MedGuideCardGrid = (props) => {
     useEffect(() => {
         const style = document.createElement("style");
         style.innerHTML = `
-                .mg-main-wrap { display: flex; width: 80%; min-height: 480px; background: #f7f8fa; border-radius: 18px; box-shadow: 0 4px 18px rgba(0,0,0,0.08); margin: 0 auto; }
+                .mg-main-wrap { display: flex; width: 80%; height: 520px; background: #f7f8fa; border-radius: 18px; box-shadow: 0 4px 18px rgba(0,0,0,0.08); margin: 0 auto; }
                 .mg-group-list { width: 180px; background: #fff; border-radius: 18px 0 0 18px; box-shadow: 2px 0 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
                 .mg-group-item { padding: 28px 0 28px 0; text-align: center; font-size: 18px; font-weight: 500; color: #888; cursor: pointer; border-left: 4px solid transparent; transition: all 0.2s; }
                 .mg-group-item.active { font-weight: 700; }
@@ -145,6 +150,9 @@ const MedGuideCardGrid = (props) => {
                 }}
             >
                 <div className="mg-btn-title" style={{ color: activeGroup.color }}>{activeGroup.name}</div>
+                {activeGroup.subtitle && (
+                    <div style={{ fontSize: 15, color: '#bbb', fontWeight: 400, margin: '-16px 0 18px 0', lineHeight: 1.4 }}>{activeGroup.subtitle}</div>
+                )}
                 <div className="mg-btns" style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(3, 1fr)',
