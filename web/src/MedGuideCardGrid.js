@@ -11,8 +11,9 @@ const GROUPS = [
         color: "#2d5af1",
         bg: "#fcfdff",
         buttons: [
-            { title: "系统设置", icon: "⚙️", desc: "配置平台基础参数，定制系统行为与外观，支持多种业务场景。", route: "/stores" },
+
             { title: "资源状态", icon: "📊", desc: "实时监控服务器、存储、网络等各类资源的运行状态，保障平台稳定。", route: "/sysinfo" },
+            { title: "系统设置", icon: "⚙️", desc: "配置平台基础参数（如提供商等），定制系统行为，支持多种业务场景。", route: "/stores" },
             { title: "用户管理", icon: "👤", desc: "集中管理所有用户账号、分配角色权限，支持批量导入与导出。" },
             { title: "权限管理", icon: "🔑", desc: "灵活配置访问控制策略，细粒度分配各类操作与数据权限。" },
         ],
@@ -34,7 +35,7 @@ const GROUPS = [
         color: "#f59e42",
         bg: "#fffcfa",
         buttons: [
-            { title: "医疗记录上联", icon: "📄", desc: "将医疗文档高效上链，保障数据不可篡改与可追溯。", route: "/records" },
+            { title: "医疗记录上联", icon: "📄", desc: "将医疗文档高效上链，保障数据不可篡改与可追溯。", route: "/ipfs-archive" },
             { title: "数据操作上联", icon: "🔗", desc: "各类数据操作全流程上链，提升数据可信度。", route: "/records" },
             { title: "区块链浏览器", icon: "🌐", desc: "可视化浏览链上数据，支持多条件筛选与溯源。", route: "/forms/区块链浏览器/data" },
             { title: "查询与审计", icon: "🔍", desc: "对链上数据进行灵活查询与合规性审计分析。", route: "/audit" },

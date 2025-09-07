@@ -16,7 +16,7 @@ import React, { Component } from "react";
 import { Link, Redirect, Route, Switch, withRouter } from "react-router-dom";
 import { StyleProvider, legacyLogicalPropertiesTransformer } from "@ant-design/cssinjs";
 import { Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu, Result } from "antd";
-import { AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone, BuildTwoTone, CameraTwoTone, SecurityScanTwoTone, ToolTwoTone } from "@ant-design/icons";
+import { AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone, BuildTwoTone, CameraTwoTone, SecurityScanTwoTone, ToolTwoTone, ApiTwoTone, ReconciliationTwoTone } from "@ant-design/icons";
 import "./App.less";
 import { Helmet } from "react-helmet";
 import * as Setting from "./Setting";
@@ -272,10 +272,14 @@ class App extends Component {
       this.setState({ selectedMenuKey: "/ipfs-archive" });
     } else if (uri.includes("/ipfs-search")) {
       this.setState({ selectedMenuKey: "/ipfs-search" });
+    } else if (uri.includes(encodeURIComponent("/forms/区块链浏览器/data"))) {
+      // 将/forms/区块链浏览器/data 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/forms/区块链浏览器/data" });
     }
     else {
       this.setState({ selectedMenuKey: "null" });
     }
+
     this.setOpenMenuKeysForParentMenu(uri);
 
 
@@ -545,6 +549,8 @@ class App extends Component {
     // 更新展开的菜单键
     const pathToMenuKeyMap = this.buildPathToMenuKeyMap();
     let openKeys = [];
+    // uri中可能存在中文的uri编码，中文需要正确转为中文
+    uri = decodeURIComponent(uri);
 
     // 精确匹配路径
     if (pathToMenuKeyMap[uri]) {
@@ -558,6 +564,7 @@ class App extends Component {
         openKeys = [pathToMenuKeyMap[matchingParentKey]];
       }
     }
+    console.log(pathToMenuKeyMap, openKeys);
 
     this.setState({ openMenuKeys: openKeys });
   }
@@ -694,60 +701,134 @@ class App extends Component {
         Setting.goToLinkSoft(this, "/videos");
       }
     } else if (domain === "med" || true) {
-      // res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
-      res.push(Setting.getItem(<Link to="/dashboard">{i18next.t("dashboard:Dashboard")}</Link>, "/dashboard", <AppstoreTwoTone twoToneColor={twoToneColor} />));
-      res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows", <BuildTwoTone twoToneColor={twoToneColor} />));
-      res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:AuditSearch")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />, [
-        Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"),
-        Setting.getItem(<Link to="/ipfs-search">{i18next.t("med:IpfsSearch")}</Link>, "/ipfs-search"),
+      // med专属左侧菜单
 
-        Setting.getItem(<Link to="/ipfs-archive">{i18next.t("med:IpfsArchives")}</Link>, "/ipfs-archive")
-
-      ]));
-
-      res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:Image Operation")}</Link>, "/img", <CameraTwoTone twoToneColor={twoToneColor} />, [
-        Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
-        Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr")
-      ]));
-
-
-
-      res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
+      // 数据管理
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/dashboard">{i18next.t("leftSideMedMenu:DataManage")}</Link>, "/dashboard", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/dashboard">{i18next.t("leftSideMedMenu:Dashboard")}</Link>, "/dashboard"),
+        Setting.getItem(<Link to="/ipfs-search">{i18next.t("leftSideMedMenu:IpfsSearch")}</Link>, "/ipfs-search"),
         Setting.getItem(
-          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
-            {i18next.t("general:Users")}
+          <a target="_blank" rel="noreferrer" href="https://192.168.0.228:13001/forms/专病库知识图谱/data">
+            {i18next.t("leftSideMedMenu:knowledge graph")}
             {Setting.renderExternalLink()}
-          </a>, "/users"),
+          </a>, "/knowledge-graph"),
+      ]));
+
+      // 上链服务
+
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/records">{i18next.t("leftSideMedMenu:Chain Services")}</Link>, "/records", <ApiTwoTone twoToneColor={twoToneColor} />, [
+
+        Setting.getItem(<Link to="/ipfs-archive">{i18next.t("leftSideMedMenu:IpfsArchives")}</Link>, "/ipfs-archive"),
+        Setting.getItem(<Link to="/records">{i18next.t("leftSideMedMenu:Records")}</Link>, "/records"),
+        Setting.getItem(<Link to="/forms/区块链浏览器/data">{i18next.t("leftSideMedMenu:chainExpoler")}</Link>, "/forms/区块链浏览器/data"),
+        Setting.getItem(<Link to="/audit">{i18next.t("leftSideMedMenu:Audit")}</Link>, "/audit"),
+      ]));
+
+      // 共享服务
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sr">{i18next.t("leftSideMedMenu:Sharing Services")}</Link>, "/sr", <BuildTwoTone twoToneColor={twoToneColor} />, [
+
+        Setting.getItem(<Link to="/sr">{i18next.t("leftSideMedMenu:Super Resolution")}</Link>, "/sr"),
+        Setting.getItem(<Link to="/yolov8mi">{i18next.t("leftSideMedMenu:Medical Image Analysis")}</Link>, "/yolov8mi")
+        // 预留：受控使用、密文计算、可信解密
+
+      ],
+      ));
+
+      // 应用场景
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/workflows">{i18next.t("leftSideMedMenu:Application Scenarios")}</Link>, "/workflows", <ReconciliationTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/workflows">{i18next.t("leftSideMedMenu:Workflows")}</Link>, "/workflows"),
+      ],
+      ));
+
+
+
+      // 系统管理
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sysinfo">{i18next.t("leftSideMedMenu:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/sysinfo">{i18next.t("leftSideMedMenu:System Info")}</Link>, "/sysinfo"),
+
+        Setting.getItem(<Link to="/stores">{i18next.t("leftSideMedMenu:Stores")}</Link>, "/stores"),
+        Setting.getItem(<Link to="/providers">{i18next.t("leftSideMedMenu:Providers")}</Link>, "/providers"),
+        Setting.getItem(<Link to="/sessions">{i18next.t("leftSideMedMenu:Sessions")}</Link>, "/sessions"),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
-            {i18next.t("general:Resources")}
+            {i18next.t("leftSideMedMenu:Resources")}
             {Setting.renderExternalLink()}
           </a>, "/resources"),
         Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
+            {i18next.t("leftSideMedMenu:Users")}
+            {Setting.renderExternalLink()}
+          </a>, "/users"),
+
+        Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
-            {i18next.t("general:Permissions")}
+            {i18next.t("leftSideMedMenu:Permissions")}
             {Setting.renderExternalLink()}
           </a>, "/permissions"),
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
+            {i18next.t("leftSideMedMenu:Swagger")}
+            {Setting.renderExternalLink()}
+          </a>, "/swagger"),
+
       ]));
 
-      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/stores">{i18next.t("general:Setting")}</Link>, "/ai-setting", <ToolTwoTone twoToneColor={twoToneColor} />, [
-        Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"),
-        Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"),
-        // Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"),
-      ]));
 
-      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />,
-        [
-          Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
-          Setting.getItem(
-            <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
-              {i18next.t("general:Swagger")}
-              {Setting.renderExternalLink()}
-            </a>, "/swagger"),
-          Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"),
-          Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records")
+      // 旧版
+      // // res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
+      // res.push(Setting.getItem(<Link to="/dashboard">{i18next.t("dashboard:Dashboard")}</Link>, "/dashboard", <AppstoreTwoTone twoToneColor={twoToneColor} />));
+      // res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows", <BuildTwoTone twoToneColor={twoToneColor} />));
+      // res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:AuditSearch")}</Link>, "/audit", <SecurityScanTwoTone twoToneColor={twoToneColor} />, [
+      //   Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"),
+      //   Setting.getItem(<Link to="/ipfs-search">{i18next.t("med:IpfsSearch")}</Link>, "/ipfs-search"),
 
-        ]));
+      //   Setting.getItem(<Link to="/ipfs-archive">{i18next.t("med:IpfsArchives")}</Link>, "/ipfs-archive")
+
+      // ]));
+
+      // res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("med:Image Operation")}</Link>, "/img", <CameraTwoTone twoToneColor={twoToneColor} />, [
+      //   Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
+      //   Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr")
+      // ]));
+
+
+
+      // res.push(Setting.getItem(<Link style={{ color: textColor }} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
+      //   Setting.getItem(
+      //     <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
+      //       {i18next.t("general:Users")}
+      //       {Setting.renderExternalLink()}
+      //     </a>, "/users"),
+      //   Setting.getItem(
+      //     <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
+      //       {i18next.t("general:Resources")}
+      //       {Setting.renderExternalLink()}
+      //     </a>, "/resources"),
+      //   Setting.getItem(
+      //     <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
+      //       {i18next.t("general:Permissions")}
+      //       {Setting.renderExternalLink()}
+      //     </a>, "/permissions"),
+      // ]));
+
+      // res.push(Setting.getItem(<Link style={{ color: textColor }} to="/stores">{i18next.t("general:Setting")}</Link>, "/ai-setting", <ToolTwoTone twoToneColor={twoToneColor} />, [
+      //   Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"),
+      //   Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"),
+      //   // Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"),
+      // ]));
+
+      // res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />,
+      //   [
+      //     Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
+      //     Setting.getItem(
+      //       <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
+      //         {i18next.t("general:Swagger")}
+      //         {Setting.renderExternalLink()}
+      //       </a>, "/swagger"),
+      //     Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"),
+      //     Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records")
+
+      //   ]));
     } else {
       const textColor = this.state.themeAlgorithm.includes("dark") ? "white" : "black";
       const twoToneColor = this.state.themeData.colorPrimary;
@@ -827,14 +908,15 @@ class App extends Component {
           </a>, "/swagger")]));
     }
 
-    const sortedForms = this.state.forms.slice().sort((a, b) => {
-      return a.position.localeCompare(b.position);
-    });
+    // 临时取消对自增加的form的渲染
+    // const sortedForms = this.state.forms.slice().sort((a, b) => {
+    //   return a.position.localeCompare(b.position);
+    // });
 
-    sortedForms.forEach(form => {
-      const path = `/forms/${form.name}/data`;
-      res.push(Setting.getItem(<Link to={path}>{form.displayName}</Link>, path));
-    });
+    // sortedForms.forEach(form => {
+    //   const path = `/forms/${form.name}/data`;
+    //   res.push(Setting.getItem(<Link to={path}>{form.displayName}</Link>, path));
+    // });
 
     return res;
   }

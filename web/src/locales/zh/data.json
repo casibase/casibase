@@ -434,6 +434,38 @@
     "IpfsArchives": "数据归档",
     "IpfsSearch": "查询数据"
   },
+  "leftSideMedMenu":{
+    "Admin": "系统管理",
+    "System Info":"资源状态",
+    "Stores":"数据仓库配置",
+    "Providers":"提供商配置",
+    "Sessions":"会话管理",
+    "Resources":"资源管理",
+    "Users":"用户管理",
+    "Permissions":"权限管理",
+    "Swagger": "API文档",
+
+    "DataManage":"数据管理",
+    "Dashboard":"数据总览",
+    "IpfsSearch":"患者上链数据",
+    "knowledge graph":"专病知识图谱",
+    
+
+    "Chain Services": "上链服务",
+    "IpfsArchives":"医疗记录上联",
+    "Records":"数据操作上联",
+    "chainExpoler":"区块链浏览器",
+    "Audit":"查询审计",
+
+    "Sharing Services": "共享服务",
+    "Medical Image Analysis":"医学影像分析",
+    "Super Resolution":"图像超分",
+
+    "Application Scenarios": "应用场景",
+    "Workflows": "临床路径监管"
+
+
+  },
    "ipfsArchive":{
     "Ipfs Archive List": "IPFS数据归档列表",
     "Correlation ID": "索引",

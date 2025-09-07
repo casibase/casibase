@@ -430,6 +430,35 @@
     "Medical Image Analysis": "Medical Image Analysis",
     "Super Resolution": "Super Resolution"
   },
+  "leftSideMedMenu": {
+    "Admin": "Admin",
+    "System Info": "System Information",
+    "Stores": "Data Warehouse Configuration",
+    "Providers": "Provider Configuration",
+    "Sessions": "Session Management",
+    "Resources": "Resource Management",
+    "Users": "User Management",
+    "Permissions": "Permission Management",
+    "Swagger": "API Documentation",
+
+    "DataManage": "Data Management",
+    "Dashboard": "Data Overview",
+    "IpfsSearch": "Patient On-Chain Data",
+    "knowledge graph": "Disease-Specific Knowledge Graph",
+
+    "Chain Services": "On-Chain Services",
+    "IpfsArchives": "Medical Record On-Chaining",
+    "Records": "Data Operation On-Chaining",
+    "chainExpoler": "Blockchain Explorer",
+    "Audit": "Query Audit",
+
+    "Sharing Services": "Sharing Services",
+    "Medical Image Analysis": "Medical Image Analysis",
+    "Super Resolution": "Image Super-Resolution",
+
+    "Application Scenarios": "Application Scenarios",
+    "Workflows": "Clinical Pathway Supervision"
+  },
   "ipfsArchive":{
     "Ipfs Archive List": "IPFS Archive List",
     "Correlation ID": "Correlation ID",
