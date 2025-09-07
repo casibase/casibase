@@ -146,72 +146,50 @@ const MedGuideCardGrid = (props) => {
                 }}
             >
                 <div className="mg-btn-title" style={{ color: activeGroup.color }}>{activeGroup.name}</div>
-                <div className="mg-btns">
+                <div className="mg-btns" style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: '20px 20px',
+                    width: '100%',
+                    justifyItems: 'center',
+                    paddingRight: '32px',
+                }}>
                     {activeGroup.buttons.map(btnObj => (
                         <div
                             key={btnObj.title}
                             className="mg-btn mg-btn-card"
                             style={{
-                                borderColor: activeGroup.color,
-                                color: activeGroup.color,
                                 background: '#fff',
+                                borderRadius: 16,
+                                boxShadow: '0 2px 12px 0 rgba(0,0,0,0.06)',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                justifyContent: 'space-between',
                                 alignItems: 'flex-start',
-                                minWidth: 260,
+                                justifyContent: 'flex-start',
+                                width: '100%',
+                                minWidth: 0,
                                 maxWidth: 340,
                                 aspectRatio: '16/9',
                                 height: 'auto',
-                                padding: '20px 24px 18px 24px',
-                                boxSizing: 'border-box',
-                                boxShadow: '0 2px 12px rgba(45,90,241,0.06)',
+                                padding: '18px 18px 14px 18px',
                                 position: 'relative',
-                                overflow: 'hidden'
+                                cursor: 'pointer',
+                                transition: 'box-shadow 0.18s',
+                                border: 'none',
                             }}
                             onClick={() => handleBtnClick(btnObj)}
                             onMouseOver={e => {
-                                e.currentTarget.style.background = activeGroup.color;
-                                e.currentTarget.style.color = '#fff';
-                                const icon = e.currentTarget.querySelector('.mg-btn-icon');
-                                icon.style.background = '#fff8';
-                                icon.style.color = activeGroup.color;
-                                icon.style.width = '88px';
-                                icon.style.height = '88px';
-                                icon.style.fontSize = '48px';
-                                icon.style.right = '6px';
-                                icon.style.bottom = '2px';
-                                icon.style.backdropFilter = 'blur(8px)';
-                                icon.style.WebkitBackdropFilter = 'blur(8px)';
-                                const inner = icon.querySelector('.mg-btn-icon-inner');
-                                if (inner) inner.style.fontSize = '56px';
+                                e.currentTarget.style.boxShadow = `0 6px 18px 0 ${activeGroup.color}22`;
                             }}
                             onMouseOut={e => {
-                                e.currentTarget.style.background = '#fff';
-                                e.currentTarget.style.color = activeGroup.color;
-                                const icon = e.currentTarget.querySelector('.mg-btn-icon');
-                                icon.style.background = activeGroup.bg + 'CC';
-                                icon.style.color = activeGroup.color;
-                                icon.style.width = '68px';
-                                icon.style.height = '68px';
-                                icon.style.fontSize = '38px';
-                                icon.style.right = '14px';
-                                icon.style.bottom = '10px';
-                                icon.style.backdropFilter = 'blur(4px)';
-                                icon.style.WebkitBackdropFilter = 'blur(4px)';
-                                const inner = icon.querySelector('.mg-btn-icon-inner');
-                                if (inner) inner.style.fontSize = '38px';
+                                e.currentTarget.style.boxShadow = '0 2px 12px 0 rgba(0,0,0,0.06)';
                             }}
                         >
-                            <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', zIndex: 2 }}>
-                                <span style={{ fontWeight: 600, fontSize: 21 }}>{btnObj.title}</span>
-                                <span style={{ fontSize: 15, color: 'inherit', opacity: 0.75, marginTop: 4 }}>{btnObj.desc}</span>
-                            </span>
-                            <span className="mg-btn-icon" style={{
-                                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 68, height: 68, borderRadius: '50%', background: activeGroup.bg + 'CC', color: activeGroup.color, fontSize: 38, position: 'absolute', right: 14, bottom: 10, transition: 'all 0.28s cubic-bezier(.4,2,.6,1)', zIndex: 1, backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)'
-                            }}>
-                                <span className="mg-btn-icon-inner" style={{ transition: 'all 0.28s cubic-bezier(.4,2,.6,1)', fontSize: 38 }}>{btnObj.icon}</span>
-                            </span>
+                            <div style={{ width: 48, height: 48, borderRadius: 12, background: activeGroup.color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+                                <span style={{ fontSize: 26, color: activeGroup.color }}>{btnObj.icon}</span>
+                            </div>
+                            <div style={{ fontWeight: 700, fontSize: 20, color: '#222', marginBottom: 7 }}>{btnObj.title}</div>
+                            <div style={{ fontSize: 14, color: '#888', fontWeight: 400 }}>{btnObj.desc}</div>
                         </div>
                     ))}
                 </div>
