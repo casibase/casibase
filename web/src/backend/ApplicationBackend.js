@@ -90,13 +90,3 @@ export function undeployApplication(owner, name) {
     },
   }).then(res => res.json());
 }
-
-export function getApplicationStatus(id) {
-  return fetch(`${Setting.ServerUrl}/api/get-application-status?id=${encodeURIComponent(id)}`, {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Accept-Language": Setting.getAcceptLanguage(),
-    },
-  }).then(res => res.json());
-}
