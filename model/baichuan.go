@@ -37,7 +37,7 @@ func NewBaichuanModelProvider(subType string, apiKey string, temperature float32
 
 func (p *BaichuanModelProvider) GetPricing() string {
 	return `URL:
-https://platform.baichuan-ai.com/price
+https://platform.baichuan-ai.com/prices
 
 | Model      | sub-type             | Input Price per 1K characters    | Output Price per 1K characters |
 |------------|----------------------|----------------------------------|--------------------------------|
