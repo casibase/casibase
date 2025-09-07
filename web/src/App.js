@@ -1100,12 +1100,13 @@ class App extends Component {
               boxShadow: "0 4px 16px 4px rgba(188, 152, 249, .08)",
             }}
           >
-            {this.isWithoutCard() ?
+            {/* {this.isWithoutCard() ?
               this.renderRouter() :
               <Card className="content-warp-card">
                 {this.renderRouter()}
               </Card>
-            }
+            } */}
+            {this.renderRouter()}
           </Content>
         </Layout>
         {this.renderFooter()}
