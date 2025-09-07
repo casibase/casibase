@@ -801,7 +801,7 @@ class App extends Component {
   }
 
   isWithoutCard() {
-    return Setting.isMobile() || this.isHiddenHeaderAndFooter() || window.location.pathname.startsWith("/chat") || window.location.pathname === "/";
+    return Setting.isMobile() || this.isHiddenHeaderAndFooter() || window.location.pathname === "/chat" || window.location.pathname.startsWith("/chat/") || window.location.pathname === "/";
   }
 
   isHiddenHeaderAndFooter(uri) {
