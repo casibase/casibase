@@ -43,7 +43,7 @@ func NewBaiduCloudModelProvider(subType string, apiKey string, temperature float
 
 func (p *BaiduCloudModelProvider) GetPricing() string {
 	return `URL:
-https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Blfmc9dlf
+https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Qm9cw2s7m
 
 | Model                          | Input Price per 1K tokens (CNY) | Output Price per 1K tokens (CNY) |
 | ------------------------------ | ------------------------------- | -------------------------------- |
