@@ -54,7 +54,7 @@ export class IPFSSearchPage extends Component {
 
         <Content className="ipfs-search-content">
           <div className="ipfs-search-header">
-            <Title level={2} className="ipfs-search-title">信息查询</Title>
+            <Title level={2} className="ipfs-search-title">患者上链数据信息查询</Title>
           </div>
           <div className="ipfs-search-body">
             <Space direction="vertical" size="large" className="ipfs-search-space">
