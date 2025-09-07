@@ -10,10 +10,10 @@ const GROUPS = [
         color: "#2d5af1",
         bg: "#fcfdff",
         buttons: [
-            { title: "系统设置", icon: "⚙️", desc: "平台参数配置", route: "/stores" },
-            { title: "资源状态", icon: "📊", desc: "各类资源监控", route: "/sysinfo" },
-            { title: "用户管理", icon: "👤", desc: "账号与角色" },
-            { title: "权限管理", icon: "🔑", desc: "访问与操作权限" },
+            { title: "系统设置", icon: "⚙️", desc: "配置平台基础参数，定制系统行为与外观，支持多种业务场景。", route: "/stores" },
+            { title: "资源状态", icon: "📊", desc: "实时监控服务器、存储、网络等各类资源的运行状态，保障平台稳定。", route: "/sysinfo" },
+            { title: "用户管理", icon: "👤", desc: "集中管理所有用户账号、分配角色权限，支持批量导入与导出。" },
+            { title: "权限管理", icon: "🔑", desc: "灵活配置访问控制策略，细粒度分配各类操作与数据权限。" },
         ],
     },
     {
@@ -21,9 +21,9 @@ const GROUPS = [
         color: "#10b981",
         bg: "#fcfefd",
         buttons: [
-            { title: "数据总揽", icon: "📊", desc: "可信共享数据总览", route: "/dashboard" },
-            { title: "患者上链数据", icon: "📝", desc: "患者数据上链明细", route: "/ipfs-search" },
-            { title: "专病知识图谱", icon: "🧠", desc: "专病知识结构化（内网）", route: "https://192.168.0.228:13001/forms/专病库知识图谱/data" },
+            { title: "数据总揽", icon: "📊", desc: "全局展示平台内各类数据分布、增长趋势与共享情况。", route: "/dashboard" },
+            { title: "患者上链数据", icon: "📝", desc: "查看每位患者的上链数据明细，支持多维度检索与追溯。", route: "/ipfs-search" },
+            { title: "专病知识图谱", icon: "🧠", desc: "构建专病领域知识结构，助力智能诊疗与科研分析。", route: "https://192.168.0.228:13001/forms/专病库知识图谱/data" },
         ],
     },
     {
@@ -31,10 +31,10 @@ const GROUPS = [
         color: "#f59e42",
         bg: "#fffcfa",
         buttons: [
-            { title: "医疗记录上联", icon: "📄", desc: "医疗文档上链", route: "/records" },
-            { title: "数据操作上联", icon: "🔗", desc: "数据操作上链", route: "/records" },
-            { title: "区块链浏览器", icon: "🌐", desc: "链上数据浏览", route: "/forms/区块链浏览器/data" },
-            { title: "查询与审计", icon: "🔍", desc: "链上数据查询与审计", route: "/audit" },
+            { title: "医疗记录上联", icon: "📄", desc: "将医疗文档高效上链，保障数据不可篡改与可追溯。", route: "/records" },
+            { title: "数据操作上联", icon: "🔗", desc: "各类数据操作全流程上链，提升数据可信度。", route: "/records" },
+            { title: "区块链浏览器", icon: "🌐", desc: "可视化浏览链上数据，支持多条件筛选与溯源。", route: "/forms/区块链浏览器/data" },
+            { title: "查询与审计", icon: "🔍", desc: "对链上数据进行灵活查询与合规性审计分析。", route: "/audit" },
         ],
     },
     {
@@ -42,11 +42,11 @@ const GROUPS = [
         color: "#8b5cf6",
         bg: "#fdfbff",
         buttons: [
-            { title: "图像超分", icon: "🖼️", desc: "医学影像超分辨率", route: "/sr" },
-            { title: "医疗影像分析", icon: "🔎", desc: "智能检测分割", route: "/yolov8mi" },
-            { title: "受控使用", icon: "🛡️", desc: "数据受控访问（todo）", route: "/share/usage" },
-            { title: "密文计算", icon: "🔒", desc: "隐私保护计算（todo）", route: "/share/crypto" },
-            { title: "可信解密", icon: "🔓", desc: "安全可信解密（todo）", route: "/share/decrypt" },
+            { title: "图像超分", icon: "🖼️", desc: "提升医学影像分辨率，助力精准诊断与科研。", route: "/sr" },
+            { title: "医疗影像分析", icon: "🔎", desc: "AI驱动医学影像检测、分割与辅助诊断。", route: "/yolov8mi" },
+            { title: "受控使用", icon: "🛡️", desc: "实现数据分级授权与受控访问，保障数据安全。", route: "/share/usage" },
+            { title: "密文计算", icon: "🔒", desc: "支持隐私保护计算，数据加密流转与分析。", route: "/share/crypto" },
+            { title: "可信解密", icon: "🔓", desc: "安全可信的数据解密服务，合规可控。", route: "/share/decrypt" },
         ],
     },
     {
@@ -54,14 +54,13 @@ const GROUPS = [
         color: "#ef4444",
         bg: "#fffdfd",
         buttons: [
-            { title: "质量控制", icon: "📈", desc: "医疗质量监控（todo）", route: "/scene/quality" },
-            { title: "临床路径监管", icon: "🩺", desc: "路径执行监管", route: "/workflows" },
-            { title: "主动理赔", icon: "💰", desc: "理赔流程自动化（todo）", route: "/scene/claim" },
-            { title: "多中心诊疗", icon: "🏥", desc: "多机构协作诊疗", route: "/scene/multicenter" },
+            { title: "质量控制", icon: "📈", desc: "全流程医疗质量监控，支持多维度统计与预警。", route: "/scene/quality" },
+            { title: "临床路径监管", icon: "🩺", desc: "监管临床路径执行，提升诊疗规范与效率。", route: "/workflows" },
+            { title: "主动理赔", icon: "💰", desc: "自动化理赔流程，提升理赔效率与合规性。", route: "/scene/claim" },
+            { title: "多中心诊疗", icon: "🏥", desc: "多机构协作诊疗，促进医疗资源共享与互通。", route: "/scene/multicenter" },
         ],
     },
 ];
-
 // 路由已合并到GROUPS配置中
 
 
@@ -174,22 +173,101 @@ const MedGuideCardGrid = (props) => {
                                 padding: '18px 18px 14px 18px',
                                 position: 'relative',
                                 cursor: 'pointer',
-                                transition: 'box-shadow 0.18s',
-                                border: 'none',
+                                transition: 'box-shadow 0.14s, border 0.16s, transform 0.16s cubic-bezier(.4,2,.6,1)',
+                                border: '2px solid #fff',
+                                overflow: 'hidden',
                             }}
                             onClick={() => handleBtnClick(btnObj)}
                             onMouseOver={e => {
-                                e.currentTarget.style.boxShadow = `0 6px 18px 0 ${activeGroup.color}22`;
+                                e.currentTarget.style.boxShadow = `0 10px 24px 0 ${activeGroup.color}33`;
+                                e.currentTarget.style.border = `2px solid ${activeGroup.color}`;
+                                e.currentTarget.style.transform = 'translateY(-4px)';
+                                const arrow = e.currentTarget.querySelector('.mg-card-arrow');
+                                if (arrow) {
+                                    arrow.style.opacity = '1';
+                                    arrow.style.transform = 'translateX(0)';
+                                }
                             }}
                             onMouseOut={e => {
                                 e.currentTarget.style.boxShadow = '0 2px 12px 0 rgba(0,0,0,0.06)';
+                                e.currentTarget.style.border = '2px solid #fff';
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                const arrow = e.currentTarget.querySelector('.mg-card-arrow');
+                                if (arrow) {
+                                    arrow.style.opacity = '0';
+                                    arrow.style.transform = 'translateX(24px)';
+                                }
                             }}
                         >
-                            <div style={{ width: 48, height: 48, borderRadius: 12, background: activeGroup.color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
-                                <span style={{ fontSize: 26, color: activeGroup.color }}>{btnObj.icon}</span>
+                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', marginBottom: 6 }}>
+                                <div style={{ flex: '0 0 48px', width: 48, aspectRatio: '1/1', borderRadius: 12, background: activeGroup.color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14, overflow: 'hidden' }}>
+                                    <span style={{ fontSize: 32, color: activeGroup.color, width: '70%', height: '70%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', lineHeight: 1 }}>{btnObj.icon}</span>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                    <div style={{ fontWeight: 700, fontSize: 20, color: '#222', marginBottom: 2 }}>{btnObj.title}</div>
+                                    <div style={{ fontSize: 14, color: '#888', fontWeight: 400, marginTop: 0 }}>{btnObj.desc}</div>
+                                </div>
                             </div>
-                            <div style={{ fontWeight: 700, fontSize: 20, color: '#222', marginBottom: 7 }}>{btnObj.title}</div>
-                            <div style={{ fontSize: 14, color: '#888', fontWeight: 400 }}>{btnObj.desc}</div>
+                            <img
+                                className="mg-card-arrow"
+                                src={require('./assets/home/right-arrow.png')}
+                                alt="right-arrow"
+                                style={{
+                                    position: 'absolute',
+                                    right: 18,
+                                    top: '50%',
+                                    transform: 'translateY(-50%) translateX(24px)',
+                                    width: 28,
+                                    height: 28,
+                                    opacity: 0,
+                                    transition: 'all 0.32s cubic-bezier(.4,2,.6,1)',
+                                    pointerEvents: 'none',
+                                    zIndex: 10,
+                                }}
+                            />
+                            <div style={{
+                                display: 'flex',
+                                width: '100%',
+                                borderTop: '1px solid #f0f0f0',
+                                marginTop: 'auto',
+                                position: 'absolute',
+                                left: 0,
+                                bottom: 0,
+                                background: '#fff',
+                                borderRadius: '0 0 16px 16px',
+                                overflow: 'hidden',
+                            }}>
+                                <button
+                                    style={{
+                                        flex: 1,
+                                        padding: '12px 0',
+                                        border: 'none',
+                                        background: '#fff',
+                                        color: '#888',
+                                        fontWeight: 500,
+                                        fontSize: 15,
+                                        cursor: 'pointer',
+                                        transition: 'color 0.18s',
+                                        outline: 'none',
+                                    }}
+                                    onClick={e => { e.stopPropagation(); alert('功能介绍功能待接入'); }}
+                                >功能介绍</button>
+                                <button
+                                    style={{
+                                        flex: 1,
+                                        padding: '12px 0',
+                                        border: 'none',
+                                        background: '#fff',
+                                        color: activeGroup.color,
+                                        fontWeight: 600,
+                                        fontSize: 15,
+                                        cursor: 'pointer',
+                                        transition: 'color 0.18s',
+                                        outline: 'none',
+                                    }}
+                                    onClick={e => { e.stopPropagation(); handleBtnClick(btnObj); }}
+                                >开始使用</button>
+                            </div>
                         </div>
                     ))}
                 </div>
