@@ -24,7 +24,7 @@ const GROUPS = [
         bg: "#fcfefd",
         buttons: [
             { title: "数据总揽", icon: "📊", desc: "全局展示平台内各类数据分布、增长趋势与共享情况。", route: "/dashboard" },
-            { title: "患者上链数据", icon: "📝", desc: "查看每位患者的上链数据明细，支持多维度检索与追溯。", route: "/ipfs-search" },
+            { title: "患者上链数据", icon: "📝", desc: "查看每位患者的上链数据明细，支持多维度检索与追溯。", route: "/ipfs-search", introRoute: "/introduce/patient-chain-data" },
             { title: "专病知识图谱", icon: "🧠", desc: "构建专病领域知识结构，助力智能诊疗与科研分析。", route: "https://192.168.0.228:13001/forms/专病库知识图谱/data" },
         ],
     },
@@ -258,7 +258,14 @@ const MedGuideCardGrid = (props) => {
                                         transition: 'color 0.18s',
                                         outline: 'none',
                                     }}
-                                    onClick={e => { e.stopPropagation(); alert('功能介绍功能待接入'); }}
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        if (btnObj.introRoute) {
+                                            history.push(btnObj.introRoute);
+                                        } else {
+                                            alert('功能介绍未搭建');
+                                        }
+                                    }}
                                 >功能介绍</button>
                                 <button
                                     style={{

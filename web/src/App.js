@@ -98,6 +98,9 @@ import IpfsSearchPage from "./auditSearch/IpfsSearchPage";
 import IpfsSearchResultPage from "./auditSearch/IpfsSearchResultPage";
 import QueryResultPage from "./auditSearch/QueryResultPage";
 
+// 功能介绍页面组
+import PatientChainDataIntro from "./introduce/PatientChainDataIntro"
+
 
 
 const { Header, Footer, Content, Sider } = Layout;
@@ -942,6 +945,10 @@ class App extends Component {
         <Route exact path="/ipfs-search" render={(props) => this.renderSigninIfNotSignedIn(<IPFSSearchPage account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-search/result/:correlationId" render={(props) => this.renderSigninIfNotSignedIn(<IpfsSearchResultPage account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-search/query-result" render={(props) => this.renderSigninIfNotSignedIn(<QueryResultPage account={this.state.account} {...props} />)} />
+
+        {/* 功能介绍页面 */}
+        <Route exact path="/introduce/patient-chain-data" render={(props) => this.renderSigninIfNotSignedIn(<PatientChainDataIntro account={this.state.account} {...props} />)} />
+
         <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
       </Switch>
     );
