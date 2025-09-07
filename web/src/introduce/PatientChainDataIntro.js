@@ -65,15 +65,15 @@ class PatientChainDataIntro extends Component {
                             size="large"
                             icon={<ArrowRightOutlined style={{ fontSize: 32 }} />}
                             style={{
-                                fontSize: 28,
+                                fontSize: 20,
                                 borderRadius: 20,
-                                padding: "28px 64px",
+                                padding: "28px 32px",
                                 marginTop: 32,
                                 background: "white",
                                 color: "#3a4a6d",
                                 border: "none",
-                                height: 80,
-                                minWidth: 220,
+                                height: 40,
+                                minWidth: 80,
                                 boxShadow: "0 6px 24px rgba(58,74,109,0.13)"
                             }}
                             onClick={this.handleIpfsSearch}

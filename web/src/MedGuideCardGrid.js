@@ -246,7 +246,7 @@ const MedGuideCardGrid = (props) => {
                                 borderRadius: '0 0 16px 16px',
                                 overflow: 'hidden',
                             }}>
-                                <button
+                                {!btnObj.introRoute ? null : <button
                                     style={{
                                         flex: 1,
                                         padding: '12px 0',
@@ -267,7 +267,7 @@ const MedGuideCardGrid = (props) => {
                                             alert('功能介绍未搭建');
                                         }
                                     }}
-                                >功能介绍</button>
+                                >功能介绍</button>}
                                 <button
                                     style={{
                                         flex: 1,
