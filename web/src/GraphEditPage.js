@@ -17,6 +17,7 @@ import {Button, Card, Col, Input, Row} from "antd";
 import * as GraphBackend from "./backend/GraphBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import Graph from "./Graph";
 
 const {TextArea} = Input;
 
@@ -28,6 +29,7 @@ class GraphEditPage extends React.Component {
       graphName: props.match.params.graphName,
       graph: null,
       graphCount: "key",
+      graphData: null,
     };
   }
 
@@ -41,6 +43,7 @@ class GraphEditPage extends React.Component {
         if (res.status === "ok") {
           this.setState({
             graph: res.data,
+            graphData: res.data.text,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -110,7 +113,7 @@ class GraphEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div key={this.state.graphCount}>
-              <iframe id="graphData" title={"graphData"} src={`${location.href}/data`} width="100%" height="700px" scrolling="no" style={{border: "1px solid #e0e0e0", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)"}} />
+              <Graph graphData={this.state.graphData} title={this.state.graph.displayName} />
             </div>
           </Col>
         </Row>
@@ -132,6 +135,7 @@ class GraphEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               graphName: this.state.graph.name,
+              graphData: this.state.graph.text,
             });
             if (exitAfterSave) {
               this.props.history.push("/graphs");

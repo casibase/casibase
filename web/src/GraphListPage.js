@@ -21,6 +21,7 @@ import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as GraphBackend from "./backend/GraphBackend";
 import i18next from "i18next";
+import Graph from "./Graph";
 
 class GraphListPage extends BaseListPage {
   constructor(props) {
@@ -121,6 +122,34 @@ class GraphListPage extends BaseListPage {
         key: "text",
         width: "200px",
         sorter: (a, b) => a.text.localeCompare(b.text),
+      },
+      {
+        title: "Graph Preview",
+        dataIndex: "graphPreview",
+        key: "graphPreview",
+        width: "800px",
+        render: (text, record, index) => {
+          return (
+            <div style={{
+              padding: "5px",
+              margin: "5px",
+              background: "rgb(191,191,191)",
+              borderRadius: "10px",
+              width: "800px",
+            }}>
+              <div style={{
+                maxHeight: "500px",
+                overflowY: "auto",
+                width: "100%",
+              }}>
+                <Graph
+                  graphData={record.text}
+                  title={record.displayName || record.name}
+                />
+              </div>
+            </div>
+          );
+        },
       },
       {
         title: i18next.t("general:Action"),
