@@ -1,28 +1,35 @@
 import React, { Component } from "react";
 import { Button } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStethoscope, faHospital, faBookMedical, faClinicMedical } from "@fortawesome/free-solid-svg-icons";
 
-const steps = [
+
+const dataSources = [
     {
-        title: "1. 数据采集",
-        desc: "在医院或医疗机构内，系统自动或人工采集患者的诊疗、检查、检验等原始数据。数据需经过标准化处理，确保结构化与合规性。"
+        title: "门诊就诊记录",
+        desc: "包含患者在各医疗机构的门诊挂号、诊疗、检查、检验等上链数据。支持通过身份证号检索门诊索引，并可进一步查询每条门诊记录的详细信息。",
+        icon: faStethoscope,
+        color: "#2d5af1"
     },
     {
-        title: "2. 数据脱敏与加密",
-        desc: "对采集到的患者数据进行脱敏处理，去除个人隐私标识，并采用加密算法保障数据传输与存储安全。"
+        title: "住院诊疗数据",
+        desc: "涵盖患者住院期间的诊疗、手术、护理、用药等全流程上链数据。可按身份证号获取住院索引，支持对单次住院的所有明细数据进行深入查询。",
+        icon: faHospital,
+        color: "#10b981"
     },
     {
-        title: "3. 匹配区块链格式",
-        desc: "将脱敏后的数据转换为区块链平台所需的数据结构，生成唯一数据摘要（Hash），确保数据不可篡改。"
+        title: "专病知识库数据",
+        desc: "聚合患者在专病领域的诊疗、随访、科研等上链数据。通过身份证号可检索专病知识库相关索引，并可查看每条专病数据的详细内容。",
+        icon: faBookMedical,
+        color: "#f59e42"
     },
     {
-        title: "4. 上链操作",
-        desc: "通过智能合约或API接口，将数据摘要及必要元数据写入区块链，实现数据上链。系统自动记录上链时间、操作人等关键信息。"
+        title: "互联网医院就诊记录",
+        desc: "记录患者在互联网医院的在线问诊、处方、支付等上链数据。支持身份证号检索互联网医院索引，并可查询每次线上就诊的详细信息。",
+        icon: faClinicMedical,
+        color: "#8b5cf6"
     },
-    {
-        title: "5. 数据验证与追溯",
-        desc: "上链后，任何授权用户均可通过区块链浏览器或平台界面，验证数据真实性，并支持全流程追溯。"
-    }
 ];
 
 class PatientChainDataIntro extends Component {
@@ -95,15 +102,47 @@ class PatientChainDataIntro extends Component {
                         zIndex: 2
                     }}
                 >
-                    <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 18, color: "#23243a" }}>操作步骤</div>
-                    <ol style={{ paddingLeft: 24, color: "#3a4a6d", fontSize: 16 }}>
-                        {steps.map(step => (
-                            <li key={step.title} style={{ marginBottom: 18 }}>
-                                <div style={{ fontWeight: 600, fontSize: 16, color: "#23243a", marginBottom: 4 }}>{step.title}</div>
-                                <div style={{ lineHeight: 1.7 }}>{step.desc}</div>
-                            </li>
+                    <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 18, color: "#23243a" }}>可查询四类上链数据源</div>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 1fr)',
+                        gap: '28px 36px',
+                        padding: '8px 0',
+                        width: '100%'
+                    }}>
+                        {dataSources.map(ds => (
+                            <div key={ds.title} style={{
+                                background: '#f7f8fa',
+                                borderRadius: 14,
+                                boxShadow: '0 2px 10px 0 rgba(45,90,241,0.06)',
+                                padding: '28px 28px 22px 28px',
+                                minHeight: 120,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                border: '1px solid #e3e7f1',
+                                gap: 22
+                            }}>
+                                <div style={{
+                                    width: 54,
+                                    height: 54,
+                                    borderRadius: '50%',
+                                    background: ds.color + '22',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginRight: 18,
+                                    flexShrink: 0
+                                }}>
+                                    <FontAwesomeIcon icon={ds.icon} style={{ color: ds.color, fontSize: 28 }} />
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                    <div style={{ fontWeight: 700, fontSize: 18, color: '#23243a', marginBottom: 10 }}>{ds.title}</div>
+                                    <div style={{ fontSize: 15, color: '#3a4a6d', lineHeight: 1.7 }}>{ds.desc}</div>
+                                </div>
+                            </div>
                         ))}
-                    </ol>
+                    </div>
                 </div>
             </div>
         );

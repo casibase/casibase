@@ -1172,7 +1172,7 @@ class App extends Component {
         <div style={{ display: "flex", alignItems: "center", flex: 1, overflow: "hidden" }}>
           {Setting.isMobile() ? null : (
             <Link to={"/"}>
-              <img className="logo" src={this.state.logo || Setting.getLogo(this.state.themeAlgorithm, this.state.store?.logoUrl)} alt="logo" style={{ "min-height": "60px" }} />
+              <img className="logo" src={this.state.logo || Setting.getLogo(this.state.themeAlgorithm, this.state.store?.logoUrl)} alt="logo" style={{ "minHeight": "60px" }} />
             </Link>
           )}
           {/* 隐藏header菜单栏 按钮 */}
