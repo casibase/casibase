@@ -276,8 +276,10 @@ class App extends Component {
     } else if (uri.includes(encodeURIComponent("/forms/区块链浏览器/data"))) {
       // 将/forms/区块链浏览器/data 转为 编码后的uri
       this.setState({ selectedMenuKey: "/forms/区块链浏览器/data" });
-    }
-    else {
+    } else if (uri.includes(encodeURIComponent("/forms/联邦学习/data"))) {
+      // 将/forms/联邦学习/data 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/forms/联邦学习/data" });
+    } else {
       this.setState({ selectedMenuKey: "null" });
     }
 
@@ -729,8 +731,9 @@ class App extends Component {
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sr">{i18next.t("leftSideMedMenu:Sharing Services")}</Link>, "/sr", <BuildTwoTone twoToneColor={twoToneColor} />, [
 
         Setting.getItem(<Link to="/sr">{i18next.t("leftSideMedMenu:Super Resolution")}</Link>, "/sr"),
-        Setting.getItem(<Link to="/yolov8mi">{i18next.t("leftSideMedMenu:Medical Image Analysis")}</Link>, "/yolov8mi")
-        // 预留：受控使用、密文计算、可信联邦
+        Setting.getItem(<Link to="/yolov8mi">{i18next.t("leftSideMedMenu:Medical Image Analysis")}</Link>, "/yolov8mi"),
+        Setting.getItem(<Link to="/forms/联邦学习/data">{i18next.t("leftSideMedMenu:Federated Learning")}</Link>, "/forms/联邦学习/data"),
+        // 预留：受控使用、密文计算
 
       ],
       ));

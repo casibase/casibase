@@ -462,7 +462,9 @@
     "Super Resolution":"图像超分",
 
     "Application Scenarios": "应用场景",
-    "Workflows": "临床路径监管"
+    "Workflows": "临床路径监管",
+
+    "Federated Learning": "可信联邦"
 
 
   },

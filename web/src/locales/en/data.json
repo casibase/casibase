@@ -457,7 +457,9 @@
     "Super Resolution": "Image Super-Resolution",
 
     "Application Scenarios": "Application Scenarios",
-    "Workflows": "Clinical Pathway Supervision"
+    "Workflows": "Clinical Pathway Supervision",
+
+    "Federated Learning": "Federated Learning"
   },
   "ipfsArchive":{
     "Ipfs Archive List": "IPFS Archive List",
