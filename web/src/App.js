@@ -730,7 +730,7 @@ class App extends Component {
 
         Setting.getItem(<Link to="/sr">{i18next.t("leftSideMedMenu:Super Resolution")}</Link>, "/sr"),
         Setting.getItem(<Link to="/yolov8mi">{i18next.t("leftSideMedMenu:Medical Image Analysis")}</Link>, "/yolov8mi")
-        // 预留：受控使用、密文计算、可信解密
+        // 预留：受控使用、密文计算、可信联邦
 
       ],
       ));
