@@ -15,10 +15,15 @@
 package routers
 
 import (
+	"strings"
+
 	"github.com/beego/beego/context"
 )
 
 func AutoSigninFilter(ctx *context.Context) {
+	if strings.HasSuffix(ctx.Request.URL.Path, "/chat/completions") {
+		return
+	}
 	// HTTP Bearer token like "Authorization: Bearer 123"
 	accessToken := ctx.Input.Query("accessToken")
 	if accessToken == "" {
