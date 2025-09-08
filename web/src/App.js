@@ -709,7 +709,7 @@ class App extends Component {
       // 数据管理
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/dashboard">{i18next.t("leftSideMedMenu:DataManage")}</Link>, "/dashboard", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/dashboard">{i18next.t("leftSideMedMenu:Dashboard")}</Link>, "/dashboard"),
-        Setting.getItem(<Link to="/ipfs-search">{i18next.t("leftSideMedMenu:IpfsSearch")}</Link>, "/ipfs-search"),
+        
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href="https://192.168.0.228:13001/forms/专病库知识图谱/data">
             {i18next.t("leftSideMedMenu:knowledge graph")}
@@ -724,7 +724,8 @@ class App extends Component {
         Setting.getItem(<Link to="/ipfs-archive">{i18next.t("leftSideMedMenu:IpfsArchives")}</Link>, "/ipfs-archive"),
         Setting.getItem(<Link to="/records">{i18next.t("leftSideMedMenu:Records")}</Link>, "/records"),
         Setting.getItem(<Link to="/forms/区块链浏览器/data">{i18next.t("leftSideMedMenu:chainExpoler")}</Link>, "/forms/区块链浏览器/data"),
-        Setting.getItem(<Link to="/audit">{i18next.t("leftSideMedMenu:Audit")}</Link>, "/audit"),
+        Setting.getItem(<Link to="/ipfs-search">{i18next.t("leftSideMedMenu:Audit")}</Link>, "/ipfs-search"),
+        // Setting.getItem(<Link to="/audit">{i18next.t("leftSideMedMenu:Audit")}</Link>, "/audit"),
       ]));
 
       // 共享服务

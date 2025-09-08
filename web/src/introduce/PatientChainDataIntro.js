@@ -68,9 +68,9 @@ class PatientChainDataIntro extends Component {
                 >
                     {/* 左侧文字 */}
                     <div style={{ flex: 1, minWidth: 0, color: "#fff", padding: "0 0 0 0" }}>
-                        <div style={{ fontSize: 38, fontWeight: 800, marginBottom: 18, letterSpacing: 1 }}>患者上链数据</div>
+                        <div style={{ fontSize: 38, fontWeight: 800, marginBottom: 18, letterSpacing: 1 }}>查询与审计</div>
                         <div style={{ fontSize: 18, color: "#e5e7eb", marginBottom: 32, lineHeight: 1.8 }}>
-                            患者上链数据功能，旨在将医疗机构采集的患者诊疗数据进行标准化、脱敏、加密处理后，安全高效地写入区块链，实现数据的不可篡改、可追溯与合规共享。平台严格遵循国家及行业数据安全规范，保障患者隐私与数据安全。
+                            查询与审计功能，旨在将医疗机构采集的患者诊疗数据进行标准化、脱敏、加密处理后，安全高效地写入区块链，实现数据的不可篡改、可追溯与合规共享。平台严格遵循国家及行业数据安全规范，保障患者隐私与数据安全。
                         </div>
                     </div>
                     {/* 右侧按钮 */}
