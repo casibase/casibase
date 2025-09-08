@@ -452,8 +452,8 @@
     
 
     "Chain Services": "上链服务",
-    "IpfsArchives":"医疗记录上联",
-    "Records":"数据操作上联",
+    "IpfsArchives":"医疗记录上链",
+    "Records":"数据操作上链",
     "chainExpoler":"区块链浏览器",
     "Audit":"查询审计",
 

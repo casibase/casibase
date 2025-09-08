@@ -35,8 +35,8 @@ const GROUPS = [
         color: "#b97a2a", // 稳重棕金
         bg: "#f9f7f3",
         buttons: [
-            { title: "医疗记录上联", icon: "📄", desc: "将医疗文档高效上链，保障数据不可篡改与可追溯。", route: "/ipfs-archive" },
-            { title: "数据操作上联", icon: "🔗", desc: "各类数据操作全流程上链，提升数据可信度。", route: "/records" },
+            { title: "医疗记录上链", icon: "📄", desc: "将医疗文档高效上链，保障数据不可篡改与可追溯。", route: "/ipfs-archive", introRoute: "/introduce/medical-record-chain" },
+            { title: "数据操作上链", icon: "🔗", desc: "各类数据操作全流程上链，提升数据可信度。", route: "/records" },
             { title: "区块链浏览器", icon: "🌐", desc: "可视化浏览链上数据，支持多条件筛选与溯源。", route: "/forms/区块链浏览器/data" },
             { title: "查询与审计", icon: "🔍", desc: "对链上数据进行灵活查询与合规性审计分析。", route: "/audit" },
         ],
