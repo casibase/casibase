@@ -43,27 +43,28 @@ func NewMiniMaxModelProvider(subType string, groupID string, apiKey string, temp
 
 func (p *MiniMaxModelProvider) GetPricing() string {
 	return `URL:
-https://api.minimax.chat/document/price
+https://www.minimaxi.com/price
 
-| Billing Item     | Unit Price                    | Billing Description                                                                                            |
-|------------------|-------------------------------|----------------------------------------------------------------------------------------------------------------|
-| abab6            | 0.1 CNY/1k tokens             | Token count includes input and output                                                                          |
-| abab5.5          | 0.015 CNY/1k tokens           |                                                                                                                |
-| abab5.5s         | 0.005 CNY/1k tokens           |                                                                                                                |
+Model         | Input Price Per Thousand tokens | Output Price Per Thousand tokens
+--------------|--------------------------------|--------------------------------
+MiniMax-M1    | 0.0008 CNY                    | 0.008 CNY
+MiniMax-Text-01| 0.001 CNY                     | 0.008 CNY
+MiniMax-VL-01 | 0.001 CNY                     | 0.008 CNY
 `
 }
 
 func (p *MiniMaxModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
-	priceTable := map[string]float64{
-		"abab6":      0.1,
-		"abab5.5":    0.015,
-		"abab5-chat": 0.015,
-		"abab5.5s":   0.005,
+	priceTable := map[string][2]float64{
+		"MiniMax-M1":      {0.0008, 0.008},
+		"MiniMax-Text-01": {0.001, 0.008},
+		"MiniMax-VL-01":   {0.001, 0.008},
 	}
 
 	if pricePerThousandTokens, ok := priceTable[p.subType]; ok {
-		price = getPrice(modelResult.TotalTokenCount, pricePerThousandTokens)
+		inputPrice := getPrice(modelResult.TotalTokenCount, pricePerThousandTokens[0])
+		outputPrice := getPrice(modelResult.TotalTokenCount, pricePerThousandTokens[1])
+		price = inputPrice + outputPrice
 	} else {
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}

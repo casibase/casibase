@@ -37,38 +37,49 @@ func NewMistralProvider(apiKey, modelName string) (*MistralModelProvider, error)
 }
 
 func (c *MistralModelProvider) GetPricing() string {
-	return `URL: https://mistral.ai/technology/#pricing
+	return `URL: https://mistral.ai/pricing#api-pricing
 
-	| Model                               | Input Price($) per 1K tokens  | Output Price($) per 1K tokens  |
-	|-------------------------------------|-------------------------------|--------------------------------|
-	| mistral-large-latest                | 0.002                         | 0.006                          |
-	| pixtral-large-latest                | 0.002                         | 0.006                          |
-	| mistral-small-latest                | 0.0002                        | 0.0006                         |
-	| codestral-latest                    | 0.0003                        | 0.0009                         |
-	| ministral-8b-latest                 | 0.0001                        | 0.0001                         |
-	| ministral-3b-latest                 | 0.00004                       | 0.00004                        |
-	| pixtral-12b                         | 0.00015                       | 0.00015                        |
-	| mistral-nemo                        | 0.00015                       | 0.00015                        |
-	| open-mistral-7b                     | 0.00025                       | 0.00025                        |
-	| open-mixtral-8x7b                   | 0.0007                        | 0.0007                         |
-	| open-mixtral-8x22b                  | 0.002                         | 0.006                          |
-	`
+Model                   | Input Price($) per1K tokens | Output Price($) per1K tokens
+------------------------|----------------------------|-----------------------------
+codestral-latest        | 0.0003                    | 0.0009
+devstral-medium-2507    | 0.0004                    | 0.002
+devstral-small-2507     | 0.0001                    | 0.0003
+magistral-medium-latest | 0.002                     | 0.005
+magistral-small-latest  | 0.0005                    | 0.0015
+ministral-3b-latest     | 0.00004                   | 0.00004
+ministral-8b-latest     | 0.0001                    | 0.0001
+mistral-large-latest    | 0.002                     | 0.006
+mistral-medium-latest   | 0.0004                    | 0.002
+mistral-nemo            | 0.00015                   | 0.00015
+mistral-saba-latest     | 0.0002                    | 0.0006
+mistral-small-latest    | 0.0001                    | 0.0003
+open-mixtral-8x22b      | 0.002                     | 0.006
+open-mixtral-8x7b       | 0.0007                    | 0.0007
+open-mistral-7b         | 0.00025                   | 0.00025
+pixtral-12b             | 0.00015                   | 0.00015
+pixtral-large-latest    | 0.002                     | 0.006`
 }
 
 func (c *MistralModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
-		"mistral-large-latest": {0.002, 0.006},
-		"pixtral-large-latest": {0.002, 0.006},
-		"mistral-small-latest": {0.0002, 0.0006},
-		"codestral-latest":     {0.0003, 0.0009},
-		"ministral-8b-latest":  {0.0001, 0.0001},
-		"ministral-3b-latest":  {0.00004, 0.0001},
-		"pixtral-12b":          {0.00015, 0.00015},
-		"mistral-nemo":         {0.00015, 0.00015},
-		"open-mistral-7b":      {0.00025, 0.00025},
-		"open-mixtral-8x7b ":   {0.002, 0.002},
-		"open-mixtral-8x22b":   {0.002, 0.006},
+		"codestral-latest":        {0.0003, 0.0009},
+		"devstral-medium-2507":    {0.0004, 0.002},
+		"devstral-small-2507":     {0.0001, 0.0003},
+		"magistral-medium-latest": {0.002, 0.005},
+		"magistral-small-latest":  {0.0005, 0.0015},
+		"ministral-3b-latest":     {0.00004, 0.00004},
+		"ministral-8b-latest":     {0.0001, 0.0001},
+		"mistral-large-latest":    {0.002, 0.006},
+		"mistral-medium-latest":   {0.0004, 0.002},
+		"mistral-nemo":            {0.00015, 0.00015},
+		"mistral-saba-latest":     {0.0002, 0.0006},
+		"mistral-small-latest":    {0.0001, 0.0003},
+		"open-mistral-7b":         {0.00025, 0.00025},
+		"open-mixtral-8x7b":       {0.0007, 0.0007},
+		"open-mixtral-8x22b":      {0.002, 0.006},
+		"pixtral-12b":             {0.00015, 0.00015},
+		"pixtral-large-latest":    {0.002, 0.006},
 	}
 
 	if priceItem, ok := priceTable[c.modelName]; ok {
