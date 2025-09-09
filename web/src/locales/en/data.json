@@ -459,7 +459,9 @@
     "Application Scenarios": "Application Scenarios",
     "Workflows": "Clinical Pathway Supervision",
 
-    "Federated Learning": "Federated Learning"
+    "Federated Learning": "Federated Learning",
+    "Encrypted Computation":"Encrypted Computation",
+    "Privacy-Preserving Inference":"Privacy-Preserving Inference"
   },
   "ipfsArchive":{
     "Ipfs Archive List": "IPFS Archive List",

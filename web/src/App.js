@@ -280,6 +280,12 @@ class App extends Component {
     } else if (uri.includes(encodeURIComponent("/forms/联邦学习/data"))) {
       // 将/forms/联邦学习/data 转为 编码后的uri
       this.setState({ selectedMenuKey: "/forms/联邦学习/data" });
+    } else if (uri.includes(encodeURIComponent("/forms/密文计算/data"))) {
+      // 将/forms/密文计算/data 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/forms/密文计算/data" });
+    } else if (uri.includes(encodeURIComponent("/forms/隐私保护推理/data"))) {
+      // 将/forms/隐私保护推理/data 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/forms/隐私保护推理/data" });
     } else {
       this.setState({ selectedMenuKey: "null" });
     }
@@ -738,6 +744,8 @@ class App extends Component {
 
         Setting.getItem(<Link to="/sr">{i18next.t("leftSideMedMenu:Super Resolution")}</Link>, "/sr"),
         Setting.getItem(<Link to="/yolov8mi">{i18next.t("leftSideMedMenu:Medical Image Analysis")}</Link>, "/yolov8mi"),
+        Setting.getItem(<Link to="/forms/密文计算/data">{i18next.t("leftSideMedMenu:Encrypted Computation")}</Link>, "/forms/密文计算/data"),
+        Setting.getItem(<Link to="/forms/隐私保护推理/data">{i18next.t("leftSideMedMenu:Privacy-Preserving Inference")}</Link>, "/forms/隐私保护推理/data"),
         Setting.getItem(<Link to="/forms/联邦学习/data">{i18next.t("leftSideMedMenu:Federated Learning")}</Link>, "/forms/联邦学习/data"),
         // 预留：受控使用、密文计算
 

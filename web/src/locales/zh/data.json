@@ -464,7 +464,9 @@
     "Application Scenarios": "应用场景",
     "Workflows": "临床路径监管",
 
-    "Federated Learning": "可信联邦"
+    "Federated Learning": "可信联邦",
+    "Encrypted Computation":"密文计算",
+    "Privacy-Preserving Inference":"隐私保护推理"
 
 
   },
