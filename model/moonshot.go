@@ -41,28 +41,29 @@ func NewMoonshotModelProvider(subType string, secretKey string, temperature floa
 }
 
 func (p *MoonshotModelProvider) GetPricing() string {
-	return `URL: 
-	https://api.moonshot.cn
+	return `URL:
+https://api.moonshot.cn
 
-Model
-
-| Model           | Unit Of Charge | Price  |
-|-----------------|----------------|--------|
-| moonshot-v1-8k  | 1M tokens      | 12yuan |
-| moonshot-v1-32k | 1M tokens      | 24yuan |
-| moonshot-v1-128k| 1M tokens      | 60yuan |
+Model                         | Unit Of Charge | Price
+------------------------------|---------------|--------
+moonshot-v1-8k                | 1M tokens     | ￥12.00
+moonshot-v1-8k-vision-preview | 1M tokens     | ￥12.00
+moonshot-v1-32k               | 1M tokens     | ￥25.00
+moonshot-v1-32k-vision-preview| 1M tokens     | ￥25.00
+moonshot-v1-128k              | 1M tokens     | ￥40.00
+moonshot-v1-128k-vision-preview| 1M tokens    | ￥40.00
 `
 }
 
 func (p *MoonshotModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
 	switch p.subType {
-	case "moonshot-v1-8k":
+	case "moonshot-v1-8k", "moonshot-v1-8k-vision-preview":
 		price = getPrice(modelResult.TotalTokenCount, 0.012)
-	case "moonshot-v1-32k":
-		price = getPrice(modelResult.TotalTokenCount, 0.024)
-	case "moonshot-v1-128k":
-		price = getPrice(modelResult.TotalTokenCount, 0.06)
+	case "moonshot-v1-32k", "moonshot-v1-32k-vision-preview":
+		price = getPrice(modelResult.TotalTokenCount, 0.025)
+	case "moonshot-v1-128k", "moonshot-v1-128k-vision-preview":
+		price = getPrice(modelResult.TotalTokenCount, 0.04)
 	default:
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}

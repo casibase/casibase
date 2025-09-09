@@ -1462,7 +1462,9 @@ export function getModelSubTypeOptions(type) {
     ;
   } else if (type === "MiniMax") {
     return [
-      {id: "abab5-chat", name: "abab5-chat"},
+      {id: "MiniMax-M1", name: "MiniMax-M1"},
+      {id: "MiniMax-Text-01", name: "MiniMax-Text-01"},
+      {id: "MiniMax-VL-01", name: "MiniMax-VL-01"},
     ];
   } else if (type === "Ollama") {
     return [
@@ -1490,9 +1492,12 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "Moonshot") {
     return [
-      {id: "moonshot-v1-8k", name: "moonshot-v1-8k"},
+      {id: "moonshot-v1-8k-vision", name: "moonshot-v1-8k-vision"},
+      {id: "moonshot-v1-8k-vision-preview", name: "moonshot-v1-8k-vision-preview"},
       {id: "moonshot-v1-32k", name: "moonshot-v1-32k"},
+      {id: "moonshot-v1-32k-vision-preview", name: "moonshot-v1-32k-vision-preview"},
       {id: "moonshot-v1-128k", name: "moonshot-v1-128k"},
+      {id: "moonshot-v1-128k-vision-preview", name: "moonshot-v1-128k-vision-preview"},
     ];
   } else if (type === "Amazon Bedrock") {
     return [
@@ -1637,17 +1642,23 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "Mistral") {
     return [
-      {id: "mistral-large-latest", name: "mistral-large-latest"},
-      {id: "pixtral-large-latest", name: "pixtral-large-latest"},
-      {id: "mistral-small-latest", name: "mistral-small-latest"},
       {id: "codestral-latest", name: "codestral-latest"},
-      {id: "ministral-8b-latest", name: "ministral-8b-latest"},
+      {id: "devstral-medium-2507", name: "devstral-medium-2507"},
+      {id: "devstral-small-2507", name: "devstral-small-2507"},
+      {id: "magistral-medium-latest", name: "magistral-medium-latest"},
+      {id: "magistral-small-latest", name: "magistral-small-latest"},
       {id: "ministral-3b-latest", name: "ministral-3b-latest"},
-      {id: "pixtral-12b", name: "pixtral-12b"},
+      {id: "ministral-8b-latest", name: "ministral-8b-latest"},
+      {id: "mistral-large-latest", name: "mistral-large-latest"},
+      {id: "mistral-medium-latest", name: "mistral-medium-latest"},
       {id: "mistral-nemo", name: "mistral-nemo"},
-      {id: "open-mistral-7b", name: "open-mistral-7b"},
-      {id: "open-mixtral-8x7b", name: "open-mixtral-8x7b"},
+      {id: "mistral-saba-latest", name: "mistral-saba-latest"},
+      {id: "mistral-small-latest", name: "mistral-small-latest"},
       {id: "open-mixtral-8x22b", name: "open-mixtral-8x22b"},
+      {id: "open-mixtral-8x7b", name: "open-mixtral-8x7b"},
+      {id: "open-mistral-7b", name: "open-mistral-7b"},
+      {id: "pixtral-12b", name: "pixtral-12b"},
+      {id: "pixtral-large-latest", name: "pixtral-large-latest"},
     ];
   } else if (type === "Yi") {
     return [
@@ -1680,12 +1691,11 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "Grok") {
     return [
-      {id: "grok-3-latest", name: "grok-3-latest"},
-      {id: "grok-3-fast-latest", name: "grok-3-fast-latest"},
-      {id: "grok-3-mini-latest", name: "grok-3-mini-latest"},
-      {id: "grok-2-vision-latest", name: "grok-2-vision-latest"},
-      {id: "grok-2-latest", name: "grok-2-latest"},
-      {id: "grok-2-image-latest", name: "grok-2-image-latest"},
+      {id: "grok-code-fast-1", name: "grok-code-fast-1"},
+      {id: "grok-4-0709", name: "grok-4-0709"},
+      {id: "grok-3", name: "grok-3"},
+      {id: "grok-3-mini", name: "grok-3-mini"},
+      {id: "grok-2-image-1212", name: "grok-2-image-1212"},
     ];
   } else if (type === "Writer") {
     return [
