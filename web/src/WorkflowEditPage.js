@@ -21,6 +21,7 @@ import BpmnComponent from "./BpmnComponent";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import ChatWidget from "./common/ChatWidget";
+import RecordListPage from "./RecordListPage";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/xml/xml");
 require("codemirror/mode/htmlmixed/htmlmixed");
@@ -125,6 +126,19 @@ class WorkflowEditPage extends React.Component {
             <Input value={this.state.workflow.displayName} onChange={e => {
               this.updateWorkflowField("displayName", e.target.value);
             }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Records"), i18next.t("general:Records - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <RecordListPage
+              account={this.props.account}
+              history={this.props.history}
+              initialField="query"
+              initialValue={`workflow-${this.state.workflow?.name || ""}`}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

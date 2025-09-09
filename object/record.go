@@ -45,6 +45,7 @@ type Record struct {
 	RequestUri   string `xorm:"varchar(1000)" json:"requestUri"`
 	Action       string `xorm:"varchar(1000)" json:"action"`
 	Language     string `xorm:"varchar(100)" json:"language"`
+	Type         string `xorm:"varchar(100)" json:"type"`
 	Query        string `xorm:"varchar(100)" json:"query"`
 	Region       string `xorm:"varchar(100)" json:"region"`
 	City         string `xorm:"varchar(100)" json:"city"`
@@ -309,6 +310,20 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 		Object:      object,
 		Response:    fmt.Sprintf("{\"status\":\"%s\",\"msg\":\"%s\"}", resp.Status, resp.Msg),
 		IsTriggered: false,
+	}
+
+	if action == "add-workflow" || action == "update-workflow" || action == "delete-workflow" {
+		record.Type = "workflow"
+		if object != "" {
+			var body map[string]interface{}
+			if err := json.Unmarshal([]byte(object), &body); err == nil {
+				if nameVal, ok := body["name"]; ok {
+					if nameStr, ok2 := nameVal.(string); ok2 && nameStr != "" {
+						record.Query = fmt.Sprintf("%s-%s", record.Type, nameStr)
+					}
+				}
+			}
+		}
 	}
 	return &record, nil
 }

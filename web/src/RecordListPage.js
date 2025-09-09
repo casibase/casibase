@@ -42,6 +42,30 @@ class RecordListPage extends BaseListPage {
 
   componentDidMount() {
     this.getProviders();
+    const pagination = this.state.pagination || {current: 1, pageSize: 10};
+    if (this.props.initialField && this.props.initialValue) {
+      this.fetch({
+        pagination,
+        searchedColumn: this.props.initialField,
+        searchText: this.props.initialValue,
+        sortField: "",
+        sortOrder: "",
+      });
+      return;
+    }
+
+    const urlField = Setting.getUrlParam && Setting.getUrlParam("field");
+    const urlValue = Setting.getUrlParam && Setting.getUrlParam("value");
+    if (urlField && urlValue) {
+      this.fetch({
+        pagination,
+        searchedColumn: urlField,
+        searchText: urlValue,
+        sortField: "",
+        sortOrder: "",
+      });
+      return;
+    }
   }
 
   getEnableCrossChainFromStorage() {
