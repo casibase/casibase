@@ -13,18 +13,18 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row, Select, Switch} from "antd";
+import { Button, Card, Col, Input, Row, Select, Switch } from "antd";
 import * as RecordBackend from "./backend/RecordBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
-import {Controlled as CodeMirror} from "react-codemirror2";
+import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/javascript/javascript");
 
-const {Option} = Select;
+const { Option } = Select;
 
 class RecordEditPage extends React.Component {
   constructor(props) {
@@ -96,15 +96,15 @@ class RecordEditPage extends React.Component {
           {this.state.mode !== "123" ? (
             <React.Fragment>
               <Button onClick={() => this.submitRecordEdit(false)}>{i18next.t("general:Save")}</Button>
-              <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitRecordEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+              <Button style={{ marginLeft: "20px" }} type="primary" onClick={() => this.submitRecordEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
             </React.Fragment>
           ) : (
             <Button type="primary" onClick={() => this.props.history.push("/records")}>{i18next.t("general:Exit")}</Button>
           )}
-          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteRecord()}>{i18next.t("general:Cancel")}</Button> : null}
+          {this.state.mode === "add" ? <Button style={{ marginLeft: "20px" }} onClick={() => this.deleteRecord()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
-      } style={{marginLeft: "5px"}} type="inner">
-        <Row style={{marginTop: "10px"}} >
+      } style={{ marginLeft: "5px" }} type="inner">
+        {/* <Row style={{marginTop: "10px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Organization"), i18next.t("general:Organization - Tooltip"))} :
           </Col>
@@ -113,8 +113,8 @@ class RecordEditPage extends React.Component {
               // this.updateRecordField("owner", e.target.value);
             }} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
@@ -123,8 +123,8 @@ class RecordEditPage extends React.Component {
               // this.updateRecordField("name", e.target.value);
             }} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}}>
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Provider"), i18next.t("general:Provider - Tooltip"))} :
           </Col>
@@ -139,8 +139,8 @@ class RecordEditPage extends React.Component {
               }
             </Select>
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}}>
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Block"), i18next.t("general:Block - Tooltip"))} :
           </Col>
@@ -149,8 +149,8 @@ class RecordEditPage extends React.Component {
               // this.updateRecordField("block", e.target.value);
             }} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}}>
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Provider") + " 2", i18next.t("general:Provider - Tooltip"))} :
           </Col>
@@ -165,8 +165,8 @@ class RecordEditPage extends React.Component {
               }
             </Select>
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}}>
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Block") + " 2", i18next.t("general:Block - Tooltip"))} :
           </Col>
@@ -175,8 +175,8 @@ class RecordEditPage extends React.Component {
               // this.updateRecordField("block", e.target.value);
             }} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Client IP"), i18next.t("general:Client IP - Tooltip"))} :
           </Col>
@@ -185,8 +185,8 @@ class RecordEditPage extends React.Component {
               // this.updateRecordField("clientIp", e.target.value);
             }} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:User"), i18next.t("general:User - Tooltip"))} :
           </Col>
@@ -195,8 +195,8 @@ class RecordEditPage extends React.Component {
               // this.updateRecordField("user", e.target.value);
             }} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Method"), i18next.t("general:Method - Tooltip"))} :
           </Col>
@@ -219,8 +219,8 @@ class RecordEditPage extends React.Component {
               }
             </Select>
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Request URI"), i18next.t("general:Request URI - Tooltip"))} :
           </Col>
@@ -229,8 +229,8 @@ class RecordEditPage extends React.Component {
               // this.updateRecordField("requestUri", e.target.value);
             }} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Action"), i18next.t("general:Action - Tooltip"))} :
           </Col>
@@ -239,8 +239,8 @@ class RecordEditPage extends React.Component {
               // this.updateRecordField("action", e.target.value);
             }} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Language"), i18next.t("general:Language - Tooltip"))} :
           </Col>
@@ -249,71 +249,71 @@ class RecordEditPage extends React.Component {
               // this.updateRecordField("language", e.target.value);
             }} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Region"), i18next.t("general:Region - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input disabled={false} value={this.state.record.region} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:City"), i18next.t("general:City - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input disabled={false} value={this.state.record.city} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        </Row> */}
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Unit"), i18next.t("general:Unit - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input disabled={false} value={this.state.record.unit} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Section"), i18next.t("general:Section - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input disabled={false} value={this.state.record.section} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
+        {/* <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:DiseaseCategory"), i18next.t("general:DiseaseCategory - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input disabled={false} value={this.state.record.diseaseCategory} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        </Row> */}
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:CorrelationId"), i18next.t("general:CorrelationId - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input disabled={false} value={this.state.record.correlationId} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Object"), i18next.t("general:Object - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <div style={{width: "900px", height: "300px"}}>
+            <div style={{ width: "900px", height: "300px" }}>
               <CodeMirror
                 value={Setting.formatJsonString(this.state.record.object)}
-                options={{mode: "javascript", theme: "material-darker"}}
+                options={{ mode: "javascript", theme: "material-darker" }}
                 onBeforeChange={(editor, data, value) => {
                 }}
               />
             </div>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}}>
+        {/* <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Response"), i18next.t("general:Response - Tooltip"))} :
           </Col>
@@ -327,8 +327,8 @@ class RecordEditPage extends React.Component {
               />
             </div>
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
+        </Row> */}
+        {/* <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 19 : 2}>
             {Setting.getLabel(i18next.t("general:Is triggered"), i18next.t("general:Is triggered - Tooltip"))} :
           </Col>
@@ -337,7 +337,7 @@ class RecordEditPage extends React.Component {
               // this.updateRecordField("isTriggered", checked);
             }} />
           </Col>
-        </Row>
+        </Row> */}
       </Card>
     );
   }
@@ -390,16 +390,16 @@ class RecordEditPage extends React.Component {
         {
           this.state.record !== null ? this.renderRecord() : null
         }
-        <div style={{marginTop: "20px", marginLeft: "40px"}}>
+        <div style={{ marginTop: "20px", marginLeft: "40px" }}>
           {this.state.mode !== "123" ? (
             <React.Fragment>
               <Button size="large" onClick={() => this.submitRecordEdit(false)}>{i18next.t("general:Save")}</Button>
-              <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitRecordEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+              <Button style={{ marginLeft: "20px" }} type="primary" size="large" onClick={() => this.submitRecordEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
             </React.Fragment>
           ) : (
             <Button type="primary" size="large" onClick={() => this.props.history.push("/records")}>{i18next.t("general:Exit")}</Button>
           )}
-          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.deleteRecord()}>{i18next.t("general:Cancel")}</Button> : null}
+          {this.state.mode === "add" ? <Button style={{ marginLeft: "20px" }} size="large" onClick={() => this.deleteRecord()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       </div>
     );
