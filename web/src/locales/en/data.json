@@ -462,7 +462,8 @@
     "Federated Learning": "Federated Learning",
     "Encrypted Computation":"Encrypted Computation",
     "Privacy-Preserving Inference":"Privacy-Preserving Inference",
-    "Controlled Usage":"Controlled Usage"
+    "Controlled Usage":"Controlled Usage",
+    "Multi Center Cure":"Multi Center Cure"
   },
   "ipfsArchive":{
     "Ipfs Archive List": "IPFS Archive List",

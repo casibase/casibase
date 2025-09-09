@@ -272,6 +272,8 @@ class App extends Component {
       this.setState({ selectedMenuKey: "/dashboard" });
     } else if (uri.includes("/ipfs-archive")) {
       this.setState({ selectedMenuKey: "/ipfs-archive" });
+    } else if (uri.includes("/vectors")) {
+      this.setState({ selectedMenuKey: "/vectors" });
     } else if (uri.includes("/ipfs-search")) {
       this.setState({ selectedMenuKey: "/ipfs-search" });
     } else if (uri.includes(encodeURIComponent("/forms/区块链浏览器/data"))) {
@@ -764,6 +766,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/workflows">{i18next.t("leftSideMedMenu:Application Scenarios")}</Link>, "/workflows", <ReconciliationTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/sr">{i18next.t("leftSideMedMenu:Super Resolution")}</Link>, "/sr"),
         Setting.getItem(<Link to="/workflows">{i18next.t("leftSideMedMenu:Workflows")}</Link>, "/workflows"),
+        Setting.getItem(<Link to="/vectors">{i18next.t("leftSideMedMenu:Multi Center Cure")}</Link>, "/vectors"),
       ],
       ));
 
