@@ -51,7 +51,7 @@ const GROUPS = [
             { title: "医疗影像分析", icon: "🔎", desc: "AI驱动医学影像检测、分割与辅助诊断。", route: "/yolov8mi" },
             { title: "受控使用", icon: "🛡️", desc: "实现数据分级授权与受控访问，保障数据安全。", route: "/share/usage" },
             { title: "密文计算", icon: "🔒", desc: "支持隐私保护计算，数据加密流转与分析。", route: "/share/crypto" },
-            { title: "可信联邦", icon: "🔓", desc: "安全可信的数据解密服务，合规可控。", route: "/forms/联邦学习/data" },
+            { title: "可信联邦", icon: "🤝", desc: "安全可信的数据解密服务，合规可控。", route: "/forms/联邦学习/data" },
         ],
     },
     {
