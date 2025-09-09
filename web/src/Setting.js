@@ -1430,8 +1430,11 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "Cohere") {
     return [
-      {id: "command-light", name: "command-light"},
-      {id: "command", name: "command"},
+      {id: "Command A", name: "Command A"},
+      {id: "Command R", name: "Command R"},
+      {id: "Command R7B", name: "Command R7B"},
+      {id: "Embed 4", name: "Embed 4"},
+      {id: "Rerank 3.5", name: "Rerank 3.5"},
     ];
   } else if (type === "iFlytek") {
     return [
