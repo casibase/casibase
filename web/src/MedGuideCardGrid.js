@@ -24,9 +24,9 @@ const GROUPS = [
         color: "#217867", // 稳重墨绿
         bg: "#f6fbf8",
         buttons: [
-            { title: "数据总揽", icon: "📊", desc: "全局展示平台内各类数据分布、增长趋势与共享情况。", route: "/dashboard" },
+            { title: "数据总览", icon: "📊", desc: "全局展示平台内各类数据分布、增长趋势与共享情况。", route: "/dashboard" },
 
-            { title: "专病知识图谱", icon: "🧠", desc: "构建专病领域知识结构，助力智能诊疗与科研分析。", route: "https://192.168.0.228:13001/forms/专病库知识图谱/data" },
+            { title: "专病知识图谱", icon: "🧠", desc: "构建专病领域知识结构，助力智能诊疗与科研分析。", route: "/forms/专病库知识图谱/data" },
         ],
     },
     {
@@ -50,7 +50,7 @@ const GROUPS = [
             { title: "医疗影像分析", icon: "🔎", desc: "AI驱动医学影像检测、分割与辅助诊断。", route: "/yolov8mi" },
             { title: "受控使用", icon: "🛡️", desc: "实现数据分级授权与受控访问，保障数据安全。", route: "/share/usage" },
             { title: "密文计算", icon: "🧮", desc: "支持隐私保护计算，数据加密流转与分析。", route: "/forms/密文计算/data" },
-            { title: "隐私保护推理", icon: "🔐", desc: "支持隐私保护推理，保障数据安全与合规。", route: "/forms/隐私保护推理/data" },
+            { title: "SM9-IPFE", icon: "🔐", desc: "支持SM9-IPFE，保障数据安全与合规。", route: "/forms/SM9-IPFE/data" },
             { title: "可信联邦", icon: "🤝", desc: "安全可信的数据解密服务，合规可控。", route: "/forms/联邦学习/data" },
         ],
     },

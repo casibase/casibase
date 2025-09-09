@@ -466,8 +466,8 @@
 
     "Federated Learning": "可信联邦",
     "Encrypted Computation":"密文计算",
-    "Privacy-Preserving Inference":"隐私保护推理"
-
+    "Privacy-Preserving Inference":"SM9-IPFE",
+    "Controlled Usage":"受控使用"
 
   },
    "ipfsArchive":{

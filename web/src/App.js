@@ -283,9 +283,15 @@ class App extends Component {
     } else if (uri.includes(encodeURIComponent("/forms/密文计算/data"))) {
       // 将/forms/密文计算/data 转为 编码后的uri
       this.setState({ selectedMenuKey: "/forms/密文计算/data" });
-    } else if (uri.includes(encodeURIComponent("/forms/隐私保护推理/data"))) {
-      // 将/forms/隐私保护推理/data 转为 编码后的uri
-      this.setState({ selectedMenuKey: "/forms/隐私保护推理/data" });
+    } else if (uri.includes(encodeURIComponent("/forms/SM9-IPFE/data"))) {
+      // 将/forms/SM9-IPFE/data 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/forms/SM9-IPFE/data" });
+    } else if (uri.includes(encodeURIComponent("/forms/受控使用/data"))) {
+      // 将/forms/受控使用/data 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/forms/受控使用/data" });
+    } else if (uri.includes(encodeURIComponent("/forms/专病库知识图谱/data"))) {
+      // 将/forms/专病库知识图谱/data 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/forms/专病库知识图谱/data" });
     } else {
       this.setState({ selectedMenuKey: "null" });
     }
@@ -720,12 +726,13 @@ class App extends Component {
       // 数据管理
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/dashboard">{i18next.t("leftSideMedMenu:DataManage")}</Link>, "/dashboard", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/dashboard">{i18next.t("leftSideMedMenu:Dashboard")}</Link>, "/dashboard"),
+        Setting.getItem(<Link to="/forms/专病库知识图谱/data">{i18next.t("leftSideMedMenu:knowledge graph")}</Link>, "/forms/专病库知识图谱/data"),
 
-        Setting.getItem(
-          <a target="_blank" rel="noreferrer" href="https://192.168.0.228:13001/forms/专病库知识图谱/data">
-            {i18next.t("leftSideMedMenu:knowledge graph")}
-            {Setting.renderExternalLink()}
-          </a>, "/knowledge-graph"),
+        // Setting.getItem(
+        //   <a target="_blank" rel="noreferrer" href="https://192.168.0.228:13001/forms/专病库知识图谱/data">
+        //     {i18next.t("leftSideMedMenu:knowledge graph")}
+        //     {Setting.renderExternalLink()}
+        //   </a>, "/knowledge-graph"),
       ]));
 
       // 上链服务
@@ -745,7 +752,8 @@ class App extends Component {
 
         Setting.getItem(<Link to="/yolov8mi">{i18next.t("leftSideMedMenu:Medical Image Analysis")}</Link>, "/yolov8mi"),
         Setting.getItem(<Link to="/forms/密文计算/data">{i18next.t("leftSideMedMenu:Encrypted Computation")}</Link>, "/forms/密文计算/data"),
-        Setting.getItem(<Link to="/forms/隐私保护推理/data">{i18next.t("leftSideMedMenu:Privacy-Preserving Inference")}</Link>, "/forms/隐私保护推理/data"),
+        Setting.getItem(<Link to="/forms/SM9-IPFE/data">{i18next.t("leftSideMedMenu:Privacy-Preserving Inference")}</Link>, "/forms/SM9-IPFE/data"),
+        Setting.getItem(<Link to="/forms/受控使用/data">{i18next.t("leftSideMedMenu:Controlled Usage")}</Link>, "/forms/受控使用/data"),
         Setting.getItem(<Link to="/forms/联邦学习/data">{i18next.t("leftSideMedMenu:Federated Learning")}</Link>, "/forms/联邦学习/data"),
         // 预留：受控使用、密文计算
 
