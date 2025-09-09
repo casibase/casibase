@@ -740,9 +740,9 @@ class App extends Component {
       ]));
 
       // 共享服务
-      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sr">{i18next.t("leftSideMedMenu:Sharing Services")}</Link>, "/sr", <BuildTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/yolov8mi">{i18next.t("leftSideMedMenu:Sharing Services")}</Link>, "/yolov8mi", <BuildTwoTone twoToneColor={twoToneColor} />, [
 
-        Setting.getItem(<Link to="/sr">{i18next.t("leftSideMedMenu:Super Resolution")}</Link>, "/sr"),
+
         Setting.getItem(<Link to="/yolov8mi">{i18next.t("leftSideMedMenu:Medical Image Analysis")}</Link>, "/yolov8mi"),
         Setting.getItem(<Link to="/forms/密文计算/data">{i18next.t("leftSideMedMenu:Encrypted Computation")}</Link>, "/forms/密文计算/data"),
         Setting.getItem(<Link to="/forms/隐私保护推理/data">{i18next.t("leftSideMedMenu:Privacy-Preserving Inference")}</Link>, "/forms/隐私保护推理/data"),
@@ -754,6 +754,7 @@ class App extends Component {
 
       // 应用场景
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/workflows">{i18next.t("leftSideMedMenu:Application Scenarios")}</Link>, "/workflows", <ReconciliationTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/sr">{i18next.t("leftSideMedMenu:Super Resolution")}</Link>, "/sr"),
         Setting.getItem(<Link to="/workflows">{i18next.t("leftSideMedMenu:Workflows")}</Link>, "/workflows"),
       ],
       ));

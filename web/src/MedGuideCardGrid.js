@@ -47,7 +47,6 @@ const GROUPS = [
         color: "#5a4697", // 稳重紫
         bg: "#f7f6fa",
         buttons: [
-            { title: "图像超分", icon: "🖼️", desc: "提升医学影像分辨率，助力精准诊断与科研。", route: "/sr" },
             { title: "医疗影像分析", icon: "🔎", desc: "AI驱动医学影像检测、分割与辅助诊断。", route: "/yolov8mi" },
             { title: "受控使用", icon: "🛡️", desc: "实现数据分级授权与受控访问，保障数据安全。", route: "/share/usage" },
             { title: "密文计算", icon: "🧮", desc: "支持隐私保护计算，数据加密流转与分析。", route: "/forms/密文计算/data" },
@@ -61,7 +60,7 @@ const GROUPS = [
         color: "#a03a3a", // 稳重酒红
         bg: "#fcf7f7",
         buttons: [
-            { title: "质量控制", icon: "📈", desc: "全流程医疗质量监控，支持多维度统计与预警。", route: "/scene/quality" },
+            { title: "质量控制", icon: "📈", desc: "提升医学影像分辨率，助力精准诊断与科研。", route: "/sr" },
             { title: "临床路径监管", icon: "🩺", desc: "监管临床路径执行，提升诊疗规范与效率。", route: "/workflows" },
             { title: "主动理赔", icon: "💰", desc: "自动化理赔流程，提升理赔效率与合规性。", route: "/scene/claim" },
             { title: "多中心诊疗", icon: "🏥", desc: "多机构协作诊疗，促进医疗资源共享与互通。", route: "/scene/multicenter" },
