@@ -129,6 +129,7 @@ class App extends Component {
       store: undefined,
     };
     this.initConfig();
+    this.setDefaultZhLanguage();
   }
 
   initConfig() {
@@ -302,6 +303,10 @@ class App extends Component {
     if (language !== "" && language !== i18next.language) {
       Setting.setLanguage(language);
     }
+  }
+
+  setDefaultZhLanguage() {
+    Setting.setLanguage("zh");
   }
 
   getAccount() {
@@ -521,7 +526,7 @@ class App extends Component {
         <React.Fragment>
           {this.renderRightDropdown()}
           {/* <ThemeSelect className="select-box" themeAlgorithm={this.state.themeAlgorithm} onChange={this.setLogoAndThemeAlgorithm} /> */}
-          <LanguageSelect className="select-box" />
+          {/* <LanguageSelect className="select-box" /> */}
           {Setting.isLocalAdminUser(this.state.account) &&
             <StoreSelect
               className="store-select"
@@ -709,7 +714,7 @@ class App extends Component {
       // 数据管理
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/dashboard">{i18next.t("leftSideMedMenu:DataManage")}</Link>, "/dashboard", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/dashboard">{i18next.t("leftSideMedMenu:Dashboard")}</Link>, "/dashboard"),
-        
+
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href="https://192.168.0.228:13001/forms/专病库知识图谱/data">
             {i18next.t("leftSideMedMenu:knowledge graph")}
