@@ -22,6 +22,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
+	networkingv1 "k8s.io/api/networking/v1"
 	"k8s.io/client-go/informers"
 	coreinformers "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/tools/cache"
@@ -29,21 +30,23 @@ import (
 
 // CacheManager manages in-memory cache using K8s informers
 type CacheManager struct {
-	factory     informers.SharedInformerFactory
-	nsInformer  coreinformers.NamespaceInformer
-	svcCache    map[string]map[string]*v1.Service        // namespace -> name -> service
-	deployCache map[string]map[string]*appsv1.Deployment // namespace -> name -> deployment
-	nsCache     map[string]*v1.Namespace                 // name -> namespace
-	nodeCache   map[string]*v1.Node                      // name -> node
-	mu          sync.RWMutex
-	stopCh      chan struct{}
-	started     bool
+	factory      informers.SharedInformerFactory
+	nsInformer   coreinformers.NamespaceInformer
+	svcCache     map[string]map[string]*v1.Service           // namespace -> name -> service
+	deployCache  map[string]map[string]*appsv1.Deployment    // namespace -> name -> deployment
+	ingressCache map[string]map[string]*networkingv1.Ingress // namespace -> name -> ingress
+	nsCache      map[string]*v1.Namespace                    // name -> namespace
+	nodeCache    map[string]*v1.Node                         // name -> node
+	mu           sync.RWMutex
+	stopCh       chan struct{}
+	started      bool
 
 	// debug counters
-	svcHits    int64
-	deployHits int64
-	nodeHits   int64
-	nsHits     int64
+	svcHits     int64
+	deployHits  int64
+	nodeHits    int64
+	nsHits      int64
+	ingressHits int64
 }
 
 var (
@@ -60,13 +63,14 @@ func initCacheManager() error {
 	factory := informers.NewSharedInformerFactory(k8sClient.clientSet, 30*time.Second)
 
 	mgr := &CacheManager{
-		factory:     factory,
-		nsInformer:  factory.Core().V1().Namespaces(),
-		svcCache:    make(map[string]map[string]*v1.Service),
-		deployCache: make(map[string]map[string]*appsv1.Deployment),
-		nsCache:     make(map[string]*v1.Namespace),
-		nodeCache:   make(map[string]*v1.Node),
-		stopCh:      make(chan struct{}),
+		factory:      factory,
+		nsInformer:   factory.Core().V1().Namespaces(),
+		svcCache:     make(map[string]map[string]*v1.Service),
+		deployCache:  make(map[string]map[string]*appsv1.Deployment),
+		ingressCache: make(map[string]map[string]*networkingv1.Ingress),
+		nsCache:      make(map[string]*v1.Namespace),
+		nodeCache:    make(map[string]*v1.Node),
+		stopCh:       make(chan struct{}),
 	}
 
 	if err := mgr.setupInformers(); err != nil {
@@ -125,6 +129,13 @@ func (cm *CacheManager) setupInformers() error {
 		AddFunc:    cm.onNodeAdd,
 		UpdateFunc: cm.onNodeUpdate,
 		DeleteFunc: cm.onNodeDelete,
+	})
+
+	ingressInformer := cm.factory.Networking().V1().Ingresses()
+	ingressInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc:    cm.onIngressAdd,
+		UpdateFunc: cm.onIngressUpdate,
+		DeleteFunc: cm.onIngressDelete,
 	})
 
 	return nil
@@ -286,6 +297,41 @@ func (cm *CacheManager) deleteNodeCache(node *v1.Node) {
 	delete(cm.nodeCache, node.Name)
 }
 
+func (cm *CacheManager) onIngressAdd(obj interface{}) {
+	ingress := obj.(*networkingv1.Ingress)
+	cm.updateIngressCache(ingress)
+}
+
+func (cm *CacheManager) onIngressUpdate(oldObj, newObj interface{}) {
+	ingress := newObj.(*networkingv1.Ingress)
+	cm.updateIngressCache(ingress)
+}
+
+func (cm *CacheManager) onIngressDelete(obj interface{}) {
+	ingress := obj.(*networkingv1.Ingress)
+	cm.deleteIngressCache(ingress)
+}
+
+func (cm *CacheManager) updateIngressCache(ingress *networkingv1.Ingress) {
+	cm.mu.Lock()
+	defer cm.mu.Unlock()
+
+	ns := ingress.Namespace
+	if cm.ingressCache[ns] == nil {
+		cm.ingressCache[ns] = make(map[string]*networkingv1.Ingress)
+	}
+	cm.ingressCache[ns][ingress.Name] = ingress
+}
+
+func (cm *CacheManager) deleteIngressCache(ingress *networkingv1.Ingress) {
+	cm.mu.Lock()
+	defer cm.mu.Unlock()
+
+	if nsCache, exists := cm.ingressCache[ingress.Namespace]; exists {
+		delete(nsCache, ingress.Name)
+	}
+}
+
 func (cm *CacheManager) getNamespace(name string) *v1.Namespace {
 	cm.mu.RLock()
 	defer cm.mu.RUnlock()
@@ -342,4 +388,19 @@ func (cm *CacheManager) getNodes() []*v1.Node {
 		nodes = append(nodes, node)
 	}
 	return nodes
+}
+
+func (cm *CacheManager) getIngresses(namespace string) []*networkingv1.Ingress {
+	cm.mu.RLock()
+	defer cm.mu.RUnlock()
+
+	atomic.AddInt64(&cm.ingressHits, 1)
+
+	var ingresses []*networkingv1.Ingress
+	if nsCache, exists := cm.ingressCache[namespace]; exists {
+		for _, ingress := range nsCache {
+			ingresses = append(ingresses, ingress)
+		}
+	}
+	return ingresses
 }

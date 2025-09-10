@@ -23,6 +23,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
+	networkingv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
@@ -218,6 +219,9 @@ func getServicesFromCache(namespace string, nodeIPs []string) []ServiceDetail {
 		services = cacheManager.getServices(namespace)
 	}
 
+	// 获取Ingress信息用于URL构建
+	ingresses := getIngressFromCache(namespace)
+
 	var serviceDetails []ServiceDetail
 	for _, svc := range services {
 		detail := ServiceDetail{
@@ -246,6 +250,8 @@ func getServicesFromCache(namespace string, nodeIPs []string) []ServiceDetail {
 			if len(nodeIPs) > 0 {
 				host = nodeIPs[0]
 			}
+		case v1.ServiceTypeClusterIP:
+			host = getExternalHost("")
 		}
 
 		detail.ExternalHost = getExternalHost(host)
@@ -257,7 +263,11 @@ func getServicesFromCache(namespace string, nodeIPs []string) []ServiceDetail {
 				Protocol: string(port.Protocol),
 			}
 
-			if port.NodePort != 0 {
+			// get URL from Ingress
+			ingressURL := findIngressURL(svc.Name, port.Port, ingresses)
+			if ingressURL != "" {
+				servicePort.URL = ingressURL
+			} else if port.NodePort != 0 {
 				servicePort.NodePort = port.NodePort
 				if detail.ExternalHost != "" {
 					servicePort.URL = fmt.Sprintf("%s:%d", detail.ExternalHost, port.NodePort)
@@ -271,6 +281,90 @@ func getServicesFromCache(namespace string, nodeIPs []string) []ServiceDetail {
 	}
 
 	return serviceDetails
+}
+
+func getIngressFromCache(namespace string) []*networkingv1.Ingress {
+	var ingresses []*networkingv1.Ingress
+
+	// First, try to get from the cache
+	if cacheManager != nil && cacheManager.started {
+		ingresses = cacheManager.getIngresses(namespace)
+	}
+
+	// If the cache is empty, try to fetch from the API
+	if len(ingresses) == 0 {
+		ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Second)
+		defer cancel()
+
+		ingressList, err := k8sClient.clientSet.NetworkingV1().Ingresses(namespace).List(ctx, metav1.ListOptions{})
+		if err == nil {
+			for i := range ingressList.Items {
+				ingresses = append(ingresses, &ingressList.Items[i])
+			}
+		}
+	}
+
+	return ingresses
+}
+
+// findIngressURL finds the external access URL for a service in Ingress rules.
+func findIngressURL(serviceName string, servicePort int32, ingresses []*networkingv1.Ingress) string {
+	for _, ingress := range ingresses {
+		// Iterate through Ingress rules
+		for _, rule := range ingress.Spec.Rules {
+			if rule.HTTP == nil {
+				continue
+			}
+
+			// Build the hostname
+			host := rule.Host
+			if host == "" && len(ingress.Status.LoadBalancer.Ingress) > 0 {
+				// If the host is not specified in the rule, try to get it from the LoadBalancer status
+				lbIngress := ingress.Status.LoadBalancer.Ingress[0]
+				if lbIngress.Hostname != "" {
+					host = lbIngress.Hostname
+				} else if lbIngress.IP != "" {
+					host = lbIngress.IP
+				}
+			}
+
+			// Iterate through each path
+			for _, path := range rule.HTTP.Paths {
+				backend := path.Backend
+
+				if backend.Service != nil &&
+					backend.Service.Name == serviceName &&
+					backend.Service.Port.Number == servicePort {
+
+					scheme := "http"
+					if hasTLSForHost(ingress, host) {
+						scheme = "https"
+					}
+
+					pathStr := path.Path
+					if pathStr == "" {
+						pathStr = "/"
+					}
+
+					return scheme + "://" + host + pathStr
+				}
+			}
+		}
+	}
+
+	return ""
+}
+
+// hasTLSForHost examine if the ingress has TLS configured for the given host
+func hasTLSForHost(ingress *networkingv1.Ingress, host string) bool {
+	for _, tls := range ingress.Spec.TLS {
+		for _, tlsHost := range tls.Hosts {
+			if tlsHost == host {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // getDeploymentsFromCache retrieves deployments from cache or fallback to API
