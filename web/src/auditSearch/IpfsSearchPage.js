@@ -135,22 +135,39 @@ export class IPFSSearchPage extends Component {
             ))}
           </div>
         </div>
-        {/* 查询操作提示 */}
+        {/* 查询操作提示与按钮同一行左右排布 */}
         <div style={{
           margin: '0px auto 0 auto',
           width: '100%',
           maxWidth: 900,
           display: 'flex',
-          justifyContent: 'center',
+          justifyContent: 'space-around',
           alignItems: 'center',
-          color: '#3460d3',
           fontSize: 15,
           fontWeight: 500,
-          gap: 8,
+          padding: '0 8px',
         }}>
-          <FontAwesomeIcon icon={faExclamationCircle} style={{ color: '#3460d3', fontSize: 18 }} />
-          所有查询操作均会被记录
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            color: '#3460d3',
+            gap: 8,
+            fontWeight: 500,
+          }}>
+            <FontAwesomeIcon icon={faExclamationCircle} style={{ color: '#3460d3', fontSize: 18 }} />
+            所有查询操作均会被记录
+          </div>
+          <Button
+            type="primary"
+            onClick={() => {
+              this.props.history.push('/search-audit');
+            }}
+          >
+            审计日志查询
+          </Button>
         </div>
+
+
 
       </div>
     );

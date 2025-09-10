@@ -97,10 +97,12 @@ import IpfsArchiveEditPage from "./auditSearch/IpfsArchiveEditPage";
 import IpfsSearchPage from "./auditSearch/IpfsSearchPage";
 import IpfsSearchResultPage from "./auditSearch/IpfsSearchResultPage";
 import QueryResultPage from "./auditSearch/QueryResultPage";
+import NewAuditPage from "./auditSearch/NewAuditPage";
 
 // 功能介绍页面组
 import PatientChainDataIntro from "./introduce/PatientChainDataIntro"
 import MedicalRecordChainIntro from "./introduce/MedicalRecordChainIntro"
+
 
 
 
@@ -1030,6 +1032,7 @@ class App extends Component {
         <Route exact path="/ipfs-archive/view/:id" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-archive/add" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-search" render={(props) => this.renderSigninIfNotSignedIn(<IpfsSearchPage account={this.state.account} {...props} />)} />
+        <Route exact path="/search-audit" render={(props) => this.renderSigninIfNotSignedIn(<NewAuditPage account={this.state.account} {...props} />)} />
 
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)} />
