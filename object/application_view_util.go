@@ -16,8 +16,9 @@ package object
 
 import (
 	"fmt"
-	networkingv1 "k8s.io/api/networking/v1"
 	"sync"
+
+	networkingv1 "k8s.io/api/networking/v1"
 )
 
 func AddDetails(apps []*Application) {
