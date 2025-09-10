@@ -14,13 +14,15 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table} from "antd";
+import {Button, Popconfirm, Popover, Table} from "antd";
 import {DeleteOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as GraphBackend from "./backend/GraphBackend";
 import i18next from "i18next";
+import {Controlled as CodeMirror} from "react-codemirror2";
+import GraphDataPage from "./GraphDataPage";
 
 class GraphListPage extends BaseListPage {
   constructor(props) {
@@ -120,7 +122,53 @@ class GraphListPage extends BaseListPage {
         dataIndex: "text",
         key: "text",
         width: "200px",
-        sorter: (a, b) => a.text.localeCompare(b.text),
+        render: (text, record, index) => {
+          return (
+            <Popover
+              placement="left"
+              trigger="hover"
+              title={i18next.t("general:Text")}
+              content={
+                <div style={{width: "800px", height: "400px", display: "flex"}}>
+                  <CodeMirror
+                    value={text}
+                    options={{
+                      mode: "application/json",
+                      theme: "material-darker",
+                      lineNumbers: true,
+                      readOnly: true,
+                    }}
+                    editorDidMount={(editor) => {
+                      if (window.ResizeObserver) {
+                        const resizeObserver = new ResizeObserver(() => {
+                          editor.refresh();
+                        });
+                        resizeObserver.observe(editor.getWrapperElement().parentNode);
+                      }
+                    }}
+                  />
+                </div>
+              }>
+              <div style={{maxWidth: "300px"}}>
+                {Setting.getShortText(text, 200)}
+              </div>
+            </Popover>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Graphs"),
+        dataIndex: "text",
+        key: "graph",
+        width: "200px",
+        sorter: (a, b) => a.graph.localeCompare(b.graph),
+        render: (text, record, index) => {
+          return (
+            <div>
+              <GraphDataPage account={this.props.account} owner={record.owner} graphName={record.name} graphText={text} compact={true} height="180px" />
+            </div>
+          );
+        },
       },
       {
         title: i18next.t("general:Action"),
