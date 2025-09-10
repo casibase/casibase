@@ -126,7 +126,7 @@ class ApplicationListPage extends BaseListPage {
           Setting.showMessage("success", i18next.t("general:Successfully undeployed"));
           this.setState({
             data: this.state.data.map((item) =>
-              item.name === record.name ? {...item, status: i18next.t("Not Deployed")} : item
+              item.name === record.name ? {...item, status: i18next.t("application:Not Deployed")} : item
             ),
           });
         } else {
