@@ -17,8 +17,8 @@ import {Button, Card, Col, Input, Row} from "antd";
 import * as GraphBackend from "./backend/GraphBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-
-const {TextArea} = Input;
+import GraphDataPage from "./GraphDataPage";
+import {Controlled as CodeMirror} from "react-codemirror2";
 
 class GraphEditPage extends React.Component {
   constructor(props) {
@@ -99,9 +99,15 @@ class GraphEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.graph.text} onChange={(e) => {
-              this.updateGraphField("text", e.target.value);
-            }} />
+            <div style={{height: "500px"}}>
+              <CodeMirror
+                value={this.state.graph.text}
+                options={{mode: "application/json", theme: "material-darker", lineNumbers: true}}
+                onBeforeChange={(editor, data, value) => {
+                  this.updateGraphField("text", value);
+                }}
+              />
+            </div>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -110,7 +116,7 @@ class GraphEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div key={this.state.graphCount}>
-              <iframe id="graphData" title={"graphData"} src={`${location.href}/data`} width="100%" height="700px" scrolling="no" style={{border: "1px solid #e0e0e0", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)"}} />
+              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} />
             </div>
           </Col>
         </Row>
