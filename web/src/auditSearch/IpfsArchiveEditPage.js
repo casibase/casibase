@@ -58,7 +58,7 @@ class IpfsArchiveEditPage extends React.Component {
           ipfsAddress: '',
           updateTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
           createTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
-          uploadTime: null,
+          uploadTime: '1970-01-01 00:00:00',
           dataType: null
         },
         mode: "add"
@@ -183,7 +183,7 @@ class IpfsArchiveEditPage extends React.Component {
             <Col span={22} >
               <Input
                 disabled={true}
-                value={this.state.archive.uploadTime === "0000-00-00 00:00:00" ? "---" : this.state.archive.uploadTime}
+                value={this.state.archive.uploadTime === "0000-00-00 00:00:00" || this.state.archive.uploadTime === "1970-01-01 00:00:00" ? "---" : this.state.archive.uploadTime}
               />
             </Col>
           </Row>
