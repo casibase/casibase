@@ -239,7 +239,7 @@ class IpfsArchiveListPage extends BaseListPage {
       width: "150px",
       sorter: true,
       sortDirections: ["descend", "ascend"],
-      render: (text) => text == null || text === "0000-00-00 00:00:00" ? "---" : text,
+      render: (text) => text == null || text === "0000-00-00 00:00:00" || text === "1970-01-01 00:00:00" ? "---" : text,
 
 
     },
