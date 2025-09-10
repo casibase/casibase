@@ -38,53 +38,43 @@ func NewGrokModelProvider(subType string, secretKey string, temperature float32,
 
 func (p *GrokModelProvider) GetPricing() string {
 	return `URL:
-https://x.ai/pricing
+https://docs.x.ai/docs/models
 
-| Models              | Context | Input (Per 1,000 tokens) | Output (Per 1,000 tokens)|
-|---------------------|---------|--------------------------|--------------------------|
-| grok-3              | 131K    | $0.003                   | $0.015                   |
-| grok-3-fast         | 131K    | $0.005                   | $0.025                   |
-| grok-3-mini         | 131K    | $0.0003                  | $0.0005                  |
-| grok-3-mini-fast    | 131K    | $0.0006                  | $0.004                  |
-| grok-2-vision       | 32K     | $0.002                   | $0.01                    |
-| grok-2              | 131K    | $0.002                   | $0.01                    |
+Models           | Context | Input (Per 1,000 tokens) | Output (Per 1,000 tokens)
+-----------------|---------|--------------------------|--------------------------
+grok-code-fast-1 | 256K    | $0.0002                 | $0.0015
+grok-4-0709      | 256K    | $0.0030                 | $0.0150
+grok-3           | 131K    | $0.0030                 | $0.0150
+grok-3-mini      | 131K    | $0.0003                 | $0.0005
 
 Image models:
 
-| Models               | Price (per image) |
-|----------------------|-------------------|
-| grok-2-image         | $0.07             |
+Models           | Price (per image)
+-----------------|------------------
+grok-2-image-1212| $0.07
 `
 }
 
 func (p *GrokModelProvider) calculatePrice(modelResult *ModelResult) error {
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 
-	if strings.Contains(p.subType, "grok-3") {
-		if !strings.Contains(p.subType, "fast") && !strings.Contains(p.subType, "mini") {
-			inputPricePerThousandTokens = 0.003  // $0.003 per 1,000 tokens
-			outputPricePerThousandTokens = 0.015 // $0.015 per 1,000 tokens
-		} else if strings.Contains(p.subType, "mini-fast") {
-			inputPricePerThousandTokens = 0.0006 // $0.0006 per 1,000 tokens
-			outputPricePerThousandTokens = 0.004 // $0.004 per 1,000 tokens
-		} else if strings.Contains(p.subType, "fast") {
-			inputPricePerThousandTokens = 0.005  // $0.005 per 1,000 tokens
-			outputPricePerThousandTokens = 0.025 // $0.025 per 1,000 tokens
-		} else if strings.Contains(p.subType, "mini") {
-			inputPricePerThousandTokens = 0.0003  // $0.0003 per 1,000 tokens
-			outputPricePerThousandTokens = 0.0005 // $0.0005 per 1,000 tokens
-		}
-	} else if strings.Contains(p.subType, "grok-2-vision") {
-		inputPricePerThousandTokens = 0.002 // $0.002 per 1,000 tokens
-		outputPricePerThousandTokens = 0.01 // $0.01 per 1,000 tokens
+	if strings.Contains(p.subType, "grok-code-fast-1") {
+		inputPricePerThousandTokens = 0.0002  // $0.0002 per 1,000 tokens
+		outputPricePerThousandTokens = 0.0015 // $0.0015 per 1,000 tokens
+	} else if strings.Contains(p.subType, "grok-4-0709") {
+		inputPricePerThousandTokens = 0.003  // $0.003 per 1,000 tokens
+		outputPricePerThousandTokens = 0.015 // $0.015 per 1,000 tokens
+	} else if strings.Contains(p.subType, "grok-3") {
+		inputPricePerThousandTokens = 0.003  // $0.003 per 1,000 tokens
+		outputPricePerThousandTokens = 0.015 // $0.015 per 1,000 tokens
+	} else if strings.Contains(p.subType, "grok-3-mini") {
+		inputPricePerThousandTokens = 0.0003  // $.0003 per 1,000 tokens
+		outputPricePerThousandTokens = 0.0005 // $0.0005 per 1,000 tokens
 	} else if strings.Contains(p.subType, "grok-2-image") {
 		// For image generation, we need special handling
 		modelResult.TotalPrice = float64(modelResult.ImageCount) * 0.07 // $0.07 per image
 		modelResult.Currency = "USD"
 		return nil
-	} else if strings.Contains(p.subType, "grok-2") {
-		inputPricePerThousandTokens = 0.002 // $0.002 per 1,000 tokens
-		outputPricePerThousandTokens = 0.01 // $0.01 per 1,000 tokens
 	} else {
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}
