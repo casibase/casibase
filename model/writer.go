@@ -37,7 +37,7 @@ func NewWriterModelProvider(subType string, apiKey string, temperature float32, 
 
 func (p *WriterModelProvider) GetPricing() string {
 	return `URL:
-https://writer.com/pricing/
+https://dev.writer.com/home/pricing
 
 | Model                    | Input Price per 1M tokens | Output Price per 1M tokens |
 |--------------------------|---------------------------|----------------------------|
