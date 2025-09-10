@@ -276,10 +276,12 @@ class App extends Component {
       this.setState({ selectedMenuKey: "/vectors" });
     } else if (uri.includes("/ipfs-search")) {
       this.setState({ selectedMenuKey: "/ipfs-search" });
-    } else if (uri.includes(encodeURIComponent("/forms/区块链浏览器/data"))) {
-      // 将/forms/区块链浏览器/data 转为 编码后的uri
-      this.setState({ selectedMenuKey: "/forms/区块链浏览器/data" });
-    } else if (uri.includes(encodeURIComponent("/forms/联邦学习/data"))) {
+    }
+    // else if (uri.includes(encodeURIComponent("/forms/区块链浏览器/data"))) {
+    //   // 将/forms/区块链浏览器/data 转为 编码后的uri
+    //   this.setState({ selectedMenuKey: "/forms/区块链浏览器/data" });
+    // } 
+    else if (uri.includes(encodeURIComponent("/forms/联邦学习/data"))) {
       // 将/forms/联邦学习/data 转为 编码后的uri
       this.setState({ selectedMenuKey: "/forms/联邦学习/data" });
     } else if (uri.includes(encodeURIComponent("/forms/密文计算/data"))) {
@@ -743,7 +745,12 @@ class App extends Component {
 
         Setting.getItem(<Link to="/ipfs-archive">{i18next.t("leftSideMedMenu:IpfsArchives")}</Link>, "/ipfs-archive"),
         Setting.getItem(<Link to="/records">{i18next.t("leftSideMedMenu:Records")}</Link>, "/records"),
-        Setting.getItem(<Link to="/forms/区块链浏览器/data">{i18next.t("leftSideMedMenu:chainExpoler")}</Link>, "/forms/区块链浏览器/data"),
+        // Setting.getItem(<Link to="/forms/区块链浏览器/data">{i18next.t("leftSideMedMenu:chainExpoler")}</Link>, "/forms/区块链浏览器/data"),
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href="http://192.168.0.228:9996/chain1/home">
+            {i18next.t("leftSideMedMenu:chainExpoler")}
+            {Setting.renderExternalLink()}
+          </a>, "http://192.168.0.228:9996/chain1/home"),
         Setting.getItem(<Link to="/ipfs-search">{i18next.t("leftSideMedMenu:Audit")}</Link>, "/ipfs-search"),
         // Setting.getItem(<Link to="/audit">{i18next.t("leftSideMedMenu:Audit")}</Link>, "/audit"),
       ]));
