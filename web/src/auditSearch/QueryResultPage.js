@@ -96,8 +96,10 @@ class QueryResultPage extends React.Component {
                     queryItem,
                     apiUrl: {
                         ipfsServiceUrl: "http://47.113.204.64:5001",
-                        chainServiceUrl: "http://47.113.204.64:9001/tencent-chainapi/exec",
-                        contractName: "tencentChainqaContractV221demo01",
+                        // chainServiceUrl: "http://47.113.204.64:9001/tencent-chainapi/exec",
+                        chainServiceUrl: "",
+                        // contractName: "tencentChainqaContractV221demo01",
+                        contractName: "chainQA",
                     },
                 }),
             });
