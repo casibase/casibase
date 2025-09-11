@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from "react";
-import {Button} from "antd";
+import {useState} from "react";
+import {Button, Dropdown} from "antd";
 import {Sender} from "@ant-design/x";
-import {LinkOutlined} from "@ant-design/icons";
+import {PlusOutlined} from "@ant-design/icons";
 import ChatFileInput from "./ChatFileInput";
 import UploadFileArea from "./UploadFileArea";
+import getChatTools, {getToolOptions} from "./chat-tools/ChatTools";
+import ToolTag from "./chat-tools/ToolTag";
 import i18next from "i18next";
 
 const ChatInput = ({
@@ -35,6 +37,7 @@ const ChatInput = ({
   onVoiceInputEnd,
   isVoiceInput,
 }) => {
+  const [selectedTool, setSelectedTool] = useState("text");
 
   let storageThemeAlgorithm = [];
   try {
@@ -110,6 +113,23 @@ const ChatInput = ({
   // const isSpeechDisabled = store?.speechToTextProvider === "";
   const isSpeechDisabled = false;
 
+  const handleToolSelect = ({key}) => {
+    if (key === "file") {
+      handleFileUploadClick();
+      return;
+    }
+
+    if (key === "more") {
+      return;
+    }
+
+    setSelectedTool(key);
+  };
+
+  const handleClearTool = () => {
+    setSelectedTool("text");
+  };
+
   return (
     <div style={{position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px 24px", zIndex: 1}}>
       <UploadFileArea onFileChange={handleInputChange} />
@@ -122,17 +142,31 @@ const ChatInput = ({
             />
           </div>
         )}
+        <ToolTag
+          toolType={selectedTool}
+          onClose={handleClearTool}
+        />
         <Sender
           prefix={
-            <Button
-              type="text"
-              icon={<LinkOutlined />}
-              onClick={handleFileUploadClick}
-              disabled={disableInput || messageError || store?.disableFileUpload}
-              style={{
-                color: (disableInput || messageError) ? "#d9d9d9" : undefined,
+            <Dropdown
+              menu={{
+                items: getChatTools(),
+                onClick: ({key}) => handleToolSelect({key}),
+                selectedKeys: [selectedTool],
               }}
-            />
+              trigger={["click"]}
+              placement="topLeft"
+              overlayClassName="chat-tools-dropdown"
+            >
+              <Button
+                type="text"
+                icon={<PlusOutlined />}
+                disabled={disableInput || messageError || store?.disableFileUpload}
+                style={{
+                  color: (disableInput || messageError) ? "#d9d9d9" : undefined,
+                }}
+              />
+            </Dropdown>
           }
           loading={loading}
           disabled={disableInput}
@@ -143,12 +177,20 @@ const ChatInput = ({
           onChange={onChange}
           onSubmit={() => {
             if (!sendButtonDisabled) {
-              onSend(value);
+              const toolOptions = getToolOptions(selectedTool);
+              const messageData = {
+                text: value,
+                type: selectedTool,
+                options: toolOptions,
+              };
+              onSend(value, messageData);
               onChange("");
+              setSelectedTool("text");
             }
           }}
           onCancel={() => {
             onCancelMessage && onCancelMessage();
+            setSelectedTool("text");
           }}
           // Only provide allowSpeech if speech is not disabled
           {...(!isSpeechDisabled ? {
