@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, Button, Tabs, message, DatePicker } from "antd";
+import { Table, Input, Button, Tabs, message, DatePicker, ConfigProvider } from "antd";
 import dayjs from "dayjs";
+import weekday from "dayjs/plugin/weekday"
+import localeData from "dayjs/plugin/localeData"
+import zhCN from 'antd/lib/locale/zh_CN'; // 引入中文语言包
+import 'dayjs/locale/zh-cn';
+
+
+dayjs.extend(weekday)
+dayjs.extend(localeData)
+
+dayjs.locale('zh-cn');
 
 
 
@@ -94,6 +104,59 @@ const columns = [
     },
 ];
 
+const localeZh = {
+    "lang": {
+        "locale": "zh_CN",
+        "placeholder": "选择日期",
+        "rangePlaceholder": ["开始日期", "结束日期"],
+        "today": "今天",
+        "now": "现在",
+        "backToToday": "返回今天",
+        "ok": "确定",
+        "clear": "清空",
+        "month": "月",
+        "year": "年",
+        "timeSelect": "选择时间",
+        "dateSelect": "选择日期",
+        "monthSelect": "选择月份",
+        "yearSelect": "选择年份",
+        "decadeSelect": "选择年代",
+        "yearFormat": "YYYY",
+        "fieldDateFormat": "YYYY-MM-DD",
+        "cellDateFormat": "D",
+        "fieldDateTimeFormat": "YYYY-MM-DD HH:mm:ss",
+        "monthFormat": "MM月",
+        "fieldWeekFormat": "YYYY年第wo周",
+        "monthBeforeYear": false,
+        "previousMonth": "上一月（PageUp）",
+        "nextMonth": "下一月（PageDown）",
+        "previousYear": "上一年（Ctrl+左箭头）",
+        "nextYear": "下一年（Ctrl+右箭头）",
+        "previousDecade": "上一个年代",
+        "nextDecade": "下一个年代",
+        "previousCentury": "上一个世纪",
+        "nextCentury": "下一个世纪",
+        "shortWeekDays": ["日", "一", "二", "三", "四", "五", "六"],
+        "shortMonths": [
+            "1月",
+            "2月",
+            "3月",
+            "4月",
+            "5月",
+            "6月",
+            "7月",
+            "8月",
+            "9月",
+            "10月",
+            "11月",
+            "12月"
+        ]
+    },
+    "timePickerLocale": {
+        "placeholder": "选择时间"
+    }
+}
+
 export default function NewAuditPage() {
     const [tabKey, setTabKey] = useState("user");
     const [user, setUser] = useState("admin");
@@ -147,13 +210,16 @@ export default function NewAuditPage() {
                 <div style={{ marginBottom: 18, display: "flex", alignItems: "center" }}>
                     <span style={{ color: "red", marginRight: 8 }}>*</span>
                     时间范围
-                    <RangePicker
-                        showTime
-                        value={dateRange}
-                        onChange={setDateRange}
-                        style={{ marginLeft: 12, width: 360 }}
-                        format="YYYY-MM-DD HH:mm:ss"
-                    />
+                    <ConfigProvider locale={zhCN}>
+                        <RangePicker
+                            showTime
+                            value={dateRange}
+                            onChange={setDateRange}
+                            style={{ marginLeft: 12, width: 360 }}
+                            format="YYYY-MM-DD HH:mm:ss"
+                            locale={localeZh}
+                        />
+                    </ConfigProvider>
                 </div>
             )}
             <Button
