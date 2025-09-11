@@ -764,7 +764,12 @@ class App extends Component {
         Setting.getItem(<Link to="/forms/密文计算/data">{i18next.t("leftSideMedMenu:Encrypted Computation")}</Link>, "/forms/密文计算/data"),
         Setting.getItem(<Link to="/forms/SM9-IPFE/data">{i18next.t("leftSideMedMenu:Privacy-Preserving Inference")}</Link>, "/forms/SM9-IPFE/data"),
         Setting.getItem(<Link to="/forms/受控使用/data">{i18next.t("leftSideMedMenu:Controlled Usage")}</Link>, "/forms/受控使用/data"),
-        Setting.getItem(<Link to="/forms/联邦学习/data">{i18next.t("leftSideMedMenu:Federated Learning")}</Link>, "/forms/联邦学习/data"),
+        // Setting.getItem(<Link to="/forms/联邦学习/data">{i18next.t("leftSideMedMenu:Federated Learning")}</Link>, "/forms/联邦学习/data"),
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href="http://172.25.77.152">
+            {i18next.t("leftSideMedMenu:Federated Learning")}
+            {Setting.renderExternalLink()}
+          </a>, "http://172.25.77.152/"),
         // 预留：受控使用、密文计算
 
       ],
