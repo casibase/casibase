@@ -590,7 +590,6 @@ class App extends Component {
         openKeys = [pathToMenuKeyMap[matchingParentKey]];
       }
     }
-    console.log(pathToMenuKeyMap, openKeys);
 
     this.setState({ openMenuKeys: openKeys });
   }

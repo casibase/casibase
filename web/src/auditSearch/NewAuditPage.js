@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Table, Input, Button, Tabs, message, DatePicker, ConfigProvider, Switch } from "antd";
 import dayjs from "dayjs";
 import weekday from "dayjs/plugin/weekday"
@@ -34,6 +34,7 @@ const parseData = (raw) => {
                     user: item.Uid,
                     time: dayjs(Number(item.Timestamp) * 1000).format("YYYY-MM-DD HH:mm:ss"),
                     status: Number(item.QueryStatus),
+                    QueryResult: item.QueryResult // 关键字段补充
                 });
             });
         }
@@ -55,7 +56,7 @@ const getColumns = (onViewResult) => [
         title: "查询ID",
         dataIndex: "id",
         key: "id",
-        width: 220,
+        width: 150,
         render: (text) => (
             <div style={{ wordBreak: "break-all", whiteSpace: "pre-line" }}>{text}</div>
         ),
@@ -73,7 +74,7 @@ const getColumns = (onViewResult) => [
         width: 160,
     },
     {
-        title: "查询状态",
+        title: "查询结果条数",
         dataIndex: "status",
         key: "status",
         width: 100,
@@ -162,7 +163,7 @@ export default function NewAuditPage() {
     const [user, setUser] = useState("");
     const [data, setData] = useState([]);
     const [showSuccessOnly, setShowSuccessOnly] = useState(true); // 过滤失败开关，默认开启
-    const [rawLog, setRawLog] = useState(null); // 保存原始后端数据
+    // 已不再需要rawLog
     const [dateRange, setDateRange] = useState([
         dayjs().startOf("day"),
         dayjs().endOf("day")
@@ -170,16 +171,8 @@ export default function NewAuditPage() {
     const [loading, setLoading] = useState(false);
 
     // 跳转到查询结果页，传递QueryResult
-    const handleViewResult = (record, idx) => {
-        let queryResult = null;
-        try {
-            if (rawLog) {
-                const dataObj = typeof rawLog.data === 'string' ? JSON.parse(rawLog.data) : rawLog.data;
-                if (Array.isArray(dataObj.QueryLogArray) && dataObj.QueryLogArray[idx]) {
-                    queryResult = dataObj.QueryLogArray[idx].QueryResult;
-                }
-            }
-        } catch (e) { }
+    const handleViewResult = (record) => {
+        const queryResult = record.QueryResult;
         if (queryResult) {
             history.push({
                 pathname: '/ipfs-search/query-result',
@@ -208,7 +201,6 @@ export default function NewAuditPage() {
             })
                 .then(res => res.json())
                 .then(res => {
-                    setRawLog(res);
                     let arr = parseData(res);
                     if (showSuccessOnly) {
                         arr = arr.filter(item => item.status > 0);
@@ -217,7 +209,6 @@ export default function NewAuditPage() {
                 })
                 .catch(() => {
                     setData([]);
-                    setRawLog(null);
                 })
                 .finally(() => setLoading(false));
         } else if (tabKey === "time") {
@@ -241,7 +232,6 @@ export default function NewAuditPage() {
             })
                 .then(res => res.json())
                 .then(res => {
-                    setRawLog(res);
                     let arr = parseData(res);
                     if (showSuccessOnly) {
                         arr = arr.filter(item => item.status > 0);
@@ -250,7 +240,6 @@ export default function NewAuditPage() {
                 })
                 .catch(() => {
                     setData([]);
-                    setRawLog(null);
                 })
                 .finally(() => setLoading(false));
         }
@@ -260,7 +249,6 @@ export default function NewAuditPage() {
     const handleTabChange = (key) => {
         setTabKey(key);
         setData([]);
-        setRawLog(null);
         setUser("");
         setDateRange([
             dayjs().startOf("day"),

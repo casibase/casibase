@@ -128,6 +128,7 @@ class QueryResultPage extends React.Component {
 
     praseQueryResultDataFromAudit = (data) => {
         // 将data字符串转为对象
+        console.log("data:", data);
         var res
         try {
             var data_ = JSON.parse(data);
@@ -158,7 +159,6 @@ class QueryResultPage extends React.Component {
                     parseError = true;
                 }
                 if (!parseError && typeof dataObj === 'object' && !Array.isArray(dataObj) && Object.keys(dataObj).length === 0) {
-
                     // 空对象，仅展示msg
                     this.setState({
                         loading: false,
@@ -181,11 +181,21 @@ class QueryResultPage extends React.Component {
                 } else if (dataObj.data) {
                     // 只展示常量池中实际存在的字段
                     const { filteredArr, presentFields } = filterAndTranslateFields(dataObj.data || []);
-                    const columns = presentFields.map(({ key, label }) => ({
-                        title: label,
-                        dataIndex: key,
-                        key,
-                    }));
+                    // 增加序号列
+                    const columns = [
+                        {
+                            title: 'No.',
+                            key: 'index',
+                            width: 60,
+                            align: 'center',
+                            render: (_, __, idx) => <b>{idx + 1}</b>,
+                        },
+                        ...presentFields.map(({ key, label }) => ({
+                            title: label,
+                            dataIndex: key,
+                            key,
+                        }))
+                    ];
                     this.setState({
                         loading: false,
                         resultMsg: `查询成功，共找到 ${dataObj.counts || filteredArr.length} 条结果。`,
