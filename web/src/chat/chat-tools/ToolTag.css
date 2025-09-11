@@ -1,0 +1,56 @@
+.ant-tool-tag-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  animation: tag-fade-in 0.3s ease-out;
+}
+
+.ant-tool-tag-container .ant-tag.ant-tool-tag {
+  font-size: 14px;
+  padding: 6px 12px;
+  margin-right: 8px;
+  border-radius: 16px;
+  background-color: rgb(247 247 248 / 90%);
+  border: 1px solid rgb(0 0 0 / 10%);
+  color: rgb(0 0 0 / 75%);
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.ant-tool-tag-container .ant-tag.ant-tool-tag:hover {
+  background-color: rgb(236 236 241 / 100%);
+  border-color: rgb(0 0 0 / 20%);
+}
+
+.ant-tool-tag-container .ant-tag.ant-tool-tag .anticon {
+  margin-right: 6px;
+  font-size: 14px;
+}
+
+.ant-tool-tag-container .ant-tag.ant-tool-tag .ant-tag-close-icon {
+  cursor: pointer;
+  z-index: 10;
+  margin-left: 8px;
+  font-size: 12px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.ant-tool-tag-container .ant-tag.ant-tool-tag .ant-tag-close-icon:hover {
+  opacity: 1;
+}
+
+@keyframes tag-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

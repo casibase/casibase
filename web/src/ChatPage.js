@@ -218,7 +218,7 @@ class ChatPage extends BaseListPage {
     };
   }
 
-  newMessage(text, fileName, isHidden, isRegenerated) {
+  newMessage(text, fileName, isHidden, isRegenerated, messageData) {
     const randomName = Setting.getRandomName();
     const message = {
       owner: "admin",
@@ -237,6 +237,13 @@ class ChatPage extends BaseListPage {
       isRegenerated: isRegenerated,
       fileName: fileName,
     };
+
+    if (messageData && typeof messageData === "object") {
+      message.metadata = {
+        type: messageData.type || "text",
+        options: messageData.options || {},
+      };
+    }
 
     if (!this.state.chat) {
       const urlStoreName = this.getStore();
@@ -271,8 +278,8 @@ class ChatPage extends BaseListPage {
     }
   };
 
-  sendMessage(text, fileName, isHidden, isRegenerated) {
-    const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
+  sendMessage(text, fileName, isHidden, isRegenerated, messageData) {
+    const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated, messageData);
     MessageBackend.addMessage(newMessage)
       .then((res) => {
         if (res.status === "ok") {
@@ -749,8 +756,8 @@ class ChatPage extends BaseListPage {
                 loading={this.state.messageLoading}
                 messages={this.state.messages}
                 messageError={this.state.messageError}
-                sendMessage={(text, fileName, regenerate = false) => {
-                  this.sendMessage(text, fileName, false, regenerate);
+                sendMessage={(text, fileName, regenerate = false, messageData) => {
+                  this.sendMessage(text, fileName, false, regenerate, messageData);
                 }}
                 onMessageEdit={this.handleMessageEdit}
                 onCancelMessage={this.cancelMessage}

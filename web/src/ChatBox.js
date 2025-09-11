@@ -113,7 +113,7 @@ class ChatBox extends React.Component {
     inputElement?.addEventListener("click", updateCursorPosition);
   }
 
-  handleSend = (innerHtml) => {
+  handleSend = (innerHtml, messageData) => {
     // abort because the remaining recognition results are useless
     this.sttHelper.stopRecognition();
 
@@ -139,7 +139,12 @@ class ChatBox extends React.Component {
       this.copyFileName = null;
     }
 
-    this.props.sendMessage(newValue, fileName);
+    if (messageData) {
+      this.props.sendMessage(newValue, fileName, false, messageData);
+    } else {
+      this.props.sendMessage(newValue, fileName);
+    }
+
     this.setState({value: "", files: []});
   };
 
