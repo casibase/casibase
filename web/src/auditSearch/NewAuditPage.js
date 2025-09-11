@@ -162,8 +162,8 @@ export default function NewAuditPage() {
     const [tabKey, setTabKey] = useState("user");
     const [user, setUser] = useState("");
     const [data, setData] = useState([]);
+    const [rawLog, setRawLog] = useState(null); // 新增，保存原始日志数据
     const [showSuccessOnly, setShowSuccessOnly] = useState(true); // 过滤失败开关，默认开启
-    // 已不再需要rawLog
     const [dateRange, setDateRange] = useState([
         dayjs().startOf("day"),
         dayjs().endOf("day")
@@ -201,6 +201,7 @@ export default function NewAuditPage() {
             })
                 .then(res => res.json())
                 .then(res => {
+                    setRawLog(res); // 保存原始数据
                     let arr = parseData(res);
                     if (showSuccessOnly) {
                         arr = arr.filter(item => item.status > 0);
@@ -208,6 +209,7 @@ export default function NewAuditPage() {
                     setData(arr);
                 })
                 .catch(() => {
+                    setRawLog(null);
                     setData([]);
                 })
                 .finally(() => setLoading(false));
@@ -232,6 +234,7 @@ export default function NewAuditPage() {
             })
                 .then(res => res.json())
                 .then(res => {
+                    setRawLog(res); // 保存原始数据
                     let arr = parseData(res);
                     if (showSuccessOnly) {
                         arr = arr.filter(item => item.status > 0);
@@ -239,6 +242,7 @@ export default function NewAuditPage() {
                     setData(arr);
                 })
                 .catch(() => {
+                    setRawLog(null);
                     setData([]);
                 })
                 .finally(() => setLoading(false));
@@ -249,6 +253,7 @@ export default function NewAuditPage() {
     const handleTabChange = (key) => {
         setTabKey(key);
         setData([]);
+        setRawLog(null);
         setUser("");
         setDateRange([
             dayjs().startOf("day"),
