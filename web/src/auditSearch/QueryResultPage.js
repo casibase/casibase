@@ -49,16 +49,28 @@ class QueryResultPage extends React.Component {
     componentDidMount() {
         // 兼容react-router v5/v6
         let queryItem = null;
-        if (this.props.location && this.props.location.state && this.props.location.state.queryItem) {
-            queryItem = this.props.location.state.queryItem;
-        } else if (window.history && window.history.state && window.history.state.usr && window.history.state.usr.queryItem) {
-            queryItem = window.history.state.usr.queryItem;
+        let queryResult = null;
+        if (this.props.location && this.props.location.state) {
+            if (this.props.location.state.queryResult) {
+                queryResult = this.props.location.state.queryResult;
+            } else if (this.props.location.state.queryItem) {
+                queryItem = this.props.location.state.queryItem;
+            }
+        } else if (window.history && window.history.state && window.history.state.usr) {
+            if (window.history.state.usr.queryResult) {
+                queryResult = window.history.state.usr.queryResult;
+            } else if (window.history.state.usr.queryItem) {
+                queryItem = window.history.state.usr.queryItem;
+            }
         }
-        console.log('queryItem', queryItem);
+        if (queryResult) {
+
+            this.praseQueryResultDataFromAudit(queryResult);
+            return;
+        }
         if (!queryItem) {
             // 没有查询条件，提示并跳转.使用ant-design的message
             message.warning("未检索到查询条件");
-            // 休息1s
             setTimeout(() => {
                 if (this.props.history && this.props.history.replace) {
                     this.props.history.replace('/ipfs-search');
@@ -66,7 +78,6 @@ class QueryResultPage extends React.Component {
                     window.location.href = '/ipfs-search';
                 }
             }, 1000);
-
             return;
         }
         // 清除缓存
@@ -104,6 +115,39 @@ class QueryResultPage extends React.Component {
                 }),
             });
             const res = await response.json();
+            this.praseQueryResult(res);
+        } catch (e) {
+            this.setState({
+                loading: false,
+                resultMsg: "请求失败，" + e.toString(),
+                resultType: "error",
+                error: e.toString(),
+            });
+        }
+    };
+
+    praseQueryResultDataFromAudit = (data) => {
+        // 将data字符串转为对象
+        var res
+        try {
+            var data_ = JSON.parse(data);
+            res = {
+                code: 0,
+                data: data,
+                msg: data_.message || "查询成功",
+            }
+        } catch (e) {
+            res = {
+                code: -1,
+                data: data,
+                msg: "查询失败",
+            }
+        }
+        this.praseQueryResult(res);
+    };
+
+    praseQueryResult = (res) => {
+        try {
             if (res.code === 0) {
                 let dataObj = {};
                 let parseError = false;
@@ -114,12 +158,13 @@ class QueryResultPage extends React.Component {
                     parseError = true;
                 }
                 if (!parseError && typeof dataObj === 'object' && !Array.isArray(dataObj) && Object.keys(dataObj).length === 0) {
+
                     // 空对象，仅展示msg
                     this.setState({
                         loading: false,
-                        resultMsg: res.msg || "查询失败",
+                        resultMsg: res.msg || res.message || "查询失败",
                         resultType: "error",
-                        error: res.msg,
+                        error: res.msg || res.message || "查询失败",
                         tableData: [],
                         columns: [],
                     });
@@ -127,7 +172,7 @@ class QueryResultPage extends React.Component {
                     // data为字符串，直接展示data内容
                     this.setState({
                         loading: false,
-                        resultMsg: res.data || res.msg || "查询失败",
+                        resultMsg: res.data || res.msg || res.message || "查询失败",
                         resultType: "error",
                         error: res.data,
                         tableData: [],
@@ -153,7 +198,7 @@ class QueryResultPage extends React.Component {
                     // 其它情况，展示data内容
                     this.setState({
                         loading: false,
-                        resultMsg: res.data || res.msg || "查询失败",
+                        resultMsg: res.data || res.msg || res.message || "查询失败",
                         resultType: "error",
                         error: res.data,
                         tableData: [],
@@ -163,7 +208,7 @@ class QueryResultPage extends React.Component {
             } else {
                 this.setState({
                     loading: false,
-                    resultMsg: res.msg || "查询失败",
+                    resultMsg: res.msg || res.message || "查询失败",
                     resultType: "error",
                     error: res.msg,
                 });
@@ -171,12 +216,13 @@ class QueryResultPage extends React.Component {
         } catch (e) {
             this.setState({
                 loading: false,
-                resultMsg: "请求失败，" + e.toString(),
+                resultMsg: "解析失败，" + e.toString(),
                 resultType: "error",
                 error: e.toString(),
             });
         }
-    };
+    }
+
 
     handleBack = () => {
         if (this.props.history && this.props.history.goBack) {
