@@ -151,15 +151,7 @@ class ApplicationStorePage extends React.Component {
 
   renderTemplateCard = (template) => {
     return (
-      <Col
-        key={`${template.owner}/${template.name}`}
-        xs={24}
-        sm={24}
-        md={12}
-        lg={12}
-        xl={8}
-        xxl={6}
-      >
+      <Col key={`${template.owner}/${template.name}`} xs={24} sm={24} md={12} lg={12} xl={8} xxl={6}>
         <Card
           hoverable
           style={{
@@ -189,18 +181,7 @@ class ApplicationStorePage extends React.Component {
               }}
               shape="square"
             />
-            <Title
-              level={5}
-              style={{
-                margin: 0,
-                flex: 1,
-                fontSize: "16px",
-                fontWeight: 500,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
+            <Title level={5} style={{margin: 0, flex: 1, fontSize: "16px", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
               {template.displayName || template.name}
             </Title>
           </div>

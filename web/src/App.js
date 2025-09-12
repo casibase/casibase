@@ -633,6 +633,7 @@ class App extends Component {
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/nodes">{i18next.t("general:Cloud Resources")}</Link>, "/cloud", <CloudTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/templates">{i18next.t("general:Templates")}</Link>, "/templates"),
+        Setting.getItem(<Link to="/application-store">{i18next.t("general:Application Store")}</Link>, "/application-store"),
         Setting.getItem(<Link to="/applications">{i18next.t("general:Applications")}</Link>, "/applications"),
         Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"),
         Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines"),
