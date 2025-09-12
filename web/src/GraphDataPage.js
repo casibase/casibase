@@ -13,183 +13,207 @@
 // limitations under the License.
 
 import React from "react";
-import ReactEcharts from "echarts-for-react";
-import i18next from "i18next";
-
-function normalizeGraphData(text) {
-  if (!text) {
-    return {nodes: [], links: [], categories: []};
-  }
-  const obj = JSON.parse(text);
-  const nodes = Array.isArray(obj.nodes) ? obj.nodes.map((node, index) => ({
-    ...node,
-    id: node.id || node.name || `node_${index}`,
-  })) : [];
-
-  const idCount = {};
-  const uniqueNodes = nodes.map(node => {
-    let uniqueId = node.id;
-    if (idCount[uniqueId]) {
-      idCount[uniqueId]++;
-      uniqueId = `${node.id}_${idCount[uniqueId]}`;
-    } else {
-      idCount[uniqueId] = 1;
-    }
-    return {...node, id: uniqueId};
-  });
-
-  const links = Array.isArray(obj.links) ? obj.links : [];
-  const categories = Array.isArray(obj.categories) ? obj.categories.map(c => (typeof c === "string" ? {name: c} : {name: (c && c.name) || ""})) : [];
-  return {nodes: uniqueNodes, links, categories};
-}
+import ForceGraph2D from "react-force-graph-2d";
 
 class GraphDataPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: {nodes: [], links: [], categories: []},
-      mode: "force",
-      invalidText: false,
-      initialZoom: null,
-      initialCenter: null,
+      data: {nodes: [], links: []},
     };
-    this.chartRef = React.createRef();
-  }
-
-  computeLayoutParams(nodeCount, isCompact) {
-    const safeCount = Math.max(1, nodeCount || 1);
-    const densityFactor = Math.log2(safeCount + 1);
-
-    let repulsion, edgeLength, gravity, minScale, initialZoom;
-    if (isCompact) {
-      const repulsionRaw = 160 / densityFactor + 5;
-      repulsion = Math.min(180, Math.max(16, Math.round(repulsionRaw)));
-
-      const edgeLengthRaw = 150 / densityFactor + 5;
-      edgeLength = Math.min(90, Math.max(8, Math.round(edgeLengthRaw)));
-
-      const gravityRaw = 0.24 + 0.060 * Math.log10(safeCount + 1);
-      gravity = Math.min(0.55, Math.max(0.16, parseFloat(gravityRaw.toFixed(2))));
-
-      const minScaleRaw = 1 / (densityFactor + 1.7);
-      minScale = Math.max(0.08, parseFloat(minScaleRaw.toFixed(2)));
-      const baseZoom = 1.35 - 0.13 * densityFactor;
-      const midBump = 0.35 / (1 + Math.abs(densityFactor - 6));
-      const adjZoom = baseZoom + midBump;
-      initialZoom = Math.min(0.90, Math.max(0.38, parseFloat(adjZoom.toFixed(2))));
-    } else {
-      const repulsionRaw = 140 / densityFactor;
-      repulsion = Math.min(200, Math.max(15, Math.round(repulsionRaw)));
-
-      const edgeLengthRaw = 90 / densityFactor;
-      edgeLength = Math.min(100, Math.max(5, Math.round(edgeLengthRaw)));
-
-      const gravityRaw = 0.18 + 0.06 * Math.log10(safeCount + 1);
-      gravity = Math.min(0.55, Math.max(0.12, parseFloat(gravityRaw.toFixed(2))));
-
-      const minScaleRaw = 1 / (densityFactor + 2.0);
-      minScale = Math.max(0.1, parseFloat(minScaleRaw.toFixed(2)));
-
-      initialZoom = undefined;
-    }
-
-    const symbolSize = isCompact ? 3 : 5;
-
-    return {
-      repulsion,
-      edgeLength,
-      gravity,
-      scaleLimit: {min: minScale, max: 8},
-      symbolSize,
-      initialZoom,
-    };
+    this.fgRef = React.createRef();
+    this.containerRef = React.createRef();
+    this.hiddenGroups = new Set();
   }
 
   componentDidMount() {
-    this.fetch();
+    const obj = this.parseData();
+    this.setState({
+      data: {nodes: obj.nodes || [], links: obj.links || []},
+    });
+
+    this.updateSize();
+
+    this.handleResize = () => {
+      if (this.resizeTimer) {
+        clearTimeout(this.resizeTimer);
+      }
+      this.resizeTimer = setTimeout(() => {
+        this.updateSize();
+        setTimeout(() => {
+          if (this.fgRef.current) {
+            this.fgRef.current.zoomToFit(200, 20);
+          }
+        }, 100);
+      }, 300);
+    };
+
+    window.addEventListener("resize", this.handleResize);
+  }
+
+  updateSize() {
+    setTimeout(() => {
+      if (this.containerRef.current) {
+        const rect = this.containerRef.current.getBoundingClientRect();
+        this.setState({
+          actualWidth: rect.width,
+          actualHeight: rect.height,
+        });
+      }
+    }, 0);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.graphText !== prevProps.graphText) {
-      this.fetch();
+      const obj = this.parseData();
+      this.setState({
+        data: {nodes: obj.nodes || [], links: obj.links || []},
+      });
     }
   }
 
-  fetch() {
+  componentWillUnmount() {
+    if (this.handleResize) {
+      window.removeEventListener("resize", this.handleResize);
+    }
+
+    if (this.resizeTimer) {
+      clearTimeout(this.resizeTimer);
+    }
+  }
+
+  parseData() {
+    const defaultData = {nodes: [], links: []};
     const text = this.props.graphText || "";
-    const defaultData = {nodes: [], links: [], categories: []};
     if (text.trim() === "") {
-      this.setState({data: defaultData, invalidText: false});
-      return;
+      return defaultData;
     }
     try {
-      JSON.parse(text);
+      const obj = JSON.parse(text);
+      if (Array.isArray(obj.nodes) && Array.isArray(obj.links)) {
+        return obj;
+      }
     } catch (e) {
-      this.setState({data: defaultData, invalidText: true});
-      return;
+      return defaultData;
     }
-    const data = normalizeGraphData(text);
-    this.setState({data, invalidText: false});
-  }
-
-  getOption() {
-    const {nodes, links, categories} = this.state.data;
-    return this.getForceOption(nodes, links, categories);
-  }
-
-  getForceOption(nodes, links, categories) {
-    const isCompact = this.props.compact;
-    const {repulsion, edgeLength, gravity, scaleLimit, symbolSize, initialZoom} = this.computeLayoutParams(nodes.length, isCompact);
-    return {
-      tooltip: {},
-      legend: isCompact ? [] : [{
-        data: categories.map(c => c.name),
-      }],
-      series: [
-        {
-          name: i18next.t("general:Graphs"),
-          type: "graph",
-          layout: "force",
-          data: nodes.map(n => ({...n, symbolSize})),
-          links: links,
-          categories: categories,
-          roam: true,
-          draggable: true,
-          label: {position: "right"},
-          layoutAnimation: true,
-          force: {edgeLength, repulsion, gravity},
-          scaleLimit,
-          zoom: (isCompact ? initialZoom : this.state.initialZoom) || undefined,
-          center: this.state.initialCenter || undefined,
-        },
-      ],
-    };
   }
 
   render() {
-    const height = this.props.height || (this.props.compact ? "180px" : "1000px");
-    const hasData = (this.state.data.nodes?.length || 0) > 0 || (this.state.data.links?.length || 0) > 0;
-    const chartStyle = {width: "100%", height: "100%"};
+    const raw = this.state.data || {nodes: [], links: []};
+    const nodes = raw.nodes || [];
+    const links = (raw.links || [])
+      .map(l => {
+        let s = l.source, t = l.target;
+        if (typeof s === "number") {s = nodes[s]?.id;}
+        if (typeof t === "number") {t = nodes[t]?.id;}
+        const src = typeof s === "object" && s ? s.id || s.name : s;
+        const dst = typeof t === "object" && t ? t.id || t.name : t;
+        return {...l, source: src, target: dst};
+      });
+    const graphData = {nodes, links};
+
+    const groups = [...new Set(nodes.map(n => n.group))].filter(g => g !== null).sort();
+    const colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
+
+    const getGroupColor = (group) => {
+      const index = groups.indexOf(group);
+      return colors[index % colors.length];
+    };
+
+    const nodeColorFunc = (node) => getGroupColor(node.group);
+
+    const legendItems = groups.map((group) => ({
+      group,
+      color: getGroupColor(group),
+      hidden: this.hiddenGroups.has(group),
+    }));
+
     return (
-      <div style={{width: "100%", height: height, display: "flex", flexDirection: "column", overflow: "hidden"}}>
-        <div style={{flex: 1, overflow: "hidden"}}>
-          {this.state.invalidText ? (
-            <div style={{width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 4}}>
-              {i18next.t("general:Invalid JSON format")}
-            </div>
-          ) : hasData ? (
-            <ReactEcharts
-              ref={this.chartRef}
-              style={chartStyle}
-              option={this.getOption()}
-              notMerge={true}
-            />
-          ) : (
-            <div style={{width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
-              {i18next.t("general:No data")}
-            </div>
-          )}
-        </div>
+      <div
+        ref={this.containerRef}
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "relative",
+        }}
+      >
+        <ForceGraph2D
+          ref={this.fgRef}
+          graphData={graphData}
+          cooldownTicks={100}
+          width={this.state.actualWidth}
+          height={this.state.actualHeight}
+          nodeLabel="id"
+          nodeColor={nodeColorFunc}
+          backgroundColor="transparent"
+          nodeVisibility={node => !this.hiddenGroups.has(node.group)}
+          linkVisibility={link => {
+            const sourceGroup = typeof link.source === "object" ? link.source.group :
+              nodes.find(n => n.id === link.source)?.group;
+            const targetGroup = typeof link.target === "object" ? link.target.group :
+              nodes.find(n => n.id === link.target)?.group;
+            return !this.hiddenGroups.has(sourceGroup) && !this.hiddenGroups.has(targetGroup);
+          }}
+          onEngineStop={() => {
+            if (this.fgRef.current) {
+              this.fgRef.current.zoomToFit(200, 20);
+            }
+          }}
+        />
+        {this.props.showLegend !== false && legendItems.length > 0 && (
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              top: 8,
+              background: "rgba(255,255,255,0.9)",
+              padding: "6px 12px",
+              borderRadius: 6,
+              fontSize: 12,
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              flexWrap: "wrap",
+              pointerEvents: "auto",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            }}
+          >
+            {legendItems.map(item => (
+              <div
+                key={item.group}
+                onClick={() => {
+                  if (item.hidden) {
+                    this.hiddenGroups.delete(item.group);
+                  } else {
+                    this.hiddenGroups.add(item.group);
+                  }
+                  this.forceUpdate();
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  cursor: "pointer",
+                  padding: "4px 8px",
+                  borderRadius: 4,
+                  opacity: item.hidden ? 0.5 : 1,
+                  transition: "opacity 0.2s ease",
+                }}
+              >
+                <div
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    backgroundColor: item.hidden ? "#ccc" : item.color,
+                  }}
+                />
+                <span style={{fontSize: 11}}>{item.group}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   }

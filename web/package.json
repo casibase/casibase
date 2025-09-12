@@ -51,6 +51,8 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.6",
     "react-file-viewer": "^1.2.1",
+    "react-force-graph": "^1.48.1",
+    "react-force-graph-2d": "^1.29.0",
     "react-github-corner": "^2.5.0",
     "react-helmet": "^6.1.0",
     "react-highlight-words": "^0.18.0",
