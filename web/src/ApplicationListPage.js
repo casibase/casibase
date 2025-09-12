@@ -189,6 +189,10 @@ class ApplicationListPage extends BaseListPage {
       });
   }
 
+  addApplicationFromStore() {
+    this.props.history.push("/application-store");
+  }
+
   deleteItem = async(i) => {
     return ApplicationBackend.deleteApplication(this.state.data[i]);
   };
@@ -392,6 +396,7 @@ class ApplicationListPage extends BaseListPage {
             <div>
               {i18next.t("general:Applications")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addApplication.bind(this)}>{i18next.t("general:Add")}</Button>
+              <Button type="default" size="small" onClick={this.addApplicationFromStore.bind(this)} style={{marginLeft: 8}}>{i18next.t("general:Add from application store")}</Button>
               {this.state.selectedRowKeys.length > 0 && (
                 <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
                   <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
