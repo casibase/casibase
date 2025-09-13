@@ -89,6 +89,7 @@ import TemplateListPage from "./TemplateListPage";
 import TemplateEditPage from "./TemplateEditPage";
 import ApplicationListPage from "./ApplicationListPage";
 import ApplicationEditPage from "./ApplicationEditPage";
+import ApplicationStorePage from "./ApplicationStorePage";
 import StoreSelect from "./StoreSelect";
 import ApplicationDetailsPage from "./ApplicationViewPage";
 
@@ -632,6 +633,7 @@ class App extends Component {
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/nodes">{i18next.t("general:Cloud Resources")}</Link>, "/cloud", <CloudTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/templates">{i18next.t("general:Templates")}</Link>, "/templates"),
+        Setting.getItem(<Link to="/application-store">{i18next.t("general:Application Store")}</Link>, "/application-store"),
         Setting.getItem(<Link to="/applications">{i18next.t("general:Applications")}</Link>, "/applications"),
         Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"),
         Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines"),
@@ -759,6 +761,7 @@ class App extends Component {
         <Route exact path="/applications" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationListPage account={this.state.account} {...props} />)} />
         <Route exact path="/applications/:applicationName" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/applications/:applicationName/view" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationDetailsPage account={this.state.account} {...props} />)} />
+        <Route exact path="/application-store" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationStorePage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes" render={(props) => this.renderSigninIfNotSignedIn(<NodeListPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes/:nodeName" render={(props) => this.renderSigninIfNotSignedIn(<NodeEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/sessions" render={(props) => this.renderSigninIfNotSignedIn(<SessionListPage account={this.state.account} {...props} />)} />
