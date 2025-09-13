@@ -671,7 +671,7 @@
     "Latency": "Latensi",
     "Memory Usage": "Penggunaan memori",
     "Official website": "Website resmi",
-    "Throughput": "Throughput",
+    "Throughput": "Melalui",
     "Total Throughput": "Throughput total",
     "Unknown version": "Versi tidak dikenal",
     "Version": "Versi",
@@ -794,7 +794,7 @@
     "Unreviewed": "Belum dinilai",
     "Upload Video": "Unggah rekaman",
     "Video": "Rekaman",
-    "Video - Tooltip": "Video",
+    "Video - Tooltip": "Video - Tooltip",
     "Video ID": "ID rekaman",
     "Video ID - Tooltip": "ID video (identifikasi unik)"
   },
