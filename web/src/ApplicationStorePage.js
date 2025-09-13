@@ -152,45 +152,19 @@ class ApplicationStorePage extends React.Component {
   renderTemplateCard = (template) => {
     return (
       <Col key={`${template.owner}/${template.name}`} xs={24} sm={24} md={12} lg={12} xl={8} xxl={6}>
-        <Card
-          hoverable
-          style={{
-            height: 200,
-            position: "relative",
-          }}
-          styles={{
-            body: {
-              padding: "16px",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-            },
-          }}
-          onClick={() => {
-            this.handleAddApplication(template);
-          }}
+        <Card hoverable style={{height: 200, position: "relative"}} styles={{body: {padding: "16px", height: "100%", display: "flex", flexDirection: "column"}}} onClick={() => {
+          this.handleAddApplication(template);
+        }}
         >
           <div style={{display: "flex", alignItems: "center", marginBottom: "8px"}}>
-            <Avatar
-              size={42}
-              src={template.icon}
-              icon={<AppstoreOutlined />}
-              style={{
-                marginRight: 12,
-                flexShrink: 0,
-              }}
-              shape="square"
-            />
+            <Avatar size={42} src={template.icon} icon={<AppstoreOutlined />} style={{marginRight: 12, flexShrink: 0}} shape="square" />
             <Title level={5} style={{margin: 0, flex: 1, fontSize: "16px", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
               {template.displayName || template.name}
             </Title>
           </div>
 
           <div style={{flex: 1}}>
-            <Paragraph
-              type="secondary"
-              ellipsis={{rows: 3, expandable: false}}
-            >
+            <Paragraph type="secondary" ellipsis={{rows: 3, expandable: false}} >
               {template.description || ""}
             </Paragraph>
           </div>
@@ -198,21 +172,15 @@ class ApplicationStorePage extends React.Component {
           <div style={{marginTop: "auto", display: "flex", justifyContent: "space-between", alignItems: "center"}}>
             <div>
               {template.version && (
-                <Tag
-                  color="processing"
-                  size="small"
-                >
+                <Tag color="processing" size="small" >
                   {template.version}
                 </Tag>
               )}
             </div>
-            <Button
-              type="primary"
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                this.handleAddApplication(template);
-              }}
+            <Button type="primary" size="small" onClick={(e) => {
+              e.stopPropagation();
+              this.handleAddApplication(template);
+            }}
             >
               {i18next.t("general:Add")}
             </Button>
@@ -233,10 +201,7 @@ class ApplicationStorePage extends React.Component {
           <Card>
             <Spin spinning={loading}>
               {templates.length === 0 && !loading ? (
-                <Empty
-                  description={i18next.t("general:No data")}
-                  style={{margin: "40px 0"}}
-                />
+                <Empty description={i18next.t("general:No data")} style={{margin: "40px 0"}} />
               ) : (
                 <>
                   <Row gutter={[16, 16]}>
