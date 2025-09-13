@@ -160,12 +160,17 @@ class GraphListPage extends BaseListPage {
         title: i18next.t("general:Graphs"),
         dataIndex: "text",
         key: "graph",
-        width: "200px",
-        sorter: (a, b) => a.graph.localeCompare(b.graph),
+        width: "240px",
         render: (text, record, index) => {
           return (
-            <div>
-              <GraphDataPage account={this.props.account} owner={record.owner} graphName={record.name} graphText={text} compact={true} height="180px" />
+            <div style={{height: "240px", width: "100%"}}>
+              <GraphDataPage
+                account={this.props.account}
+                owner={record.owner}
+                graphName={record.name}
+                graphText={text}
+                showLegend={false}
+              />
             </div>
           );
         },
@@ -204,7 +209,7 @@ class GraphListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={graphs} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: 1600}} tableLayout="fixed" columns={columns} dataSource={graphs} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Graphs")}&nbsp;&nbsp;&nbsp;&nbsp;
