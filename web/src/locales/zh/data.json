@@ -457,11 +457,11 @@
     "IpfsArchives":"医疗记录上链",
     "Records":"数据操作上链",
     "chainExpoler":"区块链浏览器",
-    "Audit":"查询审计",
+    "Audit":"查询与审计",
 
     "Sharing Services": "共享服务",
     "Medical Image Analysis":"医学影像分析",
-    "Super Resolution":"质量控制",
+    "Super Resolution":"协同诊疗",
 
     "Application Scenarios": "应用场景",
     "Workflows": "临床路径监管",
@@ -470,7 +470,7 @@
     "Encrypted Computation":"密文计算",
     "Privacy-Preserving Inference":"SM9-IPFE",
     "Controlled Usage":"受控使用",
-    "Multi Center Cure":"多中心诊疗"
+    "Multi Center Cure":"多中心科研"
 
   },
    "ipfsArchive":{
