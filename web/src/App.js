@@ -99,6 +99,7 @@ import IpfsSearchPage from "./auditSearch/IpfsSearchPage";
 import IpfsSearchResultPage from "./auditSearch/IpfsSearchResultPage";
 import QueryResultPage from "./auditSearch/QueryResultPage";
 import NewAuditPage from "./auditSearch/NewAuditPage";
+import MuiltiCenter from "./multicentre/MuiltiCenter";
 
 // 功能介绍页面组
 import PatientChainDataIntro from "./introduce/PatientChainDataIntro"
@@ -279,6 +280,8 @@ class App extends Component {
       this.setState({ selectedMenuKey: "/vectors" });
     } else if (uri.includes("/ipfs-search")) {
       this.setState({ selectedMenuKey: "/ipfs-search" });
+    } else if (uri.includes("/multi-center")) {
+      this.setState({ selectedMenuKey: "/multi-center" });
     }
     // else if (uri.includes(encodeURIComponent("/forms/区块链浏览器/data"))) {
     //   // 将/forms/区块链浏览器/data 转为 编码后的uri
@@ -780,7 +783,8 @@ class App extends Component {
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/workflows">{i18next.t("leftSideMedMenu:Application Scenarios")}</Link>, "/workflows", <ReconciliationTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/sr">{i18next.t("leftSideMedMenu:Super Resolution")}</Link>, "/sr"),
         Setting.getItem(<Link to="/workflows">{i18next.t("leftSideMedMenu:Workflows")}</Link>, "/workflows"),
-        Setting.getItem(<Link to="/vectors">{i18next.t("leftSideMedMenu:Multi Center Cure")}</Link>, "/vectors"),
+        // Setting.getItem(<Link to="/vectors">{i18next.t("leftSideMedMenu:Multi Center Cure")}</Link>, "/vectors"),
+        Setting.getItem(<Link to="/multi-center">{i18next.t("leftSideMedMenu:Multi Center Cure")}</Link>, "/multi-center"),
       ],
       ));
 
@@ -1039,6 +1043,7 @@ class App extends Component {
         <Route exact path="/ipfs-archive/add" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-search" render={(props) => this.renderSigninIfNotSignedIn(<IpfsSearchPage account={this.state.account} {...props} />)} />
         <Route exact path="/search-audit" render={(props) => this.renderSigninIfNotSignedIn(<NewAuditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/multi-center" render={(props) => this.renderSigninIfNotSignedIn(<MuiltiCenter account={this.state.account} {...props} />)} />
 
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)} />

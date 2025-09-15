@@ -65,7 +65,7 @@ const GROUPS = [
             { title: "协同诊疗", icon: "📈", desc: "提升医学影像分辨率，助力精准诊断与科研。", route: "/sr" },
             { title: "临床路径监管", icon: "🩺", desc: "监管临床路径执行，提升诊疗规范与效率。", route: "/workflows" },
             { title: "主动理赔", icon: "💰", desc: "自动化理赔流程，提升理赔效率与合规性。", route: "/scene/claim" },
-            { title: "多中心科研", icon: "🏥", desc: "多机构协作科研，促进医疗科研资源共享与互通。", route: "/vectors" },
+            { title: "多中心科研", icon: "🏥", desc: "多机构协作科研，促进医疗科研资源共享与互通。", route: "/multi-center" },
         ],
     },
 ];
