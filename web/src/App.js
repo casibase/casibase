@@ -1123,6 +1123,7 @@ class App extends Component {
     // 判断是否首页
     const isHome = window.location.pathname === "/" || window.location.pathname === "/home";
     const isIntroduce = window.location.pathname.startsWith("/introduce");
+    const isMultiCenter = window.location.pathname.startsWith("/multi-center");
 
     return (
       <Layout id="parent-area" style={{ minHeight: "100vh" }}>
@@ -1149,7 +1150,7 @@ class App extends Component {
           <Content
             style={{
               margin: isHome ? 0 : "24px 16px",
-              padding: isHome || isIntroduce ? 0 : "24px 32px",
+              padding: isHome || isIntroduce || isMultiCenter ? 0 : "24px 32px",
               borderRadius: "8px",
               overflow: "auto",
               minHeight: "calc(100vh - 64px)",
