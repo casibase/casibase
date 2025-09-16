@@ -100,10 +100,13 @@ import IpfsSearchResultPage from "./auditSearch/IpfsSearchResultPage";
 import QueryResultPage from "./auditSearch/QueryResultPage";
 import NewAuditPage from "./auditSearch/NewAuditPage";
 import MuiltiCenter from "./multicentre/MuiltiCenter";
+import DataWorkBench from "./multicentre/DataWorkBench";
+import DataAuditLog from "./multicentre/DataAuditLog";
 
 // 功能介绍页面组
 import PatientChainDataIntro from "./introduce/PatientChainDataIntro"
 import MedicalRecordChainIntro from "./introduce/MedicalRecordChainIntro"
+
 
 
 
@@ -1044,6 +1047,8 @@ class App extends Component {
         <Route exact path="/ipfs-search" render={(props) => this.renderSigninIfNotSignedIn(<IpfsSearchPage account={this.state.account} {...props} />)} />
         <Route exact path="/search-audit" render={(props) => this.renderSigninIfNotSignedIn(<NewAuditPage account={this.state.account} {...props} />)} />
         <Route exact path="/multi-center" render={(props) => this.renderSigninIfNotSignedIn(<MuiltiCenter account={this.state.account} {...props} />)} />
+        <Route exact path="/multi-center/data-workbench" render={(props) => this.renderSigninIfNotSignedIn(<DataWorkBench account={this.state.account} {...props} />)} />
+        <Route exact path="/multi-center/audit-log" render={(props) => this.renderSigninIfNotSignedIn(<DataAuditLog account={this.state.account} {...props} />)} />
 
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)} />

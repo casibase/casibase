@@ -46,8 +46,10 @@ const resourceList = [
     },
 ];
 
+import { useHistory } from 'react-router-dom';
 export default function MuiltiCenter() {
     const [search, setSearch] = useState("");
+    const history = useHistory();
     return (
         <div style={{ background: '#f7f9fb', minHeight: '100vh', paddingBottom: 40 }}>
             {/* 顶部欢迎区块 */}
@@ -60,8 +62,8 @@ export default function MuiltiCenter() {
                     <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><ShieldCheck size={18} /> 零信任架构</span>
                 </div>
                 <div style={{ position: 'absolute', right: 36, top: 36, display: 'flex', gap: 16 }}>
-                    {/* <Button icon={<UserPlus size={18} />} style={{ fontWeight: 500 }}>邀请协作者</Button>
-                    <Button icon={<FilePlus size={18} />} type="primary">新建项目</Button> */}
+                    <Button onClick={() => history.push('/multi-center/data-workbench')} style={{ fontWeight: 500, background: '#fff', color: '#23408e', border: '1px solid #d9d9d9' }}>数据工作台</Button>
+                    <Button onClick={() => history.push('/multi-center/audit-log')} style={{ fontWeight: 500, background: '#fff', color: '#23408e', border: '1px solid #d9d9d9' }}>数据审计记录</Button>
                 </div>
             </div>
 
