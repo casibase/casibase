@@ -1153,7 +1153,7 @@ class App extends Component {
               padding: isHome || isIntroduce || isMultiCenter ? 0 : "24px 32px",
               borderRadius: "8px",
               overflow: "auto",
-              minHeight: "calc(100vh - 64px)",
+              minHeight: "calc(100vh - 125px)",
               background: "white",
               boxShadow: "0 4px 16px 4px rgba(188, 152, 249, .08)",
             }}
