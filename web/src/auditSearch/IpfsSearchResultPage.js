@@ -357,7 +357,7 @@ class IPFSSearchResultPage extends BaseListPage {
             </Tooltip>
             的归档记录：
           </Title>
-          <div>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
             <Button
               type="default"
               onClick={() => this.fetch({ dataType: this.state.activeDataType, pagination: this.state.pagination })}
@@ -365,31 +365,28 @@ class IPFSSearchResultPage extends BaseListPage {
             >
               {i18next.t("ipfsSearch:Refresh", "刷新")}
             </Button>
-            {selectedRowKeys.length > 0 ? (
-              <Dropdown overlay={menu} placement="bottomRight">
-                <Badge count={selectedRowKeys.length} offset={[0, 0]} style={{ marginLeft: 8 }}>
-                  <Button
-                    type="primary"
-                    style={customButtonStyle}
-                    onClick={this.handleQueryClick}
-                    className={''}
-                  >
-                    {i18next.t("ipfsSearch:Query", "查询")}
-                  </Button>
-                </Badge>
-              </Dropdown>
-            ) : (
-              <Badge count={0} offset={[0, 0]} style={{ marginLeft: 8 }}>
-                <Button
-                  type="primary"
-                  style={{ ...customButtonStyle, background: '#333', color: '#888', borderColor: '#333', cursor: 'not-allowed', boxShadow: 'none' }}
-                  disabled
-                  className={'no-hover'}
-                >
-                  {i18next.t("ipfsSearch:Query", "查询")}
-                </Button>
-              </Badge>
-            )}
+            <Badge count={selectedRowKeys.length} offset={[0, 0]} style={{ marginLeft: 8 }}>
+              <Button
+                type="primary"
+                style={customButtonStyle}
+                onClick={this.handleQueryClick}
+                className={selectedRowKeys.length > 0 ? '' : 'no-hover'}
+                disabled={selectedRowKeys.length === 0}
+              >
+                直接查询
+              </Button>
+            </Badge>
+            <Badge count={selectedRowKeys.length} offset={[0, 0]} style={{ marginLeft: 8 }}>
+              <Button
+                type="primary"
+                style={customButtonStyle}
+                onClick={() => this.multiCondModalRef.current && this.multiCondModalRef.current.show()}
+                className={selectedRowKeys.length > 0 ? '' : 'no-hover'}
+                disabled={selectedRowKeys.length === 0}
+              >
+                多条件查询
+              </Button>
+            </Badge>
           </div>
         </div>
         <MultiConditionQueryModal
