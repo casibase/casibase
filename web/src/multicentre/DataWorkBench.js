@@ -3,6 +3,8 @@ import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result 
 import { DownOutlined } from '@ant-design/icons';
 import { Clock, Database, ShieldCheck, Link2, Image } from 'lucide-react';
 
+const usageId = "use_test_001"
+
 const columns = [
     { title: '患者ID', dataIndex: 'id', key: 'id' },
     { title: '年龄', dataIndex: 'age', key: 'age' },
