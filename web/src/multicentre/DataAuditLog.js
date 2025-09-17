@@ -61,7 +61,7 @@ export default function DataAuditLog() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 22, fontWeight: 700, marginBottom: 2 }}>
                     <Clock size={22} color="#23408e" /> 操作时间线
                 </div>
-                <div style={{ color: '#888', fontSize: 16, marginBottom: 32 }}>按时间从新到旧展示所有区块链记录的操作历史</div>
+                <div style={{ color: '#888', fontSize: 16, marginBottom: 32 }}>按时间从新到旧展示操作历史</div>
                 {loading ? (
                     <div style={{ textAlign: 'center', margin: '60px 0 40px 0' }}><Spin size="large" /></div>
                 ) : error ? (
@@ -88,13 +88,24 @@ export default function DataAuditLog() {
                                 }
                             }
                             return (
-                                <Timeline.Item key={item.id}>
-                                    <div style={{ color: '#888', fontSize: 18, marginLeft: 4, marginBottom: 2, fontWeight: 600 }}>
-                                        操作人：{item.user || '--'} <span style={{ fontSize: 14, color: '#888', marginLeft: 0, fontWeight: 400 }}>@ {item.organization || '--'}</span>
+                                <Timeline.Item key={item.id}
+                                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                                >
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ color: '#888', fontSize: 18, marginLeft: 4, marginBottom: 2, fontWeight: 600 }}>
+                                            操作人：{item.user || '--'} <span style={{ fontSize: 14, color: '#888', marginLeft: 0, fontWeight: 400 }}>@ {item.organization || '--'}</span>
+                                        </div>
+                                        <div style={{ color: '#23408e', fontSize: 14, fontWeight: 400, marginTop: 2 }}>
+                                            {timeStr}，查询了数据集（数据集ID：{obj.dataset_id || '--'}），本次授权工单id为：{obj.dataset_usage_id || '--'}，审计记录已经上链，区块号为 {item.block || '--'}。<Button
+                                                type="link"
+                                                style={{ fontSize: 15, fontWeight: 500, marginLeft: 16, marginTop: 0, padding: 0 }}
+                                                onClick={() => history && history.push && history.push(`/records/${item.organization}/${item.id}`)}
+                                            >
+                                                查看详情
+                                            </Button>
+                                        </div>
                                     </div>
-                                    <div style={{ color: '#23408e', fontSize: 14, fontWeight: 400, marginTop: 2 }}>
-                                        {timeStr}，查询了数据集（数据集ID：{obj.dataset_id || '--'}），本次授权工单id为：{obj.dataset_usage_id || '--'}，审计记录已经上链，区块号为 {item.block || '--'}。
-                                    </div>
+
                                 </Timeline.Item>
                             );
                         })}
