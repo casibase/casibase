@@ -72,3 +72,29 @@ export function queryDataSetsUsage(datasetusage_id) {
     body: JSON.stringify(newChainConfig),
   }).then(res => res.json());
 }
+
+/**
+ * 使用数据
+ * 
+ * @param {string} datasetusage_id - 使用ID
+ * @param {string} dataset_id - 数据集ID
+ * @returns {Promise}
+ */
+export function useDataSet(datasetusage_id, dataset_id) {
+  // 复制一份chainConfig
+  var newChainConfig = JSON.parse(JSON.stringify(chainConfig));
+
+  var data = {
+    "dataset_usage_id": datasetusage_id,
+    "dataset_id": dataset_id
+  }
+  newChainConfig.funcName = "UseDataset"
+
+  newChainConfig.data = JSON.stringify(data);
+
+  return fetch(`${Setting.ServerUrl}/api/query-blockchain-commit`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(newChainConfig),
+  }).then(res => res.json());
+}
