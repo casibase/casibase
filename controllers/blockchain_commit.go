@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"github.com/casibase/casibase/object"
-	"fmt"
 )
 
 // SendChainCommit
@@ -21,10 +20,7 @@ func (c *ApiController) SendBlockchainCommit() {
 	contractName := c.GetString("contractName")
 	provider := c.GetString("provider")
 
-	fmt.Println("data:", data)
-	fmt.Println("funcName:", funcName)
-	fmt.Println("contractName:", contractName)
-	fmt.Println("provider:", provider)
+	
 	// 调用区块链合约
 	block, txId, blockHash, err := object.CallBlockchainContract(provider, funcName, contractName, data)
 	if err != nil {

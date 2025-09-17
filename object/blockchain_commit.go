@@ -10,6 +10,8 @@ import (
 // providerId: "owner/name" 格式，funcName: 合约方法名，contractName: 合约名，data: 传入的 json 字符串
 func CallBlockchainContract(providerId, funcName, contractName, data string) (block, txId, blockHash string, err error) {
 	// 查询 provider
+	// 打印
+	fmt.Println("providerId:", providerId)
 	provider, err := GetProvider(providerId)
 	if err != nil {
 		return "", "", "", fmt.Errorf("GetProvider failed: %w", err)
