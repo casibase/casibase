@@ -1,6 +1,7 @@
-import React from "react";
-import { Table, Tag, Button, Progress, Alert } from "antd";
-import { Clock, Database, ShieldCheck, Link2 } from 'lucide-react';
+import React, { useState } from "react";
+import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result } from "antd";
+import { DownOutlined } from '@ant-design/icons';
+import { Clock, Database, ShieldCheck, Link2, Image } from 'lucide-react';
 
 const columns = [
     { title: '患者ID', dataIndex: 'id', key: 'id' },
@@ -30,6 +31,13 @@ const data = [
 
 export default function DataWorkBench() {
     const history = typeof window !== 'undefined' && window.history && window.location ? require('react-router-dom').useHistory() : null;
+    const [showTable, setShowLimitData] = useState(false);
+    const [selectedData, setSelectedData] = useState('心血管疾病数据');
+    const menu = (
+        <Menu onClick={() => { }}>
+            <Menu.Item key="cvd">心血管疾病数据</Menu.Item>
+        </Menu>
+    );
     return (
         <div style={{ background: 'white', minHeight: '100vh', padding: 32 }}>
             {/* 顶部卡片区 */}
@@ -131,37 +139,65 @@ export default function DataWorkBench() {
                 </div>
             </div>
 
-            {/* 数据类型切换栏（仅UI，功能无需实现） */}
-            <div style={{ display: 'flex', gap: 0, marginBottom: 18 }}>
-                <div style={{ background: '#fff', borderRadius: '18px 0 0 18px', padding: '8px 32px', fontWeight: 600, fontSize: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Database size={20} /> 结构化数据
-                </div>
-                <div style={{ background: '#f7f9fb', borderRadius: '0 18px 18px 0', padding: '8px 32px', fontWeight: 500, fontSize: 18, color: '#bbb', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Database size={20} /> 医疗影像
-                </div>
-            </div>
-
             {/* 表格区块 */}
+
             <div style={{
                 background: '#fff',
                 borderRadius: 8,
                 padding: 28,
                 marginBottom: 24,
                 border: '1.5px solid #f1f3f5',
-                boxShadow: 'none'
+                boxShadow: 'none',
+                minHeight: 120
             }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between", marginBottom: 18 }}>
-                    <div style={{ color: '#888', fontSize: 15 }}>
-                        已脱敏的结构化诊疗数据，仅显示您申请的字段
-
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                            <span style={{ fontSize: 22, fontWeight: 700 }}>心血管疾病数据</span>
+                            <Dropdown overlay={menu} trigger={["click"]}>
+                                <Button type="text" style={{ marginLeft: 4, boxShadow: 'none', border: 'none' }}>
+                                    <DownOutlined style={{ fontSize: 12, marginLeft: 0 }} />
+                                </Button>
+                            </Dropdown>
+                        </div>
                     </div>
-
                     <Tag color="#20c997" style={{ fontSize: 16, padding: '2px 14px', borderRadius: 16, fontWeight: 500, marginLeft: 16, verticalAlign: 'middle' }}>
                         <ShieldCheck size={16} style={{ marginRight: 4, verticalAlign: -2 }} /> 安全访问中
                     </Tag>
-                    {/* <Button disabled style={{ fontWeight: 500 }}>导出（已禁用）</Button> */}
                 </div>
-                <Table columns={columns} dataSource={data} pagination={false} bordered rowKey="id" />
+                {!showTable && (
+                    <div>
+                        <Result
+                            status="warning"
+                            title="本数据为受控数据，将会记录一次访问"
+                            extra={
+                                <Button type="primary" onClick={() => setShowLimitData(true)} style={{ marginTop: 24 }}>确认查看</Button>
+                            }
+                        />
+
+                    </div>
+                )}
+                {showTable && (
+                    <div>
+                        <Segmented
+                            options={[
+                                {
+                                    label: <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Database size={20} />结构化数据</span>,
+                                    value: 'structured',
+                                },
+                                {
+                                    label: <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Image size={20} />医疗影像</span>,
+                                    value: 'image',
+                                },
+                            ]}
+                            block
+                            style={{ width: '100%', marginBottom: 18 }}
+                            defaultValue="structured"
+                        />
+
+                        <Table columns={columns} dataSource={data} pagination={false} bordered rowKey="id" style={{ marginTop: 18 }} />
+                    </div>
+                )}
             </div>
 
             {/* 安全提醒 */}
@@ -177,3 +213,4 @@ export default function DataWorkBench() {
         </div>
     );
 }
+
