@@ -15,10 +15,17 @@ import (
 // @Description send chain commit request
 // @router /send-chain-commit [post]
 func (c *ApiController) SendBlockchainCommit() {
-	data := c.GetString("data")
-	funcName := c.GetString("funcName")
-	contractName := c.GetString("contractName")
-	provider := c.GetString("provider")
+	var chainConfig object.ChainConfig
+	err := c.UnmarshalJson(&chainConfig)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	
+	data := chainConfig.Data
+	funcName := chainConfig.FuncName
+	contractName := chainConfig.ContractName
+	provider := chainConfig.Provider
 
 	
 	// 调用区块链合约

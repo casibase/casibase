@@ -6,6 +6,22 @@ import (
 	"github.com/casibase/casibase/chain"
 )
 
+// 定义chainConfig结构体
+/**
+{
+    "provider": "casbin/tencent",
+    "contractName": "111",
+    "funcName": "11",
+    "data": "2222"
+}
+*/
+type ChainConfig struct {
+	Provider     string `json:"provider"`
+	ContractName string `json:"contractName"`
+	FuncName     string `json:"funcName"`
+	Data         string `json:"data"`
+}
+
 // CallBlockchainContract 通用区块链合约调用
 // providerId: "owner/name" 格式，funcName: 合约方法名，contractName: 合约名，data: 传入的 json 字符串
 func CallBlockchainContract(providerId, funcName, contractName, data string) (block, txId, blockHash string, err error) {
