@@ -18,12 +18,13 @@ import * as Setting from "../Setting";
 const chainConfig = {
   "provider": "admin/provider_blockchain_chainmaker_tc_demo_multicenter",
   "contractName": "ControlledUtilizationOfMultiCenterResearchData",
-  "funcName": "ReadDataset",
+  "funcName": "",
   "data": ""
 }
 
 // 数据集ID Owner Id数据信息
 const OwnerId = "23337679511404563151387937671769731783447702570"
+
 
 
 /**
@@ -38,6 +39,7 @@ export function queryDataSetsInfo(dataset_id) {
   var data = {
     "dataset_id": dataset_id
   }
+  newChainConfig.funcName = "ReadDataset"
 
   newChainConfig.data = JSON.stringify(data);
 
@@ -48,3 +50,25 @@ export function queryDataSetsInfo(dataset_id) {
   }).then(res => res.json());
 }
 
+/**
+ * 查询使用情况信息
+ * @param {string} dataset_id - 数据集ID
+ * @returns {Promise}
+ */
+export function queryDataSetsUsage(datasetusage_id) {
+  // 复制一份chainConfig
+  var newChainConfig = JSON.parse(JSON.stringify(chainConfig));
+
+  var data = {
+    "datasetusage_id": datasetusage_id
+  }
+  newChainConfig.funcName = "ReadDatasetUsage"
+
+  newChainConfig.data = JSON.stringify(data);
+
+  return fetch(`${Setting.ServerUrl}/api/query-blockchain-commit`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(newChainConfig),
+  }).then(res => res.json());
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Spin } from "antd";
-import { Button, Input, Progress, Tag } from "antd";
+import { Button, Input, Progress, Tag, Modal, Form, DatePicker, InputNumber, message } from "antd";
 import { UserPlus, FilePlus, Lock, Link2, ShieldCheck, Hospital } from 'lucide-react';
 import * as MuiltiCenterBackend from "../backend/MultiCenterBackend";
 
@@ -34,10 +34,14 @@ const projectList = [
 const resourceListInit = dataSetsIds.map(id => ({ id, description: '', loading: true }));
 
 import { useHistory } from 'react-router-dom';
+
 export default function MuiltiCenter() {
     const [search, setSearch] = useState("");
     const [resourceList, setResourceList] = useState(resourceListInit);
     const [loading, setLoading] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalResource, setModalResource] = useState(null);
+    const [form] = Form.useForm();
     const history = useHistory();
 
     useEffect(() => {
@@ -66,6 +70,13 @@ export default function MuiltiCenter() {
         };
         fetchAll();
     }, []);
+
+    // 弹窗确认
+    const handleApply = () => {
+        setModalOpen(false);
+        message.success('受区块链合约限制，请对方机构赋权后方可使用');
+        form.resetFields();
+    };
 
     return (
         <div style={{ background: '#f7f9fb', minHeight: '100vh', paddingBottom: 40 }}>
@@ -131,7 +142,8 @@ export default function MuiltiCenter() {
                         <Spin size="large" style={{ marginRight: 16 }} />
                         数据加载中...
                     </div>
-                ) : (
+                ) : null}
+                {!loading && (
                     <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
                         {resourceList
                             .filter(r => r.description && r.description.includes(search))
@@ -141,11 +153,42 @@ export default function MuiltiCenter() {
                                     <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}>
                                         <span style={{ marginRight: 10, display: 'flex', alignItems: 'center', gap: 4 }}><FilePlus size={15} /> {r.id}</span>
                                     </div>
+                                    <div style={{ marginTop: 18 }}>
+                                        {idx === 0 ? (
+                                            <Button type="primary" disabled>已获使用权</Button>
+                                        ) : (
+                                            <Button type="default" onClick={() => { setModalResource(r); setModalOpen(true); }}>申请数据</Button>
+                                        )}
+                                    </div>
                                 </div>
                             ))}
                     </div>
                 )}
+                <Modal
+                    title="申请数据集使用权"
+                    open={modalOpen}
+                    onCancel={() => { setModalOpen(false); form.resetFields(); }}
+                    onOk={handleApply}
+                    okText="确认"
+                    cancelText="取消"
+                >
+                    <Form
+                        form={form}
+                        layout="vertical"
+                        initialValues={{ maxCount: 1 }}
+                    >
+                        <Form.Item label="申请用途" name="purpose" rules={[{ required: true, message: '请输入申请用途' }]}> <Input.TextArea rows={2} placeholder="请输入用途" /> </Form.Item>
+                        <Form.Item label="数据使用截至时间" name="deadline" rules={[{ required: true, message: '请选择截至时间' }]}> <DatePicker style={{ width: '100%' }} /> </Form.Item>
+                        <Form.Item label="数据使用最大次数" name="maxCount" rules={[{ required: true, message: '请输入最大次数' }]}> <InputNumber min={1} style={{ width: '100%' }} /> </Form.Item>
+                        <Form.Item label="申请数据集信息">
+                            <div style={{ background: '#f7f9fb', borderRadius: 8, padding: 12, fontSize: 15 }}>
+                                <div><b>数据集ID：</b>{modalResource?.id}</div>
+                                <div><b>数据集信息：</b>{modalResource?.description}</div>
+                            </div>
+                        </Form.Item>
+                    </Form>
+                </Modal>
             </div>
-        </div >
+        </div>
     );
 }
