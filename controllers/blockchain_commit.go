@@ -17,7 +17,7 @@ import (
 // @router /send-chain-commit [post]
 func (c *ApiController) SendBlockchainCommit() {
 	var chainConfig object.ChainConfig
-	err := c.UnmarshalJson(&chainConfig)
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &chainConfig)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
