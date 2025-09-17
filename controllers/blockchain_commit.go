@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/casibase/casibase/object"
 	"encoding/json"
+	"encoding/base64"
 )
 
 // SendChainCommit
@@ -76,10 +77,13 @@ func (c *ApiController) QueryBlockchainCommit() {
 		return
 	}
 
-	result := map[string]string{
-		"result": res,
-		"msg":    msg,
-	}
-	
-	c.ResponseOk(result)
+       resultDecoded, _ := base64.StdEncoding.DecodeString(res)
+
+       result := map[string]string{
+	       "result": res,
+	       "msg":    msg,
+	       "resultDecoded": string(resultDecoded),
+       }
+       
+       c.ResponseOk(result)
 }
