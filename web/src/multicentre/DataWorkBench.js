@@ -52,7 +52,7 @@ export default function DataWorkBench() {
         setUsageLoading(true);
         try {
             // 等待1s
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 1500));
             const resp = await MultiCenterBackend.queryDataSetsUsage(usageId);
             let info = null;
             if (resp?.data?.resultDecoded) {
@@ -106,11 +106,16 @@ export default function DataWorkBench() {
                     gap: 18,
                     minWidth: 260,
                     border: '1.5px solid #dbe6f2',
-                    boxShadow: '0 2px 12px 0 rgba(66,139,229,0.08)'
-                }}>
+                    boxShadow: '0 2px 12px 0 rgba(66,139,229,0.08)',
+                    cursor: 'pointer',
+                    userSelect: 'none'
+                }}
+                    title="点击可刷新用量信息"
+                    onClick={() => !usageLoading && fetchUsageInfo()}
+                >
                     <Clock size={32} color="#428be5" />
                     <div>
-                        <div style={{ color: '#888', fontSize: 16 }}>访问时间截止至</div>
+                        <div style={{ color: '#888', fontSize: 16 }}>访问时间截止至 </div>
                         {usageLoading ? (
                             <Spin size="small" style={{ marginTop: 4 }} />
                         ) : usageInfo ? (
@@ -130,11 +135,16 @@ export default function DataWorkBench() {
                     gap: 18,
                     minWidth: 260,
                     border: '1.5px solid #dbe6f2',
-                    boxShadow: '0 2px 12px 0 rgba(66,139,229,0.08)'
-                }}>
+                    boxShadow: '0 2px 12px 0 rgba(66,139,229,0.08)',
+                    cursor: 'pointer',
+                    userSelect: 'none'
+                }}
+                    title="点击可刷新用量信息"
+                    onClick={() => !usageLoading && fetchUsageInfo()}
+                >
                     <Database size={32} color="#428be5" />
                     <div style={{ flex: 1 }}>
-                        <div style={{ color: '#888', fontSize: 16 }}>剩余数据查询次数</div>
+                        <div style={{ color: '#888', fontSize: 16 }}>剩余数据查询次数 </div>
                         {usageLoading ? (
                             <Spin size="small" style={{ marginTop: 4 }} />
                         ) : usageInfo ? (
