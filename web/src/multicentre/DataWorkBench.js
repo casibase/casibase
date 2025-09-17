@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result, Spin, message } from "antd";
+import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result, Spin, message, Modal } from "antd";
 import * as MultiCenterBackend from "../backend/MultiCenterBackend";
 import { DownOutlined } from '@ant-design/icons';
 import { Clock, Database, ShieldCheck, Link2, Image } from 'lucide-react';
@@ -39,6 +39,7 @@ export default function DataWorkBench() {
     const [usageInfo, setUsageInfo] = useState(null);
     const [usageLoading, setUsageLoading] = useState(false);
     const [selectedData, setSelectedData] = useState('心血管疾病数据');
+    const [checkingModal, setCheckingModal] = useState(false);
     const menu = (
         <Menu onClick={() => { }}>
             <Menu.Item key="cvd">心血管疾病数据</Menu.Item>
@@ -67,6 +68,7 @@ export default function DataWorkBench() {
 
     // 点击确认查看时调用useDataSet
     const handleShowLimitData = async () => {
+        setCheckingModal(true);
         try {
             // 等待1s
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -80,6 +82,8 @@ export default function DataWorkBench() {
             }
         } catch (e) {
             message.error(e?.message || '操作异常');
+        } finally {
+            setCheckingModal(false);
         }
     };
 
@@ -236,6 +240,18 @@ export default function DataWorkBench() {
                                 <Button type="primary" onClick={handleShowLimitData} style={{ marginTop: 24 }}>确认查看</Button>
                             }
                         />
+                        <Modal
+                            open={checkingModal}
+                            footer={null}
+                            closable={false}
+                            centered
+                            maskClosable={false}
+                            keyboard={false}
+                            bodyStyle={{ textAlign: 'center', padding: 32 }}
+                        >
+                            <Spin size="large" style={{ marginBottom: 16 }} />
+                            <div style={{ fontSize: 18, fontWeight: 600, marginTop: 12 }}>正在进行受控数据权限检查及记录…</div>
+                        </Modal>
                     </div>
                 )}
                 {showTable && (
@@ -259,14 +275,14 @@ export default function DataWorkBench() {
                             {usageLoading ? (
                                 <Spin size="small" style={{ marginRight: 8 }} />
                             ) : usageInfo ? (
-                                <>
-                                    <div style={{ fontSize: 16, color: '#23408e', fontWeight: 600 }}>
+                                <div>
+                                    {/* <div style={{ fontSize: 16, color: '#23408e', fontWeight: 600 }}>
                                         剩余可用次数：{usageInfo.UseCountLeft}
                                     </div>
                                     <div style={{ fontSize: 16, color: '#23408e', fontWeight: 600 }}>
                                         到期时间：{usageInfo.ExpireTime}
-                                    </div>
-                                </>
+                                    </div> */}
+                                </div>
                             ) : null}
                         </div>
                         <Table columns={columns} dataSource={data} pagination={false} bordered rowKey="id" style={{ marginTop: 18 }} />

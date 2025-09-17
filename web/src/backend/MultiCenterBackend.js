@@ -92,7 +92,7 @@ export function useDataSet(datasetusage_id, dataset_id) {
 
   newChainConfig.data = JSON.stringify(data);
 
-  return fetch(`${Setting.ServerUrl}/api/query-blockchain-commit`, {
+  return fetch(`${Setting.ServerUrl}/api/send-blockchain-commit`, {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newChainConfig),
