@@ -4,25 +4,25 @@ import { UserPlus, FilePlus, Lock, Link2, ShieldCheck, Hospital } from 'lucide-r
 
 const projectList = [
     {
-        title: "心血管疾病预后分析研究",
-        partner: "B医院",
-        status: "数据收集中",
+        title: "病例分析研究",
+        partner: "医大一院",
+        status: "项目进行中",
         statusType: "processing",
         percent: 65,
         sampleCount: 247,
         requestCount: 3,
         approvedCount: 2,
     },
-    {
-        title: "糖尿病并发症关联性研究",
-        partner: "C医院",
-        status: "申请审批中",
-        statusType: "default",
-        percent: 30,
-        sampleCount: 156,
-        requestCount: 1,
-        approvedCount: 0,
-    },
+    // {
+    //     title: "糖尿病并发症关联性研究",
+    //     partner: "C医院",
+    //     status: "申请审批中",
+    //     statusType: "default",
+    //     percent: 30,
+    //     sampleCount: 156,
+    //     requestCount: 1,
+    //     approvedCount: 0,
+    // },
 ];
 
 const resourceList = [
@@ -92,8 +92,7 @@ export default function MuiltiCenter() {
                                 <div style={{ textAlign: 'center', color: '#1bbf4c' }}>{p.approvedCount}<div style={{ fontSize: 14, fontWeight: 400, color: '#888' }}>已批准</div></div>
                             </div>
                             <div style={{ display: 'flex', gap: 16, marginTop: 24 }}>
-                                <Button type="primary">查看详情</Button>
-                                <Button>进入工作台</Button>
+                                <Button onClick={() => history.push('/multi-center/data-workbench')}> 进入工作台</Button>
                             </div>
                         </div>
                     ))}
@@ -102,13 +101,13 @@ export default function MuiltiCenter() {
                 {/* 可用数据资源 */}
                 <div style={{ fontSize: 22, fontWeight: 700, margin: '40px 0 18px 0' }}>可用数据资源</div>
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: 18 }}>
-                    <Input.Search
+                    {/* <Input.Search
                         placeholder="搜索数据集..."
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                         style={{ width: 320, background: '#fff', borderRadius: 8 }}
                         allowClear
-                    />
+                    /> */}
                 </div>
                 <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
                     {resourceList.filter(r => r.title.includes(search)).map((r, idx) => (
@@ -124,6 +123,6 @@ export default function MuiltiCenter() {
                     ))}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
