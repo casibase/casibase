@@ -104,8 +104,7 @@ export function addDataUsageAuditRecord(account, datasetusage_id, dataset_id) {
   // 获取owner和organization
   var object = {
     "dataset_usage_id": datasetusage_id,
-    "dataset_id": dataset_id,
-    "time": new Date().toISOString(),
+    "dataset_id": dataset_id
 
   }
 
