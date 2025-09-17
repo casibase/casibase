@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Input, Button, Tag, Spin, Timeline, Empty } from "antd";
 import * as MultiCenterBackend from "../backend/MultiCenterBackend";
 import { AlertCircle, Clock, Link2, ShieldCheck, CheckCircle2, Repeat2, Eye, User, Database } from 'lucide-react';
+import dayjs from "dayjs";
 
 
 export default function DataAuditLog() {
@@ -78,14 +79,14 @@ export default function DataAuditLog() {
                             try {
                                 obj = JSON.parse(item.object || '{}');
                             } catch { }
-                            // 格式化时间
+                            // 使用dayjs格式化时间为xxxx年xx月xx日 xx:xx:xx
                             let timeStr = item.createdTime;
-                            try {
-                                const d = new Date(item.createdTime);
-                                if (!isNaN(d.getTime())) {
-                                    timeStr = d.toLocaleString('zh-CN', { hour12: false });
+                            if (item.createdTime) {
+                                const d = dayjs(item.createdTime);
+                                if (d.isValid()) {
+                                    timeStr = d.format('YYYY年MM月DD日 HH:mm:ss');
                                 }
-                            } catch { }
+                            }
                             return (
                                 <Timeline.Item key={item.id}>
                                     <div style={{ color: '#888', fontSize: 18, marginLeft: 4, marginBottom: 2, fontWeight: 600 }}>
