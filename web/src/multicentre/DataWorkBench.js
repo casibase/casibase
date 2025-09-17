@@ -43,23 +43,28 @@ export default function DataWorkBench() {
             <Menu.Item key="cvd">心血管疾病数据</Menu.Item>
         </Menu>
     );
-    useEffect(() => {
-        if (!usageLoading) {
-            setUsageLoading(true);
-            MultiCenterBackend.queryDataSetsUsage(usageId).then(resp => {
-                let info = null;
-                if (resp?.data?.resultDecoded) {
-                    try {
-                        info = JSON.parse(resp.data.resultDecoded);
-                    } catch (e) { }
-                }
-                setUsageInfo(info);
-                setUsageLoading(false);
-            }).catch(() => {
-                setUsageLoading(false);
-            });
+
+    // 抽离数据用量信息请求逻辑
+    const fetchUsageInfo = async () => {
+        setUsageLoading(true);
+        try {
+            const resp = await MultiCenterBackend.queryDataSetsUsage(usageId);
+            let info = null;
+            if (resp?.data?.resultDecoded) {
+                try {
+                    info = JSON.parse(resp.data.resultDecoded);
+                } catch (e) { }
+            }
+            setUsageInfo(info);
+        } finally {
+            setUsageLoading(false);
         }
-    }, [showTable, usageInfo, usageLoading]);
+    };
+
+    useEffect(() => {
+        // 页面加载时只调用一次
+        fetchUsageInfo();
+    }, []);
 
     return (
         <div style={{ background: 'white', minHeight: '100vh', padding: 32 }}>
