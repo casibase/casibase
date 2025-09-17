@@ -19,7 +19,6 @@ func (c *ApiController) SendChainCommit() {
 	funcName := c.GetString("funcName")
 	contractName := c.GetString("contractName")
 	provider := c.GetString("provider")
-
 	// 调用区块链合约
 	block, txId, blockHash, err := object.CallBlockchainContract(provider, funcName, contractName, data)
 	if err != nil {
