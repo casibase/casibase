@@ -88,11 +88,11 @@ export default function DataAuditLog() {
                             } catch { }
                             return (
                                 <Timeline.Item key={item.id}>
-                                    <div style={{ color: '#23408e', fontSize: 16, fontWeight: 500, marginBottom: 2 }}>
-                                        {timeStr}，查询了数据集（数据集ID：{obj.dataset_id || '--'}），本次授权工单id为：{obj.dataset_usage_id || '--'}，审计记录已经上链。
+                                    <div style={{ color: '#888', fontSize: 18, marginLeft: 4, marginBottom: 2, fontWeight: 600 }}>
+                                        操作人：{item.user || '--'} <span style={{ fontSize: 14, color: '#888', marginLeft: 0, fontWeight: 400 }}>@ {item.organization || '--'}</span>
                                     </div>
-                                    <div style={{ color: '#888', fontSize: 14, marginLeft: 4, marginTop: 2 }}>
-                                        操作人：{item.user || '--'} @ {item.organization || '--'}
+                                    <div style={{ color: '#23408e', fontSize: 14, fontWeight: 400, marginTop: 2 }}>
+                                        {timeStr}，查询了数据集（数据集ID：{obj.dataset_id || '--'}），本次授权工单id为：{obj.dataset_usage_id || '--'}，审计记录已经上链，区块号为 {item.block || '--'}。
                                     </div>
                                 </Timeline.Item>
                             );
