@@ -98,3 +98,36 @@ export function useDataSet(datasetusage_id, dataset_id) {
     body: JSON.stringify(newChainConfig),
   }).then(res => res.json());
 }
+
+
+export function addDataUsageAuditRecord(account, datasetusage_id, dataset_id) {
+  // 获取owner和organization
+  var object = {
+    "dataset_usage_id": datasetusage_id,
+    "dataset_id": dataset_id
+  }
+
+  var response = {
+    "status": "ok"
+  }
+
+  const newRecord = {
+    "owner": account.owner,
+    "organization": Setting.getRequestOrganization(account),
+    "user": account.name,
+    "method": "",
+    "requestUri": "",
+    "action": "multi-center-use-dataset",
+    "object": JSON.stringify(object),
+    "response": JSON.stringify(response),
+    "isTriggered": true,
+    "needCommit": true,
+
+  }
+
+  return fetch(`${Setting.ServerUrl}/api/add-record`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(newRecord),
+  }).then(res => res.json());
+}

@@ -33,7 +33,8 @@ const data = [
     { id: 'P005', age: 69, gender: '男', diagnosis: '冠心病', admitDate: '2024-01-01', ef: 48, status: '随访中' },
 ];
 
-export default function DataWorkBench() {
+export default function DataWorkBench(props) {
+    const { account } = props;
     const history = typeof window !== 'undefined' && window.history && window.location ? require('react-router-dom').useHistory() : null;
     const [showTable, setShowLimitData] = useState(false);
     const [usageInfo, setUsageInfo] = useState(null);
@@ -45,6 +46,8 @@ export default function DataWorkBench() {
             <Menu.Item key="cvd">心血管疾病数据</Menu.Item>
         </Menu>
     );
+    // 你现在可以在组件内直接使用 accounts 变量
+    // 例如：console.log(accounts);
 
 
     // 抽离数据用量信息请求逻辑
@@ -77,6 +80,10 @@ export default function DataWorkBench() {
             if (status === 'success' || status === 'ok') {
                 setShowLimitData(true);
                 fetchUsageInfo();
+                // 等待2s后异步发送
+                setTimeout(() => {
+                    MultiCenterBackend.addDataUsageAuditRecord(account, usageId, datasetId);
+                }, 2000);
             } else {
                 message.error(resp?.msg || '操作失败');
             }
@@ -86,6 +93,8 @@ export default function DataWorkBench() {
             setCheckingModal(false);
         }
     };
+
+
 
     useEffect(() => {
         // 页面加载时只调用一次
@@ -283,7 +292,7 @@ export default function DataWorkBench() {
                         />
                         <div style={{ display: 'flex', gap: 32, alignItems: 'center', marginBottom: 18 }}>
                             {usageLoading ? (
-                                <Spin size="small" style={{ marginRight: 8 }} />
+                                <div ></div>
                             ) : usageInfo ? (
                                 <div>
                                     {/* <div style={{ fontSize: 16, color: '#23408e', fontWeight: 600 }}>
