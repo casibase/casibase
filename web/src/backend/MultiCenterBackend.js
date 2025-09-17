@@ -25,6 +25,7 @@ const chainConfig = {
 // 数据集ID Owner Id数据信息
 const OwnerId = "23337679511404563151387937671769731783447702570"
 
+const AUDIT_ACTION_MARK = "multi-center-use-dataset";
 
 
 /**
@@ -100,6 +101,8 @@ export function useDataSet(datasetusage_id, dataset_id) {
 }
 
 
+
+
 export function addDataUsageAuditRecord(account, datasetusage_id, dataset_id) {
   // 获取owner和organization
   var object = {
@@ -118,7 +121,7 @@ export function addDataUsageAuditRecord(account, datasetusage_id, dataset_id) {
     "user": account.name,
     "method": "",
     "requestUri": "",
-    "action": "multi-center-use-dataset",
+    "action": AUDIT_ACTION_MARK,
     "object": JSON.stringify(object),
     "response": JSON.stringify(response),
     "isTriggered": true,
@@ -130,5 +133,14 @@ export function addDataUsageAuditRecord(account, datasetusage_id, dataset_id) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newRecord),
+  }).then(res => res.json());
+}
+
+
+export function getDataSetUsageAuditRecord() {
+  return fetch(`${Setting.ServerUrl}/api/get-records-by-action?action=${AUDIT_ACTION_MARK}`, {
+    method: "GET",
+    credentials: "include",
+
   }).then(res => res.json());
 }
