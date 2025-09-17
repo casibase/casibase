@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Spin } from "antd";
 import { Button, Input, Progress, Tag } from "antd";
 import { UserPlus, FilePlus, Lock, Link2, ShieldCheck, Hospital } from 'lucide-react';
+import * as MuiltiCenterBackend from "../backend/MultiCenterBackend";
+
+
+const dataSetsIds = ["MCTest1", "MCTest2", "MCTest3"];
 
 const projectList = [
     {
@@ -25,31 +30,43 @@ const projectList = [
     // },
 ];
 
-const resourceList = [
-    {
-        title: "心血管患者诊疗记录集",
-        org: "B医院",
-        access: "受控访问",
-        count: 1348,
-    },
-    {
-        title: "心电图影像数据集",
-        org: "B医院",
-        access: "受控访问",
-        count: 856,
-    },
-    {
-        title: "超声心动图数据集",
-        org: "B医院",
-        access: "受控访问",
-        count: 624,
-    },
-];
+// 动态获取数据集基本信息
+const resourceListInit = dataSetsIds.map(id => ({ id, description: '', loading: true }));
 
 import { useHistory } from 'react-router-dom';
 export default function MuiltiCenter() {
     const [search, setSearch] = useState("");
+    const [resourceList, setResourceList] = useState(resourceListInit);
+    const [loading, setLoading] = useState(false);
     const history = useHistory();
+
+    useEffect(() => {
+        const fetchAll = async () => {
+            setLoading(true);
+            const results = [];
+            for (let i = 0; i < dataSetsIds.length; i++) {
+                const id = dataSetsIds[i];
+                try {
+                    const resp = await MuiltiCenterBackend.queryDataSetsInfo(id);
+                    if (resp?.data?.resultDecoded) {
+                        const info = JSON.parse(resp.data.resultDecoded);
+                        results.push({ id, description: info.Description || '', loading: false });
+                    } else {
+                        results.push({ id, description: '', loading: false });
+                    }
+                } catch (e) {
+                    results.push({ id, description: '', loading: false });
+                }
+                if (i < dataSetsIds.length - 1) {
+                    await new Promise(res => setTimeout(res, 1500)); // 每秒只允许一个请求
+                }
+            }
+            setResourceList(results);
+            setLoading(false);
+        };
+        fetchAll();
+    }, []);
+
     return (
         <div style={{ background: '#f7f9fb', minHeight: '100vh', paddingBottom: 40 }}>
             {/* 顶部欢迎区块 */}
@@ -87,9 +104,9 @@ export default function MuiltiCenter() {
                                 <span style={{ fontWeight: 600, fontSize: 18 }}>{p.percent}%</span>
                             </div>
                             <div style={{ display: 'flex', gap: 32, margin: '18px 0 0 0', fontSize: 20, fontWeight: 700 }}>
-                                <div style={{ textAlign: 'center' }}>{p.sampleCount}<div style={{ fontSize: 14, fontWeight: 400, color: '#888' }}>样本数量</div></div>
+                                {/* <div style={{ textAlign: 'center' }}>{p.sampleCount}<div style={{ fontSize: 14, fontWeight: 400, color: '#888' }}>样本数量</div></div>
                                 <div style={{ textAlign: 'center' }}>{p.requestCount}<div style={{ fontSize: 14, fontWeight: 400, color: '#888' }}>数据请求</div></div>
-                                <div style={{ textAlign: 'center', color: '#1bbf4c' }}>{p.approvedCount}<div style={{ fontSize: 14, fontWeight: 400, color: '#888' }}>已批准</div></div>
+                                <div style={{ textAlign: 'center', color: '#1bbf4c' }}>{p.approvedCount}<div style={{ fontSize: 14, fontWeight: 400, color: '#888' }}>已批准</div></div> */}
                             </div>
                             <div style={{ display: 'flex', gap: 16, marginTop: 24 }}>
                                 <Button onClick={() => history.push('/multi-center/data-workbench')}> 进入工作台</Button>
@@ -109,19 +126,25 @@ export default function MuiltiCenter() {
                         allowClear
                     /> */}
                 </div>
-                <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
-                    {resourceList.filter(r => r.title.includes(search)).map((r, idx) => (
-                        <div key={idx} style={{ background: '#fff', borderRadius: 16, boxShadow: '0 2px 10px #e6eaf1', padding: 28, minWidth: 320, flex: 1, marginBottom: 24, position: 'relative' }}>
-                            <div style={{ fontSize: 19, fontWeight: 600, marginBottom: 8 }}>{r.title}</div>
-                            <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}>
-                                <span style={{ marginRight: 10, display: 'flex', alignItems: 'center', gap: 4 }}><Hospital size={15} /> {r.org}</span>
-                            </div>
-                            <Tag icon={<Lock size={14} style={{ verticalAlign: -2 }} />} color="default" style={{ position: 'absolute', right: 28, top: 28, fontSize: 14 }}>{r.access}</Tag>
-                            <div style={{ fontSize: 22, fontWeight: 700, marginTop: 18 }}>{r.count}</div>
-                            <div style={{ fontSize: 14, color: '#888' }}>样本数量</div>
-                        </div>
-                    ))}
-                </div>
+                {loading ? (
+                    <div style={{ textAlign: 'center', fontSize: 18, color: '#428be5', margin: '32px 0' }}>
+                        <Spin size="large" style={{ marginRight: 16 }} />
+                        数据加载中...
+                    </div>
+                ) : (
+                    <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
+                        {resourceList
+                            .filter(r => r.description && r.description.includes(search))
+                            .map((r, idx) => (
+                                <div key={r.id} style={{ background: '#fff', borderRadius: 16, boxShadow: '0 2px 10px #e6eaf1', padding: 28, minWidth: 320, flex: 1, marginBottom: 24, position: 'relative' }}>
+                                    <div style={{ fontSize: 19, fontWeight: 600, marginBottom: 8 }}>{r.loading ? '加载中...' : r.description || '无描述'}</div>
+                                    <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}>
+                                        <span style={{ marginRight: 10, display: 'flex', alignItems: 'center', gap: 4 }}><FilePlus size={15} /> {r.id}</span>
+                                    </div>
+                                </div>
+                            ))}
+                    </div>
+                )}
             </div>
         </div >
     );
