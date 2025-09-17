@@ -81,6 +81,11 @@ func (client *ChainChainmakerClient) CommitWithMethodAndContractName(data, funcN
 	return response.Block, response.TxId, response.BlockHash, nil
 }
 
+func (client *ChainChainmakerClient) QueryWithMethodAndContractName(data, funcName, contractName string) (string,string, error) { 
+	// 返回报错，未实现
+	return "未实现", "未实现", nil
+}
+
 func (client *ChainChainmakerClient) Query(txId string, data string) (string, error) {
 	client.TxId = txId
 	queryResult, err := SendChainmakerRequest(client, "query-contract")

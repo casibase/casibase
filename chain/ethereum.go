@@ -166,6 +166,11 @@ func (client *EthereumClient) CommitWithMethodAndContractName(data, funcName, co
 	return client.Commit(data)
 }
 
+func (client *EthereumClient) QueryWithMethodAndContractName(data, funcName, contractName string) (string,string, error) {
+	// 返回报错，未实现
+	return "未实现", "未实现", nil
+}
+
 // Query retrieves the transaction receipt and decodes the event logs to get the data.
 func (client *EthereumClient) Query(txHash string, data string) (string, error) {
 	hash := common.HexToHash(txHash)

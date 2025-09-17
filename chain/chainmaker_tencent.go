@@ -87,6 +87,10 @@ func (client *ChainTencentChainmakerClient) Commit(data string) (string, string,
 }
 
 
+func (client *ChainTencentChainmakerClient) QueryWithMethodAndContractName(data, funcName, contractName string) (string,string, error) { 
+	// 无法实现
+	return "未实现", "未实现", nil
+}
 
 func (client ChainTencentChainmakerClient) Query(blockId string, data string) (string, error) {
 	return "", nil

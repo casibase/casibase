@@ -20,6 +20,7 @@ type ChainClientInterface interface {
 	Commit(data string) (string, string, string, error)
 	CommitWithMethodAndContractName(data, funcName, contractName string) (string, string, string, error)
 	Query(txId string, data string) (string, error)
+	QueryWithMethodAndContractName(data, funcName, contractName string) (string,string, error)
 }
 
 func NewChainClient(providerType string, clientId string, clientSecret string, region string, networkId string, chainId string, endponit string, text string, UserKey string, UserCert string, SignKey string, SignCert string, ContractName string, ContractMethod string) (ChainClientInterface, error) {

@@ -136,6 +136,33 @@ func (client *ChainTencentChainmakerDemoClient) Commit(data string) (string, str
 	return client.CommitWithMethodAndContractName(data, "save", "ChainMakerDemo")
 }
 
+func (client ChainTencentChainmakerDemoClient) QueryWithMethodAndContractName(data, funcName, contractName string) (string,string, error) {
+	request := tbaas.NewQueryChainMakerDemoContractRequest()
+	request.ClusterId = common.StringPtr(client.NetworkId)
+	request.ChainId = common.StringPtr(client.ChainId)
+	request.ContractName = common.StringPtr(contractName)
+	request.FuncName = common.StringPtr(funcName)
+	request.FuncParam = common.StringPtr(data)
+       response, err := client.Client.QueryChainMakerDemoContract(request)
+
+       if err != nil {
+	       if sdkErr, ok := err.(*errors.TencentCloudSDKError); ok {
+		       return "", "", fmt.Errorf("TencentCloudSDKError: %v", sdkErr)
+	       }
+	       return "", "", fmt.Errorf("ChainTencentChainmakerDemoClient.Client.QueryWithMethodAndContractName() error: %v", err)
+       }
+
+       // 检查 Data 字段是否存在
+       var resStr, msgStr string
+       if response.Response.Result.Result != nil {
+	       resStr = *(response.Response.Result.Result)
+       }
+       if response.Response.Result.Message != nil {
+	       msgStr = *(response.Response.Result.Message)
+       }
+       return resStr, msgStr, nil
+}
+
 func (client ChainTencentChainmakerDemoClient) Query(txId string, data string) (string, error) {
 	queryResult, err := client.getQueryResult(txId)
 	if err != nil {
