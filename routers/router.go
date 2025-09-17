@@ -256,4 +256,5 @@ func initAPI() {
 	beego.Handler("/api/metrics", promhttp.Handler())
 
 	beego.Router("/api/chat/completions", &controllers.ApiController{}, "POST:ChatCompletions")
+	beego.Router("/api/send-chain-commit", &controllers.ApiController{}, "POST:SendChainCommit")
 }
