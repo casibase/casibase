@@ -75,12 +75,13 @@ func (client ChainTencentChainmakerDemoClient) getQueryResult(txId string) (*tba
 	return response.Response.Result, nil
 }
 
-func (client *ChainTencentChainmakerDemoClient) Commit(data string) (string, string, string, error) {
+
+func (client *ChainTencentChainmakerDemoClient) CommitWithMethodAndContractName(data, funcName, contractName string) (string, string, string, error) {
 	request := tbaas.NewInvokeChainMakerDemoContractRequest()
 	request.ClusterId = common.StringPtr(client.NetworkId)
 	request.ChainId = common.StringPtr(client.ChainId)
-	request.ContractName = common.StringPtr("ChainMakerDemo")
-	request.FuncName = common.StringPtr("save")
+	request.ContractName = common.StringPtr(contractName)
+	request.FuncName = common.StringPtr(funcName)
 	request.FuncParam = common.StringPtr(data)
 
 	response, err := client.Client.InvokeChainMakerDemoContract(request)
@@ -103,6 +104,36 @@ func (client *ChainTencentChainmakerDemoClient) Commit(data string) (string, str
 
 	blockId := strconv.FormatInt(*(queryResult.BlockHeight), 10)
 	return blockId, txId, "", nil
+}
+func (client *ChainTencentChainmakerDemoClient) Commit(data string) (string, string, string, error) {
+	// request := tbaas.NewInvokeChainMakerDemoContractRequest()
+	// request.ClusterId = common.StringPtr(client.NetworkId)
+	// request.ChainId = common.StringPtr(client.ChainId)
+	// request.ContractName = common.StringPtr("ChainMakerDemo")
+	// request.FuncName = common.StringPtr("save")
+	// request.FuncParam = common.StringPtr(data)
+
+	// response, err := client.Client.InvokeChainMakerDemoContract(request)
+	// if err != nil {
+	// 	if sdkErr, ok := err.(*errors.TencentCloudSDKError); ok {
+	// 		return "", "", "", fmt.Errorf("TencentCloudSDKError: %v", sdkErr)
+	// 	}
+
+	// 	return "", "", "", fmt.Errorf("ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v", err)
+	// }
+	// if *(response.Response.Result.Code) != 0 {
+	// 	return "", "", "", fmt.Errorf("TencentCloudSDKError, code = %d, message = %s", *(response.Response.Result.Code), *(response.Response.Result.Message))
+	// }
+
+	// txId := *(response.Response.Result.TxId)
+	// queryResult, err := client.getQueryResult(txId)
+	// if err != nil {
+	// 	return "", "", "", err
+	// }
+
+	// blockId := strconv.FormatInt(*(queryResult.BlockHeight), 10)
+	// return blockId, txId, "", nil
+	return client.CommitWithMethodAndContractName(data, "save", "ChainMakerDemo")
 }
 
 func (client ChainTencentChainmakerDemoClient) Query(txId string, data string) (string, error) {

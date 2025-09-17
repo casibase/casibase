@@ -170,6 +170,59 @@ func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 	return affected, data, err
 }
 
+
+func CommitRecordWithMethod(record *Record, funcName, contractName string) (bool, map[string]interface{}, error) {
+	if record.Block != "" {
+		return false, nil, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getUniqueId(), record.Block)
+	}
+
+	client, provider, err := record.getRecordChainClient(record.Provider)
+	if err != nil {
+		_, updateErr := record.updateErrorText(err.Error())
+		if updateErr != nil {
+			err = updateErr
+		}
+		return false, nil, err
+	}
+	record.Provider = provider.Name
+
+	blockId, transactionId, blockHash, err := client.CommitWithMethodAndContractName(record.toParam(), funcName, contractName)
+	if err != nil {
+		_, updateErr := record.updateErrorText(err.Error())
+		if updateErr != nil {
+			err = updateErr
+		}
+		return false, nil, err
+	}
+
+	data := map[string]interface{}{
+		"provider":    record.Provider,
+		"block":       blockId,
+		"transaction": transactionId,
+		"block_hash":  blockHash,
+	}
+
+	if record.ErrorText != "" {
+		data["error_text"] = ""
+	}
+
+	// Update the record fields to avoid concurrent update race conditions
+	var affected bool
+	if record.Id == 0 {
+		// If the record ID is 0, it means batch insert, so using getId()
+		affected, err = UpdateRecordFields(record.getId(), data)
+	} else {
+		affected, err = UpdateRecordFields(record.getUniqueId(), data)
+	}
+
+	delete(data, "error_text")
+
+	// attach the name to the data for consistency
+	data["name"] = record.Name
+
+	return affected, data, err
+}
+
 func CommitRecordSecond(record *Record) (bool, error) {
 	if record.Block2 != "" {
 		return false, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getUniqueId(), record.Block2)

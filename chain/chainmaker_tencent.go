@@ -52,17 +52,20 @@ func newChainTencentChainmakerClient(clientId, clientSecret, region, networkId, 
 	}, nil
 }
 
-func (client *ChainTencentChainmakerClient) Commit(data string) (string, string, string, error) {
+
+func (client *ChainTencentChainmakerClient) CommitWithMethodAndContractName(data, funcName, contractName string) (string, string, string, error) {
 	request := tbaas.NewInvokeRequest()
 	request.Module = common.StringPtr("transaction")
 	request.Operation = common.StringPtr("invoke")
 	request.ClusterId = common.StringPtr(client.NetworkId)
-	request.ChaincodeName = common.StringPtr("ChainMakerDemo")
+	// request.ChaincodeName = common.StringPtr("ChainMakerDemo")
+	request.ChaincodeName = common.StringPtr(contractName)
 	request.ChannelName = common.StringPtr(client.ChainId)
 	request.Peers = []*tbaas.PeerSet{
 		{OrgName: common.StringPtr("orgbeijing.chainmaker-demo"), PeerName: common.StringPtr("consensus1-orgbeijing.chainmaker-demo")},
 	}
-	request.FuncName = common.StringPtr("save")
+	// request.FuncName = common.StringPtr("save")
+	request.FuncName = common.StringPtr(funcName)
 	request.GroupName = common.StringPtr("orgbeijing.chainmaker-demo")
 	// request.Args = []*string{common.StringPtr(data["arg1"]), common.StringPtr(data["arg2"])}
 	request.Args = []*string{common.StringPtr(data)}
@@ -78,6 +81,12 @@ func (client *ChainTencentChainmakerClient) Commit(data string) (string, string,
 
 	return response.ToJsonString(), "", "", nil
 }
+
+func (client *ChainTencentChainmakerClient) Commit(data string) (string, string, string, error) {
+	return client.CommitWithMethodAndContractName(data, "save", "ChainMakerDemo")
+}
+
+
 
 func (client ChainTencentChainmakerClient) Query(blockId string, data string) (string, error) {
 	return "", nil

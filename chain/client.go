@@ -18,6 +18,7 @@ import "fmt"
 
 type ChainClientInterface interface {
 	Commit(data string) (string, string, string, error)
+	CommitWithMethodAndContractName(data, funcName, contractName string) (string, string, string, error)
 	Query(txId string, data string) (string, error)
 }
 

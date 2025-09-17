@@ -68,6 +68,19 @@ func (client *ChainChainmakerClient) Commit(data string) (string, string, string
 	return response.Block, response.TxId, response.BlockHash, nil
 }
 
+func (client *ChainChainmakerClient) CommitWithMethodAndContractName(data, funcName, contractName string) (string, string, string, error) {
+	// 未经测试
+	client.Data = data
+	client.ContractName = contractName
+	client.ContractMethod = funcName
+	response, err := SendChainmakerRequest(client, "invoke-contract")
+	if err != nil {
+		return "", "", "", err
+	}
+
+	return response.Block, response.TxId, response.BlockHash, nil
+}
+
 func (client *ChainChainmakerClient) Query(txId string, data string) (string, error) {
 	client.TxId = txId
 	queryResult, err := SendChainmakerRequest(client, "query-contract")

@@ -160,6 +160,12 @@ func (client *EthereumClient) Commit(data string) (string, string, string, error
 	return blockNumber, txHash.Hex(), blockHash, nil
 }
 
+// CommitWithMethodAndContractName commits a transaction with the specified method and contract name.
+func (client *EthereumClient) CommitWithMethodAndContractName(data, funcName, contractName string) (string, string, string, error) {
+	// 暂不支持指定funcName和contractName
+	return client.Commit(data)
+}
+
 // Query retrieves the transaction receipt and decodes the event logs to get the data.
 func (client *EthereumClient) Query(txHash string, data string) (string, error) {
 	hash := common.HexToHash(txHash)
