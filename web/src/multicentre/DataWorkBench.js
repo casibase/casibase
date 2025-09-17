@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result } from "antd";
+import React, { useState, useEffect } from "react";
+import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result, Spin } from "antd";
+import * as MultiCenterBackend from "../backend/MultiCenterBackend";
 import { DownOutlined } from '@ant-design/icons';
 import { Clock, Database, ShieldCheck, Link2, Image } from 'lucide-react';
 
@@ -34,12 +35,32 @@ const data = [
 export default function DataWorkBench() {
     const history = typeof window !== 'undefined' && window.history && window.location ? require('react-router-dom').useHistory() : null;
     const [showTable, setShowLimitData] = useState(false);
+    const [usageInfo, setUsageInfo] = useState(null);
+    const [usageLoading, setUsageLoading] = useState(false);
     const [selectedData, setSelectedData] = useState('心血管疾病数据');
     const menu = (
         <Menu onClick={() => { }}>
             <Menu.Item key="cvd">心血管疾病数据</Menu.Item>
         </Menu>
     );
+    useEffect(() => {
+        if (!usageLoading) {
+            setUsageLoading(true);
+            MultiCenterBackend.queryDataSetsUsage(usageId).then(resp => {
+                let info = null;
+                if (resp?.data?.resultDecoded) {
+                    try {
+                        info = JSON.parse(resp.data.resultDecoded);
+                    } catch (e) { }
+                }
+                setUsageInfo(info);
+                setUsageLoading(false);
+            }).catch(() => {
+                setUsageLoading(false);
+            });
+        }
+    }, [showTable, usageInfo, usageLoading]);
+
     return (
         <div style={{ background: 'white', minHeight: '100vh', padding: 32 }}>
             {/* 顶部卡片区 */}
@@ -76,9 +97,9 @@ export default function DataWorkBench() {
                 }}>
                     <Database size={32} color="#428be5" />
                     <div style={{ flex: 1 }}>
-                        <div style={{ color: '#888', fontSize: 16 }}>数据查询次数</div>
-                        <div style={{ color: '#23408e', fontWeight: 700, fontSize: 22, marginTop: 4 }}>15/100</div>
-                        <Progress percent={15} showInfo={false} strokeColor="#428be5" style={{ marginTop: 6, width: 120 }} />
+                        <div style={{ color: '#888', fontSize: 16 }}>剩余数据查询次数</div>
+                        <div style={{ color: '#23408e', fontWeight: 700, fontSize: 22, marginTop: 4 }}>15</div>
+                        {/* <Progress percent={15} showInfo={false} strokeColor="#428be5" style={{ marginTop: 6, width: 120 }} /> */}
                     </div>
                 </div>
                 <div style={{
@@ -196,7 +217,20 @@ export default function DataWorkBench() {
                             style={{ width: '100%', marginBottom: 18 }}
                             defaultValue="structured"
                         />
-
+                        <div style={{ display: 'flex', gap: 32, alignItems: 'center', marginBottom: 18 }}>
+                            {usageLoading ? (
+                                <Spin size="small" style={{ marginRight: 8 }} />
+                            ) : usageInfo ? (
+                                <>
+                                    <div style={{ fontSize: 16, color: '#23408e', fontWeight: 600 }}>
+                                        剩余可用次数：{usageInfo.UseCountLeft}
+                                    </div>
+                                    <div style={{ fontSize: 16, color: '#23408e', fontWeight: 600 }}>
+                                        到期时间：{usageInfo.ExpireTime}
+                                    </div>
+                                </>
+                            ) : null}
+                        </div>
                         <Table columns={columns} dataSource={data} pagination={false} bordered rowKey="id" style={{ marginTop: 18 }} />
                     </div>
                 )}

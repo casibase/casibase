@@ -62,7 +62,7 @@ export function queryDataSetsUsage(datasetusage_id) {
   var data = {
     "datasetusage_id": datasetusage_id
   }
-  newChainConfig.funcName = "ReadDatasetUsage"
+  newChainConfig.funcName = "ReadDatasetusage"
 
   newChainConfig.data = JSON.stringify(data);
 
