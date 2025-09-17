@@ -174,6 +174,16 @@ func GetRecord(id string) (*Record, error) {
 	return nil, nil
 }
 
+// GetRecordsByAction 根据owner和action字段获取记录，按Id降序排列
+func GetRecordsByAction( action string) ([]*Record, error) {
+	records := []*Record{}
+	err := adapter.engine.Desc("id").Where("action = ?", action).Find(&records)
+	if err != nil {
+		return records, err
+	}
+	return records, nil
+}
+
 func prepareRecord(record *Record, providerFirst, providerSecond *Provider) (bool, error) {
 	if logPostOnly && record.Method == "GET" {
 		return false, nil

@@ -1,3 +1,4 @@
+
 // Copyright 2023 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -89,6 +90,24 @@ func (c *ApiController) GetRecord() {
 	}
 
 	c.ResponseOk(record)
+}
+
+// GetRecordsByActionController 获取指定action的记录，按Id降序
+// /get-records-by-action
+func (c *ApiController) GetRecordsByAction() {
+	action := c.Input().Get("action")
+	if action == "" {
+		c.ResponseError("action is required")
+		return
+	}
+
+	records, err := object.GetRecordsByAction(action)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(records)
 }
 
 // UpdateRecord
