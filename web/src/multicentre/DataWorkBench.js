@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result, Spin } from "antd";
+import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result, Spin, message } from "antd";
 import * as MultiCenterBackend from "../backend/MultiCenterBackend";
 import { DownOutlined } from '@ant-design/icons';
 import { Clock, Database, ShieldCheck, Link2, Image } from 'lucide-react';
 
 const usageId = "use_test_001"
+const datasetId = "MCTest1"
 
 const columns = [
     { title: '患者ID', dataIndex: 'id', key: 'id' },
@@ -44,6 +45,7 @@ export default function DataWorkBench() {
         </Menu>
     );
 
+
     // 抽离数据用量信息请求逻辑
     const fetchUsageInfo = async () => {
         setUsageLoading(true);
@@ -60,6 +62,24 @@ export default function DataWorkBench() {
             setUsageInfo(info);
         } finally {
             setUsageLoading(false);
+        }
+    };
+
+    // 点击确认查看时调用useDataSet
+    const handleShowLimitData = async () => {
+        try {
+            // 等待1s
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const resp = await MultiCenterBackend.useDataSet(usageId, datasetId);
+            const status = resp?.status?.toLowerCase?.() || resp?.data?.status?.toLowerCase?.();
+            if (status === 'success' || status === 'ok') {
+                setShowLimitData(true);
+                fetchUsageInfo();
+            } else {
+                message.error(resp?.msg || '操作失败');
+            }
+        } catch (e) {
+            message.error(e?.message || '操作异常');
         }
     };
 
@@ -213,10 +233,9 @@ export default function DataWorkBench() {
                             status="warning"
                             title="本数据为受控数据，将会记录一次访问"
                             extra={
-                                <Button type="primary" onClick={() => setShowLimitData(true)} style={{ marginTop: 24 }}>确认查看</Button>
+                                <Button type="primary" onClick={handleShowLimitData} style={{ marginTop: 24 }}>确认查看</Button>
                             }
                         />
-
                     </div>
                 )}
                 {showTable && (
