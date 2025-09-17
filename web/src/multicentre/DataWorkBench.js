@@ -48,6 +48,8 @@ export default function DataWorkBench() {
     const fetchUsageInfo = async () => {
         setUsageLoading(true);
         try {
+            // 等待1s
+            await new Promise(resolve => setTimeout(resolve, 1000));
             const resp = await MultiCenterBackend.queryDataSetsUsage(usageId);
             let info = null;
             if (resp?.data?.resultDecoded) {
@@ -84,8 +86,14 @@ export default function DataWorkBench() {
                 }}>
                     <Clock size={32} color="#428be5" />
                     <div>
-                        <div style={{ color: '#888', fontSize: 16 }}>剩余访问时间</div>
-                        <div style={{ color: '#428be5', fontWeight: 700, fontSize: 22, marginTop: 4 }}>29天 12小时 34分钟</div>
+                        <div style={{ color: '#888', fontSize: 16 }}>访问时间截止至</div>
+                        {usageLoading ? (
+                            <Spin size="small" style={{ marginTop: 4 }} />
+                        ) : usageInfo ? (
+                            <div style={{ color: '#428be5', fontWeight: 700, fontSize: 22, marginTop: 4 }}>{usageInfo.ExpireTime}</div>
+                        ) : (
+                            <div style={{ color: '#428be5', fontWeight: 700, fontSize: 22, marginTop: 4 }}>--</div>
+                        )}
                     </div>
                 </div>
                 <div style={{
@@ -103,7 +111,13 @@ export default function DataWorkBench() {
                     <Database size={32} color="#428be5" />
                     <div style={{ flex: 1 }}>
                         <div style={{ color: '#888', fontSize: 16 }}>剩余数据查询次数</div>
-                        <div style={{ color: '#23408e', fontWeight: 700, fontSize: 22, marginTop: 4 }}>15</div>
+                        {usageLoading ? (
+                            <Spin size="small" style={{ marginTop: 4 }} />
+                        ) : usageInfo ? (
+                            <div style={{ color: '#23408e', fontWeight: 700, fontSize: 22, marginTop: 4 }}>{usageInfo.UseCountLeft}</div>
+                        ) : (
+                            <div style={{ color: '#23408e', fontWeight: 700, fontSize: 22, marginTop: 4 }}>--</div>
+                        )}
                         {/* <Progress percent={15} showInfo={false} strokeColor="#428be5" style={{ marginTop: 6, width: 120 }} /> */}
                     </div>
                 </div>
