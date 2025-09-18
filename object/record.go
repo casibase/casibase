@@ -72,6 +72,7 @@ type Record struct {
 	NeedCommit  bool `xorm:"index" json:"needCommit"`
 
 	CorrelationId string `xorm:"varchar(256)" json:"correlationId"`
+	Objcid        string `xorm:"varchar(500)" json:"objcid"`
 }
 
 type Response struct {
