@@ -64,6 +64,7 @@ export default function DynamicConfigPage() {
         { title: "ID", dataIndex: "id", key: "id", width: 80 },
         { title: "配置Key", dataIndex: "configkey", key: "configkey" },
         { title: "配置Value", dataIndex: "configvalue", key: "configvalue" },
+        { title: "描述", dataIndex: "desc", key: "desc" },
         {
             title: "操作",
             key: "action",
@@ -120,6 +121,13 @@ export default function DynamicConfigPage() {
                         validateTrigger={["onBlur", "onSubmit"]}
                     >
                         <Input.TextArea autoSize autoComplete="off" />
+                    </Form.Item>
+                    <Form.Item
+                        name="desc"
+                        label="描述"
+                        rules={[]}
+                    >
+                        <Input autoComplete="off" />
                     </Form.Item>
                 </Form>
             </Modal>
