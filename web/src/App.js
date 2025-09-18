@@ -102,10 +102,12 @@ import NewAuditPage from "./auditSearch/NewAuditPage";
 import MuiltiCenter from "./multicentre/MuiltiCenter";
 import DataWorkBench from "./multicentre/DataWorkBench";
 import DataAuditLog from "./multicentre/DataAuditLog";
+import DynamicConfigPage from "./DynamicConfigPage";
 
 // 功能介绍页面组
 import PatientChainDataIntro from "./introduce/PatientChainDataIntro"
 import MedicalRecordChainIntro from "./introduce/MedicalRecordChainIntro"
+
 
 
 
@@ -1089,6 +1091,7 @@ class App extends Component {
         {/* 功能介绍页面 */}
         <Route exact path="/introduce/patient-chain-data" render={(props) => this.renderSigninIfNotSignedIn(<PatientChainDataIntro account={this.state.account} {...props} />)} />
         <Route exact path="/introduce/medical-record-chain" render={(props) => this.renderSigninIfNotSignedIn(<MedicalRecordChainIntro account={this.state.account} {...props} />)} />
+        <Route exact path="/lion" render={(props) => this.renderSigninIfNotSignedIn(<DynamicConfigPage account={this.state.account} {...props} />)} />
 
         <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
       </Switch>
