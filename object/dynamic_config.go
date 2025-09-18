@@ -2,8 +2,9 @@ package object
 
 type DynamicConfig struct {
 	Id         int    `xorm:"pk autoincr" json:"id"`
-	ConfigKey   string `xorm:"varchar(256)" json:"configkey"`
-	ConfigValue string `xorm:"varchar(2048)" json:"configvalue"`
+	Configkey   string `xorm:"varchar(256)" json:"configkey"`
+	Configvalue string `xorm:"varchar(2048)" json:"configvalue"`
+	Desc       string `xorm:"varchar(2048)" json:"desc"`
 }
 
 func GetDynamicConfigs() ([]*DynamicConfig, error) {

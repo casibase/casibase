@@ -83,7 +83,10 @@ export default function DynamicConfigPage() {
         <div style={{ background: '#fff', padding: 32, minHeight: '100vh' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
                 <h2 style={{ margin: 0 }}>动态配置管理</h2>
-                <Button type="primary" onClick={handleAdd}>新增配置</Button>
+                <div style={{ display: 'flex', gap: 12 }}>
+                    <Button onClick={fetchConfigs}>刷新</Button>
+                    <Button type="primary" onClick={handleAdd}>新增配置</Button>
+                </div>
             </div>
             <Table
                 columns={columns}
@@ -102,8 +105,22 @@ export default function DynamicConfigPage() {
                 destroyOnClose
             >
                 <Form form={form} layout="vertical">
-                    <Form.Item name="configkey" label="配置Key" rules={[{ required: true, message: '请输入配置Key' }]}> <Input /> </Form.Item>
-                    <Form.Item name="configvalue" label="配置Value" rules={[{ required: true, message: '请输入配置Value' }]}> <Input.TextArea autoSize /> </Form.Item>
+                    <Form.Item
+                        name="configkey"
+                        label="配置Key"
+                        rules={[{ required: true, whitespace: true, message: '请输入配置Key' }]}
+                        validateTrigger={["onBlur", "onSubmit"]}
+                    >
+                        <Input autoComplete="off" />
+                    </Form.Item>
+                    <Form.Item
+                        name="configvalue"
+                        label="配置Value"
+                        rules={[{ required: true, whitespace: true, message: '请输入配置Value' }]}
+                        validateTrigger={["onBlur", "onSubmit"]}
+                    >
+                        <Input.TextArea autoSize autoComplete="off" />
+                    </Form.Item>
                 </Form>
             </Modal>
             <div style={{ marginTop: 48, textAlign: 'center', color: '#888' }}>
