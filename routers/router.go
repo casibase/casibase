@@ -259,5 +259,12 @@ func initAPI() {
 	beego.Handler("/api/metrics", promhttp.Handler())
 
 	beego.Router("/api/chat/completions", &controllers.ApiController{}, "POST:ChatCompletions")
+
+	// Dynamic Config
+	beego.Router("/api/get-dynamic-config", &controllers.ApiController{}, "GET:GetDynamicConfig")
+	beego.Router("/api/add-dynamic-config", &controllers.ApiController{}, "POST:AddDynamicConfig")
+	beego.Router("/api/update-dynamic-config", &controllers.ApiController{}, "POST:UpdateDynamicConfig")
+	beego.Router("/api/delete-dynamic-config", &controllers.ApiController{}, "POST:DeleteDynamicConfig")
+	beego.Router("/api/get-dynamic-configs", &controllers.ApiController{}, "GET:GetDynamicConfigs")
 	
 }
