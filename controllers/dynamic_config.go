@@ -95,3 +95,16 @@ func (c *ApiController) DeleteDynamicConfig() {
 	c.ServeJSON()
 }
 
+// 根据key获取配置值，找不到返回默认值
+func (c *ApiController) GetDynamicConfigValueByKey() {
+	key := c.Input().Get("key")
+	defaultVal := c.Input().Get("defaultVal")
+	
+	configVal, err := object.GetDynamicConfigValueByKey(key, defaultVal)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(configVal)
+}
+

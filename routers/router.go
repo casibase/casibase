@@ -266,5 +266,6 @@ func initAPI() {
 	beego.Router("/api/update-dynamic-config", &controllers.ApiController{}, "POST:UpdateDynamicConfig")
 	beego.Router("/api/delete-dynamic-config", &controllers.ApiController{}, "POST:DeleteDynamicConfig")
 	beego.Router("/api/get-dynamic-configs", &controllers.ApiController{}, "GET:GetDynamicConfigs")
+	beego.Router("/api/get-dynamic-config-by-key", &controllers.ApiController{}, "GET:GetDynamicConfigValueByKey")
 	
 }

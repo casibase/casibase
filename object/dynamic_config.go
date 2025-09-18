@@ -37,3 +37,16 @@ func DeleteDynamicConfig(config *DynamicConfig) (bool, error) {
 	affected, err := adapter.engine.Where("id = ?", config.Id).Delete(&DynamicConfig{})
 	return affected > 0, err
 }
+
+func GetDynamicConfigValueByKey(key, defaultVal string) (string, error) {
+	if key == "" {
+		return defaultVal, nil
+	}
+
+	config := &DynamicConfig{}
+	has, err := adapter.engine.Where("configkey = ?",  key).Get(config)
+	if err != nil || !has {
+		return defaultVal, nil
+	}
+	return config.Configvalue, nil
+}
