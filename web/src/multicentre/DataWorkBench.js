@@ -380,7 +380,32 @@ export default function DataWorkBench(props) {
                                                         setPreviewOpen(true);
                                                     }}
                                                 >查看</Button>
-                                                <Button icon={<span role="img" aria-label="ai">🪄</span>} style={{ fontWeight: 500, borderRadius: 8, background: 'linear-gradient(90deg,#a259e4 0%,#f857a6 100%)', color: '#fff', border: 'none' }}>AI超分</Button>
+                                                <Button
+                                                    icon={<span role="img" aria-label="ai">🪄</span>}
+                                                    style={{ fontWeight: 500, borderRadius: 8, background: 'linear-gradient(90deg,#a259e4 0%,#f857a6 100%)', color: '#fff', border: 'none' }}
+                                                    onClick={async () => {
+                                                        let imgSrc = '';
+                                                        try {
+                                                            imgSrc = require(`${item.src}`);
+                                                        } catch (e) {
+                                                            imgSrc = '';
+                                                        }
+                                                        if (!imgSrc) {
+                                                            message.error('图片资源不存在');
+                                                            return;
+                                                        }
+                                                        try {
+                                                            message.loading({ content: 'AI超分处理中...', key: 'ai-sr', duration: 0 });
+                                                            const res = await fetch(imgSrc);
+                                                            const blob = await res.blob();
+                                                            const result = await MultiCenterBackend.generateSRPicture(blob);
+                                                            message.success({ content: 'AI超分完成', key: 'ai-sr' });
+                                                            // 可根据 result 处理后续逻辑，如弹窗预览等
+                                                        } catch (e) {
+                                                            message.error({ content: 'AI超分失败', key: 'ai-sr' });
+                                                        }
+                                                    }}
+                                                >AI超分</Button>
                                             </div>
                                         </div>
                                     ))}

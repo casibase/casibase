@@ -136,11 +136,26 @@ export function addDataUsageAuditRecord(account, datasetusage_id, dataset_id) {
   }).then(res => res.json());
 }
 
-
+/**
+ * getDataSetUsageAuditRecord
+ * @returns {Promise}
+ */
 export function getDataSetUsageAuditRecord() {
   return fetch(`${Setting.ServerUrl}/api/get-records-by-action?action=${AUDIT_ACTION_MARK}`, {
     method: "GET",
     credentials: "include",
 
+  }).then(res => res.json());
+}
+
+
+export function generateSRPicture(image) {
+  const formData = new FormData();
+  formData.append("file", image); // image 可以是 File 或 Blob
+
+  return fetch(`https://srapi.casibase.com/super-resolution?return_metrics=false`, {
+    method: "POST",
+    credentials: "include",
+    body: formData
   }).then(res => res.json());
 }
