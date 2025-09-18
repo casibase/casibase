@@ -18,6 +18,10 @@ export default function DataAuditLog() {
             const resp = await MultiCenterBackend.getDataSetUsageAuditRecord();
             if (resp?.status === 'ok' && Array.isArray(resp.data)) {
                 const sorted = resp.data.slice().sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+                // sorted只保留最近10条
+                if (sorted.length > 10) {
+                    sorted.splice(10);
+                }
                 setAuditList(sorted);
             } else {
                 setError(resp?.msg || '数据获取失败');
@@ -61,7 +65,7 @@ export default function DataAuditLog() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 22, fontWeight: 700, marginBottom: 2 }}>
                     <Clock size={22} color="#23408e" /> 操作时间线
                 </div>
-                <div style={{ color: '#888', fontSize: 16, marginBottom: 32 }}>按时间从新到旧展示操作历史</div>
+                <div style={{ color: '#888', fontSize: 16, marginBottom: 32 }}>按时间从新到旧展示操作历史，仅展示最近10条</div>
                 {loading ? (
                     <div style={{ textAlign: 'center', margin: '60px 0 40px 0' }}><Spin size="large" /></div>
                 ) : error ? (
