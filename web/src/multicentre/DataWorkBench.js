@@ -45,6 +45,8 @@ export default function DataWorkBench(props) {
     // 图片预览相关
     const [previewImg, setPreviewImg] = useState(null);
     const [previewOpen, setPreviewOpen] = useState(false);
+    // 影像卡片超分状态与超分图片
+    const [srMap, setSrMap] = useState({}); // { [id]: { url, done } }
     const menu = (
         <Menu onClick={() => { }}>
             <Menu.Item key="cvd">心血管疾病数据</Menu.Item>
@@ -309,106 +311,111 @@ export default function DataWorkBench(props) {
                                         { id: 'ECG001', patient: 'P001', date: '2025-09-10', src: './sample/sample_hr_input.png' },
                                         { id: 'ECG002', patient: 'P002', date: '2025-09-08', src: './sample/sample_lr_input.png' },
                                         { id: 'ECHO001', patient: 'P001', date: '2025-09-11', src: './sample/sample_hr_input.png' }
-                                    ].map(item => (
-                                        <div key={item.id} style={{
-                                            width: 240,
-                                            background: '#fff',
-                                            borderRadius: 18,
-                                            boxShadow: '0 2px 12px 0 rgba(66,139,229,0.08)',
-                                            border: '1.5px solid #e6eaf1',
-                                            padding: 18,
-                                            marginBottom: 8,
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'center',
-                                            position: 'relative',
-                                        }}>
-                                            <div style={{
-                                                width: 180,
-                                                height: 120,
-                                                background: '#111',
-                                                borderRadius: 12,
-                                                marginBottom: 12,
+                                    ].map(item => {
+                                        // 判断是否已超分
+                                        const srInfo = srMap[item.id];
+                                        let imgSrc = '';
+                                        try {
+                                            imgSrc = srInfo && srInfo.url ? srInfo.url : require(`${item.src}`);
+                                        } catch (e) {
+                                            imgSrc = srInfo && srInfo.url ? srInfo.url : '';
+                                        }
+                                        return (
+                                            <div key={item.id} style={{
+                                                width: 240,
+                                                background: '#fff',
+                                                borderRadius: 18,
+                                                boxShadow: '0 2px 12px 0 rgba(66,139,229,0.08)',
+                                                border: '1.5px solid #e6eaf1',
+                                                padding: 18,
+                                                marginBottom: 8,
                                                 display: 'flex',
+                                                flexDirection: 'column',
                                                 alignItems: 'center',
-                                                justifyContent: 'center',
                                                 position: 'relative',
-                                                overflow: 'hidden',
                                             }}>
-                                                {(() => {
-                                                    let imgSrc = '';
-                                                    try {
-                                                        imgSrc = require(`${item.src}`);
-                                                    } catch (e) {
-                                                        imgSrc = '';
-                                                    }
-                                                    return (
-                                                        <img
-                                                            src={imgSrc}
-                                                            alt={item.id}
-                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12, opacity: 0.85 }}
-                                                            onClick={() => { setPreviewImg(imgSrc); setPreviewOpen(true); }}
-                                                        />
-                                                    );
-                                                })()}
-                                                <span style={{
-                                                    position: 'absolute',
-                                                    left: '50%',
-                                                    top: '50%',
-                                                    transform: 'translate(-50%, -50%)',
-                                                    background: '#f5f6fa',
-                                                    color: '#428be5',
-                                                    borderRadius: 8,
-                                                    padding: '2px 12px',
-                                                    fontSize: 15,
-                                                    fontWeight: 500,
-                                                    pointerEvents: 'none'
-                                                }}>低分辨率</span>
+                                                <div style={{
+                                                    width: 180,
+                                                    height: 120,
+                                                    background: '#111',
+                                                    borderRadius: 12,
+                                                    marginBottom: 12,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    position: 'relative',
+                                                    overflow: 'hidden',
+                                                }}>
+                                                    <img
+                                                        src={imgSrc}
+                                                        alt={item.id}
+                                                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12, opacity: 0.85 }}
+                                                        onClick={() => { setPreviewImg(imgSrc); setPreviewOpen(true); }}
+                                                    />
+                                                    <span style={{
+                                                        position: 'absolute',
+                                                        left: '50%',
+                                                        top: '50%',
+                                                        transform: 'translate(-50%, -50%)',
+                                                        background: srInfo && srInfo.done ? '#d4fbe5' : '#f5f6fa',
+                                                        color: srInfo && srInfo.done ? '#20c997' : '#428be5',
+                                                        borderRadius: 8,
+                                                        padding: '2px 12px',
+                                                        fontSize: 15,
+                                                        fontWeight: 500,
+                                                        pointerEvents: 'none',
+                                                        border: srInfo && srInfo.done ? '1.5px solid #20c997' : undefined
+                                                    }}>{srInfo && srInfo.done ? '超分完成' : '低分辨率'}</span>
+                                                </div>
+                                                <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 2 }}>{item.id}</div>
+                                                <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}>患者: {item.patient} | 日期: {item.date}</div>
+                                                <div style={{ display: 'flex', gap: 8, width: '100%', justifyContent: 'center' }}>
+                                                    <Button icon={<span role="img" aria-label="eye">👁️</span>} style={{ fontWeight: 500, borderRadius: 8, borderColor: '#e6eaf1', color: '#222', background: '#fff' }}
+                                                        onClick={() => {
+                                                            setPreviewImg(imgSrc);
+                                                            setPreviewOpen(true);
+                                                        }}
+                                                    >查看</Button>
+                                                    {/* 仅未超分时显示AI超分按钮 */}
+                                                    {!(srInfo && srInfo.done) && (
+                                                        <Button
+                                                            icon={<span role="img" aria-label="ai">🪄</span>}
+                                                            style={{ fontWeight: 500, borderRadius: 8, background: 'linear-gradient(90deg,#a259e4 0%,#f857a6 100%)', color: '#fff', border: 'none' }}
+                                                            onClick={async () => {
+                                                                let originImg = '';
+                                                                try {
+                                                                    originImg = require(`${item.src}`);
+                                                                } catch (e) {
+                                                                    originImg = '';
+                                                                }
+                                                                if (!originImg) {
+                                                                    message.error('图片资源不存在');
+                                                                    return;
+                                                                }
+                                                                try {
+                                                                    message.loading({ content: 'AI超分处理中...', key: 'ai-sr', duration: 0 });
+                                                                    const res = await fetch(originImg);
+                                                                    const blob = await res.blob();
+                                                                    const srResult = await MultiCenterBackend.generateSRPicture(blob);
+                                                                    // 假设 srResult 是 Blob 或 ArrayBuffer
+                                                                    let srUrl = '';
+                                                                    const srBlob = await srResult.blob();
+                                                                    srUrl = URL.createObjectURL(srBlob);
+                                                                    setSrMap(prev => ({ ...prev, [item.id]: { url: srUrl, done: true } }));
+                                                                    setPreviewImg(srUrl);
+                                                                    setPreviewOpen(true);
+                                                                    message.success({ content: 'AI超分完成', key: 'ai-sr' });
+                                                                } catch (e) {
+                                                                    message.error({ content: 'AI超分失败', key: 'ai-sr' });
+                                                                    console.error(e);
+                                                                }
+                                                            }}
+                                                        >AI超分</Button>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 2 }}>{item.id}</div>
-                                            <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}>患者: {item.patient} | 日期: {item.date}</div>
-                                            <div style={{ display: 'flex', gap: 8, width: '100%', justifyContent: 'center' }}>
-                                                <Button icon={<span role="img" aria-label="eye">👁️</span>} style={{ fontWeight: 500, borderRadius: 8, borderColor: '#e6eaf1', color: '#222', background: '#fff' }}
-                                                    onClick={() => {
-                                                        let imgSrc = '';
-                                                        try {
-                                                            imgSrc = require(`${item.src}`);
-                                                        } catch (e) {
-                                                            imgSrc = '';
-                                                        }
-                                                        setPreviewImg(imgSrc);
-                                                        setPreviewOpen(true);
-                                                    }}
-                                                >查看</Button>
-                                                <Button
-                                                    icon={<span role="img" aria-label="ai">🪄</span>}
-                                                    style={{ fontWeight: 500, borderRadius: 8, background: 'linear-gradient(90deg,#a259e4 0%,#f857a6 100%)', color: '#fff', border: 'none' }}
-                                                    onClick={async () => {
-                                                        let imgSrc = '';
-                                                        try {
-                                                            imgSrc = require(`${item.src}`);
-                                                        } catch (e) {
-                                                            imgSrc = '';
-                                                        }
-                                                        if (!imgSrc) {
-                                                            message.error('图片资源不存在');
-                                                            return;
-                                                        }
-                                                        try {
-                                                            message.loading({ content: 'AI超分处理中...', key: 'ai-sr', duration: 0 });
-                                                            const res = await fetch(imgSrc);
-                                                            const blob = await res.blob();
-                                                            const result = await MultiCenterBackend.generateSRPicture(blob);
-                                                            message.success({ content: 'AI超分完成', key: 'ai-sr' });
-                                                            // 可根据 result 处理后续逻辑，如弹窗预览等
-                                                        } catch (e) {
-                                                            message.error({ content: 'AI超分失败', key: 'ai-sr' });
-                                                        }
-                                                    }}
-                                                >AI超分</Button>
-                                            </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                                 <Modal
                                     open={previewOpen}

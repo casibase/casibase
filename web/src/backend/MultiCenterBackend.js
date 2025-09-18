@@ -155,7 +155,7 @@ export function generateSRPicture(image) {
 
   return fetch(`https://srapi.casibase.com/super-resolution?return_metrics=false`, {
     method: "POST",
-    credentials: "include",
+    // credentials: "include",
     body: formData
-  }).then(res => res.json());
+  }).then();
 }
