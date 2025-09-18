@@ -104,6 +104,7 @@ export default function DynamicConfigPage() {
                 onCancel={() => setModalOpen(false)}
                 onOk={handleOk}
                 destroyOnClose
+                width={1520}
             >
                 <Form form={form} layout="vertical">
                     <Form.Item
@@ -114,6 +115,7 @@ export default function DynamicConfigPage() {
                     >
                         <Input autoComplete="off" />
                     </Form.Item>
+                    <div style={{ color: '#888', fontSize: 13, margin: '-10px 0 12px 2px' }}>建议以xxx.xxx.xxx.xxx的形式填写以方便分组</div>
                     <Form.Item
                         name="configvalue"
                         label="配置Value"
@@ -122,6 +124,7 @@ export default function DynamicConfigPage() {
                     >
                         <Input.TextArea autoSize autoComplete="off" />
                     </Form.Item>
+                    <div style={{ color: '#888', fontSize: 13, margin: '-10px 0 12px 2px' }}>数据库均以字符串形式存储</div>
                     <Form.Item
                         name="desc"
                         label="描述"
