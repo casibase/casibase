@@ -39,8 +39,12 @@ export default function DataWorkBench(props) {
     const [showTable, setShowLimitData] = useState(false);
     const [usageInfo, setUsageInfo] = useState(null);
     const [usageLoading, setUsageLoading] = useState(false);
-    const [selectedData, setSelectedData] = useState('心血管疾病数据');
+    // 只存储 'structured' 或 'image'
+    const [selectedData, setSelectedData] = useState('structured');
     const [checkingModal, setCheckingModal] = useState(false);
+    // 图片预览相关
+    const [previewImg, setPreviewImg] = useState(null);
+    const [previewOpen, setPreviewOpen] = useState(false);
     const menu = (
         <Menu onClick={() => { }}>
             <Menu.Item key="cvd">心血管疾病数据</Menu.Item>
@@ -288,23 +292,131 @@ export default function DataWorkBench(props) {
                             ]}
                             block
                             style={{ width: '100%', marginBottom: 18 }}
-                            defaultValue="structured"
+                            value={selectedData}
+                            onChange={setSelectedData}
                         />
-                        <div style={{ display: 'flex', gap: 32, alignItems: 'center', marginBottom: 18 }}>
-                            {usageLoading ? (
-                                <div ></div>
-                            ) : usageInfo ? (
-                                <div>
-                                    {/* <div style={{ fontSize: 16, color: '#23408e', fontWeight: 600 }}>
-                                        剩余可用次数：{usageInfo.UseCountLeft}
-                                    </div>
-                                    <div style={{ fontSize: 16, color: '#23408e', fontWeight: 600 }}>
-                                        到期时间：{usageInfo.ExpireTime}
-                                    </div> */}
+                        {selectedData === 'image' ? (
+                            <>
+                                <div style={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: 32,
+                                    marginTop: 8,
+                                    minHeight: 200
+                                }}>
+                                    {/* 示例影像卡片数据，可替换为真实数据 */}
+                                    {[
+                                        { id: 'ECG001', patient: 'P001', date: '2025-09-10', src: './sample/sample_hr_input.png' },
+                                        { id: 'ECG002', patient: 'P002', date: '2025-09-08', src: './sample/sample_lr_input.png' },
+                                        { id: 'ECHO001', patient: 'P001', date: '2025-09-11', src: './sample/sample_hr_input.png' }
+                                    ].map(item => (
+                                        <div key={item.id} style={{
+                                            width: 240,
+                                            background: '#fff',
+                                            borderRadius: 18,
+                                            boxShadow: '0 2px 12px 0 rgba(66,139,229,0.08)',
+                                            border: '1.5px solid #e6eaf1',
+                                            padding: 18,
+                                            marginBottom: 8,
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            position: 'relative',
+                                        }}>
+                                            <div style={{
+                                                width: 180,
+                                                height: 120,
+                                                background: '#111',
+                                                borderRadius: 12,
+                                                marginBottom: 12,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                position: 'relative',
+                                                overflow: 'hidden',
+                                            }}>
+                                                {(() => {
+                                                    let imgSrc = '';
+                                                    try {
+                                                        imgSrc = require(`${item.src}`);
+                                                    } catch (e) {
+                                                        imgSrc = '';
+                                                    }
+                                                    return (
+                                                        <img
+                                                            src={imgSrc}
+                                                            alt={item.id}
+                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12, opacity: 0.85 }}
+                                                            onClick={() => { setPreviewImg(imgSrc); setPreviewOpen(true); }}
+                                                        />
+                                                    );
+                                                })()}
+                                                <span style={{
+                                                    position: 'absolute',
+                                                    left: '50%',
+                                                    top: '50%',
+                                                    transform: 'translate(-50%, -50%)',
+                                                    background: '#f5f6fa',
+                                                    color: '#428be5',
+                                                    borderRadius: 8,
+                                                    padding: '2px 12px',
+                                                    fontSize: 15,
+                                                    fontWeight: 500,
+                                                    pointerEvents: 'none'
+                                                }}>低分辨率</span>
+                                            </div>
+                                            <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 2 }}>{item.id}</div>
+                                            <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}>患者: {item.patient} | 日期: {item.date}</div>
+                                            <div style={{ display: 'flex', gap: 8, width: '100%', justifyContent: 'center' }}>
+                                                <Button icon={<span role="img" aria-label="eye">👁️</span>} style={{ fontWeight: 500, borderRadius: 8, borderColor: '#e6eaf1', color: '#222', background: '#fff' }}
+                                                    onClick={() => {
+                                                        let imgSrc = '';
+                                                        try {
+                                                            imgSrc = require(`${item.src}`);
+                                                        } catch (e) {
+                                                            imgSrc = '';
+                                                        }
+                                                        setPreviewImg(imgSrc);
+                                                        setPreviewOpen(true);
+                                                    }}
+                                                >查看</Button>
+                                                <Button icon={<span role="img" aria-label="ai">🪄</span>} style={{ fontWeight: 500, borderRadius: 8, background: 'linear-gradient(90deg,#a259e4 0%,#f857a6 100%)', color: '#fff', border: 'none' }}>AI超分</Button>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                            ) : null}
-                        </div>
-                        <Table columns={columns} dataSource={data} pagination={false} bordered rowKey="id" style={{ marginTop: 18 }} />
+                                <Modal
+                                    open={previewOpen}
+                                    footer={null}
+                                    onCancel={() => setPreviewOpen(false)}
+                                    centered
+                                    bodyStyle={{ padding: 0, background: '#111', textAlign: 'center' }}
+                                    width={600}
+                                >
+                                    {previewImg && (
+                                        <img src={previewImg} alt="预览" style={{ maxWidth: '100%', maxHeight: 480, margin: '32px auto', display: 'block', borderRadius: 12 }} />
+                                    )}
+                                </Modal>
+                            </>
+                        ) : (
+                            <>
+                                <div style={{ display: 'flex', gap: 32, alignItems: 'center', marginBottom: 18 }}>
+                                    {usageLoading ? (
+                                        <div ></div>
+                                    ) : usageInfo ? (
+                                        <div>
+                                            {/* <div style={{ fontSize: 16, color: '#23408e', fontWeight: 600 }}>
+                                                剩余可用次数：{usageInfo.UseCountLeft}
+                                            </div>
+                                            <div style={{ fontSize: 16, color: '#23408e', fontWeight: 600 }}>
+                                                到期时间：{usageInfo.ExpireTime}
+                                            </div> */}
+                                        </div>
+                                    ) : null}
+                                </div>
+                                <Table columns={columns} dataSource={data} pagination={false} bordered rowKey="id" style={{ marginTop: 18 }} />
+                            </>
+                        )}
                     </div>
                 )}
             </div>
