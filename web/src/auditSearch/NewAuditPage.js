@@ -225,19 +225,26 @@ export default function NewAuditPage() {
         } else if (tabKey === "time") {
             if (!dateRange || !dateRange[0] || !dateRange[1]) return;
             setLoading(true);
+
+            // 获取基本chainqa的动态配置
+            const chainServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CHAINSERVICEURL, "");
+            const contractName = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CONTRACTNAME, "chainQA");
+            const ipfsServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_IPFSSERVICEURL, "https://47.113.204.64:5001");
+            const serverURL = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_SERVER, "	https://47.113.204.64:23554");
+
             // 转为秒级时间戳
             const startTime = Math.floor(dateRange[0].startOf("day").valueOf() / 1000);
             const endTime = Math.floor(dateRange[1].endOf("day").valueOf() / 1000);
-            fetch("https://47.113.204.64:23554/api/log/logByTimeRange", {
+            fetch(serverURL + "/api/log/logByTimeRange", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     startTime: String(startTime),
                     endTime: String(endTime),
                     apiUrl: {
-                        ipfsServiceUrl: "http://47.113.204.64:5001",
-                        chainServiceUrl: "",
-                        contractName: "chainQA"
+                        ipfsServiceUrl: ipfsServiceUrl,
+                        chainServiceUrl: chainServiceUrl,
+                        contractName: contractName
                     }
                 })
             })

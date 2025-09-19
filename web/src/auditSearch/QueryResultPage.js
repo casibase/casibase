@@ -4,6 +4,9 @@ import { Table, Typography, Alert, Spin, message } from "antd";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 
+import * as DYCF_UTIL from "../utils/dynamicConfigUtil";
+import { DYNAMIC_CONFIG_KEYS } from "../const/DynamicConfigConst";
+
 // 字段常量池和中英文映射
 const FIELD_CONFIG = [
     { key: "name", label: "姓名" },
@@ -97,7 +100,14 @@ class QueryResultPage extends React.Component {
         this.setState({ loading: true });
         try {
             const uId = (this.props.account && this.props.account.name) ? this.props.account.name : 'admin';
-            const response = await fetch("https://47.113.204.64:23554/api/query/queryData", {
+
+            // 获取基本chainqa的动态配置
+            const chainServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CHAINSERVICEURL, "");
+            const contractName = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CONTRACTNAME, "chainQA");
+            const ipfsServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_IPFSSERVICEURL, "https://47.113.204.64:5001");
+            const serverURL = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_SERVER, "	https://47.113.204.64:23554");
+
+            const response = await fetch(serverURL + "/api/query/queryData", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -106,11 +116,11 @@ class QueryResultPage extends React.Component {
                     uId,
                     queryItem,
                     apiUrl: {
-                        ipfsServiceUrl: "http://47.113.204.64:5001",
+                        ipfsServiceUrl: ipfsServiceUrl,
                         // chainServiceUrl: "http://47.113.204.64:9001/tencent-chainapi/exec",
-                        chainServiceUrl: "",
+                        chainServiceUrl: chainServiceUrl,
                         // contractName: "tencentChainqaContractV221demo01",
-                        contractName: "chainQA",
+                        contractName: contractName,
                     },
                 }),
             });
