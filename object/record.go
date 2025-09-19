@@ -351,10 +351,11 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 		return false, nil, err
 	}
 
-	// 异步执行
-	go UploadObjectToIPFS(record)
+	
 
 	AddRecordToArchiveQueueFromRecordAdd(record)
+
+	
 
 	data := map[string]interface{}{"name": record.Name}
 
@@ -366,6 +367,9 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 			data = commitResult
 		}
 	}
+
+	// 异步执行
+	go UploadObjectToIPFS(record)
 
 	return affected != 0, data, nil
 }
@@ -429,7 +433,16 @@ func AddRecords(records []*Record, syncEnabled bool) (bool, interface{}, error) 
 	// 将validRecords逐个加入到AddRecordToArchiveQueueFromRecordAdd
 	for _, record := range validRecords {
 		AddRecordToArchiveQueueFromRecordAdd(record)
+		
 	}
+
+	// 异步执行
+	go func() {
+		for _, record := range validRecords {
+			UploadObjectToIPFS(record)
+		}
+	}()
+
 
 	return totalAffected != 0, data, nil
 }
@@ -475,7 +488,7 @@ func UploadObjectToIPFS (r *Record) (bool, error) {
 		return false, nil
 	}
 
-	
+
 	ipfs, err := RecordObjectToIPFS(r)
 	if err != nil {
 		return false, err
