@@ -351,6 +351,9 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 		return false, nil, err
 	}
 
+	// 异步执行
+	go UploadObjectToIPFS(record)
+
 	AddRecordToArchiveQueueFromRecordAdd(record)
 
 	data := map[string]interface{}{"name": record.Name}
@@ -463,4 +466,26 @@ func (r *Record) updateErrorText(errText string) (bool, error) {
 		}
 		return affected > 0, nil
 	}
+}
+
+func UploadObjectToIPFS (r *Record) (bool, error) {
+	needUploadObjectToIPFS, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("record.object.uploadIPFS.switch", "true")
+
+	if needUploadObjectToIPFS == "false" {
+		return false, nil
+	}
+
+	
+	ipfs, err := RecordObjectToIPFS(r)
+	if err != nil {
+		return false, err
+	}
+	
+	fmt.Println(">>> Object字段已经上传ipfs:", ipfs)
+	// 将ipfs字段更新到数据库中
+	affected, err := adapter.engine.Where("id = ?", r.Id).Cols("objcid").Update(&Record{Objcid: ipfs})
+	if err != nil {
+		return false, fmt.Errorf("failed to update objcid for record %s: %s", r.getUniqueId(), err)
+	}
+	return affected > 0, nil
 }

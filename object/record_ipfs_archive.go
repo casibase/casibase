@@ -560,10 +560,11 @@ func sendIpfsUploadReq(queueData []*Record, dataType int) (string, error) {
 	chainServiceUrl, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.chainServiceUrl", "")
 	contractName, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.contractName", "chainQA")
 	serverURL, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.server", "https://47.113.204.64:23554")
+	chainqaUploadUid, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.uploadUid", "casbin")
 
 	// 构造请求体
 	requestBody := map[string]interface{}{
-		"uId":         "casbin",
+		"uId":         chainqaUploadUid,
 		"aesKey":      generateAESKey(32),
 		"fileContent": content,
 		"fileName":    fmt.Sprintf("%d-%s", dataType, util.GetCurrentTimeWithMilli()),
@@ -769,4 +770,177 @@ func generateExcelFromRecords(queueData []*Record) (string, error) {
 	}
 
 	return resultStr, nil
+}
+
+// 将record字段的object内容上传至IPFS，保证数据库安全-_-
+func RecordObjectToIPFS(record *Record) (string, error) {
+	// 1. 获取record的object内容
+	objectData := record.Object
+
+	
+	// 2. 判断object是否为正确的json
+	var jsonData interface{}
+	if err := json.Unmarshal([]byte(objectData), &jsonData); err != nil {
+		return "", fmt.Errorf("invalid JSON format in record object: %w", err)
+	}
+
+	
+
+	// 将json转为map[string]interface{}
+	jsonMap, ok := jsonData.(map[string]interface{})
+
+	// 将key中的和value中的空格替换为下划线
+	if !ok {
+		return "", fmt.Errorf("failed to convert JSON to map: %w", ok)
+	}
+	processedMap := make(map[string]string)
+
+	for key, value := range jsonMap {
+		// key首先去除首尾空格
+		key = strings.TrimSpace(key)
+		// 替换key中的空格为下划线
+		processedKey := strings.ReplaceAll(key, " ", "_")
+
+		// 所有的value转为字符串
+		valueStr := fmt.Sprintf("%v", value)
+		// 去除首尾空格
+		valueStr = strings.TrimSpace(valueStr)
+		// value中的空格替换为下划线
+		valueStr = strings.ReplaceAll(valueStr, " ", "_")
+		// value中的换行符替换为<br>
+		valueStr = strings.ReplaceAll(valueStr, "\n", "<br>")
+		// 如果value为空字符串，强制设为"-"
+		if valueStr == "" {
+			valueStr = "-"
+		}
+		processedMap[processedKey] = valueStr
+	}
+
+	content := ""
+	// key排序后，拼接为字符串
+	var keys []string
+	for key := range processedMap {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	for i, key := range keys {
+		content += key
+		// 如果不是最后一个key，添加空格
+		if i < len(keys)-1 {
+			content += " "
+		}
+	}
+	content += "\n"
+	for i, key := range keys {
+		value := processedMap[key]
+		// 如果不是最后一个value，添加空格
+		content += value
+		if i < len(keys)-1 {
+			content += " "
+		}
+	}
+
+	ipfsServiceUrl, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.ipfsServiceUrl", "http://47.113.204.64:5001")
+	chainServiceUrl, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.chainServiceUrl", "")
+	contractName, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.contractName", "chainQA")
+	serverURL, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.server", "https://47.113.204.64:23554")
+	chainqaUploadUid, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.uploadUid", "casbin")
+
+	// 构造请求体
+	requestBody := map[string]interface{}{
+		"uId":         chainqaUploadUid,
+		"aesKey":      generateAESKey(32),
+		"fileContent": content,
+		"fileName":    fmt.Sprintf("record-%d-%s", record.Id, util.GetCurrentTimeWithMilli()),
+		"apiUrl": map[string]string{
+			"ipfsServiceUrl":  ipfsServiceUrl,
+			"chainServiceUrl": chainServiceUrl,
+			"contractName":    contractName,
+		},
+	}
+
+	// 转换为JSON
+	reqJsonData, err := json.Marshal(requestBody)
+	if err != nil {
+		fmt.Printf("Failed to marshal request body: %v\n", err)
+		return "", err
+	}
+
+	// 发送POST请求
+	url := serverURL + "/api/upload/uploadFile"
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(reqJsonData))
+	if err != nil {
+		fmt.Printf("Failed to send POST request: %v\n", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	// 读取响应
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("Failed to read response body: %v\n", err)
+		return "", err
+	}
+
+	// 处理响应
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf("Request failed with status code: %d, response: %s\n", resp.StatusCode, string(body))
+		return "", err
+	}
+
+	// 解析响应
+	var response map[string]interface{}
+	if err := json.Unmarshal(body, &response); err != nil {
+		fmt.Printf("Failed to unmarshal response: %v\n", err)
+		return "", err
+	}
+
+	// 检查响应状态
+	code, ok := response["code"].(float64)
+	if !ok {
+		fmt.Printf("Invalid response format: code not found or not a number\n")
+		return "", errors.New("invalid response format")
+	}
+
+	if code == 0 {
+		// 成功响应，提取pos
+		data, ok := response["data"].(map[string]interface{})
+		if !ok {
+			fmt.Printf("Invalid response format: data not found or not an object\n")
+			return "", errors.New("invalid response data format")
+		}
+
+		pos, ok := data["pos"].(string)
+		if !ok {
+			fmt.Printf("Invalid response format: pos not found or not a string\n")
+			return "", errors.New("pos not found in response")
+		}
+
+		return pos, nil
+	} else {
+		// 错误响应，提取error
+		data, ok := response["data"].(map[string]interface{})
+		if !ok {
+			fmt.Printf("Invalid response format: data not found or not an object\n")
+			return "", errors.New("invalid response data format")
+		}
+
+		// 先获取msg和errorMsg
+		msg, msgOk := response["msg"].(string)
+		errorMsg, ok := data["error"].(string)
+
+		// 按照msg -> errorMsg的优先级设置错误消息
+		if msgOk && ok {
+			// 如果msg和error都存在，返回"msg——errorMsg"格式
+			errorMsg = fmt.Sprintf("%s——%s", msg, errorMsg)
+		} else if msgOk {
+			// 如果只有msg存在，使用msg
+			errorMsg = msg
+		} else if !ok {
+			// 如果msg和error都不存在，使用默认错误消息
+			errorMsg = fmt.Sprintf("request failed with code: %v", code)
+		}
+
+		return "", errors.New(errorMsg)
+	}
 }
