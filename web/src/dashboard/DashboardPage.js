@@ -450,7 +450,7 @@ class DashboardPage extends Component {
                   formatter={(value) => `${(value)}`}
                   loading={loading}
                 />
-                {/* <p style={{ marginTop: 16 }}>按患者就诊记录统计（非身份证号）</p> */}
+                {/* <p style={{ marginTop: 16 }}>按患者就诊记录统计（非索引编号）</p> */}
               </div>
             </Card>
           </Col>

@@ -9,7 +9,7 @@ import './IpfsSearchPage.less';
 
 // 步骤条数据
 const steps = [
-  { title: "输入患者身份证号" },
+  { title: "输入患者索引编号" },
   { title: "获取归档数据信息" },
   { title: "选择归档记录查询详细信息" },
 ];
