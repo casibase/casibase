@@ -313,14 +313,17 @@ class RecordEditPage extends React.Component {
             </div>
           </Col>
         </Row> */}
-        <Row style={{ marginTop: "20px" }} >
-          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:objcid"), i18next.t("general:objcid - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input disabled={false} value={this.state.record.objccid} />
-          </Col>
-        </Row>
+        {/* objcid展示：如果objcid为空则不渲染，否则渲染按钮，点击弹窗展示CodeMirror */}
+        {this.state.record.objcid && this.state.record.objcid !== "" && (
+          <Row style={{ marginTop: "20px" }} >
+            <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
+              {Setting.getLabel(i18next.t("general:objcid"), i18next.t("general:objcid - Tooltip"))} :
+            </Col>
+            <Col span={22} >
+              <ObjcidPreviewButton objcid={this.state.record.objcid} object={this.state.record.object} />
+            </Col>
+          </Row>
+        )}
         <Row style={{ marginTop: "20px" }}>
           <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Response"), i18next.t("general:Response - Tooltip"))} :
@@ -415,3 +418,36 @@ class RecordEditPage extends React.Component {
 }
 
 export default RecordEditPage;
+// 弹窗按钮组件：点击后展示CodeMirror内容
+import { Modal } from "antd";
+class ObjcidPreviewButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { visible: false };
+  }
+  showModal = () => {
+    this.setState({ visible: true });
+  };
+  handleCancel = () => {
+    this.setState({ visible: false });
+  };
+  render() {
+    return (
+      <div>
+
+        <span style={{ color: '#888', fontSize: 12, marginLeft: 12, marginRight: 12, wordBreak: 'break-all' }}>{this.props.objcid}</span>
+        <Button type="primary" size="small" onClick={() => this.setState({ visible: !this.state.visible })}>
+          {this.state.visible ? "隐藏对象数据" : "查询相应对象数据"}
+        </Button>
+        {this.state.visible && (
+          <div style={{ width: "850px", height: "400px", marginTop: 10 }}>
+            <CodeMirror
+              value={Setting.formatJsonString(this.props.object)}
+              options={{ mode: "javascript", theme: "material-darker", readOnly: true }}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+}
