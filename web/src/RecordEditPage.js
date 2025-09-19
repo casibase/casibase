@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { Button, Card, Col, Input, Row, Select, Switch } from "antd";
+import { Button, Card, Col, Input, Row, Select, Switch, message } from "antd";
 import * as RecordBackend from "./backend/RecordBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
@@ -23,6 +23,10 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/javascript/javascript");
+
+
+import * as DYCF_UTIL from "./utils/dynamicConfigUtil";
+import { DYNAMIC_CONFIG_KEYS } from "./const/DynamicConfigConst";
 
 const { Option } = Select;
 
@@ -36,6 +40,8 @@ class RecordEditPage extends React.Component {
       record: null,
       blockchainProviders: [],
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
+      ipfsQueryLoading: false,
+      ipfsQueryResult: null
     };
   }
 
@@ -320,7 +326,63 @@ class RecordEditPage extends React.Component {
               {Setting.getLabel(i18next.t("general:objcid"), i18next.t("general:objcid - Tooltip"))} :
             </Col>
             <Col span={22} >
-              <ObjcidPreviewButton objcid={this.state.record.objcid} object={this.state.record.object} />
+              {/* 内联 objcid 预览按钮及逻辑 */}
+              {(() => {
+                // 本地 state
+                if (!this.objcidPreviewState) {
+                  this.objcidPreviewState = { visible: false, loading: false };
+                }
+                const { visible, loading } = this.objcidPreviewState;
+                const ipfsQueryResult = this.state.ipfsQueryResult;
+                const ipfsQueryLoading = this.state.ipfsQueryLoading;
+                const handlePreviewClick = async () => {
+                  if (!ipfsQueryResult) {
+                    this.objcidPreviewState.loading = true;
+                    this.forceUpdate();
+                    await this.fetchQueryResult(this.state.record.objcid);
+                    this.objcidPreviewState.loading = false;
+                    this.objcidPreviewState.visible = true;
+                    this.forceUpdate();
+                  } else {
+                    this.objcidPreviewState.visible = !this.objcidPreviewState.visible;
+                    this.forceUpdate();
+                  }
+                };
+                return (
+                  <div>
+                    <span style={{ marginRight: 16 }}>{this.state.record.objcid}</span>
+                    <Button onClick={handlePreviewClick} loading={loading || ipfsQueryLoading}>
+                      {visible ? "收起" : "查询"}
+                    </Button>
+                    {/* 动画展开效果 */}
+                    <div style={{
+                      maxHeight: visible ? 400 : 0,
+                      overflow: 'hidden',
+                      transition: 'max-height 0.4s cubic-bezier(0.4,0,0.2,1)',
+                      marginTop: visible ? 16 : 0,
+                      background: '#222',
+                      borderRadius: 6,
+                      boxShadow: visible ? '0 2px 8px #0002' : 'none',
+                    }}>
+                      {visible && (
+                        <div style={{ padding: 12 }}>
+                          {ipfsQueryLoading || loading ? (
+                            <div style={{ textAlign: 'center', padding: 32 }}>
+                              <span>加载中...</span>
+                            </div>
+                          ) : (
+                            <CodeMirror
+                              value={Setting.formatJsonString(ipfsQueryResult)}
+                              options={{ mode: "javascript", theme: "material-darker", readOnly: true }}
+                              onBeforeChange={() => { }}
+                            />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
             </Col>
           </Row>
         )}
@@ -395,6 +457,142 @@ class RecordEditPage extends React.Component {
       });
   }
 
+  fetchQueryResult = async (ipfsAddress) => {
+    this.setState({ ipfsQueryLoading: true });
+    const queryItemObj = {
+      queryConcatType: "single",
+      filePos: [[ipfsAddress]],
+      returnField: [ipfsAddress + "_*"],
+      queryConditions: [],
+    };
+    const queryItem = JSON.stringify(queryItemObj);
+    try {
+      const uId = (this.props.account && this.props.account.name) ? this.props.account.name : 'admin';
+
+      // 获取基本chainqa的动态配置
+      const chainServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CHAINSERVICEURL, "");
+      const contractName = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CONTRACTNAME, "chainQA");
+      const ipfsServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_IPFSSERVICEURL, "https://47.113.204.64:5001");
+      const serverURL = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_SERVER, "	https://47.113.204.64:23554");
+
+      const response = await fetch(serverURL + "/api/query/queryData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uId,
+          queryItem,
+          apiUrl: {
+            ipfsServiceUrl: ipfsServiceUrl,
+            // chainServiceUrl: "http://47.113.204.64:9001/tencent-chainapi/exec",
+            chainServiceUrl: chainServiceUrl,
+            // contractName: "tencentChainqaContractV221demo01",
+            contractName: contractName,
+          },
+        }),
+      });
+      const res = await response.json();
+      this.praseQueryResult(res);
+    } catch (e) {
+      this.setState({
+        ipfsQueryLoading: false,
+        ipfsQueryResult: null
+      });
+      message.warning("查询失败，" + e.toString() + ". 建议稍后重试");
+
+    }
+  };
+
+  praseQueryResult = (res) => {
+    try {
+      if (res.code === 0) {
+        let dataObj = {};
+        let parseError = false;
+        try {
+          dataObj = JSON.parse(res.data);
+        } catch (e) {
+          // 不是标准json，直接展示data内容
+          parseError = true;
+        }
+        console.log(dataObj);
+        if (!parseError && typeof dataObj === 'object' && !Array.isArray(dataObj) && Object.keys(dataObj).length === 0) {
+          this.setState({
+            ipfsQueryLoading: false,
+            ipfsQueryResult: null
+          });
+          var errmsg
+          if (res.msg) {
+            errmsg = res.msg;
+          } else if (res.message) {
+            errmsg = res.message;
+          } else {
+            errmsg = "查询失败";
+          }
+          message.warning("查询出现错误，" + errmsg + ". 建议稍后重试");
+        } else if (parseError) {
+          this.setState({
+            ipfsQueryLoading: false,
+            ipfsQueryResult: null
+          });
+          var errmsg
+          if (res.msg) {
+            errmsg = res.msg;
+          } else if (res.message) {
+            errmsg = res.message;
+          } else {
+            errmsg = "查询失败";
+          }
+          message.warning("查询出现错误，" + errmsg + ". 建议稍后重试");
+        } else if (dataObj.data) {
+          // dataObj.data是一个数组，提取第一个元素
+          this.setState({
+            ipfsQueryLoading: false,
+            ipfsQueryResult: JSON.stringify(dataObj.data[0])
+          });
+        } else {
+          this.setState({
+            ipfsQueryLoading: false,
+            ipfsQueryResult: null
+          });
+          var errmsg
+          if (res.data) {
+            errmsg = res.data;
+          }
+          else if (res.msg) {
+            errmsg = res.msg;
+          } else if (res.message) {
+            errmsg = res.message;
+          } else {
+            errmsg = "查询失败";
+          }
+          message.warning("查询出现错误，" + errmsg + ". 建议稍后重试");
+        }
+      } else {
+        this.setState({
+          ipfsQueryLoading: false,
+          ipfsQueryResult: null
+        });
+        var errmsg
+        if (res.msg) {
+          errmsg = res.msg;
+        } else if (res.message) {
+          errmsg = res.message;
+        } else {
+          errmsg = "查询失败";
+        }
+        message.warning("查询出现错误，" + errmsg + ". 建议稍后重试");
+      }
+    } catch (e) {
+      this.setState({
+        ipfsQueryLoading: false,
+        ipfsQueryResult: null
+      });
+
+      message.warning("查询出现错误，" + e.toString() + ". 建议稍后重试");
+    }
+  }
+
   render() {
     return (
       <div>
@@ -418,46 +616,4 @@ class RecordEditPage extends React.Component {
 }
 
 export default RecordEditPage;
-// 弹窗按钮组件：点击后展示CodeMirror内容
-import { Modal } from "antd";
-class ObjcidPreviewButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { visible: false };
-  }
-  showModal = () => {
-    this.setState({ visible: true });
-  };
-  handleCancel = () => {
-    this.setState({ visible: false });
-  };
-  render() {
-    return (
-      <div>
-        <span style={{ color: '#888', fontSize: 12, marginLeft: 12, marginRight: 12, wordBreak: 'break-all' }}>{this.props.objcid}</span>
-        <Button type="primary" size="small" onClick={() => this.setState({ visible: !this.state.visible })}>
-          {this.state.visible ? "隐藏对象数据" : "查询相应对象数据"}
-        </Button>
-        <div
-          style={{
-            width: "850px",
-            marginTop: 10,
-            overflow: "hidden",
-            maxHeight: this.state.visible ? 420 : 0,
-            opacity: this.state.visible ? 1 : 0,
-            transition: "max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s cubic-bezier(.4,0,.2,1)",
-          }}
-        >
-          <div style={{ height: this.state.visible ? "400px" : 0, transition: "height 0.4s cubic-bezier(.4,0,.2,1)" }}>
-            {this.state.visible && (
-              <CodeMirror
-                value={Setting.formatJsonString(this.props.object)}
-                options={{ mode: "javascript", theme: "material-darker", readOnly: true }}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
+
