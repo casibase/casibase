@@ -555,6 +555,12 @@ func sendIpfsUploadReq(queueData []*Record, dataType int) (string, error) {
 	if contentErr != nil {
 		return "", contentErr
 	}
+
+	ipfsServiceUrl, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.ipfsServiceUrl", "http://47.113.204.64:5001")
+	chainServiceUrl, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.chainServiceUrl", "")
+	contractName, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.contractName", "chainQA")
+	serverURL, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("chainqa.server", "https://47.113.204.64:23554")
+
 	// 构造请求体
 	requestBody := map[string]interface{}{
 		"uId":         "casbin",
@@ -562,11 +568,9 @@ func sendIpfsUploadReq(queueData []*Record, dataType int) (string, error) {
 		"fileContent": content,
 		"fileName":    fmt.Sprintf("%d-%s", dataType, util.GetCurrentTimeWithMilli()),
 		"apiUrl": map[string]string{
-			"ipfsServiceUrl":  "http://47.113.204.64:5001",
-			// "chainServiceUrl": "http://47.113.204.64:9001/tencent-chainapi/exec",
-			"chainServiceUrl": "",
-			// "contractName":    "tencentChainqaContractV221demo01",
-			"contractName":    "chainQA",
+			"ipfsServiceUrl":  ipfsServiceUrl,
+			"chainServiceUrl": chainServiceUrl,
+			"contractName":    contractName,
 		},
 	}
 
@@ -580,7 +584,7 @@ func sendIpfsUploadReq(queueData []*Record, dataType int) (string, error) {
 	fmt.Printf("上传IPFS: " + string(jsonData))
 
 	// 发送POST请求
-	url := "https://47.113.204.64:23554/api/upload/uploadFile"
+	url := serverURL + "/api/upload/uploadFile"
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		fmt.Printf("Failed to send POST request: %v\n", err)

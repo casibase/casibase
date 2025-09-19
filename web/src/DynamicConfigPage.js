@@ -119,7 +119,8 @@ export default function DynamicConfigPage() {
                     <Form.Item
                         name="configvalue"
                         label="配置Value"
-                        rules={[{ required: true, whitespace: true, message: '请输入配置Value' }]}
+                        // 默认值为空字符串
+                        initialValue={""}
                         validateTrigger={["onBlur", "onSubmit"]}
                     >
                         <Input.TextArea autoSize autoComplete="off" />

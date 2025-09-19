@@ -6,6 +6,9 @@ import localeData from "dayjs/plugin/localeData"
 import zhCN from 'antd/lib/locale/zh_CN'; // 引入中文语言包
 import 'dayjs/locale/zh-cn';
 
+import * as DYCF_UTIL from "../utils/dynamicConfigUtil";
+import { DYNAMIC_CONFIG_KEYS } from "../const/DynamicConfigConst";
+
 
 dayjs.extend(weekday)
 dayjs.extend(localeData)
@@ -184,18 +187,24 @@ export default function NewAuditPage() {
     };
 
     // 查询按钮点击事件
-    const handleSearch = () => {
+    const handleSearch = async () => {
         if (tabKey === "user") {
             setLoading(true);
-            fetch("https://47.113.204.64:23554/api/log/logByUid", {
+            // 获取基本chainqa的动态配置
+            const chainServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CHAINSERVICEURL, "");
+            const contractName = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CONTRACTNAME, "chainQA");
+            const ipfsServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_IPFSSERVICEURL, "https://47.113.204.64:5001");
+            const serverURL = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_SERVER, "	https://47.113.204.64:23554");
+
+            fetch(serverURL + "/api/log/logByUid", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     uId: user.trim(),
                     apiUrl: {
-                        ipfsServiceUrl: "http://47.113.204.64:5001",
-                        chainServiceUrl: "",
-                        contractName: "chainQA"
+                        ipfsServiceUrl: ipfsServiceUrl,
+                        chainServiceUrl: chainServiceUrl,
+                        contractName: contractName
                     }
                 })
             })

@@ -1,3 +1,6 @@
 export const DYNAMIC_CONFIG_KEYS = {
-    "RECORD_OBJECT_FRONTEND_HIDDEN": "record.object.frontend.hidden"
+    "CHAINQA_IPFSSERVERURL": "chainqa.ipfsServiceUrl",
+    "CHAINQA_CHAINSERVICEURL": "chainqa.chainServiceUrl",
+    "CHAINQA_CONTRACTNAME": "chainqa.contractName",
+    "CHAINQA_SERVER": "chainqa.server",
 };
