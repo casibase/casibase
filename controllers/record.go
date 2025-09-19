@@ -24,6 +24,12 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
+
+const (
+	RECORD_OBJECT_SHOW = "record.object.show"
+	RECORD_OBJECT_HIDE_CONTENT = "record.object.hide.content"
+)
+
 // GetRecords
 // @Title GetRecords
 // @Tag Record API
@@ -47,7 +53,7 @@ func (c *ApiController) GetRecords() {
 			c.ResponseError(err.Error())
 			return
 		}
-
+		records = HideRecordsObject(records)
 		c.ResponseOk(records)
 	} else {
 		limit, err := util.ParseIntWithError(limit)
@@ -68,7 +74,7 @@ func (c *ApiController) GetRecords() {
 			c.ResponseError(err.Error())
 			return
 		}
-
+		records = HideRecordsObject(records)
 		c.ResponseOk(records, paginator.Nums())
 	}
 }
@@ -88,7 +94,7 @@ func (c *ApiController) GetRecord() {
 		c.ResponseError(err.Error())
 		return
 	}
-
+	record = HideRecordObject(record)
 	c.ResponseOk(record)
 }
 
@@ -102,11 +108,12 @@ func (c *ApiController) GetRecordsByAction() {
 	}
 
 	records, err := object.GetRecordsByAction(action)
+	
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
-
+	records = HideRecordsObject(records)
 	c.ResponseOk(records)
 }
 
@@ -221,4 +228,29 @@ func (c *ApiController) DeleteRecord() {
 
 	c.Data["json"] = wrapActionResponse(object.DeleteRecord(&record))
 	c.ServeJSON()
+}
+
+
+func HideRecordsObject(records []*object.Record)([]*object.Record) {
+	flag , err := object.GET_DYNAMIC_CONFIG_VALUE_BY_KEY(RECORD_OBJECT_SHOW,"false")
+	if err!=nil || flag == "false" {
+		return records
+	}
+
+	content , _ := object.GET_DYNAMIC_CONFIG_VALUE_BY_KEY(RECORD_OBJECT_HIDE_CONTENT,"{\"info\":\"数据进行加密存储，不提供明文显示\"}")
+	for _, record := range records {
+		record.Object = content
+	}
+	return records
+}
+
+func HideRecordObject(record *object.Record)(*object.Record) {
+	flag , err := object.GET_DYNAMIC_CONFIG_VALUE_BY_KEY(RECORD_OBJECT_SHOW,"false")
+	if err!=nil || flag == "false" {
+		return record
+	}
+
+	content , _ := object.GET_DYNAMIC_CONFIG_VALUE_BY_KEY(RECORD_OBJECT_HIDE_CONTENT,"{\"info\":\"数据进行加密存储，不提供明文显示\"}")
+	record.Object = content
+	return record
 }

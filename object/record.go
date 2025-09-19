@@ -75,6 +75,8 @@ type Record struct {
 	Objcid        string `xorm:"varchar(500)" json:"objcid"`
 }
 
+
+
 type Response struct {
 	Status string `json:"status"`
 	Msg    string `json:"msg"`
@@ -168,6 +170,7 @@ func GetRecord(id string) (*Record, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to get record with id '%s': %w", id, err)
 	}
+	
 	if existed {
 		return record, nil
 	}

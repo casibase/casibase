@@ -34,6 +34,16 @@ export function getDynamicConfig(id) {
     }).then(res => res.json());
 }
 
+export function getDynamicConfigValueByKey(key, defaultValue) {
+    return fetch(`${Setting.ServerUrl}/api/get-dynamic-config-by-key?key=${encodeURIComponent(key)}&defaultValue=${encodeURIComponent(defaultValue)}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+            "Accept-Language": Setting.getAcceptLanguage(),
+        },
+    }).then(res => res.json());
+}
+
 export function addDynamicConfig(config) {
     return fetch(`${Setting.ServerUrl}/api/add-dynamic-config`, {
         method: "POST",

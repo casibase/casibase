@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import {Link} from "react-router-dom";
-import {Alert, Button, Popconfirm, Popover, Switch, Table, Tooltip, Typography} from "antd";
+import { Link } from "react-router-dom";
+import { Alert, Button, Popconfirm, Popover, Switch, Table, Tooltip, Typography } from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as RecordBackend from "./backend/RecordBackend";
@@ -22,8 +22,8 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
-import {CloseCircleFilled, DeleteOutlined} from "@ant-design/icons";
-import {Controlled as CodeMirror} from "react-codemirror2";
+import { CloseCircleFilled, DeleteOutlined } from "@ant-design/icons";
+import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css";
 import CommitResultWidget from "./component/record/CommitResultWidget";
@@ -98,7 +98,7 @@ class RecordListPage extends BaseListPage {
     RecordBackend.addRecord(newRecord)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/records/${newRecord.owner}/${newRecord.id}`, mode: "add"});
+          this.props.history.push({ pathname: `/records/${newRecord.owner}/${newRecord.id}`, mode: "add" });
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
@@ -109,7 +109,7 @@ class RecordListPage extends BaseListPage {
       });
   }
 
-  deleteItem = async(i) => {
+  deleteItem = async (i) => {
     return RecordBackend.deleteRecord(this.state.data[i]);
   };
 
@@ -313,15 +313,15 @@ class RecordListPage extends BaseListPage {
         sorter: true,
         filterMultiple: false,
         filters: [
-          {text: "GET", value: "GET"},
-          {text: "HEAD", value: "HEAD"},
-          {text: "POST", value: "POST"},
-          {text: "PUT", value: "PUT"},
-          {text: "DELETE", value: "DELETE"},
-          {text: "CONNECT", value: "CONNECT"},
-          {text: "OPTIONS", value: "OPTIONS"},
-          {text: "TRACE", value: "TRACE"},
-          {text: "PATCH", value: "PATCH"},
+          { text: "GET", value: "GET" },
+          { text: "HEAD", value: "HEAD" },
+          { text: "POST", value: "POST" },
+          { text: "PUT", value: "PUT" },
+          { text: "DELETE", value: "DELETE" },
+          { text: "CONNECT", value: "CONNECT" },
+          { text: "OPTIONS", value: "OPTIONS" },
+          { text: "TRACE", value: "TRACE" },
+          { text: "PATCH", value: "PATCH" },
         ],
       },
       {
@@ -415,7 +415,7 @@ class RecordListPage extends BaseListPage {
         render: (text, record, index) => {
           if (!text || text === "") {
             return (
-              <div style={{maxWidth: "200px"}}>
+              <div style={{ maxWidth: "200px" }}>
                 {Setting.getShortText(text, 50)}
               </div>
             );
@@ -441,10 +441,10 @@ class RecordListPage extends BaseListPage {
             <Popover
               placement="right"
               content={
-                <div style={{width: "600px", height: "400px", display: "flex", flexDirection: "column", gap: "12px"}}>
+                <div style={{ width: "600px", height: "400px", display: "flex", flexDirection: "column", gap: "12px" }}>
                   {!isValidJson && (
                     <Alert type="error" showIcon message={
-                      <Typography.Paragraph ellipsis={{expandable: "collapsible"}} style={{margin: 0}}>{errorMessage}</Typography.Paragraph>}
+                      <Typography.Paragraph ellipsis={{ expandable: "collapsible" }} style={{ margin: 0 }}>{errorMessage}</Typography.Paragraph>}
                     />)}
                   <CodeMirror
                     value={formattedText}
@@ -467,12 +467,20 @@ class RecordListPage extends BaseListPage {
               }
               trigger="hover"
             >
-              <div style={{maxWidth: "200px", cursor: "pointer"}}>
+              <div style={{ maxWidth: "200px", cursor: "pointer" }}>
                 {Setting.getShortText(text, 50)}
               </div>
             </Popover>
           );
         },
+      },
+      {
+        title: i18next.t("general:objcid"),
+        dataIndex: "objcid",
+        key: "objcid",
+        width: "260px",
+        sorter: true,
+        ...this.getColumnSearchProps("objcid")
       },
       {
         title: i18next.t("message:Error text"),
@@ -482,7 +490,7 @@ class RecordListPage extends BaseListPage {
         sorter: true,
         ...this.getColumnSearchProps("errorText"),
         render: (text, record, index) => {
-          return (text !== "" ? <Alert description={text} type="error" showIcon style={{padding: "4px"}} icon={<CloseCircleFilled style={{fontSize: "16px", margin: "4px 8px 0 4px"}} />} /> : null);
+          return (text !== "" ? <Alert description={text} type="error" showIcon style={{ padding: "4px" }} icon={<CloseCircleFilled style={{ fontSize: "16px", margin: "4px 8px 0 4px" }} />} /> : null);
         },
       },
       {
@@ -570,10 +578,10 @@ class RecordListPage extends BaseListPage {
                       placement="left"
                       title={i18next.t("general:Result")}
                       content={
-                        <div style={{width: "800px", maxHeight: "600px", overflow: "auto"}}>
+                        <div style={{ width: "800px", maxHeight: "600px", overflow: "auto" }}>
                           {this.state.isComparing ? (
-                            <div style={{textAlign: "center", padding: "40px"}}>
-                              <div style={{fontSize: "24px", marginBottom: "16px"}}>🔄</div>
+                            <div style={{ textAlign: "center", padding: "40px" }}>
+                              <div style={{ fontSize: "24px", marginBottom: "16px" }}>🔄</div>
                               <div>{i18next.t("general:Loading...")}</div>
                             </div>
                           ) : (
@@ -610,10 +618,10 @@ class RecordListPage extends BaseListPage {
                         placement="left"
                         title={i18next.t("general:Result") + " 2"}
                         content={
-                          <div style={{width: "800px", maxHeight: "600px", overflow: "auto"}}>
+                          <div style={{ width: "800px", maxHeight: "600px", overflow: "auto" }}>
                             {this.state.isComparing ? (
-                              <div style={{textAlign: "center", padding: "40px"}}>
-                                <div style={{fontSize: "24px", marginBottom: "16px"}}>🔄</div>
+                              <div style={{ textAlign: "center", padding: "40px" }}>
+                                <div style={{ fontSize: "24px", marginBottom: "16px" }}>🔄</div>
                                 <div>{i18next.t("general:Loading...")}</div>
                               </div>
                             ) : (
@@ -667,19 +675,19 @@ class RecordListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={records} rowKey={(record) => `${record.owner}/${record.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{ x: "max-content" }} columns={columns} dataSource={records} rowKey={(record) => `${record.owner}/${record.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Records")}
               {Setting.isAdminUser(this.props.account) && (
-                <span style={{marginLeft: 32}}>
+                <span style={{ marginLeft: 32 }}>
                   {i18next.t("record:Enable cross-chain")}:
-                  <Switch checked={this.state.enableCrossChain} onChange={this.toggleEnableCrossChain} style={{marginLeft: 8}} />
+                  <Switch checked={this.state.enableCrossChain} onChange={this.toggleEnableCrossChain} style={{ marginLeft: 8 }} />
                 </span>
               )}
               {this.state.selectedRowKeys.length > 0 && (
                 <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
-                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
+                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{ marginLeft: 8 }}>
                     {i18next.t("general:Delete")} ({this.state.selectedRowKeys.length})
                   </Button>
                 </Popconfirm>
@@ -700,7 +708,7 @@ class RecordListPage extends BaseListPage {
       field = "type";
       value = params.type;
     }
-    this.setState({loading: true});
+    this.setState({ loading: true });
     RecordBackend.getRecords(Setting.getRequestOrganization(this.props.account), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({

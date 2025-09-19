@@ -497,6 +497,8 @@
     "Failed to remove record": "Failed to remove record",
     "Record ID": "Record ID",
     "Object": "Object",
+    "objcid": "object CID",
+    "objcid - Tooltip": "Object CID - Tooltip",
     "Action": "Action",
     "Remove": "Remove",
     "Refresh": "Refresh",

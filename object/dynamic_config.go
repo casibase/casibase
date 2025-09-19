@@ -50,3 +50,7 @@ func GetDynamicConfigValueByKey(key, defaultVal string) (string, error) {
 	}
 	return config.Configvalue, nil
 }
+
+func GET_DYNAMIC_CONFIG_VALUE_BY_KEY(key, defaultVal string) (string, error) {
+	return GetDynamicConfigValueByKey(key, defaultVal)
+}
