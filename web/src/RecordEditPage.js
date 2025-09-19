@@ -298,7 +298,7 @@ class RecordEditPage extends React.Component {
             <Input disabled={false} value={this.state.record.correlationId} />
           </Col>
         </Row>
-        <Row style={{ marginTop: "20px" }} >
+        {/* <Row style={{ marginTop: "20px" }} >
           <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Object"), i18next.t("general:Object - Tooltip"))} :
           </Col>
@@ -312,10 +312,10 @@ class RecordEditPage extends React.Component {
               />
             </div>
           </Col>
-        </Row>
+        </Row> */}
         <Row style={{ marginTop: "20px" }} >
           <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:objccid"), i18next.t("general:objccid - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:objcid"), i18next.t("general:objcid - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input disabled={false} value={this.state.record.objccid} />
