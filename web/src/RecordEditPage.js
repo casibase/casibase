@@ -434,19 +434,29 @@ class ObjcidPreviewButton extends React.Component {
   render() {
     return (
       <div>
-
         <span style={{ color: '#888', fontSize: 12, marginLeft: 12, marginRight: 12, wordBreak: 'break-all' }}>{this.props.objcid}</span>
         <Button type="primary" size="small" onClick={() => this.setState({ visible: !this.state.visible })}>
           {this.state.visible ? "隐藏对象数据" : "查询相应对象数据"}
         </Button>
-        {this.state.visible && (
-          <div style={{ width: "850px", height: "400px", marginTop: 10 }}>
-            <CodeMirror
-              value={Setting.formatJsonString(this.props.object)}
-              options={{ mode: "javascript", theme: "material-darker", readOnly: true }}
-            />
+        <div
+          style={{
+            width: "850px",
+            marginTop: 10,
+            overflow: "hidden",
+            maxHeight: this.state.visible ? 420 : 0,
+            opacity: this.state.visible ? 1 : 0,
+            transition: "max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s cubic-bezier(.4,0,.2,1)",
+          }}
+        >
+          <div style={{ height: this.state.visible ? "400px" : 0, transition: "height 0.4s cubic-bezier(.4,0,.2,1)" }}>
+            {this.state.visible && (
+              <CodeMirror
+                value={Setting.formatJsonString(this.props.object)}
+                options={{ mode: "javascript", theme: "material-darker", readOnly: true }}
+              />
+            )}
           </div>
-        )}
+        </div>
       </div>
     );
   }
