@@ -6,7 +6,7 @@ import * as DynamicConfigBackend from '../backend/DynamicConfigBackend';
  * @param {string} defaultValue 默认值（如果未获取到则返回此值）
  * @returns {Promise<string>} 配置值
  */
-export async function getDynamicConfigValue(key, defaultValue = '') {
+export async function GET(key, defaultValue = '') {
     try {
         const res = await DynamicConfigBackend.getDynamicConfigValueByKey(key, defaultValue);
         // 兼容后端返回格式

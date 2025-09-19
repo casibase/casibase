@@ -28,6 +28,9 @@ import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css";
 import CommitResultWidget from "./component/record/CommitResultWidget";
 
+// import * as DYCF_UTIL from "./utils/dynamicConfigUtil";
+// import { DYNAMIC_CONFIG_KEYS } from "./const/DynamicConfigConst";
+
 class RecordListPage extends BaseListPage {
   constructor(props) {
     super(props);
@@ -411,6 +414,7 @@ class RecordListPage extends BaseListPage {
         key: "object",
         width: "200px",
         sorter: true,
+        hidden: true,
         ...this.getColumnSearchProps("object"),
         render: (text, record, index) => {
           if (!text || text === "") {
@@ -663,6 +667,8 @@ class RecordListPage extends BaseListPage {
         },
       },
     ];
+
+
 
     const paginationProps = {
       pageSize: this.state.pagination.pageSize,
