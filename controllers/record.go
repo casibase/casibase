@@ -26,7 +26,7 @@ import (
 
 
 const (
-	RECORD_OBJECT_SHOW = "record.object.show"
+	RECORD_OBJECT_CHANGE = "record.object.change"
 	RECORD_OBJECT_HIDE_CONTENT = "record.object.hide.content"
 )
 
@@ -232,7 +232,7 @@ func (c *ApiController) DeleteRecord() {
 
 
 func HideRecordsObject(records []*object.Record)([]*object.Record) {
-	flag , err := object.GET_DYNAMIC_CONFIG_VALUE_BY_KEY(RECORD_OBJECT_SHOW,"false")
+	flag , err := object.GET_DYNAMIC_CONFIG_VALUE_BY_KEY(RECORD_OBJECT_CHANGE,"false")
 	if err!=nil || flag == "false" {
 		return records
 	}
@@ -245,7 +245,7 @@ func HideRecordsObject(records []*object.Record)([]*object.Record) {
 }
 
 func HideRecordObject(record *object.Record)(*object.Record) {
-	flag , err := object.GET_DYNAMIC_CONFIG_VALUE_BY_KEY(RECORD_OBJECT_SHOW,"false")
+	flag , err := object.GET_DYNAMIC_CONFIG_VALUE_BY_KEY(RECORD_OBJECT_CHANGE,"false")
 	if err!=nil || flag == "false" {
 		return record
 	}
