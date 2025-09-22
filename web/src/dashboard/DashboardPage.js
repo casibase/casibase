@@ -138,7 +138,7 @@ const mockData = {
         }
       }
     ],
-    "unit": [
+    "section": [
 
       {
         "date": "2025-08-14",
@@ -201,21 +201,21 @@ class DashboardPage extends Component {
   processData = (data) => {
     // 取最后一天的数据
     const lastDayAction = data.action.length > 0 ? data.action[data.action.length - 1] : null;
-    const lastDayUnit = data.unit.length > 0 ? data.unit[data.unit.length - 1] : null;
+    const lastDaySection = data.section.length > 0 ? data.section[data.section.length - 1] : null;
     const lastDayDiseaseCategory = data.diseaseCategory.length > 0 ? data.diseaseCategory[data.diseaseCategory.length - 1] : null;
 
-    // 处理总就诊记录数（units各医院的和）
+    // 处理总就诊记录数（sections各医院的和）
     // const totalRecords = lastDayAction?.FieldCount?.["test-action"] || 0;
     let totalRecords = 0;
-    if (lastDayUnit?.FieldCount) {
-      Object.values(lastDayUnit.FieldCount).forEach(value => {
+    if (lastDaySection?.FieldCount) {
+      Object.values(lastDaySection.FieldCount).forEach(value => {
         totalRecords += value;
       });
     }
-    // 处理医院记录数（unit）
+    // 处理医院记录数（section）
     const hospitals = [];
-    if (lastDayUnit?.FieldCount) {
-      Object.entries(lastDayUnit.FieldCount).forEach(([name, value]) => {
+    if (lastDaySection?.FieldCount) {
+      Object.entries(lastDaySection.FieldCount).forEach(([name, value]) => {
         hospitals.push({ name, value });
       });
     }
@@ -246,7 +246,7 @@ class DashboardPage extends Component {
 
   fetchDashboardData = async () => {
     try {
-      const response = await DashboardBackend.getDashBoardData("100", "All", "unit,diseaseCategory,action");
+      const response = await DashboardBackend.getDashBoardData("100", "All", "section,diseaseCategory,action");
 
       if (response.status === "ok" && response.data) {
         this.processData(response.data);
