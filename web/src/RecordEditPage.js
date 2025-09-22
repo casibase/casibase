@@ -473,7 +473,7 @@ class RecordEditPage extends React.Component {
       // 获取基本chainqa的动态配置
       const chainServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CHAINSERVICEURL, "");
       const contractName = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CONTRACTNAME, "chainQA");
-      const ipfsServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_IPFSSERVICEURL, "https://47.113.204.64:5001");
+      const ipfsServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_IPFSSERVERURL, "https://47.113.204.64:5001");
       const serverURL = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_SERVER, "	https://47.113.204.64:23554");
 
       const response = await fetch(serverURL + "/api/query/queryData", {

@@ -193,7 +193,7 @@ export default function NewAuditPage() {
             // 获取基本chainqa的动态配置
             const chainServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CHAINSERVICEURL, "");
             const contractName = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CONTRACTNAME, "chainQA");
-            const ipfsServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_IPFSSERVICEURL, "https://47.113.204.64:5001");
+            const ipfsServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_IPFSSERVERURL, "https://47.113.204.64:5001");
             const serverURL = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_SERVER, "	https://47.113.204.64:23554");
 
             fetch(serverURL + "/api/log/logByUid", {
@@ -229,7 +229,7 @@ export default function NewAuditPage() {
             // 获取基本chainqa的动态配置
             const chainServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CHAINSERVICEURL, "");
             const contractName = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_CONTRACTNAME, "chainQA");
-            const ipfsServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_IPFSSERVICEURL, "https://47.113.204.64:5001");
+            const ipfsServiceUrl = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_IPFSSERVERURL, "https://47.113.204.64:5001");
             const serverURL = await DYCF_UTIL.GET(DYNAMIC_CONFIG_KEYS.CHAINQA_SERVER, "	https://47.113.204.64:23554");
 
             // 转为秒级时间戳
