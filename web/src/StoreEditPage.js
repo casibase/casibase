@@ -25,6 +25,7 @@ import PromptTable from "./table/PromptTable";
 import StoreAvatarUploader from "./AvatarUpload";
 import {LinkOutlined} from "@ant-design/icons";
 import {Controlled as CodeMirror} from "react-codemirror2";
+import {NavItemTree} from "./component/nav-item-tree/NavItemTree";
 
 const {Option} = Select;
 const {TextArea} = Input;
@@ -514,6 +515,21 @@ class StoreEditPage extends React.Component {
                 <input type="color" value={this.state.store.themeColor} onChange={(e) => {
                   this.updateStoreField("themeColor", e.target.value);
                 }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Navbar items"), i18next.t("store:Navbar items - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <NavItemTree
+                  disabled={!Setting.isAdminUser(this.props.account)}
+                  checkedKeys={this.state.store.navItems ?? ["all"]}
+                  defaultExpandedKeys={["all"]}
+                  onCheck={(checked) => {
+                    this.updateStoreField("navItems", checked);
+                  }}
+                />
               </Col>
             </Row>
             <Row style={{marginTop: "20px"}} >
