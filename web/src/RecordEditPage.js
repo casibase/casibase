@@ -325,7 +325,7 @@ class RecordEditPage extends React.Component {
             <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
               {Setting.getLabel(i18next.t("general:objcid"), i18next.t("general:objcid - Tooltip"))} :
             </Col>
-            
+
             <Col span={22} >
               {/* 内联 objcid 预览按钮及逻辑 */}
               {(() => {
@@ -481,6 +481,7 @@ class RecordEditPage extends React.Component {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: 'same-origin',
         body: JSON.stringify({
           uId,
           queryItem,
