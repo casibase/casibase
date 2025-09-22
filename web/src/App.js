@@ -507,6 +507,35 @@ class App extends Component {
     }
   }
 
+  navItemsIsAll() {
+    const navItems = this.state.store?.navItems;
+    return !navItems || navItems.includes("all");
+  }
+
+  filterMenuItems(menuItems, navItems) {
+    if (!navItems || navItems.includes("all")) {
+      return menuItems;
+    }
+
+    const filteredItems = menuItems.map(item => {
+      if (!Array.isArray(item.children)) {
+        return item;
+      }
+
+      const filteredChildren = item.children.filter(child => {
+        return navItems.includes(child.key);
+      });
+
+      const newItem = {...item};
+      newItem.children = filteredChildren;
+      return newItem;
+    });
+
+    return filteredItems.filter(item => {
+      return !Array.isArray(item.children) || item.children.length > 0;
+    });
+  }
+
   getMenuItems() {
     const res = [];
 
@@ -515,6 +544,8 @@ class App extends Component {
     if (this.state.account === null || this.state.account === undefined) {
       return [];
     }
+
+    const navItems = this.state.store?.navItems;
 
     if (this.state.account.type.startsWith("video-")) {
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
@@ -614,7 +645,7 @@ class App extends Component {
       res.pop();
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/chat">{i18next.t("general:Home")}</Link>, "/home", <HomeTwoTone twoToneColor={twoToneColor} />, [
-        Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/Chat"),
+        Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"),
         Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"),
         Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities"),
         Setting.getItem(<Link to="/desktop">{i18next.t("general:OS Desktop")}</Link>, "/desktop"),
@@ -686,7 +717,10 @@ class App extends Component {
           <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
             {i18next.t("general:Swagger")}
             {Setting.renderExternalLink()}
-          </a>, "/swagger")]));
+          </a>, "/swagger"),
+      ]));
+
+      return this.filterMenuItems(res, navItems);
     }
 
     const sortedForms = this.state.forms.slice().sort((a, b) => {
