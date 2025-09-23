@@ -22,12 +22,38 @@ import (
 
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/util"
+	"xorm.io/core"
 )
 
 func InitDb() {
 	modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName := initBuiltInProviders()
 	initBuiltInStore(modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName)
 	initTemplates()
+}
+
+func InitFixPrice() {
+	var messages []*Message
+	start := "2025-09-08T00:00:00+08:00"
+	end := "2025-09-23T00:00:00+08:00"
+	err := adapter.engine.Where("created_time >= ? AND created_time < ? AND price > ?", start, end, 1.0).
+		Find(&messages)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, message := range messages {
+		tokenCount := message.TokenCount
+		price := message.Price
+		if (tokenCount >= 1000 && tokenCount < 10_000 && price >= 1.0) ||
+			(tokenCount >= 10_000 && tokenCount < 100_000 && price >= 10.0) ||
+			(tokenCount >= 100_000 && price >= 100.0) {
+			message.Price = price / 1000.0
+			_, err = adapter.engine.ID(core.PK{message.Owner, message.Name}).AllCols().Update(message)
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
 }
 
 func initBuiltInStore(modelProviderName string, embeddingProviderName string, ttsProviderName string, sttProviderName string) {
