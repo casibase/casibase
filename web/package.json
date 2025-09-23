@@ -65,6 +65,7 @@
     "react-scripts": "5.0.1",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
+    "sm-crypto": "^0.3.13",
     "xlsx": "^0.16.9"
   },
   "scripts": {

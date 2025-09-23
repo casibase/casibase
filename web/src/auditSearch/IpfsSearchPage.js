@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import sm3 from 'sm-crypto/src/sm3';
 import { Input, Button, Layout, Typography, Space, message } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -29,13 +30,18 @@ export class IPFSSearchPage extends Component {
     });
   };
 
+  // 进行s3哈希处理（sm3）
+  s3HashCorrelationId = (correlationId) => {
+    return sm3(correlationId);
+  };
+
   handleSearch = () => {
     const { correlationId } = this.state;
-    if (correlationId.trim()) {
-      // 跳转到结果页面
-      this.props.history.push(`/ipfs-search/result/${correlationId}`);
+    const trimmed = correlationId.trim();
+    if (trimmed) {
+      const hash = this.s3HashCorrelationId(trimmed);
+      this.props.history.push(`/ipfs-search/result/${hash}`);
     } else {
-      // 提示用户输入
       message.error('请输入有效的索引(correlationId)');
     }
   };
@@ -72,7 +78,7 @@ export class IPFSSearchPage extends Component {
                 <div className="ipfs-search-input-container">
                   <SearchOutlined className="ipfs-search-icon" />
                   <Input
-                    placeholder="请输入索引(correlationId)"
+                    placeholder="请输入索引"
                     value={correlationId}
                     variant="borderless"
                     onChange={this.handleInputChange}
