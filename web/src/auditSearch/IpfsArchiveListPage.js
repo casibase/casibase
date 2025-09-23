@@ -91,13 +91,19 @@ class IpfsArchiveListPage extends BaseListPage {
   };
 
   fetch = async (params) => {
-    const { page, pageSize, sortField, sortOrder, searchText, searchedColumn } = params;
+    // 兼容 antd Table onChange 传参和自定义传参
+    let page = params?.pagination?.current || params?.page || this.state.pagination.current;
+    let pageSize = params?.pagination?.pageSize || params?.pageSize || this.state.pagination.pageSize;
+    const sortField = params?.sortField;
+    const sortOrder = params?.sortOrder;
+    const searchText = params?.searchText;
+    const searchedColumn = params?.searchedColumn;
     this.setState({ loading: true });
 
     try {
       const response = await IpfsArchiveBackend.getIpfsArchives(
-        page || this.state.pagination.current,
-        pageSize || this.state.pagination.pageSize,
+        page,
+        pageSize,
         searchedColumn || "",
         searchText || "",
         sortField || "",
@@ -109,9 +115,9 @@ class IpfsArchiveListPage extends BaseListPage {
           data: response.data || [],
           pagination: {
             ...this.state.pagination,
-            current: page || this.state.pagination.current,
-            pageSize: pageSize || this.state.pagination.pageSize,
-            total: response.total || 0,
+            current: page,
+            pageSize: pageSize,
+            total: response.data2 || 0,
           },
           loading: false,
         });

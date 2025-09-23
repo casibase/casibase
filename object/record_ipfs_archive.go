@@ -158,6 +158,11 @@ func GetIpfsArchives(offset, limit int, field, value, sortField, sortOrder strin
 	return archives, nil
 }
 
+func GetIpfsArchivesCount(field, value string) (int64, error) {
+	session := GetDbSession("", -1, -1, field, value, "", "")
+	return session.Count(&IpfsArchive{})
+}
+
 // UpdateIpfsArchive 更新IPFS归档记录(基于CorrelationId)
 func UpdateIpfsArchive(archive *IpfsArchive) (bool, error) {
 	if archive.CorrelationId == "" {

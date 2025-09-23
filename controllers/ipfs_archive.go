@@ -68,14 +68,15 @@ func (c *ApiController) GetIpfsArchives() {
 		// }
 
 		// Temporarily get all archives for pagination (to be replaced with proper count function)
-		allArchives, err := object.GetIpfsArchives(0, 0, field, value, sortField, sortOrder)
+		count, err := object.GetIpfsArchivesCount(field, value)
+		
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
-		count := len(allArchives)
+		fmt.Printf("count: %d\n", count)
 
-		paginator := pagination.SetPaginator(c.Ctx, limit, int64(count))
+		paginator := pagination.SetPaginator(c.Ctx, limit, count)
 		archives, err := object.GetIpfsArchives(paginator.Offset(), limit, field, value, sortField, sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
