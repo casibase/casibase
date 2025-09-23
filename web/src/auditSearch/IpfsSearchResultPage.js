@@ -53,6 +53,8 @@ class IPFSSearchResultPage extends BaseListPage {
     const dataTypes = Object.keys(DataTypeConverter.getAllDataTypes()).map(Number);
     const initialDataType = dataTypes[0] || 1;
 
+
+
     // 先设置状态
     this.setState({
       allDataTypes: dataTypes,
@@ -84,14 +86,15 @@ class IPFSSearchResultPage extends BaseListPage {
     const { dataType = this.state.activeDataType, page, pageSize } = params;
     const { correlationId } = this.state;
     const currentPage = page || this.state.pagination.current || 1;
-    const currentPageSize = pageSize || this.state.pagination.pageSize || 10;
+    const currentPageSize = pageSize || this.state.pagination.pageSize || 1000;
 
     this.setState({ loading: true });
 
     try {
       const response = await IpfsArchiveBackend.getIpfsArchivesByCorrelationIdAndDataType(
         currentPage.toString(),
-        currentPageSize.toString(),
+        // currentPageSize.toString(),
+        "10000",
         dataType,
         correlationId
       );
@@ -105,8 +108,8 @@ class IPFSSearchResultPage extends BaseListPage {
           delete newGroupedArchives[dataType];
         }
         // 存储总数，用于分页
-        if (response.total) {
-          newGroupedArchives[`${dataType}_total`] = response.total;
+        if (response.data2) {
+          newGroupedArchives[`${dataType}_total`] = response.data2;
         } else {
           delete newGroupedArchives[`${dataType}_total`];
         }
@@ -117,7 +120,7 @@ class IPFSSearchResultPage extends BaseListPage {
             ...this.state.pagination,
             current: currentPage,
             pageSize: currentPageSize,
-            total: response.total || 0
+            total: response.data2 || 0
           },
           loading: false
         });
