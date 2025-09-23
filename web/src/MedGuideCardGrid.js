@@ -26,7 +26,7 @@ const GROUPS = [
         buttons: [
             { title: "数据总览", icon: "📊", desc: "全局展示平台内各类数据分布、增长趋势与共享情况。", route: "/dashboard" },
 
-            { title: "专病知识图谱", icon: "🧠", desc: "构建专病领域知识结构，助力智能诊疗与科研分析。", route: "/forms/专病库知识图谱/data" },
+            { title: "专病知识图谱", icon: "🧠", desc: "构建专病领域知识结构，助力智能诊疗与科研分析。", route: "https://rws.neusoft.com:10100/medkb/#/login" },
         ],
     },
     {
