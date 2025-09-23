@@ -57,6 +57,7 @@ func AddIpfsArchive(archive *IpfsArchive) (bool, error) {
 		archive.CreateTime = currentTime
 	}
 	archive.UpdateTime = currentTime
+	archive.UploadTime = "1970-01-01 00:00:00.000"
 
 	affected, err := adapter.engine.Insert(archive)
 	if err != nil {
