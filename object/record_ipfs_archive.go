@@ -240,6 +240,9 @@ func AddRecordToArchiveQueueFromRecordAdd(record *Record) {
         return
     }
 
+	// 等待2s
+	time.Sleep(2 * time.Second)
+
     var dataType int
     switch record.Action {
     case "add-outpatient":
@@ -254,9 +257,24 @@ func AddRecordToArchiveQueueFromRecordAdd(record *Record) {
         // 其他类型action不处理
         return
     }
+	// 先调用数据库获取到最新的recordId
+	recordName := record.Name
+	recordOwner := record.Owner
+	// 根据name和owner获取最新的record
+
+	recordFromDb, err := GetRecord(fmt.Sprintf("%s/%s", recordOwner, recordName))
+	
+	if err != nil {
+		
+		return
+	}
+	if recordFromDb == nil {
+		return
+	}
+	fmt.Println(">>> AddRecordToArchiveQueueFromRecordAdd 数据进入待归档队列 ", recordFromDb)
 
     // 异步调用
-    go AddRecordToArchiveQueue(record, dataType)
+    go AddRecordToArchiveQueue(recordFromDb, dataType)
 }
 
 
@@ -299,6 +317,7 @@ func AddRecordToArchiveQueue(record *Record, dataType int) error {
 	// 检查队列大小是否达到阈值
 	if len(recordArchiveQueues[dataType]) >= maxQueueSize {
 		// 触发IPFS归档流程
+		fmt.Println(">> [AddRecordToArchiveQueue]触发IPFS归档流程")
 		go ArchiveToIPFS(dataType, userId)
 	}
 

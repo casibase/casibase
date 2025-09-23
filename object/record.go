@@ -178,6 +178,8 @@ func GetRecord(id string) (*Record, error) {
 	return nil, nil
 }
 
+
+
 // GetRecordsByAction 根据owner和action字段获取记录，按Id降序排列
 func GetRecordsByAction( action string) ([]*Record, error) {
 	records := []*Record{}
@@ -351,11 +353,6 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 		return false, nil, err
 	}
 
-	
-
-	AddRecordToArchiveQueueFromRecordAdd(record)
-
-	
 
 	data := map[string]interface{}{"name": record.Name}
 
@@ -367,6 +364,8 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 			data = commitResult
 		}
 	}
+
+	go AddRecordToArchiveQueueFromRecordAdd(record)
 
 	// 异步执行
 	go UploadObjectToIPFS(record)
@@ -430,15 +429,11 @@ func AddRecords(records []*Record, syncEnabled bool) (bool, interface{}, error) 
 		}
 	}
 
-	// 将validRecords逐个加入到AddRecordToArchiveQueueFromRecordAdd
-	for _, record := range validRecords {
-		AddRecordToArchiveQueueFromRecordAdd(record)
-		
-	}
 
 	// 异步执行
 	go func() {
 		for _, record := range validRecords {
+			AddRecordToArchiveQueueFromRecordAdd(record)
 			UploadObjectToIPFS(record)
 		}
 	}()
@@ -491,14 +486,19 @@ func UploadObjectToIPFS (r *Record) (bool, error) {
 
 	ipfs, err := RecordObjectToIPFS(r)
 	if err != nil {
+		fmt.Println(">>> [UploadObjectToIPFS]RecordObjectToIPFS error:", err)
 		return false, err
 	}
 	
-	fmt.Println(">>> Object字段已经上传ipfs:", ipfs)
-	// 将ipfs字段更新到数据库中
-	affected, err := adapter.engine.Where("id = ?", r.Id).Cols("objcid").Update(&Record{Objcid: ipfs})
+	
+	affected, err := adapter.engine.Where("name = ?", r.Name).Cols("objcid").Update(&Record{Objcid: ipfs})
 	if err != nil {
 		return false, fmt.Errorf("failed to update objcid for record %s: %s", r.getUniqueId(), err)
+	}
+	if affected > 0 {
+		fmt.Println(">>> [UploadObjectToIPFS]Object字段已经上传ipfs:", ipfs)
+	} else {
+		fmt.Println(">>> [UploadObjectToIPFS]Object字段上传ipfs成功但更新失败，建议人工更新:", ipfs, "| record的Name字段为：",r.Name)
 	}
 	return affected > 0, nil
 }
