@@ -15,34 +15,21 @@
 package model
 
 import (
-	"context"
 	"fmt"
 	"io"
-	"net/http"
-	"strings"
-
-	"github.com/iflytek/spark-ai-go/sparkai/llms/spark"
-	"github.com/iflytek/spark-ai-go/sparkai/llms/spark/client/sparkclient"
-	"github.com/iflytek/spark-ai-go/sparkai/messages"
 )
 
 type iFlytekModelProvider struct {
 	subType     string
-	appID       string
-	apiKey      string
 	secretKey   string
 	temperature float32
-	topK        int
 }
 
-func NewiFlytekModelProvider(subType string, secretKey string, apiKey string, appId string, temperature float32, topK int) (*iFlytekModelProvider, error) {
+func NewiFlytekModelProvider(subType string, secretKey string, temperature float32) (*iFlytekModelProvider, error) {
 	p := &iFlytekModelProvider{
 		subType:     subType,
-		appID:       appId,
-		apiKey:      apiKey,
 		secretKey:   secretKey,
 		temperature: temperature,
-		topK:        topK,
 	}
 	return p, nil
 }
@@ -185,60 +172,13 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
 }
 
 func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
-	baseUrl, domain, err := p.getBaseUrl()
-	_, client, err := spark.NewClient(spark.WithBaseURL(baseUrl), spark.WithApiKey(p.apiKey), spark.WithApiSecret(p.secretKey), spark.WithAppId(p.appID), spark.WithAPIDomain(domain))
-	if err != nil {
-		return nil, err
-	}
-	ctx := context.Background()
-
-	flusher, ok := writer.(http.Flusher)
-	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
-	}
-	if strings.HasPrefix(question, "$CasibaseDryRun$") {
-		modelResult, err := getDefaultModelResult(p.subType, question, "")
-		if err != nil {
-			return nil, fmt.Errorf("cannot calculate tokens")
-		}
-		if getContextLength(p.subType) > modelResult.TotalTokenCount {
-			return modelResult, nil
-		} else {
-			return nil, fmt.Errorf("exceed max tokens")
-		}
-	}
-
-	chatMessages := p.getChatMessages(question, history, prompt, knowledgeMessages)
-
-	r := &sparkclient.ChatRequest{
-		Domain:   &domain,
-		Messages: chatMessages,
-	}
-
-	flushData := func(data string) error {
-		if _, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
-			return err
-		}
-		flusher.Flush()
-		return nil
-	}
-
-	response := ""
-
-	_, err = client.CreateChatWithCallBack(ctx, r, func(msg messages.ChatMessage) error {
-		content := msg.GetContent()
-		response += content
-		err = flushData(content)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
+	const BaseUrl = "https://spark-api-open.xf-yun.com/v1"
+	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.secretKey, p.temperature, 0, 0, 0, BaseUrl, "generalv3", 0, 0, "CNY")
 	if err != nil {
 		return nil, err
 	}
 
-	modelResult, err := getDefaultModelResult(p.subType, question, response)
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -247,55 +187,5 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 	if err != nil {
 		return nil, err
 	}
-
 	return modelResult, nil
-}
-
-func (p *iFlytekModelProvider) getChatMessages(question string, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) []messages.ChatMessage {
-	var result []messages.ChatMessage
-
-	systemMsgs := getSystemMessages(prompt, knowledgeMessages)
-	for _, msg := range systemMsgs {
-		result = append(result, &messages.GenericChatMessage{
-			Role:    "system",
-			Content: msg.Text,
-		})
-	}
-
-	for i := len(history) - 1; i >= 0; i-- {
-		msg := history[i]
-		role := "user"
-		if msg.Author == "AI" {
-			role = "assistant"
-		}
-		result = append(result, &messages.GenericChatMessage{
-			Role:    role,
-			Content: msg.Text,
-		})
-	}
-
-	result = append(result, &messages.GenericChatMessage{
-		Role:    "user",
-		Content: question,
-	})
-
-	return result
-}
-
-func (p *iFlytekModelProvider) getBaseUrl() (string, string, error) {
-	if p.subType == "spark4.0-ultra" {
-		return "wss://spark-api.xf-yun.com/v4.0/chat", "4.0Ultra", nil
-	} else if p.subType == "spark-max-32k" {
-		return "wss://spark-api.xf-yun.com/chat/max-32k", "max-32k", nil
-	} else if p.subType == "spark-max" {
-		return "wss://spark-api.xf-yun.com/v3.5/chat", "generalv3.5", nil
-	} else if p.subType == "spark-pro-128k" {
-		return "wss://spark-api.xf-yun.com/chat/pro-128k", "pro-128k", nil
-	} else if p.subType == "spark-pro" {
-		return "wss://spark-api.xf-yun.com/v3.1/chat", "generalv3", nil
-	} else if p.subType == "spark-lite" {
-		return "wss://spark-api.xf-yun.com/v1.1/chat", "lite", nil
-	} else {
-		return "", "", fmt.Errorf("chat model not found")
-	}
 }
