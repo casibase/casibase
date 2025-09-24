@@ -233,6 +233,7 @@ func DeployApplicationSync(application *Application) (bool, error) {
 			case StatusRunning:
 				if url, err := GetURL(application.Namespace); err == nil && url != "" {
 					application.URL = url
+					application.Status = StatusRunning
 					_, err := UpdateApplication(util.GetIdFromOwnerAndName(application.Owner, application.Name), application)
 					if err != nil {
 						return false, err
