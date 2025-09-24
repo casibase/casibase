@@ -15,29 +15,23 @@
 package model
 
 import (
-	"context"
 	"fmt"
 	"io"
-	"log"
-	"net/http"
-	"os"
-
-	"github.com/baidubce/bce-qianfan-sdk/go/qianfan"
 )
 
 type BaiduCloudModelProvider struct {
 	subType     string
 	apiKey      string
-	temperature float64
-	topP        float64
+	temperature float32
+	topP        float32
 }
 
 func NewBaiduCloudModelProvider(subType string, apiKey string, temperature float32, topP float32) (*BaiduCloudModelProvider, error) {
 	return &BaiduCloudModelProvider{
 		subType:     subType,
 		apiKey:      apiKey,
-		temperature: float64(temperature),
-		topP:        float64(topP),
+		temperature: temperature,
+		topP:        topP,
 	}, nil
 }
 
@@ -127,80 +121,18 @@ func (p *BaiduCloudModelProvider) calculatePrice(modelResult *ModelResult) error
 }
 
 func (p *BaiduCloudModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
-	ctx := context.Background()
-	flusher, ok := writer.(http.Flusher)
-	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
-	}
-
-	err := os.Setenv("QIANFAN_BEARER_TOKEN", p.apiKey)
-	if err != nil {
-		return nil, err
-	}
-	chat := qianfan.NewChatCompletionV2()
-	messages := []qianfan.ChatCompletionV2Message{
-		{
-			Role:    "user",
-			Content: question,
-		},
-	}
-
-	flushData := func(data string) error {
-		log.Print(data)
-		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
-			return err
-		}
-		flusher.Flush()
-		return nil
-	}
-
-	modelResult := &ModelResult{}
-	tokenizer := qianfan.NewTokenizer()
-	TokenizerModeLocal := qianfan.TokenizerMode("local")
-	additionalArguments := make(map[string]interface{})
-
-	promptTokenCount, err := tokenizer.CountTokens(messages[0].Content, TokenizerModeLocal, "", additionalArguments)
-	if err != nil {
-		return nil, err
-	}
-	modelResult.PromptTokenCount = promptTokenCount
-	modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
-
-	resp, err := chat.Stream(ctx, &qianfan.ChatCompletionV2Request{
-		Model:       p.subType,
-		Messages:    messages,
-		Temperature: p.temperature,
-		TopP:        p.topP,
-		StreamOptions: &qianfan.StreamOptions{
-			IncludeUsage: true,
-		},
-	})
+	const BaseUrl = "https://qianfan.baidubce.com/v2"
+	// Create a new LocalModelProvider to handle the request
+	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
 	if err != nil {
 		return nil, err
 	}
 
-	for !resp.IsEnd {
-		r := qianfan.ChatCompletionV2Response{}
-		err := resp.Recv(&r)
-		if err != nil {
-			return nil, err
-		}
-
-		if len(r.Choices) == 0 {
-			continue
-		}
-
-		data := r.Choices[0].Delta.Content
-		err = flushData(data)
-		if err != nil {
-			return nil, err
-		}
-		if r.Usage != nil {
-			modelResult.PromptTokenCount += r.Usage.PromptTokens
-			modelResult.ResponseTokenCount += r.Usage.CompletionTokens
-			modelResult.TotalTokenCount += r.Usage.TotalTokens
-		}
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo)
+	if err != nil {
+		return nil, err
 	}
+
 	err = p.calculatePrice(modelResult)
 	if err != nil {
 		return nil, err
