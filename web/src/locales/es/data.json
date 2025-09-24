@@ -1,7 +1,7 @@
 {
   "account": {
-    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
-    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Haz clic en el botón \"Mi Cuenta\" a continuación para acceder a tu página de configuración.",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Haz clic en el botón \"Modificar contraseña...\" para cambiar tu contraseña. Luego cierra la página de configuración.",
     "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. Vuelve a esta página y actualízala presionando la tecla F5. Este mensaje de alerta debería desaparecer.",
     "4. If you encounter any issues, please contact your administrator.": "4. Si encuentras algún problema, comunícate con tu administrador.",
     "My Account": "Mi Cuenta",
@@ -794,7 +794,7 @@
     "Unreviewed": "No revisado",
     "Upload Video": "Cargar grabación",
     "Video": "Grabación",
-    "Video - Tooltip": "Video",
+    "Video - Tooltip": "Video - Tooltip",
     "Video ID": "ID de grabación",
     "Video ID - Tooltip": "ID de video (identificador único)"
   },

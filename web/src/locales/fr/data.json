@@ -1,7 +1,7 @@
 {
   "account": {
-    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
-    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Cliquez sur le bouton \"Mon Compte\" ci-dessous pour accéder à votre page de paramètres.",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Cliquez sur le bouton \"Modifier le mot de passe...\" pour changer votre mot de passe. Puis fermez la page de paramètres.",
     "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. Revenez sur cette page et actualisez-la en appuyant sur la touche F5. Ce message d'alerte devrait disparaître.",
     "4. If you encounter any issues, please contact your administrator.": "4. Si vous rencontrez des problèmes, contactez votre administrateur.",
     "My Account": "Mon Compte",
@@ -352,7 +352,7 @@
     "Title - Tooltip": "Sous-titre (optionnel), utilisé pour préciser l'utilisation",
     "Tokens": "Tokens",
     "Type": "Type",
-    "Type - Tooltip": "Type",
+    "Type - Tooltip": "Type - Tooltip",
     "URL": "Lien",
     "URL - Tooltip": "Adresse réseau complète de la ressource",
     "Unit": "Unité",
@@ -674,7 +674,7 @@
     "Throughput": "Débit",
     "Total Throughput": "Débit total",
     "Unknown version": "Version inconnue",
-    "Version": "Version",
+    "Version": " Version",
     "🚀⚡️Open-Source LangChain-like AI Knowledge Database & Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)": "🚀⚡️Base de connaissances AI et robot de chat similaire à LangChain open-source avec interface d'administration et prise en charge multi-modèle (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)"
   },
   "task": {
