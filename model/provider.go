@@ -64,7 +64,7 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	} else if typ == "Baidu Cloud" {
 		p, err = NewBaiduCloudModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "iFlytek" {
-		p, err = NewiFlytekModelProvider(subType, clientSecret, clientId, userKey, temperature, topK)
+		p, err = NewiFlytekModelProvider(subType, clientSecret, temperature)
 	} else if typ == "ChatGLM" {
 		p, err = NewChatGLMModelProvider(subType, clientSecret)
 	} else if typ == "MiniMax" {
