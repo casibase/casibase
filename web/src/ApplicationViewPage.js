@@ -1,7 +1,7 @@
 // Copyright 2025 The Casibase Authors. All Rights Reserved.
 
 import React from "react";
-import {Button, Card, Descriptions, Table, Tag, Typography} from "antd";
+import {Button, Card, Descriptions, Table, Tag, Tooltip, Typography} from "antd";
 import {CopyOutlined} from "@ant-design/icons";
 import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as Setting from "./Setting";
@@ -54,6 +54,22 @@ class ApplicationViewPage extends React.Component {
 
   copyToClipboard = (text) => {
     copy(text);
+    Setting.showMessage("success", i18next.t("general:Successfully copied"));
+  };
+
+  copyEventDetails = (event) => {
+    const details = [
+      `${i18next.t("general:Type")}: ${event.type}`,
+      `${i18next.t("general:Status")}: ${event.reason}`,
+      `${i18next.t("general:Object")}: ${event.involvedObject}`,
+      `${i18next.t("general:Message")}: ${event.message}`,
+      `${i18next.t("message:Author")}: ${event.source}`,
+      `${i18next.t("system:Count")}: ${event.count}`,
+      `${i18next.t("general:Created time")}: ${event.firstTime}`,
+      `${i18next.t("general:Updated time")}: ${event.lastTime}`,
+    ].join("\n");
+
+    copy(details);
     Setting.showMessage("success", i18next.t("general:Successfully copied"));
   };
 
@@ -231,6 +247,124 @@ class ApplicationViewPage extends React.Component {
     );
   }
 
+  renderEvents() {
+    const details = this.state.application?.details;
+    if (!details || !details.events || details.events.length === 0) {
+      return null;
+    }
+
+    const columns = [
+      {
+        title: i18next.t("general:Type"),
+        dataIndex: "type",
+        key: "type",
+        width: "80px",
+        render: (text) => {
+          const color = text === "Warning" ? "orange" : text === "Normal" ? "green" : "default";
+          return <Tag color={color}>{text}</Tag>;
+        },
+      },
+      {
+        title: i18next.t("general:Status"),
+        dataIndex: "reason",
+        key: "reason",
+        width: "120px",
+        render: (text) => <Text strong>{text}</Text>,
+      },
+      {
+        title: i18next.t("general:Object"),
+        dataIndex: "involvedObject",
+        key: "involvedObject",
+        width: "150px",
+        render: (text) => (
+          <Text style={{fontSize: "12px", fontFamily: "monospace"}}>
+            {text}
+          </Text>
+        ),
+      },
+      {
+        title: i18next.t("general:Message"),
+        dataIndex: "message",
+        key: "message",
+        width: "300px",
+        render: (text) => (
+          <div>
+            <Text style={{fontSize: "12px"}}>
+              {text.length > 80 ? (
+                <Tooltip title={text} placement="topLeft">
+                  {text.substring(0, 80)}...
+                </Tooltip>
+              ) : (
+                text
+              )}
+            </Text>
+          </div>
+        ),
+      },
+      {
+        title: i18next.t("system:Count"),
+        dataIndex: "count",
+        key: "count",
+        width: "60px",
+        render: (text) => (
+          <Tag color={text > 1 ? "red" : "default"}>
+            {text}
+          </Tag>
+        ),
+      },
+      {
+        title: i18next.t("general:Updated time"),
+        dataIndex: "lastTime",
+        key: "lastTime",
+        width: "140px",
+        render: (text) => (
+          <Text style={{fontSize: "11px", color: "#666"}}>
+            {text}
+          </Text>
+        ),
+      },
+      {
+        title: i18next.t("general:Action"),
+        key: "action",
+        width: "80px",
+        render: (text, record) => (
+          <Button
+            icon={<CopyOutlined />}
+            size="small"
+            onClick={() => this.copyEventDetails(record)}
+            title={i18next.t("general:Copy")}
+          />
+        ),
+      },
+    ];
+
+    return (
+      <Card size="small" title={
+        <span>
+          {i18next.t("general:Records")}
+          <Text type="secondary" style={{marginLeft: 8, fontSize: "12px"}}>
+              ({details.events.length})
+          </Text>
+        </span>
+      }
+      style={{marginBottom: 16}}
+      >
+        <Table dataSource={details.events}
+          columns={columns}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total) => i18next.t("general:{total} in total").replace("{total}", total),
+          }}
+          size="small"
+          rowKey="name"
+          scroll={{x: 900}}
+        />
+      </Card>
+    );
+  }
+
   renderCredentials() {
     const details = this.state.application?.details;
     if (!details || !details.credentials || details.credentials.length === 0) {
@@ -307,6 +441,7 @@ class ApplicationViewPage extends React.Component {
         {this.renderBasic()}
         {this.renderDeployments()}
         {this.renderConnections()}
+        {this.renderEvents()}
         {this.renderCredentials()}
       </div>
     );
