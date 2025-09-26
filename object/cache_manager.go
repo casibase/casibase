@@ -35,6 +35,7 @@ type CacheManager struct {
 	svcCache     map[string]map[string]*v1.Service           // namespace -> name -> service
 	deployCache  map[string]map[string]*appsv1.Deployment    // namespace -> name -> deployment
 	ingressCache map[string]map[string]*networkingv1.Ingress // namespace -> name -> ingress
+	eventCache   map[string]map[string]*v1.Event             // namespace -> name -> event
 	nsCache      map[string]*v1.Namespace                    // name -> namespace
 	nodeCache    map[string]*v1.Node                         // name -> node
 	mu           sync.RWMutex
@@ -47,6 +48,7 @@ type CacheManager struct {
 	nodeHits    int64
 	nsHits      int64
 	ingressHits int64
+	eventHits   int64
 }
 
 var (
@@ -68,6 +70,7 @@ func initCacheManager() error {
 		svcCache:     make(map[string]map[string]*v1.Service),
 		deployCache:  make(map[string]map[string]*appsv1.Deployment),
 		ingressCache: make(map[string]map[string]*networkingv1.Ingress),
+		eventCache:   make(map[string]map[string]*v1.Event),
 		nsCache:      make(map[string]*v1.Namespace),
 		nodeCache:    make(map[string]*v1.Node),
 		stopCh:       make(chan struct{}),
@@ -131,6 +134,7 @@ func (cm *CacheManager) setupInformers() error {
 		DeleteFunc: cm.onNodeDelete,
 	})
 
+	// Ingress informer for all namespaces
 	ingressInformer := cm.factory.Networking().V1().Ingresses()
 	ingressInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc:    cm.onIngressAdd,
@@ -138,7 +142,69 @@ func (cm *CacheManager) setupInformers() error {
 		DeleteFunc: cm.onIngressDelete,
 	})
 
+	// Event informer
+	eventInformer := cm.factory.Core().V1().Events()
+	eventInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc:    cm.onEventAdd,
+		UpdateFunc: cm.onEventUpdate,
+		DeleteFunc: cm.onEventDelete,
+	})
+
 	return nil
+}
+
+// Event-related event handlers
+func (cm *CacheManager) onEventAdd(obj interface{}) {
+	event := obj.(*v1.Event)
+	cm.updateEventCache(event)
+}
+
+func (cm *CacheManager) onEventUpdate(oldObj, newObj interface{}) {
+	event := newObj.(*v1.Event)
+	cm.updateEventCache(event)
+}
+
+func (cm *CacheManager) onEventDelete(obj interface{}) {
+	event := obj.(*v1.Event)
+	cm.deleteEventCache(event)
+}
+
+// updateEventCache updates the event cache
+func (cm *CacheManager) updateEventCache(event *v1.Event) {
+	cm.mu.Lock()
+	defer cm.mu.Unlock()
+
+	ns := event.Namespace
+	if cm.eventCache[ns] == nil {
+		cm.eventCache[ns] = make(map[string]*v1.Event)
+	}
+	cm.eventCache[ns][event.Name] = event
+}
+
+// deleteEventCache deletes from event cache
+func (cm *CacheManager) deleteEventCache(event *v1.Event) {
+	cm.mu.Lock()
+	defer cm.mu.Unlock()
+
+	if nsCache, exists := cm.eventCache[event.Namespace]; exists {
+		delete(nsCache, event.Name)
+	}
+}
+
+// getEvents retrieves all events for the specified namespace
+func (cm *CacheManager) getEvents(namespace string) []*v1.Event {
+	cm.mu.RLock()
+	defer cm.mu.RUnlock()
+
+	atomic.AddInt64(&cm.eventHits, 1)
+
+	var events []*v1.Event
+	if nsCache, exists := cm.eventCache[namespace]; exists {
+		for _, event := range nsCache {
+			events = append(events, event)
+		}
+	}
+	return events
 }
 
 // Start begins the cache manager
