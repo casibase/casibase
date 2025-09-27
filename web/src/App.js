@@ -490,13 +490,9 @@ class App extends Component {
           {Setting.isLocalAdminUser(this.state.account) &&
                 <StoreSelect
                   className="store-select"
-                  initValue={Setting.getStore()}
                   withAll={true}
                   style={{display: Setting.isMobile() ? "none" : "flex"}}
                   disabled={!this.isStoreSelectEnabled()}
-                  onChange={(value) => {
-                    Setting.setStore(value);
-                  }}
                 />
           }
           <div className="select-box" style={{float: "right", marginRight: "20px", padding: "0px"}}>

@@ -19,9 +19,9 @@ import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 
 function StoreSelect(props) {
-  const {onChange, initValue, style, onSelect, withAll, className, disabled} = props;
+  const {style, onSelect, withAll, className, disabled} = props;
   const [stores, setStores] = React.useState([]);
-  const [value, setValue] = React.useState(initValue);
+  const [value, setValue] = React.useState(Setting.getStore());
 
   React.useEffect(() => {
     if (props.stores === undefined) {
@@ -39,7 +39,7 @@ function StoreSelect(props) {
         if (res.status === "ok") {
           setStores(res.data);
           const selectedValueExist = res.data.filter(store => store.name === value).length > 0;
-          if (initValue === undefined || !selectedValueExist) {
+          if (Setting.getStore() === undefined || !selectedValueExist) {
             handleOnChange(getStoreItems().length > 0 ? getStoreItems()[0].value : "");
           }
         }
@@ -48,7 +48,7 @@ function StoreSelect(props) {
 
   const handleOnChange = (value) => {
     setValue(value);
-    onChange?.(value);
+    Setting.setStore(value);
   };
 
   const getStoreItems = () => {
