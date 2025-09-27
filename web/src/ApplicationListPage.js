@@ -88,7 +88,7 @@ class ApplicationListPage extends BaseListPage {
           Setting.showMessage("success", i18next.t("general:Successfully deployed"));
           this.setState({
             data: this.state.data.map((item) =>
-              item.name === record.name ? {...item, status: "Running"} : item
+              item.name === record.name ? {...item, ...res.data} : item
             ),
           });
         } else {
