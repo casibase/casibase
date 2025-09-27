@@ -34,6 +34,11 @@ function StoreSelect(props) {
   }, [value]);
 
   const getStores = () => {
+    const currentStore = Setting.getStore();
+    if (currentStore) {
+      setValue(currentStore);
+    }
+
     StoreBackend.getStoreNames("admin")
       .then((res) => {
         if (res.status === "ok") {

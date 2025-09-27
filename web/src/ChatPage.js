@@ -56,6 +56,12 @@ class ChatPage extends BaseListPage {
       paneCount: 1,
     });
 
+    // if URL path contains store name, set it to the store select widget
+    const currentStore = this.getStore();
+    if (currentStore) {
+      Setting.setStore(currentStore);
+    }
+
     this.fetch();
   }
 

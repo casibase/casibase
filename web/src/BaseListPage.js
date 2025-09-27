@@ -53,9 +53,9 @@ class BaseListPage extends React.Component {
 
   componentDidMount() {
     window.addEventListener("storeChanged", this.handleStoreChange);
-    if (!Setting.isLocalAdminUser(this.props.account)) {
-      Setting.setStore("All");
-    }
+    // if (!Setting.isLocalAdminUser(this.props.account)) {
+    //   Setting.setStore("All");
+    // }
   }
 
   componentWillUnmount() {
