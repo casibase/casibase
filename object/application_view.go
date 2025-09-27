@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -27,6 +28,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
+	metricsclientset "k8s.io/metrics/pkg/client/clientset/versioned"
 )
 
 type ApplicationView struct {
@@ -36,6 +38,16 @@ type ApplicationView struct {
 	Status      string             `json:"status"`
 	CreatedTime string             `json:"createdTime"`
 	Namespace   string             `json:"namespace"`
+	Metrics     *ResourceMetrics   `json:"metrics,omitempty"`
+}
+
+// ResourceMetrics represents resource usage metrics
+type ResourceMetrics struct {
+	CPUUsage         string  `json:"cpuUsage"`         // CPU usage (e.g., "120m" for 120 millicores)
+	CPUPercentage    float64 `json:"cpuPercentage"`    // CPU usage percentage (0-100)
+	MemoryUsage      string  `json:"memoryUsage"`      // Memory usage (e.g., "256Mi" for 256 mebibyte)
+	MemoryPercentage float64 `json:"memoryPercentage"` // Memory usage percentage (0-100)
+	PodCount         int     `json:"podCount"`         // Number of active pods
 }
 
 type ServiceDetail struct {
@@ -80,6 +92,77 @@ type ResourceRequests struct {
 type EnvVariable struct {
 	Name  string `json:"name"`
 	Value string `json:"value"`
+}
+
+var (
+	metricsClient *metricsclientset.Clientset
+	metricsOnce   sync.Once
+)
+
+// initMetricsClient init metrics client
+func initMetricsClient() error {
+	if k8sClient == nil || k8sClient.config == nil {
+		return fmt.Errorf("k8s client not initialized")
+	}
+
+	var err error
+	metricsOnce.Do(func() {
+		metricsClient, err = metricsclientset.NewForConfig(k8sClient.config)
+	})
+
+	return err
+}
+
+// getNamespaceMetrics retrieves namespace metrics from cache with API fallback
+func getNamespaceMetrics(namespace string) (*ResourceMetrics, error) {
+	if cacheManager != nil && cacheManager.started {
+		if cachedMetrics, found := cacheManager.getNamespaceMetricsFromCache(namespace); found {
+			if time.Since(cachedMetrics.LastUpdated) < 5*time.Minute {
+				return &ResourceMetrics{
+					CPUUsage:         formatCPUUsage(cachedMetrics.TotalCPU),
+					CPUPercentage:    cachedMetrics.CPUPercentage,
+					MemoryUsage:      formatMemoryUsage(cachedMetrics.TotalMemory),
+					MemoryPercentage: cachedMetrics.MemoryPercentage,
+					PodCount:         cachedMetrics.PodCount,
+				}, nil
+			}
+		}
+	}
+
+	if err := initMetricsClient(); err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Second)
+	defer cancel()
+
+	var metrics *CachedMetrics
+	var err error
+
+	if cacheManager != nil && cacheManager.started {
+		metrics, err = calculateNamespaceMetrics(ctx, metricsClient, namespace, cacheManager.deployCache, &cacheManager.mu)
+	} else {
+		metrics, err = calculateNamespaceMetrics(ctx, metricsClient, namespace, nil, nil)
+	}
+
+	if err != nil {
+		if errors.IsNotFound(err) || strings.Contains(err.Error(), "metrics.k8s.io") {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to get pod metrics: %v", err)
+	}
+
+	if metrics == nil {
+		return nil, nil
+	}
+
+	return &ResourceMetrics{
+		CPUUsage:         formatCPUUsage(metrics.TotalCPU),
+		CPUPercentage:    metrics.CPUPercentage,
+		MemoryUsage:      formatMemoryUsage(metrics.TotalMemory),
+		MemoryPercentage: metrics.MemoryPercentage,
+		PodCount:         metrics.PodCount,
+	}, nil
 }
 
 // getExternalHost attempts to get k8s server IP first, then falls back to provided host
@@ -174,6 +257,10 @@ func GetApplicationView(namespace string) (*ApplicationView, error) {
 	details.Services = getServicesFromCache(namespace, nodeIPs)
 	details.Deployments = getDeploymentsFromCache(namespace)
 	details.Credentials = getCredentialsFromCache(namespace)
+
+	if metrics, err := getNamespaceMetrics(namespace); err == nil && metrics != nil {
+		details.Metrics = metrics
+	}
 
 	return details, nil
 }
