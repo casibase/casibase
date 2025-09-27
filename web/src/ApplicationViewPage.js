@@ -215,7 +215,7 @@ class ApplicationViewPage extends React.Component {
                     {port.url && (
                       <div style={{marginTop: 4}}>
                         <Text type="secondary" style={{fontSize: "12px"}}>
-                          <a target="_blank" rel="noreferrer" href={`http://${port.url}`}>
+                          <a target="_blank" rel="noreferrer" href={port.url}>
                             {port.url}
                           </a>
                         </Text>
