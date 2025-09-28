@@ -1,12 +1,12 @@
 package object
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 
+	"github.com/beego/beego/logs"
 	"gopkg.in/yaml.v3"
 )
 
@@ -16,7 +16,7 @@ func initTemplates() {
 	templatesDir := "./data/template"
 	files, err := os.ReadDir(templatesDir)
 	if err != nil {
-		fmt.Printf("Failed to read template directory: %v\n", err)
+		logs.Error("Failed to read template directory: %v\n", err)
 	}
 
 	for _, file := range files {
@@ -28,13 +28,13 @@ func initTemplates() {
 		}
 		tpl, err := parseTemplateFromFile(owner, filepath.Join(templatesDir, file.Name()))
 		if err != nil {
-			fmt.Printf("Failed to parse template file %s: %v\n", file.Name(), err)
+			logs.Error("Failed to parse template file %s: %v\n", file.Name(), err)
 			continue
 		}
 		if tpl != nil {
 			_, err = AddTemplate(tpl)
 			if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
-				fmt.Printf("Failed to add template %s: %v\n", tpl.Name, err)
+				logs.Error("Failed to add template %s: %v\n", tpl.Name, err)
 			}
 		}
 	}

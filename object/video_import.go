@@ -21,6 +21,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/beego/beego/logs"
 )
 
 func getImportedVideos(path string) ([]*Video, error) {
@@ -195,7 +197,7 @@ func importVideos(path string) error {
 	}
 
 	for i, video := range videos {
-		fmt.Printf("[%d] Add video: %v\n", i, video)
+		logs.Info("[%d] Add video: %v\n", i, video)
 		_, err = AddVideo(video)
 		if err != nil {
 			return err
