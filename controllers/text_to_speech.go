@@ -16,8 +16,8 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/object"
 )
 
@@ -97,6 +97,6 @@ func (c *ApiController) GenerateTextToSpeechAudioStream() {
 
 	err = object.UpdateChatStats(chat, ttsResult)
 	if err != nil {
-		fmt.Printf("Error updating chat: %s\n", err.Error())
+		logs.Error("Error updating chat: %s\n", err.Error())
 	}
 }

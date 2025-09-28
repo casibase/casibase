@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/beego/beego/logs"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
@@ -96,7 +97,7 @@ func (client MachineTencentClient) GetMachines() ([]*Machine, error) {
 		return nil, err
 	}
 
-	fmt.Printf("DescribeInstances response: %s\n", response.ToJsonString())
+	logs.Info("DescribeInstances response: %s\n", response.ToJsonString())
 
 	machines := []*Machine{}
 	for _, reservation := range response.Response.InstanceSet {
@@ -153,7 +154,7 @@ func (client MachineTencentClient) UpdateMachineState(name string, state string)
 
 		_, err = client.Client.StartInstances(startReq)
 		if err != nil {
-			fmt.Printf("Error starting instance: %v\n", err)
+			logs.Error("Error starting instance: %v\n", err)
 			return false, "", err
 		}
 
@@ -163,7 +164,7 @@ func (client MachineTencentClient) UpdateMachineState(name string, state string)
 
 		_, err = client.Client.StopInstances(stopReq)
 		if err != nil {
-			fmt.Printf("Error stopping instance: %v\n", err)
+			logs.Error("Error stopping instance: %v\n", err)
 			return false, "", err
 		}
 	default:

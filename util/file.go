@@ -23,6 +23,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/proxy"
 )
@@ -166,7 +167,7 @@ func downloadMaxmindFiles(cityExists, asnExists bool) {
 
 		EnsureFileFolderExists(filePath)
 
-		fmt.Printf("Downloading %s database from %s\n", filename, fileUrl)
+		logs.Info("Downloading %s database from %s\n", filename, fileUrl)
 		buffer, err := DownloadFile(fileUrl)
 		if err != nil {
 			return err

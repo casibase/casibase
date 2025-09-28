@@ -15,9 +15,8 @@
 package routers
 
 import (
-	"fmt"
-
 	"github.com/beego/beego/context"
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -34,7 +33,7 @@ func RecordMessage(ctx *context.Context) {
 func AfterRecordMessage(ctx *context.Context) {
 	record, err := object.NewRecord(ctx)
 	if err != nil {
-		fmt.Printf("AfterRecordMessage() error: %s\n", err.Error())
+		logs.Error("AfterRecordMessage() error: %s\n", err.Error())
 		return
 	}
 

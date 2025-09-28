@@ -21,6 +21,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/split"
@@ -151,11 +152,11 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			}
 
 			if vector != nil {
-				fmt.Printf("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s\n", i+1, len(textSections), storeName, file.Key, i, "Skipped due to already exists")
+				logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s\n", i+1, len(textSections), storeName, file.Key, i, "Skipped due to already exists")
 				continue
 			}
 
-			fmt.Printf("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s\n", i+1, len(textSections), storeName, file.Key, i, textSection)
+			logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s\n", i+1, len(textSections), storeName, file.Key, i, textSection)
 
 			operation := func() error {
 				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType)
@@ -169,7 +170,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			}
 			err = backoff.Retry(operation, backoff.NewExponentialBackOff())
 			if err != nil {
-				fmt.Printf("Failed to generate embedding after retries: %v\n", err)
+				logs.Error("Failed to generate embedding after retries: %v\n", err)
 				return false, err
 			}
 		}
@@ -206,7 +207,7 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string)
 		if err != nil {
 			err = fmt.Errorf("queryVectorSafe() error, %s", err.Error())
 			if i > 0 {
-				fmt.Printf("\tFailed (%d): %s\n", i+1, err.Error())
+				logs.Error("\tFailed (%d): %s\n", i+1, err.Error())
 			}
 		} else {
 			break
