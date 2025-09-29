@@ -509,7 +509,10 @@ class RecordListPage extends BaseListPage {
         key: "objcid",
         width: "260px",
         sorter: true,
-        ...this.getColumnSearchProps("objcid")
+        ...this.getColumnSearchProps("objcid"),
+        render: (text, record, index) => {
+          return text || "-";
+        },
       },
       {
         title: i18next.t("message:Error text"),

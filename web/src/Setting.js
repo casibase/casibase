@@ -2249,6 +2249,7 @@ export function getFormTypeItems(formType) {
 }
 
 export function filterTableColumns(columns, formItems) {
+
   if (!formItems || formItems.length === 0) {
     return columns;
   }
