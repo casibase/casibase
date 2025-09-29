@@ -17,6 +17,8 @@
     "Deploy": "部署",
     "Deployment manifest": "部署清单",
     "Deployment manifest - Tooltip": "应用部署清单，包含资源配置和部署策略",
+    "Deployment manifest": "部署清单",
+    "Deployment manifest - Tooltip": "应用部署清单，包含资源配置和部署策略",
     "Edit Application": "编辑应用",
     "Failed": "失败",
     "Host": "主机名",
@@ -113,6 +115,7 @@
     "Edit Form": "编辑表单",
     "Form items": "表单项",
     "Form items - Tooltip": "表单的各个列头",
+    "List Page": "列表页面",
     "Position": "位置",
     "Position - Tooltip": "列头在表单中的位置",
     "Table": "表格",
@@ -289,7 +292,6 @@
     "Region - Tooltip": "云服务区域",
     "Request URI": "请求URI",
     "Request URI - Tooltip": "完整请求路径",
-    "Required": "是否必填项",
     "Resources": "资源",
     "Response": "响应",
     "Response - Tooltip": "结构化响应数据体",
@@ -383,6 +385,7 @@
     "Version - Tooltip": "版本号或构建标识符",
     "Videos": "我的录像",
     "View": "查看",
+    "Visible": "是否可见",
     "Workbench": "工作台",
     "Workflows": "工作流",
     "Zone": "区域",
@@ -395,6 +398,9 @@
     "DiseaseCategory - Tooltip": "疾病病种",
     "CorrelationId":"索引",
     "CorrelationId - Tooltip": "数据索引"
+  },
+  "graph": {
+    "Edit Graph": "编辑图"
   },
   "graph": {
     "Edit Graph": "编辑图"

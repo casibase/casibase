@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/chain"
 	"github.com/casibase/casibase/util"
 	"github.com/robfig/cron/v3"
@@ -361,7 +362,7 @@ func ScanNeedCommitRecords() {
 	records := []*Record{}
 	err := adapter.engine.Where("need_commit = ? AND block = ?", true, "").Asc("id").Find(&records)
 	if err != nil {
-		fmt.Printf("ScanNeedCommitRecords() failed to scan records that need to be committed: %v", err)
+		logs.Error("ScanNeedCommitRecords() failed to scan records that need to be committed: %v", err)
 	}
 
 	if len(records) == 0 {
@@ -377,7 +378,7 @@ func ScanNeedCommitRecords() {
 	}
 
 	if len(errors) > 0 {
-		fmt.Printf("ScanNeedCommitRecords() failed to commit %d/%d records: %v", len(errors), len(records), errors)
+		logs.Error("ScanNeedCommitRecords() failed to commit %d/%d records: %v", len(errors), len(records), errors)
 	}
 }
 

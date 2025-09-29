@@ -47,6 +47,8 @@ import MessageListPage from "./MessageListPage";
 import MessageEditPage from "./MessageEditPage";
 import GraphListPage from "./GraphListPage";
 import GraphEditPage from "./GraphEditPage";
+import GraphListPage from "./GraphListPage";
+import GraphEditPage from "./GraphEditPage";
 import NodeListPage from "./NodeListPage";
 import NodeEditPage from "./NodeEditPage";
 import MachineListPage from "./MachineListPage";
@@ -90,6 +92,7 @@ import TemplateListPage from "./TemplateListPage";
 import TemplateEditPage from "./TemplateEditPage";
 import ApplicationListPage from "./ApplicationListPage";
 import ApplicationEditPage from "./ApplicationEditPage";
+import ApplicationStorePage from "./ApplicationStorePage";
 import ApplicationStorePage from "./ApplicationStorePage";
 import StoreSelect from "./StoreSelect";
 import ApplicationDetailsPage from "./ApplicationViewPage";
@@ -136,6 +139,7 @@ class App extends Component {
       forms: [],
       openMenuKeys: [], // 控制菜单展开状态
       store: undefined,
+      store: undefined,
     };
     this.initConfig();
     this.setDefaultZhLanguage();
@@ -173,6 +177,7 @@ class App extends Component {
           Setting.setThemeColor(color);
           localStorage.setItem("themeColor", color);
         }
+        this.setState({ store: res.data });
         this.setState({ store: res.data });
       } else {
         Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
@@ -226,6 +231,8 @@ class App extends Component {
       this.setState({ selectedMenuKey: "/chats" });
     } else if (uri.includes("/messages")) {
       this.setState({ selectedMenuKey: "/messages" });
+    } else if (uri.includes("/graphs")) {
+      this.setState({ selectedMenuKey: "/graphs" });
     } else if (uri.includes("/graphs")) {
       this.setState({ selectedMenuKey: "/graphs" });
     } else if (uri.includes("/usages")) {
@@ -445,6 +452,7 @@ class App extends Component {
     this.setState({
       themeAlgorithm: nextThemeAlgorithm,
       logo: Setting.getLogo(nextThemeAlgorithm, this.state.store?.logoUrl),
+      logo: Setting.getLogo(nextThemeAlgorithm, this.state.store?.logoUrl),
     });
     localStorage.setItem("themeAlgorithm", JSON.stringify(nextThemeAlgorithm));
   };
@@ -646,6 +654,8 @@ class App extends Component {
     if (this.state.account === null || this.state.account === undefined) {
       return [];
     }
+
+    const navItems = this.state.store?.navItems;
 
     if (this.state.account.type.startsWith("video-")) {
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
@@ -930,6 +940,7 @@ class App extends Component {
         Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"),
         Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"),
         Setting.getItem(<Link to="/graphs">{i18next.t("general:Graphs")}</Link>, "/graphs"),
+        Setting.getItem(<Link to="/graphs">{i18next.t("general:Graphs")}</Link>, "/graphs"),
       ]));
 
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
@@ -962,7 +973,10 @@ class App extends Component {
           <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
             {i18next.t("general:Swagger")}
             {Setting.renderExternalLink()}
-          </a>, "/swagger")]));
+          </a>, "/swagger"),
+      ]));
+
+      return this.filterMenuItems(res, navItems);
     }
 
     // 临时取消对自增加的form的渲染
@@ -1040,6 +1054,7 @@ class App extends Component {
         <Route exact path="/applications/:applicationName" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/applications/:applicationName/view" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationDetailsPage account={this.state.account} {...props} />)} />
         <Route exact path="/application-store" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationStorePage account={this.state.account} {...props} />)} />
+        <Route exact path="/application-store" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationStorePage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes" render={(props) => this.renderSigninIfNotSignedIn(<NodeListPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes/:nodeName" render={(props) => this.renderSigninIfNotSignedIn(<NodeEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/sessions" render={(props) => this.renderSigninIfNotSignedIn(<SessionListPage account={this.state.account} {...props} />)} />
@@ -1084,6 +1099,8 @@ class App extends Component {
         <Route exact path="/:owner/:storeName/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/graphs" render={(props) => this.renderSigninIfNotSignedIn(<GraphListPage account={this.state.account} {...props} />)} />
         <Route exact path="/graphs/:graphName" render={(props) => this.renderSigninIfNotSignedIn(<GraphEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/graphs" render={(props) => this.renderSigninIfNotSignedIn(<GraphListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/graphs/:graphName" render={(props) => this.renderSigninIfNotSignedIn(<GraphEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/sysinfo" render={(props) => this.renderSigninIfNotSignedIn(<SystemInfo account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-search" render={(props) => this.renderSigninIfNotSignedIn(<IPFSSearchPage account={this.state.account} {...props} />)} />
@@ -1101,6 +1118,7 @@ class App extends Component {
   }
 
   isWithoutCard() {
+    return Setting.isMobile() || this.isHiddenHeaderAndFooter() || window.location.pathname === "/chat" || window.location.pathname.startsWith("/chat/") || window.location.pathname === "/";
     return Setting.isMobile() || this.isHiddenHeaderAndFooter() || window.location.pathname === "/chat" || window.location.pathname.startsWith("/chat/") || window.location.pathname === "/";
   }
 
@@ -1313,6 +1331,8 @@ class App extends Component {
     return (
       <React.Fragment>
         <Helmet>
+          <title>{Setting.getHtmlTitle(this.state.store?.htmlTitle)}</title>
+          <link rel="icon" href={Setting.getFaviconUrl(this.state.themeAlgorithm, this.state.store?.faviconUrl)} />
           <title>{Setting.getHtmlTitle(this.state.store?.htmlTitle)}</title>
           <link rel="icon" href={Setting.getFaviconUrl(this.state.themeAlgorithm, this.state.store?.faviconUrl)} />
         </Helmet>

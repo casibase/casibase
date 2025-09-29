@@ -13,21 +13,22 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, InputNumber, Popover, Row, Select, Switch} from "antd";
+import { Button, Card, Col, Input, InputNumber, Popover, Row, Select, Switch } from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import FileTree from "./FileTree";
-import {ThemeDefault} from "./Conf";
+import { ThemeDefault } from "./Conf";
 import PromptTable from "./table/PromptTable";
 import StoreAvatarUploader from "./AvatarUpload";
-import {LinkOutlined} from "@ant-design/icons";
-import {Controlled as CodeMirror} from "react-codemirror2";
+import { LinkOutlined } from "@ant-design/icons";
+import { Controlled as CodeMirror } from "react-codemirror2";
+import { NavItemTree } from "./component/nav-item-tree/NavItemTree";
 
-const {Option} = Select;
-const {TextArea} = Input;
+const { Option } = Select;
+const { TextArea } = Input;
 
 class StoreEditPage extends React.Component {
   constructor(props) {
@@ -62,8 +63,8 @@ class StoreEditPage extends React.Component {
   renderProviderOption(provider, index) {
     return (
       <Option key={index} value={provider.name}>
-        <img width={20} height={20} style={{marginBottom: "3px", marginRight: "10px"}}
-          src={Setting.getProviderLogoURL({category: provider.category, type: provider.type})}
+        <img width={20} height={20} style={{ marginBottom: "3px", marginRight: "10px" }}
+          src={Setting.getProviderLogoURL({ category: provider.category, type: provider.type })}
           alt={provider.name} />
         {provider.displayName} ({provider.name})
       </Option>
@@ -162,11 +163,11 @@ class StoreEditPage extends React.Component {
         <div>
           {i18next.t("store:Edit Store")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitStoreEdit(false, undefined)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitStoreEdit(true, undefined)}>{i18next.t("general:Save & Exit")}</Button>
+          <Button style={{ marginLeft: "20px" }} type="primary" onClick={() => this.submitStoreEdit(true, undefined)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
-      } style={{marginLeft: "5px"}} type="inner">
-        <Row style={{marginTop: "10px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+      } style={{ marginLeft: "5px" }} type="inner">
+        <Row style={{ marginTop: "10px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -175,8 +176,8 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -185,8 +186,8 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Title"), i18next.t("general:Title - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -195,8 +196,8 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Avatar"), i18next.t("general:Avatar - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -211,8 +212,8 @@ class StoreEditPage extends React.Component {
             />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Is default"), i18next.t("store:Is default - Tooltip"))} :
           </Col>
           <Col span={1}>
@@ -221,26 +222,26 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}}>
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }}>
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
           </Col>
           <Col span={5}>
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.state} onChange={value => {
+            <Select virtual={false} style={{ width: "100%" }} value={this.state.store.state} onChange={value => {
               this.updateStoreField("state", value);
             }}
-            options={[
-              {value: "Active", label: i18next.t("general:Active")},
-              {value: "Inactive", label: i18next.t("general:Inactive")},
-            ].map(item => Setting.getOption(item.label, item.value))} />
+              options={[
+                { value: "Active", label: i18next.t("general:Active") },
+                { value: "Inactive", label: i18next.t("general:Inactive") },
+              ].map(item => Setting.getOption(item.label, item.value))} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Storage provider"), i18next.t("store:Storage provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.storageProvider} onChange={(value => {this.updateStoreField("storageProvider", value);})}
+            <Select virtual={false} style={{ width: "100%" }} value={this.state.store.storageProvider} onChange={(value => { this.updateStoreField("storageProvider", value); })}
             >
               {
                 this.state.storageProviders.concat(this.state.casdoorStorageProviders).map((provider, index) =>
@@ -250,8 +251,8 @@ class StoreEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Storage subpath"), i18next.t("store:Storage subpath - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -262,8 +263,8 @@ class StoreEditPage extends React.Component {
         </Row>
         {this.isAIStorageProvider(this.state.store.storageProvider) ? (
           <>
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            <Row style={{ marginTop: "20px" }} >
+              <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("store:Vector store id"), i18next.t("store:Vector store id - Tooltip"))} :
               </Col>
               <Col span={22} >
@@ -274,12 +275,12 @@ class StoreEditPage extends React.Component {
             </Row>
           </>
         ) : null}
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Image provider"), i18next.t("store:Image provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.imageProvider} onChange={(value => {this.updateStoreField("imageProvider", value);})}
+            <Select virtual={false} style={{ width: "100%" }} value={this.state.store.imageProvider} onChange={(value => { this.updateStoreField("imageProvider", value); })}
             >
               <Option key="none" value="">
                 {i18next.t("general:empty")}
@@ -292,32 +293,32 @@ class StoreEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Split provider"), i18next.t("store:Split provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.splitProvider} onChange={(value => {this.updateStoreField("splitProvider", value);})}
-              options={[{name: "Default"}, {name: "Basic"}, {name: "QA"}, {name: "Markdown"}].map((provider) => Setting.getOption(provider.name, provider.name))
+            <Select virtual={false} style={{ width: "100%" }} value={this.state.store.splitProvider} onChange={(value => { this.updateStoreField("splitProvider", value); })}
+              options={[{ name: "Default" }, { name: "Basic" }, { name: "QA" }, { name: "Markdown" }].map((provider) => Setting.getOption(provider.name, provider.name))
               } />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Search provider"), i18next.t("store:Search provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.searchProvider} onChange={(value => {this.updateStoreField("searchProvider", value);})}
-              options={[{name: "Default"}, {name: "Hierarchy"}].map((provider) => Setting.getOption(provider.name, provider.name))
+            <Select virtual={false} style={{ width: "100%" }} value={this.state.store.searchProvider} onChange={(value => { this.updateStoreField("searchProvider", value); })}
+              options={[{ name: "Default" }, { name: "Hierarchy" }].map((provider) => Setting.getOption(provider.name, provider.name))
               } />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Model provider"), i18next.t("store:Model provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.modelProvider} onChange={(value => {this.updateStoreField("modelProvider", value);})}
+            <Select virtual={false} style={{ width: "100%" }} value={this.state.store.modelProvider} onChange={(value => { this.updateStoreField("modelProvider", value); })}
             >
               {
                 this.state.modelProviders.map((provider, index) =>
@@ -327,12 +328,12 @@ class StoreEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Embedding provider"), i18next.t("store:Embedding provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProvider} onChange={(value => {this.updateStoreField("embeddingProvider", value);})}
+            <Select virtual={false} style={{ width: "100%" }} value={this.state.store.embeddingProvider} onChange={(value => { this.updateStoreField("embeddingProvider", value); })}
             >
               <Option key="none" value="">
                 {i18next.t("general:empty")}
@@ -345,12 +346,12 @@ class StoreEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Agent provider"), i18next.t("store:Agent provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.agentProvider} onChange={(value => {this.updateStoreField("agentProvider", value);})}>
+            <Select virtual={false} style={{ width: "100%" }} value={this.state.store.agentProvider} onChange={(value => { this.updateStoreField("agentProvider", value); })}>
               <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
               {
                 this.state.agentProviders.map((provider, index) => this.renderProviderOption(provider, index))
@@ -358,12 +359,12 @@ class StoreEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Text-to-Speech provider"), i18next.t("store:Text-to-Speech provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.textToSpeechProvider} onChange={(value => {this.updateStoreField("textToSpeechProvider", value);})}
+            <Select virtual={false} style={{ width: "100%" }} value={this.state.store.textToSpeechProvider} onChange={(value => { this.updateStoreField("textToSpeechProvider", value); })}
             >
               <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
               <Option key="Browser Built-In" value="Browser Built-In">Browser Built-In</Option>
@@ -373,8 +374,8 @@ class StoreEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Enable TTS streaming"), i18next.t("store:Enable TTS streaming - Tooltip"))} :
           </Col>
           <Col span={1}>
@@ -383,12 +384,12 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Speech-to-Text provider"), i18next.t("store:Speech-to-Text provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.speechToTextProvider} onChange={(value => {this.updateStoreField("speechToTextProvider", value);})}>
+            <Select virtual={false} style={{ width: "100%" }} value={this.state.store.speechToTextProvider} onChange={(value => { this.updateStoreField("speechToTextProvider", value); })}>
               <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
               <Option key="Browser Built-In" value="Browser Built-In">Browser Built-In</Option>
               {
@@ -397,8 +398,8 @@ class StoreEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Frequency"), i18next.t("store:Frequency - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -407,8 +408,8 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Memory limit"), i18next.t("store:Memory limit - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -417,8 +418,8 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Limit minutes"), i18next.t("store:Limit minutes - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -427,8 +428,8 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Welcome"), i18next.t("store:Welcome - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -437,8 +438,8 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Welcome title"), i18next.t("store:Welcome title - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -449,8 +450,8 @@ class StoreEditPage extends React.Component {
             />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Welcome text"), i18next.t("store:Welcome text - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -461,18 +462,18 @@ class StoreEditPage extends React.Component {
             />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Prompt"), i18next.t("store:Prompt - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.store.prompt} onChange={(e) => {
+            <TextArea autoSize={{ minRows: 1, maxRows: 15 }} value={this.state.store.prompt} onChange={(e) => {
               this.updateStoreField("prompt", e.target.value);
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Prompts"), i18next.t("store:Prompts - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -481,8 +482,8 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Knowledge count"), i18next.t("store:Knowledge count - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -491,8 +492,8 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Suggestion count"), i18next.t("store:Suggestion count - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -501,13 +502,13 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Site setting"), i18next.t("general:Site setting - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Row style={{marginTop: "20px"}}>
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            <Row style={{ marginTop: "20px" }}>
+              <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("store:Theme color"), i18next.t("store:Theme color - Tooltip"))} :
               </Col>
               <Col span={22} >
@@ -516,8 +517,23 @@ class StoreEditPage extends React.Component {
                 }} />
               </Col>
             </Row>
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            <Row style={{ marginTop: "20px" }} >
+              <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Navbar items"), i18next.t("store:Navbar items - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <NavItemTree
+                  disabled={!Setting.isAdminUser(this.props.account)}
+                  checkedKeys={this.state.store.navItems ?? ["all"]}
+                  defaultExpandedKeys={["all"]}
+                  onCheck={(checked) => {
+                    this.updateStoreField("navItems", checked);
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row style={{ marginTop: "20px" }} >
+              <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("general:HTML title"), i18next.t("general:HTML title - Tooltip"))} :
               </Col>
               <Col span={22} >
@@ -526,8 +542,8 @@ class StoreEditPage extends React.Component {
                 }} />
               </Col>
             </Row>
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            <Row style={{ marginTop: "20px" }} >
+              <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("general:Favicon URL"), i18next.t("general:Favicon URL - Tooltip"))} :
               </Col>
               <Col span={22} >
@@ -536,19 +552,19 @@ class StoreEditPage extends React.Component {
                 }} />
               </Col>
             </Row>
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
+            <Row style={{ marginTop: "20px" }} >
+              <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 1}>
                 {i18next.t("general:Preview")}:
               </Col>
               <Col span={23} >
                 <a target="_blank" rel="noreferrer" href={Setting.getFaviconUrl("", this.state.store.faviconUrl)}>
-                  <img src={Setting.getFaviconUrl("", this.state.store.faviconUrl)} alt={Setting.getFaviconUrl("", this.state.store.faviconUrl)} height={90} style={{marginBottom: "20px"}} />
+                  <img src={Setting.getFaviconUrl("", this.state.store.faviconUrl)} alt={Setting.getFaviconUrl("", this.state.store.faviconUrl)} height={90} style={{ marginBottom: "20px" }} />
                 </a>
               </Col>
             </Row>
             <Col span={22} >
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              <Row style={{ marginTop: "20px" }} >
+                <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
                   {Setting.getLabel(i18next.t("general:Logo URL"), i18next.t("general:Logo URL - Tooltip"))} :
                 </Col>
                 <Col span={22} >
@@ -557,33 +573,33 @@ class StoreEditPage extends React.Component {
                   }} />
                 </Col>
               </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
+              <Row style={{ marginTop: "20px" }} >
+                <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 1}>
                   {i18next.t("general:Preview")}:
                 </Col>
                 <Col span={23} >
                   <a target="_blank" rel="noreferrer" href={Setting.getLogo("", this.state.store.logoUrl)}>
-                    <img src={Setting.getLogo("", this.state.store.logoUrl)} alt={Setting.getLogo("", this.state.store.logoUrl)} height={90} style={{marginBottom: "20px"}} />
+                    <img src={Setting.getLogo("", this.state.store.logoUrl)} alt={Setting.getLogo("", this.state.store.logoUrl)} height={90} style={{ marginBottom: "20px" }} />
                   </a>
                 </Col>
               </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              <Row style={{ marginTop: "20px" }} >
+                <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
                   {Setting.getLabel(i18next.t("general:Footer HTML"), i18next.t("general:Footer HTML - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <Popover placement="right" content={
-                    <div style={{width: "900px", height: "300px"}} >
+                    <div style={{ width: "900px", height: "300px" }} >
                       <CodeMirror
                         value={this.state.store.footerHtml}
-                        options={{mode: "htmlmixed", theme: "material-darker"}}
+                        options={{ mode: "htmlmixed", theme: "material-darker" }}
                         onBeforeChange={(editor, data, value) => {
                           this.updateStoreField("footerHtml", value);
                         }}
                       />
                     </div>
                   } title={i18next.t("store:Footer HTML - Edit")} trigger="click">
-                    <Input value={this.state.store.footerHtml} style={{marginBottom: "10px"}} onChange={e => {
+                    <Input value={this.state.store.footerHtml} style={{ marginBottom: "10px" }} onChange={e => {
                       this.updateStoreField("footerHtml", e.target.value);
                     }} />
                   </Popover>
@@ -592,24 +608,24 @@ class StoreEditPage extends React.Component {
             </Col>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Child stores"), i18next.t("store:Child stores - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childStores} onChange={(value => {this.updateStoreField("childStores", value);})}>
+            <Select virtual={false} mode="tags" style={{ width: "100%" }} value={this.state.store.childStores} onChange={(value => { this.updateStoreField("childStores", value); })}>
               {
                 this.state.stores?.filter(item => item.name !== this.state.store.name).map((item, index) => <Option key={item.name} value={item.name}>{`${item.displayName} (${item.name})`}</Option>)
               }
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Child model providers"), i18next.t("store:Child model providers - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childModelProviders} onChange={(value => {this.updateStoreField("childModelProviders", value);})}>
+            <Select virtual={false} mode="tags" style={{ width: "100%" }} value={this.state.store.childModelProviders} onChange={(value => { this.updateStoreField("childModelProviders", value); })}>
               {
                 this.state.modelProviders?.map((item, index) =>
                   this.renderProviderOption(item, index)
@@ -618,8 +634,8 @@ class StoreEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Show auto read"), i18next.t("store:Show auto read - Tooltip"))} :
           </Col>
           <Col span={1}>
@@ -628,8 +644,8 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Disable file upload"), i18next.t("store:Disable file upload - Tooltip"))} :
           </Col>
           <Col span={1}>
@@ -638,8 +654,8 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:File tree"), i18next.t("store:File tree - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -696,9 +712,9 @@ class StoreEditPage extends React.Component {
         {
           this.state.store !== null ? this.renderStore() : null
         }
-        <div style={{marginTop: "20px", marginLeft: "40px"}}>
+        <div style={{ marginTop: "20px", marginLeft: "40px" }}>
           <Button size="large" onClick={() => this.submitStoreEdit(false, undefined)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitStoreEdit(true, undefined)}>{i18next.t("general:Save & Exit")}</Button>
+          <Button style={{ marginLeft: "20px" }} type="primary" size="large" onClick={() => this.submitStoreEdit(true, undefined)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );

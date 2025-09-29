@@ -15,10 +15,10 @@
 package util
 
 import (
-	"fmt"
 	"net"
 	"path/filepath"
 
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/conf"
 	"github.com/oschwald/geoip2-golang"
 )
@@ -41,7 +41,7 @@ func InitMaxmindDb() error {
 	if cityErr != nil {
 		maxmindCityDB, cityErr = geoip2.Open(filepath.Join(frontendBaseDir, "..", "data", "GeoLite2-City.mmdb"))
 		if cityErr != nil {
-			fmt.Printf("InitMaxmindDb() open \"GeoLite2-City.mmdb\" warning: %v\n", cityErr)
+			logs.Warn("InitMaxmindDb() open \"GeoLite2-City.mmdb\" warning: %v\n", cityErr)
 		}
 	}
 
@@ -50,7 +50,7 @@ func InitMaxmindDb() error {
 	if asnErr != nil {
 		maxmindASNDB, asnErr = geoip2.Open(filepath.Join(frontendBaseDir, "..", "data", "GeoLite2-ASN.mmdb"))
 		if asnErr != nil {
-			fmt.Printf("InitMaxmindDb() open \"GeoLite2-ASN.mmdb\" warning: %v\n", asnErr)
+			logs.Warn("InitMaxmindDb() open \"GeoLite2-ASN.mmdb\" warning: %v\n", asnErr)
 		}
 	}
 

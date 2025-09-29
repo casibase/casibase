@@ -22,10 +22,11 @@ import (
 )
 
 type FormItem struct {
-	Name  string `json:"name"`
-	Label string `json:"label"`
-	Type  string `json:"type"`
-	Width string `json:"width"`
+	Name    string `json:"name"`
+	Label   string `json:"label"`
+	Type    string `json:"type"`
+	Visible bool   `json:"visible"`
+	Width   string `json:"width"`
 }
 
 type Form struct {
@@ -35,6 +36,7 @@ type Form struct {
 
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 	Position    string `xorm:"varchar(100)" json:"position"`
+	Category    string `xorm:"varchar(100)" json:"category"`
 	Type        string `xorm:"varchar(100)" json:"type"`
 	Url         string `xorm:"varchar(100)" json:"url"`
 

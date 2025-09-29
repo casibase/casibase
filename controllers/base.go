@@ -16,10 +16,12 @@ package controllers
 
 import (
 	"encoding/gob"
+	"encoding/json"
 	"strings"
 	"time"
 
 	"github.com/beego/beego"
+	"github.com/beego/beego/logs"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/object"
 )
@@ -118,5 +120,41 @@ func (c *ApiController) Finish() {
 			object.ApiLatency.WithLabelValues(c.Ctx.Input.URL(), c.Ctx.Input.Method()).Observe(float64(latency))
 		}
 	}
+	c.errorLogFilter()
 	c.Controller.Finish()
+}
+
+func (c *ApiController) errorLogFilter() {
+	if v, ok := c.Data["json"]; ok {
+		var status string
+		switch r := v.(type) {
+		case Response:
+			status = r.Status
+		case *Response:
+			if r != nil {
+				status = r.Status
+			}
+		default:
+			status = ""
+		}
+		if status == "error" {
+			method := c.Ctx.Input.Method()
+			path := c.Ctx.Input.URL()
+			query := ""
+			if c.Ctx.Request != nil && c.Ctx.Request.URL != nil {
+				query = c.Ctx.Request.URL.RawQuery
+			}
+			body := string(c.Ctx.Input.RequestBody)
+			if len(body) > 4096 {
+				body = body[:4096] + "...(truncated)"
+			}
+			token := c.Ctx.Request.Header.Get("Authorization")
+			respJSON, _ := json.Marshal(v)
+			respStr := string(respJSON)
+			if len(respStr) > 4096 {
+				respStr = respStr[:4096] + "...(truncated)"
+			}
+			logs.Error("API error: method=%s path=%s query=%s token=%s body=%s response=%s", method, path, query, token, body, respStr)
+		}
+	}
 }

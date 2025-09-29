@@ -19,7 +19,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 
+	"github.com/beego/beego/logs"
 	"github.com/volcengine/volcengine-go-sdk/service/arkruntime"
 	"github.com/volcengine/volcengine-go-sdk/service/arkruntime/model"
 	"github.com/volcengine/volcengine-go-sdk/volcengine"
@@ -41,6 +43,12 @@ func NewVolcengineModelProvider(subType string, endpointID string, apiKey string
 		temperature: temperature,
 		topP:        topP,
 	}, nil
+}
+
+func trimModelDate(subType string) string {
+	// change "doubao-seed-1-6-250615" to "doubao-seed-1-6"
+	re := regexp.MustCompile(`-\d{6}$`)
+	return re.ReplaceAllString(subType, "")
 }
 
 func (p *VolcengineModelProvider) GetPricing() string {
@@ -135,8 +143,10 @@ func (p *VolcengineModelProvider) calculatePrice(modelResult *ModelResult) error
 		"doubao-realtime": {0.0300, 0.0300},
 	}
 
+	subType := trimModelDate(p.subType)
+
 	// Special handling for image generation models
-	switch p.subType {
+	switch subType {
 	case "doubao-seedream-4.0":
 		modelResult.TotalPrice = float64(modelResult.ImageCount) * 0.2
 		modelResult.Currency = "CNY"
@@ -151,12 +161,12 @@ func (p *VolcengineModelProvider) calculatePrice(modelResult *ModelResult) error
 		return nil
 	}
 
-	if priceItem, ok := priceTable[p.subType]; ok {
+	if priceItem, ok := priceTable[subType]; ok {
 		inputPrice := getPrice(modelResult.PromptTokenCount, priceItem[0])
 		outputPrice := getPrice(modelResult.ResponseTokenCount, priceItem[1])
 		price = inputPrice + outputPrice
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf("calculatePrice() error: unknown model type: %s", subType)
 	}
 
 	modelResult.TotalPrice = price
@@ -182,7 +192,7 @@ func (p *VolcengineModelProvider) QueryText(question string, writer io.Writer, h
 		},
 	}
 	request := model.ChatCompletionRequest{
-		Model:         p.endpointID,
+		Model:         p.subType,
 		Messages:      messages,
 		Temperature:   p.temperature,
 		TopP:          p.topP,
@@ -200,7 +210,7 @@ func (p *VolcengineModelProvider) QueryText(question string, writer io.Writer, h
 
 	stream, err := client.CreateChatCompletionStream(ctx, request)
 	if err != nil {
-		fmt.Printf("stream chat error: %v\n", err)
+		logs.Error("stream chat error: %v\n", err)
 		return nil, err
 	}
 	defer stream.Close()

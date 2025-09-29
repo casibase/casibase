@@ -15,7 +15,6 @@
 package object
 
 import (
-	"fmt"
 	"math"
 	"os"
 	"path/filepath"
@@ -23,6 +22,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/txt"
 	"github.com/casibase/casibase/util"
 )
@@ -172,7 +172,7 @@ func parseVideoFile2(filePath string) (*Video, error) {
 	}
 
 	for _, label := range labels {
-		fmt.Printf("%v\n", label)
+		logs.Info("%v\n", label)
 	}
 
 	video.CreatedTime = util.GetCurrentTime()
@@ -188,7 +188,7 @@ func importVideos2(path string) error {
 	}
 
 	for i, video := range videos {
-		fmt.Printf("[%d] Add video: %v\n", i, video)
+		logs.Info("[%d] Add video: %v\n", i, video)
 		_, err = AddVideo(video)
 		if err != nil {
 			return err

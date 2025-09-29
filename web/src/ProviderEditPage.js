@@ -494,7 +494,6 @@ class ProviderEditPage extends React.Component {
               (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") ||
               (this.state.provider.category === "Storage" && this.state.provider.type !== "OpenAI File System")) ||
             (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
-            (this.state.provider.category === "Model" && this.state.provider.type === "iFlytek") ||
             (this.state.provider.category === "Blockchain" && !["ChainMaker", "Ethereum"].includes(this.state.provider.type)) ||
             ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
             (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent", "Blockchain"].includes(this.state.provider.category)))
@@ -645,20 +644,6 @@ class ProviderEditPage extends React.Component {
                 </Col>
               </Row>
             )
-        }
-        {
-          (this.state.provider.type === "iFlytek" && this.state.provider.category === "Model") && (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("cert:User key"), i18next.t("cert:User key - Tooltip"))} :
-              </Col>
-              <Col span={22} >
-                <Input value={this.state.provider.userKey} onChange={e => {
-                  this.updateProviderField("userKey", e.target.value);
-                }} />
-              </Col>
-            </Row>
-          )
         }
         {
           (this.state.provider.category === "Model" && this.state.provider.type === "Claude" && Setting.getThinkingModelMaxTokens(this.state.provider.subType) !== 0) ? (
@@ -973,7 +958,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && ["iFlytek", "Gemini"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && this.state.provider.type === "Gemini") ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
