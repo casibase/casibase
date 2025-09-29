@@ -317,7 +317,7 @@ class ApplicationListPage extends BaseListPage {
             return null;
           }
           return (
-            <a target="_blank" rel="noreferrer" href={`http://${text}`} style={{display: "flex", alignItems: "center"}}>
+            <a target="_blank" rel="noreferrer" href={text} style={{display: "flex", alignItems: "center"}}>
               <LinkOutlined style={{marginRight: 4}} />
               <Tooltip title={text}>
                 {text}
