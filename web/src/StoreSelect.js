@@ -22,16 +22,30 @@ function StoreSelect(props) {
   const {style, onSelect, withAll, className, disabled} = props;
   const [stores, setStores] = React.useState([]);
   const [value, setValue] = React.useState(Setting.getStore());
+  const [initialized, setInitialized] = React.useState(false);
 
   React.useEffect(() => {
     if (props.stores === undefined) {
       getStores();
     }
+
     window.addEventListener("storesChanged", getStores);
+
+    const handleStorageChange = (e) => {
+      if (e.storageArea && "store" in e.storageArea) {
+        const currentStore = Setting.getStore();
+        if (currentStore && currentStore !== value) {
+          setValue(currentStore);
+        }
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+
     return function() {
       window.removeEventListener("storesChanged", getStores);
+      window.removeEventListener("storage", handleStorageChange);
     };
-  }, [value]);
+  }, []);
 
   const getStores = () => {
     const currentStore = Setting.getStore();
@@ -47,6 +61,7 @@ function StoreSelect(props) {
           if (Setting.getStore() === undefined || !selectedValueExist) {
             handleOnChange(getStoreItems().length > 0 ? getStoreItems()[0].value : "");
           }
+          setInitialized(true);
         }
       });
   };
@@ -70,6 +85,10 @@ function StoreSelect(props) {
 
     return items;
   };
+
+  if (!initialized) {
+    return <div style={{...style, width: "100%", height: "32px"}} className={className}></div>;
+  }
 
   return (
     <Select

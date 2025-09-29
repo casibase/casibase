@@ -42,6 +42,12 @@ class ChatPage extends BaseListPage {
     const savedCollapsedState = localStorage.getItem("chatMenuCollapsed");
     const chatMenuCollapsed = savedCollapsedState ? JSON.parse(savedCollapsedState) : false;
 
+    // if URL path contains store name, set it to the store select widget
+    const currentStore = this.getStore();
+    if (currentStore) {
+      Setting.setStore(currentStore);
+    }
+
     this.setState({
       loading: true,
       disableInput: false,
@@ -54,13 +60,8 @@ class ChatPage extends BaseListPage {
       defaultStore: null,
       filteredStores: [],
       paneCount: 1,
+      storeName: currentStore, // Store the current store name in state
     });
-
-    // if URL path contains store name, set it to the store select widget
-    const currentStore = this.getStore();
-    if (currentStore) {
-      Setting.setStore(currentStore);
-    }
 
     this.fetch();
   }
@@ -245,7 +246,7 @@ class ChatPage extends BaseListPage {
     };
 
     if (!this.state.chat) {
-      const urlStoreName = this.getStore();
+      const urlStoreName = this.state.storeName || this.getStore();
       if (urlStoreName) {
         message.store = urlStoreName;
       }
@@ -763,7 +764,10 @@ class ChatPage extends BaseListPage {
                 account={this.props.account}
                 name={this.state.chat?.name}
                 displayName={this.state.chat?.displayName}
-                store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : this.state.stores?.find(store => store.isDefault === true)}
+                store={this.state.chat ?
+                  this.state.stores?.find(store => store.name === this.state.chat.store) :
+                  this.state.stores?.find(store => store.name === this.state.storeName) ||
+                  this.state.stores?.find(store => store.isDefault === true)}
               />
             </div>
           )}

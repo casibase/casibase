@@ -397,7 +397,10 @@ class StoreListPage extends BaseListPage {
             <div>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}/view`)}>{i18next.t("general:View")}</Button>
               <Button style={{marginBottom: "10px", marginRight: "10px"}} icon={<CopyOutlined />} onClick={() => {copy(`${window.location.origin}/${record.owner}/${record.name}/chat`);Setting.showMessage("success", i18next.t("general:Successfully copied"));}}>{i18next.t("general:Copy Link")}</Button>
-              <Button style={{marginBottom: "10px", marginRight: "10px"}} onClick={() => window.open(`${window.location.origin}/${record.owner}/${record.name}/chat`, "_blank")}>{i18next.t("store:Open Chat")}</Button>
+              <Button style={{marginBottom: "10px", marginRight: "10px"}} onClick={() => {
+                Setting.setStore(record.name);
+                window.open(`${window.location.origin}/${record.owner}/${record.name}/chat`, "_blank");
+              }}>{i18next.t("store:Open Chat")}</Button>
 
               {
                 !Setting.isLocalAdminUser(this.props.account) ? null : (
