@@ -118,9 +118,9 @@ jobs:
           fetch-depth: 0
 
       - name: Free disk space
-        uses: jlumbroso/free-disk-space@v1
+        uses: jlumbroso/free-disk-space@v1.3.1
         with:
-          tool-cache: true
+          tool-cache: false
           android: true
           dotnet: true
           haskell: true
