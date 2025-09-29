@@ -108,10 +108,10 @@ class FormEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Type"), i18next.t("general:Type - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Category"), i18next.t("general:Category - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.form.type} onChange={(value => {
+            <Select virtual={false} style={{width: "100%"}} value={this.state.form.category} onChange={(value => {
               this.updateFormField("type", value);
             })}>
               {
@@ -124,7 +124,7 @@ class FormEditPage extends React.Component {
           </Col>
         </Row>
         {
-          this.state.form.type === "Table" && (
+          this.state.form.category === "Table" && (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("form:Form items"), i18next.t("form:Form items - Tooltip"))} :
@@ -140,7 +140,7 @@ class FormEditPage extends React.Component {
           )
         }
         {
-          this.state.form.type === "iFrame" && (
+          this.state.form.category === "iFrame" && (
             <Row style={{marginTop: "20px"}}>
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("general:URL"), i18next.t("general:URL - Tooltip"))} :
