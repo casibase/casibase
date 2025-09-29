@@ -117,11 +117,27 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@v1
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          swap-storage: true
+
       - name: Download frontend build artifacts
         uses: actions/download-artifact@v4
         with:
           name: frontend-build-${{ github.run_id }}
           path: ./web/build
+
+      - name: Prepare Go caches
+        run: |
+          echo "GOMODCACHE=$RUNNER_TEMP/gomod" >> $GITHUB_ENV
+          echo "GOCACHE=$RUNNER_TEMP/gocache" >> $GITHUB_ENV
+          go clean -cache -modcache -testcache -fuzzcache
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
