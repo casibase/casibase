@@ -716,10 +716,10 @@ class RecordListPage extends BaseListPage {
                     {i18next.t("record:Enable cross-chain")}:
                     <Switch checked={this.state.enableCrossChain} onChange={this.toggleEnableCrossChain} style={{ marginLeft: 8 }} />
                   </span>
-                  <span style={{ marginLeft: 32 }}>
+                  {/* <span style={{ marginLeft: 32 }}>
                     {i18next.t("record:Enable decoding")}:
                     <Switch checked={this.state.enableDecoding} onChange={this.toggleEnableDecoding} style={{ marginLeft: 8 }} />
-                  </span>
+                  </span> */}
                 </>
               )}
               {this.state.selectedRowKeys.length > 0 && (
