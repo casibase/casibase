@@ -19,8 +19,10 @@ import * as FormBackend from "./backend/FormBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import FormItemTable from "./table/FormItemTable";
+import RecordListPage from "./RecordListPage";
 
 const {Option} = Select;
+const formTypeOptions = Setting.getFormTypeOptions();
 
 class FormEditPage extends React.Component {
   constructor(props) {
@@ -108,16 +110,17 @@ class FormEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Category"), i18next.t("general:Category - Tooltip"))} :
+            {Setting.getLabel(i18next.t("provider:Category"), i18next.t("provider:Category - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.form.category} onChange={(value => {
-              this.updateFormField("type", value);
+              this.updateFormField("category", value);
             })}>
               {
                 [
                   {id: "Table", name: i18next.t("form:Table")},
                   {id: "iFrame", name: i18next.t("form:iFrame")},
+                  {id: "List Page", name: i18next.t("form:List Page")},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
@@ -133,6 +136,7 @@ class FormEditPage extends React.Component {
                 <FormItemTable
                   title={i18next.t("form:Form items")}
                   table={this.state.form.formItems}
+                  category={this.state.form.category}
                   onUpdateTable={(value) => {this.updateFormField("formItems", value);}}
                 />
               </Col>
@@ -151,17 +155,85 @@ class FormEditPage extends React.Component {
             </Row>
           )
         }
+        {
+          this.state.form.category === "List Page" && (
+            <div>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("general:Type"), i18next.t("general:Type - Tooltip"))} :
+                </Col>
+                <Col span={22}>
+                  <Select
+                    style={{width: "100%"}}
+                    value={this.state.form.type}
+                    onChange={value => {
+                      this.updateFormField("type", value);
+                      this.updateFormField("name", value);
+                      const defaultItems = new FormItemTable({formType: value}).getItems();
+                      this.updateFormField("formItems", defaultItems);
+                    }}
+                  >
+                    {formTypeOptions.map(option => (
+                      <Option key={option.id} value={option.id}>{i18next.t(option.name)}</Option>
+                    ))}
+                  </Select>
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("form:Form items"), i18next.t("form:Form items - Tooltip"))} :
+                </Col>
+                <Col span={22}>
+                  <FormItemTable
+                    title={i18next.t("form:Form items")}
+                    table={this.state.form.formItems}
+                    category={this.state.form.category}
+                    onUpdateTable={(value) => {
+                      this.updateFormField("formItems", value);
+                    }}
+                    formType={this.state.form.type}
+                  />
+                </Col>
+              </Row>
+            </div>
+          )
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Preview")}:
           </Col>
           <Col span={22} >
-            <div key={this.state.formCount}>
-              <iframe id="formData" title={"formData"} src={`${location.href}/data`} width="100%" height="700px" frameBorder="no" style={{border: "1px solid #e0e0e0", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)"}} />
-            </div>
+            {this.state.form.category === "List Page" ? (this.renderListPagePreview()) :
+              <div key={this.state.formCount}>
+                <iframe id="formData" title={"formData"} src={`${location.href}/data`} width="100%" height="700px" frameBorder="no" style={{border: "1px solid #e0e0e0", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)"}} />
+              </div>
+            }
           </Col>
         </Row>
       </Card>
+    );
+  }
+
+  renderListPageItems() {
+
+  }
+
+  renderListPagePreview() {
+    let listPageComponent = null;
+
+    if (this.state.form.type === "records") {
+      listPageComponent = (<RecordListPage {...this.props} formItems={this.state.form.formItems} />);
+    }
+
+    return (
+      <div style={{position: "relative", border: "1px solid rgb(217,217,217)", height: "600px", cursor: "pointer"}} onClick={(e) => {Setting.openLink(`/${this.state.form.type}`);}}>
+        <div style={{position: "relative", height: "100%", overflow: "auto"}}>
+          <div style={{display: "inline-block", position: "relative", zIndex: 1, pointerEvents: "none"}}>
+            {listPageComponent}
+          </div>
+        </div>
+        <div style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10, background: "rgba(0,0,0,0.4)", pointerEvents: "none"}} />
+      </div>
     );
   }
 
