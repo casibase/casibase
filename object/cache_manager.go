@@ -15,6 +15,7 @@
 package object
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"sync/atomic"
@@ -23,12 +24,21 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/client-go/informers"
 	coreinformers "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/tools/cache"
 )
 
-// CacheManager manages in-memory cache using K8s informers
+type CachedMetrics struct {
+	TotalCPU         resource.Quantity `json:"totalCPU"`
+	TotalMemory      resource.Quantity `json:"totalMemory"`
+	PodCount         int               `json:"podCount"`
+	CPUPercentage    float64           `json:"cpuPercentage"`
+	MemoryPercentage float64           `json:"memoryPercentage"`
+	LastUpdated      time.Time         `json:"lastUpdated"`
+}
+
 type CacheManager struct {
 	factory      informers.SharedInformerFactory
 	nsInformer   coreinformers.NamespaceInformer
@@ -38,9 +48,12 @@ type CacheManager struct {
 	eventCache   map[string]map[string]*v1.Event             // namespace -> name -> event
 	nsCache      map[string]*v1.Namespace                    // name -> namespace
 	nodeCache    map[string]*v1.Node                         // name -> node
-	mu           sync.RWMutex
-	stopCh       chan struct{}
-	started      bool
+
+	metricsCache map[string]*CachedMetrics // namespace -> metrics
+
+	mu      sync.RWMutex
+	stopCh  chan struct{}
+	started bool
 
 	// debug counters
 	svcHits     int64
@@ -49,6 +62,7 @@ type CacheManager struct {
 	nsHits      int64
 	ingressHits int64
 	eventHits   int64
+	metricsHits int64
 }
 
 var (
@@ -73,6 +87,7 @@ func initCacheManager() error {
 		eventCache:   make(map[string]map[string]*v1.Event),
 		nsCache:      make(map[string]*v1.Namespace),
 		nodeCache:    make(map[string]*v1.Node),
+		metricsCache: make(map[string]*CachedMetrics),
 		stopCh:       make(chan struct{}),
 	}
 
@@ -223,6 +238,10 @@ func (cm *CacheManager) Start() error {
 		}
 	}
 
+	if metricsClient != nil {
+		go cm.startMetricsPoller(60 * time.Second)
+	}
+
 	cm.started = true
 	return nil
 }
@@ -235,7 +254,62 @@ func (cm *CacheManager) Stop() {
 	}
 }
 
-// Namespace event handlers
+func (cm *CacheManager) startMetricsPoller(interval time.Duration) {
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	cm.updateAllMetrics()
+
+	for {
+		select {
+		case <-ticker.C:
+			cm.updateAllMetrics()
+		case <-cm.stopCh:
+			return
+		}
+	}
+}
+
+func (cm *CacheManager) updateAllMetrics() {
+	cm.mu.RLock()
+	namespaces := make([]string, 0, len(cm.nsCache))
+	for name := range cm.nsCache {
+		namespaces = append(namespaces, name)
+	}
+	cm.mu.RUnlock()
+
+	for _, namespace := range namespaces {
+		cm.updateNamespaceMetrics(namespace)
+		time.Sleep(100 * time.Millisecond)
+	}
+}
+
+// updateNamespaceMetrics updates cached metrics for a namespace
+func (cm *CacheManager) updateNamespaceMetrics(namespace string) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	metrics, err := calculateNamespaceMetrics(ctx, metricsClient, namespace, cm.deployCache, &cm.mu)
+	if err != nil {
+		return
+	}
+
+	cm.mu.Lock()
+	cm.metricsCache[namespace] = metrics
+	cm.mu.Unlock()
+}
+
+func (cm *CacheManager) getNamespaceMetricsFromCache(namespace string) (*CachedMetrics, bool) {
+	cm.mu.RLock()
+	defer cm.mu.RUnlock()
+
+	atomic.AddInt64(&cm.metricsHits, 1)
+
+	metrics, found := cm.metricsCache[namespace]
+	return metrics, found
+}
+
+// Namespace handlers
 func (cm *CacheManager) onNamespaceAdd(obj interface{}) {
 	ns := obj.(*v1.Namespace)
 	cm.updateNamespaceCache(ns)
@@ -261,6 +335,7 @@ func (cm *CacheManager) deleteNamespaceCache(ns *v1.Namespace) {
 	cm.mu.Lock()
 	defer cm.mu.Unlock()
 	delete(cm.nsCache, ns.Name)
+	delete(cm.metricsCache, ns.Name)
 }
 
 // Service event handlers

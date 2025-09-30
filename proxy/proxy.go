@@ -16,12 +16,12 @@ package proxy
 
 import (
 	"crypto/tls"
-	"fmt"
 	"net"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/conf"
 	"golang.org/x/net/proxy"
 )
@@ -49,7 +49,7 @@ func isAddressOpen(address string) bool {
 
 	if conn != nil {
 		defer conn.Close()
-		fmt.Printf("Socks5 proxy enabled: %s\n", address)
+		logs.Info("Socks5 proxy enabled: %s\n", address)
 		return true
 	}
 

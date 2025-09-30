@@ -35,6 +35,7 @@ class RecordListPage extends BaseListPage {
       ...this.state,
       providerMap: {},
       enableCrossChain: this.getEnableCrossChainFromStorage(),
+      enableDecoding: this.getEnableDecodingFromStorage(),
       queryResult: "",
       isComparing: false,
     };
@@ -52,12 +53,28 @@ class RecordListPage extends BaseListPage {
     return JSON.parse(saved) === true;
   }
 
+  getEnableDecodingFromStorage() {
+    const saved = localStorage.getItem("enableDecoding");
+    if (saved === null || saved === undefined) {
+      return false;
+    }
+    return JSON.parse(saved) === true;
+  }
+
   toggleEnableCrossChain = () => {
     const newValue = !this.state.enableCrossChain;
     this.setState({
       enableCrossChain: newValue,
     });
     localStorage.setItem("enableCrossChain", JSON.stringify(newValue));
+  };
+
+  toggleEnableDecoding = () => {
+    const newValue = !this.state.enableDecoding;
+    this.setState({
+      enableDecoding: newValue,
+    });
+    localStorage.setItem("enableDecoding", JSON.stringify(newValue));
   };
 
   getProviders() {
@@ -405,6 +422,14 @@ class RecordListPage extends BaseListPage {
             );
           }
 
+          if (!this.state.enableDecoding) {
+            return (
+              <div style={{maxWidth: "200px"}}>
+                ***
+              </div>
+            );
+          }
+
           let formattedText;
           let isValidJson = false;
           let errorMessage;
@@ -526,8 +551,8 @@ class RecordListPage extends BaseListPage {
       }),
       {
         title: i18next.t("general:Action"),
-        dataIndex: "action",
-        key: "action",
+        dataIndex: "op",
+        key: "op",
         width: this.state.enableCrossChain ? "370px" : "270px",
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, record, index) => {
@@ -639,7 +664,7 @@ class RecordListPage extends BaseListPage {
         },
       },
     ];
-
+    const filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
     const paginationProps = {
       pageSize: this.state.pagination.pageSize,
       total: this.state.pagination.total,
@@ -651,15 +676,21 @@ class RecordListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={records} rowKey={(record) => `${record.owner}/${record.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={filteredColumns} dataSource={records} rowKey={(record) => `${record.owner}/${record.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Records")}
               {Setting.isAdminUser(this.props.account) && (
-                <span style={{marginLeft: 32}}>
-                  {i18next.t("record:Enable cross-chain")}:
-                  <Switch checked={this.state.enableCrossChain} onChange={this.toggleEnableCrossChain} style={{marginLeft: 8}} />
-                </span>
+                <>
+                  <span style={{marginLeft: 32}}>
+                    {i18next.t("record:Enable cross-chain")}:
+                    <Switch checked={this.state.enableCrossChain} onChange={this.toggleEnableCrossChain} style={{marginLeft: 8}} />
+                  </span>
+                  <span style={{marginLeft: 32}}>
+                    {i18next.t("record:Enable decoding")}:
+                    <Switch checked={this.state.enableDecoding} onChange={this.toggleEnableDecoding} style={{marginLeft: 8}} />
+                  </span>
+                </>
               )}
               {this.state.selectedRowKeys.length > 0 && (
                 <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>

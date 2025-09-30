@@ -15,8 +15,16 @@
 package object
 
 import (
+	"context"
 	"fmt"
 	"sync"
+	"time"
+
+	appsv1 "k8s.io/api/apps/v1"
+	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	metricsclientset "k8s.io/metrics/pkg/client/clientset/versioned"
 
 	networkingv1 "k8s.io/api/networking/v1"
 )
@@ -127,4 +135,120 @@ func hasTLSForHost(ingress *networkingv1.Ingress, host string) bool {
 		}
 	}
 	return false
+}
+
+// formatCPUUsage formats CPU usage quantity to human-readable format
+func formatCPUUsage(quantity resource.Quantity) string {
+	milliValue := quantity.MilliValue()
+
+	if milliValue >= 1000 {
+		cores := float64(milliValue) / 1000
+		if cores == float64(int(cores)) {
+			return fmt.Sprintf("%d", int(cores))
+		}
+		return fmt.Sprintf("%.2f", cores)
+	}
+
+	// Display as milli-cores for < 1 core
+	return fmt.Sprintf("%dm", milliValue)
+}
+
+// formatMemoryUsage formats memory usage quantity to human-readable format
+func formatMemoryUsage(quantity resource.Quantity) string {
+	bytes := quantity.Value()
+
+	switch {
+	case bytes >= 1<<30: // >= 1 GiB
+		gb := float64(bytes) / (1 << 30)
+		if gb >= 10 {
+			return fmt.Sprintf("%.0fGi", gb)
+		}
+		return fmt.Sprintf("%.1fGi", gb)
+	case bytes >= 1<<20: // >= 1 MiB
+		mb := float64(bytes) / (1 << 20)
+		if mb >= 10 {
+			return fmt.Sprintf("%.0fMi", mb)
+		}
+		return fmt.Sprintf("%.1fMi", mb)
+	case bytes >= 1<<10: // >= 1 KiB
+		return fmt.Sprintf("%.0fKi", float64(bytes)/(1<<10))
+	default:
+		return fmt.Sprintf("%d", bytes)
+	}
+}
+
+func calculateNamespaceMetrics(ctx context.Context, metricsClient *metricsclientset.Clientset, namespace string, deployCache map[string]map[string]*appsv1.Deployment, mu *sync.RWMutex) (*CachedMetrics, error) {
+	if metricsClient == nil {
+		return nil, fmt.Errorf("metrics client not available")
+	}
+
+	podMetricsList, err := metricsClient.MetricsV1beta1().PodMetricses(namespace).List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	totalCPU := resource.NewQuantity(0, resource.DecimalSI)
+	totalMemory := resource.NewQuantity(0, resource.BinarySI)
+
+	// Aggregate resource usage from all pods
+	for _, podMetrics := range podMetricsList.Items {
+		for _, container := range podMetrics.Containers {
+			if cpuUsage, ok := container.Usage[v1.ResourceCPU]; ok {
+				totalCPU.Add(cpuUsage)
+			}
+			if memUsage, ok := container.Usage[v1.ResourceMemory]; ok {
+				totalMemory.Add(memUsage)
+			}
+		}
+	}
+
+	var cpuPercentage, memPercentage float64
+
+	// Calculate percentages if deployment cache and mutex are provided
+	if deployCache != nil && mu != nil {
+		mu.RLock()
+		if deploys, exists := deployCache[namespace]; exists {
+			totalCPULimits := resource.NewQuantity(0, resource.DecimalSI)
+			totalMemoryLimits := resource.NewQuantity(0, resource.BinarySI)
+
+			for _, deploy := range deploys {
+				replicas := int32(1)
+				if deploy.Spec.Replicas != nil {
+					replicas = *deploy.Spec.Replicas
+				}
+
+				for _, container := range deploy.Spec.Template.Spec.Containers {
+					if container.Resources.Limits != nil {
+						if cpuLimit, ok := container.Resources.Limits[v1.ResourceCPU]; ok {
+							for i := int32(0); i < replicas; i++ {
+								totalCPULimits.Add(cpuLimit)
+							}
+						}
+						if memLimit, ok := container.Resources.Limits[v1.ResourceMemory]; ok {
+							for i := int32(0); i < replicas; i++ {
+								totalMemoryLimits.Add(memLimit)
+							}
+						}
+					}
+				}
+			}
+
+			if totalCPULimits.MilliValue() > 0 {
+				cpuPercentage = float64(totalCPU.MilliValue()) / float64(totalCPULimits.MilliValue()) * 100
+			}
+			if totalMemoryLimits.Value() > 0 {
+				memPercentage = float64(totalMemory.Value()) / float64(totalMemoryLimits.Value()) * 100
+			}
+		}
+		mu.RUnlock()
+	}
+
+	return &CachedMetrics{
+		TotalCPU:         *totalCPU,
+		TotalMemory:      *totalMemory,
+		PodCount:         len(podMetricsList.Items),
+		CPUPercentage:    cpuPercentage,
+		MemoryPercentage: memPercentage,
+		LastUpdated:      time.Now(),
+	}, nil
 }

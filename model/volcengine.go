@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"regexp"
 
+	"github.com/beego/beego/logs"
 	"github.com/volcengine/volcengine-go-sdk/service/arkruntime"
 	"github.com/volcengine/volcengine-go-sdk/service/arkruntime/model"
 	"github.com/volcengine/volcengine-go-sdk/volcengine"
@@ -209,7 +210,7 @@ func (p *VolcengineModelProvider) QueryText(question string, writer io.Writer, h
 
 	stream, err := client.CreateChatCompletionStream(ctx, request)
 	if err != nil {
-		fmt.Printf("stream chat error: %v\n", err)
+		logs.Error("stream chat error: %v\n", err)
 		return nil, err
 	}
 	defer stream.Close()

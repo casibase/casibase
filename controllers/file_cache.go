@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/util"
 )
@@ -84,7 +85,7 @@ func (c *ApiController) ActivateFile() {
 
 	path := fmt.Sprintf("%s/%s", cacheDir, key)
 	cacheMap[prefix] = path
-	fmt.Printf("%v\n", cacheMap)
+	logs.Info("%v\n", cacheMap)
 
 	if !util.FileExist(getAppPath(filename)) {
 		util.CopyFile(getAppPath(filename), getAppPath(prefix))

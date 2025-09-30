@@ -18,6 +18,7 @@ import {ExclamationCircleOutlined, SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import i18next from "i18next";
 import * as Setting from "./Setting";
+import * as FormBackend from "./backend/FormBackend";
 
 const {confirm} = Modal;
 
@@ -38,6 +39,7 @@ class BaseListPage extends React.Component {
       isAuthorized: true,
       selectedRowKeys: [],
       selectedRows: [],
+      formItems: [],
     };
   }
 
@@ -53,9 +55,9 @@ class BaseListPage extends React.Component {
 
   componentDidMount() {
     window.addEventListener("storeChanged", this.handleStoreChange);
-    if (!Setting.isLocalAdminUser(this.props.account)) {
-      Setting.setStore("All");
-    }
+    // if (!Setting.isLocalAdminUser(this.props.account)) {
+    //   Setting.setStore("All");
+    // }
   }
 
   componentWillUnmount() {
@@ -68,6 +70,14 @@ class BaseListPage extends React.Component {
   UNSAFE_componentWillMount() {
     const {pagination} = this.state;
     this.fetch({pagination});
+    FormBackend.getForm(this.props.account.name, this.props.match?.path?.replace(/^\//, ""))
+      .then(res => {
+        if (res.status === "ok" && res.data) {
+          this.setState({formItems: res.data.formItems});
+        } else {
+          this.setState({formItems: []});
+        }
+      });
   }
 
   getColumnSearchProps = dataIndex => ({

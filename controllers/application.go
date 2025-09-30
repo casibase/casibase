@@ -227,7 +227,13 @@ func (c *ApiController) DeployApplication() {
 		return
 	}
 
-	c.ResponseOk(success)
+	updatedApplication, err := object.GetApplication(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(updatedApplication)
 }
 
 // UndeployApplication

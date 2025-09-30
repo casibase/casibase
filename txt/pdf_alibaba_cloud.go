@@ -25,6 +25,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/beego/beego/logs"
 	"github.com/carmel/gooxml/document"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 )
@@ -60,7 +61,7 @@ func processPdf(localPDFPath, number string) error {
 	}
 
 	pageCount := ctx.PageCount
-	fmt.Printf("Total pages: %d\n", pageCount)
+	logs.Info("Total pages: %d\n", pageCount)
 
 	ans := ""
 	batchSize := 20
@@ -115,7 +116,7 @@ func processPdf(localPDFPath, number string) error {
 		return fmt.Errorf("write to %s failed: %v", outputFile, err)
 	}
 
-	fmt.Println("Saved result to:", outputFile)
+	logs.Info("Saved result to:", outputFile)
 
 	return nil
 }

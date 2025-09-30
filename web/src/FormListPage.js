@@ -14,13 +14,15 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, List, Popconfirm, Row, Table, Tooltip} from "antd";
-import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
+import {Button, Col, List, Popconfirm, Row, Table} from "antd";
+import {DeleteOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as FormBackend from "./backend/FormBackend";
 import i18next from "i18next";
+
+const formTypeOptions = Setting.getFormTypeOptions();
 
 class FormListPage extends BaseListPage {
   constructor(props) {
@@ -35,7 +37,7 @@ class FormListPage extends BaseListPage {
       createdTime: moment().format(),
       displayName: `New Form - ${randomName}`,
       position: "1",
-      type: "Table",
+      category: "Table",
       url: "",
       formItems: [],
     };
@@ -119,11 +121,22 @@ class FormListPage extends BaseListPage {
         sorter: (a, b) => a.position.localeCompare(b.position),
       },
       {
+        title: i18next.t("provider:Category"),
+        dataIndex: "category",
+        key: "category",
+        width: "90px",
+        sorter: (a, b) => a.category.localeCompare(b.category),
+      },
+      {
         title: i18next.t("general:Type"),
         dataIndex: "type",
         key: "type",
-        width: "90px",
+        width: "120px",
         sorter: (a, b) => a.type.localeCompare(b.type),
+        render: (text, record, index) => {
+          const typeOption = formTypeOptions.find(option => option.id === text);
+          return typeOption ? i18next.t(typeOption.name) : text;
+        },
       },
       {
         title: i18next.t("general:URL"),
@@ -144,52 +157,41 @@ class FormListPage extends BaseListPage {
         dataIndex: "formItems",
         key: "formItems",
         ...this.getColumnSearchProps("formItems"),
-        // width: '600px',
         render: (text, record, index) => {
           const providers = text;
-          if (providers === null || providers.length === 0) {
+          if (!providers || providers.length === 0) {
             return `(${i18next.t("general:empty")})`;
           }
 
-          const half = Math.floor((providers.length + 1) / 2);
+          const visibleProviders = providers.filter(item => item.visible !== false);
+          const leftItems = [];
+          const rightItems = [];
+          visibleProviders.forEach((item, idx) => {
+            if (idx % 2 === 0) {
+              leftItems.push(item);
+            } else {
+              rightItems.push(item);
+            }
+          });
 
-          const getList = (providers) => {
-            return (
-              <List
-                size="small"
-                locale={{emptyText: " "}}
-                dataSource={providers}
-                renderItem={(providerItem, i) => {
-                  return (
-                    <List.Item>
-                      <div style={{display: "inline"}}>
-                        <Tooltip placement="topLeft" title="Edit">
-                          <Button style={{marginRight: "5px"}} icon={<EditOutlined />} size="small" onClick={() => Setting.goToLinkSoft(this, `/providers/${record.organization}/${providerItem.name}`)} />
-                        </Tooltip>
-                        <Link to={`/providers/${record.organization}/${providerItem.name}`}>
-                          {providerItem.name}
-                        </Link>
-                      </div>
-                    </List.Item>
-                  );
-                }}
-              />
-            );
-          };
+          const getList = (items) => (
+            <List
+              size="small"
+              locale={{emptyText: " "}}
+              dataSource={items}
+              renderItem={providerItem => (
+                <List.Item>
+                  <div style={{display: "inline"}}>{i18next.t(providerItem.label)}</div>
+                </List.Item>
+              )}
+            />
+          );
 
           return (
             <div>
               <Row>
-                <Col span={12}>
-                  {
-                    getList(providers.slice(0, half))
-                  }
-                </Col>
-                <Col span={12}>
-                  {
-                    getList(providers.slice(half))
-                  }
-                </Col>
+                <Col span={12}>{getList(leftItems)}</Col>
+                <Col span={12}>{getList(rightItems)}</Col>
               </Row>
             </div>
           );

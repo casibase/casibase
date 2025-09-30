@@ -55,14 +55,14 @@ class FormDataPage extends Component {
       );
     }
 
-    if (this.state.form.type === "Table" || this.state.form.type === "") {
+    if (this.state.form.category === "Table" || this.state.form.category === "") {
       return <FormDataTablePage {...this.props} />;
-    } else if (this.state.form.type === "iFrame") {
+    } else if (this.state.form.category === "iFrame") {
       return (
         <iframe id="formData" title="formData" src={this.state.form.url} style={{width: "100%", height: "calc(100vh - 134px)"}} frameBorder="no" />
       );
     } else {
-      return `Unsupported form type: ${this.state.form.type}`;
+      return `Unsupported form category: ${this.state.form.category}`;
     }
   }
 }

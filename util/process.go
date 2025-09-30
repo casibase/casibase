@@ -21,6 +21,8 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+
+	"github.com/beego/beego/logs"
 )
 
 func getPidByPort(port int) (int, error) {
@@ -90,7 +92,7 @@ func StopOldInstance(port int) error {
 	if err != nil {
 		return err
 	} else {
-		fmt.Printf("The old instance with pid: %d has been stopped\n", pid)
+		logs.Warn("The old instance with pid: %d has been stopped\n", pid)
 	}
 
 	return nil

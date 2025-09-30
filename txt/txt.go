@@ -18,6 +18,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/beego/beego/logs"
 )
 
 func GetSupportedFileTypes() []string {
@@ -37,7 +39,7 @@ func GetParsedTextFromUrl(url string, ext string) (string, error) {
 		defer func() {
 			err = os.Remove(path)
 			if err != nil {
-				fmt.Printf("%v\n", err.Error())
+				logs.Error("%v\n", err.Error())
 			}
 		}()
 	}

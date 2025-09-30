@@ -15,10 +15,11 @@
 package util
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/beego/beego/logs"
 )
 
 var licenseText = `// Copyright 2025 The Casibase Authors. All Rights Reserved.
@@ -56,7 +57,7 @@ func updateAllHeaders() {
 					return err
 				}
 
-				fmt.Printf("Handled path: [%s]\n", path)
+				logs.Info("Handled path: [%s]\n", path)
 			}
 		}
 		return nil
