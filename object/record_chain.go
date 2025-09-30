@@ -111,6 +111,13 @@ func (record *Record) toParam() string {
 	record2.Transaction2 = ""
 	record2.BlockHash2 = ""
 
+	// 适配检查
+	needHideObjectAndObjcid, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("record.object.chain.check.hide", "true")
+	if needHideObjectAndObjcid == "true" {
+		record2.Object = ""
+		record2.Objcid = ""
+	}
+
 	res := Param{
 		Key:   record2.getId(),
 		Field: "Record",
