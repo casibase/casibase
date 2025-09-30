@@ -200,6 +200,7 @@ class RecordListPage extends BaseListPage {
   };
 
   renderTable(records) {
+    // 在数据库的form表中，也存在对record字段的配置，若在此处修改无效，需要同时修改数据库中的信息
     const columns = [
       {
         title: i18next.t("general:Organization"),
