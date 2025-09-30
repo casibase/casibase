@@ -512,7 +512,7 @@ class RecordListPage extends BaseListPage {
         sorter: true,
         ...this.getColumnSearchProps("objcid"),
         render: (text, record, index) => {
-          return text || "-";
+          return text || "";
         },
       },
       {
