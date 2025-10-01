@@ -1,10 +1,13 @@
 // Copyright 2025 The Casibase Authors. All Rights Reserved.
 
 import React from "react";
-import {Button, Card, Col, Descriptions, Progress, Row, Statistic, Table, Tag, Typography} from "antd";
+import {Button, Card, Col, Descriptions, Progress, Row, Statistic, Tag, Typography} from "antd";
 import {CopyOutlined} from "@ant-design/icons";
 import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as Setting from "./Setting";
+import EventTable from "./table/EventTable";
+import DeploymentTable from "./table/DeploymentTable";
+import CredentialsTable from "./table/CredentialTable";
 import i18next from "i18next";
 import copy from "copy-to-clipboard";
 
@@ -133,75 +136,6 @@ class ApplicationViewPage extends React.Component {
     );
   }
 
-  renderDeployments() {
-    const details = this.state.application?.details;
-    if (!details || !details.deployments || details.deployments.length === 0) {
-      return null;
-    }
-
-    const columns = [
-      {
-        title: i18next.t("general:Name"),
-        dataIndex: "name",
-        key: "name",
-        width: "150px",
-        render: (text) => <Text>{text}</Text>,
-      },
-      {
-        title: i18next.t("application:Replicas"),
-        dataIndex: "replicas",
-        key: "replicas",
-        width: "80px",
-        render: (text, record) => <Text>{record.readyReplicas}/{text}</Text>,
-      },
-      {
-        title: i18next.t("general:Status"),
-        dataIndex: "status",
-        key: "status",
-        width: "120px",
-        render: (text) => {
-          let color = "default";
-          if (text === "Running") {
-            color = "green";
-          } else if (text === "Partially Ready") {
-            color = "orange";
-          } else if (text === "Not Ready") {
-            color = "red";
-          }
-          return <Tag color={color}>{text}</Tag>;
-        },
-      },
-      {
-        title: i18next.t("general:Containers"),
-        dataIndex: "containers",
-        key: "containers",
-        width: "280px",
-        render: (containers) => (
-          <div>
-            {containers.map((container, index) => (
-              <div key={index} style={{marginBottom: 4}}>
-                <Text style={{fontSize: "12px"}}>{container.image}</Text>
-              </div>
-            ))}
-          </div>
-        ),
-      },
-      {
-        title: i18next.t("general:Created time"),
-        dataIndex: "createdTime",
-        key: "createdTime",
-        width: "160px",
-        render: (text) => <Text style={{fontSize: "12px"}}>{text}</Text>,
-      },
-    ];
-
-    return (
-      <Card size="small" title={i18next.t("application:Deploy")} style={{marginBottom: 16}}>
-        <Table dataSource={details.deployments} columns={columns} pagination={false} size="small" rowKey="name" />
-      </Card>
-    );
-  }
-
   renderConnections() {
     const details = this.state.application?.details;
     if (!details || !details.services || details.services.length === 0) {
@@ -281,52 +215,6 @@ class ApplicationViewPage extends React.Component {
     );
   }
 
-  renderCredentials() {
-    const details = this.state.application?.details;
-    if (!details || !details.credentials || details.credentials.length === 0) {
-      return null;
-    }
-
-    const columns = [
-      {
-        title: i18next.t("general:Name"),
-        dataIndex: "name",
-        key: "name",
-        width: "200px",
-        sorter: (a, b) => a.name.localeCompare(b.name),
-        render: (text) => <Text>{text}</Text>,
-      },
-      {
-        title: i18next.t("general:Data"),
-        dataIndex: "value",
-        key: "value",
-        width: "300px",
-        render: (text) => (
-          <Text style={{wordBreak: "break-all"}}>{text}</Text>
-        ),
-      },
-      {
-        title: i18next.t("general:Action"),
-        key: "action",
-        width: "80px",
-        render: (text, record) => (
-          <Button icon={<CopyOutlined />} size="small"
-            disabled={!record.value}
-            onClick={() => this.copyToClipboard(record.value)}>
-            {i18next.t("general:Copy")}
-          </Button>
-        ),
-      },
-    ];
-
-    return (
-      <Card size="small" title={i18next.t("general:Resources")} style={{marginBottom: 16}}>
-        <Table dataSource={details.credentials} columns={columns}
-          pagination={false} size="small" rowKey="name" />
-      </Card>
-    );
-  }
-
   render() {
     if (!this.state.application) {
       return null;
@@ -352,13 +240,16 @@ class ApplicationViewPage extends React.Component {
       );
     }
 
+    const details = this.state.application?.details;
+
     return (
       <div style={{margin: "32px"}}>
         {this.renderBasic()}
         {this.renderMetrics()}
-        {this.renderDeployments()}
+        <DeploymentTable deployments={details?.deployments} />
         {this.renderConnections()}
-        {this.renderCredentials()}
+        <EventTable events={details?.events} />
+        <CredentialsTable credentials={details?.credentials} />
       </div>
     );
   }
