@@ -21,7 +21,7 @@ import * as Setting from "../Setting";
 
 const {Text} = Typography;
 
-class EventsTable extends React.Component {
+class EventTable extends React.Component {
   copyEventDetails = (event) => {
     const details = [
       `${i18next.t("general:Type")}: ${event.type}`,
@@ -164,4 +164,4 @@ class EventsTable extends React.Component {
   }
 }
 
-export default EventsTable;
+export default EventTable;

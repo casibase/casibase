@@ -89,7 +89,7 @@ func initCacheManager() error {
 		svcCache:     make(map[string]map[string]*v1.Service),
 		deployCache:  make(map[string]map[string]*appsv1.Deployment),
 		ingressCache: make(map[string]map[string]*networkingv1.Ingress),
-		eventCaches:  make(map[string]*EventCache), // Simplified event cache structure
+		eventCaches:  make(map[string]*EventCache),
 		nsCache:      make(map[string]*v1.Namespace),
 		nodeCache:    make(map[string]*v1.Node),
 		metricsCache: make(map[string]*CachedMetrics),
