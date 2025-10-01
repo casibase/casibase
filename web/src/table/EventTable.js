@@ -127,7 +127,7 @@ class EventTable extends React.Component {
   };
 
   render() {
-    const {events} = this.props;
+    const {events, onAnalyze} = this.props;
 
     if (!events || events.length === 0) {
       return null;
@@ -137,11 +137,23 @@ class EventTable extends React.Component {
       <Card
         size="small"
         title={
-          <span>
-            {i18next.t("general:Records")}
-            <Text type="secondary" style={{marginLeft: 8, fontSize: "12px"}}>
-              ({events.length})
-            </Text>
+          <span style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+            <span>
+              {i18next.t("general:Records")}
+              <Text type="secondary" style={{marginLeft: 8, fontSize: "12px"}}>
+                ({events.length})
+              </Text>
+            </span>
+            {onAnalyze && (
+              <Button
+                type="primary"
+                size="small"
+                onClick={onAnalyze}
+                disabled={!events || events.length === 0}
+              >
+                {i18next.t("general:Chat")}
+              </Button>
+            )}
           </span>
         }
         style={{marginBottom: 16}}

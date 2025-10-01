@@ -2,7 +2,7 @@
 
 import React from "react";
 import {Button, Card, Col, Descriptions, Progress, Row, Statistic, Tag, Typography} from "antd";
-import {CopyOutlined} from "@ant-design/icons";
+import {CloseOutlined, CopyOutlined} from "@ant-design/icons";
 import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as Setting from "./Setting";
 import EventTable from "./table/EventTable";
@@ -59,6 +59,107 @@ class ApplicationViewPage extends React.Component {
     copy(text);
     Setting.showMessage("success", i18next.t("general:Successfully copied"));
   };
+
+  buildAnalysisPrompt = (details) => {
+    let prompt = "Please analyze the following Kubernetes application status and provide an objective summary:\n\n";
+
+    prompt += `Application: ${this.state.application.name}\n`;
+    prompt += `Namespace: ${details.namespace}\n`;
+    prompt += `Status: ${details.status}\n\n`;
+
+    if (details.metrics) {
+      prompt += "Resource Usage:\n";
+      prompt += `- CPU: ${details.metrics.cpuUsage}`;
+      if (details.metrics.cpuPercentage > 0) {
+        prompt += ` (${details.metrics.cpuPercentage.toFixed(1)}% of limits)`;
+      }
+      prompt += "\n";
+      prompt += `- Memory: ${details.metrics.memoryUsage}`;
+      if (details.metrics.memoryPercentage > 0) {
+        prompt += ` (${details.metrics.memoryPercentage.toFixed(1)}% of limits)`;
+      }
+      prompt += "\n";
+      prompt += `- Active Pods: ${details.metrics.podCount}\n\n`;
+    }
+
+    if (details.deployments && details.deployments.length > 0) {
+      prompt += "Deployments:\n";
+      details.deployments.forEach(deploy => {
+        prompt += `- ${deploy.name}: ${deploy.readyReplicas}/${deploy.replicas} replicas (${deploy.status})\n`;
+      });
+      prompt += "\n";
+    }
+
+    if (details.events && details.events.length > 0) {
+      const warningEvents = details.events.filter(e => e.type === "Warning");
+      const normalEvents = details.events.filter(e => e.type === "Normal");
+
+      prompt += `Recent Events (${details.events.length} total):\n`;
+      prompt += `- Warning events: ${warningEvents.length}\n`;
+      prompt += `- Normal events: ${normalEvents.length}\n\n`;
+
+      if (warningEvents.length > 0) {
+        prompt += "Warning Events Details:\n";
+        warningEvents.slice(0, 10).forEach(event => {
+          prompt += `- ${event.reason}: ${event.message} (Object: ${event.involvedObject}, Count: ${event.count})\n`;
+        });
+        prompt += "\n";
+      }
+    }
+
+    prompt += "Please provide:\n";
+    prompt += "1. A brief objective summary of the current application status\n";
+    prompt += "2. Explanation of any warning events in plain language\n";
+    prompt += "3. Resource utilization analysis\n";
+    prompt += "4. Specific actionable recommendations if issues are found\n\n";
+    prompt += "Keep the response concise and technical but understandable.";
+
+    return prompt;
+  };
+
+  analyzeApplication = () => {
+    const details = this.state.application?.details;
+    if (!details) {
+      return;
+    }
+
+    this.setState({showAnalysis: true});
+  };
+
+  closeAnalysis = () => {
+    this.setState({showAnalysis: false});
+  };
+
+  renderAnalysisPanel() {
+    if (!this.state.showAnalysis) {
+      return null;
+    }
+
+    const details = this.state.application?.details;
+    const analysisPrompt = this.buildAnalysisPrompt(details);
+    const chatUrl = `/?isRaw=1&newMessage=${encodeURIComponent(analysisPrompt)}`;
+
+    return (
+      <Card
+        size="small"
+        title={
+          <span style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+            <span>
+              {i18next.t("general:Chat")}
+            </span>
+            <Button size="small" icon={<CloseOutlined />} onClick={this.closeAnalysis}>
+              {i18next.t("general:Close")}
+            </Button>
+          </span>
+        }
+        style={{marginBottom: 16}}
+      >
+        <div style={{height: "500px", border: "1px solid #d9d9d9", borderRadius: "6px", overflow: "hidden"}}>
+          <iframe src={chatUrl} style={{width: "100%", height: "100%", border: "none"}} />
+        </div>
+      </Card>
+    );
+  }
 
   renderBasic() {
     const details = this.state.application?.details;
@@ -248,7 +349,8 @@ class ApplicationViewPage extends React.Component {
         {this.renderMetrics()}
         <DeploymentTable deployments={details?.deployments} />
         {this.renderConnections()}
-        <EventTable events={details?.events} />
+        {this.renderAnalysisPanel()}
+        <EventTable events={details?.events} onAnalyze={this.analyzeApplication} />
         <CredentialsTable credentials={details?.credentials} />
       </div>
     );
