@@ -18,7 +18,6 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -39,13 +38,19 @@ type CachedMetrics struct {
 	LastUpdated      time.Time         `json:"lastUpdated"`
 }
 
+// EventCache represents namespace-level event cache
+type EventCache struct {
+	Namespace string               `json:"namespace"` // Namespace name
+	Events    map[string]*v1.Event `json:"events"`    // Event name -> Event object
+}
+
 type CacheManager struct {
 	factory      informers.SharedInformerFactory
 	nsInformer   coreinformers.NamespaceInformer
 	svcCache     map[string]map[string]*v1.Service           // namespace -> name -> service
 	deployCache  map[string]map[string]*appsv1.Deployment    // namespace -> name -> deployment
 	ingressCache map[string]map[string]*networkingv1.Ingress // namespace -> name -> ingress
-	eventCache   map[string]map[string]*v1.Event             // namespace -> name -> event
+	eventCaches  map[string]*EventCache                      // namespace -> EventCache
 	nsCache      map[string]*v1.Namespace                    // name -> namespace
 	nodeCache    map[string]*v1.Node                         // name -> node
 
@@ -56,13 +61,13 @@ type CacheManager struct {
 	started bool
 
 	// debug counters
-	svcHits     int64
-	deployHits  int64
-	nodeHits    int64
-	nsHits      int64
-	ingressHits int64
-	eventHits   int64
-	metricsHits int64
+	svcHits     int
+	deployHits  int
+	nodeHits    int
+	nsHits      int
+	ingressHits int
+	eventHits   int
+	metricsHits int
 }
 
 var (
@@ -84,7 +89,7 @@ func initCacheManager() error {
 		svcCache:     make(map[string]map[string]*v1.Service),
 		deployCache:  make(map[string]map[string]*appsv1.Deployment),
 		ingressCache: make(map[string]map[string]*networkingv1.Ingress),
-		eventCache:   make(map[string]map[string]*v1.Event),
+		eventCaches:  make(map[string]*EventCache), // Simplified event cache structure
 		nsCache:      make(map[string]*v1.Namespace),
 		nodeCache:    make(map[string]*v1.Node),
 		metricsCache: make(map[string]*CachedMetrics),
@@ -190,10 +195,14 @@ func (cm *CacheManager) updateEventCache(event *v1.Event) {
 	defer cm.mu.Unlock()
 
 	ns := event.Namespace
-	if cm.eventCache[ns] == nil {
-		cm.eventCache[ns] = make(map[string]*v1.Event)
+
+	if cm.eventCaches[ns] == nil {
+		cm.eventCaches[ns] = &EventCache{
+			Namespace: ns,
+			Events:    make(map[string]*v1.Event),
+		}
 	}
-	cm.eventCache[ns][event.Name] = event
+	cm.eventCaches[ns].Events[event.Name] = event
 }
 
 // deleteEventCache deletes from event cache
@@ -201,8 +210,11 @@ func (cm *CacheManager) deleteEventCache(event *v1.Event) {
 	cm.mu.Lock()
 	defer cm.mu.Unlock()
 
-	if nsCache, exists := cm.eventCache[event.Namespace]; exists {
-		delete(nsCache, event.Name)
+	if nsEventCache, exists := cm.eventCaches[event.Namespace]; exists {
+		delete(nsEventCache.Events, event.Name)
+		if len(nsEventCache.Events) == 0 {
+			delete(cm.eventCaches, event.Namespace)
+		}
 	}
 }
 
@@ -211,11 +223,11 @@ func (cm *CacheManager) getEvents(namespace string) []*v1.Event {
 	cm.mu.RLock()
 	defer cm.mu.RUnlock()
 
-	atomic.AddInt64(&cm.eventHits, 1)
+	cm.eventHits++
 
 	var events []*v1.Event
-	if nsCache, exists := cm.eventCache[namespace]; exists {
-		for _, event := range nsCache {
+	if nsEventCache, exists := cm.eventCaches[namespace]; exists {
+		for _, event := range nsEventCache.Events {
 			events = append(events, event)
 		}
 	}
@@ -303,7 +315,7 @@ func (cm *CacheManager) getNamespaceMetricsFromCache(namespace string) (*CachedM
 	cm.mu.RLock()
 	defer cm.mu.RUnlock()
 
-	atomic.AddInt64(&cm.metricsHits, 1)
+	cm.metricsHits++
 
 	metrics, found := cm.metricsCache[namespace]
 	return metrics, found
@@ -336,6 +348,7 @@ func (cm *CacheManager) deleteNamespaceCache(ns *v1.Namespace) {
 	defer cm.mu.Unlock()
 	delete(cm.nsCache, ns.Name)
 	delete(cm.metricsCache, ns.Name)
+	delete(cm.eventCaches, ns.Name)
 }
 
 // Service event handlers
@@ -477,7 +490,7 @@ func (cm *CacheManager) getNamespace(name string) *v1.Namespace {
 	cm.mu.RLock()
 	defer cm.mu.RUnlock()
 
-	atomic.AddInt64(&cm.nsHits, 1)
+	cm.nsHits++
 
 	if ns, exists := cm.nsCache[name]; exists {
 		return ns
@@ -490,7 +503,7 @@ func (cm *CacheManager) getServices(namespace string) []*v1.Service {
 	cm.mu.RLock()
 	defer cm.mu.RUnlock()
 
-	atomic.AddInt64(&cm.svcHits, 1)
+	cm.svcHits++
 
 	var services []*v1.Service
 	if nsCache, exists := cm.svcCache[namespace]; exists {
@@ -507,7 +520,7 @@ func (cm *CacheManager) getDeployments(namespace string) []*appsv1.Deployment {
 	cm.mu.RLock()
 	defer cm.mu.RUnlock()
 
-	atomic.AddInt64(&cm.deployHits, 1)
+	cm.deployHits++
 
 	var deployments []*appsv1.Deployment
 	if nsCache, exists := cm.deployCache[namespace]; exists {
@@ -522,7 +535,7 @@ func (cm *CacheManager) getNodes() []*v1.Node {
 	cm.mu.RLock()
 	defer cm.mu.RUnlock()
 
-	atomic.AddInt64(&cm.nodeHits, 1)
+	cm.nodeHits++
 
 	var nodes []*v1.Node
 	for _, node := range cm.nodeCache {
@@ -535,7 +548,7 @@ func (cm *CacheManager) getIngresses(namespace string) []*networkingv1.Ingress {
 	cm.mu.RLock()
 	defer cm.mu.RUnlock()
 
-	atomic.AddInt64(&cm.ingressHits, 1)
+	cm.ingressHits++
 
 	var ingresses []*networkingv1.Ingress
 	if nsCache, exists := cm.ingressCache[namespace]; exists {

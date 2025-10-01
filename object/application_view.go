@@ -36,7 +36,7 @@ type ApplicationView struct {
 	Services    []ServiceDetail    `json:"services"`
 	Credentials []EnvVariable      `json:"credentials"`
 	Deployments []DeploymentDetail `json:"deployments"`
-	Events      []EventDetail      `json:"events"` // Added events field
+	Events      []ApplicationEvent `json:"events"`
 	Status      string             `json:"status"`
 	CreatedTime string             `json:"createdTime"`
 	Namespace   string             `json:"namespace"`
@@ -96,14 +96,14 @@ type EnvVariable struct {
 	Value string `json:"value"`
 }
 
-type EventDetail struct {
+type ApplicationEvent struct {
 	Name           string `json:"name"`           // Event name
 	Type           string `json:"type"`           // Event type: Normal, Warning
 	Reason         string `json:"reason"`         // Event reason
 	Message        string `json:"message"`        // Event message
 	InvolvedObject string `json:"involvedObject"` // Related object
 	Source         string `json:"source"`         // Event source
-	Count          int32  `json:"count"`          // Event occurrence count
+	Count          int    `json:"count"`          // Event occurrence count
 	FirstTime      string `json:"firstTime"`      // First occurrence time
 	LastTime       string `json:"lastTime"`       // Last occurrence time
 }
@@ -247,7 +247,7 @@ func GetApplicationView(namespace string) (*ApplicationView, error) {
 					Services:    []ServiceDetail{},
 					Credentials: []EnvVariable{},
 					Deployments: []DeploymentDetail{},
-					Events:      []EventDetail{},
+					Events:      []ApplicationEvent{},
 					Status:      StatusNotDeployed,
 					Namespace:   namespace,
 				}, nil
@@ -261,7 +261,7 @@ func GetApplicationView(namespace string) (*ApplicationView, error) {
 		Services:    []ServiceDetail{},
 		Credentials: []EnvVariable{},
 		Deployments: []DeploymentDetail{},
-		Events:      []EventDetail{},
+		Events:      []ApplicationEvent{},
 		Status:      StatusRunning,
 		CreatedTime: ns.CreationTimestamp.Format("2006-01-02 15:04:05"),
 		Namespace:   namespace,
@@ -514,7 +514,7 @@ func getCredentialsFromCache(namespace string) []EnvVariable {
 }
 
 // getEventsFromCache retrieves namespace-related events from cache or API
-func getEventsFromCache(namespace string) []EventDetail {
+func getEventsFromCache(namespace string) []ApplicationEvent {
 	var events []*v1.Event
 
 	// Try cache first
@@ -535,12 +535,12 @@ func getEventsFromCache(namespace string) []EventDetail {
 		}
 	}
 
-	return convertEventsToDetails(events)
+	return convertEventsToApplicationEvents(events)
 }
 
 // convertEventsToDetails converts Kubernetes Events to EventDetail
-func convertEventsToDetails(events []*v1.Event) []EventDetail {
-	eventDetails := make([]EventDetail, 0)
+func convertEventsToApplicationEvents(events []*v1.Event) []ApplicationEvent {
+	eventDetails := make([]ApplicationEvent, 0)
 
 	for _, event := range events {
 		// Format involved object information
@@ -554,14 +554,14 @@ func convertEventsToDetails(events []*v1.Event) []EventDetail {
 			source = fmt.Sprintf("%s@%s", source, event.Source.Host)
 		}
 
-		detail := EventDetail{
+		detail := ApplicationEvent{
 			Name:           event.Name,
 			Type:           event.Type,
 			Reason:         event.Reason,
 			Message:        event.Message,
 			InvolvedObject: involvedObj,
 			Source:         source,
-			Count:          event.Count,
+			Count:          int(event.Count), // Convert int32 to int
 			FirstTime:      event.FirstTimestamp.Format("2006-01-02 15:04:05"),
 			LastTime:       event.LastTimestamp.Format("2006-01-02 15:04:05"),
 		}
