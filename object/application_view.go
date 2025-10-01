@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -35,6 +36,7 @@ type ApplicationView struct {
 	Services    []ServiceDetail    `json:"services"`
 	Credentials []EnvVariable      `json:"credentials"`
 	Deployments []DeploymentDetail `json:"deployments"`
+	Events      []ApplicationEvent `json:"events"`
 	Status      string             `json:"status"`
 	CreatedTime string             `json:"createdTime"`
 	Namespace   string             `json:"namespace"`
@@ -92,6 +94,18 @@ type ResourceRequests struct {
 type EnvVariable struct {
 	Name  string `json:"name"`
 	Value string `json:"value"`
+}
+
+type ApplicationEvent struct {
+	Name           string `json:"name"`           // Event name
+	Type           string `json:"type"`           // Event type: Normal, Warning
+	Reason         string `json:"reason"`         // Event reason
+	Message        string `json:"message"`        // Event message
+	InvolvedObject string `json:"involvedObject"` // Related object
+	Source         string `json:"source"`         // Event source
+	Count          int    `json:"count"`          // Event occurrence count
+	FirstTime      string `json:"firstTime"`      // First occurrence time
+	LastTime       string `json:"lastTime"`       // Last occurrence time
 }
 
 var (
@@ -233,6 +247,7 @@ func GetApplicationView(namespace string) (*ApplicationView, error) {
 					Services:    []ServiceDetail{},
 					Credentials: []EnvVariable{},
 					Deployments: []DeploymentDetail{},
+					Events:      []ApplicationEvent{},
 					Status:      StatusNotDeployed,
 					Namespace:   namespace,
 				}, nil
@@ -246,6 +261,7 @@ func GetApplicationView(namespace string) (*ApplicationView, error) {
 		Services:    []ServiceDetail{},
 		Credentials: []EnvVariable{},
 		Deployments: []DeploymentDetail{},
+		Events:      []ApplicationEvent{},
 		Status:      StatusRunning,
 		CreatedTime: ns.CreationTimestamp.Format("2006-01-02 15:04:05"),
 		Namespace:   namespace,
@@ -257,6 +273,7 @@ func GetApplicationView(namespace string) (*ApplicationView, error) {
 	details.Services = getServicesFromCache(namespace, nodeIPs)
 	details.Deployments = getDeploymentsFromCache(namespace)
 	details.Credentials = getCredentialsFromCache(namespace)
+	details.Events = getEventsFromCache(namespace) // Added event retrieval
 
 	if metrics, err := getNamespaceMetrics(namespace); err == nil && metrics != nil {
 		details.Metrics = metrics
@@ -494,4 +511,71 @@ func getCredentialsFromCache(namespace string) []EnvVariable {
 	}
 
 	return credentials
+}
+
+// getEventsFromCache retrieves namespace-related events from cache or API
+func getEventsFromCache(namespace string) []ApplicationEvent {
+	var events []*v1.Event
+
+	// Try cache first
+	if cacheManager != nil && cacheManager.started {
+		events = cacheManager.getEvents(namespace)
+	}
+
+	// If cache is empty, get from API
+	if len(events) == 0 {
+		ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Second)
+		defer cancel()
+
+		eventList, err := k8sClient.clientSet.CoreV1().Events(namespace).List(ctx, metav1.ListOptions{})
+		if err == nil {
+			for i := range eventList.Items {
+				events = append(events, &eventList.Items[i])
+			}
+		}
+	}
+
+	return convertEventsToApplicationEvents(events)
+}
+
+// convertEventsToDetails converts Kubernetes Events to EventDetail
+func convertEventsToApplicationEvents(events []*v1.Event) []ApplicationEvent {
+	eventDetails := make([]ApplicationEvent, 0)
+
+	for _, event := range events {
+		// Format involved object information
+		involvedObj := fmt.Sprintf("%s/%s",
+			strings.ToLower(event.InvolvedObject.Kind),
+			event.InvolvedObject.Name)
+
+		// Format event source information
+		source := event.Source.Component
+		if event.Source.Host != "" {
+			source = fmt.Sprintf("%s@%s", source, event.Source.Host)
+		}
+
+		detail := ApplicationEvent{
+			Name:           event.Name,
+			Type:           event.Type,
+			Reason:         event.Reason,
+			Message:        event.Message,
+			InvolvedObject: involvedObj,
+			Source:         source,
+			Count:          int(event.Count), // Convert int32 to int
+			FirstTime:      event.FirstTimestamp.Format("2006-01-02 15:04:05"),
+			LastTime:       event.LastTimestamp.Format("2006-01-02 15:04:05"),
+		}
+
+		eventDetails = append(eventDetails, detail)
+	}
+
+	sort.Slice(eventDetails, func(i, j int) bool {
+		return eventDetails[i].LastTime > eventDetails[j].LastTime
+	})
+
+	if len(eventDetails) > 50 {
+		eventDetails = eventDetails[:50]
+	}
+
+	return eventDetails
 }
