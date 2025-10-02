@@ -2190,29 +2190,29 @@ export function getFormTypeOptions() {
 export function getFormTypeItems(formType) {
   if (formType === "records") {
     return [
-      {name: "organization", label: "general:Organization", visible: true, width: "110"},
-      {name: "id", label: "general:ID", visible: true, width: "90"},
-      {name: "name", label: "general:Name", visible: true, width: "300"},
-      {name: "clientIp", label: "general:Client IP", visible: true, width: "150"},
-      {name: "createdTime", label: "general:Created time", visible: true, width: "150"},
-      {name: "provider", label: "vector:Provider", visible: true, width: "150"},
-      {name: "provider2", label: "vector:Provider" + " 2", visible: true, width: "150"},
-      {name: "user", label: "general:User", visible: true, width: "120"},
-      {name: "method", label: "general:Method", visible: true, width: "110"},
-      {name: "requestUri", label: "general:Request URI", visible: true, width: "200"},
-      {name: "language", label: "general:Language", visible: true, width: "90"},
-      {name: "query", label: "general:Query", visible: true, width: "90"},
-      {name: "region", label: "general:Region", visible: true, width: "90"},
-      {name: "city", label: "general:City", visible: true, width: "90"},
-      {name: "unit", label: "general:Unit", visible: true, width: "90"},
-      {name: "section", label: "general:Section", visible: true, width: "90"},
-      {name: "response", label: "general:Response", visible: true, width: "90"},
-      {name: "object", label: "record:Object", visible: true, width: "200"},
-      {name: "errorText", label: "message:Error text", visible: true, width: "120"},
-      {name: "isTriggered", label: "general:Is triggered", visible: true, width: "140"},
-      {name: "action", label: "general:Action", visible: true, width: "150"},
-      {name: "block", label: "general:Block", visible: true, width: "110"},
-      {name: "block2", label: "general:Block" + " 2", visible: true, width: "110"},
+      {name: "organization", label: "general:Organization", visible: true, width: 110},
+      {name: "id", label: "general:ID", visible: true, width: 90},
+      {name: "name", label: "general:Name", visible: true, width: 300},
+      {name: "clientIp", label: "general:Client IP", visible: true, width: 150},
+      {name: "createdTime", label: "general:Created time", visible: true, width: 150},
+      {name: "provider", label: "vector:Provider", visible: true, width: 150},
+      {name: "provider2", label: "vector:Provider" + " 2", visible: true, width: 150},
+      {name: "user", label: "general:User", visible: true, width: 120},
+      {name: "method", label: "general:Method", visible: true, width: 110},
+      {name: "requestUri", label: "general:Request URI", visible: true, width: 200},
+      {name: "language", label: "general:Language", visible: true, width: 90},
+      {name: "query", label: "general:Query", visible: true, width: 90},
+      {name: "region", label: "general:Region", visible: true, width: 90},
+      {name: "city", label: "general:City", visible: true, width: 90},
+      {name: "unit", label: "general:Unit", visible: true, width: 90},
+      {name: "section", label: "general:Section", visible: true, width: 90},
+      {name: "response", label: "general:Response", visible: true, width: 90},
+      {name: "object", label: "record:Object", visible: true, width: 200},
+      {name: "errorText", label: "message:Error text", visible: true, width: 120},
+      {name: "isTriggered", label: "general:Is triggered", visible: true, width: 140},
+      {name: "action", label: "general:Action", visible: true, width: 150},
+      {name: "block", label: "general:Block", visible: true, width: 110},
+      {name: "block2", label: "general:Block" + " 2", visible: true, width: 110},
     ];
   } else {
     return [];
@@ -2232,6 +2232,7 @@ export function filterTableColumns(columns, formItems) {
         return {
           ...matchedColumn,
           width: item.width !== undefined ? `${item.width}px` : matchedColumn.width,
+          title: item.width !== undefined ? `${i18next.t(item.label)}` : matchedColumn.title,
         };
       }
       return null;

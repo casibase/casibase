@@ -26,7 +26,7 @@ type FormItem struct {
 	Label   string `json:"label"`
 	Type    string `json:"type"`
 	Visible bool   `json:"visible"`
-	Width   string `json:"width"`
+	Width   int    `json:"width"`
 }
 
 type Form struct {
