@@ -175,17 +175,40 @@ class FormItemTable extends React.Component {
         render: (text, record, index) => {
           const items = this.getItems();
           const options = Setting.getDeduplicatedArray(items, table, "name").map(item => ({label: i18next.t(item.label), value: item.name}));
-          const selectedLabel = items.find(item => item.name === text)?.label || text;
+          const selectedName = items.find(item => item.name === text)?.name || text;
           return (
             <Select
               virtual={false}
               style={{width: "100%"}}
               options={options}
-              value={i18next.t(selectedLabel)}
+              value={selectedName}
               onChange={value => {
                 this.updateField(table, index, "name", value);
               }}
               optionLabelProp="label"
+            />
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Label"),
+        dataIndex: "label",
+        key: "label",
+        width: "200px",
+        render: (text, record, index) => {
+          const items = this.getItems();
+          const selectedItem = items.find(item => item.name === text);
+          const currentLabel = selectedItem?.label || text;
+          return (
+            <Input
+              value={i18next.t(currentLabel)}
+              onChange={e => {
+                const newLabel = e.target.value;
+                this.updateField(this.props.table, index, "label", newLabel);
+                if (selectedItem) {
+                  selectedItem.label = newLabel;
+                }
+              }}
             />
           );
         },

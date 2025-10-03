@@ -2232,6 +2232,7 @@ export function filterTableColumns(columns, formItems) {
         return {
           ...matchedColumn,
           width: item.width !== undefined ? `${item.width}px` : matchedColumn.width,
+          title: item.width !== undefined ? `${i18next.t(item.label)}` : matchedColumn.title,
         };
       }
       return null;
