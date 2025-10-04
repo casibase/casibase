@@ -198,7 +198,7 @@ class GraphListPage extends BaseListPage {
         },
       },
     ];
-
+    const filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
     const paginationProps = {
       total: this.state.pagination.total,
       showQuickJumper: true,
@@ -209,7 +209,7 @@ class GraphListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: 1600}} tableLayout="fixed" columns={columns} dataSource={graphs} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: 1600}} tableLayout="fixed" columns={filteredColumns} dataSource={graphs} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Graphs")}&nbsp;&nbsp;&nbsp;&nbsp;

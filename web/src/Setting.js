@@ -2184,6 +2184,13 @@ export function getDeduplicatedArray(array, filterArray, key) {
 export function getFormTypeOptions() {
   return [
     {id: "records", name: "general:Records"},
+    {id: "stores", name: "general:Stores"},
+    {id: "vectors", name: "vector:Vectors"},
+    {id: "videos", name: "video:Videos"},
+    {id: "tasks", name: "task:Tasks"},
+    {id: "workflows", name: "workflow:Workflows"},
+    {id: "articles", name: "article:Articles"},
+    {id: "graphs", name: "graph:Graphs"},
   ];
 }
 
@@ -2214,19 +2221,113 @@ export function getFormTypeItems(formType) {
       {name: "block", label: "general:Block", visible: true, width: "110"},
       {name: "block2", label: "general:Block" + " 2", visible: true, width: "110"},
     ];
+  } else if (formType === "stores") {
+    return [
+      {name: "name", label: "general:Name", visible: true, width: "120"},
+      {name: "displayName", label: "general:Display name", visible: true},
+      {name: "isDefault", label: "store:Is default", visible: true, width: "120"},
+      {name: "chatCount", label: "store:Chat count", visible: true, width: "150"},
+      {name: "messageCount", label: "store:Message count", visible: true, width: "150"},
+      {name: "storageProvider", label: "store:Storage provider", visible: true, width: "250"},
+      // { name: "splitProvider", label: "store:Split provider", visible: false, width: "200" },
+      {name: "imageProvider", label: "store:Image provider", visible: true, width: "300"},
+      {name: "modelProvider", label: "store:Model provider", visible: true, width: "330"},
+      {name: "embeddingProvider", label: "store:Embedding provider", visible: true, width: "300"},
+      {name: "textToSpeechProvider", label: "store:Text-to-Speech provider", visible: true, width: "300"},
+      {name: "speechToTextProvider", label: "store:Speech-to-Text provider", visible: true, width: "200"},
+      {name: "agentProvider", label: "store:Agent provider", visible: true, width: "250"},
+      {name: "memoryLimit", label: "store:Memory limit", visible: true, width: "120"},
+      {name: "state", label: "general:State", visible: true, width: "90"},
+    ];
+  } else if (formType === "vectors") {
+    return [
+      {name: "name", label: "general:Name", visible: true, width: "140"},
+      // { name: "displayName", label: "general:Display name", visible: false, width: "200" },
+      {name: "store", label: "general:Store", visible: true, width: "130"},
+      {name: "provider", label: "vector:Provider", visible: true, width: "200"},
+      {name: "file", label: "store:File", visible: true, width: "200"},
+      {name: "index", label: "vector:Index", visible: true, width: "80"},
+      {name: "text", label: "general:Text", visible: true, width: "200"},
+      {name: "size", label: "general:Size", visible: true, width: "80"},
+      {name: "data", label: "vector:Data", visible: true, width: "200"},
+      {name: "dimension", label: "vector:Dimension", visible: true, width: "80"},
+    ];
+  } else if (formType === "videos") {
+    return [
+      {name: "owner", label: "general:User", visible: true, width: "90"},
+      {name: "name", label: "general:Name", visible: true, width: "180"},
+      {name: "displayName", label: "general:Display name", visible: true, width: "180"},
+      {name: "description", label: "general:Description", visible: true, width: "120"},
+      {name: "grade", label: "video:Grade", visible: true, width: "90"},
+      {name: "unit", label: "video:Unit", visible: true, width: "90"},
+      {name: "lesson", label: "video:Lesson", visible: true, width: "90"},
+      // { name: "videoId", label: "video:Video ID", visible: false, width: "250" },
+      {name: "coverUrl", label: "video:Cover", visible: true, width: "170"},
+      {name: "remarks", label: "video:Remarks", visible: true},
+      // { name: "labels", label: "video:Labels", visible: false, width: "120" },
+      {name: "state", label: "general:State", visible: true, width: "90"},
+      {name: "reviewState", label: "video:Review state", visible: true, width: "110"},
+      {name: "isPublic", label: "video:Is public", visible: true, width: "110"},
+      {name: "downloadUrl", label: "general:Download", visible: true, width: "110"},
+      // { name: "labelCount", label: "video:Label count", visible: false, width: "90" },
+      // { name: "segmentCount", label: "video:Segment count", visible: false, width: "110" },
+      {name: "excellentCount", label: "video:Excellent count", visible: true, width: "110"},
+    ];
+  } else if (formType === "tasks") {
+    return [
+      {name: "name", label: "general:Name", visible: true, width: "160"},
+      {name: "displayName", label: "general:Display name", visible: true, width: "200"},
+      {name: "provider", label: "store:Model provider", visible: true, width: "250"},
+      {name: "type", label: "general:Type", visible: true, width: "90"},
+      {name: "subject", label: "store:Subject", visible: true, width: "200"},
+      {name: "topic", label: "video:Topic", visible: true, width: "200"},
+      {name: "result", label: "general:Result", visible: true, width: "200"},
+      {name: "activity", label: "task:Activity", visible: true, width: "200"},
+      {name: "grade", label: "video:Grade", visible: true, width: "200"},
+      // { name: "application", label: "task:Application", visible: false, width: "180" },
+      // { name: "path", label: "provider:Path", visible: false },
+      {name: "text", label: "general:Text", visible: true},
+      {name: "labels", label: "task:Labels", visible: true, width: "250"},
+      {name: "example", label: "task:Example", visible: true},
+    ];
+  } else if (formType === "workflows") {
+    return [
+      {name: "name", label: "general:Name", visible: true, width: "160"},
+      {name: "displayName", label: "general:Display name", visible: true, width: "200"},
+      {name: "text", label: "general:Text", visible: true},
+      {name: "text2", label: "general:Text2", visible: true},
+      {name: "message", label: "general:Message", visible: true},
+      {name: "questionTemplate", label: "task:Question", visible: true},
+    ];
+  } else if (formType === "articles") {
+    return [
+      {name: "name", label: "general:Name", visible: true, width: "160"},
+      {name: "displayName", label: "general:Display name", visible: true, width: "200"},
+      {name: "workflow", label: "store:Workflow", visible: true, width: "250"},
+      // { name: "type", label: "general:Type", visible: false, width: "90" },
+      {name: "content", label: "article:Content", visible: true},
+    ];
+  } else if (formType === "graphs") {
+    return [
+      {name: "name", label: "general:Name", visible: true, width: "160"},
+      {name: "displayName", label: "general:Display name", visible: true, width: "200"},
+      {name: "createdTime", label: "general:Created time", visible: true, width: "200"},
+      {name: "text", label: "general:Text", visible: true, width: "200"},
+      {name: "graph", label: "general:Graphs", visible: true, width: "240"},
+    ];
   } else {
     return [];
   }
 }
 
-export function filterTableColumns(columns, formItems) {
+export function filterTableColumns(columns, formItems, actionKey = "action") {
   if (!formItems || formItems.length === 0) {
     return columns;
   }
   const visibleColumns = formItems
     .filter(item => item.visible !== false)
     .map(item => {
-      const matchedColumn = columns.find(col => col.dataIndex === item.name);
+      const matchedColumn = columns.find(col => col.key === item.name);
 
       if (matchedColumn) {
         return {
@@ -2239,7 +2340,7 @@ export function filterTableColumns(columns, formItems) {
     })
     .filter(col => col !== null);
 
-  const actionColumn = columns.find(col => col.key === "op");
+  const actionColumn = columns.find(col => col.key === actionKey);
 
   return [
     ...visibleColumns,

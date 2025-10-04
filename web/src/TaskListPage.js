@@ -256,7 +256,7 @@ class TaskListPage extends BaseListPage {
         },
       },
     ];
-
+    columns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
     if (!this.props.account || this.props.account.name !== "admin") {
       columns = columns.filter(column => column.key !== "provider");
     }

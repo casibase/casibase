@@ -20,6 +20,13 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import FormItemTable from "./table/FormItemTable";
 import RecordListPage from "./RecordListPage";
+import StoreListPage from "./StoreListPage";
+import VectorListPage from "./VectorListPage";
+import VideoListPage from "./VideoListPage";
+import TaskListPage from "./TaskListPage";
+import WorkflowListPage from "./WorkflowListPage";
+import ArticleListPage from "./ArticleListPage";
+import GraphListPage from "./GraphListPage";
 
 const {Option} = Select;
 const formTypeOptions = Setting.getFormTypeOptions();
@@ -223,6 +230,20 @@ class FormEditPage extends React.Component {
 
     if (this.state.form.type === "records") {
       listPageComponent = (<RecordListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "stores") {
+      listPageComponent = (<StoreListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "vectors") {
+      listPageComponent = (<VectorListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "videos") {
+      listPageComponent = (<VideoListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "tasks") {
+      listPageComponent = (<TaskListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "workflows") {
+      listPageComponent = (<WorkflowListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "articles") {
+      listPageComponent = (<ArticleListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "graphs") {
+      listPageComponent = (<GraphListPage {...this.props} formItems={this.state.form.formItems} />);
     }
 
     return (
