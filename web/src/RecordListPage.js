@@ -551,8 +551,8 @@ class RecordListPage extends BaseListPage {
       }),
       {
         title: i18next.t("general:Action"),
-        dataIndex: "op",
-        key: "op",
+        dataIndex: "recordAction",
+        key: "recordAction",
         width: this.state.enableCrossChain ? "370px" : "270px",
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, record, index) => {
@@ -664,7 +664,7 @@ class RecordListPage extends BaseListPage {
         },
       },
     ];
-    const filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
+    const filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems, "recordAction");
     const paginationProps = {
       pageSize: this.state.pagination.pageSize,
       total: this.state.pagination.total,

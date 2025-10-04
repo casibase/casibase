@@ -510,7 +510,7 @@ class VideoListPage extends BaseListPage {
         },
       },
     ];
-
+    columns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
     const paginationProps = {
       total: this.state.pagination.total,
       showQuickJumper: true,
