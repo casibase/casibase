@@ -152,7 +152,7 @@ class RecordEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Provider") + " 2", i18next.t("general:Provider - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Provider 2"), i18next.t("general:Provider - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Select disabled={false} virtual={false} style={{width: "100%"}} value={this.state.record.provider2} onChange={(value => {
@@ -168,7 +168,7 @@ class RecordEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Block") + " 2", i18next.t("general:Block - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Block 2"), i18next.t("general:Block - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Input disabled={false} value={this.state.record.block2} onChange={e => {

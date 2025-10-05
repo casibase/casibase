@@ -176,6 +176,7 @@ class FormEditPage extends React.Component {
                     onChange={value => {
                       this.updateFormField("type", value);
                       this.updateFormField("name", value);
+                      this.updateFormField("displayName", value);
                       const defaultItems = new FormItemTable({formType: value}).getItems();
                       this.updateFormField("formItems", defaultItems);
                     }}

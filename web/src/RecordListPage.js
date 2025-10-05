@@ -288,7 +288,7 @@ class RecordListPage extends BaseListPage {
         },
       },
       (this.state.enableCrossChain ? {
-        title: i18next.t("vector:Provider") + " 2",
+        title: i18next.t("general:Provider 2"),
         dataIndex: "provider2",
         key: "provider2",
         width: "150px",
@@ -304,7 +304,7 @@ class RecordListPage extends BaseListPage {
           );
         },
       } : {
-        title: i18next.t("vector:Provider") + " 2",
+        title: i18next.t("general:Provider 2"),
         hidden: true,
       }),
       {
@@ -535,7 +535,7 @@ class RecordListPage extends BaseListPage {
         },
       },
       (this.state.enableCrossChain ? {
-        title: i18next.t("general:Block") + " 2",
+        title: i18next.t("general:Block 2"),
         dataIndex: "block2",
         key: "block2",
         width: "110px",
@@ -546,7 +546,7 @@ class RecordListPage extends BaseListPage {
           return Setting.getBlockBrowserUrl(this.state.providerMap, record, text, false);
         },
       } : {
-        title: i18next.t("general:Block") + " 2",
+        title: i18next.t("general:Block 2"),
         hidden: true,
       }),
       {
