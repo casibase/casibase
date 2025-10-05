@@ -2185,12 +2185,12 @@ export function getFormTypeOptions() {
   return [
     {id: "records", name: "general:Records"},
     {id: "stores", name: "general:Stores"},
-    {id: "vectors", name: "vector:Vectors"},
-    {id: "videos", name: "video:Videos"},
-    {id: "tasks", name: "task:Tasks"},
-    {id: "workflows", name: "workflow:Workflows"},
-    {id: "articles", name: "article:Articles"},
-    {id: "graphs", name: "graph:Graphs"},
+    {id: "vectors", name: "general:Vectors"},
+    {id: "videos", name: "general:Videos"},
+    {id: "tasks", name: "general:Tasks"},
+    {id: "workflows", name: "general:Workflows"},
+    {id: "articles", name: "general:Articles"},
+    {id: "graphs", name: "general:Graphs"},
   ];
 }
 
@@ -2203,7 +2203,7 @@ export function getFormTypeItems(formType) {
       {name: "clientIp", label: "general:Client IP", visible: true, width: "150"},
       {name: "createdTime", label: "general:Created time", visible: true, width: "150"},
       {name: "provider", label: "vector:Provider", visible: true, width: "150"},
-      {name: "provider2", label: "vector:Provider" + " 2", visible: true, width: "150"},
+      {name: "provider2", label: "general:Provider 2", visible: true, width: "150"},
       {name: "user", label: "general:User", visible: true, width: "120"},
       {name: "method", label: "general:Method", visible: true, width: "110"},
       {name: "requestUri", label: "general:Request URI", visible: true, width: "200"},
@@ -2219,7 +2219,7 @@ export function getFormTypeItems(formType) {
       {name: "isTriggered", label: "general:Is triggered", visible: true, width: "140"},
       {name: "action", label: "general:Action", visible: true, width: "150"},
       {name: "block", label: "general:Block", visible: true, width: "110"},
-      {name: "block2", label: "general:Block" + " 2", visible: true, width: "110"},
+      {name: "block2", label: "general:Block 2", visible: true, width: "110"},
     ];
   } else if (formType === "stores") {
     return [
