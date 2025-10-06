@@ -205,6 +205,12 @@ func (c *ApiController) AddStore() {
 		return
 	}
 
+	err = object.SyncDefaultProvidersToStore(&store)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
 	if store.ModelProvider == "" {
 		var modelProvider *object.Provider
 		modelProvider, err = object.GetDefaultModelProvider()

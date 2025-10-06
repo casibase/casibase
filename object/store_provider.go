@@ -157,3 +157,28 @@ func (store *Store) GetVideoData() ([]string, error) {
 
 	return res, nil
 }
+
+func SyncDefaultProvidersToStore(store *Store) error {
+	defaultStore, err := GetDefaultStore("admin")
+	if err != nil {
+		return err
+	}
+	if defaultStore == nil {
+		return nil
+	}
+
+	if store.ImageProvider == "" && defaultStore.ImageProvider != "" {
+		store.ImageProvider = defaultStore.ImageProvider
+	}
+	if store.TextToSpeechProvider == "Browser Built-In" && defaultStore.TextToSpeechProvider != "" {
+		store.TextToSpeechProvider = defaultStore.TextToSpeechProvider
+	}
+	if store.SpeechToTextProvider == "Browser Built-In" && defaultStore.SpeechToTextProvider != "" {
+		store.SpeechToTextProvider = defaultStore.SpeechToTextProvider
+	}
+	if store.AgentProvider == "" && defaultStore.AgentProvider != "" {
+		store.AgentProvider = defaultStore.AgentProvider
+	}
+
+	return nil
+}
