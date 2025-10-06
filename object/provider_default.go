@@ -116,13 +116,13 @@ func GetDefaultVideoProvider() (*Provider, error) {
 
 func GetDefaultModelProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Model", IsDefault: true}
-	existed, err := adapter.engine.UseBool().Get(&provider)
+	existed, err := adapter.engine.UseBool("is_default").Get(&provider)
 	if err != nil {
 		return &provider, err
 	}
 
 	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.UseBool().Get(&provider)
+		existed, err = providerAdapter.engine.UseBool("is_default").Get(&provider)
 		if err != nil {
 			return &provider, err
 		}
@@ -137,13 +137,13 @@ func GetDefaultModelProvider() (*Provider, error) {
 
 func GetDefaultEmbeddingProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Embedding", IsDefault: true}
-	existed, err := adapter.engine.UseBool().Get(&provider)
+	existed, err := adapter.engine.UseBool("is_default").Get(&provider)
 	if err != nil {
 		return &provider, err
 	}
 
 	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.UseBool().Get(&provider)
+		existed, err = providerAdapter.engine.UseBool("is_default").Get(&provider)
 		if err != nil {
 			return &provider, err
 		}
@@ -158,13 +158,13 @@ func GetDefaultEmbeddingProvider() (*Provider, error) {
 
 func GetDefaultBlockchainProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Blockchain", IsDefault: true}
-	existed, err := adapter.engine.UseBool().Get(&provider)
+	existed, err := adapter.engine.UseBool("is_default").Get(&provider)
 	if err != nil {
 		return &provider, err
 	}
 
 	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.UseBool().Get(&provider)
+		existed, err = providerAdapter.engine.UseBool("is_default").Get(&provider)
 		if err != nil {
 			return &provider, err
 		}
@@ -179,13 +179,13 @@ func GetDefaultBlockchainProvider() (*Provider, error) {
 
 func GetDefaultAgentProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Agent", IsDefault: true}
-	existed, err := adapter.engine.UseBool().Get(&provider)
+	existed, err := adapter.engine.UseBool("is_default").Get(&provider)
 	if err != nil {
 		return &provider, err
 	}
 
 	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.UseBool().Get(&provider)
+		existed, err = providerAdapter.engine.UseBool("is_default").Get(&provider)
 		if err != nil {
 			return &provider, err
 		}
@@ -200,13 +200,13 @@ func GetDefaultAgentProvider() (*Provider, error) {
 
 func GetDefaultTextToSpeechProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Text-to-Speech", IsDefault: true}
-	existed, err := adapter.engine.UseBool().Get(&provider)
+	existed, err := adapter.engine.UseBool("is_default").Get(&provider)
 	if err != nil {
 		return &provider, err
 	}
 
 	if providerAdapter != nil && !existed {
-		existed, err = providerAdapter.engine.UseBool().Get(&provider)
+		existed, err = providerAdapter.engine.UseBool("is_default").Get(&provider)
 		if err != nil {
 			return &provider, err
 		}
