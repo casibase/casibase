@@ -93,6 +93,7 @@ type Store struct {
 	ChildModelProviders []string `xorm:"varchar(500)" json:"childModelProviders"`
 	ShowAutoRead        bool     `json:"showAutoRead"`
 	DisableFileUpload   bool     `json:"disableFileUpload"`
+	HideThinking        bool     `json:"hideThinking"`
 	IsDefault           bool     `json:"isDefault"`
 	State               string   `xorm:"varchar(100)" json:"state"`
 
