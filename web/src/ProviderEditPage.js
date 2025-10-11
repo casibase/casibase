@@ -79,6 +79,11 @@ class ProviderEditPage extends React.Component {
     if (provider.category === "Storage") {
       return Setting.getLabel(i18next.t("store:Storage subpath"), i18next.t("store:Storage subpath - Tooltip"));
     }
+    if (provider.category === "Bot") {
+      if (provider.type === "Tencent") {
+        return Setting.getLabel(i18next.t("provider:Bot ID"), i18next.t("provider:Bot ID - Tooltip"));
+      }
+    }
     return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID - Tooltip"));
   }
 
@@ -107,6 +112,10 @@ class ProviderEditPage extends React.Component {
       if (provider.type === "ChainMaker") {
         return Setting.getLabel(i18next.t("general:Org ID"), i18next.t("general:Org ID - Tooltip"));
       }
+    } else if (provider.category === "Bot") {
+      if (provider.type === "Tencent") {
+        return Setting.getLabel(i18next.t("provider:AES key"), i18next.t("provider:AES key - Tooltip"));
+      }
     }
     return Setting.getLabel(i18next.t("general:Region"), i18next.t("general:Region - Tooltip"));
   }
@@ -124,6 +133,10 @@ class ProviderEditPage extends React.Component {
     } else if (provider.category === "Blockchain") {
       if (provider.type === "Ethereum") {
         return Setting.getLabel(i18next.t("provider:Private key"), i18next.t("provider:Private key - Tooltip"));
+      }
+    } else if (provider.category === "Bot") {
+      if (provider.type === "Tencent") {
+        return Setting.getLabel(i18next.t("provider:Token"), i18next.t("provider:Token - Tooltip"));
       }
     }
     return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret - Tooltip"));
@@ -299,6 +312,9 @@ class ProviderEditPage extends React.Component {
                 this.updateProviderField("subType", "paraformer-realtime-v1");
               } else if (value === "Private Cloud") {
                 this.updateProviderField("type", "Kubernetes");
+              } else if (value === "Bot") {
+                this.updateProviderField("type", "Tencent");
+                this.updateProviderField("subType", "WeCom Bot");
               }
             })}>
               {
@@ -313,6 +329,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Video", name: "Video"},
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
                   {id: "Speech-to-Text", name: "Speech-to-Text"},
+                  {id: "Bot", name: "Bot"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
@@ -411,6 +428,10 @@ class ProviderEditPage extends React.Component {
                 if (value === "Alibaba Cloud") {
                   this.updateProviderField("subType", "paraformer-realtime-v1");
                 }
+              } else if (this.state.provider.category === "Bot") {
+                if (value === "Tencent") {
+                  this.updateProviderField("subType", "WeCom Bot");
+                }
               }
             })}
             showSearch
@@ -430,7 +451,7 @@ class ProviderEditPage extends React.Component {
           </Col>
         </Row>
         {
-          !["Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) ? null : (
+          !["Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text", "Bot"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("provider:Sub type"), i18next.t("provider:Sub type - Tooltip"))} :

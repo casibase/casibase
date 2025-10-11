@@ -242,4 +242,6 @@ func initAPI() {
 	beego.Handler("/api/metrics", promhttp.Handler())
 
 	beego.Router("/api/chat/completions", &controllers.ApiController{}, "POST:ChatCompletions")
+
+	beego.Router("/api/wecom-bot/callback/:botId", &controllers.ApiController{}, "GET:WecomBotVerifyUrl;POST:WecomBotHandleMessage")
 }
