@@ -19,7 +19,10 @@ import (
 	"fmt"
 )
 
-var WecomBotCache = make(map[string]Provider)
+var (
+	WecomBotCache        = make(map[string]Provider)
+	WecomBotMessageCache = make(map[string]string)
+)
 
 type WecomBotMessage struct {
 	MsgId    string        `json:"msgid"`
@@ -71,9 +74,9 @@ type ImageItem struct {
 	Md5    string `json:"md5"`
 }
 
-type TextResponse struct {
-	MsgType string       `json:"msgtype"`
-	Text    *TextMessage `json:"text"`
+type MsgResponse struct {
+	MsgType string      `json:"msgtype"`
+	Stream  *StreamSend `json:"stream"`
 }
 
 func GetWecomBotTokenAndKey(botID string) (string, string, error) {
@@ -95,11 +98,13 @@ func GetWecomBotTokenAndKey(botID string) (string, string, error) {
 	return "", "", fmt.Errorf("not found provider for bot %s", botID)
 }
 
-func MakeTextResponse(content string) (string, error) {
-	msg := map[string]interface{}{
-		"msgtype": "text",
-		"text": map[string]interface{}{
-			"content": content,
+func MakeMsgResponse(content string, streamId string) (string, error) {
+	msg := MsgResponse{
+		MsgType: "stream",
+		Stream: &StreamSend{
+			ID:      streamId,
+			Finish:  content != "",
+			Content: content,
 		},
 	}
 

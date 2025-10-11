@@ -21,6 +21,7 @@ import (
 	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/util"
 	"github.com/workweixin/weworkapi_golang/json_callback/wxbizjsonmsgcrypt"
 )
 
@@ -35,7 +36,6 @@ func (c *ApiController) WecomBotVerifyUrl() {
 	timestamp := c.GetString("timestamp")
 	nonce := c.GetString("nonce")
 	echoStr := c.GetString("echostr")
-	logs.Debug("botID: %s, msgSignature: %s, timestamp: %s, nonce: %s, echoStr: %s", botId, msgSignature, timestamp, nonce, echoStr)
 
 	token, encodingAESKey, err := object.GetWecomBotTokenAndKey(botId)
 	if err != nil {
@@ -51,7 +51,6 @@ func (c *ApiController) WecomBotVerifyUrl() {
 		return
 	}
 
-	logs.Debug("[WechatWork Bot] URL verified for botID: %s\n", botId)
 	c.Ctx.ResponseWriter.Write(result)
 }
 
@@ -90,14 +89,12 @@ func (c *ApiController) WecomBotHandleMessage() {
 		return
 	}
 
-	logs.Debug("[WechatWork Bot] Received message, botID: %s, msgtype: %s, msgid: %s\n", botId, message.MsgType, message.MsgId)
-
 	var responseMsg string
 	switch message.MsgType {
-	case "text":
+	case "text", "stream":
 		responseMsg, cryptErr = c.handleTextMessage(&message, wxcpt, nonce, timestamp)
 	default:
-		logs.Debug("[WechatWork Bot] Unsupported message type: %s\n", message.MsgType)
+		logs.Error("[WechatWork Bot] Unsupported message type: %s\n", message.MsgType)
 		c.Ctx.ResponseWriter.Write([]byte("success"))
 		return
 	}
@@ -112,24 +109,40 @@ func (c *ApiController) WecomBotHandleMessage() {
 }
 
 func (c *ApiController) handleTextMessage(message *object.WecomBotMessage, wxcpt *wxbizjsonmsgcrypt.WXBizMsgCrypt, nonce, timestamp string) (string, *wxbizjsonmsgcrypt.CryptError) {
-	if message.Text == nil {
-		return "", wxbizjsonmsgcrypt.NewCryptError(wxbizjsonmsgcrypt.ParseJsonError, "text content is empty")
+	content := ""
+	if message.Text != nil {
+		content = message.Text.Content
 	}
 
-	content := message.Text.Content
-	logs.Debug("[WechatWork Bot] Text message from %s: %s\n", message.From.UserId, content)
-
-	store, err := object.GetDefaultStore("admin")
-	if err != nil {
-		return "", wxbizjsonmsgcrypt.NewCryptError(wxbizjsonmsgcrypt.IllegalBuffer, fmt.Sprintf("get default store error: %v", err))
+	var streamId string
+	if message.Stream != nil && message.Stream.Id != "" {
+		streamId = message.Stream.Id
+	} else {
+		streamId = util.GenerateId()
 	}
-	answer, err := sendMessage(store, content)
-	if err != nil {
-		return "", wxbizjsonmsgcrypt.NewCryptError(wxbizjsonmsgcrypt.IllegalBuffer, fmt.Sprintf("send message error: %v", err))
-	}
-	logs.Debug("[WechatWork Bot] AI response: %s\n", answer)
 
-	resp, err := object.MakeTextResponse(answer)
+	answer := ""
+	ans, ok := object.WecomBotMessageCache[streamId]
+	if !ok {
+		object.WecomBotMessageCache[streamId] = ""
+		go func() {
+			store, err := object.GetDefaultStore("admin")
+			if err != nil {
+				return
+			}
+			response, _ := sendMessage(store, content)
+			if err != nil {
+				delete(object.WecomBotMessageCache, streamId)
+				return
+			}
+			object.WecomBotMessageCache[streamId] = response
+		}()
+	} else if ans != "" {
+		answer = ans
+		delete(object.WecomBotMessageCache, streamId)
+	}
+
+	resp, err := object.MakeMsgResponse(answer, streamId)
 	if err != nil {
 		return "", wxbizjsonmsgcrypt.NewCryptError(wxbizjsonmsgcrypt.GenJsonError, err.Error())
 	}
