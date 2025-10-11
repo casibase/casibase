@@ -38,40 +38,10 @@ type Form struct {
 	Position    string `xorm:"varchar(100)" json:"position"`
 	Category    string `xorm:"varchar(100)" json:"category"`
 	Type        string `xorm:"varchar(100)" json:"type"`
+	Tag         string `xorm:"varchar(100)" json:"tag"`
 	Url         string `xorm:"varchar(100)" json:"url"`
 
 	FormItems []*FormItem `xorm:"varchar(5000)" json:"formItems"`
-}
-
-func getFormByType(formType string) ([]*Form, error) {
-	forms := []*Form{}
-	err := adapter.engine.Desc("created_time").Find(&forms, &Form{Type: formType})
-	if err != nil {
-		return forms, err
-	}
-
-	return forms, nil
-}
-
-func checkFormTypeExists(formType string, excludeId string) (bool, error) {
-	forms, err := getFormByType(formType)
-	if err != nil {
-		return false, err
-	}
-
-	if len(forms) == 0 {
-		return false, nil
-	}
-
-	if excludeId != "" {
-		for _, form := range forms {
-			if form.GetId() != excludeId {
-				return true, nil
-			}
-		}
-		return false, nil
-	}
-	return true, nil
 }
 
 func GetMaskedForm(form *Form, isMaskEnabled bool) *Form {
@@ -149,16 +119,6 @@ func UpdateForm(id string, form *Form) (bool, error) {
 		return false, nil
 	}
 
-	if form.Type != "" && form.Type != existingForm.Type {
-		exists, err := checkFormTypeExists(form.Type, id)
-		if err != nil {
-			return false, err
-		}
-		if exists {
-			return false, fmt.Errorf("form type %s already exists", form.Type)
-		}
-	}
-
 	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(form)
 	if err != nil {
 		return false, err
@@ -169,16 +129,6 @@ func UpdateForm(id string, form *Form) (bool, error) {
 }
 
 func AddForm(form *Form) (bool, error) {
-	if form.Type != "" {
-		exists, err := checkFormTypeExists(form.Type, "")
-		if err != nil {
-			return false, err
-		}
-		if exists {
-			return false, fmt.Errorf("form type %s already exists", form.Type)
-		}
-	}
-
 	affected, err := adapter.engine.Insert(form)
 	if err != nil {
 		return false, err

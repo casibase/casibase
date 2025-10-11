@@ -34,7 +34,7 @@ class FormDataPage extends Component {
   }
 
   getForm() {
-    FormBackend.getForm(this.props.account.name, this.state.formName)
+    FormBackend.getForm(this.props.account.owner, this.state.formName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
