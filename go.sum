@@ -978,6 +978,8 @@ github.com/volcengine/volcengine-go-sdk v1.0.141/go.mod h1:oht5AKDJsk0fY6tV2Viqa
 github.com/wangbin/jiebago v0.3.2 h1:reQKp0xTXWFK7eQ19L6Ofq5xODSR2hcam55qcdCCNpw=
 github.com/wangbin/jiebago v0.3.2/go.mod h1:PAqQLauF0qAzy/63jBvO7Goh0oYBq1ocr0OXHLlujwQ=
 github.com/wendal/errors v0.0.0-20181209125328-7f31f4b264ec/go.mod h1:Q12BUT7DqIlHRmgv3RskH+UCM/4eqVMgI0EMmlSpAXc=
+github.com/workweixin/weworkapi_golang v0.0.0-20200831071321-c1fdfd3d6e7d h1:+921K6z7SqJAdFejpwVkp5ZsC1A7b2lQew8YLbLZ3DA=
+github.com/workweixin/weworkapi_golang v0.0.0-20200831071321-c1fdfd3d6e7d/go.mod h1:vYtneA/Rq6p38+4jx4iFMX8O8eQqsNiMpv0UvNgzaXk=
 github.com/xanzy/ssh-agent v0.3.3 h1:+/15pJfg/RsTxqYcX6fHqOXZwwMP+2VyYWJeWM2qQFM=
 github.com/xanzy/ssh-agent v0.3.3/go.mod h1:6dzNDKs0J9rVPHPhaGCukekBHKqfl+L3KghI1Bc68Uw=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
