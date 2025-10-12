@@ -46,15 +46,15 @@ func TestGetTextFromPdfLegacy(t *testing.T) {
 func TestGetTextFromPdfWithSampleFile(t *testing.T) {
 	// This test only runs if the sample PDF file exists
 	testPDF := "/tmp/test_sample.pdf"
-	
+
 	text, err := getTextFromPdf(testPDF)
-	
+
 	// If file doesn't exist, skip the test
 	if err != nil && strings.Contains(err.Error(), "no such file") {
 		t.Skip("Sample PDF not found, skipping test")
 		return
 	}
-	
+
 	// If we got text, verify it's not empty
 	if err == nil {
 		if len(text) == 0 {
