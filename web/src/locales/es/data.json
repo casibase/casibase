@@ -659,6 +659,8 @@
     "Upload file": "Cargar archivo",
     "Vector store id": "Vector store id",
     "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector stores": "Almacenes de vectores",
+    "Vector stores - Tooltip": "Otros almacenes cuyos vectores puede usar este almacén para la recuperación de conocimientos",
     "Welcome": "Indicador de bienvenida",
     "Welcome - Tooltip": "Mensaje de bienvenida mostrado cuando el usuario ingresa al chat por primera vez",
     "Welcome text": "Texto de bienvenida",

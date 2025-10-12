@@ -659,6 +659,8 @@
     "Upload file": "ファイルをアップロード",
     "Vector store id": "Vector store id",
     "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector stores": "ベクトルストア",
+    "Vector stores - Tooltip": "知識検索に使用できる他のストアのベクトル",
     "Welcome": "歓迎プロンプト",
     "Welcome - Tooltip": "ユーザーが初めてチャットに入ったときに表示する歓迎メッセージ",
     "Welcome text": "歓迎テキスト",
