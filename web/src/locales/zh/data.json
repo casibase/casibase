@@ -578,6 +578,8 @@
     "Child stores": "附属数据仓库",
     "Child stores - Tooltip": "关联子存储名称（用于跨存储知识检索）",
     "Chinese": "语文",
+    "Vector stores": "向量数据仓库",
+    "Vector stores - Tooltip": "可用于知识搜索的其他数据仓库的向量",
     "Collected time": "采集时间",
     "Disable file upload": "禁止文件上传",
     "Disable file upload - Tooltip": "禁止用户上传文件（启用后知识库仅管理员可更新）",

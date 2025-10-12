@@ -181,15 +181,25 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 }
 
 func getRelatedVectors(storeName string, provider string) ([]*Vector, error) {
-	vectors, err := getVectorsByProvider(storeName, provider)
-	if err != nil {
-		return nil, err
+	return getRelatedVectorsFromStores([]string{storeName}, provider)
+}
+
+func getRelatedVectorsFromStores(storeNames []string, provider string) ([]*Vector, error) {
+	allVectors := []*Vector{}
+	
+	for _, store := range storeNames {
+		vectors, err := getVectorsByProvider(store, provider)
+		if err != nil {
+			return nil, err
+		}
+		allVectors = append(allVectors, vectors...)
 	}
-	if len(vectors) == 0 {
+	
+	if len(allVectors) == 0 {
 		return nil, fmt.Errorf("no knowledge vectors found")
 	}
 
-	return vectors, nil
+	return allVectors, nil
 }
 
 func queryVectorWithContext(embeddingProvider embedding.EmbeddingProvider, text string, timeout int, lang string) ([]float32, *embedding.EmbeddingResult, error) {
@@ -223,6 +233,19 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string,
 }
 
 func GetNearestKnowledge(storeName string, searchProviderType string, embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, modelProvider *Provider, owner string, text string, knowledgeCount int, lang string) ([]*model.RawMessage, []VectorScore, *embedding.EmbeddingResult, error) {
+	// Get the store object to check for vectorStores configuration
+	store, err := GetStore(util.GetIdFromOwnerAndName(owner, storeName))
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	
+	if store != nil && len(store.VectorStores) > 0 {
+		// Use vectorStores if configured
+		storeNames := append([]string{storeName}, store.VectorStores...)
+		return GetNearestKnowledgeFromStores(storeNames, searchProviderType, embeddingProvider, embeddingProviderObj, modelProvider, owner, text, knowledgeCount, lang)
+	}
+	
+	// Fall back to original behavior for backward compatibility
 	searchProvider, err := GetSearchProvider(searchProviderType, owner)
 	if err != nil {
 		return nil, nil, nil, err
@@ -244,6 +267,38 @@ func GetNearestKnowledge(storeName string, searchProviderType string, embeddingP
 		//	return "", nil, fmt.Errorf(i18n.Translate(lang, "object:The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v"), embeddingProvider.Name, vector.Provider, vector)
 		// }
 
+		vectorScores = append(vectorScores, VectorScore{
+			Vector: vector.Name,
+			Score:  vector.Score,
+		})
+		knowledge = append(knowledge, &model.RawMessage{
+			Text:           vector.Text,
+			Author:         "System",
+			TextTokenCount: vector.TokenCount,
+		})
+	}
+
+	return knowledge, vectorScores, embeddingResult, nil
+}
+
+func GetNearestKnowledgeFromStores(storeNames []string, searchProviderType string, embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, modelProvider *Provider, owner string, text string, knowledgeCount int, lang string) ([]*model.RawMessage, []VectorScore, *embedding.EmbeddingResult, error) {
+	searchProvider, err := GetSearchProvider(searchProviderType, owner)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	vectors, embeddingResult, err := searchProvider.SearchWithStores(storeNames, embeddingProvider.Name, embeddingProviderObj, modelProvider.Name, text, knowledgeCount, lang)
+	if err != nil {
+		if err.Error() == "no knowledge vectors found" {
+			return nil, nil, embeddingResult, err
+		} else {
+			return nil, nil, nil, err
+		}
+	}
+
+	vectorScores := []VectorScore{}
+	knowledge := []*model.RawMessage{}
+	for _, vector := range vectors {
 		vectorScores = append(vectorScores, VectorScore{
 			Vector: vector.Name,
 			Score:  vector.Score,

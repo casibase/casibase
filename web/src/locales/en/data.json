@@ -578,6 +578,8 @@
     "Child stores": "Child stores",
     "Child stores - Tooltip": "Linked substores for cross-store knowledge",
     "Chinese": "Chinese",
+    "Vector stores": "Vector stores",
+    "Vector stores - Tooltip": "Other stores whose vectors can be used for knowledge search",
     "Collected time": "Collected time",
     "Disable file upload": "Disable file upload",
     "Disable file upload - Tooltip": "Disable user file uploads (admin-only updates)",

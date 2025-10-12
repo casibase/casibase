@@ -30,7 +30,11 @@ func NewDefaultSearchProvider(owner string) (*DefaultSearchProvider, error) {
 }
 
 func (p *DefaultSearchProvider) Search(storeName string, embeddingProviderName string, embeddingProviderObj embedding.EmbeddingProvider, modelProviderName string, text string, knowledgeCount int, lang string) ([]Vector, *embedding.EmbeddingResult, error) {
-	vectors, err := getRelatedVectors(storeName, embeddingProviderName)
+	return p.SearchWithStores([]string{storeName}, embeddingProviderName, embeddingProviderObj, modelProviderName, text, knowledgeCount, lang)
+}
+
+func (p *DefaultSearchProvider) SearchWithStores(storeNames []string, embeddingProviderName string, embeddingProviderObj embedding.EmbeddingProvider, modelProviderName string, text string, knowledgeCount int, lang string) ([]Vector, *embedding.EmbeddingResult, error) {
+	vectors, err := getRelatedVectorsFromStores(storeNames, embeddingProviderName)
 	if err != nil {
 		return nil, nil, err
 	}
