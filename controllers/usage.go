@@ -37,7 +37,7 @@ func (c *ApiController) GetUsages() {
 		return
 	}
 
-	usageMetadata, err := object.GetUsageMetadata()
+	usageMetadata, err := object.GetUsageMetadata(c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -59,13 +59,13 @@ func (c *ApiController) GetRangeUsages() {
 	user := c.Input().Get("user")
 	storeName := c.Input().Get("store")
 
-	usages, err := object.GetRangeUsages(rangeType, count, user, storeName)
+	usages, err := object.GetRangeUsages(rangeType, count, user, storeName, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	usageMetadata, err := object.GetUsageMetadata()
+	usageMetadata, err := object.GetUsageMetadata(c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

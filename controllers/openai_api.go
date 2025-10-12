@@ -43,7 +43,7 @@ func (c *ApiController) ChatCompletions() {
 	apiKey = strings.TrimPrefix(apiKey, "Bearer ")
 
 	// Get the model provider based on API key
-	modelProvider, err := object.GetModelProviderByProviderKey(apiKey)
+	modelProvider, err := object.GetModelProviderByProviderKey(apiKey, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(fmt.Sprintf("Authentication failed: %s", err.Error()))
 		return
@@ -103,7 +103,7 @@ func (c *ApiController) ChatCompletions() {
 	knowledge := []*model.RawMessage{}
 
 	// Call the model provider
-	modelResult, err := modelProvider.QueryText(question, writer, history, "", knowledge, nil)
+	modelResult, err := modelProvider.QueryText(question, writer, history, "", knowledge, nil, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

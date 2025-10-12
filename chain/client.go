@@ -17,21 +17,21 @@ package chain
 import "fmt"
 
 type ChainClientInterface interface {
-	Commit(data string) (string, string, string, error)
-	Query(txId string, data string) (string, error)
+	Commit(data string, lang string) (string, string, string, error)
+	Query(txId string, data string, lang string) (string, error)
 }
 
-func NewChainClient(providerType string, clientId string, clientSecret string, region string, networkId string, chainId string, endponit string, text string, UserKey string, UserCert string, SignKey string, SignCert string, ContractName string, ContractMethod string) (ChainClientInterface, error) {
+func NewChainClient(providerType string, clientId string, clientSecret string, region string, networkId string, chainId string, endponit string, text string, UserKey string, UserCert string, SignKey string, SignCert string, ContractName string, ContractMethod string, lang string) (ChainClientInterface, error) {
 	var res ChainClientInterface
 	var err error
 	if providerType == "ChainMaker" {
 		res, err = newChainChainmakerClient(networkId, text, region, chainId, endponit, UserKey, UserCert, SignKey, SignCert, ContractName, ContractMethod)
 	} else if providerType == "Tencent ChainMaker" {
-		res, err = newChainTencentChainmakerClient(clientId, clientSecret, region, networkId, chainId)
+		res, err = newChainTencentChainmakerClient(clientId, clientSecret, region, networkId, chainId, lang)
 	} else if providerType == "Tencent ChainMaker (Demo Network)" {
-		res, err = newChainTencentChainmakerDemoClient(clientId, clientSecret, region, networkId, chainId)
+		res, err = newChainTencentChainmakerDemoClient(clientId, clientSecret, region, networkId, chainId, lang)
 	} else if providerType == "Ethereum" {
-		res, err = newEthereumClient(endponit, clientSecret, ContractName, ContractMethod)
+		res, err = newEthereumClient(endponit, clientSecret, ContractName, ContractMethod, lang)
 	} else {
 		return nil, fmt.Errorf("unsupported provider type: %s", providerType)
 	}

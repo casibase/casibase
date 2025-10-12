@@ -35,7 +35,7 @@ type TxtLabel struct {
 	Text      string  `xorm:"varchar(100)" json:"text"`
 }
 
-func getImportedVideos2(path string) ([]*Video, error) {
+func getImportedVideos2(path string, lang string) ([]*Video, error) {
 	files, err := os.ReadDir(path)
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func getImportedVideos2(path string) ([]*Video, error) {
 		}
 
 		filePath := filepath.Join(path, file.Name())
-		video, err := parseVideoFile2(filePath)
+		video, err := parseVideoFile2(filePath, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -132,8 +132,8 @@ func timeInSeconds(parts []string) (float64, error) {
 	return totalSeconds, nil
 }
 
-func parseVideoFile2(filePath string) (*Video, error) {
-	content, err := txt.GetTextFromDocx(filePath)
+func parseVideoFile2(filePath string, lang string) (*Video, error) {
+	content, err := txt.GetTextFromDocx(filePath, lang)
 	if err != nil {
 		return nil, err
 	}
@@ -181,8 +181,8 @@ func parseVideoFile2(filePath string) (*Video, error) {
 	return video, nil
 }
 
-func importVideos2(path string) error {
-	videos, err := getImportedVideos2(path)
+func importVideos2(path string, lang string) error {
+	videos, err := getImportedVideos2(path, lang)
 	if err != nil {
 		return err
 	}

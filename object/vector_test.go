@@ -38,7 +38,7 @@ func TestUpdateVectors(t *testing.T) {
 				panic(err)
 			}
 
-			_, err = UpdateVector(vector.GetId(), vector)
+			_, err = UpdateVector(vector.GetId(), vector, "en")
 			if err != nil {
 				panic(err)
 			}

@@ -19,6 +19,7 @@ import (
 	"strings"
 
 	"github.com/beego/beego/logs"
+	"github.com/casibase/casibase/i18n"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
@@ -86,13 +87,13 @@ func getMachineFromTencentInstance(instance *cvm.Instance) *Machine {
 	return machine
 }
 
-func (client MachineTencentClient) GetMachines() ([]*Machine, error) {
+func (client MachineTencentClient) GetMachines(lang string) ([]*Machine, error) {
 	request := cvm.NewDescribeInstancesRequest()
 
 	response, err := client.Client.DescribeInstances(request)
 	if err != nil {
 		if _, ok := err.(*errors.TencentCloudSDKError); ok {
-			return nil, fmt.Errorf("Tencent Cloud API error: %s", err)
+			return nil, fmt.Errorf(i18n.Translate(lang, "pkgmachine:Tencent Cloud API error: %s"), err)
 		}
 		return nil, err
 	}
@@ -108,7 +109,7 @@ func (client MachineTencentClient) GetMachines() ([]*Machine, error) {
 	return machines, nil
 }
 
-func (client MachineTencentClient) GetMachine(name string) (*Machine, error) {
+func (client MachineTencentClient) GetMachine(name string, lang string) (*Machine, error) {
 	request := cvm.NewDescribeInstancesRequest()
 
 	request.Filters = []*cvm.Filter{
@@ -121,7 +122,7 @@ func (client MachineTencentClient) GetMachine(name string) (*Machine, error) {
 	response, err := client.Client.DescribeInstances(request)
 	if err != nil {
 		if _, ok := err.(*errors.TencentCloudSDKError); ok {
-			return nil, fmt.Errorf("Tencent Cloud API error: %s", err)
+			return nil, fmt.Errorf(i18n.Translate(lang, "pkgmachine:Tencent Cloud API error: %s"), err)
 		}
 		return nil, err
 	}
@@ -135,8 +136,8 @@ func (client MachineTencentClient) GetMachine(name string) (*Machine, error) {
 	return machine, nil
 }
 
-func (client MachineTencentClient) UpdateMachineState(name string, state string) (bool, string, error) {
-	machine, err := client.GetMachine(name)
+func (client MachineTencentClient) UpdateMachineState(name string, state string, lang string) (bool, string, error) {
+	machine, err := client.GetMachine(name, lang)
 	if err != nil {
 		return false, "", err
 	}

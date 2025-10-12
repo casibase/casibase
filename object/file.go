@@ -26,7 +26,7 @@ func UpdateFile(storeId string, key string, file *File) bool {
 	return true
 }
 
-func AddFile(storeId string, userName string, key string, isLeaf bool, filename string, file multipart.File) (bool, []byte, error) {
+func AddFile(storeId string, userName string, key string, isLeaf bool, filename string, file multipart.File, lang string) (bool, []byte, error) {
 	store, err := GetStore(storeId)
 	if err != nil {
 		return false, nil, err
@@ -35,7 +35,7 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 		return false, nil, nil
 	}
 
-	storageProviderObj, err := store.GetStorageProviderObj()
+	storageProviderObj, err := store.GetStorageProviderObj(lang)
 	if err != nil {
 		return false, nil, err
 	}
@@ -72,7 +72,7 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 	}
 }
 
-func DeleteFile(storeId string, key string, isLeaf bool) (bool, error) {
+func DeleteFile(storeId string, key string, isLeaf bool, lang string) (bool, error) {
 	store, err := GetStore(storeId)
 	if err != nil {
 		return false, err
@@ -81,7 +81,7 @@ func DeleteFile(storeId string, key string, isLeaf bool) (bool, error) {
 		return false, nil
 	}
 
-	storageProviderObj, err := store.GetStorageProviderObj()
+	storageProviderObj, err := store.GetStorageProviderObj(lang)
 	if err != nil {
 		return false, err
 	}

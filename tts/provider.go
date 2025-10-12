@@ -27,11 +27,11 @@ type TextToSpeechResult struct {
 
 type TextToSpeechProvider interface {
 	GetPricing() string
-	QueryAudio(text string, ctx context.Context) ([]byte, *TextToSpeechResult, error)
-	QueryAudioStream(text string, ctx context.Context, writer io.Writer) (*TextToSpeechResult, error)
+	QueryAudio(text string, ctx context.Context, lang string) ([]byte, *TextToSpeechResult, error)
+	QueryAudioStream(text string, ctx context.Context, writer io.Writer, lang string) (*TextToSpeechResult, error)
 }
 
-func GetTextToSpeechProvider(typ string, subType string, clientId string, clientSecret string, providerUrl string, apiVersion string, pricePerThousandChars float64, currency string, flavor string) (TextToSpeechProvider, error) {
+func GetTextToSpeechProvider(typ string, subType string, clientId string, clientSecret string, providerUrl string, apiVersion string, pricePerThousandChars float64, currency string, flavor string, lang string) (TextToSpeechProvider, error) {
 	var p TextToSpeechProvider
 	var err error
 

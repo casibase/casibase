@@ -146,7 +146,7 @@ func (c *ApiController) addInitialChat(organization string, userName string, sto
 			return nil, err
 		}
 		if store == nil {
-			return nil, fmt.Errorf("The store: %s is not found", storeName)
+			return nil, fmt.Errorf(c.T("account:The store: %s is not found"), storeName)
 		}
 	} else {
 		store, err = object.GetDefaultStore("admin")
@@ -154,7 +154,7 @@ func (c *ApiController) addInitialChat(organization string, userName string, sto
 			return nil, err
 		}
 		if store == nil {
-			return nil, fmt.Errorf("The default store is not found")
+			return nil, fmt.Errorf(c.T("account:The default store is not found"))
 		}
 	}
 
@@ -218,7 +218,7 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 		return err
 	}
 	if store == nil {
-		return fmt.Errorf("The store: %s is not found", chat.Store)
+		return fmt.Errorf(c.T("account:The store: %s is not found"), chat.Store)
 	}
 
 	userMessage := &object.Message{

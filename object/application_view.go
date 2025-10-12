@@ -23,6 +23,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/casibase/casibase/i18n"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
@@ -114,9 +115,9 @@ var (
 )
 
 // initMetricsClient init metrics client
-func initMetricsClient() error {
+func initMetricsClient(lang string) error {
 	if k8sClient == nil || k8sClient.config == nil {
-		return fmt.Errorf("k8s client not initialized")
+		return fmt.Errorf(i18n.Translate(lang, "object:k8s client not initialized"))
 	}
 
 	var err error
@@ -128,7 +129,7 @@ func initMetricsClient() error {
 }
 
 // getNamespaceMetrics retrieves namespace metrics from cache with API fallback
-func getNamespaceMetrics(namespace string) (*ResourceMetrics, error) {
+func getNamespaceMetrics(namespace string, lang string) (*ResourceMetrics, error) {
 	if cacheManager != nil && cacheManager.started {
 		if cachedMetrics, found := cacheManager.getNamespaceMetricsFromCache(namespace); found {
 			if time.Since(cachedMetrics.LastUpdated) < 5*time.Minute {
@@ -143,7 +144,7 @@ func getNamespaceMetrics(namespace string) (*ResourceMetrics, error) {
 		}
 	}
 
-	if err := initMetricsClient(); err != nil {
+	if err := initMetricsClient(lang); err != nil {
 		return nil, err
 	}
 
@@ -154,16 +155,16 @@ func getNamespaceMetrics(namespace string) (*ResourceMetrics, error) {
 	var err error
 
 	if cacheManager != nil && cacheManager.started {
-		metrics, err = calculateNamespaceMetrics(ctx, metricsClient, namespace, cacheManager.deployCache, &cacheManager.mu)
+		metrics, err = calculateNamespaceMetrics(ctx, metricsClient, namespace, cacheManager.deployCache, &cacheManager.mu, lang)
 	} else {
-		metrics, err = calculateNamespaceMetrics(ctx, metricsClient, namespace, nil, nil)
+		metrics, err = calculateNamespaceMetrics(ctx, metricsClient, namespace, nil, nil, lang)
 	}
 
 	if err != nil {
 		if errors.IsNotFound(err) || strings.Contains(err.Error(), "metrics.k8s.io") {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("failed to get pod metrics: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to get pod metrics: %v"), err)
 	}
 
 	if metrics == nil {
@@ -189,41 +190,41 @@ func getExternalHost(fallbackHost string) string {
 }
 
 // parseK8sHost extracts server host from kubeconfig content
-func parseK8sHost(configText string) (string, error) {
+func parseK8sHost(configText string, lang string) (string, error) {
 	if strings.TrimSpace(configText) == "" {
-		return "", fmt.Errorf("kubeconfig content is empty")
+		return "", fmt.Errorf(i18n.Translate(lang, "object:kubeconfig content is empty"))
 	}
 
 	config, err := clientcmd.RESTConfigFromKubeConfig([]byte(configText))
 	if err != nil {
-		return "", fmt.Errorf("failed to parse kubeconfig: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:failed to parse kubeconfig: %v"), err)
 	}
 
 	if config.Host == "" {
-		return "", fmt.Errorf("server address not found")
+		return "", fmt.Errorf(i18n.Translate(lang, "object:server address not found"))
 	}
 
 	serverURL, err := url.Parse(config.Host)
 	if err != nil {
-		return "", fmt.Errorf("failed to parse server URL: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:failed to parse server URL: %v"), err)
 	}
 
 	host := serverURL.Hostname()
 	if host == "" {
-		return "", fmt.Errorf("unable to extract host")
+		return "", fmt.Errorf(i18n.Translate(lang, "object:unable to extract host"))
 	}
 
 	return host, nil
 }
 
 // GetApplicationView retrieves application view from cache with fallback
-func GetApplicationView(namespace string) (*ApplicationView, error) {
-	if err := ensureK8sClient(); err != nil {
-		return nil, fmt.Errorf("failed to initialize k8s client: %v", err)
+func GetApplicationView(namespace string, lang string) (*ApplicationView, error) {
+	if err := ensureK8sClient(lang); err != nil {
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to initialize k8s client: %v"), err)
 	}
 
 	if !k8sClient.connected {
-		return nil, fmt.Errorf("k8s client not connected")
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:k8s client not connected"))
 	}
 
 	// Try to get namespace from cache first
@@ -252,7 +253,7 @@ func GetApplicationView(namespace string) (*ApplicationView, error) {
 					Namespace:   namespace,
 				}, nil
 			}
-			return nil, fmt.Errorf("failed to get namespace: %v", err)
+			return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to get namespace: %v"), err)
 		}
 		ns = apiNs
 	}
@@ -275,7 +276,7 @@ func GetApplicationView(namespace string) (*ApplicationView, error) {
 	details.Credentials = getCredentialsFromCache(namespace)
 	details.Events = getEventsFromCache(namespace) // Added event retrieval
 
-	if metrics, err := getNamespaceMetrics(namespace); err == nil && metrics != nil {
+	if metrics, err := getNamespaceMetrics(namespace, lang); err == nil && metrics != nil {
 		details.Metrics = metrics
 	}
 

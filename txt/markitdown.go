@@ -22,6 +22,7 @@ import (
 	"os/exec"
 	"unicode/utf8"
 
+	"github.com/casibase/casibase/i18n"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
 )
@@ -46,15 +47,15 @@ func gbkToUtf8(gbkData []byte) (string, error) {
 	return string(data), nil
 }
 
-func GetTextFromMarkitdown(path string) (string, error) {
+func GetTextFromMarkitdown(path string, lang string) (string, error) {
 	if !markitdownExists {
-		return "", fmt.Errorf("GetTextFromMarkitdown() error, markitdown does not exist")
+		return "", fmt.Errorf(i18n.Translate(lang, "txt:GetTextFromMarkitdown() error, markitdown does not exist"))
 	}
 
 	// Open the input file
 	file, err := os.Open(path)
 	if err != nil {
-		return "", fmt.Errorf("GetTextFromMarkitdown() error, failed to open file: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "txt:GetTextFromMarkitdown() error, failed to open file: %v"), err)
 	}
 	defer file.Close()
 
@@ -68,7 +69,7 @@ func GetTextFromMarkitdown(path string) (string, error) {
 
 	err = cmd.Run()
 	if err != nil {
-		return "", fmt.Errorf("GetTextFromMarkitdown() error, markitdown failed to run: %v: %s", err, stderr.String())
+		return "", fmt.Errorf(i18n.Translate(lang, "txt:GetTextFromMarkitdown() error, markitdown failed to run: %v: %s"), err, stderr.String())
 	}
 
 	outputBytes := out.Bytes()

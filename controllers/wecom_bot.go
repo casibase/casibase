@@ -92,7 +92,7 @@ func (c *ApiController) WecomBotHandleMessage() {
 	var responseMsg string
 	switch message.MsgType {
 	case "text", "stream":
-		responseMsg, cryptErr = c.handleTextMessage(&message, wxcpt, nonce, timestamp)
+		responseMsg, cryptErr = c.handleTextMessage(&message, wxcpt, nonce, timestamp, c.GetAcceptLanguage())
 	default:
 		logs.Error("[WechatWork Bot] Unsupported message type: %s\n", message.MsgType)
 		c.Ctx.ResponseWriter.Write([]byte("success"))
@@ -108,7 +108,7 @@ func (c *ApiController) WecomBotHandleMessage() {
 	c.Ctx.ResponseWriter.Write([]byte(responseMsg))
 }
 
-func (c *ApiController) handleTextMessage(message *object.WecomBotMessage, wxcpt *wxbizjsonmsgcrypt.WXBizMsgCrypt, nonce, timestamp string) (string, *wxbizjsonmsgcrypt.CryptError) {
+func (c *ApiController) handleTextMessage(message *object.WecomBotMessage, wxcpt *wxbizjsonmsgcrypt.WXBizMsgCrypt, nonce, timestamp string, lang string) (string, *wxbizjsonmsgcrypt.CryptError) {
 	content := ""
 	if message.Text != nil {
 		content = message.Text.Content
@@ -130,7 +130,7 @@ func (c *ApiController) handleTextMessage(message *object.WecomBotMessage, wxcpt
 			if err != nil {
 				return
 			}
-			response, _ := sendMessage(store, content)
+			response, _ := sendMessage(store, content, lang)
 			if err != nil {
 				delete(object.WecomBotMessageCache, streamId)
 				return
@@ -155,23 +155,23 @@ func (c *ApiController) handleTextMessage(message *object.WecomBotMessage, wxcpt
 	return string(encryptedMsg), nil
 }
 
-func sendMessage(store *object.Store, question string) (string, error) {
-	modelProvider, _, err := object.GetModelProviderFromContext("admin", store.ModelProvider)
+func sendMessage(store *object.Store, question string, lang string) (string, error) {
+	modelProvider, _, err := object.GetModelProviderFromContext("admin", store.ModelProvider, lang)
 	if err != nil {
 		return "", err
 	}
 
-	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", store.EmbeddingProvider)
+	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", store.EmbeddingProvider, lang)
 	if err != nil {
 		return "", err
 	}
 
-	knowledge, _, _, err := object.GetNearestKnowledge(store.Name, store.SearchProvider, embeddingProvider, embeddingProviderObj, modelProvider, "admin", question, store.KnowledgeCount)
+	knowledge, _, _, err := object.GetNearestKnowledge(store.Name, store.SearchProvider, embeddingProvider, embeddingProviderObj, modelProvider, "admin", question, store.KnowledgeCount, lang)
 	if err != nil {
 		return "", err
 	}
 	var history []*model.RawMessage
-	answer, _, err := object.GetAnswerWithContext(store.ModelProvider, question, history, knowledge, store.Prompt)
+	answer, _, err := object.GetAnswerWithContext(store.ModelProvider, question, history, knowledge, store.Prompt, lang)
 	if err != nil {
 		return "", err
 	}

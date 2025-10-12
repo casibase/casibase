@@ -42,7 +42,7 @@ func TestTranslateArticle(t *testing.T) {
 
 		question := fmt.Sprintf("Translate the following text to Chinese, the words related to this glossary: %s should not be translated. Only respond with the translated text:\n%s", glossary, block.TextEn)
 		var answer string
-		answer, _, err = GetAnswer(article.Provider, question)
+		answer, _, err = GetAnswer(article.Provider, question, "en")
 		if err != nil {
 			panic(err)
 		}

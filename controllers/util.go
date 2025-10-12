@@ -26,6 +26,7 @@ import (
 	"github.com/beego/beego/context"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/conf"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 )
 
@@ -60,6 +61,10 @@ func (c *ApiController) ResponseError(error string, data ...interface{}) {
 	}
 	c.Data["json"] = resp
 	c.ServeJSON()
+}
+
+func (c *ApiController) T(error string) string {
+	return i18n.Translate(c.GetAcceptLanguage(), error)
 }
 
 func (c *ApiController) ResponseAudio(audioData []byte, contentType string, filename string) {

@@ -39,12 +39,12 @@ This is a dummy module provider.
 `
 }
 
-func (p *DummyModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *DummyModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	answer := "this is the answer for \"" + message + "\""
 	if strings.HasPrefix(message, "$CasibaseDryRun$") {
 		return &ModelResult{}, nil
 	}
-	err := flushDataAzure(answer, writer)
+	err := flushDataAzure(answer, writer, lang)
 	if err != nil {
 		return nil, err
 	}

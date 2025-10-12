@@ -17,6 +17,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/casibase/casibase/i18n"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -88,7 +89,7 @@ func (client PodClient) GetPods() ([]*Pod, error) {
 	return pods, nil
 }
 
-func (client PodClient) GetPod(name string) (*Pod, error) {
+func (client PodClient) GetPod(name string, lang string) (*Pod, error) {
 	namespaces, err := client.Client.CoreV1().Namespaces().List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
@@ -104,7 +105,7 @@ func (client PodClient) GetPod(name string) (*Pod, error) {
 			}
 		}
 	}
-	return nil, fmt.Errorf("Pod %s not found", name)
+	return nil, fmt.Errorf(i18n.Translate(lang, "pkgkubernets:Pod %s not found"), name)
 }
 
 // The status of Pods includes Pending, Running, Succeeded, Failed, etc.

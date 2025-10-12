@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	hunyuan "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan/v20230901"
@@ -27,13 +28,13 @@ type TencentCloudEmbeddingProvider struct {
 	client *hunyuan.Client
 }
 
-func NewTencentCloudEmbeddingProvider(clientId, clientSecret string) (*TencentCloudEmbeddingProvider, error) {
+func NewTencentCloudEmbeddingProvider(clientId, clientSecret string, lang string) (*TencentCloudEmbeddingProvider, error) {
 	credential := common.NewCredential(clientId, clientSecret)
 	region := "ap-guangzhou"
 	cpf := profile.NewClientProfile()
 	client, err := hunyuan.NewClient(credential, region, cpf)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create client: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "embedding:failed to create client: %v"), err)
 	}
 	return &TencentCloudEmbeddingProvider{
 		client: client,
@@ -60,7 +61,7 @@ func (p *TencentCloudEmbeddingProvider) calculatePrice(res *EmbeddingResult) err
 	return nil
 }
 
-func (p *TencentCloudEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+func (p *TencentCloudEmbeddingProvider) QueryVector(text string, ctx context.Context, lang string) ([]float32, *EmbeddingResult, error) {
 	request := hunyuan.NewGetEmbeddingRequest()
 	request.Input = common.StringPtr(text)
 
@@ -70,7 +71,7 @@ func (p *TencentCloudEmbeddingProvider) QueryVector(text string, ctx context.Con
 	}
 
 	if len(response.Response.Data) == 0 {
-		return nil, nil, fmt.Errorf("no embedding vector found in response")
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "embedding:no embedding vector found in response"))
 	}
 
 	vector := make([]float32, len(response.Response.Data[0].Embedding))

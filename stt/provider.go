@@ -27,7 +27,7 @@ type SpeechToTextResult struct {
 
 type SpeechToTextProvider interface {
 	GetPricing() string
-	ProcessAudio(audioData io.Reader, ctx context.Context) (string, *SpeechToTextResult, error)
+	ProcessAudio(audioData io.Reader, ctx context.Context, lang string) (string, *SpeechToTextResult, error)
 }
 
 // GetSpeechToTextProvider creates a new provider instance based on the provider type

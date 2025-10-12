@@ -123,7 +123,7 @@ func (c *ApiController) GetStore() {
 	if store != nil {
 		host := c.Ctx.Request.Host
 		origin := getOriginFromHost(host)
-		err = store.Populate(origin)
+		err = store.Populate(origin, c.GetAcceptLanguage())
 		if err != nil {
 			c.ResponseOk(store, err.Error())
 			return
@@ -285,7 +285,7 @@ func (c *ApiController) RefreshStoreVectors() {
 		return
 	}
 
-	ok, err := object.RefreshStoreVectors(&store)
+	ok, err := object.RefreshStoreVectors(&store, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

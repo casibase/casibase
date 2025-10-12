@@ -116,7 +116,7 @@ func (c *ApiController) UpdatePod() {
 		return
 	}
 
-	c.ResponseOk(object.UpdatePod(id, &pod))
+	c.ResponseOk(object.UpdatePod(id, &pod, c.GetAcceptLanguage()))
 }
 
 // AddPod

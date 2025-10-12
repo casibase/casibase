@@ -22,6 +22,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/northes/go-moonshot"
 )
 
@@ -54,7 +55,7 @@ Model
 `
 }
 
-func (p *MoonshotModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *MoonshotModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
 	switch p.subType {
 	case "moonshot-v1-8k":
@@ -64,14 +65,14 @@ func (p *MoonshotModelProvider) calculatePrice(modelResult *ModelResult) error {
 	case "moonshot-v1-128k":
 		price = getPrice(modelResult.TotalTokenCount, 0.06)
 	default:
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 	modelResult.TotalPrice = price
 	modelResult.Currency = "CNY"
 	return nil
 }
 
-func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	if p.secretKey == "" {
 		return nil, errors.New("missing moonshot_key")
 	}
@@ -87,12 +88,12 @@ func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, his
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
-			return nil, fmt.Errorf("cannot calculate tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))
 		}
 		if getContextLength(p.subType) > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
-			return nil, fmt.Errorf("exceed max tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
 		}
 	}
 
@@ -126,7 +127,7 @@ func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, his
 
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 
 	flushData := func(data string) error {
@@ -148,7 +149,7 @@ func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, his
 		TotalTokenCount:    resp.Usage.TotalTokens,
 	}
 
-	err = p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

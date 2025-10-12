@@ -117,7 +117,7 @@ func (c *ApiController) UpdateWorkflow() {
 		return
 	}
 
-	success, err := object.UpdateWorkflow(id, &workflow)
+	success, err := object.UpdateWorkflow(id, &workflow, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -141,7 +141,7 @@ func (c *ApiController) AddWorkflow() {
 		return
 	}
 
-	success, err := object.AddWorkflow(&workflow)
+	success, err := object.AddWorkflow(&workflow, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

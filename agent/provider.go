@@ -19,6 +19,7 @@ import (
 
 	"github.com/ThinkInAIXYZ/go-mcp/client"
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
+	"github.com/casibase/casibase/i18n"
 )
 
 type AgentProvider interface {
@@ -30,13 +31,13 @@ type AgentClients struct {
 	Tools   []*protocol.Tool
 }
 
-func GetAgentProvider(typ string, subType string, text string, mcpTools []*McpTools) (AgentProvider, error) {
+func GetAgentProvider(typ string, subType string, text string, mcpTools []*McpTools, lang string) (AgentProvider, error) {
 	var p AgentProvider
 	var err error
 	if typ == "MCP" {
 		p, err = NewMcpAgentProvider(typ, subType, text, mcpTools)
 	} else {
-		return nil, fmt.Errorf("the agent provider type: %s is not supported", typ)
+		return nil, fmt.Errorf(i18n.Translate(lang, "agent:the agent provider type: %s is not supported"), typ)
 	}
 
 	if err != nil {

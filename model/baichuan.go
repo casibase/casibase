@@ -17,6 +17,8 @@ package model
 import (
 	"fmt"
 	"io"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 type BaichuanModelProvider struct {
@@ -51,7 +53,7 @@ https://platform.baichuan-ai.com/price
 `
 }
 
-func (p *BaichuanModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *BaichuanModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
 		"Baichuan2-Turbo":      {0.008, 0.008},
@@ -68,7 +70,7 @@ func (p *BaichuanModelProvider) calculatePrice(modelResult *ModelResult) error {
 		outputPrice := getPrice(modelResult.TotalTokenCount, priceItem[1])
 		price = inputPrice + outputPrice
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	modelResult.TotalPrice = price
@@ -76,7 +78,7 @@ func (p *BaichuanModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *BaichuanModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *BaichuanModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	const BaseUrl = "https://api.baichuan-ai.com/v1"
 	// Create a new LocalModelProvider to handle the request
 	localProvider, err := NewLocalModelProvider("Custom", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
@@ -84,12 +86,12 @@ func (p *BaichuanModelProvider) QueryText(question string, writer io.Writer, his
 		return nil, err
 	}
 
-	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo)
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo, lang)
 	if err != nil {
 		return nil, err
 	}
 
-	err = p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

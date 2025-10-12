@@ -39,7 +39,7 @@ func (c *ApiController) GetMachines() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 
-	_, err := object.SyncMachinesCloud(owner)
+	_, err := object.SyncMachinesCloud(owner, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -83,7 +83,7 @@ func (c *ApiController) GetMachine() {
 	id := c.Input().Get("id")
 
 	owner, _ := util.GetOwnerAndNameFromId(id)
-	_, err := object.SyncMachinesCloud(owner)
+	_, err := object.SyncMachinesCloud(owner, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

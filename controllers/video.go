@@ -69,7 +69,7 @@ func (c *ApiController) GetVideos() {
 	owner = ""
 
 	if limit == "" || page == "" {
-		videos, err := object.GetVideos(owner)
+		videos, err := object.GetVideos(owner, c.GetAcceptLanguage())
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -85,7 +85,7 @@ func (c *ApiController) GetVideos() {
 		}
 
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		videos, err := object.GetPaginationVideos(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		videos, err := object.GetPaginationVideos(owner, paginator.Offset(), limit, field, value, sortField, sortOrder, c.GetAcceptLanguage())
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -105,14 +105,14 @@ func (c *ApiController) GetVideos() {
 func (c *ApiController) GetVideo() {
 	id := c.Input().Get("id")
 
-	video, err := object.GetVideo(id)
+	video, err := object.GetVideo(id, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
 	if video != nil {
-		err = video.Populate()
+		err = video.Populate(c.GetAcceptLanguage())
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -209,11 +209,11 @@ func (c *ApiController) DeleteVideo() {
 	c.ResponseOk(success)
 }
 
-func updateVideoCoverUrl(id string, videoId string) error {
+func updateVideoCoverUrl(id string, videoId string, lang string) error {
 	for i := 0; i < 30; i++ {
 		coverUrl := video.GetVideoCoverUrl(videoId)
 		if coverUrl != "" {
-			v, err := object.GetVideo(id)
+			v, err := object.GetVideo(id, lang)
 			if err != nil {
 				return err
 			}
@@ -236,14 +236,14 @@ func updateVideoCoverUrl(id string, videoId string) error {
 	return nil
 }
 
-func startCoverUrlJob(id string, videoId string) {
-	err := object.SetDefaultVodClient()
+func startCoverUrlJob(id string, videoId string, lang string) {
+	err := object.SetDefaultVodClient(lang)
 	if err != nil {
 		panic(err)
 	}
 
 	go func(id string, videoId string) {
-		err = updateVideoCoverUrl(id, videoId)
+		err = updateVideoCoverUrl(id, videoId, lang)
 		if err != nil {
 			panic(err)
 		}
@@ -266,7 +266,7 @@ func getSpeaker(s string) string {
 	}
 }
 
-func getAudioSegments(userName string, filename string, fileBuffer *bytes.Buffer) (string, []*object.Label, error) {
+func getAudioSegments(userName string, filename string, fileBuffer *bytes.Buffer, lang string) (string, []*object.Label, error) {
 	audioStorageProviderName := conf.GetConfigString("audioStorageProvider")
 	if audioStorageProviderName == "" {
 		return "", []*object.Label{}, nil
@@ -279,7 +279,7 @@ func getAudioSegments(userName string, filename string, fileBuffer *bytes.Buffer
 		return "", nil, err
 	}
 
-	audioStorageProvider, err := storage.NewCasdoorProvider(audioStorageProviderName)
+	audioStorageProvider, err := storage.NewCasdoorProvider(audioStorageProviderName, lang)
 	if err != nil {
 		return "", nil, err
 	}
@@ -303,7 +303,7 @@ func getAudioSegments(userName string, filename string, fileBuffer *bytes.Buffer
 	tmpInputFile.Close()
 
 	segments := []*object.Label{}
-	oSegments, err := audio.GetSegmentsFromAudio(tmpInputFile.Name())
+	oSegments, err := audio.GetSegmentsFromAudio(tmpInputFile.Name(), lang)
 	if err != nil {
 		return "", nil, err
 	}
@@ -361,7 +361,7 @@ func (c *ApiController) UploadVideo() {
 		return
 	}
 
-	err = object.SetDefaultVodClient()
+	err = object.SetDefaultVodClient(c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -377,7 +377,7 @@ func (c *ApiController) UploadVideo() {
 		return
 	}
 
-	audioUrl, segments, err := getAudioSegments(userName, filename, fileBuffer)
+	audioUrl, segments, err := getAudioSegments(userName, filename, fileBuffer, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -411,7 +411,7 @@ func (c *ApiController) UploadVideo() {
 
 	id := util.GetIdFromOwnerAndName(userName, fileId)
 
-	err = updateVideoCoverUrl(id, videoId)
+	err = updateVideoCoverUrl(id, videoId, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

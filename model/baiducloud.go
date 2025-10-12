@@ -17,6 +17,8 @@ package model
 import (
 	"fmt"
 	"io"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 type BaiduCloudModelProvider struct {
@@ -73,7 +75,7 @@ https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Blfmc9dlf
 `
 }
 
-func (p *BaiduCloudModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *BaiduCloudModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
 		"ernie-4.0-8k":                          {0.03, 0.09},
@@ -112,7 +114,7 @@ func (p *BaiduCloudModelProvider) calculatePrice(modelResult *ModelResult) error
 		outputPrice := getPrice(modelResult.TotalTokenCount, priceItem[1])
 		price = inputPrice + outputPrice
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	modelResult.TotalPrice = price
@@ -120,7 +122,7 @@ func (p *BaiduCloudModelProvider) calculatePrice(modelResult *ModelResult) error
 	return nil
 }
 
-func (p *BaiduCloudModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *BaiduCloudModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	const BaseUrl = "https://qianfan.baidubce.com/v2"
 	// Create a new LocalModelProvider to handle the request
 	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
@@ -128,12 +130,12 @@ func (p *BaiduCloudModelProvider) QueryText(question string, writer io.Writer, h
 		return nil, err
 	}
 
-	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo)
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo, lang)
 	if err != nil {
 		return nil, err
 	}
 
-	err = p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

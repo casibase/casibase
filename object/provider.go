@@ -21,6 +21,7 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/agent"
 	"github.com/casibase/casibase/embedding"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/storage"
 	"github.com/casibase/casibase/stt"
@@ -266,10 +267,10 @@ func (provider *Provider) GetId() string {
 	return fmt.Sprintf("%s/%s", provider.Owner, provider.Name)
 }
 
-func GetDefaultKubernetesProvider() (*Provider, error) {
+func GetDefaultKubernetesProvider(lang string) (*Provider, error) {
 	providers, err := GetProviders("admin")
 	if err != nil {
-		return nil, fmt.Errorf("failed to get providers: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to get providers: %v"), err)
 	}
 
 	for _, provider := range providers {
@@ -277,88 +278,88 @@ func GetDefaultKubernetesProvider() (*Provider, error) {
 			return provider, nil
 		}
 	}
-	return nil, fmt.Errorf("no Kubernetes provider found")
+	return nil, fmt.Errorf(i18n.Translate(lang, "object:no Kubernetes provider found"))
 }
 
-func (p *Provider) GetStorageProviderObj(vectorStoreId string) (storage.StorageProvider, error) {
-	pProvider, err := storage.GetStorageProvider(p.Type, p.ClientId, p.ClientSecret, p.Name, vectorStoreId)
+func (p *Provider) GetStorageProviderObj(vectorStoreId string, lang string) (storage.StorageProvider, error) {
+	pProvider, err := storage.GetStorageProvider(p.Type, p.ClientId, p.ClientSecret, p.Name, vectorStoreId, lang)
 	if err != nil {
 		return nil, err
 	}
 
 	if pProvider == nil {
-		return nil, fmt.Errorf("the storage provider type: %s is not supported", p.Type)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:the storage provider type: %s is not supported"), p.Type)
 	}
 
 	return pProvider, nil
 }
 
-func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
+func (p *Provider) GetModelProvider(lang string) (model.ModelProvider, error) {
 	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.UserKey, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompatibleProvider, p.InputPricePerThousandTokens, p.OutputPricePerThousandTokens, p.Currency, p.EnableThinking)
 	if err != nil {
 		return nil, err
 	}
 
 	if pProvider == nil {
-		return nil, fmt.Errorf("the model provider type: %s is not supported", p.Type)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:the model provider type: %s is not supported"), p.Type)
 	}
 
 	return pProvider, nil
 }
 
-func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
-	pProvider, err := embedding.GetEmbeddingProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.ProviderUrl, p.ApiVersion, p.InputPricePerThousandTokens, p.Currency)
+func (p *Provider) GetEmbeddingProvider(lang string) (embedding.EmbeddingProvider, error) {
+	pProvider, err := embedding.GetEmbeddingProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.ProviderUrl, p.ApiVersion, p.InputPricePerThousandTokens, p.Currency, lang)
 	if err != nil {
 		return nil, err
 	}
 
 	if pProvider == nil {
-		return nil, fmt.Errorf("the embedding provider type: %s is not supported", p.Type)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:the embedding provider type: %s is not supported"), p.Type)
 	}
 
 	return pProvider, nil
 }
 
-func (p *Provider) GetAgentProvider() (agent.AgentProvider, error) {
-	pProvider, err := agent.GetAgentProvider(p.Type, p.SubType, p.Text, p.McpTools)
+func (p *Provider) GetAgentProvider(lang string) (agent.AgentProvider, error) {
+	pProvider, err := agent.GetAgentProvider(p.Type, p.SubType, p.Text, p.McpTools, lang)
 	if err != nil {
 		return nil, err
 	}
 
 	if pProvider == nil {
-		return nil, fmt.Errorf("the agent provider type: %s is not supported", p.Type)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:the agent provider type: %s is not supported"), p.Type)
 	}
 
 	return pProvider, nil
 }
 
-func (p *Provider) GetTextToSpeechProvider() (tts.TextToSpeechProvider, error) {
-	pProvider, err := tts.GetTextToSpeechProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.ProviderUrl, p.ApiVersion, p.InputPricePerThousandTokens, p.Currency, p.Flavor)
+func (p *Provider) GetTextToSpeechProvider(lang string) (tts.TextToSpeechProvider, error) {
+	pProvider, err := tts.GetTextToSpeechProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.ProviderUrl, p.ApiVersion, p.InputPricePerThousandTokens, p.Currency, p.Flavor, lang)
 	if err != nil {
 		return nil, err
 	}
 
 	if pProvider == nil {
-		return nil, fmt.Errorf("the TTS provider type: %s is not supported", p.Type)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:the TTS provider type: %s is not supported"), p.Type)
 	}
 
 	return pProvider, nil
 }
 
-func (p *Provider) GetSpeechToTextProvider() (stt.SpeechToTextProvider, error) {
+func (p *Provider) GetSpeechToTextProvider(lang string) (stt.SpeechToTextProvider, error) {
 	pProvider, err := stt.GetSpeechToTextProvider(p.Type, p.SubType, p.ClientSecret, p.ProviderUrl)
 	if err != nil {
 		return nil, err
 	}
 
 	if pProvider == nil {
-		return nil, fmt.Errorf("the STT provider type: %s is not supported", p.Type)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:the STT provider type: %s is not supported"), p.Type)
 	}
 
 	return pProvider, nil
 }
 
-func GetModelProviderFromContext(owner string, name string) (*Provider, model.ModelProvider, error) {
+func GetModelProviderFromContext(owner string, name string, lang string) (*Provider, model.ModelProvider, error) {
 	var providerName string
 	if name != "" {
 		providerName = name
@@ -373,10 +374,10 @@ func GetModelProviderFromContext(owner string, name string) (*Provider, model.Mo
 		}
 	}
 
-	return getModelProviderFromName(owner, providerName)
+	return getModelProviderFromName(owner, providerName, lang)
 }
 
-func GetEmbeddingProviderFromContext(owner string, name string) (*Provider, embedding.EmbeddingProvider, error) {
+func GetEmbeddingProviderFromContext(owner string, name string, lang string) (*Provider, embedding.EmbeddingProvider, error) {
 	var providerName string
 	if name != "" {
 		providerName = name
@@ -391,10 +392,10 @@ func GetEmbeddingProviderFromContext(owner string, name string) (*Provider, embe
 		}
 	}
 
-	return getEmbeddingProviderFromName(owner, providerName)
+	return getEmbeddingProviderFromName(owner, providerName, lang)
 }
 
-func GetAgentProviderFromContext(owner string, name string) (*Provider, agent.AgentProvider, error) {
+func GetAgentProviderFromContext(owner string, name string, lang string) (*Provider, agent.AgentProvider, error) {
 	var providerName string
 	if name != "" {
 		providerName = name
@@ -409,7 +410,7 @@ func GetAgentProviderFromContext(owner string, name string) (*Provider, agent.Ag
 		}
 	}
 
-	return getAgentProviderFromName(owner, providerName)
+	return getAgentProviderFromName(owner, providerName, lang)
 }
 
 func GetAgentClients(agentProviderObj agent.AgentProvider) (*agent.AgentClients, error) {

@@ -21,6 +21,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/casibase/casibase/i18n"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -54,41 +55,41 @@ func init() {
 }
 
 // Create K8s client from provider's ConfigText
-func createK8sClientFromProvider(provider *Provider) (*K8sClient, error) {
+func createK8sClientFromProvider(provider *Provider, lang string) (*K8sClient, error) {
 	if provider.ConfigText == "" {
-		return nil, fmt.Errorf("provider kubeconfig content is empty")
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:provider kubeconfig content is empty"))
 	}
 
 	// Parse kubeconfig from provider.ConfigText
 	config, err := clientcmd.RESTConfigFromKubeConfig([]byte(provider.ConfigText))
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse kubeconfig from provider: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to parse kubeconfig from provider: %v"), err)
 	}
 
-	return createK8sClient(config, provider.ConfigText)
+	return createK8sClient(config, provider.ConfigText, lang)
 }
 
-func createK8sClient(config *rest.Config, configText string) (*K8sClient, error) {
+func createK8sClient(config *rest.Config, configText string, lang string) (*K8sClient, error) {
 	config.Timeout = 30 * time.Second // Default timeout
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create kubernetes clientSet: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to create kubernetes clientSet: %v"), err)
 	}
 
 	dynamicClient, err := dynamic.NewForConfig(config)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create dynamic client: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to create dynamic client: %v"), err)
 	}
 
 	discoveryClient, err := discovery.NewDiscoveryClientForConfig(config)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create discovery client: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to create discovery client: %v"), err)
 	}
 
 	groupResources, err := restmapper.GetAPIGroupResources(discoveryClient)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get API group resources: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to get API group resources: %v"), err)
 	}
 
 	restMapper := restmapper.NewDiscoveryRESTMapper(groupResources)
@@ -103,7 +104,7 @@ func createK8sClient(config *rest.Config, configText string) (*K8sClient, error)
 	}
 
 	if err := client.testConnection(); err != nil {
-		return nil, fmt.Errorf("failed to connect to kubernetes cluster: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to connect to kubernetes cluster: %v"), err)
 	}
 
 	client.connected = true
@@ -119,7 +120,7 @@ func (k *K8sClient) testConnection() error {
 }
 
 // Ensure k8s client is initialized, try to initialize if not
-func ensureK8sClient() error {
+func ensureK8sClient(lang string) error {
 	// Quick check if client is already ready
 	if k8sClient != nil && k8sClient.connected {
 		return nil
@@ -132,9 +133,9 @@ func ensureK8sClient() error {
 		return nil
 	}
 
-	provider, err := GetDefaultKubernetesProvider()
+	provider, err := GetDefaultKubernetesProvider(lang)
 	if err != nil {
-		return fmt.Errorf("failed to get default Kubernetes provider: %v", err)
+		return fmt.Errorf(i18n.Translate(lang, "object:failed to get default Kubernetes provider: %v"), err)
 	}
 
 	// Only recreate if config changed or client doesn't exist
@@ -144,13 +145,13 @@ func ensureK8sClient() error {
 			cacheManager = nil
 		}
 
-		client, err := createK8sClientFromProvider(provider)
+		client, err := createK8sClientFromProvider(provider, lang)
 		if err != nil {
 			return err
 		}
 		k8sClient = client
 
-		host, parseErr := parseK8sHost(provider.ConfigText)
+		host, parseErr := parseK8sHost(provider.ConfigText, lang)
 		if parseErr != nil {
 			cachedK8sHost = ""
 		} else {
@@ -159,19 +160,19 @@ func ensureK8sClient() error {
 
 		// Initialize cache manager
 		if err := initCacheManager(); err != nil {
-			return fmt.Errorf("failed to initialize cache manager: %v", err)
+			return fmt.Errorf(i18n.Translate(lang, "object:failed to initialize cache manager: %v"), err)
 		}
 
-		if err := startCacheManager(); err != nil {
-			return fmt.Errorf("failed to start cache manager: %v", err)
+		if err := startCacheManager(lang); err != nil {
+			return fmt.Errorf(i18n.Translate(lang, "object:failed to start cache manager: %v"), err)
 		}
 	}
 
 	return nil
 }
 
-func GetK8sStatus() (string, error) {
-	if err := ensureK8sClient(); err != nil {
+func GetK8sStatus(lang string) (string, error) {
+	if err := ensureK8sClient(lang); err != nil {
 		return "Disconnected", err
 	}
 
@@ -229,14 +230,14 @@ func (k *K8sClient) createNamespaceIfNotExists(name string) error {
 	return nil
 }
 
-func (k *K8sClient) deployResource(yamlContent, namespace string) error {
+func (k *K8sClient) deployResource(yamlContent, namespace string, lang string) error {
 	// Parse YAML to unstructured object
 	decoder := yaml.NewYAMLToJSONDecoder(strings.NewReader(yamlContent))
 
 	var obj unstructured.Unstructured
 	err := decoder.Decode(&obj)
 	if err != nil {
-		return fmt.Errorf("failed to decode YAML: %v", err)
+		return fmt.Errorf(i18n.Translate(lang, "object:failed to decode YAML: %v"), err)
 	}
 
 	// Skip empty objects
@@ -261,7 +262,7 @@ func (k *K8sClient) deployResource(yamlContent, namespace string) error {
 	gvk := obj.GetObjectKind().GroupVersionKind()
 	mapping, err := k.restMapper.RESTMapping(gvk.GroupKind(), gvk.Version)
 	if err != nil {
-		return fmt.Errorf("failed to get REST mapping for %s: %v", gvk, err)
+		return fmt.Errorf(i18n.Translate(lang, "object:failed to get REST mapping for %s: %v"), gvk, err)
 	}
 
 	var dr dynamic.ResourceInterface
@@ -278,17 +279,17 @@ func (k *K8sClient) deployResource(yamlContent, namespace string) error {
 			// Create new resource
 			_, err = dr.Create(context.TODO(), &obj, metav1.CreateOptions{})
 			if err != nil {
-				return fmt.Errorf("failed to create resource %s/%s: %v", obj.GetKind(), obj.GetName(), err)
+				return fmt.Errorf(i18n.Translate(lang, "object:failed to create resource %s/%s: %v"), obj.GetKind(), obj.GetName(), err)
 			}
 		} else {
-			return fmt.Errorf("failed to get existing resource %s/%s: %v", obj.GetKind(), obj.GetName(), err)
+			return fmt.Errorf(i18n.Translate(lang, "object:failed to get existing resource %s/%s: %v"), obj.GetKind(), obj.GetName(), err)
 		}
 	} else {
 		// Update existing resource
 		obj.SetResourceVersion(existing.GetResourceVersion())
 		_, err = dr.Update(context.TODO(), &obj, metav1.UpdateOptions{})
 		if err != nil {
-			return fmt.Errorf("failed to update resource %s/%s: %v", obj.GetKind(), obj.GetName(), err)
+			return fmt.Errorf(i18n.Translate(lang, "object:failed to update resource %s/%s: %v"), obj.GetKind(), obj.GetName(), err)
 		}
 	}
 

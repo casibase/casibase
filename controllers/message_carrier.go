@@ -88,7 +88,7 @@ func isReasonModel(typ string) bool {
 	return false
 }
 
-func getResultWithSuggestionsAndTitle(writer *CarrierWriter, question string, modelProviderObj model.ModelProvider, needTitle bool, suggestionCount int) (*model.ModelResult, error) {
+func getResultWithSuggestionsAndTitle(writer *CarrierWriter, question string, modelProviderObj model.ModelProvider, needTitle bool, suggestionCount int, lang string) (*model.ModelResult, error) {
 	var fullPrompt strings.Builder
 
 	fullPrompt.WriteString(fmt.Sprintf("User question: %s\n\n", question))
@@ -115,7 +115,7 @@ Examples of generated title:
 - Do NOT include any explanations or extra text—just output the title.`)
 	}
 
-	carrierResult, err := modelProviderObj.QueryText(fullPrompt.String(), writer, nil, "", nil, nil)
+	carrierResult, err := modelProviderObj.QueryText(fullPrompt.String(), writer, nil, "", nil, nil, lang)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +123,7 @@ Examples of generated title:
 	return carrierResult, nil
 }
 
-func QueryCarrierText(question string, writer *RefinedWriter, history []*model.RawMessage, prompt string, knowledge []*model.RawMessage, modelProviderObj model.ModelProvider, needTitle bool, suggestionCount int) (*model.ModelResult, error) {
+func QueryCarrierText(question string, writer *RefinedWriter, history []*model.RawMessage, prompt string, knowledge []*model.RawMessage, modelProviderObj model.ModelProvider, needTitle bool, suggestionCount int, lang string) (*model.ModelResult, error) {
 	var (
 		wg         sync.WaitGroup
 		mainErr    error
@@ -136,7 +136,7 @@ func QueryCarrierText(question string, writer *RefinedWriter, history []*model.R
 	go func() {
 		defer wg.Done()
 		var err error
-		modelResult, err = modelProviderObj.QueryText(question, writer, history, prompt, knowledge, nil)
+		modelResult, err = modelProviderObj.QueryText(question, writer, history, prompt, knowledge, nil, lang)
 		if err != nil {
 			mainErr = err
 		}
@@ -149,7 +149,7 @@ func QueryCarrierText(question string, writer *RefinedWriter, history []*model.R
 	go func() {
 		defer wg.Done()
 		var err error
-		carrierResult, err = getResultWithSuggestionsAndTitle(CarrierWriter, question, modelProviderObj, needTitle, suggestionCount)
+		carrierResult, err = getResultWithSuggestionsAndTitle(CarrierWriter, question, modelProviderObj, needTitle, suggestionCount, lang)
 		if err != nil {
 			carrierErr = err
 		}

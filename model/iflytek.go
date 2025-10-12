@@ -17,6 +17,8 @@ package model
 import (
 	"fmt"
 	"io"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 type iFlytekModelProvider struct {
@@ -85,7 +87,7 @@ https://xinghuo.xfyun.cn/sparkapi
 `
 }
 
-func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
 	tokenCount := modelResult.TotalTokenCount
 	modelResult.Currency = "CNY"
@@ -164,26 +166,26 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
 	case "spark-lite":
 		price = 0.0
 	default:
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	modelResult.TotalPrice = price
 	return nil
 }
 
-func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	const BaseUrl = "https://spark-api-open.xf-yun.com/v1"
 	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.secretKey, p.temperature, 0, 0, 0, BaseUrl, "generalv3", 0, 0, "CNY")
 	if err != nil {
 		return nil, err
 	}
 
-	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo)
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo, lang)
 	if err != nil {
 		return nil, err
 	}
 
-	err = p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

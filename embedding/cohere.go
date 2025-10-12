@@ -54,7 +54,7 @@ func NewCohereEmbeddingProvider(subType string, inputType string, secretKey stri
 	}, nil
 }
 
-func (p *CohereEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+func (p *CohereEmbeddingProvider) QueryVector(text string, ctx context.Context, lang string) ([]float32, *EmbeddingResult, error) {
 	client := cohereclient.NewClient(
 		cohereclient.WithToken(p.secretKey),
 	)

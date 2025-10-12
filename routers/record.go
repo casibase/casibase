@@ -42,5 +42,5 @@ func AfterRecordMessage(ctx *context.Context) {
 		record.Organization, record.User = util.GetOwnerAndNameFromId(userId)
 	}
 
-	object.AddRecord(record)
+	object.AddRecord(record, "en")
 }
