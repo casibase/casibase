@@ -32,7 +32,7 @@ func NewHierarchySearchProvider(owner string) (*HierarchySearchProvider, error) 
 }
 
 func (p *HierarchySearchProvider) Search(storeName string, embeddingProviderName string, embeddingProviderObj embedding.EmbeddingProvider, modelProviderName string, text string, knowledgeCount int, lang string) ([]Vector, *embedding.EmbeddingResult, error) {
-	vectors, err := getRelatedVectors(storeName, embeddingProviderName, lang)
+	vectors, err := getRelatedVectors(storeName, embeddingProviderName)
 	if err != nil {
 		return nil, nil, err
 	}
