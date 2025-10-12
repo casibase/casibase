@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/proxy"
 	"github.com/casibase/go-openrouter"
 )
@@ -75,7 +76,7 @@ https://openrouter.ai/docs#models
 `
 }
 
-func (p *OpenRouterModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *OpenRouterModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	priceTable := map[string][]float64{
 		"google/palm-2-codechat-bison": {0.00025, 0.0005},
@@ -104,7 +105,7 @@ func (p *OpenRouterModelProvider) calculatePrice(modelResult *ModelResult) error
 		inputPricePerThousandTokens = priceItem[0]
 		outputPricePerThousandTokens = priceItem[1]
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
@@ -126,13 +127,13 @@ func (p *OpenRouterModelProvider) getProxyClientFromToken() *openrouter.Client {
 	return c
 }
 
-func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	client := p.getProxyClientFromToken()
 
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 
 	model := p.subType
@@ -150,18 +151,18 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(model, question, "")
 		if err != nil {
-			return nil, fmt.Errorf("cannot calculate tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))
 		}
 		if contextLength > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
-			return nil, fmt.Errorf("exceed max tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
 		}
 	}
 
 	maxTokens := contextLength - tokenCount
 	if maxTokens < 0 {
-		return nil, fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, contextLength)
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]"), tokenCount, model, contextLength)
 	}
 
 	temperature := p.temperature
@@ -228,7 +229,7 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 		return nil, err
 	}
 
-	err = p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

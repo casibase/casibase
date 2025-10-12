@@ -104,7 +104,7 @@ func GetVector(id string) (*Vector, error) {
 	return getVector(owner, name)
 }
 
-func UpdateVector(id string, vector *Vector) (bool, error) {
+func UpdateVector(id string, vector *Vector, lang string) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	oldVector, err := getVector(owner, name)
 	if err != nil {
@@ -118,7 +118,7 @@ func UpdateVector(id string, vector *Vector) (bool, error) {
 		if vector.Text == "" {
 			vector.Data = []float32{}
 		} else {
-			_, err = refreshVector(vector)
+			_, err = refreshVector(vector, lang)
 			if err != nil {
 				return false, err
 			}

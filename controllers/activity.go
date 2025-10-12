@@ -34,7 +34,7 @@ func (c *ApiController) GetActivities() {
 	fieldParam := c.Input().Get("field")
 	fields := strings.Split(fieldParam, ",")
 
-	activities, err := object.GetActivities(days, user, fields)
+	activities, err := object.GetActivities(days, user, fields, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

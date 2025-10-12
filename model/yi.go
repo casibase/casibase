@@ -17,6 +17,8 @@ package model
 import (
 	"fmt"
 	"io"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 type YiProvider struct {
@@ -45,7 +47,7 @@ https://platform.lingyiwanwu.com
 | yi-vision-v2   | 16K          | ¥6.00                    | ¥6.00                     |`
 }
 
-func (p *YiProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *YiProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	// Price table (price per 1000 tokens in CNY)
 	priceTable := map[string][2]float64{
 		"yi-lightning": {0.00099, 0.00099},
@@ -59,11 +61,11 @@ func (p *YiProvider) calculatePrice(modelResult *ModelResult) error {
 		modelResult.Currency = "CNY"
 		return nil
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 }
 
-func (p *YiProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *YiProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	// Configure Yi API client
 	const BaseUrl = "https://api.lingyiwanwu.com/v1"
 
@@ -73,12 +75,12 @@ func (p *YiProvider) QueryText(question string, writer io.Writer, history []*Raw
 		return nil, err
 	}
 
-	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo)
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo, lang)
 	if err != nil {
 		return nil, err
 	}
 
-	err = p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

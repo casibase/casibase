@@ -72,7 +72,7 @@ func TestProcessPapers(t *testing.T) {
 		fmt.Printf("created store for paper %s: %s\n", paperId, store.Name)
 
 		// refresh vectors
-		_, err = object.RefreshStoreVectors(store)
+		_, err = object.RefreshStoreVectors(store, "en")
 		if err != nil {
 			panic(err)
 		}
@@ -86,7 +86,7 @@ func TestProcessPapers(t *testing.T) {
 					"2. If this is a multiple-choice question, reply with only the letters of all correct options (e.g., ABC), and do not include any other words, explanations, or punctuation." +
 					"Question:\n" + questionText
 				fmt.Printf("sending question: %s\n", questionText)
-				answer, _, err := sendMessage(store, text, modelProviderName, embeddingProviderName)
+				answer, _, err := sendMessage(store, text, modelProviderName, embeddingProviderName, "en")
 				if err != nil {
 					fmt.Printf("failed to send message: %v\n", err)
 					break

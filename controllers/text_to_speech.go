@@ -42,13 +42,13 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 		c.ResponseError(err.Error())
 		return
 	}
-	message, chat, providerObj, ctx, err := object.PrepareTextToSpeech(req.StoreId, req.ProviderId, req.MessageId, req.Text)
+	message, chat, providerObj, ctx, err := object.PrepareTextToSpeech(req.StoreId, req.ProviderId, req.MessageId, req.Text, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	audioData, ttsResult, err := providerObj.QueryAudio(message.Text, ctx)
+	audioData, ttsResult, err := providerObj.QueryAudio(message.Text, ctx, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -83,13 +83,13 @@ func (c *ApiController) GenerateTextToSpeechAudioStream() {
 	c.Ctx.ResponseWriter.Header().Set("Cache-Control", "no-cache")
 	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
 
-	message, chat, providerObj, ctx, err := object.PrepareTextToSpeech(storeId, "", messageId, "")
+	message, chat, providerObj, ctx, err := object.PrepareTextToSpeech(storeId, "", messageId, "", c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
-	ttsResult, err := providerObj.QueryAudioStream(message.Text, ctx, c.Ctx.ResponseWriter)
+	ttsResult, err := providerObj.QueryAudioStream(message.Text, ctx, c.Ctx.ResponseWriter, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return

@@ -105,7 +105,7 @@ func initCacheManager() error {
 }
 
 // startCacheManager starts the cache manager if it exists
-func startCacheManager() error {
+func startCacheManager(lang string) error {
 	if cacheManager == nil {
 		return fmt.Errorf("cache manager not initialized")
 	}
@@ -114,7 +114,7 @@ func startCacheManager() error {
 		return nil
 	}
 
-	if err := cacheManager.Start(); err != nil {
+	if err := cacheManager.Start(lang); err != nil {
 		return fmt.Errorf("failed to start cache manager: %v", err)
 	}
 
@@ -235,7 +235,7 @@ func (cm *CacheManager) getEvents(namespace string) []*v1.Event {
 }
 
 // Start begins the cache manager
-func (cm *CacheManager) Start() error {
+func (cm *CacheManager) Start(lang string) error {
 	if cm.started {
 		return nil
 	}
@@ -251,7 +251,7 @@ func (cm *CacheManager) Start() error {
 	}
 
 	if metricsClient != nil {
-		go cm.startMetricsPoller(60 * time.Second)
+		go cm.startMetricsPoller(60*time.Second, lang)
 	}
 
 	cm.started = true
@@ -266,23 +266,23 @@ func (cm *CacheManager) Stop() {
 	}
 }
 
-func (cm *CacheManager) startMetricsPoller(interval time.Duration) {
+func (cm *CacheManager) startMetricsPoller(interval time.Duration, lang string) {
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
-	cm.updateAllMetrics()
+	cm.updateAllMetrics(lang)
 
 	for {
 		select {
 		case <-ticker.C:
-			cm.updateAllMetrics()
+			cm.updateAllMetrics(lang)
 		case <-cm.stopCh:
 			return
 		}
 	}
 }
 
-func (cm *CacheManager) updateAllMetrics() {
+func (cm *CacheManager) updateAllMetrics(lang string) {
 	cm.mu.RLock()
 	namespaces := make([]string, 0, len(cm.nsCache))
 	for name := range cm.nsCache {
@@ -291,17 +291,17 @@ func (cm *CacheManager) updateAllMetrics() {
 	cm.mu.RUnlock()
 
 	for _, namespace := range namespaces {
-		cm.updateNamespaceMetrics(namespace)
+		cm.updateNamespaceMetrics(namespace, lang)
 		time.Sleep(100 * time.Millisecond)
 	}
 }
 
 // updateNamespaceMetrics updates cached metrics for a namespace
-func (cm *CacheManager) updateNamespaceMetrics(namespace string) {
+func (cm *CacheManager) updateNamespaceMetrics(namespace string, lang string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	metrics, err := calculateNamespaceMetrics(ctx, metricsClient, namespace, cm.deployCache, &cm.mu)
+	metrics, err := calculateNamespaceMetrics(ctx, metricsClient, namespace, cm.deployCache, &cm.mu, lang)
 	if err != nil {
 		return
 	}

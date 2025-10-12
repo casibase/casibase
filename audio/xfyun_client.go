@@ -22,6 +22,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 var ch string = "aaaaaaaaa`"
@@ -54,29 +56,28 @@ func New(appID, secretKey string) *Client {
 	return &client
 }
 
-func (c *Client) UploadAudio(filename, language string) (taskId string, err error) {
+func (c *Client) UploadAudio(filename, language string, lang string) (taskId string, err error) {
 	filesize, sliceNum, err := c.conn.getSizeAndSiceNum(filename)
 	if err != nil {
 		return
 	}
-
-	taskId, err = c.initSliceUpload(filename, language, filesize, sliceNum)
+	taskId, err = c.initSliceUpload(filename, language, filesize, sliceNum, lang)
 	if err != nil {
 		return
 	}
 
-	if err = c.performSliceUpload(filename, taskId, filesize, sliceNum); err != nil {
+	if err = c.performSliceUpload(filename, taskId, filesize, sliceNum, lang); err != nil {
 		return
 	}
 
-	if err = c.completeSliceUpload(taskId); err != nil {
+	if err = c.completeSliceUpload(taskId, lang); err != nil {
 		return
 	}
 
 	return
 }
 
-func (c *Client) initSliceUpload(filename, language string, filesize, sliceNum int64) (taskId string, err error) {
+func (c *Client) initSliceUpload(filename, language string, filesize, sliceNum int64, lang string) (taskId string, err error) {
 	var info RespInfo
 	params := c.getBaseAuthParam("")
 	params.Add("file_len", strconv.FormatInt(filesize, 10))
@@ -96,13 +97,13 @@ func (c *Client) initSliceUpload(filename, language string, filesize, sliceNum i
 	if info.Ok == 0 {
 		taskId = info.Data
 	} else {
-		err = fmt.Errorf("init slice upload failed: %s", info.Failed)
+		err = fmt.Errorf(i18n.Translate(lang, "audio:init slice upload failed: %s"), info.Failed)
 	}
 
 	return
 }
 
-func (c *Client) performSliceUpload(filename, taskId string, filesize, sliceNum int64) (err error) {
+func (c *Client) performSliceUpload(filename, taskId string, filesize, sliceNum int64, lang string) (err error) {
 	var info RespInfo
 	fi, err := os.OpenFile(filename, os.O_RDONLY, os.ModePerm)
 	if err != nil {
@@ -130,13 +131,13 @@ func (c *Client) performSliceUpload(filename, taskId string, filesize, sliceNum 
 		}
 
 		if info.Ok != 0 {
-			return fmt.Errorf("perform slice upload failed: %s", info.Failed)
+			return fmt.Errorf(i18n.Translate(lang, "audio:perform slice upload failed: %s"), info.Failed)
 		}
 	}
 	return nil
 }
 
-func (c *Client) completeSliceUpload(taskId string) (err error) {
+func (c *Client) completeSliceUpload(taskId string, lang string) (err error) {
 	params := c.getBaseAuthParam(taskId)
 	resp, err := c.conn.httpDo(c.conn.conf.Domain+"/merge", nil, params, nil)
 	if err != nil {
@@ -148,13 +149,13 @@ func (c *Client) completeSliceUpload(taskId string) (err error) {
 	}
 
 	if info.Ok != 0 {
-		return fmt.Errorf("complete slice upload failed: %s", info.Failed)
+		return fmt.Errorf(i18n.Translate(lang, "audio:complete slice upload failed: %s"), info.Failed)
 	}
 
 	return nil
 }
 
-func (c *Client) doWorker(filename, taskId string, b []byte) (err error) {
+func (c *Client) doWorker(filename, taskId string, b []byte, lang string) (err error) {
 	params := c.getBaseAuthParam(taskId)
 	params.Add("slice_id", c.getNextSliceId())
 	resp, err := c.conn.postMulti(c.conn.conf.Domain+"/upload", filename, b, params)
@@ -167,13 +168,13 @@ func (c *Client) doWorker(filename, taskId string, b []byte) (err error) {
 	}
 
 	if info.Ok != 0 {
-		return fmt.Errorf("worker upload failed: %s", info.Failed)
+		return fmt.Errorf(i18n.Translate(lang, "audio:worker upload failed: %s"), info.Failed)
 	}
 
 	return
 }
 
-func (c *Client) getProgress(taskId string) (*Response, error) {
+func (c *Client) getProgress(taskId string, lang string) (*Response, error) {
 	params := c.getBaseAuthParam(taskId)
 	resp, err := c.conn.httpDo(c.conn.conf.Domain+"/getProgress", nil, params, nil)
 	if err != nil {
@@ -186,7 +187,7 @@ func (c *Client) getProgress(taskId string) (*Response, error) {
 	}
 
 	if info.Ok != 0 {
-		return nil, fmt.Errorf("get progress failed: %s", info.Failed)
+		return nil, fmt.Errorf(i18n.Translate(lang, "audio:get progress failed: %s"), info.Failed)
 	}
 
 	var res *Response
@@ -194,7 +195,7 @@ func (c *Client) getProgress(taskId string) (*Response, error) {
 	return res, err
 }
 
-func (c *Client) getResult(taskId string) ([]*Segment, error) {
+func (c *Client) getResult(taskId string, lang string) ([]*Segment, error) {
 	params := c.getBaseAuthParam(taskId)
 	resp, err := c.conn.httpDo(c.conn.conf.Domain+"/getResult", nil, params, nil)
 	if err != nil {
@@ -208,7 +209,7 @@ func (c *Client) getResult(taskId string) ([]*Segment, error) {
 	}
 
 	if info.Ok != 0 {
-		return nil, fmt.Errorf("get result failed: %s", info.Failed)
+		return nil, fmt.Errorf(i18n.Translate(lang, "audio:get result failed: %s"), info.Failed)
 	}
 
 	segments, err := parseSegmentResponse(info.Data)
@@ -219,17 +220,17 @@ func (c *Client) getResult(taskId string) ([]*Segment, error) {
 	return segments, nil
 }
 
-func GetSegmentsFromAudio(audioUrl string) ([]*Segment, error) {
+func GetSegmentsFromAudio(audioUrl string, lang string) ([]*Segment, error) {
 	client := New(xfyunAppId, xfyunSecretKey)
 
-	taskId, err := client.UploadAudio(audioUrl, "cn")
+	taskId, err := client.UploadAudio(audioUrl, "cn", lang)
 	if err != nil {
 		return nil, err
 	}
 
 	for {
 		var resp *Response
-		resp, err = client.getProgress(taskId)
+		resp, err = client.getProgress(taskId, lang)
 		if err != nil && !strings.Contains(err.Error(), "请稍后重试") {
 			return nil, err
 		}
@@ -240,7 +241,7 @@ func GetSegmentsFromAudio(audioUrl string) ([]*Segment, error) {
 		}
 
 		var segments []*Segment
-		segments, err = client.getResult(taskId)
+		segments, err = client.getResult(taskId, lang)
 		if err != nil {
 			return nil, err
 		}

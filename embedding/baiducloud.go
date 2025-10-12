@@ -57,7 +57,7 @@ func (p *BaiduCloudEmbeddingProvider) calculatePrice(res *EmbeddingResult) error
 	return nil
 }
 
-func (p *BaiduCloudEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+func (p *BaiduCloudEmbeddingProvider) QueryVector(text string, ctx context.Context, lang string) ([]float32, *EmbeddingResult, error) {
 	qianfan.GetConfig().AccessKey = p.apiKey
 	qianfan.GetConfig().SecretKey = p.secretKey
 

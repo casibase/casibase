@@ -22,7 +22,7 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-// //go:embed locales/*/data.json
+//go:embed locales/*/data.json
 var f embed.FS
 
 var langMap = make(map[string]map[string]map[string]string) // for example : langMap[en][account][Invalid information] = Invalid information

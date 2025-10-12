@@ -23,6 +23,7 @@ import (
 
 	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/embedding"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/split"
 	"github.com/casibase/casibase/storage"
@@ -48,8 +49,8 @@ func filterTextFiles(files []*storage.Object) []*storage.Object {
 	return res
 }
 
-func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string, index int, embeddingProviderName string, modelSubType string) (bool, error) {
-	data, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text)
+func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string, index int, embeddingProviderName string, modelSubType string, lang string) (bool, error) {
+	data, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text, lang)
 	if err != nil {
 		return false, err
 	}
@@ -102,7 +103,7 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 	return AddVector(vector)
 }
 
-func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, splitProviderName string, embeddingProviderName string, modelSubType string) (bool, error) {
+func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, splitProviderName string, embeddingProviderName string, modelSubType string, lang string) (bool, error) {
 	var affected bool
 
 	files, err := storageProviderObj.ListObjects(prefix)
@@ -115,7 +116,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 	for _, file := range files {
 		var text string
 		fileExt := filepath.Ext(file.Key)
-		text, err = txt.GetParsedTextFromUrl(file.Url, fileExt)
+		text, err = txt.GetParsedTextFromUrl(file.Url, fileExt, lang)
 		if err != nil {
 			return false, err
 		}
@@ -159,7 +160,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s\n", i+1, len(textSections), storeName, file.Key, i, textSection)
 
 			operation := func() error {
-				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType)
+				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType, lang)
 				if err != nil {
 					if isRetryableError(err) {
 						return err
@@ -179,33 +180,33 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 	return affected, err
 }
 
-func getRelatedVectors(storeName string, provider string) ([]*Vector, error) {
+func getRelatedVectors(storeName string, provider string, lang string) ([]*Vector, error) {
 	vectors, err := getVectorsByProvider(storeName, provider)
 	if err != nil {
 		return nil, err
 	}
 	if len(vectors) == 0 {
-		return nil, fmt.Errorf("no knowledge vectors found")
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:no knowledge vectors found"))
 	}
 
 	return vectors, nil
 }
 
-func queryVectorWithContext(embeddingProvider embedding.EmbeddingProvider, text string, timeout int) ([]float32, *embedding.EmbeddingResult, error) {
+func queryVectorWithContext(embeddingProvider embedding.EmbeddingProvider, text string, timeout int, lang string) ([]float32, *embedding.EmbeddingResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30+timeout*2)*time.Second)
 	defer cancel()
-	vector, embeddingResult, err := embeddingProvider.QueryVector(text, ctx)
+	vector, embeddingResult, err := embeddingProvider.QueryVector(text, ctx, lang)
 	return vector, embeddingResult, err
 }
 
-func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string) ([]float32, *embedding.EmbeddingResult, error) {
+func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string, lang string) ([]float32, *embedding.EmbeddingResult, error) {
 	var res []float32
 	var embeddingResult *embedding.EmbeddingResult
 	var err error
 	for i := 0; i < 10; i++ {
-		res, embeddingResult, err = queryVectorWithContext(embeddingProvider, text, i)
+		res, embeddingResult, err = queryVectorWithContext(embeddingProvider, text, i, lang)
 		if err != nil {
-			err = fmt.Errorf("queryVectorSafe() error, %s", err.Error())
+			err = fmt.Errorf(i18n.Translate(lang, "object:queryVectorSafe() error, %s"), err.Error())
 			if i > 0 {
 				logs.Error("\tFailed (%d): %s\n", i+1, err.Error())
 			}
@@ -221,13 +222,13 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string)
 	}
 }
 
-func GetNearestKnowledge(storeName string, searchProviderType string, embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, modelProvider *Provider, owner string, text string, knowledgeCount int) ([]*model.RawMessage, []VectorScore, *embedding.EmbeddingResult, error) {
+func GetNearestKnowledge(storeName string, searchProviderType string, embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, modelProvider *Provider, owner string, text string, knowledgeCount int, lang string) ([]*model.RawMessage, []VectorScore, *embedding.EmbeddingResult, error) {
 	searchProvider, err := GetSearchProvider(searchProviderType, owner)
 	if err != nil {
 		return nil, nil, nil, err
 	}
 
-	vectors, embeddingResult, err := searchProvider.Search(storeName, embeddingProvider.Name, embeddingProviderObj, modelProvider.Name, text, knowledgeCount)
+	vectors, embeddingResult, err := searchProvider.Search(storeName, embeddingProvider.Name, embeddingProviderObj, modelProvider.Name, text, knowledgeCount, lang)
 	if err != nil {
 		if err.Error() == "no knowledge vectors found" {
 			return nil, nil, embeddingResult, err
@@ -240,7 +241,7 @@ func GetNearestKnowledge(storeName string, searchProviderType string, embeddingP
 	knowledge := []*model.RawMessage{}
 	for _, vector := range vectors {
 		// if embeddingProvider.Name != vector.Provider {
-		//	return "", nil, fmt.Errorf("The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v", embeddingProvider.Name, vector.Provider, vector)
+		//	return "", nil, fmt.Errorf(i18n.Translate(lang, "object:The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v"), embeddingProvider.Name, vector.Provider, vector)
 		// }
 
 		vectorScores = append(vectorScores, VectorScore{

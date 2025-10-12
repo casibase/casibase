@@ -104,7 +104,7 @@ func GetGlobalVideos() ([]*Video, error) {
 	return videos, nil
 }
 
-func GetVideos(owner string) ([]*Video, error) {
+func GetVideos(owner string, lang string) ([]*Video, error) {
 	videos := []*Video{}
 	err := adapter.engine.Desc("created_time").Find(&videos, &Video{Owner: owner})
 	if err != nil {
@@ -112,7 +112,7 @@ func GetVideos(owner string) ([]*Video, error) {
 	}
 
 	for _, v := range videos {
-		err = v.refineVideoAndCoverUrl()
+		err = v.refineVideoAndCoverUrl(lang)
 		if err != nil {
 			return videos, err
 		}
@@ -135,7 +135,7 @@ func getVideo(owner string, name string) (*Video, error) {
 	}
 }
 
-func GetVideo(id string) (*Video, error) {
+func GetVideo(id string, lang string) (*Video, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	v, err := getVideo(owner, name)
 	if err != nil {
@@ -143,7 +143,7 @@ func GetVideo(id string) (*Video, error) {
 	}
 
 	if v != nil && v.VideoId != "" {
-		err = SetDefaultVodClient()
+		err = SetDefaultVodClient(lang)
 		if err != nil {
 			return nil, err
 		}
@@ -208,7 +208,7 @@ func (video *Video) GetId() string {
 	return fmt.Sprintf("%s/%s", video.Owner, video.Name)
 }
 
-func (video *Video) Populate() error {
+func (video *Video) Populate(lang string) error {
 	// store, err := GetDefaultStore("admin")
 	// if err != nil {
 	//	return err
@@ -223,7 +223,7 @@ func (video *Video) Populate() error {
 	// }
 	// video.DataUrls = dataUrls
 
-	err := video.PopulateWordCountMap()
+	err := video.PopulateWordCountMap(lang)
 	if err != nil {
 		return err
 	}
@@ -239,7 +239,7 @@ func (video *Video) Populate() error {
 	return nil
 }
 
-func (v *Video) refineVideoAndCoverUrl() error {
+func (v *Video) refineVideoAndCoverUrl(lang string) error {
 	excellentCount := 0
 	for _, remark := range v.Remarks {
 		if remark.Score == "Excellent" {
@@ -252,7 +252,7 @@ func (v *Video) refineVideoAndCoverUrl() error {
 		return nil
 	}
 
-	err := SetDefaultVodClient()
+	err := SetDefaultVodClient(lang)
 	if err != nil {
 		return err
 	}
@@ -276,7 +276,7 @@ func GetVideoCount(owner string, field string, value string) (int64, error) {
 	return session.Count(&Video{})
 }
 
-func GetPaginationVideos(owner string, offset int, limit int, field string, value string, sortField string, sortOrder string) ([]*Video, error) {
+func GetPaginationVideos(owner string, offset int, limit int, field string, value string, sortField string, sortOrder string, lang string) ([]*Video, error) {
 	videos := []*Video{}
 	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&videos)
@@ -285,7 +285,7 @@ func GetPaginationVideos(owner string, offset int, limit int, field string, valu
 	}
 
 	for _, v := range videos {
-		err = v.refineVideoAndCoverUrl()
+		err = v.refineVideoAndCoverUrl(lang)
 		if err != nil {
 			return videos, err
 		}

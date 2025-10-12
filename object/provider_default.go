@@ -17,13 +17,14 @@ package object
 import (
 	"fmt"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/model"
 )
 
 // GetProviderByProviderKey retrieves a provider using the Provider key
-func GetProviderByProviderKey(providerKey string) (*Provider, error) {
+func GetProviderByProviderKey(providerKey string, lang string) (*Provider, error) {
 	if providerKey == "" {
-		return nil, fmt.Errorf("empty provider key")
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:empty provider key"))
 	}
 
 	provider := &Provider{}
@@ -50,27 +51,27 @@ func GetProviderByProviderKey(providerKey string) (*Provider, error) {
 }
 
 // GetModelProviderByProviderKey retrieves both the provider and its model provider by API key
-func GetModelProviderByProviderKey(providerKey string) (model.ModelProvider, error) {
-	provider, err := GetProviderByProviderKey(providerKey)
+func GetModelProviderByProviderKey(providerKey string, lang string) (model.ModelProvider, error) {
+	provider, err := GetProviderByProviderKey(providerKey, lang)
 	if err != nil {
 		return nil, err
 	}
 
 	if provider == nil {
-		return nil, fmt.Errorf("The provider is not found")
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:The provider is not found"))
 	}
 
 	// Ensure it's a model provider
 	if provider.Category != "Model" {
-		return nil, fmt.Errorf("The model provider: %s is not found", provider.Name)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:The model provider: %s is not found"), provider.Name)
 	}
 
-	modelProvider, err := provider.GetModelProvider()
+	modelProvider, err := provider.GetModelProvider(lang)
 	if err != nil {
 		return nil, err
 	}
 	if modelProvider == nil {
-		return nil, fmt.Errorf("The model provider: %s is not found", provider.Name)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:The model provider: %s is not found"), provider.Name)
 	}
 
 	return modelProvider, nil

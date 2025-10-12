@@ -68,7 +68,7 @@ func TestSplit2(t *testing.T) {
 
 	path := filepath.Join(storageProvider.ClientId, "QAText.docx")
 
-	text, err := txt.GetParsedTextFromUrl(path, ".docx")
+	text, err := txt.GetParsedTextFromUrl(path, ".docx", "en")
 	if err != nil {
 		panic(err)
 	}
@@ -98,7 +98,7 @@ func TestSplit3(t *testing.T) {
 
 	path := filepath.Join(storageProvider.ClientId, "myfile.docx")
 
-	text, err := txt.GetParsedTextFromUrl(path, ".docx")
+	text, err := txt.GetParsedTextFromUrl(path, ".docx", "en")
 	if err != nil {
 		panic(err)
 	}

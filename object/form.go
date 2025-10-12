@@ -17,6 +17,7 @@ package object
 import (
 	"fmt"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -106,11 +107,11 @@ func GetForm(id string) (*Form, error) {
 	return getForm(owner, name)
 }
 
-func UpdateForm(id string, form *Form) (bool, error) {
+func UpdateForm(id string, form *Form, lang string) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	existingForm, err := getForm(owner, name)
 	if existingForm == nil {
-		return false, fmt.Errorf("the form: %s is not found", id)
+		return false, fmt.Errorf(i18n.Translate(lang, "object:the form: %s is not found"), id)
 	}
 	if err != nil {
 		return false, err

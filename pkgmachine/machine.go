@@ -14,15 +14,19 @@
 
 package pkgmachine
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/casibase/casibase/i18n"
+)
 
 type MachineClientInterface interface {
-	GetMachines() ([]*Machine, error)
-	GetMachine(name string) (*Machine, error)
-	UpdateMachineState(name string, state string) (bool, string, error)
+	GetMachines(lang string) ([]*Machine, error)
+	GetMachine(name string, lang string) (*Machine, error)
+	UpdateMachineState(name string, state string, lang string) (bool, string, error)
 }
 
-func NewMachineClient(providerType string, accessKeyId string, accessKeySecret string, region string) (MachineClientInterface, error) {
+func NewMachineClient(providerType string, accessKeyId string, accessKeySecret string, region string, lang string) (MachineClientInterface, error) {
 	var res MachineClientInterface
 	var err error
 	switch providerType {
@@ -41,7 +45,7 @@ func NewMachineClient(providerType string, accessKeyId string, accessKeySecret s
 	case "Tencent Cloud":
 		res, err = newMachineTencentClient(accessKeyId, accessKeySecret, region)
 	default:
-		return nil, fmt.Errorf("unsupported provider type: %s", providerType)
+		return nil, fmt.Errorf(i18n.Translate(lang, "pkgmachine:unsupported provider type: %s"), providerType)
 	}
 
 	if err != nil {

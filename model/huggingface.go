@@ -20,6 +20,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/proxy"
 	"github.com/hupe1980/go-huggingface"
 )
@@ -47,7 +48,7 @@ func (p *HuggingFaceModelProvider) calculatePrice(modelResult *ModelResult) erro
 	return nil
 }
 
-func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	ctx := context.Background()
 	client := huggingface.NewInferenceClient(p.secretKey, func(o *huggingface.InferenceClientOptions) {
 		o.HTTPClient = proxy.ProxyHttpClient
@@ -56,12 +57,12 @@ func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, 
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
-			return nil, fmt.Errorf("cannot calculate tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))
 		}
 		if getContextLength(p.subType) > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
-			return nil, fmt.Errorf("exceed max tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
 		}
 	}
 

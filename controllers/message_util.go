@@ -23,6 +23,7 @@ import (
 	"path/filepath"
 	"regexp"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/txt"
 )
@@ -31,7 +32,7 @@ func (c *ApiController) ResponseErrorStream(message *object.Message, errorText s
 	var err error
 	if message != nil {
 		if !message.IsAlerted {
-			err = message.SendErrorEmail(errorText)
+			err = message.SendErrorEmail(errorText, c.GetAcceptLanguage())
 			if err != nil {
 				errorText = fmt.Sprintf("%s\n%s", errorText, err.Error())
 			}
@@ -55,7 +56,7 @@ func (c *ApiController) ResponseErrorStream(message *object.Message, errorText s
 	}
 }
 
-func refineQuestionTextViaParsingUrlContent(question string) (string, error) {
+func refineQuestionTextViaParsingUrlContent(question string, lang string) (string, error) {
 	re := regexp.MustCompile(`href="([^"]+)"`)
 	urls := re.FindStringSubmatch(question)
 	if len(urls) == 0 {
@@ -64,7 +65,7 @@ func refineQuestionTextViaParsingUrlContent(question string) (string, error) {
 
 	href := urls[1]
 	ext := filepath.Ext(href)
-	content, err := txt.GetParsedTextFromUrl(href, ext)
+	content, err := txt.GetParsedTextFromUrl(href, ext, lang)
 	if err != nil {
 		return "", err
 	}
@@ -83,18 +84,18 @@ func ConvertMessageDataToJSON(data string) ([]byte, error) {
 	return jsonBytes, nil
 }
 
-func RefineMessageImage(message *object.Message) error {
+func RefineMessageImage(message *object.Message, lang string) error {
 	imgRegex := regexp.MustCompile(`<img[^>]*src="([^"]*)"[^>]*>`)
 	srcMatches := imgRegex.FindStringSubmatch(message.Text)
 	if len(srcMatches) <= 1 {
-		return fmt.Errorf("no image url found")
+		return fmt.Errorf(i18n.Translate(lang, "no image url found"))
 	}
 	imageUrl := srcMatches[1]
 
 	extRegex := regexp.MustCompile(`\.([a-zA-Z]+)\?`)
 	extMatches := extRegex.FindStringSubmatch(imageUrl)
 	if len(extMatches) <= 1 {
-		return fmt.Errorf("no extension found")
+		return fmt.Errorf(i18n.Translate(lang, "no extension found"))
 	}
 	ext := extMatches[1]
 
@@ -116,12 +117,12 @@ func RefineMessageImage(message *object.Message) error {
 	return nil
 }
 
-func storeImage(message *object.Message, origin string) error {
-	err := RefineMessageImage(message)
+func storeImage(message *object.Message, origin string, lang string) error {
+	err := RefineMessageImage(message, lang)
 	if err != nil {
 		return err
 	}
-	err = object.RefineMessageFiles(message, origin)
+	err = object.RefineMessageFiles(message, origin, lang)
 	if err != nil {
 		return err
 	}

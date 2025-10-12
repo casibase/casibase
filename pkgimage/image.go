@@ -14,19 +14,23 @@
 
 package pkgimage
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/casibase/casibase/i18n"
+)
 
 type ImageClientInterface interface {
 	GetImages() ([]*Image, error)
 }
 
-func NewImageClient(providerType string, accessKeyId string, accessKeySecret string, region string) (ImageClientInterface, error) {
+func NewImageClient(providerType string, accessKeyId string, accessKeySecret string, region string, lang string) (ImageClientInterface, error) {
 	var res ImageClientInterface
 	var err error
 	if providerType == "Aliyun" {
 		res, err = newImageAliyunClient(accessKeyId, accessKeySecret, region)
 	} else {
-		return nil, fmt.Errorf("unsupported provider type: %s", providerType)
+		return nil, fmt.Errorf(i18n.Translate(lang, "pkgimage:unsupported provider type: %s"), providerType)
 	}
 
 	if err != nil {

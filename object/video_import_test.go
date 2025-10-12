@@ -33,7 +33,7 @@ func TestImportVideos2(t *testing.T) {
 	InitConfig()
 
 	path := ""
-	err := importVideos2(path)
+	err := importVideos2(path, "en")
 	if err != nil {
 		panic(err)
 	}

@@ -153,7 +153,7 @@ func (c *ApiController) UpdateMessage() {
 	}
 
 	if message.NeedNotify {
-		err = message.SendEmail()
+		err = message.SendEmail(c.GetAcceptLanguage())
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -281,7 +281,7 @@ func (c *ApiController) AddMessage() {
 
 	host := c.Ctx.Request.Host
 	origin := getOriginFromHost(host)
-	err = object.RefineMessageFiles(&message, origin)
+	err = object.RefineMessageFiles(&message, origin, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

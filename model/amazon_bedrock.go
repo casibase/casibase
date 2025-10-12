@@ -24,6 +24,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/bedrockruntime"
+	"github.com/casibase/casibase/i18n"
 )
 
 type AmazonBedrockModelProvider struct {
@@ -76,7 +77,7 @@ Model
 `
 }
 
-func (p *AmazonBedrockModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *AmazonBedrockModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	prices := map[string]struct {
 		InputTokenPrice  float64
 		OutputTokenPrice float64
@@ -98,7 +99,7 @@ func (p *AmazonBedrockModelProvider) calculatePrice(modelResult *ModelResult) er
 	}
 	price, ok := prices[p.subType]
 	if !ok {
-		return fmt.Errorf("unsupported model: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:unsupported model: %s"), p.subType)
 	}
 	inputTokenPrice := float64(modelResult.PromptTokenCount) / 1000.0 * price.InputTokenPrice
 	outputTokenPrice := float64(modelResult.ResponseTokenCount) / 1000.0 * price.OutputTokenPrice
@@ -107,7 +108,7 @@ func (p *AmazonBedrockModelProvider) calculatePrice(modelResult *ModelResult) er
 	return nil
 }
 
-func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-west-2"))
 	if err != nil {
 		return nil, err
@@ -128,12 +129,12 @@ func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
-			return nil, fmt.Errorf("cannot calculate tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))
 		}
 		if maxTokens > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
-			return nil, fmt.Errorf("exceed max tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
 		}
 	}
 
@@ -163,7 +164,7 @@ func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer
 		return nil, err
 	}
 
-	if err := p.calculatePrice(modelResult); err != nil {
+	if err := p.calculatePrice(modelResult, lang); err != nil {
 		return nil, err
 	}
 

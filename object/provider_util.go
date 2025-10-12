@@ -19,12 +19,13 @@ import (
 
 	"github.com/casibase/casibase/agent"
 	"github.com/casibase/casibase/embedding"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/util"
 	"github.com/casibase/casibase/video"
 )
 
-func getModelProviderFromName(owner string, providerName string) (*Provider, model.ModelProvider, error) {
+func getModelProviderFromName(owner string, providerName string, lang string) (*Provider, model.ModelProvider, error) {
 	var provider *Provider
 	var err error
 	if providerName != "" {
@@ -38,20 +39,20 @@ func getModelProviderFromName(owner string, providerName string) (*Provider, mod
 	}
 	if provider == nil {
 		if providerName != "" {
-			return nil, nil, fmt.Errorf("The model provider: %s is not found", providerName)
+			return nil, nil, fmt.Errorf(i18n.Translate(lang, "object:The model provider: %s is not found"), providerName)
 		} else {
-			return nil, nil, fmt.Errorf("Please add a model provider first")
+			return nil, nil, fmt.Errorf(i18n.Translate(lang, "object:Please add a model provider first"))
 		}
 	}
 
 	if provider.Category != "Model" {
-		return nil, nil, fmt.Errorf("The model provider: %s is expected to be \"Model\" category, got: \"%s\"", provider.GetId(), provider.Category)
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "object:The model provider: %s is expected to be \")Model\" category, got: \"%s\""), provider.GetId(), provider.Category)
 	}
 	if provider.ClientSecret == "" && provider.Type != "Dummy" && provider.Type != "Ollama" {
-		return nil, nil, fmt.Errorf("The model provider: %s's client secret should not be empty", provider.GetId())
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "object:The model provider: %s's client secret should not be empty"), provider.GetId())
 	}
 
-	providerObj, err := provider.GetModelProvider()
+	providerObj, err := provider.GetModelProvider(lang)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -59,7 +60,7 @@ func getModelProviderFromName(owner string, providerName string) (*Provider, mod
 	return provider, providerObj, err
 }
 
-func getEmbeddingProviderFromName(owner string, providerName string) (*Provider, embedding.EmbeddingProvider, error) {
+func getEmbeddingProviderFromName(owner string, providerName string, lang string) (*Provider, embedding.EmbeddingProvider, error) {
 	var provider *Provider
 	var err error
 	if providerName != "" {
@@ -73,20 +74,20 @@ func getEmbeddingProviderFromName(owner string, providerName string) (*Provider,
 	}
 	if provider == nil {
 		if providerName != "" {
-			return nil, nil, fmt.Errorf("The embedding provider: %s is not found", providerName)
+			return nil, nil, fmt.Errorf(i18n.Translate(lang, "object:The embedding provider: %s is not found"), providerName)
 		} else {
-			return nil, nil, fmt.Errorf("Please add an embedding provider first")
+			return nil, nil, fmt.Errorf(i18n.Translate(lang, "object:Please add an embedding provider first"))
 		}
 	}
 
 	if provider.Category != "Embedding" {
-		return nil, nil, fmt.Errorf("The embedding provider: %s is expected to be \"Embedding\" category, got: \"%s\"", provider.GetId(), provider.Category)
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "object:The embedding provider: %s is expected to be \")Embedding\" category, got: \"%s\""), provider.GetId(), provider.Category)
 	}
 	if provider.ClientSecret == "" && provider.Type != "Dummy" {
-		return nil, nil, fmt.Errorf("The embedding provider: %s's client secret should not be empty", provider.GetId())
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "object:The embedding provider: %s's client secret should not be empty"), provider.GetId())
 	}
 
-	providerObj, err := provider.GetEmbeddingProvider()
+	providerObj, err := provider.GetEmbeddingProvider(lang)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -94,7 +95,7 @@ func getEmbeddingProviderFromName(owner string, providerName string) (*Provider,
 	return provider, providerObj, err
 }
 
-func getAgentProviderFromName(owner string, providerName string) (*Provider, agent.AgentProvider, error) {
+func getAgentProviderFromName(owner string, providerName string, lang string) (*Provider, agent.AgentProvider, error) {
 	var provider *Provider
 	var err error
 	if providerName != "" {
@@ -111,10 +112,10 @@ func getAgentProviderFromName(owner string, providerName string) (*Provider, age
 	}
 
 	if provider.Category != "Agent" {
-		return nil, nil, fmt.Errorf("The agent provider: %s is expected to be \"Agent\" category, got: \"%s\"", provider.GetId(), provider.Category)
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "object:The agent provider: %s is expected to be \")Agent\" category, got: \"%s\""), provider.GetId(), provider.Category)
 	}
 
-	providerObj, err := provider.GetAgentProvider()
+	providerObj, err := provider.GetAgentProvider(lang)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -122,7 +123,7 @@ func getAgentProviderFromName(owner string, providerName string) (*Provider, age
 	return provider, providerObj, err
 }
 
-func SetDefaultVodClient() error {
+func SetDefaultVodClient(lang string) error {
 	if video.VodClient != nil {
 		return nil
 	}
@@ -132,7 +133,7 @@ func SetDefaultVodClient() error {
 		return err
 	}
 	if provider == nil {
-		return fmt.Errorf("The default video provider should not be empty")
+		return fmt.Errorf(i18n.Translate(lang, "object:The default video provider should not be empty"))
 	}
 
 	err = video.SetVodClient(provider.Region, provider.ClientId, provider.ClientSecret)

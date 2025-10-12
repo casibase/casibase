@@ -20,17 +20,18 @@ import (
 
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/conf"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 )
 
-func (message *Message) SendEmail() error {
+func (message *Message) SendEmail(lang string) error {
 	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
 	organization, err := casdoorsdk.GetOrganization(casdoorOrganization)
 	if err != nil {
 		return err
 	}
 	if organization == nil {
-		return fmt.Errorf("Casdoor organization: [%s] doesn't exist", casdoorOrganization)
+		return fmt.Errorf(i18n.Translate(lang, "object:Casdoor organization: [%s] doesn't exist"), casdoorOrganization)
 	}
 	sender := organization.DisplayName
 
@@ -40,7 +41,7 @@ func (message *Message) SendEmail() error {
 		return err
 	}
 	if application == nil {
-		return fmt.Errorf("Casdoor application: [%s] doesn't exist", casdoorApplication)
+		return fmt.Errorf(i18n.Translate(lang, "object:Casdoor application: [%s] doesn't exist"), casdoorApplication)
 	}
 	title := application.DisplayName
 
@@ -112,13 +113,13 @@ func (message *Message) SendEmail() error {
 	return nil
 }
 
-func (message *Message) SendErrorEmail(errorText string) error {
+func (message *Message) SendErrorEmail(errorText string, lang string) error {
 	adminUser, err := casdoorsdk.GetUser("admin")
 	if err != nil {
 		return err
 	}
 	if adminUser == nil {
-		return fmt.Errorf("SendErrorEmail() error, the receiver user: \"admin\" doesn't exist")
+		return fmt.Errorf(i18n.Translate(lang, "object:SendErrorEmail() error, the receiver user: \")admin\" doesn't exist"))
 	}
 
 	receiverEmail := adminUser.Email
@@ -132,7 +133,7 @@ func (message *Message) SendErrorEmail(errorText string) error {
 		return err
 	}
 	if organization == nil {
-		return fmt.Errorf("Casdoor organization: [%s] doesn't exist", casdoorOrganization)
+		return fmt.Errorf(i18n.Translate(lang, "object:Casdoor organization: [%s] doesn't exist"), casdoorOrganization)
 	}
 	sender := organization.DisplayName
 
@@ -151,7 +152,7 @@ func (message *Message) SendErrorEmail(errorText string) error {
 		return err
 	}
 	if questionMessage == nil {
-		return fmt.Errorf("Question message: [%s] doesn't exist", message.ReplyTo)
+		return fmt.Errorf(i18n.Translate(lang, "object:Question message: [%s] doesn't exist"), message.ReplyTo)
 	}
 
 	question := questionMessage.Text

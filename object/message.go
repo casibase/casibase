@@ -167,7 +167,7 @@ func UpdateMessage(id string, message *Message, isHitOnly bool) (bool, error) {
 	return true, nil
 }
 
-func RefineMessageFiles(message *Message, origin string) error {
+func RefineMessageFiles(message *Message, origin string, lang string) error {
 	text := message.Text
 	// re := regexp.MustCompile(`data:image\/([a-zA-Z]*);base64,([^"]*)`)
 	re := regexp.MustCompile(`data:([a-zA-Z]*\/[a-zA-Z\-\.]*);base64,([^"]*)`)
@@ -178,14 +178,14 @@ func RefineMessageFiles(message *Message, origin string) error {
 			return err
 		}
 
-		obj, err := store.GetImageProviderObj()
+		obj, err := store.GetImageProviderObj(lang)
 		if err != nil {
 			return err
 		}
 
 		for _, match := range matches {
 			var content []byte
-			content, err = parseBase64Image(match)
+			content, err = parseBase64Image(match, lang)
 			if err != nil {
 				return err
 			}
@@ -340,14 +340,14 @@ func (w *MyWriter) Write(p []byte) (n int, err error) {
 	return w.Buffer.Write(p)
 }
 
-func GetAnswer(provider string, question string) (string, *model.ModelResult, error) {
+func GetAnswer(provider string, question string, lang string) (string, *model.ModelResult, error) {
 	history := []*model.RawMessage{}
 	knowledge := []*model.RawMessage{}
-	return GetAnswerWithContext(provider, question, history, knowledge, "")
+	return GetAnswerWithContext(provider, question, history, knowledge, "", lang)
 }
 
-func GetAnswerWithContext(provider string, question string, history []*model.RawMessage, knowledge []*model.RawMessage, prompt string) (string, *model.ModelResult, error) {
-	_, modelProviderObj, err := GetModelProviderFromContext("admin", provider)
+func GetAnswerWithContext(provider string, question string, history []*model.RawMessage, knowledge []*model.RawMessage, prompt string, lang string) (string, *model.ModelResult, error) {
+	_, modelProviderObj, err := GetModelProviderFromContext("admin", provider, lang)
 	if err != nil {
 		return "", nil, err
 	}
@@ -356,7 +356,7 @@ func GetAnswerWithContext(provider string, question string, history []*model.Raw
 		prompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems."
 	}
 	var writer MyWriter
-	modelResult, err := modelProviderObj.QueryText(question, &writer, history, prompt, knowledge, nil)
+	modelResult, err := modelProviderObj.QueryText(question, &writer, history, prompt, knowledge, nil, lang)
 	if err != nil {
 		return "", nil, err
 	}

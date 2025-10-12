@@ -18,14 +18,15 @@ import (
 	"fmt"
 
 	"github.com/casibase/casibase/conf"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
 
-func addRecord(c *ApiController, userName string, requestUri string) error {
+func addRecord(c *ApiController, userName string, requestUri string, lang string) error {
 	record, err := object.NewRecord(c.Ctx)
 	if err != nil {
-		return fmt.Errorf("NewRecord() error: %s\n", err.Error())
+		return fmt.Errorf(i18n.Translate(lang, "NewRecord() error: %s\n"), err.Error())
 	}
 
 	record.User = userName
@@ -35,11 +36,11 @@ func addRecord(c *ApiController, userName string, requestUri string) error {
 
 	record.Organization = conf.GetConfigString("casdoorOrganization")
 
-	_, _, err = object.AddRecord(record)
+	_, _, err = object.AddRecord(record, c.GetAcceptLanguage())
 	return err
 }
 
-func addRecordForFile(c *ApiController, userName string, action string, sessionId string, key string, filename string, isLeaf bool) error {
+func addRecordForFile(c *ApiController, userName string, action string, sessionId string, key string, filename string, isLeaf bool, lang string) error {
 	typ := "Folder"
 	if isLeaf {
 		typ = "File"
@@ -53,6 +54,6 @@ func addRecordForFile(c *ApiController, userName string, action string, sessionI
 	}
 
 	text := fmt.Sprintf("%s%s, Session: %s, Path: %s", action, typ, storeName, path)
-	err := addRecord(c, userName, text)
+	err := addRecord(c, userName, text, lang)
 	return err
 }

@@ -96,7 +96,7 @@ func GetWorkflow(id string) (*Workflow, error) {
 	return getWorkflow(owner, name)
 }
 
-func UpdateWorkflow(id string, workflow *Workflow) (bool, error) {
+func UpdateWorkflow(id string, workflow *Workflow, lang string) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	_, err := getWorkflow(owner, name)
 	if err != nil {
@@ -107,7 +107,7 @@ func UpdateWorkflow(id string, workflow *Workflow) (bool, error) {
 	}
 
 	if workflow.Text != "" && workflow.Text2 != "" {
-		message := bpmn.ComparePath(workflow.Text, workflow.Text2)
+		message := bpmn.ComparePath(workflow.Text, workflow.Text2, lang)
 		workflow.Message = message
 	} else {
 		workflow.Message = ""
@@ -122,9 +122,9 @@ func UpdateWorkflow(id string, workflow *Workflow) (bool, error) {
 	return true, nil
 }
 
-func AddWorkflow(workflow *Workflow) (bool, error) {
+func AddWorkflow(workflow *Workflow, lang string) (bool, error) {
 	if workflow.Text != "" && workflow.Text2 != "" {
-		message := bpmn.ComparePath(workflow.Text, workflow.Text2)
+		message := bpmn.ComparePath(workflow.Text, workflow.Text2, lang)
 		workflow.Message = message
 	} else {
 		workflow.Message = ""

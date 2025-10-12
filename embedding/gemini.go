@@ -53,7 +53,7 @@ func (p *GeminiEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 	return nil
 }
 
-func (p *GeminiEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+func (p *GeminiEmbeddingProvider) QueryVector(text string, ctx context.Context, lang string) ([]float32, *EmbeddingResult, error) {
 	// Access your API key as an environment variable (see "Set up your API key" above)
 	client, err := genai.NewClient(ctx, &genai.ClientConfig{
 		APIKey:     p.secretKey,

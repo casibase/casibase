@@ -23,7 +23,7 @@ import (
 )
 
 func TestGetAudioText(t *testing.T) {
-	segments, err := GetSegmentsFromAudio("../data/example.mp3")
+	segments, err := GetSegmentsFromAudio("../data/example.mp3", "en")
 	if err != nil {
 		panic(err)
 	}

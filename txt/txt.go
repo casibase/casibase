@@ -20,13 +20,14 @@ import (
 	"strings"
 
 	"github.com/beego/beego/logs"
+	"github.com/casibase/casibase/i18n"
 )
 
 func GetSupportedFileTypes() []string {
 	return []string{".txt", ".md", ".yaml", ".csv", ".pdf", ".docx", ".xlsx", ".pptx"}
 }
 
-func GetParsedTextFromUrl(url string, ext string) (string, error) {
+func GetParsedTextFromUrl(url string, ext string, lang string) (string, error) {
 	var path string
 	var err error
 	if !strings.HasPrefix(url, "http") {
@@ -52,13 +53,13 @@ func GetParsedTextFromUrl(url string, ext string) (string, error) {
 	} else if ext == ".pdf" {
 		res, err = getTextFromPdf(path)
 	} else if ext == ".docx" {
-		res, err = GetTextFromDocx(path)
+		res, err = GetTextFromDocx(path, lang)
 	} else if ext == ".xlsx" {
 		res, err = getTextFromXlsx(path)
 	} else if ext == ".pptx" {
 		res, err = getTextFromPptx(path)
 	} else {
-		return "", fmt.Errorf("unsupported file type: %s", ext)
+		return "", fmt.Errorf(i18n.Translate(lang, "txt:unsupported file type: %s"), ext)
 	}
 	if err != nil {
 		return "", err

@@ -66,7 +66,7 @@ func TestProcessFiles(t *testing.T) {
 				outputFileName := strings.TrimSuffix(fileName, fileExt) + ".md"
 				outputFilePath := filepath.Join(outputDir, outputFileName)
 
-				parsedText, err := GetParsedTextFromUrl(inputFilePath, fileExt)
+				parsedText, err := GetParsedTextFromUrl(inputFilePath, fileExt, "en")
 				if err != nil {
 					mu.Lock()
 					t.Logf("Failed to process file %s: %v\n", inputFilePath, err)

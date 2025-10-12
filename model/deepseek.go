@@ -17,6 +17,8 @@ package model
 import (
 	"fmt"
 	"io"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 type DeepSeekProvider struct {
@@ -45,7 +47,7 @@ https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 `
 }
 
-func (p *DeepSeekProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *DeepSeekProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
 		"deepseek-chat":     {0.001, 0.002},
@@ -57,7 +59,7 @@ func (p *DeepSeekProvider) calculatePrice(modelResult *ModelResult) error {
 		outputPrice := getPrice(modelResult.TotalTokenCount, priceItem[1])
 		price = inputPrice + outputPrice
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	modelResult.TotalPrice = price
@@ -65,7 +67,7 @@ func (p *DeepSeekProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *DeepSeekProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *DeepSeekProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	const BaseUrl = "https://api.deepseek.com/v1"
 
 	var localType string
@@ -79,12 +81,12 @@ func (p *DeepSeekProvider) QueryText(question string, writer io.Writer, history 
 		return nil, err
 	}
 
-	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo)
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo, lang)
 	if err != nil {
 		return nil, err
 	}
 
-	err = p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

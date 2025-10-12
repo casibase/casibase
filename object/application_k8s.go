@@ -21,6 +21,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 	"gopkg.in/yaml.v3"
 	v1 "k8s.io/api/core/v1"
@@ -41,7 +42,7 @@ const (
 	NamespaceFormat   = "casibase-%s"
 )
 
-func UpdateApplicationStatus(owner string, name string, status string) error {
+func UpdateApplicationStatus(owner string, name string, status string, lang string) error {
 	application, err := getApplication(owner, name)
 	if err != nil {
 		return err
@@ -53,7 +54,7 @@ func UpdateApplicationStatus(owner string, name string, status string) error {
 	application.Status = status
 	application.UpdatedTime = util.GetCurrentTime()
 
-	_, err = UpdateApplication(fmt.Sprintf("%s/%s", owner, name), application)
+	_, err = UpdateApplication(fmt.Sprintf("%s/%s", owner, name), application, lang)
 	if err != nil {
 		return err
 	}
@@ -61,7 +62,7 @@ func UpdateApplicationStatus(owner string, name string, status string) error {
 	return nil
 }
 
-func generateManifestWithKustomize(baseManifest, parameters string) (string, error) {
+func generateManifestWithKustomize(baseManifest, parameters string, lang string) (string, error) {
 	// If no parameters provided, return base manifest directly
 	if parameters == "" {
 		return baseManifest, nil
@@ -72,7 +73,7 @@ func generateManifestWithKustomize(baseManifest, parameters string) (string, err
 
 	// Create root directory first
 	if err := fs.Mkdir("."); err != nil {
-		return "", fmt.Errorf("failed to create root directory: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:failed to create root directory: %v"), err)
 	}
 
 	// Split and write base resource files
@@ -87,7 +88,7 @@ func generateManifestWithKustomize(baseManifest, parameters string) (string, err
 
 		fileName := fmt.Sprintf("resource-%d.yaml", i)
 		if err := fs.WriteFile(fileName, []byte(trimmedContent)); err != nil {
-			return "", fmt.Errorf("failed to write resource file: %v", err)
+			return "", fmt.Errorf(i18n.Translate(lang, "object:failed to write resource file: %v"), err)
 		}
 		resourceFiles = append(resourceFiles, fileName)
 	}
@@ -95,7 +96,7 @@ func generateManifestWithKustomize(baseManifest, parameters string) (string, err
 	// Write patch file
 	patchFileName := "patch.yaml"
 	if err := fs.WriteFile(patchFileName, []byte(parameters)); err != nil {
-		return "", fmt.Errorf("failed to write patch file: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:failed to write patch file: %v"), err)
 	}
 
 	// Create kustomization.yaml
@@ -112,52 +113,52 @@ func generateManifestWithKustomize(baseManifest, parameters string) (string, err
 
 	kustomizationYaml, err := yaml.Marshal(kustomization)
 	if err != nil {
-		return "", fmt.Errorf("failed to marshal kustomization: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:failed to marshal kustomization: %v"), err)
 	}
 
 	err = fs.WriteFile("kustomization.yaml", kustomizationYaml)
 	if err != nil {
-		return "", fmt.Errorf("failed to write kustomization.yaml: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:failed to write kustomization.yaml: %v"), err)
 	}
 
 	// Run Kustomize with correct path
 	k := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
 	resMap, err := k.Run(fs, ".")
 	if err != nil {
-		return "", fmt.Errorf("kustomize run failed: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:kustomize run failed: %v"), err)
 	}
 
 	// Convert to final YAML
 	finalManifestBytes, err := resMap.AsYaml()
 	if err != nil {
-		return "", fmt.Errorf("failed to convert result to yaml: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:failed to convert result to yaml: %v"), err)
 	}
 
 	return string(finalManifestBytes), nil
 }
 
-func DeployApplication(application *Application) (bool, error) {
-	if err := ensureK8sClient(); err != nil {
-		return false, fmt.Errorf("failed to initialize k8s client: %v", err)
+func DeployApplication(application *Application, lang string) (bool, error) {
+	if err := ensureK8sClient(lang); err != nil {
+		return false, fmt.Errorf(i18n.Translate(lang, "object:failed to initialize k8s client: %v"), err)
 	}
 
 	if !k8sClient.connected {
-		return false, fmt.Errorf("k8s client not connected to cluster")
+		return false, fmt.Errorf(i18n.Translate(lang, "object:k8s client not connected to cluster"))
 	}
 
 	// Create namespace if it doesn't exist
 	err := k8sClient.createNamespaceIfNotExists(application.Namespace)
 	if err != nil {
-		return false, fmt.Errorf("failed to create namespace: %v", err)
+		return false, fmt.Errorf(i18n.Translate(lang, "object:failed to create namespace: %v"), err)
 	}
 
 	// Deploy the manifest
-	err = deployManifest(application.Manifest, application.Namespace)
+	err = deployManifest(application.Manifest, application.Namespace, lang)
 	if err != nil {
-		return false, fmt.Errorf("failed to deploy manifest: %v", err)
+		return false, fmt.Errorf(i18n.Translate(lang, "object:failed to deploy manifest: %v"), err)
 	}
 
-	err = UpdateApplicationStatus(application.Owner, application.Name, StatusPending)
+	err = UpdateApplicationStatus(application.Owner, application.Name, StatusPending, lang)
 	if err != nil {
 		return false, err
 	}
@@ -165,13 +166,13 @@ func DeployApplication(application *Application) (bool, error) {
 	return true, nil
 }
 
-func UndeployApplication(owner, name, namespace string) (bool, error) {
-	if err := ensureK8sClient(); err != nil {
-		return false, fmt.Errorf("failed to initialize k8s client: %v", err)
+func UndeployApplication(owner, name, namespace string, lang string) (bool, error) {
+	if err := ensureK8sClient(lang); err != nil {
+		return false, fmt.Errorf(i18n.Translate(lang, "object:failed to initialize k8s client: %v"), err)
 	}
 
 	if !k8sClient.connected {
-		return false, fmt.Errorf("k8s client not connected to cluster")
+		return false, fmt.Errorf(i18n.Translate(lang, "object:k8s client not connected to cluster"))
 	}
 
 	// Delete the entire namespace
@@ -182,10 +183,10 @@ func UndeployApplication(owner, name, namespace string) (bool, error) {
 	)
 
 	if err != nil && !errors.IsNotFound(err) {
-		return false, fmt.Errorf("failed to delete namespace: %v", err)
+		return false, fmt.Errorf(i18n.Translate(lang, "object:failed to delete namespace: %v"), err)
 	}
 
-	err = UpdateApplicationStatus(owner, name, StatusTerminating)
+	err = UpdateApplicationStatus(owner, name, StatusTerminating, lang)
 	if err != nil {
 		return false, err
 	}
@@ -193,14 +194,14 @@ func UndeployApplication(owner, name, namespace string) (bool, error) {
 	return true, nil
 }
 
-func DeployApplicationSync(application *Application) (bool, error) {
+func DeployApplicationSync(application *Application, lang string) (bool, error) {
 	// First deploy the application
-	success, err := DeployApplication(application)
+	success, err := DeployApplication(application, lang)
 	if err != nil {
 		return false, err
 	}
 	if !success {
-		return false, fmt.Errorf("failed to deploy application")
+		return false, fmt.Errorf(i18n.Translate(lang, "object:failed to deploy application"))
 	}
 
 	// Wait for deployment to be ready (with timeout)
@@ -213,35 +214,35 @@ func DeployApplicationSync(application *Application) (bool, error) {
 	for {
 		select {
 		case <-ctx.Done():
-			err = UpdateApplicationStatus(application.Owner, application.Name, StatusFailed)
+			err = UpdateApplicationStatus(application.Owner, application.Name, StatusFailed, lang)
 			if err != nil {
 				return false, err
 			}
 
-			reason, err := GetApplicationFailureReason(application.Namespace)
+			reason, err := GetApplicationFailureReason(application.Namespace, lang)
 			if err != nil {
-				return false, fmt.Errorf("deployment failed, and could not retrieve failure details: %v", err)
+				return false, fmt.Errorf(i18n.Translate(lang, "object:deployment failed, and could not retrieve failure details: %v"), err)
 			}
-			return false, fmt.Errorf("deployment failed: %s", reason)
+			return false, fmt.Errorf(i18n.Translate(lang, "object:deployment failed: %s"), reason)
 		case <-ticker.C:
-			status, err := GetApplicationStatus(application.Owner, application.Name, application.Namespace)
+			status, err := GetApplicationStatus(application.Owner, application.Name, application.Namespace, lang)
 			if err != nil {
 				continue
 			}
 
 			switch status {
 			case StatusRunning:
-				if url, err := GetURL(application.Namespace); err == nil && url != "" {
+				if url, err := GetURL(application.Namespace, lang); err == nil && url != "" {
 					application.URL = url
 					application.Status = StatusRunning
-					_, err := UpdateApplication(util.GetIdFromOwnerAndName(application.Owner, application.Name), application)
+					_, err := UpdateApplication(util.GetIdFromOwnerAndName(application.Owner, application.Name), application, lang)
 					if err != nil {
 						return false, err
 					}
 				}
 				return true, nil
 			case StatusNotDeployed:
-				return false, fmt.Errorf("namespace %s is terminating and all resources have been cleaned up", application.Namespace)
+				return false, fmt.Errorf(i18n.Translate(lang, "object:namespace %s is terminating and all resources have been cleaned up"), application.Namespace)
 			default:
 				continue
 			}
@@ -250,14 +251,14 @@ func DeployApplicationSync(application *Application) (bool, error) {
 }
 
 // UndeployApplicationSync undeploys application and waits for it to be completely removed
-func UndeployApplicationSync(owner, name, namespace string) (bool, error) {
+func UndeployApplicationSync(owner, name, namespace string, lang string) (bool, error) {
 	// First undeploy the application
-	success, err := UndeployApplication(owner, name, namespace)
+	success, err := UndeployApplication(owner, name, namespace, lang)
 	if err != nil {
 		return false, err
 	}
 	if !success {
-		return false, fmt.Errorf("failed to start undeployment")
+		return false, fmt.Errorf(i18n.Translate(lang, "object:failed to start undeployment"))
 	}
 
 	// Wait for undeployment to complete (with timeout)
@@ -270,9 +271,9 @@ func UndeployApplicationSync(owner, name, namespace string) (bool, error) {
 	for {
 		select {
 		case <-ctx.Done():
-			return false, fmt.Errorf("undeployment timeout: application did not undeploy within 10 minutes")
+			return false, fmt.Errorf(i18n.Translate(lang, "object:undeployment timeout: application did not undeploy within 10 minutes"))
 		case <-ticker.C:
-			status, err := GetApplicationStatus(owner, name, namespace)
+			status, err := GetApplicationStatus(owner, name, namespace, lang)
 			if err != nil {
 				continue
 			}
@@ -290,16 +291,16 @@ func UndeployApplicationSync(owner, name, namespace string) (bool, error) {
 }
 
 // GetApplicationFailureReason returns the failure reason for an application deployment
-func GetApplicationFailureReason(namespace string) (string, error) {
+func GetApplicationFailureReason(namespace string, lang string) (string, error) {
 	if namespace == "" {
-		return "", fmt.Errorf("namespace cannot be empty")
+		return "", fmt.Errorf(i18n.Translate(lang, "object:namespace cannot be empty"))
 	}
 
-	if err := ensureK8sClient(); err != nil {
+	if err := ensureK8sClient(lang); err != nil {
 		return "", err
 	}
 	if !k8sClient.connected {
-		return "", fmt.Errorf("k8s client is not connected to the cluster")
+		return "", fmt.Errorf(i18n.Translate(lang, "object:k8s client is not connected to the cluster"))
 	}
 
 	pods, err := k8sClient.clientSet.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
@@ -307,7 +308,7 @@ func GetApplicationFailureReason(namespace string) (string, error) {
 		if errors.IsNotFound(err) {
 			return "namespace or pods not found", nil
 		}
-		return "", fmt.Errorf("failed to list pods in namespace %s: %w", namespace, err)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:failed to list pods in namespace %s: %w"), namespace, err)
 	}
 
 	if len(pods.Items) == 0 {
@@ -375,8 +376,8 @@ func analyzeContainerStatus(podName, containerName, containerType string, state 
 }
 
 // GetApplicationStatus returns application status as string
-func GetApplicationStatus(owner, name, namespace string) (string, error) {
-	if err := ensureK8sClient(); err != nil {
+func GetApplicationStatus(owner, name, namespace string, lang string) (string, error) {
+	if err := ensureK8sClient(lang); err != nil {
 		return StatusUnknown, err
 	}
 
@@ -391,7 +392,7 @@ func GetApplicationStatus(owner, name, namespace string) (string, error) {
 	)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			err = UpdateApplicationStatus(owner, name, StatusNotDeployed)
+			err = UpdateApplicationStatus(owner, name, StatusNotDeployed, lang)
 			if err != nil {
 				return "", err
 			}
@@ -407,7 +408,7 @@ func GetApplicationStatus(owner, name, namespace string) (string, error) {
 		deployments, _ := k8sClient.clientSet.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
 
 		if len(pods.Items) == 0 && len(services.Items) == 0 && len(deployments.Items) == 0 {
-			err = UpdateApplicationStatus(owner, name, StatusNotDeployed)
+			err = UpdateApplicationStatus(owner, name, StatusNotDeployed, lang)
 			if err != nil {
 				return "", err
 			}
@@ -415,7 +416,7 @@ func GetApplicationStatus(owner, name, namespace string) (string, error) {
 			return StatusNotDeployed, nil
 		}
 
-		err = UpdateApplicationStatus(owner, name, StatusTerminating)
+		err = UpdateApplicationStatus(owner, name, StatusTerminating, lang)
 		if err != nil {
 			return "", err
 		}
@@ -439,7 +440,7 @@ func GetApplicationStatus(owner, name, namespace string) (string, error) {
 	}
 
 	if len(deployments.Items) == 0 && len(statefulSets.Items) == 0 {
-		err = UpdateApplicationStatus(owner, name, StatusNotDeployed)
+		err = UpdateApplicationStatus(owner, name, StatusNotDeployed, lang)
 		if err != nil {
 			return "", err
 		}
@@ -450,7 +451,7 @@ func GetApplicationStatus(owner, name, namespace string) (string, error) {
 	// Check if all deployments are ready
 	for _, deployment := range deployments.Items {
 		if deployment.Status.ReadyReplicas < deployment.Status.Replicas {
-			err = UpdateApplicationStatus(owner, name, StatusPending)
+			err = UpdateApplicationStatus(owner, name, StatusPending, lang)
 			if err != nil {
 				return "", err
 			}
@@ -462,7 +463,7 @@ func GetApplicationStatus(owner, name, namespace string) (string, error) {
 	// Check if all statefulsets are ready
 	for _, statefulSet := range statefulSets.Items {
 		if statefulSet.Status.ReadyReplicas < statefulSet.Status.Replicas {
-			err = UpdateApplicationStatus(owner, name, StatusPending)
+			err = UpdateApplicationStatus(owner, name, StatusPending, lang)
 			if err != nil {
 				return "", err
 			}
@@ -471,7 +472,7 @@ func GetApplicationStatus(owner, name, namespace string) (string, error) {
 		}
 	}
 
-	err = UpdateApplicationStatus(owner, name, StatusRunning)
+	err = UpdateApplicationStatus(owner, name, StatusRunning, lang)
 	if err != nil {
 		return "", err
 	}
@@ -480,7 +481,7 @@ func GetApplicationStatus(owner, name, namespace string) (string, error) {
 }
 
 // Helper function to deploy manifest (refactored from existing code)
-func deployManifest(manifest, namespace string) error {
+func deployManifest(manifest, namespace string, lang string) error {
 	// Split manifest by "---" separator
 	docs := strings.Split(manifest, "---")
 
@@ -490,9 +491,9 @@ func deployManifest(manifest, namespace string) error {
 			continue
 		}
 
-		err := k8sClient.deployResource(doc, namespace)
+		err := k8sClient.deployResource(doc, namespace, lang)
 		if err != nil {
-			return fmt.Errorf("failed to deploy resource: %v", err)
+			return fmt.Errorf(i18n.Translate(lang, "object:failed to deploy resource: %v"), err)
 		}
 	}
 

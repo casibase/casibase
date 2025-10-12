@@ -21,6 +21,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 type MiniMaxEmbeddingProvider struct {
@@ -72,7 +74,7 @@ type EmbeddingResponse struct {
 	Base_resp    base_resp   `json:"base_resp"`
 }
 
-func (p *MiniMaxEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+func (p *MiniMaxEmbeddingProvider) QueryVector(text string, ctx context.Context, lang string) ([]float32, *EmbeddingResult, error) {
 	url := p.providerUrl
 	apiKey := p.apiKey
 
@@ -104,7 +106,7 @@ func (p *MiniMaxEmbeddingProvider) QueryVector(text string, ctx context.Context)
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return nil, nil, fmt.Errorf("request failed with status code %d: %s", resp.StatusCode, string(body))
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "embedding:request failed with status code %d: %s"), resp.StatusCode, string(body))
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -115,11 +117,11 @@ func (p *MiniMaxEmbeddingProvider) QueryVector(text string, ctx context.Context)
 	var embeddingResponse EmbeddingResponse
 	err = json.Unmarshal(body, &embeddingResponse)
 	if err != nil {
-		return nil, nil, fmt.Errorf("error unmarshaling response JSON: %v", err)
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "embedding:error unmarshaling response JSON: %v"), err)
 	}
 
 	if len(embeddingResponse.Vectors) == 0 {
-		return nil, nil, fmt.Errorf("no embedding vector found in response")
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "embedding:no embedding vector found in response"))
 	}
 
 	embeddingResult := &EmbeddingResult{

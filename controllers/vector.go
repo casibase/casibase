@@ -111,7 +111,7 @@ func (c *ApiController) UpdateVector() {
 		return
 	}
 
-	success, err := object.UpdateVector(id, &vector)
+	success, err := object.UpdateVector(id, &vector, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

@@ -67,14 +67,14 @@ func (c *ApiController) ProcessSpeechToText() {
 	}
 
 	// Get provider implementation
-	providerObj, err := provider.GetSpeechToTextProvider()
+	providerObj, err := provider.GetSpeechToTextProvider(c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 	// Process the audio data and get the transcription
 	ctx := context.Background()
-	text, _, err := providerObj.ProcessAudio(audioFile, ctx)
+	text, _, err := providerObj.ProcessAudio(audioFile, ctx, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

@@ -79,8 +79,8 @@ func isObjectLeaf(object *storage.Object) bool {
 	return isLeaf
 }
 
-func (store *Store) Populate(origin string) error {
-	storageProviderObj, err := store.GetStorageProviderObj()
+func (store *Store) Populate(origin string, lang string) error {
+	storageProviderObj, err := store.GetStorageProviderObj(lang)
 	if err != nil {
 		return err
 	}
@@ -134,8 +134,8 @@ func (store *Store) Populate(origin string) error {
 	return nil
 }
 
-func (store *Store) GetVideoData() ([]string, error) {
-	storageProviderObj, err := store.GetStorageProviderObj()
+func (store *Store) GetVideoData(lang string) ([]string, error) {
+	storageProviderObj, err := store.GetStorageProviderObj(lang)
 	if err != nil {
 		return nil, err
 	}

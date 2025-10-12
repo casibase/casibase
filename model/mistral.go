@@ -19,6 +19,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/gage-technologies/mistral-go"
 )
 
@@ -55,7 +56,7 @@ func (c *MistralModelProvider) GetPricing() string {
 	`
 }
 
-func (c *MistralModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (c *MistralModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
 		"mistral-large-latest": {0.002, 0.006},
@@ -76,7 +77,7 @@ func (c *MistralModelProvider) calculatePrice(modelResult *ModelResult) error {
 		outputPrice := getPrice(modelResult.TotalTokenCount, priceItem[1])
 		price = inputPrice + outputPrice
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", c.modelName)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), c.modelName)
 	}
 
 	modelResult.TotalPrice = price
@@ -84,10 +85,10 @@ func (c *MistralModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (c *MistralModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (c *MistralModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	chatRes, err := c.client.Chat(c.modelName, []mistral.ChatMessage{{Content: question, Role: mistral.RoleUser}}, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error getting chat completion: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:error getting chat completion: %v"), err)
 	}
 
 	respText := chatRes.Choices[0].Message.Content
@@ -95,7 +96,7 @@ func (c *MistralModelProvider) QueryText(question string, writer io.Writer, hist
 
 	_, err = fmt.Fprint(writer, respText)
 	if err != nil {
-		return nil, fmt.Errorf("failed to write response: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:failed to write response: %v"), err)
 	}
 
 	modelResult, err := getDefaultModelResult(c.modelName, question, respText)
@@ -103,9 +104,9 @@ func (c *MistralModelProvider) QueryText(question string, writer io.Writer, hist
 		return nil, err
 	}
 
-	err = c.calculatePrice(modelResult)
+	err = c.calculatePrice(modelResult, lang)
 	if err != nil {
-		return nil, fmt.Errorf("failed to calculate price: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:failed to calculate price: %v"), err)
 	}
 	modelResult.PromptTokenCount += len(question)
 

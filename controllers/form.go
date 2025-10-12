@@ -117,7 +117,7 @@ func (c *ApiController) UpdateForm() {
 		return
 	}
 
-	success, err := object.UpdateForm(id, &form)
+	success, err := object.UpdateForm(id, &form, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

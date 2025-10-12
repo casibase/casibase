@@ -147,7 +147,7 @@ func UpdateMachine(id string, machine *Machine) (bool, error) {
 		machine.RemotePassword = oldMachine.RemotePassword
 	}
 
-	_, err = updateMachineCloud(oldMachine, machine)
+	_, err = updateMachineCloud(oldMachine, machine, "en")
 	if err != nil {
 		return false, err
 	}

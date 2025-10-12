@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/proxy"
 	"google.golang.org/genai"
 )
@@ -65,7 +66,7 @@ func (p *GeminiModelProvider) GetPricing() string {
 `
 }
 
-func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	if modelResult.PromptTokenCount == 0 && modelResult.ResponseTokenCount == 0 && modelResult.TotalTokenCount != 0 {
 		modelResult.ResponseTokenCount = modelResult.TotalTokenCount
 	}
@@ -174,7 +175,7 @@ func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult) error {
 	case strings.Contains(p.subType, "veo-2"):
 		// $0.35 per second - need special handling
 		// Would need video duration information
-		return fmt.Errorf("calculatePrice() error: video generation pricing requires duration information")
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: video generation pricing requires duration information"))
 
 	// Experimental models (using default Flash pricing)
 	case strings.Contains(p.subType, "gemini-exp"):
@@ -187,7 +188,7 @@ func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult) error {
 		outputPricePerMillionTokens = 0
 
 	default:
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	// Convert from per million to per token pricing
@@ -202,7 +203,7 @@ func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	ctx := context.Background()
 	// Access your API key as an environment variable (see "Set up your API key" above)
 	client, err := genai.NewClient(ctx,
@@ -218,12 +219,12 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
-			return nil, fmt.Errorf("cannot calculate tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))
 		}
 		if getContextLength(p.subType) > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
-			return nil, fmt.Errorf("exceed max tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
 		}
 	}
 
@@ -247,7 +248,7 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 
 	flushData := func(data []*genai.Part) error {
@@ -273,7 +274,7 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 		TotalTokenCount:    promptTokenCount + respTokenCount,
 	}
 
-	err = p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

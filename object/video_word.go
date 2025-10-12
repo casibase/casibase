@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"unicode"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 	"github.com/wangbin/jiebago"
 )
@@ -37,14 +38,14 @@ func isNumber(s string) bool {
 	return true
 }
 
-func (v *Video) PopulateWordCountMap() error {
+func (v *Video) PopulateWordCountMap(lang string) error {
 	if len(v.Segments) == 0 {
 		return nil
 	}
 
 	dictPath := "data/dict.txt"
 	if !util.FileExist(dictPath) {
-		return fmt.Errorf("Cannot generate word cloud, the dict file: [%s] does not exist", dictPath)
+		return fmt.Errorf(i18n.Translate(lang, "object:Cannot generate word cloud, the dict file: [%s] does not exist"), dictPath)
 	}
 
 	if seg == nil {

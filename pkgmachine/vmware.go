@@ -21,6 +21,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"sync"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 type MachineVmwareClient struct {
@@ -53,7 +55,7 @@ func newMachineVmwareClient(hostname string, basicAuthKey string) (*MachineVmwar
 	return &client, nil
 }
 
-func (client MachineVmwareClient) sendRequest(method, path string) ([]byte, error) {
+func (client MachineVmwareClient) sendRequest(method, path string, lang string) ([]byte, error) {
 	url := fmt.Sprintf("http://%s/api%s", client.hostname, path)
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
@@ -86,15 +88,15 @@ func (client MachineVmwareClient) sendRequest(method, path string) ([]byte, erro
 		if message.Code == 100 {
 			return nil, nil
 		} else if message.Code != 0 {
-			return nil, fmt.Errorf("VMware API error, code = %d, message = %s", message.Code, message.Message)
+			return nil, fmt.Errorf(i18n.Translate(lang, "pkgmachine:VMware API error, code = %d, message = %s"), message.Code, message.Message)
 		}
 	}
 
 	return body, nil
 }
 
-func (client MachineVmwareClient) GetMachines() ([]*Machine, error) {
-	body, err := client.sendRequest("GET", "/vms")
+func (client MachineVmwareClient) GetMachines(lang string) ([]*Machine, error) {
+	body, err := client.sendRequest("GET", "/vms", lang)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +115,7 @@ func (client MachineVmwareClient) GetMachines() ([]*Machine, error) {
 		wg.Add(1)
 		go func(vm VirtualMachinePath) {
 			defer wg.Done()
-			machine, err2 := client.GetMachine(vm.ID)
+			machine, err2 := client.GetMachine(vm.ID, lang)
 			if err2 != nil {
 				errChan <- err2
 				return
@@ -134,8 +136,8 @@ func (client MachineVmwareClient) GetMachines() ([]*Machine, error) {
 	return machines, nil
 }
 
-func (client MachineVmwareClient) GetMachine(name string) (*Machine, error) {
-	body, err := client.sendRequest("GET", fmt.Sprintf("/vms/%s", name))
+func (client MachineVmwareClient) GetMachine(name string, lang string) (*Machine, error) {
+	body, err := client.sendRequest("GET", fmt.Sprintf("/vms/%s", name), lang)
 	if err != nil {
 		return nil, err
 	}
@@ -158,6 +160,6 @@ func (client MachineVmwareClient) GetMachine(name string) (*Machine, error) {
 	return machine, nil
 }
 
-func (client MachineVmwareClient) UpdateMachineState(name string, state string) (bool, string, error) {
-	return false, "", fmt.Errorf("Not implemented")
+func (client MachineVmwareClient) UpdateMachineState(name string, state string, lang string) (bool, string, error) {
+	return false, "", fmt.Errorf(i18n.Translate(lang, "pkgmachine:Not implemented"))
 }

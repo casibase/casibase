@@ -17,6 +17,8 @@ package embedding
 import (
 	"context"
 	"fmt"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 type AlibabacloudEmbeddingProvider struct {
@@ -49,7 +51,7 @@ Embedding models:
 `
 }
 
-func (p *AlibabacloudEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
+func (p *AlibabacloudEmbeddingProvider) calculatePrice(res *EmbeddingResult, lang string) error {
 	priceTable := map[string]float64{
 		"text-embedding-v1": 0.0007,
 		"text-embedding-v2": 0.0007,
@@ -60,21 +62,21 @@ func (p *AlibabacloudEmbeddingProvider) calculatePrice(res *EmbeddingResult) err
 		res.Currency = "CNY"
 		return nil
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 }
 
-func (p *AlibabacloudEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+func (p *AlibabacloudEmbeddingProvider) QueryVector(text string, ctx context.Context, lang string) ([]float32, *EmbeddingResult, error) {
 	const BaseUrl = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 	localEmbeddingProvider, err := NewLocalEmbeddingProvider("Custom", "custom-embedding", p.secretKey, BaseUrl, p.subType, 0, "CNY")
 	if err != nil {
 		return nil, nil, err
 	}
-	vector, embeddingResult, err := localEmbeddingProvider.QueryVector(text, ctx)
+	vector, embeddingResult, err := localEmbeddingProvider.QueryVector(text, ctx, lang)
 	if err != nil {
 		return nil, nil, err
 	}
-	err = p.calculatePrice(embeddingResult)
+	err = p.calculatePrice(embeddingResult, lang)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -25,7 +25,7 @@ import (
 // @Success 200 {object} object.K8sStatus The Response object
 // @router /get-k8s-status [get]
 func (c *ApiController) GetK8sStatus() {
-	status, err := object.GetK8sStatus()
+	status, err := object.GetK8sStatus(c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

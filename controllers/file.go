@@ -48,7 +48,7 @@ func (c *ApiController) UpdateFile() {
 
 	res := object.UpdateFile(storeId, key, &file)
 	if res {
-		err = addRecordForFile(c, userName, "Update", storeId, key, "", true)
+		err = addRecordForFile(c, userName, "Update", storeId, key, "", true, c.GetAcceptLanguage())
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -90,7 +90,7 @@ func (c *ApiController) AddFile() {
 		defer file.Close()
 	}
 
-	res, bs, err := object.AddFile(storeId, userName, key, isLeaf, filename, file)
+	res, bs, err := object.AddFile(storeId, userName, key, isLeaf, filename, file, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -103,7 +103,7 @@ func (c *ApiController) AddFile() {
 			return
 		}
 
-		err = addRecordForFile(c, userName, "Add", storeId, key, filename, isLeaf)
+		err = addRecordForFile(c, userName, "Add", storeId, key, filename, isLeaf, c.GetAcceptLanguage())
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -132,14 +132,14 @@ func (c *ApiController) DeleteFile() {
 	key := c.Input().Get("key")
 	isLeaf := c.Input().Get("isLeaf") == "1"
 
-	res, err := object.DeleteFile(storeId, key, isLeaf)
+	res, err := object.DeleteFile(storeId, key, isLeaf, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
 	if res {
-		err = addRecordForFile(c, userName, "Delete", storeId, key, "", isLeaf)
+		err = addRecordForFile(c, userName, "Delete", storeId, key, "", isLeaf, c.GetAcceptLanguage())
 		if err != nil {
 			c.ResponseError(err.Error())
 			return

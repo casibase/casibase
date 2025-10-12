@@ -20,15 +20,16 @@ import (
 
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/conf"
+	"github.com/casibase/casibase/i18n"
 )
 
 type CasdoorProvider struct {
 	providerName string
 }
 
-func NewCasdoorProvider(providerName string) (*CasdoorProvider, error) {
+func NewCasdoorProvider(providerName string, lang string) (*CasdoorProvider, error) {
 	if providerName == "" {
-		return nil, fmt.Errorf("storage provider name: [%s] doesn't exist", providerName)
+		return nil, fmt.Errorf(i18n.Translate(lang, "storage:storage provider name: [%s] doesn't exist"), providerName)
 	}
 
 	return &CasdoorProvider{providerName: providerName}, nil

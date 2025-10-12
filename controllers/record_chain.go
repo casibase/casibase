@@ -35,7 +35,7 @@ func (c *ApiController) CommitRecord() {
 		return
 	}
 
-	c.Data["json"] = wrapActionResponse2(object.CommitRecord(&record))
+	c.Data["json"] = wrapActionResponse2(object.CommitRecord(&record, c.GetAcceptLanguage()))
 	c.ServeJSON()
 }
 
@@ -54,7 +54,7 @@ func (c *ApiController) CommitRecordSecond() {
 		return
 	}
 
-	c.Data["json"] = wrapActionResponse(object.CommitRecordSecond(&record))
+	c.Data["json"] = wrapActionResponse(object.CommitRecordSecond(&record, c.GetAcceptLanguage()))
 	c.ServeJSON()
 }
 
@@ -68,7 +68,7 @@ func (c *ApiController) CommitRecordSecond() {
 func (c *ApiController) QueryRecord() {
 	id := c.Input().Get("id")
 
-	res, err := object.QueryRecord(id)
+	res, err := object.QueryRecord(id, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -87,7 +87,7 @@ func (c *ApiController) QueryRecord() {
 func (c *ApiController) QueryRecordSecond() {
 	id := c.Input().Get("id")
 
-	res, err := object.QueryRecordSecond(id)
+	res, err := object.QueryRecordSecond(id, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

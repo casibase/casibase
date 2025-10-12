@@ -23,6 +23,7 @@ import (
 	"net/http"
 
 	"github.com/WqyJh/go-cosyvoice"
+	"github.com/casibase/casibase/i18n"
 )
 
 type AlibabacloudTextToSpeechProvider struct {
@@ -56,7 +57,7 @@ TTS models:
 `
 }
 
-func (p *AlibabacloudTextToSpeechProvider) calculatePrice(res *TextToSpeechResult) error {
+func (p *AlibabacloudTextToSpeechProvider) calculatePrice(res *TextToSpeechResult, lang string) error {
 	priceTable := map[string]float64{
 		"cosyvoice-v1": 0.2,
 	}
@@ -65,7 +66,7 @@ func (p *AlibabacloudTextToSpeechProvider) calculatePrice(res *TextToSpeechResul
 		res.Currency = "CNY"
 		return nil
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "tts:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 }
 
@@ -88,7 +89,7 @@ func (p *AlibabacloudTextToSpeechProvider) prepareRequest(text string) (*TextToS
 	return res, synthConfig, client
 }
 
-func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.Context) ([]byte, *TextToSpeechResult, error) {
+func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.Context, lang string) ([]byte, *TextToSpeechResult, error) {
 	res, synthConfig, client := p.prepareRequest(text)
 
 	// Create AsyncSynthesizer with custom config
@@ -96,14 +97,14 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 		cosyvoice.WithSynthesizerConfig(synthConfig),
 	)
 	if err != nil {
-		return nil, res, fmt.Errorf("error creating synthesizer: %v", err)
+		return nil, res, fmt.Errorf(i18n.Translate(lang, "tts:error creating synthesizer: %v"), err)
 	}
 	defer asyncSynthesizer.Close()
 
 	// Run task
 	output, err := asyncSynthesizer.RunTask(ctx)
 	if err != nil {
-		return nil, res, fmt.Errorf("error running task: %v", err)
+		return nil, res, fmt.Errorf(i18n.Translate(lang, "tts:error running task: %v"), err)
 	}
 
 	// Create a channel to collect audio data
@@ -115,7 +116,7 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 		var allAudio []byte
 		for outputResult := range output {
 			if outputResult.Err != nil {
-				errorChannel <- fmt.Errorf("output error: %v", outputResult.Err)
+				errorChannel <- fmt.Errorf(i18n.Translate(lang, "tts:output error: %v"), outputResult.Err)
 				return
 			}
 			allAudio = append(allAudio, outputResult.Data...)
@@ -126,19 +127,19 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 	// Send text to synthesizer
 	err = asyncSynthesizer.SendText(ctx, text)
 	if err != nil {
-		return nil, res, fmt.Errorf("error sending text: %v", err)
+		return nil, res, fmt.Errorf(i18n.Translate(lang, "tts:error sending text: %v"), err)
 	}
 
 	// Finish task
 	err = asyncSynthesizer.FinishTask(ctx)
 	if err != nil {
-		return nil, res, fmt.Errorf("error finishing task: %v", err)
+		return nil, res, fmt.Errorf(i18n.Translate(lang, "tts:error finishing task: %v"), err)
 	}
 
 	// Wait for either audio data or an error
 	select {
 	case audioBytes := <-audioChannel:
-		if err := p.calculatePrice(res); err != nil {
+		if err := p.calculatePrice(res, lang); err != nil {
 			return audioBytes, res, err
 		}
 		return audioBytes, res, nil
@@ -149,7 +150,7 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 	}
 }
 
-func (p *AlibabacloudTextToSpeechProvider) QueryAudioStream(text string, ctx context.Context, writer io.Writer) (*TextToSpeechResult, error) {
+func (p *AlibabacloudTextToSpeechProvider) QueryAudioStream(text string, ctx context.Context, writer io.Writer, lang string) (*TextToSpeechResult, error) {
 	res, synthConfig, client := p.prepareRequest(text)
 
 	// Create AsyncSynthesizer with custom config
@@ -157,14 +158,14 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudioStream(text string, ctx con
 		cosyvoice.WithSynthesizerConfig(synthConfig),
 	)
 	if err != nil {
-		return res, fmt.Errorf("error creating synthesizer: %v", err)
+		return res, fmt.Errorf(i18n.Translate(lang, "tts:error creating synthesizer: %v"), err)
 	}
 	defer asyncSynthesizer.Close()
 
 	// Run task
 	output, err := asyncSynthesizer.RunTask(ctx)
 	if err != nil {
-		return res, fmt.Errorf("error running task: %v", err)
+		return res, fmt.Errorf(i18n.Translate(lang, "tts:error running task: %v"), err)
 	}
 
 	var streamErr error
@@ -174,7 +175,7 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudioStream(text string, ctx con
 	// Check if writer supports Flush
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf(i18n.Translate(lang, "tts:writer does not implement http.Flusher"))
 	}
 
 	// Error channel for streaming mode
@@ -233,12 +234,12 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudioStream(text string, ctx con
 
 	// Launch goroutine to collect audio data
 	if err = asyncSynthesizer.SendText(ctx, text); err != nil {
-		return res, fmt.Errorf("error sending text: %v", err)
+		return res, fmt.Errorf(i18n.Translate(lang, "tts:error sending text: %v"), err)
 	}
 
 	// Finish task
 	if err = asyncSynthesizer.FinishTask(ctx); err != nil {
-		return res, fmt.Errorf("error finishing task: %v", err)
+		return res, fmt.Errorf(i18n.Translate(lang, "tts:error finishing task: %v"), err)
 	}
 
 	// Wait for streaming to finish
@@ -247,7 +248,7 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudioStream(text string, ctx con
 	}
 
 	// Calculate price
-	if err := p.calculatePrice(res); err != nil {
+	if err := p.calculatePrice(res, lang); err != nil {
 		return res, err
 	}
 
