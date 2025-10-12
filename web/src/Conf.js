@@ -13,7 +13,12 @@
 // limitations under the License.
 
 // eslint-disable-next-line
-export let AuthConfig = {};
+export let AuthConfig = {
+  serverUrl: "https://door.casdoor.com",
+  clientId: "",
+  appName: "",
+  organizationName: "",
+};
 export let EnableExtraPages = false;
 export let ShortcutPageItems = [];
 export let UsageEndpoints = [];
