@@ -286,12 +286,12 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			// Handle both regular content and reasoning content
 			if p.typ == "Custom-think" {
 				// For Custom-think type, we'll handle both reasoning and regular content
-				flushThink := flushData.(func(string, string, io.Writer) error)
+				flushThink := flushData.(func(string, string, io.Writer, string) error)
 
 				// Check if we have reasoning content (think_content)
 				if completion.Choices[0].Delta.ReasoningContent != "" {
 					reasoningData := completion.Choices[0].Delta.ReasoningContent
-					err = flushThink(reasoningData, "reason", writer)
+					err = flushThink(reasoningData, "reason", writer, lang)
 					if err != nil {
 						return nil, err
 					}
@@ -308,7 +308,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 						}
 					}
 
-					err = flushThink(data, "message", writer)
+					err = flushThink(data, "message", writer, lang)
 					if err != nil {
 						return nil, err
 					}
@@ -317,7 +317,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				}
 			} else {
 				// For all other provider types, use the standard flush function
-				flushStandard := flushData.(func(string, io.Writer) error)
+				flushStandard := flushData.(func(string, io.Writer, string) error)
 
 				data := completion.Choices[0].Delta.Content
 				if isLeadingReturn && len(data) != 0 {
@@ -328,7 +328,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 					}
 				}
 
-				err = flushStandard(data, writer)
+				err = flushStandard(data, writer, lang)
 				if err != nil {
 					return nil, err
 				}
@@ -337,7 +337,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			}
 		}
 
-		err = handleToolCalls(toolCalls, flushData, writer)
+		err = handleToolCalls(toolCalls, flushData, writer, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -427,11 +427,11 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 			// Here we also need to handle the different flush functions
 			if p.typ == "Custom-think" {
-				flushThink := flushData.(func(string, string, io.Writer) error)
-				err = flushThink(data, "message", writer)
+				flushThink := flushData.(func(string, string, io.Writer, string) error)
+				err = flushThink(data, "message", writer, lang)
 			} else {
-				flushStandard := flushData.(func(string, io.Writer) error)
-				err = flushStandard(data, writer)
+				flushStandard := flushData.(func(string, io.Writer, string) error)
+				err = flushStandard(data, writer, lang)
 			}
 
 			if err != nil {

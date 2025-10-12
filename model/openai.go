@@ -291,7 +291,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 
 		isLeadingReturn := true
 		for respStream.Next() {
-			flushStandard := flushData.(func(string, io.Writer) error)
+			flushStandard := flushData.(func(string, io.Writer, string) error)
 			response := respStream.Current()
 			switch variant := response.AsAny().(type) {
 			case responses.ResponseTextDeltaEvent:
@@ -304,7 +304,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 					}
 				}
 
-				err = flushStandard(data, writer)
+				err = flushStandard(data, writer, lang)
 				if err != nil {
 					return nil, err
 				}
@@ -324,7 +324,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 			return nil, respStream.Err()
 		}
 
-		err = handleMcpToolCalls(toolCalls, flushData, writer)
+		err = handleMcpToolCalls(toolCalls, flushData, writer, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -397,8 +397,8 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 				}
 			}
 
-			flushStandard := flushData.(func(string, io.Writer) error)
-			err := flushStandard(data, writer)
+			flushStandard := flushData.(func(string, io.Writer, string) error)
+			err := flushStandard(data, writer, lang)
 			if err != nil {
 				return nil, err
 			}
@@ -657,14 +657,14 @@ func reverseMcpToolsToOpenAi(tools []*protocol.Tool) ([]responses.ToolUnionParam
 	return openaiTools, nil
 }
 
-func handleMcpToolCalls(toolCalls []responses.ResponseFunctionToolCall, flushData interface{}, writer io.Writer) error {
+func handleMcpToolCalls(toolCalls []responses.ResponseFunctionToolCall, flushData interface{}, writer io.Writer, lang string) error {
 	if toolCalls == nil {
 		return nil
 	}
 
-	if flushThink, ok := flushData.(func(string, string, io.Writer) error); ok {
+	if flushThink, ok := flushData.(func(string, string, io.Writer, string) error); ok {
 		for _, toolCall := range toolCalls {
-			err := flushThink("\n"+"Call result from "+toolCall.Name+"\n", "reason", writer)
+			err := flushThink("\n"+"Call result from "+toolCall.Name+"\n", "reason", writer, lang)
 			if err != nil {
 				return err
 			}

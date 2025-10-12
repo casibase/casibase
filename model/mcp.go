@@ -69,14 +69,14 @@ func reverseToolsToOpenAi(tools []*protocol.Tool) ([]openai.Tool, error) {
 	return openaiTools, nil
 }
 
-func handleToolCalls(toolCalls []openai.ToolCall, flushData interface{}, writer io.Writer) error {
+func handleToolCalls(toolCalls []openai.ToolCall, flushData interface{}, writer io.Writer, lang string) error {
 	if toolCalls == nil {
 		return nil
 	}
 
-	if flushThink, ok := flushData.(func(string, string, io.Writer) error); ok {
+	if flushThink, ok := flushData.(func(string, string, io.Writer, string) error); ok {
 		for _, toolCall := range toolCalls {
-			err := flushThink("\n"+"Call result from "+toolCall.Function.Name+"\n", "reason", writer)
+			err := flushThink("\n"+"Call result from "+toolCall.Function.Name+"\n", "reason", writer, lang)
 			if err != nil {
 				return err
 			}
