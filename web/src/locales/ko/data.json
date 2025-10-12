@@ -578,6 +578,8 @@
     "Child stores": "부속 데이터 저장소",
     "Child stores - Tooltip": "연결된 자식 저장소 이름(다른 저장소에서 지식 검색용)",
     "Chinese": "국어",
+    "Vector stores": "벡터 데이터 저장소",
+    "Vector stores - Tooltip": "지식 검색에 사용할 수 있는 다른 데이터 저장소의 벡터",
     "Collected time": "수집 시간",
     "Disable file upload": "파일 업로드 금지",
     "Disable file upload - Tooltip": "사용자가 파일을 업로드하는 것을 금지함(활성화 후 지식 데이터베이스는 관리자만 업데이트할 수 있음)",

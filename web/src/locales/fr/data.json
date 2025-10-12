@@ -578,6 +578,8 @@
     "Child stores": "Magasins de données enfants",
     "Child stores - Tooltip": "Noms de sous-magasins associés (pour la recherche de connaissances trans-magasin)",
     "Chinese": "Chinois",
+    "Vector stores": "Magasins de vecteurs",
+    "Vector stores - Tooltip": "Vecteurs d'autres magasins de données utilisables pour la recherche de connaissances",
     "Collected time": "Date de collecte",
     "Disable file upload": "Désactiver le téléchargement de fichiers",
     "Disable file upload - Tooltip": "Interdire aux utilisateurs de télécharger des fichiers (une fois activé, la base de connaissances ne peut être mise à jour que par les administrateurs)",

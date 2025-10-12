@@ -578,6 +578,8 @@
     "Child stores": "Rumah data anak",
     "Child stores - Tooltip": "Nama penyimpanan anak terkait (digunakan untuk pencarian pengetahuan lintas penyimpanan)",
     "Chinese": "Bahasa Cina",
+    "Vector stores": "Rumah data vektor",
+    "Vector stores - Tooltip": "Vektor dari rumah data lain yang dapat digunakan untuk pencarian pengetahuan",
     "Collected time": "Waktu dikumpulkan",
     "Disable file upload": "Nonaktifkan unggah file",
     "Disable file upload - Tooltip": "Mencegah pengguna mengunggah file (setelah diaktifkan, database pengetahuan hanya dapat diupdate oleh administrator)",

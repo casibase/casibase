@@ -578,6 +578,8 @@
     "Child stores": "Almacenes de datos secundarios",
     "Child stores - Tooltip": "Nombre del subalmacén asociado (para la recuperación de conocimiento a través del almacén)",
     "Chinese": "Chino",
+    "Vector stores": "Almacenes de vectores",
+    "Vector stores - Tooltip": "Vectores de otros almacenes de datos utilizables para búsqueda de conocimiento",
     "Collected time": "Tiempo de colección",
     "Disable file upload": "Deshabilitar carga de archivos",
     "Disable file upload - Tooltip": "Prohibir a los usuarios cargar archivos (cuando se habilita, el repositorio de conocimiento solo se puede actualizar por administradores)",

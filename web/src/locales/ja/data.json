@@ -578,6 +578,8 @@
     "Child stores": "子データストア",
     "Child stores - Tooltip": "関連付けられた子ストア名（クロスストア知識検索用）",
     "Chinese": "中国語",
+    "Vector stores": "ベクトルデータストア",
+    "Vector stores - Tooltip": "知識検索に使用できる他のデータストアのベクトル",
     "Collected time": "収集時間",
     "Disable file upload": "ファイルアップロードを禁止",
     "Disable file upload - Tooltip": "ユーザーのファイルアップロードを禁止（有効化後、知識ベースは管理者のみ更新可能）",

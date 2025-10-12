@@ -578,6 +578,8 @@
     "Child stores": "Unterdatenrepositories",
     "Child stores - Tooltip": "Bezogene Unterladennamen (für die cross-Repository-Wissenssuche)",
     "Chinese": "Chinesisch",
+    "Vector stores": "Vektordatenrepositories",
+    "Vector stores - Tooltip": "Vektoren aus anderen Datenrepositories, die für die Wissenssuche verwendet werden können",
     "Collected time": "Erfassungszeit",
     "Disable file upload": "Dateihochladen verbieten",
     "Disable file upload - Tooltip": "Benutzern das Hochladen von Dateien verbieten (wenn aktiviert, kann das Wissensrepository nur von Administratoren aktualisiert werden)",
