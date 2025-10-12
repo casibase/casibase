@@ -180,7 +180,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 	return affected, err
 }
 
-func getRelatedVectors(storeName string, provider string, lang string) ([]*Vector, error) {
+func getRelatedVectors(storeName string, provider string) ([]*Vector, error) {
 	// Get vectors from the main store
 	vectors, err := getVectorsByProvider(storeName, provider)
 	if err != nil {
@@ -202,7 +202,7 @@ func getRelatedVectors(storeName string, provider string, lang string) ([]*Vecto
 	}
 
 	if len(vectors) == 0 {
-		return nil, fmt.Errorf(i18n.Translate(lang, "object:no knowledge vectors found"))
+		return nil, fmt.Errorf("no knowledge vectors found")
 	}
 
 	return vectors, nil

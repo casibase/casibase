@@ -30,7 +30,4 @@ logs/
 lastupdate.tmp
 commentsRouter*.go
 
-dist/web/package-lock.json
-
-web/build/
-web/node_modules/
+dist/

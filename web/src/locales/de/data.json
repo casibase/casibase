@@ -659,6 +659,8 @@
     "Upload file": "Datei hochladen",
     "Vector store id": "Vector store id",
     "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector stores": "Vektorspeicher",
+    "Vector stores - Tooltip": "Andere Speicher, deren Vektoren dieser Speicher für den Wissensabruf verwenden kann",
     "Welcome": "Willkommensprompt",
     "Welcome - Tooltip": "Willkommensnachricht, die beim ersten Eintreten in den Chat angezeigt wird",
     "Welcome text": "Willkommenstext",

@@ -659,6 +659,8 @@
     "Upload file": "Загрузить файл",
     "Vector store id": "Vector store id",
     "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector stores": "Векторные хранилища",
+    "Vector stores - Tooltip": "Другие хранилища, векторы которых может использовать это хранилище для извлечения знаний",
     "Welcome": "Приветственная подсказка",
     "Welcome - Tooltip": "Приветствие, отображаемое пользователю при первом входе в чат",
     "Welcome text": "Приветственный текст",

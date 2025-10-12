@@ -659,6 +659,8 @@
     "Upload file": "파일 업로드",
     "Vector store id": "벡터 저장소 id",
     "Vector store id - Tooltip": "벡터 저장소 id",
+    "Vector stores": "벡터 저장소",
+    "Vector stores - Tooltip": "이 저장소가 지식 검색에 사용할 수 있는 다른 저장소의 벡터",
     "Welcome": "환영 프롬프트",
     "Welcome - Tooltip": "사용자가 처음으로 채팅에 들어갈 때 표시되는 환영 메시지",
     "Welcome text": "환영 텍스트",
