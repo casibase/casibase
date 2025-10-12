@@ -659,6 +659,8 @@
     "Upload file": "上传文件",
     "Vector store id": "向量存储ID",
     "Vector store id - Tooltip": "文件所属的向量存储ID",
+    "Vector stores": "向量存储",
+    "Vector stores - Tooltip": "该存储可以使用其他存储的向量进行知识检索",
     "Welcome": "欢迎提示词",
     "Welcome - Tooltip": "用户首次进入聊天时显示的欢迎语",
     "Welcome text": "欢迎文字",

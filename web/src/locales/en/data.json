@@ -659,6 +659,8 @@
     "Upload file": "Upload file",
     "Vector store id": "Vector store id",
     "Vector store id - Tooltip": "The ID of the vector store that the files belong to",
+    "Vector stores": "Vector stores",
+    "Vector stores - Tooltip": "Other stores whose vectors this store can use for knowledge retrieval",
     "Welcome": "Welcome",
     "Welcome - Tooltip": "Welcome message",
     "Welcome text": "Welcome text",

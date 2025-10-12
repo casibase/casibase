@@ -181,10 +181,26 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 }
 
 func getRelatedVectors(storeName string, provider string, lang string) ([]*Vector, error) {
+	// Get vectors from the main store
 	vectors, err := getVectorsByProvider(storeName, provider)
 	if err != nil {
 		return nil, err
 	}
+
+	// Get the store object to check for vector stores
+	store, err := getStore("admin", storeName)
+	if err == nil && store != nil && len(store.VectorStores) > 0 {
+		// Fetch vectors from each configured vector store
+		for _, vectorStoreName := range store.VectorStores {
+			if vectorStoreName != "" && vectorStoreName != storeName {
+				additionalVectors, err := getVectorsByProvider(vectorStoreName, provider)
+				if err == nil && len(additionalVectors) > 0 {
+					vectors = append(vectors, additionalVectors...)
+				}
+			}
+		}
+	}
+
 	if len(vectors) == 0 {
 		return nil, fmt.Errorf(i18n.Translate(lang, "object:no knowledge vectors found"))
 	}

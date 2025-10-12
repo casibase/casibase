@@ -92,6 +92,7 @@ type Store struct {
 	NavItems            []string `xorm:"text" json:"navItems"`
 	ChildStores         []string `xorm:"varchar(500)" json:"childStores"`
 	ChildModelProviders []string `xorm:"varchar(500)" json:"childModelProviders"`
+	VectorStores        []string `xorm:"varchar(500)" json:"vectorStores"`
 	ShowAutoRead        bool     `json:"showAutoRead"`
 	DisableFileUpload   bool     `json:"disableFileUpload"`
 	HideThinking        bool     `json:"hideThinking"`
