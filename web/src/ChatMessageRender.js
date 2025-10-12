@@ -45,10 +45,25 @@ export function renderMarkdown(text) {
 }
 
 export function renderLatex(text) {
-  const inlineLatexRegex = /\(\s*(([a-zA-Z])|(\\.+?)|([^)]*?[_^!].*?))\s*\)/g;
-  const blockLatexRegex = /\[\s*(.+?)\s*\]/g;
+  // Store code blocks temporarily to avoid processing LaTeX inside them
+  const codeBlocks = [];
+  const codeBlockPlaceholder = "___CODE_BLOCK___";
+  text = text.replace(/```[\s\S]*?```/g, (match) => {
+    codeBlocks.push(match);
+    return codeBlockPlaceholder + (codeBlocks.length - 1) + codeBlockPlaceholder;
+  });
 
-  text = text.replace(blockLatexRegex, (match, formula) => {
+  // Match $$...$$ for display math (must be before single $ to avoid conflicts)
+  const displayDollarRegex = /\$\$([\s\S]+?)\$\$/g;
+  // Match \[...\] for display math
+  const displayBracketRegex = /\\\[([\s\S]+?)\\\]/g;
+  // Match $...$ for inline math (simpler pattern without lookbehind)
+  const inlineDollarRegex = /\$([^$\n]+?)\$/g;
+  // Match \(...\) for inline math
+  const inlineParenRegex = /\\\((.+?)\\\)/g;
+
+  // Process display math with $$ first
+  text = text.replace(displayDollarRegex, (match, formula) => {
     try {
       return katex.renderToString(formula, {
         throwOnError: false,
@@ -59,7 +74,20 @@ export function renderLatex(text) {
     }
   });
 
-  return text.replace(inlineLatexRegex, (match, formula) => {
+  // Process display math with \[...\]
+  text = text.replace(displayBracketRegex, (match, formula) => {
+    try {
+      return katex.renderToString(formula, {
+        throwOnError: false,
+        displayMode: true,
+      });
+    } catch (error) {
+      return match;
+    }
+  });
+
+  // Process inline math with $...$
+  text = text.replace(inlineDollarRegex, (match, formula) => {
     try {
       return katex.renderToString(formula, {
         throwOnError: false,
@@ -69,6 +97,25 @@ export function renderLatex(text) {
       return match;
     }
   });
+
+  // Process inline math with \(...\)
+  text = text.replace(inlineParenRegex, (match, formula) => {
+    try {
+      return katex.renderToString(formula, {
+        throwOnError: false,
+        displayMode: false,
+      });
+    } catch (error) {
+      return match;
+    }
+  });
+
+  // Restore code blocks
+  text = text.replace(new RegExp(codeBlockPlaceholder + "(\\d+)" + codeBlockPlaceholder, "g"), (match, index) => {
+    return codeBlocks[parseInt(index)];
+  });
+
+  return text;
 }
 
 export function renderCode(text) {
@@ -82,8 +129,9 @@ export function renderCode(text) {
 
 export function renderText(text) {
   let html;
-  html = renderMarkdown(text);
-  html = renderLatex(html);
+  // Process LaTeX first to avoid markdown interfering with math delimiters
+  html = renderLatex(text);
+  html = renderMarkdown(html);
   html = renderCode(html);
   return (
     <div dangerouslySetInnerHTML={{__html: html}} style={{display: "flex", flexDirection: "column", gap: "0px"}} />
@@ -94,8 +142,9 @@ export function renderReason(text) {
   if (!text) {return null;}
 
   // Apply the same markdown, LaTeX, and code highlighting as renderText
-  let html = renderMarkdown(text);
-  html = renderLatex(html);
+  // Process LaTeX first to avoid markdown interfering with math delimiters
+  let html = renderLatex(text);
+  html = renderMarkdown(html);
   html = renderCode(html);
 
   return (
