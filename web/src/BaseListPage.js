@@ -168,6 +168,15 @@ class BaseListPage extends React.Component {
       ),
   });
 
+  getColumnFilterProps = dataIndex => ({
+    filterMultiple: false,
+    filters: [
+      {text: "ON", value: true},
+      {text: "OFF", value: false},
+    ],
+    onFilter: (value, record) => record[dataIndex] === value,
+  });
+
   getRowSelection = () => ({
     selectedRowKeys: this.state.selectedRowKeys,
     onChange: this.onSelectChange,
