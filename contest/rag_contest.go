@@ -89,7 +89,7 @@ func sendMessage(store *object.Store, question string, modelProviderName string,
 		return "", nil, err
 	}
 
-	knowledge, _, _, err := object.GetNearestKnowledge(store.Name, store.SearchProvider, embeddingProvider, embeddingProviderObj, modelProvider, "admin", question, store.KnowledgeCount, lang)
+	knowledge, _, _, err := object.GetNearestKnowledge(store.Name, store.VectorStores, store.SearchProvider, embeddingProvider, embeddingProviderObj, modelProvider, "admin", question, store.KnowledgeCount, lang)
 	if err != nil {
 		return "", nil, err
 	}
