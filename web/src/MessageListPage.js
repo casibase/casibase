@@ -141,6 +141,7 @@ class MessageListPage extends BaseListPage {
         key: "name",
         width: "100px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/messages/${text}`}>
@@ -165,6 +166,7 @@ class MessageListPage extends BaseListPage {
         key: "user",
         width: "90px",
         sorter: (a, b) => a.user.localeCompare(b.user),
+        ...this.getColumnSearchProps("user"),
         render: (text, record, index) => {
           if (text.startsWith("u-")) {
             return text;
@@ -183,6 +185,7 @@ class MessageListPage extends BaseListPage {
         key: "chat",
         width: "90px",
         sorter: (a, b) => a.chat.localeCompare(b.chat),
+        ...this.getColumnSearchProps("chat"),
         render: (text, record, index) => {
           return (
             <Link to={`/chats/${text}`}>
@@ -197,6 +200,7 @@ class MessageListPage extends BaseListPage {
         key: "replyTo",
         width: "90px",
         sorter: (a, b) => a.replyTo.localeCompare(b.replyTo),
+        ...this.getColumnSearchProps("replyTo"),
         render: (text, record, index) => {
           return (
             <Link to={`/messages/${text}`}>
@@ -211,6 +215,7 @@ class MessageListPage extends BaseListPage {
         key: "author",
         width: "90px",
         sorter: (a, b) => a.author.localeCompare(b.author),
+        ...this.getColumnSearchProps("author"),
         render: (text, record, index) => {
           if (text === "AI") {
             return text;
@@ -265,6 +270,7 @@ class MessageListPage extends BaseListPage {
         key: "reasonText",
         width: "300px",
         sorter: (a, b) => a.reasonText.localeCompare(b.reasonText),
+        ...this.getColumnSearchProps("reasonText"),
         render: (text, record, index) => {
           return (
             <div dangerouslySetInnerHTML={{__html: text}} />
@@ -277,6 +283,7 @@ class MessageListPage extends BaseListPage {
         key: "text",
         width: "300px",
         sorter: (a, b) => a.text.localeCompare(b.text),
+        ...this.getColumnSearchProps("text"),
         render: (text, record, index) => {
           return (
             <div dangerouslySetInnerHTML={{__html: text}} />
@@ -324,6 +331,7 @@ class MessageListPage extends BaseListPage {
         key: "errorText",
         width: "200px",
         sorter: (a, b) => a.errorText.localeCompare(b.errorText),
+        ...this.getColumnSearchProps("errorText"),
         render: (text, record, index) => {
           return (
             <div dangerouslySetInnerHTML={{__html: text}} />
@@ -336,6 +344,7 @@ class MessageListPage extends BaseListPage {
         key: "comment",
         width: "200px",
         sorter: (a, b) => a.comment.localeCompare(b.comment),
+        ...this.getColumnSearchProps("comment"),
         render: (text, record, index) => {
           return (
             <div dangerouslySetInnerHTML={{__html: text}} />
@@ -348,7 +357,7 @@ class MessageListPage extends BaseListPage {
         key: "isDeleted",
         width: "120px",
         sorter: (a, b) => a.isDeleted - b.isDeleted,
-        // ...this.getColumnSearchProps("isDeleted"),
+        ...this.getColumnFilterProps("isDeleted"),
         render: (text, record, index) => {
           return (
             <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
@@ -361,7 +370,7 @@ class MessageListPage extends BaseListPage {
         key: "isAlerted",
         width: "120px",
         sorter: (a, b) => a.isAlerted - b.isAlerted,
-        // ...this.getColumnSearchProps("isAlerted"),
+        ...this.getColumnFilterProps("isAlerted"),
         render: (text, record, index) => {
           return (
             <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
