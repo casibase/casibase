@@ -227,6 +227,7 @@
     "Logo URL - Tooltip": "로고 URL - 툴팁",
     "Machines": "호스트",
     "Menu": "메뉴",
+    "Scans": "스캔",
     "Message": "메시지",
     "Message - Tooltip": "메시지 알림 템플릿(HTML 형식), ${taskName}과 같은 변수를 지원함",
     "Messages": "메시지",
@@ -426,6 +427,14 @@
     "Public IP - Tooltip": "공인 IP 주소(인터넷에 액세스할 수 있음)",
     "Zone": "지역"
   },
+  "scan": {
+    "Edit Scan": "스캔 편집",
+    "New Scan": "새 스캔 생성",
+    "Result": "결과",
+    "Result - Tooltip": "스캔 결과 데이터",
+    "Target": "대상",
+    "Target - Tooltip": "스캔 대상 (예: IP 주소 또는 호스트명)"
+  },
   "med": {
     "Audit": "감사",
     "Medical Image Analysis": "의료 영상 분석",
@@ -479,6 +488,8 @@
     "Add Storage Provider": "스토리지 공급자 추가",
     "Auth type": "인증 유형",
     "Auth type - Tooltip": "인증 유형",
+    "Binary path": "바이너리 경로",
+    "Binary path - Tooltip": "서버의 스캔 도구 바이너리 경로",
     "Browser URL": "브라우저 URL",
     "Browser URL - Tooltip": "블록체인 브라우저 URL",
     "Category": "분류",

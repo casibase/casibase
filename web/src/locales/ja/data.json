@@ -227,6 +227,7 @@
     "Logo URL - Tooltip": "ロゴURL - ツールチップ",
     "Machines": "マシン",
     "Menu": "メニュー",
+    "Scans": "スキャン",
     "Message": "メッセージ",
     "Message - Tooltip": "メッセージ通知テンプレート（HTML形式）、${taskName}のような変数をサポート",
     "Messages": "メッセージ",
@@ -426,6 +427,14 @@
     "Public IP - Tooltip": "公開IPアドレス（インターネットにアクセス可能）",
     "Zone": "ゾーン"
   },
+  "scan": {
+    "Edit Scan": "スキャンを編集",
+    "New Scan": "新規スキャン",
+    "Result": "結果",
+    "Result - Tooltip": "スキャン結果データ",
+    "Target": "ターゲット",
+    "Target - Tooltip": "スキャン対象（例：IPアドレスまたはホスト名）"
+  },
   "med": {
     "Audit": "監査",
     "Medical Image Analysis": "医学画像解析",
@@ -479,6 +488,8 @@
     "Add Storage Provider": "ストレージプロバイダを追加",
     "Auth type": "認証タイプ",
     "Auth type - Tooltip": "認証タイプ",
+    "Binary path": "バイナリパス",
+    "Binary path - Tooltip": "サーバー上のスキャンツールバイナリへのパス",
     "Browser URL": "ブラウザURL",
     "Browser URL - Tooltip": "ブロックチェーンブラウザURL",
     "Category": "カテゴリ",

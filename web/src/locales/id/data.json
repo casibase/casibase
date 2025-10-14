@@ -227,6 +227,7 @@
     "Logo URL - Tooltip": "URL Logo - Keterangan",
     "Machines": "Host",
     "Menu": "Menu",
+    "Scans": "Pemindaian",
     "Message": "Pesan",
     "Message - Tooltip": "Template notifikasi pesan (format HTML), mendukung variabel seperti ${taskName}",
     "Messages": "Pesan",
@@ -426,6 +427,14 @@
     "Public IP - Tooltip": "Alamat IP publik (dapat diakses internet)",
     "Zone": "Zona"
   },
+  "scan": {
+    "Edit Scan": "Sunting pemindaian",
+    "New Scan": "Pemindaian baru",
+    "Result": "Hasil",
+    "Result - Tooltip": "Data hasil pemindaian",
+    "Target": "Target",
+    "Target - Tooltip": "Target pemindaian (misalnya, alamat IP atau nama host)"
+  },
   "med": {
     "Audit": "Audit",
     "Medical Image Analysis": "Analisis gambar medis",
@@ -479,6 +488,8 @@
     "Add Storage Provider": "Tambahkan penyedia penyimpanan",
     "Auth type": "Tipe otentikasi",
     "Auth type - Tooltip": "Tipe otentikasi",
+    "Binary path": "Jalur biner",
+    "Binary path - Tooltip": "Jalur ke biner alat pemindaian di server",
     "Browser URL": "URL browser",
     "Browser URL - Tooltip": "URL browser blockchain",
     "Category": "Kategori",

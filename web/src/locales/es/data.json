@@ -227,6 +227,7 @@
     "Logo URL - Tooltip": "URL del Logo - Información",
     "Machines": "Hosts",
     "Menu": "Menú",
+    "Scans": "Escaneos",
     "Message": "Mensaje",
     "Message - Tooltip": "Plantilla de notificación de mensajes (formato HTML), soporta variables como ${taskName}",
     "Messages": "Mensajes",
@@ -426,6 +427,14 @@
     "Public IP - Tooltip": "Dirección IP pública (accesible a Internet)",
     "Zone": "Zona"
   },
+  "scan": {
+    "Edit Scan": "Editar escaneo",
+    "New Scan": "Nuevo escaneo",
+    "Result": "Resultado",
+    "Result - Tooltip": "Datos del resultado del escaneo",
+    "Target": "Objetivo",
+    "Target - Tooltip": "Objetivo del escaneo (por ejemplo, dirección IP o nombre de host)"
+  },
   "med": {
     "Audit": "Auditoría",
     "Medical Image Analysis": "Análisis de imágenes médicas",
@@ -479,6 +488,8 @@
     "Add Storage Provider": "Agregar proveedor de almacenamiento",
     "Auth type": "Tipo de autenticación",
     "Auth type - Tooltip": "Tipo de autenticación",
+    "Binary path": "Ruta binaria",
+    "Binary path - Tooltip": "Ruta al binario de la herramienta de escaneo en el servidor",
     "Browser URL": "URL del navegador",
     "Browser URL - Tooltip": "URL del navegador blockchain",
     "Category": "Categoría",

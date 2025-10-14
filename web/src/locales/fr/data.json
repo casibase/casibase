@@ -227,6 +227,7 @@
     "Logo URL - Tooltip": "URL du Logo - Info-bulle",
     "Machines": "Hosts",
     "Menu": "Menu",
+    "Scans": "Analyses",
     "Message": "Message",
     "Message - Tooltip": "Modèle de notification (format HTML), prend en charge des variables comme ${taskName}",
     "Messages": "Messages",
@@ -426,6 +427,14 @@
     "Public IP - Tooltip": "Adresse IP publique (accessible sur Internet)",
     "Zone": "Zone"
   },
+  "scan": {
+    "Edit Scan": "Éditer l'analyse",
+    "New Scan": "Nouvelle analyse",
+    "Result": "Résultat",
+    "Result - Tooltip": "Données du résultat de l'analyse",
+    "Target": "Cible",
+    "Target - Tooltip": "Cible de l'analyse (par exemple, adresse IP ou nom d'hôte)"
+  },
   "med": {
     "Audit": "Audit",
     "Medical Image Analysis": "Analyse d'images médicales",
@@ -479,6 +488,8 @@
     "Add Storage Provider": "Ajouter un fournisseur de stockage",
     "Auth type": "Type d'authentification",
     "Auth type - Tooltip": "Type d'authentification",
+    "Binary path": "Chemin binaire",
+    "Binary path - Tooltip": "Chemin vers le binaire de l'outil d'analyse sur le serveur",
     "Browser URL": "URL du navigateur",
     "Browser URL - Tooltip": "URL du navigateur blockchain",
     "Category": "Catégorie",
