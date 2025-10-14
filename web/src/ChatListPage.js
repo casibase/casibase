@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Switch, Table} from "antd";
+import {Button, Input, Popconfirm, Space, Switch, Table} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -24,7 +24,7 @@ import * as Conf from "./Conf";
 import * as MessageBackend from "./backend/MessageBackend";
 import ChatBox from "./ChatBox";
 import {renderText} from "./ChatMessageRender";
-import {DeleteOutlined} from "@ant-design/icons";
+import {DeleteOutlined, SearchOutlined} from "@ant-design/icons";
 
 class ChatListPage extends BaseListPage {
   constructor(props) {
@@ -33,6 +33,7 @@ class ChatListPage extends BaseListPage {
       ...this.state,
       messagesMap: {},
       filterSingleChat: Setting.getBoolValue("filterSingleChat", false),
+      messagesSearchText: "",
     };
   }
 
@@ -136,6 +137,92 @@ class ChatListPage extends BaseListPage {
       });
     }
   }
+
+  getMessagesColumnSearchProps = () => ({
+    filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
+      <div style={{padding: 8}}>
+        <Input
+          ref={node => {
+            this.messagesSearchInput = node;
+          }}
+          placeholder="Search messages"
+          value={selectedKeys[0]}
+          onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => this.handleMessagesSearch(selectedKeys, confirm)}
+          style={{marginBottom: 8, display: "block"}}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => this.handleMessagesSearch(selectedKeys, confirm)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{width: 90}}
+          >
+            Search
+          </Button>
+          <Button onClick={() => this.handleMessagesReset(clearFilters)} size="small" style={{width: 90}}>
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({closeDropdown: false});
+              this.setState({
+                messagesSearchText: selectedKeys[0],
+              });
+            }}
+          >
+            Filter
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: filtered => <SearchOutlined style={{color: filtered ? "#1890ff" : undefined}} />,
+    onFilter: (value, record) => {
+      const messages = this.state.messagesMap[record.name];
+      if (!messages || messages.length === 0) {
+        return false;
+      }
+      return messages.some(message =>
+        message.text && message.text.toLowerCase().includes(value.toLowerCase())
+      );
+    },
+    onFilterDropdownOpenChange: visible => {
+      if (visible) {
+        setTimeout(() => this.messagesSearchInput?.select(), 100);
+      }
+    },
+  });
+
+  handleMessagesSearch = (selectedKeys, confirm) => {
+    confirm();
+    this.setState({
+      messagesSearchText: selectedKeys[0] || "",
+    });
+  };
+
+  handleMessagesReset = clearFilters => {
+    clearFilters();
+    this.setState({
+      messagesSearchText: "",
+    });
+  };
+
+  highlightMessageText = (text, searchText) => {
+    if (!text || !searchText) {
+      return text;
+    }
+
+    // Escape special regex characters in search text for regex
+    const escapedSearchText = searchText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(`(${escapedSearchText})`, "gi");
+
+    // Wrap matched text with HTML mark tag for highlighting
+    // This will work because the text goes through markdown rendering which preserves HTML
+    return text.replace(regex, "<mark style=\"background-color: #ffc069; padding: 2px 0;\">$1</mark>");
+  };
 
   renderTable(chats) {
     let columns = [
@@ -351,11 +438,26 @@ class ChatListPage extends BaseListPage {
         dataIndex: "messages",
         key: "messages",
         width: "800px",
+        ...this.getMessagesColumnSearchProps(),
         render: (text, record, index) => {
           const messages = this.state.messagesMap[record.name];
           if (messages === undefined || messages.length === 0) {
             return null;
           }
+
+          // Create a modified version of messages with highlighted text if search is active
+          const displayMessages = this.state.messagesSearchText ? messages.map(msg => {
+            // Only highlight if the message text contains the search term
+            if (msg.text && msg.text.toLowerCase().includes(this.state.messagesSearchText.toLowerCase())) {
+              const highlightedText = this.highlightMessageText(msg.text, this.state.messagesSearchText);
+              return {
+                ...msg,
+                text: highlightedText,
+                html: null, // Clear cached HTML so it re-renders with highlighted text
+              };
+            }
+            return msg;
+          }) : messages;
 
           return (
             <div style={{
@@ -372,7 +474,7 @@ class ChatListPage extends BaseListPage {
                 overflowY: "auto",
                 width: "100%",
               }}>
-                <ChatBox disableInput={true} hideInput={true} messages={messages} sendMessage={null} account={this.props.account} previewMode={true} />
+                <ChatBox disableInput={true} hideInput={true} messages={displayMessages} sendMessage={null} account={this.props.account} previewMode={true} />
               </div>
             </div>
 
