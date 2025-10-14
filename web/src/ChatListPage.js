@@ -381,7 +381,7 @@ class ChatListPage extends BaseListPage {
         title: i18next.t("general:Messages"),
         dataIndex: "messages",
         key: "messages",
-        width: this.state.maximizeMessages ? "100%" : "800px",
+        width: this.state.maximizeMessages ? "70vw" : "800px",
         ...this.getMessagesColumnSearchProps(),
         render: (text, record, index) => {
           const messages = this.state.messagesMap[record.name];
@@ -389,7 +389,7 @@ class ChatListPage extends BaseListPage {
             return null;
           }
 
-          const messagesWidth = this.state.maximizeMessages ? "100%" : "800px";
+          const messagesWidth = this.state.maximizeMessages ? "70vw" : "800px";
 
           return (
             <div style={{
