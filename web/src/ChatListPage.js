@@ -33,8 +33,25 @@ class ChatListPage extends BaseListPage {
       ...this.state,
       messagesMap: {},
       filterSingleChat: Setting.getBoolValue("filterSingleChat", false),
+      maximizeMessages: this.getMaximizeMessagesFromStorage(),
     };
   }
+
+  getMaximizeMessagesFromStorage() {
+    const saved = localStorage.getItem("maximizeMessages");
+    if (saved === null || saved === undefined) {
+      return false;
+    }
+    return JSON.parse(saved) === true;
+  }
+
+  toggleMaximizeMessages = () => {
+    const newValue = !this.state.maximizeMessages;
+    this.setState({
+      maximizeMessages: newValue,
+    });
+    localStorage.setItem("maximizeMessages", JSON.stringify(newValue));
+  };
 
   getMessages(chatName) {
     MessageBackend.getChatMessages("admin", chatName)
@@ -364,7 +381,7 @@ class ChatListPage extends BaseListPage {
         title: i18next.t("general:Messages"),
         dataIndex: "messages",
         key: "messages",
-        width: "800px",
+        width: this.state.maximizeMessages ? "100%" : "800px",
         ...this.getMessagesColumnSearchProps(),
         render: (text, record, index) => {
           const messages = this.state.messagesMap[record.name];
@@ -372,13 +389,15 @@ class ChatListPage extends BaseListPage {
             return null;
           }
 
+          const messageWidth = this.state.maximizeMessages ? "100%" : "800px";
+
           return (
             <div style={{
               padding: "5px",
               margin: "5px",
               background: "rgb(191,191,191)",
               borderRadius: "10px",
-              width: "800px",
+              width: messageWidth,
               // boxSizing: "border-box",
               // boxShadow: "0 0 0 1px inset",
             }}>
@@ -463,6 +482,10 @@ class ChatListPage extends BaseListPage {
             <div>
               {i18next.t("chat:Chats")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addChat.bind(this)}>{i18next.t("general:Add")}</Button>
+              <span style={{marginLeft: 32}}>
+                {i18next.t("chat:Maximize messages")}:
+                <Switch checked={this.state.maximizeMessages} onChange={this.toggleMaximizeMessages} style={{marginLeft: 8}} />
+              </span>
               {this.state.selectedRowKeys.length > 0 && (
                 <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
                   <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>

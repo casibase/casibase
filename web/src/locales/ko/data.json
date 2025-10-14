@@ -88,7 +88,8 @@
     "User2": "사용자2",
     "User2 - Tooltip": "채팅 수신자",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "채팅 내용에 민감한 정보가 포함되어 있습니다. 이 대화가 강제 종료되었습니다.",
-    "click to stop...": "클릭하여 중지..."
+    "click to stop...": "클릭하여 중지...",
+    "Maximize messages": "메시지 최대화"
   },
   "connection": {
     "History": "히스토리",

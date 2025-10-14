@@ -88,7 +88,8 @@
     "User2": "User2",
     "User2 - Tooltip": "Recipient",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Your chat text involves sensitive content. This chat has been forcibly terminated.",
-    "click to stop...": "click to stop..."
+    "click to stop...": "click to stop...",
+    "Maximize messages": "Maximize messages"
   },
   "connection": {
     "History": "History",

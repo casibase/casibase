@@ -88,7 +88,8 @@
     "User2": "Pengguna2",
     "User2 - Tooltip": "Penerima percakapan",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Teks percakapan Anda mengandung konten sensitif. Percakapan ini telah ditangguhkan secara paksa.",
-    "click to stop...": "klik untuk menghentikan..."
+    "click to stop...": "klik untuk menghentikan...",
+    "Maximize messages": "Maksimalkan pesan"
   },
   "connection": {
     "History": "Riwayat",
