@@ -137,6 +137,20 @@ class ChatListPage extends BaseListPage {
     }
   }
 
+  getMessagesColumnSearchProps = () => ({
+    ...this.getColumnSearchProps("messages"),
+    onFilter: (value, record) => {
+      const messages = this.state.messagesMap[record.name];
+      if (!messages || messages.length === 0) {
+        return false;
+      }
+      // Search through all messages' text content
+      return messages.some(message =>
+        message.text && message.text.toLowerCase().includes(value.toLowerCase())
+      );
+    },
+  });
+
   renderTable(chats) {
     let columns = [
       // {
@@ -351,6 +365,7 @@ class ChatListPage extends BaseListPage {
         dataIndex: "messages",
         key: "messages",
         width: "800px",
+        ...this.getMessagesColumnSearchProps(),
         render: (text, record, index) => {
           const messages = this.state.messagesMap[record.name];
           if (messages === undefined || messages.length === 0) {
