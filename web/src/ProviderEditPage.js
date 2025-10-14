@@ -84,6 +84,9 @@ class ProviderEditPage extends React.Component {
         return Setting.getLabel(i18next.t("provider:Bot ID"), i18next.t("provider:Bot ID - Tooltip"));
       }
     }
+    if (provider.category === "Scan") {
+      return Setting.getLabel(i18next.t("provider:Binary path"), i18next.t("provider:Binary path - Tooltip"));
+    }
     return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID - Tooltip"));
   }
 
