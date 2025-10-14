@@ -222,6 +222,7 @@ class ApplicationListPage extends BaseListPage {
         key: "name",
         width: "160px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/applications/${text}`}>
@@ -236,6 +237,7 @@ class ApplicationListPage extends BaseListPage {
         key: "displayName",
         width: "200px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        ...this.getColumnSearchProps("displayName"),
       },
       {
         title: i18next.t("general:Created time"),
@@ -253,6 +255,7 @@ class ApplicationListPage extends BaseListPage {
         key: "description",
         width: "250px",
         sorter: (a, b) => a.description.localeCompare(b.description),
+        ...this.getColumnSearchProps("description"),
         render: (text, record, index) => {
           return (
             <Tooltip placement="left" title={Setting.getShortText(text, 1000)}>

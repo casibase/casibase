@@ -98,6 +98,7 @@ class FormListPage extends BaseListPage {
         key: "name",
         width: "160px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/forms/${text}`}>
@@ -112,6 +113,7 @@ class FormListPage extends BaseListPage {
         key: "displayName",
         width: "200px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        ...this.getColumnSearchProps("displayName"),
       },
       {
         title: i18next.t("form:Position"),
@@ -126,6 +128,7 @@ class FormListPage extends BaseListPage {
         key: "category",
         width: "90px",
         sorter: (a, b) => a.category.localeCompare(b.category),
+        ...this.getColumnSearchProps("category"),
       },
       {
         title: i18next.t("general:Type"),

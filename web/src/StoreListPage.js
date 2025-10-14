@@ -236,6 +236,7 @@ class StoreListPage extends BaseListPage {
         key: "name",
         width: "120px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/stores/${record.owner}/${text}/view`}>
@@ -250,6 +251,7 @@ class StoreListPage extends BaseListPage {
         key: "displayName",
         // width: "600px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        ...this.getColumnSearchProps("displayName"),
       },
       {
         title: i18next.t("store:Is default"),
@@ -257,7 +259,7 @@ class StoreListPage extends BaseListPage {
         key: "isDefault",
         width: "120px",
         sorter: (a, b) => a.isDefault - b.isDefault,
-        // ...this.getColumnSearchProps("isDefault"),
+        ...this.getColumnFilterProps("isDefault"),
         render: (text, record, index) => {
           return (
             <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />

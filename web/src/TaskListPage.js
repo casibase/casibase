@@ -100,6 +100,7 @@ class TaskListPage extends BaseListPage {
         key: "name",
         width: "160px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/tasks/${text}`}>
@@ -114,6 +115,7 @@ class TaskListPage extends BaseListPage {
         key: "displayName",
         width: "200px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        ...this.getColumnSearchProps("displayName"),
       },
       {
         title: i18next.t("store:Model provider"),
@@ -135,6 +137,7 @@ class TaskListPage extends BaseListPage {
         key: "type",
         width: "90px",
         sorter: (a, b) => a.type.localeCompare(b.type),
+        ...this.getColumnSearchProps("type"),
       },
       {
         title: i18next.t("store:Subject"),
@@ -142,6 +145,7 @@ class TaskListPage extends BaseListPage {
         key: "subject",
         width: "200px",
         sorter: (a, b) => a.subject.localeCompare(b.subject),
+        ...this.getColumnSearchProps("subject"),
       },
       {
         title: i18next.t("video:Topic"),
@@ -149,6 +153,7 @@ class TaskListPage extends BaseListPage {
         key: "topic",
         width: "200px",
         sorter: (a, b) => a.topic.localeCompare(b.topic),
+        ...this.getColumnSearchProps("topic"),
       },
       {
         title: i18next.t("general:Result"),
@@ -191,6 +196,7 @@ class TaskListPage extends BaseListPage {
         key: "text",
         // width: "160px",
         sorter: (a, b) => a.text.localeCompare(b.text),
+        ...this.getColumnSearchProps("text"),
         render: (text, record, index) => {
           return (
             <Tooltip placement="left" title={Setting.getShortText(text, 1000)}>

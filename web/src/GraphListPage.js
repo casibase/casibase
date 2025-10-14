@@ -95,6 +95,7 @@ class GraphListPage extends BaseListPage {
         key: "name",
         width: "160px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/graphs/${text}`}>
@@ -109,6 +110,7 @@ class GraphListPage extends BaseListPage {
         key: "displayName",
         width: "200px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        ...this.getColumnSearchProps("displayName"),
       },
       {
         title: i18next.t("general:Created time"),
