@@ -85,7 +85,7 @@ class ProviderEditPage extends React.Component {
       }
     }
     if (provider.category === "Scan") {
-      return Setting.getLabel(i18next.t("provider:Binary path"), i18next.t("provider:Binary path - Tooltip"));
+      return Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path - Tooltip"));
     }
     return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID - Tooltip"));
   }

@@ -430,8 +430,6 @@
   "scan": {
     "Edit Scan": "Editar escaneo",
     "New Scan": "Nuevo escaneo",
-    "Result": "Resultado",
-    "Result - Tooltip": "Datos del resultado del escaneo",
     "Target": "Objetivo",
     "Target - Tooltip": "Objetivo del escaneo (por ejemplo, dirección IP o nombre de host)"
   },
@@ -488,8 +486,8 @@
     "Add Storage Provider": "Agregar proveedor de almacenamiento",
     "Auth type": "Tipo de autenticación",
     "Auth type - Tooltip": "Tipo de autenticación",
-    "Binary path": "Ruta binaria",
-    "Binary path - Tooltip": "Ruta al binario de la herramienta de escaneo en el servidor",
+    "Path": "Ruta",
+    "Path - Tooltip": "Ruta al binario de la herramienta en el servidor",
     "Browser URL": "URL del navegador",
     "Browser URL - Tooltip": "URL del navegador blockchain",
     "Category": "Categoría",

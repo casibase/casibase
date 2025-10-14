@@ -430,8 +430,6 @@
   "scan": {
     "Edit Scan": "编辑扫描",
     "New Scan": "新建扫描",
-    "Result": "结果",
-    "Result - Tooltip": "扫描结果数据",
     "Target": "目标",
     "Target - Tooltip": "扫描目标（如IP地址或主机名）"
   },
@@ -488,8 +486,8 @@
     "Add Storage Provider": "添加存储提供商",
     "Auth type": "认证类型",
     "Auth type - Tooltip": "认证类型",
-    "Binary path": "二进制路径",
-    "Binary path - Tooltip": "服务器上扫描工具的二进制文件路径",
+    "Path": "路径",
+    "Path - Tooltip": "服务器上工具的二进制文件路径",
     "Browser URL": "浏览器URL",
     "Browser URL - Tooltip": "区块链浏览器URL",
     "Category": "分类",

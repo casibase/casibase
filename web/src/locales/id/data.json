@@ -430,8 +430,6 @@
   "scan": {
     "Edit Scan": "Sunting pemindaian",
     "New Scan": "Pemindaian baru",
-    "Result": "Hasil",
-    "Result - Tooltip": "Data hasil pemindaian",
     "Target": "Target",
     "Target - Tooltip": "Target pemindaian (misalnya, alamat IP atau nama host)"
   },
@@ -488,8 +486,8 @@
     "Add Storage Provider": "Tambahkan penyedia penyimpanan",
     "Auth type": "Tipe otentikasi",
     "Auth type - Tooltip": "Tipe otentikasi",
-    "Binary path": "Jalur biner",
-    "Binary path - Tooltip": "Jalur ke biner alat pemindaian di server",
+    "Path": "Jalur",
+    "Path - Tooltip": "Jalur ke biner alat di server",
     "Browser URL": "URL browser",
     "Browser URL - Tooltip": "URL browser blockchain",
     "Category": "Kategori",

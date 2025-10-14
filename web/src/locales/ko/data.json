@@ -430,8 +430,6 @@
   "scan": {
     "Edit Scan": "스캔 편집",
     "New Scan": "새 스캔 생성",
-    "Result": "결과",
-    "Result - Tooltip": "스캔 결과 데이터",
     "Target": "대상",
     "Target - Tooltip": "스캔 대상 (예: IP 주소 또는 호스트명)"
   },
@@ -488,8 +486,8 @@
     "Add Storage Provider": "스토리지 공급자 추가",
     "Auth type": "인증 유형",
     "Auth type - Tooltip": "인증 유형",
-    "Binary path": "바이너리 경로",
-    "Binary path - Tooltip": "서버의 스캔 도구 바이너리 경로",
+    "Path": "경로",
+    "Path - Tooltip": "서버의 도구 바이너리 경로",
     "Browser URL": "브라우저 URL",
     "Browser URL - Tooltip": "블록체인 브라우저 URL",
     "Category": "분류",

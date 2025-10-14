@@ -430,8 +430,6 @@
   "scan": {
     "Edit Scan": "スキャンを編集",
     "New Scan": "新規スキャン",
-    "Result": "結果",
-    "Result - Tooltip": "スキャン結果データ",
     "Target": "ターゲット",
     "Target - Tooltip": "スキャン対象（例：IPアドレスまたはホスト名）"
   },
@@ -488,8 +486,8 @@
     "Add Storage Provider": "ストレージプロバイダを追加",
     "Auth type": "認証タイプ",
     "Auth type - Tooltip": "認証タイプ",
-    "Binary path": "バイナリパス",
-    "Binary path - Tooltip": "サーバー上のスキャンツールバイナリへのパス",
+    "Path": "パス",
+    "Path - Tooltip": "サーバー上のツールバイナリへのパス",
     "Browser URL": "ブラウザURL",
     "Browser URL - Tooltip": "ブロックチェーンブラウザURL",
     "Category": "カテゴリ",

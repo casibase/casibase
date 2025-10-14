@@ -430,8 +430,6 @@
   "scan": {
     "Edit Scan": "Edit Scan",
     "New Scan": "New Scan",
-    "Result": "Result",
-    "Result - Tooltip": "Scan result data",
     "Target": "Target",
     "Target - Tooltip": "Scan target (e.g., IP address or hostname)"
   },
@@ -488,8 +486,8 @@
     "Add Storage Provider": "Add Storage Provider",
     "Auth type": "Auth type",
     "Auth type - Tooltip": "Authentication type",
-    "Binary path": "Binary path",
-    "Binary path - Tooltip": "Path to the scan tool binary on the server",
+    "Path": "Path",
+    "Path - Tooltip": "Path to the tool binary on the server",
     "Browser URL": "Browser URL",
     "Browser URL - Tooltip": "Blockchain explorer URL",
     "Category": "Category",
