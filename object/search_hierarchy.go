@@ -31,8 +31,8 @@ func NewHierarchySearchProvider(owner string) (*HierarchySearchProvider, error) 
 	return &HierarchySearchProvider{owner: owner}, nil
 }
 
-func (p *HierarchySearchProvider) Search(storeName string, embeddingProviderName string, embeddingProviderObj embedding.EmbeddingProvider, modelProviderName string, text string, knowledgeCount int, lang string) ([]Vector, *embedding.EmbeddingResult, error) {
-	vectors, err := getRelatedVectors(storeName, embeddingProviderName)
+func (p *HierarchySearchProvider) Search(relatedStores []string, embeddingProviderName string, embeddingProviderObj embedding.EmbeddingProvider, modelProviderName string, text string, knowledgeCount int, lang string) ([]Vector, *embedding.EmbeddingResult, error) {
+	vectors, err := getRelatedVectors(relatedStores, embeddingProviderName)
 	if err != nil {
 		return nil, nil, err
 	}

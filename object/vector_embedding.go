@@ -180,8 +180,8 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 	return affected, err
 }
 
-func getRelatedVectors(storeName string, provider string) ([]*Vector, error) {
-	vectors, err := getVectorsByProvider(storeName, provider)
+func getRelatedVectors(relatedStores []string, provider string) ([]*Vector, error) {
+	vectors, err := getVectorsByProvider(relatedStores, provider)
 	if err != nil {
 		return nil, err
 	}
@@ -222,13 +222,14 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string,
 	}
 }
 
-func GetNearestKnowledge(storeName string, searchProviderType string, embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, modelProvider *Provider, owner string, text string, knowledgeCount int, lang string) ([]*model.RawMessage, []VectorScore, *embedding.EmbeddingResult, error) {
+func GetNearestKnowledge(storeName string, vectorStores []string, searchProviderType string, embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, modelProvider *Provider, owner string, text string, knowledgeCount int, lang string) ([]*model.RawMessage, []VectorScore, *embedding.EmbeddingResult, error) {
 	searchProvider, err := GetSearchProvider(searchProviderType, owner)
 	if err != nil {
 		return nil, nil, nil, err
 	}
 
-	vectors, embeddingResult, err := searchProvider.Search(storeName, embeddingProvider.Name, embeddingProviderObj, modelProvider.Name, text, knowledgeCount, lang)
+	relatedStores := append(vectorStores, storeName)
+	vectors, embeddingResult, err := searchProvider.Search(relatedStores, embeddingProvider.Name, embeddingProviderObj, modelProvider.Name, text, knowledgeCount, lang)
 	if err != nil {
 		if err.Error() == "no knowledge vectors found" {
 			return nil, nil, embeddingResult, err

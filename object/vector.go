@@ -61,9 +61,9 @@ func GetVectors(owner string) ([]*Vector, error) {
 	return vectors, nil
 }
 
-func getVectorsByProvider(storeName string, provider string) ([]*Vector, error) {
+func getVectorsByProvider(relatedStores []string, provider string) ([]*Vector, error) {
 	vectors := []*Vector{}
-	err := adapter.engine.Find(&vectors, &Vector{Store: storeName, Provider: provider})
+	err := adapter.engine.In("store", relatedStores).Find(&vectors, &Vector{Provider: provider})
 	if err != nil {
 		return vectors, err
 	}

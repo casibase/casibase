@@ -90,6 +90,7 @@ type Store struct {
 	LogoUrl             string   `xorm:"varchar(200)" json:"logoUrl"`
 	FooterHtml          string   `xorm:"mediumtext" json:"footerHtml"`
 	NavItems            []string `xorm:"text" json:"navItems"`
+	VectorStores        []string `xorm:"varchar(500)" json:"vectorStores"`
 	ChildStores         []string `xorm:"varchar(500)" json:"childStores"`
 	ChildModelProviders []string `xorm:"varchar(500)" json:"childModelProviders"`
 	ShowAutoRead        bool     `json:"showAutoRead"`
