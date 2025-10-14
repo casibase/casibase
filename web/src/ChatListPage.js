@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Switch, Table} from "antd";
+import {Button, Input, Popconfirm, Space, Switch, Table} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -24,7 +24,7 @@ import * as Conf from "./Conf";
 import * as MessageBackend from "./backend/MessageBackend";
 import ChatBox from "./ChatBox";
 import {renderText} from "./ChatMessageRender";
-import {DeleteOutlined} from "@ant-design/icons";
+import {DeleteOutlined, SearchOutlined} from "@ant-design/icons";
 
 class ChatListPage extends BaseListPage {
   constructor(props) {
@@ -137,19 +137,57 @@ class ChatListPage extends BaseListPage {
     }
   }
 
-  getMessagesColumnSearchProps = () => ({
-    ...this.getColumnSearchProps("messages"),
-    onFilter: (value, record) => {
-      const messages = this.state.messagesMap[record.name];
-      if (!messages || messages.length === 0) {
-        return false;
-      }
-      // Search through all messages' text content
-      return messages.some(message =>
-        message.text && message.text.toLowerCase().includes(value.toLowerCase())
-      );
-    },
-  });
+  getMessagesColumnSearchProps = () => {
+    return {
+      filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
+        <div style={{padding: 8}}>
+          <Input
+            ref={node => {
+              this.searchInput = node;
+            }}
+            placeholder="Search messages"
+            value={selectedKeys[0]}
+            onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => confirm()}
+            style={{marginBottom: 8, display: "block"}}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => confirm()}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{width: 90}}
+            >
+              Search
+            </Button>
+            <Button onClick={() => {
+              clearFilters();
+              confirm();
+            }} size="small" style={{width: 90}}>
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{color: filtered ? "#1890ff" : undefined}} />,
+      onFilter: (value, record) => {
+        const messages = this.state.messagesMap[record.name];
+        if (!messages || messages.length === 0) {
+          return false;
+        }
+        // Search through all messages' text content
+        return messages.some(message =>
+          message.text && message.text.toLowerCase().includes(value.toLowerCase())
+        );
+      },
+      onFilterDropdownOpenChange: visible => {
+        if (visible) {
+          setTimeout(() => this.searchInput.select(), 100);
+        }
+      },
+    };
+  };
 
   renderTable(chats) {
     let columns = [
