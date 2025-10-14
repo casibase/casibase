@@ -19,7 +19,6 @@ import (
 
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
-	"xorm.io/xorm"
 )
 
 type Chat struct {
