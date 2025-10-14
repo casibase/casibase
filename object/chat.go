@@ -162,7 +162,7 @@ func GetChatCount(owner string, field string, value string, store string) (int64
 	if field == "messages" && value != "" {
 		return getChatCountByMessages(owner, value, store)
 	}
-	
+
 	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	if store != "" {
 		session = session.And("store = ?", store)
@@ -187,7 +187,7 @@ func getPaginationChatsByMessages(owner string, offset, limit int, value, sortFi
 		Select("DISTINCT chat.*").
 		Join("INNER", "message", "chat.owner = message.owner AND chat.name = message.chat").
 		Where("message.text LIKE ?", fmt.Sprintf("%%%s%%", value))
-	
+
 	// Handle sorting
 	if sortField == "" || sortOrder == "" {
 		sortField = "created_time"
@@ -197,7 +197,7 @@ func getPaginationChatsByMessages(owner string, offset, limit int, value, sortFi
 	} else {
 		session = session.Desc(fmt.Sprintf("chat.%s", util.SnakeString(sortField)))
 	}
-	
+
 	err := session.Find(&chats)
 	if err != nil {
 		return chats, err
@@ -211,13 +211,13 @@ func GetPaginationChats(owner string, offset, limit int, field, value, sortField
 	if field == "messages" && value != "" {
 		return getPaginationChatsByMessages(owner, offset, limit, value, sortField, sortOrder, store)
 	}
-	
+
 	chats := []*Chat{}
 	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
 	if store != "" {
 		session = session.And("store = ?", store)
 	}
-	
+
 	err := session.Find(&chats)
 	if err != nil {
 		return chats, err
