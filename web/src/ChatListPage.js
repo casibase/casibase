@@ -152,6 +152,7 @@ class ChatListPage extends BaseListPage {
         key: "name",
         width: "100px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`chats/${text}`}>
@@ -218,7 +219,7 @@ class ChatListPage extends BaseListPage {
         key: "user",
         width: "90px",
         sorter: (a, b) => a.user.localeCompare(b.user),
-        // ...this.getColumnSearchProps("user"),
+        ...this.getColumnSearchProps("user"),
         render: (text, record, index) => {
           if (text.startsWith("u-")) {
             return text;
@@ -282,6 +283,7 @@ class ChatListPage extends BaseListPage {
         key: "clientIp",
         width: "120px",
         sorter: (a, b) => a.clientIp.localeCompare(b.clientIp),
+        ...this.getColumnSearchProps("clientIp"),
         render: (text, record, index) => {
           if (text === "") {
             return null;
@@ -383,7 +385,7 @@ class ChatListPage extends BaseListPage {
         key: "isDeleted",
         width: "120px",
         sorter: (a, b) => a.isDeleted - b.isDeleted,
-        // ...this.getColumnSearchProps("isDeleted"),
+        ...this.getColumnFilterProps("isDeleted"),
         render: (text, record, index) => {
           return (
             <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />

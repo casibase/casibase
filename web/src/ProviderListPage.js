@@ -139,6 +139,7 @@ class ProviderListPage extends BaseListPage {
         key: "name",
         width: "180px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/providers/${text}`}>
@@ -153,6 +154,7 @@ class ProviderListPage extends BaseListPage {
         key: "displayName",
         width: "220px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        ...this.getColumnSearchProps("displayName"),
       },
       {
         title: i18next.t("provider:Category"),
@@ -160,6 +162,7 @@ class ProviderListPage extends BaseListPage {
         key: "category",
         width: "110px",
         sorter: (a, b) => a.category.localeCompare(b.category),
+        ...this.getColumnSearchProps("category"),
       },
       {
         title: i18next.t("general:Type"),
@@ -179,6 +182,7 @@ class ProviderListPage extends BaseListPage {
         key: "subType",
         width: "180px",
         sorter: (a, b) => a.subType.localeCompare(b.subType),
+        ...this.getColumnSearchProps("subType"),
       },
       {
         title: i18next.t("provider:Client ID"),
@@ -186,6 +190,7 @@ class ProviderListPage extends BaseListPage {
         key: "clientId",
         width: "240px",
         sorter: (a, b) => a.clientId.localeCompare(b.clientId),
+        ...this.getColumnSearchProps("clientId"),
       },
       {
         title: i18next.t("provider:Secret key"),
@@ -200,6 +205,7 @@ class ProviderListPage extends BaseListPage {
         key: "region",
         width: "120px",
         sorter: (a, b) => a.region.localeCompare(b.region),
+        ...this.getColumnSearchProps("region"),
       },
       {
         title: i18next.t("provider:API key"),
@@ -214,6 +220,7 @@ class ProviderListPage extends BaseListPage {
         key: "providerUrl",
         // width: "250px",
         sorter: (a, b) => a.providerUrl.localeCompare(b.providerUrl),
+        ...this.getColumnSearchProps("providerUrl"),
         render: (text, record, index) => {
           return (
             <a target="_blank" rel="noreferrer" href={text}>
