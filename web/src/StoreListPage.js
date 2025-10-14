@@ -300,6 +300,7 @@ class StoreListPage extends BaseListPage {
         key: "storageProvider",
         width: "250px",
         sorter: (a, b) => a.storageProvider.localeCompare(b.storageProvider),
+        ...this.getColumnSearchProps("storageProvider"),
         render: (text, record, index) => {
           if (text === "") {
             return null;
@@ -320,6 +321,7 @@ class StoreListPage extends BaseListPage {
         key: "imageProvider",
         width: "300px",
         sorter: (a, b) => a.imageProvider.localeCompare(b.imageProvider),
+        ...this.getColumnSearchProps("imageProvider"),
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
         },
@@ -330,6 +332,7 @@ class StoreListPage extends BaseListPage {
         key: "modelProvider",
         width: "330px",
         sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
+        ...this.getColumnSearchProps("modelProvider"),
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
         },
@@ -340,6 +343,7 @@ class StoreListPage extends BaseListPage {
         key: "embeddingProvider",
         width: "300px",
         sorter: (a, b) => a.embeddingProvider.localeCompare(b.embeddingProvider),
+        ...this.getColumnSearchProps("embeddingProvider"),
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
         },
@@ -350,6 +354,7 @@ class StoreListPage extends BaseListPage {
         key: "textToSpeechProvider",
         width: "300px",
         sorter: (a, b) => a.textToSpeechProvider.localeCompare(b.textToSpeechProvider),
+        ...this.getColumnSearchProps("textToSpeechProvider"),
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
         },
@@ -360,6 +365,7 @@ class StoreListPage extends BaseListPage {
         key: "speechToTextProvider",
         width: "200px",
         sorter: (a, b) => a.speechToTextProvider.localeCompare(b.speechToTextProvider),
+        ...this.getColumnSearchProps("speechToTextProvider"),
         render: (text) => {
           return this.renderProviderInfo(text);
         },
@@ -370,6 +376,7 @@ class StoreListPage extends BaseListPage {
         key: "agentProvider",
         width: "250px",
         sorter: (a, b) => a.agentProvider.localeCompare(b.agentProvider),
+        ...this.getColumnSearchProps("agentProvider"),
         render: (text) => {
           return this.renderProviderInfo(text);
         },
@@ -387,6 +394,7 @@ class StoreListPage extends BaseListPage {
         key: "state",
         width: "90px",
         sorter: (a, b) => a.state.localeCompare(b.state),
+        ...this.getColumnSearchProps("state"),
       },
       {
         title: i18next.t("general:Action"),

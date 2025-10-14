@@ -119,6 +119,7 @@ class ArticleListPage extends BaseListPage {
         key: "workflow",
         width: "250px",
         sorter: (a, b) => a.workflow.localeCompare(b.workflow),
+        ...this.getColumnSearchProps("workflow"),
         render: (text, record, index) => {
           return (
             <Link to={`/workflows/${text}`}>

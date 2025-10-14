@@ -123,6 +123,7 @@ class TaskListPage extends BaseListPage {
         key: "provider",
         width: "250px",
         sorter: (a, b) => a.provider.localeCompare(b.provider),
+        ...this.getColumnSearchProps("provider"),
         render: (text, record, index) => {
           return (
             <Link to={`/providers/${text}`}>
@@ -161,6 +162,7 @@ class TaskListPage extends BaseListPage {
         key: "result",
         width: "200px",
         sorter: (a, b) => a.result.localeCompare(b.result),
+        ...this.getColumnSearchProps("result"),
       },
       {
         title: i18next.t("task:Activity"),
@@ -168,6 +170,7 @@ class TaskListPage extends BaseListPage {
         key: "activity",
         width: "200px",
         sorter: (a, b) => a.activity.localeCompare(b.activity),
+        ...this.getColumnSearchProps("activity"),
       },
       {
         title: i18next.t("video:Grade"),
@@ -175,6 +178,7 @@ class TaskListPage extends BaseListPage {
         key: "grade",
         width: "200px",
         sorter: (a, b) => a.grade.localeCompare(b.grade),
+        ...this.getColumnSearchProps("grade"),
       },
       // {
       //   title: i18next.t("task:Application"),

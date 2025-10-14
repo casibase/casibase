@@ -198,6 +198,7 @@ class WorkflowListPage extends BaseListPage {
         key: "message",
         // width: "160px",
         sorter: (a, b) => a.text.localeCompare(b.text),
+        ...this.getColumnSearchProps("message"),
         render: (text, record, index) => {
           return (
             <Tooltip placement="left" styles={{body: {width: "815px", maxHeight: "355px"}}} title={
@@ -216,6 +217,7 @@ class WorkflowListPage extends BaseListPage {
         key: "questionTemplate",
         // width: "160px",
         sorter: (a, b) => a.questionTemplate.localeCompare(b.questionTemplate),
+        ...this.getColumnSearchProps("questionTemplate"),
         render: (text, record, index) => {
           return (
             <Popover

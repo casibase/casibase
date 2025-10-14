@@ -166,6 +166,7 @@ spec:
         key: "version",
         width: "100px",
         sorter: (a, b) => a.version.localeCompare(b.version),
+        ...this.getColumnSearchProps("version"),
       },
       {
         title: i18next.t("general:Icon"),

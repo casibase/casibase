@@ -205,6 +205,7 @@ class ProviderListPage extends BaseListPage {
         key: "region",
         width: "120px",
         sorter: (a, b) => a.region.localeCompare(b.region),
+        ...this.getColumnSearchProps("region"),
       },
       {
         title: i18next.t("provider:API key"),
@@ -219,6 +220,7 @@ class ProviderListPage extends BaseListPage {
         key: "providerUrl",
         // width: "250px",
         sorter: (a, b) => a.providerUrl.localeCompare(b.providerUrl),
+        ...this.getColumnSearchProps("providerUrl"),
         render: (text, record, index) => {
           return (
             <a target="_blank" rel="noreferrer" href={text}>
