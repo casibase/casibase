@@ -230,6 +230,12 @@ func initAPI() {
 	beego.Router("/api/add-records", &controllers.ApiController{}, "POST:AddRecords")
 	beego.Router("/api/delete-record", &controllers.ApiController{}, "POST:DeleteRecord")
 
+	beego.Router("/api/get-scans", &controllers.ApiController{}, "GET:GetScans")
+	beego.Router("/api/get-scan", &controllers.ApiController{}, "GET:GetScan")
+	beego.Router("/api/update-scan", &controllers.ApiController{}, "POST:UpdateScan")
+	beego.Router("/api/add-scan", &controllers.ApiController{}, "POST:AddScan")
+	beego.Router("/api/delete-scan", &controllers.ApiController{}, "POST:DeleteScan")
+
 	beego.Router("/api/commit-record", &controllers.ApiController{}, "POST:CommitRecord")
 	beego.Router("/api/commit-record-second", &controllers.ApiController{}, "POST:CommitRecordSecond")
 	beego.Router("/api/query-record", &controllers.ApiController{}, "GET:QueryRecord")

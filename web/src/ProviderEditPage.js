@@ -315,6 +315,9 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Bot") {
                 this.updateProviderField("type", "Tencent");
                 this.updateProviderField("subType", "WeCom Bot");
+              } else if (value === "Scan") {
+                this.updateProviderField("type", "Nmap");
+                this.updateProviderField("subType", "");
               }
             })}>
               {
@@ -330,6 +333,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
                   {id: "Speech-to-Text", name: "Speech-to-Text"},
                   {id: "Bot", name: "Bot"},
+                  {id: "Scan", name: "Scan"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>

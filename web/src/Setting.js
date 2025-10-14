@@ -1015,6 +1015,12 @@ export function getOtherProviderInfo() {
         url: "https://cloud.tencent.com/",
       },
     },
+    "Scan": {
+      "Nmap": {
+        logo: `${StaticBaseUrl}/img/social_github.png`,
+        url: "https://github.com/nmap/nmap",
+      },
+    },
   };
 
   return res;
@@ -1209,6 +1215,10 @@ export function getProviderTypeOptions(category) {
   } else if (category === "Bot") {
     return [
       {id: "Tencent", name: "Tencent"},
+    ];
+  } else if (category === "Scan") {
+    return [
+      {id: "Nmap", name: "Nmap"},
     ];
   } else {
     return [];
