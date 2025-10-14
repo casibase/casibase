@@ -33,8 +33,25 @@ class ChatListPage extends BaseListPage {
       ...this.state,
       messagesMap: {},
       filterSingleChat: Setting.getBoolValue("filterSingleChat", false),
+      maximizeMessages: this.getMaximizeMessagesFromStorage(),
     };
   }
+
+  getMaximizeMessagesFromStorage() {
+    const saved = localStorage.getItem("maximizeMessages");
+    if (saved === null || saved === undefined) {
+      return false;
+    }
+    return JSON.parse(saved) === true;
+  }
+
+  toggleMaximizeMessages = () => {
+    const newValue = !this.state.maximizeMessages;
+    this.setState({
+      maximizeMessages: newValue,
+    });
+    localStorage.setItem("maximizeMessages", JSON.stringify(newValue));
+  };
 
   getMessages(chatName) {
     MessageBackend.getChatMessages("admin", chatName)
@@ -364,7 +381,7 @@ class ChatListPage extends BaseListPage {
         title: i18next.t("general:Messages"),
         dataIndex: "messages",
         key: "messages",
-        width: "800px",
+        width: this.state.maximizeMessages ? "70vw" : "800px",
         ...this.getMessagesColumnSearchProps(),
         render: (text, record, index) => {
           const messages = this.state.messagesMap[record.name];
@@ -372,13 +389,15 @@ class ChatListPage extends BaseListPage {
             return null;
           }
 
+          const messagesWidth = this.state.maximizeMessages ? "70vw" : "800px";
+
           return (
             <div style={{
               padding: "5px",
               margin: "5px",
               background: "rgb(191,191,191)",
               borderRadius: "10px",
-              width: "800px",
+              width: messagesWidth,
               // boxSizing: "border-box",
               // boxShadow: "0 0 0 1px inset",
             }}>
@@ -470,6 +489,10 @@ class ChatListPage extends BaseListPage {
                   </Button>
                 </Popconfirm>
               )}
+              <span style={{marginLeft: 32}}>
+                {i18next.t("chat:Maximize messages")}:
+                <Switch checked={this.state.maximizeMessages} onChange={this.toggleMaximizeMessages} style={{marginLeft: 8}} />
+              </span>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               &nbsp;&nbsp;&nbsp;&nbsp;
               {i18next.t("general:Users")}:
