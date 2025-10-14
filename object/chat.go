@@ -19,6 +19,7 @@ import (
 
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
+	"xorm.io/xorm"
 )
 
 type Chat struct {
@@ -142,7 +143,26 @@ func (chat *Chat) GetId() string {
 }
 
 func GetChatCount(owner string, field string, value string, store string) (int64, error) {
-	session := GetDbSession(owner, -1, -1, field, value, "", "")
+	var session *xorm.Session
+	
+	// Handle the special "messages" field by joining with the message table
+	if field == "messages" && value != "" {
+		session = adapter.engine.NewSession()
+		if owner != "" {
+			session = session.And("chat.owner=?", owner)
+		}
+		if store != "" {
+			session = session.And("chat.store = ?", store)
+		}
+		// Join with message table and filter by message text
+		session = session.Table("chat").
+			Join("INNER", "message", "chat.owner = message.owner AND chat.name = message.chat").
+			Where("message.text LIKE ?", fmt.Sprintf("%%%s%%", value)).
+			Distinct("chat.owner", "chat.name")
+		return session.Count(&Chat{})
+	}
+	
+	session = GetDbSession(owner, -1, -1, field, value, "", "")
 	if store != "" {
 		session = session.And("store = ?", store)
 	}
@@ -151,10 +171,42 @@ func GetChatCount(owner string, field string, value string, store string) (int64
 
 func GetPaginationChats(owner string, offset, limit int, field, value, sortField, sortOrder string, store string) ([]*Chat, error) {
 	chats := []*Chat{}
-	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
-	if store != "" {
-		session = session.And("store = ?", store)
+	var session *xorm.Session
+	
+	// Handle the special "messages" field by joining with the message table
+	if field == "messages" && value != "" {
+		session = adapter.engine.NewSession()
+		if offset != -1 && limit != -1 {
+			session.Limit(limit, offset)
+		}
+		if owner != "" {
+			session = session.And("chat.owner=?", owner)
+		}
+		if store != "" {
+			session = session.And("chat.store = ?", store)
+		}
+		// Join with message table and filter by message text
+		session = session.Table("chat").
+			Select("DISTINCT chat.*").
+			Join("INNER", "message", "chat.owner = message.owner AND chat.name = message.chat").
+			Where("message.text LIKE ?", fmt.Sprintf("%%%s%%", value))
+		
+		// Handle sorting
+		if sortField == "" || sortOrder == "" {
+			sortField = "created_time"
+		}
+		if sortOrder == "ascend" {
+			session = session.Asc(fmt.Sprintf("chat.%s", util.SnakeString(sortField)))
+		} else {
+			session = session.Desc(fmt.Sprintf("chat.%s", util.SnakeString(sortField)))
+		}
+	} else {
+		session = GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
+		if store != "" {
+			session = session.And("store = ?", store)
+		}
 	}
+	
 	err := session.Find(&chats)
 	if err != nil {
 		return chats, err
