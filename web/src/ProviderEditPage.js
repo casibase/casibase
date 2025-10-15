@@ -84,6 +84,9 @@ class ProviderEditPage extends React.Component {
         return Setting.getLabel(i18next.t("provider:Bot ID"), i18next.t("provider:Bot ID - Tooltip"));
       }
     }
+    if (provider.category === "Scan") {
+      return Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path - Tooltip"));
+    }
     return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID - Tooltip"));
   }
 
@@ -315,6 +318,9 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Bot") {
                 this.updateProviderField("type", "Tencent");
                 this.updateProviderField("subType", "WeCom Bot");
+              } else if (value === "Scan") {
+                this.updateProviderField("type", "Nmap");
+                this.updateProviderField("subType", "");
               }
             })}>
               {
@@ -330,6 +336,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
                   {id: "Speech-to-Text", name: "Speech-to-Text"},
                   {id: "Bot", name: "Bot"},
+                  {id: "Scan", name: "Scan"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>

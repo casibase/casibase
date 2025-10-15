@@ -228,6 +228,7 @@
     "Logo URL - Tooltip": "Logo-URL - Tooltip",
     "Machines": "Server",
     "Menu": "Menü",
+    "Scans": "Scans",
     "Message": "Nachricht",
     "Message - Tooltip": "Nachrichtenbenachrichtigungstemplate (HTML-Format), unterstützt Variablen wie ${taskName}",
     "Messages": "Nachrichten",
@@ -427,6 +428,12 @@
     "Public IP - Tooltip": "Öffentliche IP-Adresse (Internetzugänglich)",
     "Zone": "Zone"
   },
+  "scan": {
+    "Edit Scan": "Scan bearbeiten",
+    "New Scan": "Neuen Scan erstellen",
+    "Target": "Ziel",
+    "Target - Tooltip": "Scan-Ziel (z.B. IP-Adresse oder Hostname)"
+  },
   "med": {
     "Audit": "Audit",
     "Medical Image Analysis": "Medizinische Bildanalyse",
@@ -480,6 +487,8 @@
     "Add Storage Provider": "Speicheranbieter hinzufügen",
     "Auth type": "Authentifizierungstyp",
     "Auth type - Tooltip": "Authentifizierungstyp",
+    "Path": "Pfad",
+    "Path - Tooltip": "Pfad zur Tool-Binärdatei auf dem Server",
     "Browser URL": "Browser-URL",
     "Browser URL - Tooltip": "Blockchain-Browser-URL",
     "Category": "Kategorie",
