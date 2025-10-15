@@ -46,6 +46,22 @@
     "ZH 🡰 EN": "ZH 🡰 EN",
     "ZH 🡲 EN": "ZH 🡲 EN"
   },
+  "asset": {
+    "Assets scanned successfully": "Assets scanned successfully",
+    "Edit Asset": "Edit Asset",
+    "Failed to scan assets": "Failed to scan assets",
+    "IP Address": "IP Address",
+    "Please select a provider": "Please select a provider",
+    "Provider": "Provider",
+    "Region": "Region",
+    "Resource ID": "Resource ID",
+    "Resource Type": "Resource Type",
+    "Scan": "Scan",
+    "Size": "Size",
+    "State": "State",
+    "Tags": "Tags",
+    "Zone": "Zone"
+  },
   "cert": {
     "Sign cert": "Sign cert",
     "Sign cert - Tooltip": "Sign cert - Tooltip",
@@ -134,6 +150,7 @@
     "Application Store": "Application Store",
     "Applications": "Applications",
     "Articles": "Articles",
+    "Assets": "Assets",
     "Audit": "Audit",
     "Avatar": "Avatar",
     "Avatar - Tooltip": "Icon URL for visual identification",

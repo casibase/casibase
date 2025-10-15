@@ -79,8 +79,6 @@ func getAssetsFromAliyun(owner string, provider *Provider) ([]*Asset, error) {
 	vpcResponse, err := client.DescribeVpcs(vpcRequest)
 	if err == nil {
 		for _, vpc := range vpcResponse.Vpcs.Vpc {
-			tagsJson, _ := json.Marshal(vpc.Tags.Tag)
-
 			asset := &Asset{
 				Owner:        owner,
 				Name:         fmt.Sprintf("%s_%s", provider.Name, vpc.VpcId),
@@ -92,7 +90,7 @@ func getAssetsFromAliyun(owner string, provider *Provider) ([]*Asset, error) {
 				Region:       vpc.RegionId,
 				State:        vpc.Status,
 				Description:  vpc.Description,
-				Tags:         string(tagsJson),
+				Tags:         "",
 			}
 			assets = append(assets, asset)
 		}
@@ -116,7 +114,7 @@ func getAssetsFromAliyun(owner string, provider *Provider) ([]*Asset, error) {
 				Provider:     provider.Name,
 				ResourceId:   sg.SecurityGroupId,
 				ResourceType: "Security Group",
-				Region:       provider.RegionId,
+				Region:       provider.Region,
 				State:        "",
 				Description:  sg.Description,
 				Tags:         string(tagsJson),
