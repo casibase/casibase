@@ -38,13 +38,13 @@ type Asset struct {
 	Region      string `xorm:"varchar(100)" json:"region"`
 	Zone        string `xorm:"varchar(100)" json:"zone"`
 	Status      string `xorm:"varchar(100)" json:"status"`
-	
+
 	// Common resource fields
-	IpAddress   string `xorm:"varchar(100)" json:"ipAddress"`
-	Size        string `xorm:"varchar(100)" json:"size"`
-	
+	IpAddress string `xorm:"varchar(100)" json:"ipAddress"`
+	Size      string `xorm:"varchar(100)" json:"size"`
+
 	// Additional metadata stored as text
-	Metadata    string `xorm:"mediumtext" json:"metadata"`
+	Metadata string `xorm:"mediumtext" json:"metadata"`
 }
 
 func GetAssetCount(owner, field, value string) (int64, error) {
@@ -160,7 +160,7 @@ func ScanAssetsFromProvider(owner, providerName string, lang string) ([]*Asset, 
 		if err != nil {
 			return nil, err
 		}
-		
+
 		if existingAsset != nil {
 			// Update existing asset
 			_, err = UpdateAsset(util.GetIdFromOwnerAndName(owner, asset.Name), asset)
