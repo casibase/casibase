@@ -17,7 +17,9 @@ package pkgimage
 import (
 	"fmt"
 
-	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
+	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
+	ecs20140526 "github.com/alibabacloud-go/ecs-20140526/v4/client"
+	"github.com/alibabacloud-go/tea/tea"
 )
 
 type Image struct {
@@ -57,62 +59,65 @@ type Image struct {
 }
 
 type ImageAliyunClient struct {
-	Client *ecs.Client
+	Client *ecs20140526.Client
 	Region string
 }
 
 func newImageAliyunClient(accessKeyId string, accessKeySecret string, region string) (ImageAliyunClient, error) {
-	client, err := ecs.NewClientWithAccessKey(
-		region,
-		accessKeyId,
-		accessKeySecret,
-	)
+	config := &openapi.Config{
+		AccessKeyId:     tea.String(accessKeyId),
+		AccessKeySecret: tea.String(accessKeySecret),
+		RegionId:        tea.String(region),
+		Endpoint:        tea.String("ecs." + region + ".aliyuncs.com"),
+	}
+	client, err := ecs20140526.NewClient(config)
 	if err != nil {
 		return ImageAliyunClient{}, err
 	}
 	return ImageAliyunClient{Client: client, Region: region}, nil
 }
 
-func getImageFromAliyunImage(aliyunImage ecs.Image) *Image {
+func getImageFromAliyunImage(aliyunImage *ecs20140526.DescribeImagesResponseBodyImagesImage) *Image {
 	image := &Image{
-		// BootMode:                aliyunImage.BootMode,
-		Name:                    aliyunImage.ImageId,
-		ImageId:                 aliyunImage.ImageId,
-		ImageOwnerAlias:         aliyunImage.ImageOwnerAlias,
-		OSName:                  aliyunImage.OSName,
-		OSNameEn:                aliyunImage.OSNameEn,
-		ImageFamily:             aliyunImage.ImageFamily,
-		Architecture:            aliyunImage.Architecture,
-		IsSupportIoOptimized:    aliyunImage.IsSupportIoOptimized,
-		Size:                    fmt.Sprintf("%v GiB", aliyunImage.Size),
-		ResourceGroupId:         aliyunImage.ResourceGroupId,
-		SupplierName:            aliyunImage.SupplierName,
-		Description:             aliyunImage.Description,
-		Usage:                   aliyunImage.Usage,
-		IsCopied:                aliyunImage.IsCopied,
-		LoginAsNonRootSupported: aliyunImage.LoginAsNonRootSupported,
-		ImageVersion:            aliyunImage.ImageVersion,
-		OSType:                  aliyunImage.OSType,
-		IsSubscribed:            aliyunImage.IsSubscribed,
-		IsSupportCloudinit:      aliyunImage.IsSupportCloudinit,
-		CreationTime:            aliyunImage.CreationTime,
-		ProductCode:             aliyunImage.ProductCode,
-		Progress:                aliyunImage.Progress,
-		Platform:                aliyunImage.Platform,
-		IsSelfShared:            aliyunImage.IsSelfShared,
-		ImageName:               aliyunImage.ImageName,
-		Status:                  aliyunImage.Status,
-		ImageOwnerId:            aliyunImage.ImageOwnerId,
-		IsPublic:                aliyunImage.IsPublic,
+		// BootMode:                tea.StringValue(aliyunImage.BootMode),
+		Name:                    tea.StringValue(aliyunImage.ImageId),
+		ImageId:                 tea.StringValue(aliyunImage.ImageId),
+		ImageOwnerAlias:         tea.StringValue(aliyunImage.ImageOwnerAlias),
+		OSName:                  tea.StringValue(aliyunImage.OSName),
+		OSNameEn:                tea.StringValue(aliyunImage.OSNameEn),
+		ImageFamily:             tea.StringValue(aliyunImage.ImageFamily),
+		Architecture:            tea.StringValue(aliyunImage.Architecture),
+		IsSupportIoOptimized:    tea.BoolValue(aliyunImage.IsSupportIoOptimized),
+		Size:                    fmt.Sprintf("%v GiB", tea.Int32Value(aliyunImage.Size)),
+		ResourceGroupId:         tea.StringValue(aliyunImage.ResourceGroupId),
+		SupplierName:            tea.StringValue(aliyunImage.SupplierName),
+		Description:             tea.StringValue(aliyunImage.Description),
+		Usage:                   tea.StringValue(aliyunImage.Usage),
+		IsCopied:                tea.BoolValue(aliyunImage.IsCopied),
+		LoginAsNonRootSupported: tea.BoolValue(aliyunImage.LoginAsNonRootSupported),
+		ImageVersion:            tea.StringValue(aliyunImage.ImageVersion),
+		OSType:                  tea.StringValue(aliyunImage.OSType),
+		IsSubscribed:            tea.BoolValue(aliyunImage.IsSubscribed),
+		IsSupportCloudinit:      tea.BoolValue(aliyunImage.IsSupportCloudinit),
+		CreationTime:            tea.StringValue(aliyunImage.CreationTime),
+		ProductCode:             tea.StringValue(aliyunImage.ProductCode),
+		Progress:                tea.StringValue(aliyunImage.Progress),
+		Platform:                tea.StringValue(aliyunImage.Platform),
+		IsSelfShared:            tea.StringValue(aliyunImage.IsSelfShared),
+		ImageName:               tea.StringValue(aliyunImage.ImageName),
+		Status:                  tea.StringValue(aliyunImage.Status),
+		ImageOwnerId:            tea.Int64Value(aliyunImage.ImageOwnerId),
+		IsPublic:                tea.BoolValue(aliyunImage.IsPublic),
 	}
 
 	return image
 }
 
 func (client ImageAliyunClient) GetImages() ([]*Image, error) {
-	request := ecs.CreateDescribeImagesRequest()
-	request.RegionId = client.Region
-	request.PageSize = "100"
+	request := &ecs20140526.DescribeImagesRequest{
+		RegionId: tea.String(client.Region),
+		PageSize: tea.Int32(100),
+	}
 
 	response, err := client.Client.DescribeImages(request)
 	if err != nil {
@@ -120,7 +125,7 @@ func (client ImageAliyunClient) GetImages() ([]*Image, error) {
 	}
 
 	images := []*Image{}
-	for _, image := range response.Images.Image {
+	for _, image := range response.Body.Images.Image {
 		images = append(images, getImageFromAliyunImage(image))
 		if images[len(images)-1].IsPublic {
 			images[len(images)-1].Category = "Public Image"

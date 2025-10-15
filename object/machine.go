@@ -17,7 +17,9 @@ package object
 import (
 	"fmt"
 
-	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
+	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
+	ecs20140526 "github.com/alibabacloud-go/ecs-20140526/v4/client"
+	"github.com/alibabacloud-go/tea/tea"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -183,63 +185,74 @@ func createMachineByImage(machine *Machine) (bool, error) {
 	}
 	for _, provider := range providers {
 		if provider.Type == "Aliyun" {
-			client, err2 := ecs.NewClientWithAccessKey(
-				provider.Region,
-				provider.ClientId,
-				provider.ClientSecret,
-			)
+			config := &openapi.Config{
+				AccessKeyId:     tea.String(provider.ClientId),
+				AccessKeySecret: tea.String(provider.ClientSecret),
+				RegionId:        tea.String(provider.Region),
+				Endpoint:        tea.String("ecs." + provider.Region + ".aliyuncs.com"),
+			}
+			client, err2 := ecs20140526.NewClient(config)
 			if err2 != nil {
 				return false, err2
 			}
 
-			request0 := ecs.CreateDescribeAvailableResourceRequest()
-			request0.RegionId = provider.Region
-			request0.DestinationResource = "InstanceType"
+			request0 := &ecs20140526.DescribeAvailableResourceRequest{
+				RegionId:            tea.String(provider.Region),
+				DestinationResource: tea.String("InstanceType"),
+			}
 			response0, err2 := client.DescribeAvailableResource(request0)
 			if err2 != nil {
 				return false, err2
 			}
-			supportedResource := response0.AvailableZones.AvailableZone[0].AvailableResources.AvailableResource[0].SupportedResources.SupportedResource
+			supportedResource := response0.Body.AvailableZones.AvailableZone[0].AvailableResources.AvailableResource[0].SupportedResources.SupportedResource
 
 			var instanceType string
 			for _, resource := range supportedResource {
-				if resource.Status == "Available" {
-					instanceType = resource.Value
+				if tea.StringValue(resource.Status) == "Available" {
+					instanceType = tea.StringValue(resource.Value)
 					break
 				}
 			}
 
-			request1 := ecs.CreateDescribeSecurityGroupsRequest()
+			request1 := &ecs20140526.DescribeSecurityGroupsRequest{}
 			response1, err2 := client.DescribeSecurityGroups(request1)
 			if err2 != nil {
 				return false, err2
 			}
-			securityGroupId := response1.SecurityGroups.SecurityGroup[0].SecurityGroupId
-			vpcId := response1.SecurityGroups.SecurityGroup[0].VpcId
+			securityGroupId := tea.StringValue(response1.Body.SecurityGroups.SecurityGroup[0].SecurityGroupId)
+			vpcId := tea.StringValue(response1.Body.SecurityGroups.SecurityGroup[0].VpcId)
 
-			request2 := ecs.CreateDescribeVSwitchesRequest()
-			request2.VpcId = vpcId
-			request2.RegionId = provider.Region
+			request2 := &ecs20140526.DescribeVSwitchesRequest{
+				VpcId:    tea.String(vpcId),
+				RegionId: tea.String(provider.Region),
+			}
 			response2, err2 := client.DescribeVSwitches(request2)
-			vSwitchId := response2.VSwitches.VSwitch[0].VSwitchId
+			if err2 != nil {
+				return false, err2
+			}
+			vSwitchId := tea.StringValue(response2.Body.VSwitches.VSwitch[0].VSwitchId)
 
-			request3 := ecs.CreateDescribeAvailableResourceRequest()
-			request3.RegionId = provider.Region
-			request3.DestinationResource = "SystemDisk"
-			request3.InstanceType = instanceType
+			request3 := &ecs20140526.DescribeAvailableResourceRequest{
+				RegionId:            tea.String(provider.Region),
+				DestinationResource: tea.String("SystemDisk"),
+				InstanceType:        tea.String(instanceType),
+			}
 			response3, err3 := client.DescribeAvailableResource(request3)
 			if err3 != nil {
 				return false, err3
 			}
-			systemDiskCategory := response3.AvailableZones.AvailableZone[0].AvailableResources.AvailableResource[0].SupportedResources.SupportedResource[0].Value
+			systemDiskCategory := tea.StringValue(response3.Body.AvailableZones.AvailableZone[0].AvailableResources.AvailableResource[0].SupportedResources.SupportedResource[0].Value)
 
-			request := ecs.CreateRunInstancesRequest()
-			request.InstanceType = instanceType
-			request.RegionId = provider.Region
-			request.ImageId = machine.DisplayName
-			request.SecurityGroupId = securityGroupId
-			request.VSwitchId = vSwitchId
-			request.SystemDiskCategory = systemDiskCategory
+			request := &ecs20140526.RunInstancesRequest{
+				InstanceType:    tea.String(instanceType),
+				RegionId:        tea.String(provider.Region),
+				ImageId:         tea.String(machine.DisplayName),
+				SecurityGroupId: tea.String(securityGroupId),
+				VSwitchId:       tea.String(vSwitchId),
+				SystemDisk: &ecs20140526.RunInstancesRequestSystemDisk{
+					Category: tea.String(systemDiskCategory),
+				},
+			}
 			_, err := client.RunInstances(request)
 			if err != nil {
 				return false, err

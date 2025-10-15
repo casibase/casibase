@@ -9,8 +9,11 @@ require (
 	github.com/ConnectAI-E/go-minimax v0.0.1
 	github.com/ThinkInAIXYZ/go-mcp v0.2.10
 	github.com/WqyJh/go-cosyvoice v0.1.0
-	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1585
-	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible
+	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.10
+	github.com/alibabacloud-go/ecs-20140526/v4 v4.26.10
+	github.com/alibabacloud-go/tea v1.2.2
+	github.com/alibabacloud-go/vod-20170321/v2 v2.16.10
+	github.com/aliyun/alibabacloud-oss-go-sdk-v2 v1.3.0
 	github.com/anthropics/anthropic-sdk-go v1.4.0
 	github.com/aws/aws-sdk-go-v2 v1.36.1
 	github.com/aws/aws-sdk-go-v2/config v1.27.27
@@ -58,6 +61,7 @@ require (
 	github.com/ua-parser/uap-go v0.0.0-20230823213814-f77b3e91e9dc
 	github.com/volcengine/volcengine-go-sdk v1.0.141
 	github.com/wangbin/jiebago v0.3.2
+	github.com/workweixin/weworkapi_golang v0.0.0-20200831071321-c1fdfd3d6e7d
 	golang.org/x/net v0.38.0
 	golang.org/x/text v0.25.0
 	google.golang.org/genai v1.10.0
@@ -74,9 +78,19 @@ require (
 )
 
 require (
+	github.com/alibabacloud-go/alibabacloud-gateway-spi v0.0.5 // indirect
+	github.com/alibabacloud-go/darabonba-openapi v0.1.18 // indirect
+	github.com/alibabacloud-go/debug v1.0.1 // indirect
+	github.com/alibabacloud-go/endpoint-util v1.1.0 // indirect
+	github.com/alibabacloud-go/openapi-util v0.1.1 // indirect
+	github.com/alibabacloud-go/tea-utils v1.4.5 // indirect
+	github.com/alibabacloud-go/tea-utils/v2 v2.0.6 // indirect
+	github.com/alibabacloud-go/tea-xml v1.1.3 // indirect
+	github.com/aliyun/credentials-go v1.3.10 // indirect
 	github.com/bits-and-blooms/bitset v1.20.0 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/carapace-sh/carapace-shlex v1.0.1 // indirect
+	github.com/clbanning/mxj/v2 v2.5.6 // indirect
 	github.com/consensys/gnark-crypto v0.18.0 // indirect
 	github.com/crate-crypto/go-eth-kzg v1.3.0 // indirect
 	github.com/crate-crypto/go-ipa v0.0.0-20240724233137-53bbb0ceb27a // indirect
@@ -95,7 +109,7 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/supranational/blst v0.3.14 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
-	github.com/workweixin/weworkapi_golang v0.0.0-20200831071321-c1fdfd3d6e7d // indirect
+	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/xlab/treeprint v1.2.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.3 // indirect
@@ -128,7 +142,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.30.3 // indirect
 	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/baidubce/bce-sdk-go v0.9.164 // indirect
-	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/buger/goterm v1.0.4 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
