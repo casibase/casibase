@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"time"
 
-	vod20170321 "github.com/alibabacloud-go/vod-20170321/v2/client"
 	"github.com/alibabacloud-go/tea/tea"
+	vod20170321 "github.com/alibabacloud-go/vod-20170321/v2/client"
 	"github.com/casibase/casibase/util"
 )
 
