@@ -19,11 +19,21 @@ import genai "google.golang.org/genai"
 func GenaiRawMessagesToMessages(question string, history []*RawMessage) []*genai.Content {
 	var messages []*genai.Content
 	for _, rawMessage := range history {
+		var role string
+		switch rawMessage.Author {
+		case "user", "System":
+			role = genai.RoleUser
+		case "AI", "assistant", "model":
+			role = genai.RoleModel
+		default:
+			role = genai.RoleUser
+		}
+
 		messages = append(messages, &genai.Content{
 			Parts: []*genai.Part{
 				{Text: rawMessage.Text},
 			},
-			Role: rawMessage.Author,
+			Role: role,
 		})
 	}
 	messages = append(messages, &genai.Content{
