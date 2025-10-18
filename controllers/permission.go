@@ -150,7 +150,7 @@ func checkCasdoorPermission(userId string, resource string, action string) (bool
 	clientSecret := conf.GetConfigString("clientSecret")
 
 	// 从配置文件读取 enforcerId，如果没有配置则使用默认值
-	enforcerId := beego.AppConfig.DefaultString("enforcerId", "casibase/enforcer_l38pva")
+	enforcerId , _:= object.GET_DYNAMIC_CONFIG_VALUE_BY_KEY(PERMISSION_CASDOOR_ENFORCEID, beego.AppConfig.DefaultString("enforcerId", "casibase/enforcer_l38pva"))
 
 	// 构造用户ID（不添加组织前缀，使用原始值）
 	subject := userId
