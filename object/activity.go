@@ -18,6 +18,8 @@ import (
 	"errors"
 	"fmt"
 	"time"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 type Activity struct {
@@ -60,7 +62,7 @@ func getTargetfieldValue(record *Record, fieldName string) (string, error) {
 	return "", errors.New("no matched field")
 }
 
-func GetActivities(days int, user string, fieldNames []string) (map[string][]*Activity, error) {
+func GetActivities(days int, user string, fieldNames []string, lang string) (map[string][]*Activity, error) {
 	records, err := getAllRecords()
 	if err != nil {
 		return nil, err
@@ -101,7 +103,7 @@ func GetActivities(days int, user string, fieldNames []string) (map[string][]*Ac
 		for _, fieldName := range fieldNames {
 			value, err := getTargetfieldValue(record, fieldName)
 			if err != nil {
-				return nil, fmt.Errorf("failed to parse record: name %s, field %s, error: %v", record.Name, fieldName, err)
+				return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to parse record: name %s, field %s, error: %v"), record.Name, fieldName, err)
 			}
 
 			if value != "" {

@@ -22,6 +22,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	ec2Types "github.com/aws/aws-sdk-go-v2/service/ec2/types"
+	"github.com/casibase/casibase/i18n"
 )
 
 type MachineAwsClient struct {
@@ -70,7 +71,7 @@ func getMachineFromAwsInstance(instance ec2Types.Instance) *Machine {
 	return machine
 }
 
-func (client MachineAwsClient) GetMachines() ([]*Machine, error) {
+func (client MachineAwsClient) GetMachines(lang string) ([]*Machine, error) {
 	input := &ec2.DescribeInstancesInput{}
 	output, err := client.Client.DescribeInstances(context.TODO(), input)
 	if err != nil {
@@ -88,7 +89,7 @@ func (client MachineAwsClient) GetMachines() ([]*Machine, error) {
 	return machines, nil
 }
 
-func (client MachineAwsClient) GetMachine(name string) (*Machine, error) {
+func (client MachineAwsClient) GetMachine(name string, lang string) (*Machine, error) {
 	input := &ec2.DescribeInstancesInput{
 		InstanceIds: []string{name},
 	}
@@ -99,14 +100,14 @@ func (client MachineAwsClient) GetMachine(name string) (*Machine, error) {
 	}
 
 	if len(output.Reservations) == 0 || len(output.Reservations[0].Instances) == 0 {
-		return nil, fmt.Errorf("Instance not found: %s", name)
+		return nil, fmt.Errorf(i18n.Translate(lang, "pkgmachine:Instance not found: %s"), name)
 	}
 
 	instance := output.Reservations[0].Instances[0]
 	return getMachineFromAwsInstance(instance), nil
 }
 
-func (client MachineAwsClient) UpdateMachineState(name string, state string) (bool, string, error) {
+func (client MachineAwsClient) UpdateMachineState(name string, state string, lang string) (bool, string, error) {
 	switch state {
 	case "Running":
 		input := &ec2.StartInstancesInput{
@@ -125,8 +126,8 @@ func (client MachineAwsClient) UpdateMachineState(name string, state string) (bo
 			return false, "", err
 		}
 	default:
-		return false, fmt.Sprintf("Unsupported state: %s", state), nil
+		return false, fmt.Sprintf(i18n.Translate(lang, "pkgmachine:Unsupported state: %s"), state), nil
 	}
 
-	return true, fmt.Sprintf("Instance: [%s]'s state has been successfully updated to: [%s]", name, state), nil
+	return true, fmt.Sprintf(i18n.Translate(lang, "pkgmachine:Instance: [%s]'s state has been successfully updated to: [%s]"), name, state), nil
 }

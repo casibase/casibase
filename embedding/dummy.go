@@ -49,7 +49,7 @@ func hashString(s string) int {
 	return hash
 }
 
-func (p *DummyEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+func (p *DummyEmbeddingProvider) QueryVector(text string, ctx context.Context, lang string) ([]float32, *EmbeddingResult, error) {
 	dimensions := 1536
 	freqMap := make(map[string]int)
 	words := strings.Fields(text)

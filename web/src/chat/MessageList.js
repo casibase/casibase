@@ -36,6 +36,7 @@ class MessageList extends React.Component {
       readingMessage,
       sendMessage,
       files,
+      hideThinking,
     } = this.props;
 
     const avatarSrc = store?.avatar || Setting.getDefaultAiAvatar();
@@ -76,6 +77,7 @@ class MessageList extends React.Component {
             isLoadingTTS={isLoadingTTS}
             readingMessage={readingMessage}
             sendMessage={sendMessage}
+            hideThinking={hideThinking}
           />
         )}
       />

@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
@@ -34,14 +35,14 @@ type ChainTencentChainmakerDemoClient struct {
 	Client       *tbaas.Client
 }
 
-func newChainTencentChainmakerDemoClient(clientId, clientSecret, region, networkId, chainId string) (*ChainTencentChainmakerDemoClient, error) {
+func newChainTencentChainmakerDemoClient(clientId, clientSecret, region, networkId, chainId string, lang string) (*ChainTencentChainmakerDemoClient, error) {
 	credential := common.NewCredential(clientId, clientSecret)
 	cpf := profile.NewClientProfile()
 	cpf.HttpProfile.Endpoint = "tbaas.tencentcloudapi.com"
 
 	client, err := tbaas.NewClient(credential, region, cpf)
 	if err != nil {
-		return nil, fmt.Errorf("newChainTencentChainmakerClient() error: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "chain:newChainTencentChainmakerClient() error: %v"), err)
 	}
 
 	return &ChainTencentChainmakerDemoClient{
@@ -54,7 +55,7 @@ func newChainTencentChainmakerDemoClient(clientId, clientSecret, region, network
 	}, nil
 }
 
-func (client ChainTencentChainmakerDemoClient) getQueryResult(txId string) (*tbaas.ChainMakerTransactionResult, error) {
+func (client ChainTencentChainmakerDemoClient) getQueryResult(txId string, lang string) (*tbaas.ChainMakerTransactionResult, error) {
 	request := tbaas.NewQueryChainMakerDemoTransactionRequest()
 	request.ClusterId = common.StringPtr(client.NetworkId)
 	request.ChainId = common.StringPtr(client.ChainId)
@@ -63,20 +64,20 @@ func (client ChainTencentChainmakerDemoClient) getQueryResult(txId string) (*tba
 	response, err := client.Client.QueryChainMakerDemoTransaction(request)
 	if err != nil {
 		if sdkErr, ok := err.(*errors.TencentCloudSDKError); ok {
-			return nil, fmt.Errorf("TencentCloudSDKError: %v", sdkErr)
+			return nil, fmt.Errorf(i18n.Translate(lang, "chain:TencentCloudSDKError: %v"), sdkErr)
 		}
 
-		return nil, fmt.Errorf("ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "chain:ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v"), err)
 	}
 	if *(response.Response.Result.Code) != 0 {
-		return nil, fmt.Errorf("TencentCloudSDKError, code = %d, message = %s", *(response.Response.Result.Code), *(response.Response.Result.Message))
+		return nil, fmt.Errorf(i18n.Translate(lang, "chain:TencentCloudSDKError, code = %d, message = %s"), *(response.Response.Result.Code), *(response.Response.Result.Message))
 	}
 
 	return response.Response.Result, nil
 }
 
 
-func (client *ChainTencentChainmakerDemoClient) CommitWithMethodAndContractName(data, funcName, contractName string) (string, string, string, error) {
+func (client *ChainTencentChainmakerDemoClient) CommitWithMethodAndContractName(data, funcName, contractName string, lang string) (string, string, string, error) {
 	request := tbaas.NewInvokeChainMakerDemoContractRequest()
 	request.ClusterId = common.StringPtr(client.NetworkId)
 	request.ChainId = common.StringPtr(client.ChainId)
@@ -87,17 +88,17 @@ func (client *ChainTencentChainmakerDemoClient) CommitWithMethodAndContractName(
 	response, err := client.Client.InvokeChainMakerDemoContract(request)
 	if err != nil {
 		if sdkErr, ok := err.(*errors.TencentCloudSDKError); ok {
-			return "", "", "", fmt.Errorf("TencentCloudSDKError: %v", sdkErr)
+			return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:TencentCloudSDKError: %v"), sdkErr)
 		}
 
-		return "", "", "", fmt.Errorf("ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v", err)
+		return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v"), err)
 	}
 	if *(response.Response.Result.Code) != 0 {
-		return "", "", "", fmt.Errorf("TencentCloudSDKError, code = %d, message = %s", *(response.Response.Result.Code), *(response.Response.Result.Message))
+		return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:TencentCloudSDKError, code = %d, message = %s"), *(response.Response.Result.Code), *(response.Response.Result.Message))
 	}
 
 	txId := *(response.Response.Result.TxId)
-	queryResult, err := client.getQueryResult(txId)
+	queryResult, err := client.getQueryResult(txId, lang)
 	if err != nil {
 		return "", "", "", err
 	}
@@ -105,7 +106,7 @@ func (client *ChainTencentChainmakerDemoClient) CommitWithMethodAndContractName(
 	blockId := strconv.FormatInt(*(queryResult.BlockHeight), 10)
 	return blockId, txId, "", nil
 }
-func (client *ChainTencentChainmakerDemoClient) Commit(data string) (string, string, string, error) {
+func (client *ChainTencentChainmakerDemoClient) Commit(data, lang string) (string, string, string, error) {
 	// request := tbaas.NewInvokeChainMakerDemoContractRequest()
 	// request.ClusterId = common.StringPtr(client.NetworkId)
 	// request.ChainId = common.StringPtr(client.ChainId)
@@ -133,38 +134,40 @@ func (client *ChainTencentChainmakerDemoClient) Commit(data string) (string, str
 
 	// blockId := strconv.FormatInt(*(queryResult.BlockHeight), 10)
 	// return blockId, txId, "", nil
-	return client.CommitWithMethodAndContractName(data, "save", "ChainMakerDemo")
+	return client.CommitWithMethodAndContractName(data, "save", "ChainMakerDemo",lang)
 }
 
-func (client ChainTencentChainmakerDemoClient) QueryWithMethodAndContractName(data, funcName, contractName string) (string,string, error) {
+func (client ChainTencentChainmakerDemoClient) QueryWithMethodAndContractName(data, funcName, contractName, lang string) (string, string, error) {
 	request := tbaas.NewQueryChainMakerDemoContractRequest()
 	request.ClusterId = common.StringPtr(client.NetworkId)
 	request.ChainId = common.StringPtr(client.ChainId)
 	request.ContractName = common.StringPtr(contractName)
 	request.FuncName = common.StringPtr(funcName)
 	request.FuncParam = common.StringPtr(data)
-       response, err := client.Client.QueryChainMakerDemoContract(request)
+    response, err := client.Client.QueryChainMakerDemoContract(request)
 
-       if err != nil {
-	       if sdkErr, ok := err.(*errors.TencentCloudSDKError); ok {
-		       return "", "", fmt.Errorf("TencentCloudSDKError: %v", sdkErr)
-	       }
-	       return "", "", fmt.Errorf("ChainTencentChainmakerDemoClient.Client.QueryWithMethodAndContractName() error: %v", err)
-       }
+	if err != nil {
+		if sdkErr, ok := err.(*errors.TencentCloudSDKError); ok {
+			return "", "", fmt.Errorf(i18n.Translate(lang, "chain:TencentCloudSDKError: %v"), sdkErr)
+		}
 
-       // 检查 Data 字段是否存在
-       var resStr, msgStr string
-       if response.Response.Result.Result != nil {
-	       resStr = *(response.Response.Result.Result)
-       }
-       if response.Response.Result.Message != nil {
-	       msgStr = *(response.Response.Result.Message)
-       }
-       return resStr, msgStr, nil
+		return "", "", fmt.Errorf(i18n.Translate(lang, "chain:ChainTencentChainmakerDemoClient.Client.QueryChainMakerDemoContract() error: %v"), err)
+
+	}
+
+	// 检查 Data 字段是否存在
+	var resStr, msgStr string
+	if response.Response.Result.Result != nil {
+		resStr = *(response.Response.Result.Result)
+	}
+	if response.Response.Result.Message != nil {
+		msgStr = *(response.Response.Result.Message)
+	}
+	return resStr, msgStr, nil
 }
 
-func (client ChainTencentChainmakerDemoClient) Query(txId string, data string) (string, error) {
-	queryResult, err := client.getQueryResult(txId)
+func (client ChainTencentChainmakerDemoClient) Query(txId string, data string, lang string) (string, error) {
+	queryResult, err := client.getQueryResult(txId,lang)
 	if err != nil {
 		return "", err
 	}

@@ -19,15 +19,17 @@ import (
 	"fmt"
 	"mime"
 	"strings"
+
+	"github.com/casibase/casibase/i18n"
 )
 
-func getExtFromMimeType(mimeType string) (string, error) {
+func getExtFromMimeType(mimeType string, lang string) (string, error) {
 	exts, err := mime.ExtensionsByType(mimeType)
 	if err != nil {
 		return "", err
 	}
 	if len(exts) == 0 {
-		return "", fmt.Errorf("getExtFromMimeType() error: unknown MimeType: %s", mimeType)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:getExtFromMimeType() error: unknown MimeType: %s"), mimeType)
 	}
 
 	res := ""
@@ -39,15 +41,15 @@ func getExtFromMimeType(mimeType string) (string, error) {
 	return res, nil
 }
 
-func parseBase64Image(data string) ([]byte, error) {
+func parseBase64Image(data string, lang string) ([]byte, error) {
 	parts := strings.SplitN(data, ";", 2)
 	if len(parts) < 2 {
-		return nil, fmt.Errorf("parseBase64Image() error: invalid image format")
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:parseBase64Image() error: invalid image format"))
 	}
 
 	b64Parts := strings.SplitN(parts[1], ",", 2)
 	if len(b64Parts) < 2 {
-		return nil, fmt.Errorf("parseBase64Image() error: invalid image format")
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:parseBase64Image() error: invalid image format"))
 	}
 
 	imageContent, err := base64.StdEncoding.DecodeString(b64Parts[1])

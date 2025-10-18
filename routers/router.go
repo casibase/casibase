@@ -174,6 +174,7 @@ func initAPI() {
 	beego.Router("/api/update-permission", &controllers.ApiController{}, "POST:UpdatePermission")
 	beego.Router("/api/add-permission", &controllers.ApiController{}, "POST:AddPermission")
 	beego.Router("/api/delete-permission", &controllers.ApiController{}, "POST:DeletePermission")
+	beego.Router("/api/check-page-permission", &controllers.ApiController{}, "GET:CheckPagePermission")
 
 	beego.Router("/api/get-nodes", &controllers.ApiController{}, "GET:GetNodes")
 	beego.Router("/api/get-node", &controllers.ApiController{}, "GET:GetNode")
@@ -268,4 +269,5 @@ func initAPI() {
 	beego.Router("/api/get-dynamic-configs", &controllers.ApiController{}, "GET:GetDynamicConfigs")
 	beego.Router("/api/get-dynamic-config-by-key", &controllers.ApiController{}, "GET:GetDynamicConfigValueByKey")
 	
+	beego.Router("/api/wecom-bot/callback/:botId", &controllers.ApiController{}, "GET:WecomBotVerifyUrl;POST:WecomBotHandleMessage")
 }

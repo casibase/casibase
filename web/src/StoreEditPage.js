@@ -610,6 +610,18 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{ marginTop: "20px" }} >
           <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("store:Vector stores"), i18next.t("store:Vector stores - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} mode="tags" style={{ width: "100%" }} value={this.state.store.vectorStores} onChange={(value => { this.updateStoreField("vectorStores", value); })}>
+              {
+                this.state.stores?.filter(item => item.name !== this.state.store.name).map((item, index) => <Option key={item.name} value={item.name}>{`${item.displayName} (${item.name})`}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Child stores"), i18next.t("store:Child stores - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -651,6 +663,16 @@ class StoreEditPage extends React.Component {
           <Col span={1}>
             <Switch checked={this.state.store.disableFileUpload} onChange={checked => {
               this.updateStoreField("disableFileUpload", checked);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("store:Hide thinking"), i18next.t("store:Hide thinking - Tooltip"))} :
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.store.hideThinking} onChange={checked => {
+              this.updateStoreField("hideThinking", checked);
             }} />
           </Col>
         </Row>

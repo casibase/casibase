@@ -292,7 +292,7 @@ class RecordListPage extends BaseListPage {
         },
       },
       (this.state.enableCrossChain ? {
-        title: i18next.t("vector:Provider") + " 2",
+        title: i18next.t("general:Provider 2"),
         dataIndex: "provider2",
         key: "provider2",
         width: "150px",
@@ -308,7 +308,7 @@ class RecordListPage extends BaseListPage {
           );
         },
       } : {
-        title: i18next.t("vector:Provider") + " 2",
+        title: i18next.t("general:Provider 2"),
         hidden: true,
       }),
       {
@@ -567,7 +567,7 @@ class RecordListPage extends BaseListPage {
         },
       },
       (this.state.enableCrossChain ? {
-        title: i18next.t("general:Block") + " 2",
+        title: i18next.t("general:Block 2"),
         dataIndex: "block2",
         key: "block2",
         width: "110px",
@@ -578,13 +578,13 @@ class RecordListPage extends BaseListPage {
           return Setting.getBlockBrowserUrl(this.state.providerMap, record, text, false);
         },
       } : {
-        title: i18next.t("general:Block") + " 2",
+        title: i18next.t("general:Block 2"),
         hidden: true,
       }),
       {
         title: i18next.t("general:Action"),
-        dataIndex: "op",
-        key: "op",
+        dataIndex: "recordAction",
+        key: "recordAction",
         width: this.state.enableCrossChain ? "370px" : "270px",
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, record, index) => {
@@ -696,7 +696,7 @@ class RecordListPage extends BaseListPage {
         },
       },
     ];
-    const filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
+    const filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems, "recordAction");
 
 
     const paginationProps = {

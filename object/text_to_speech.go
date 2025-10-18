@@ -4,17 +4,18 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/tts"
 	"github.com/casibase/casibase/util"
 )
 
-func addProviderMessage(providerId, text string) (*Message, *Chat, *Provider, error) {
+func addProviderMessage(providerId, text string, lang string) (*Message, *Chat, *Provider, error) {
 	provider, err := GetProvider(providerId)
 	if err != nil {
 		return nil, nil, nil, err
 	}
 	if provider == nil {
-		return nil, nil, nil, fmt.Errorf("The provider: %s is not found", providerId)
+		return nil, nil, nil, fmt.Errorf(i18n.Translate(lang, "object:The provider: %s is not found"), providerId)
 	}
 	chatId := util.GetChatFromProvider(provider.Owner, provider.Name)
 	chat, err := GetChat(chatId)
@@ -64,13 +65,13 @@ func createProviderChat(chatId string, provider *Provider) (*Chat, error) {
 	return chat, nil
 }
 
-func getMessageAndChat(messageId string) (*Message, *Chat, error) {
+func getMessageAndChat(messageId string, lang string) (*Message, *Chat, error) {
 	message, err := GetMessage(messageId)
 	if err != nil {
 		return nil, nil, err
 	}
 	if message == nil {
-		return nil, nil, fmt.Errorf("The message: %s is not found", messageId)
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "object:The message: %s is not found"), messageId)
 	}
 
 	chatId := util.GetIdFromOwnerAndName(message.Owner, message.Chat)
@@ -79,20 +80,20 @@ func getMessageAndChat(messageId string) (*Message, *Chat, error) {
 		return nil, nil, err
 	}
 	if chat == nil {
-		return nil, nil, fmt.Errorf("The chat: %s is not found", chatId)
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "object:The chat: %s is not found"), chatId)
 	}
 
 	return message, chat, nil
 }
 
 // getStoreProvider retrieves the text-to-speech provider for a given store ID
-func getStoreProvider(storeId string) (*Provider, error) {
+func getStoreProvider(storeId string, lang string) (*Provider, error) {
 	store, err := GetStore(storeId)
 	if err != nil {
 		return nil, err
 	}
 	if store == nil {
-		return nil, fmt.Errorf("The store: %s is not found", storeId)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:The store: %s is not found"), storeId)
 	}
 
 	provider, err := store.GetTextToSpeechProvider()
@@ -100,38 +101,38 @@ func getStoreProvider(storeId string) (*Provider, error) {
 		return nil, err
 	}
 	if provider == nil {
-		return nil, fmt.Errorf("The text-to-speech provider for store: %s is not found", store.GetId())
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:The text-to-speech provider for store: %s is not found"), store.GetId())
 	}
 
 	return provider, nil
 }
 
 // PrepareTextToSpeech prepares the text-to-speech conversion
-func PrepareTextToSpeech(storeId, providerId, messageId, text string) (*Message, *Chat, tts.TextToSpeechProvider, context.Context, error) {
+func PrepareTextToSpeech(storeId, providerId, messageId, text string, lang string) (*Message, *Chat, tts.TextToSpeechProvider, context.Context, error) {
 	var message *Message
 	var chat *Chat
 	var provider *Provider
 	var err error
 
 	if messageId == "" {
-		message, chat, provider, err = addProviderMessage(providerId, text)
+		message, chat, provider, err = addProviderMessage(providerId, text, lang)
 		if err != nil {
 			return nil, nil, nil, nil, err
 		}
 	} else {
-		message, chat, err = getMessageAndChat(messageId)
+		message, chat, err = getMessageAndChat(messageId, lang)
 		if err != nil {
 			return nil, nil, nil, nil, err
 		}
 
-		provider, err = getStoreProvider(storeId)
+		provider, err = getStoreProvider(storeId, lang)
 	}
 
 	if err != nil {
 		return nil, nil, nil, nil, err
 	}
 
-	ttsProvider, err := provider.GetTextToSpeechProvider()
+	ttsProvider, err := provider.GetTextToSpeechProvider(lang)
 	if err != nil {
 		return nil, nil, nil, nil, err
 	}

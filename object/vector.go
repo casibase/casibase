@@ -61,9 +61,9 @@ func GetVectors(owner string) ([]*Vector, error) {
 	return vectors, nil
 }
 
-func getVectorsByProvider(storeName string, provider string) ([]*Vector, error) {
+func getVectorsByProvider(relatedStores []string, provider string) ([]*Vector, error) {
 	vectors := []*Vector{}
-	err := adapter.engine.Find(&vectors, &Vector{Store: storeName, Provider: provider})
+	err := adapter.engine.In("store", relatedStores).Find(&vectors, &Vector{Provider: provider})
 	if err != nil {
 		return vectors, err
 	}
@@ -104,7 +104,7 @@ func GetVector(id string) (*Vector, error) {
 	return getVector(owner, name)
 }
 
-func UpdateVector(id string, vector *Vector) (bool, error) {
+func UpdateVector(id string, vector *Vector, lang string) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	oldVector, err := getVector(owner, name)
 	if err != nil {
@@ -118,7 +118,7 @@ func UpdateVector(id string, vector *Vector) (bool, error) {
 		if vector.Text == "" {
 			vector.Data = []float32{}
 		} else {
-			_, err = refreshVector(vector)
+			_, err = refreshVector(vector, lang)
 			if err != nil {
 				return false, err
 			}

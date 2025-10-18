@@ -89,7 +89,7 @@ func (c *ApiController) GetRecords() {
 func (c *ApiController) GetRecord() {
 	id := c.Input().Get("id")
 
-	record, err := object.GetRecord(id)
+	record, err := object.GetRecord(id, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -135,7 +135,7 @@ func (c *ApiController) UpdateRecord() {
 		return
 	}
 
-	c.Data["json"] = wrapActionResponse(object.UpdateRecord(id, &record))
+	c.Data["json"] = wrapActionResponse(object.UpdateRecord(id, &record, c.GetAcceptLanguage()))
 	c.ServeJSON()
 }
 
@@ -161,7 +161,7 @@ func (c *ApiController) AddRecord() {
 		record.UserAgent = c.getUserAgent()
 	}
 
-	c.Data["json"] = wrapActionResponse2(object.AddRecord(&record))
+	c.Data["json"] = wrapActionResponse2(object.AddRecord(&record, c.GetAcceptLanguage()))
 	c.ServeJSON()
 }
 
@@ -207,7 +207,7 @@ func (c *ApiController) AddRecords() {
 		}
 	}
 
-	c.Data["json"] = wrapActionResponse2(object.AddRecords(records, syncEnabled))
+	c.Data["json"] = wrapActionResponse2(object.AddRecords(records, syncEnabled, c.GetAcceptLanguage()))
 	c.ServeJSON()
 }
 

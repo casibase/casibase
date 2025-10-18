@@ -70,7 +70,7 @@ func getMachineFromComputepbInstance(instance *computepb.Instance) *Machine {
 	return machine
 }
 
-func (client MachineGcpClient) GetMachines() ([]*Machine, error) {
+func (client MachineGcpClient) GetMachines(lang string) ([]*Machine, error) {
 	ctx := context.Background()
 	var maxResults *uint32
 	value := uint32(100)
@@ -95,7 +95,7 @@ func (client MachineGcpClient) GetMachines() ([]*Machine, error) {
 	return machines, nil
 }
 
-func (client MachineGcpClient) GetMachine(name string) (*Machine, error) {
+func (client MachineGcpClient) GetMachine(name string, lang string) (*Machine, error) {
 	ctx := context.Background()
 	req := &computepb.GetInstanceRequest{
 		Project:  client.ProjectID,
@@ -112,8 +112,8 @@ func (client MachineGcpClient) GetMachine(name string) (*Machine, error) {
 	return machine, nil
 }
 
-func (client MachineGcpClient) UpdateMachineState(name string, state string) (bool, string, error) {
-	machine, err := client.GetMachine(name)
+func (client MachineGcpClient) UpdateMachineState(name string, state string, lang string) (bool, string, error) {
+	machine, err := client.GetMachine(name, lang)
 	if err != nil {
 		return false, "", err
 	}

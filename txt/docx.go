@@ -19,11 +19,12 @@ import (
 	"strings"
 
 	"github.com/carmel/gooxml/document"
+	"github.com/casibase/casibase/i18n"
 )
 
-func GetTextFromDocx(path string) (string, error) {
+func GetTextFromDocx(path string, lang string) (string, error) {
 	if markitdownExists {
-		return GetTextFromMarkitdown(path)
+		return GetTextFromMarkitdown(path, lang)
 	}
 
 	docx, err := document.Open(path)
@@ -47,7 +48,7 @@ func GetTextFromDocx(path string) (string, error) {
 	}
 
 	if len(paragraphs) == 0 {
-		return "", fmt.Errorf(".docx file is empty")
+		return "", fmt.Errorf(i18n.Translate(lang, "txt:.docx file is empty"))
 	}
 
 	text := strings.Join(paragraphs, "")

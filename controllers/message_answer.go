@@ -111,7 +111,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 		question = questionMessage.Text
 
-		question, err = refineQuestionTextViaParsingUrlContent(question)
+		question, err = refineQuestionTextViaParsingUrlContent(question, c.GetAcceptLanguage())
 		if err != nil {
 			c.ResponseErrorStream(message, err.Error())
 			return
@@ -142,19 +142,19 @@ func (c *ApiController) GetMessageAnswer() {
 		modelProviderName = chat.ModelProvider
 	}
 
-	modelProvider, modelProviderObj, err := object.GetModelProviderFromContext("admin", modelProviderName)
+	modelProvider, modelProviderObj, err := object.GetModelProviderFromContext("admin", modelProviderName, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
-	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2)
+	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
-	_, agentProviderObj, err := object.GetAgentProviderFromContext("admin", store.AgentProvider)
+	_, agentProviderObj, err := object.GetAgentProviderFromContext("admin", store.AgentProvider, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -171,9 +171,9 @@ func (c *ApiController) GetMessageAnswer() {
 		knowledgeCount = 10
 	}
 
-	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(store.Name, store.SearchProvider, embeddingProvider, embeddingProviderObj, modelProvider, "admin", question, knowledgeCount)
+	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(store.Name, store.VectorStores, store.SearchProvider, embeddingProvider, embeddingProviderObj, modelProvider, "admin", question, knowledgeCount, c.GetAcceptLanguage())
 	if err != nil && err.Error() != "no knowledge vectors found" {
-		err = fmt.Errorf("object.GetNearestKnowledge() error, %s", err.Error())
+		err = fmt.Errorf(c.T("message_answer:object.GetNearestKnowledge() error, %s"), err.Error())
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
@@ -227,12 +227,12 @@ func (c *ApiController) GetMessageAnswer() {
 			AgentClients:  agentClients,
 			AgentMessages: messages,
 		}
-		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, store.Prompt, knowledge, agentInfo)
+		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, store.Prompt, knowledge, agentInfo, c.GetAcceptLanguage())
 	} else {
 		if isReasonModel(modelProvider.SubType) {
-			modelResult, err = QueryCarrierText(question, writer, history, store.Prompt, knowledge, modelProviderObj, chat.NeedTitle, store.SuggestionCount)
+			modelResult, err = QueryCarrierText(question, writer, history, store.Prompt, knowledge, modelProviderObj, chat.NeedTitle, store.SuggestionCount, c.GetAcceptLanguage())
 		} else {
-			modelResult, err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge, nil)
+			modelResult, err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge, nil, c.GetAcceptLanguage())
 		}
 	}
 	if err != nil {
@@ -365,7 +365,7 @@ func (c *ApiController) GetAnswer() {
 		}
 	}
 
-	answer, modelResult, err := object.GetAnswer(provider, question)
+	answer, modelResult, err := object.GetAnswer(provider, question, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -409,7 +409,7 @@ func (c *ApiController) GetAnswer() {
 		}
 	}
 
-	answer, modelResult, err = object.GetAnswer(provider, question)
+	answer, modelResult, err = object.GetAnswer(provider, question, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

@@ -19,21 +19,22 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aliyun/alibaba-cloud-sdk-go/services/vod"
+	"github.com/alibabacloud-go/tea/tea"
+	vod20170321 "github.com/alibabacloud-go/vod-20170321/v2/client"
 	"github.com/casibase/casibase/util"
 )
 
 func GetVideoPlayAuth(videoId string) (string, error) {
-	r := vod.CreateGetVideoPlayAuthRequest()
-	r.VideoId = videoId
-	r.AcceptFormat = "JSON"
+	request := &vod20170321.GetVideoPlayAuthRequest{
+		VideoId: tea.String(videoId),
+	}
 
-	resp, err := VodClient.GetVideoPlayAuth(r)
+	resp, err := VodClient.GetVideoPlayAuth(request)
 	if err != nil {
 		return "", err
 	}
 
-	playAuth := resp.PlayAuth
+	playAuth := tea.StringValue(resp.Body.PlayAuth)
 	return playAuth, nil
 }
 
@@ -55,18 +56,18 @@ type UploadAuth struct {
 func UploadVideo(fileId string, filename string, fileBuffer *bytes.Buffer) (string, error) {
 	// https://help.aliyun.com/document_detail/476208.html
 
-	r := vod.CreateCreateUploadVideoRequest()
-	r.Scheme = "https"
-	r.FileName = filename
-	r.Title = fileId
-	resp, err := VodClient.CreateUploadVideo(r)
+	request := &vod20170321.CreateUploadVideoRequest{
+		FileName: tea.String(filename),
+		Title:    tea.String(fileId),
+	}
+	resp, err := VodClient.CreateUploadVideo(request)
 	if err != nil {
 		return "", nil
 	}
 
-	encodedUploadAddress := resp.UploadAddress
-	videoId := resp.VideoId
-	encodedUploadAuth := resp.UploadAuth
+	encodedUploadAddress := tea.StringValue(resp.Body.UploadAddress)
+	videoId := tea.StringValue(resp.Body.VideoId)
+	encodedUploadAuth := tea.StringValue(resp.Body.UploadAuth)
 
 	uploadAddressStr := util.DecodeBase64(encodedUploadAddress)
 	uploadAuthStr := util.DecodeBase64(encodedUploadAuth)
@@ -97,31 +98,31 @@ func UploadVideo(fileId string, filename string, fileBuffer *bytes.Buffer) (stri
 }
 
 func GetVideoCoverUrl(videoId string) string {
-	r := vod.CreateGetVideoInfoRequest()
-	r.VideoId = videoId
-	r.AcceptFormat = "JSON"
+	request := &vod20170321.GetVideoInfoRequest{
+		VideoId: tea.String(videoId),
+	}
 
-	resp, err := VodClient.GetVideoInfo(r)
+	resp, err := VodClient.GetVideoInfo(request)
 	if err != nil {
 		fmt.Println(err)
 		return err.Error()
 	}
 
-	return resp.Video.CoverURL
+	return tea.StringValue(resp.Body.Video.CoverURL)
 }
 
 func GetVideoFileUrl(videoId string) string {
-	r := vod.CreateGetMezzanineInfoRequest()
-	r.VideoId = videoId
-	r.AcceptFormat = "JSON"
+	request := &vod20170321.GetMezzanineInfoRequest{
+		VideoId: tea.String(videoId),
+	}
 
-	resp, err := VodClient.GetMezzanineInfo(r)
+	resp, err := VodClient.GetMezzanineInfo(request)
 	if err != nil {
 		fmt.Println(err)
 		return err.Error()
 	}
 
-	downloadUrl := resp.Mezzanine.FileURL
+	downloadUrl := tea.StringValue(resp.Body.Mezzanine.FileURL)
 	if downloadUrl == "" {
 		fmt.Println(err)
 		return err.Error()

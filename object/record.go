@@ -21,6 +21,7 @@ import (
 
 	"github.com/beego/beego/context"
 	"github.com/casibase/casibase/conf"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 )
 
@@ -150,12 +151,12 @@ func GetPaginationRecords(owner string, offset, limit int, field, value, sortFie
 }
 
 // GetRecord retrieves a record by its ID or owner/name format.
-func GetRecord(id string) (*Record, error) {
+func GetRecord(id string, lang string) (*Record, error) {
 	record := &Record{}
 
 	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse record identifier '%s': neither a valid owner/[id|name] format", id)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to parse record identifier '%s': neither a valid owner/[id|name] format"), id)
 	}
 	// Try to parse as integer ID first
 	if recordId, err := util.ParseIntWithError(name); err == nil && recordId > 0 {
@@ -168,7 +169,7 @@ func GetRecord(id string) (*Record, error) {
 
 	existed, err := adapter.engine.Get(record)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get record with id '%s': %w", id, err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to get record with id '%s': %w"), id, err)
 	}
 	
 	if existed {
@@ -224,8 +225,8 @@ func prepareRecord(record *Record, providerFirst, providerSecond *Provider) (boo
 	return true, nil
 }
 
-func UpdateRecord(id string, record *Record) (bool, error) {
-	p, err := GetRecord(id)
+func UpdateRecord(id string, record *Record, lang string) (bool, error) {
+	p, err := GetRecord(id, lang)
 	if err != nil {
 		return false, err
 	} else if p == nil {
@@ -260,8 +261,8 @@ func UpdateRecordInternal(id int, record Record) error {
 	return nil
 }
 
-func UpdateRecordFields(id string, fields map[string]interface{}) (bool, error) {
-	p, err := GetRecord(id)
+func UpdateRecordFields(id string, fields map[string]interface{}, lang string) (bool, error) {
+	p, err := GetRecord(id, lang)
 	if err != nil {
 		return false, err
 	} else if p == nil {
@@ -332,7 +333,7 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	return &record, nil
 }
 
-func AddRecord(record *Record) (bool, interface{}, error) {
+func AddRecord(record *Record, lang string) (bool, interface{}, error) {
 	providerFirst, providerSecond, err := GetTwoActiveBlockchainProvider(record.Owner)
 	if err != nil {
 		return false, nil, err
@@ -357,7 +358,7 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 	data := map[string]interface{}{"name": record.Name}
 
 	if record.NeedCommit {
-		_, commitResult, err := CommitRecord(record)
+		_, commitResult, err := CommitRecord(record, lang)
 		if err != nil {
 			data["error_text"] = err.Error()
 		} else {
@@ -373,7 +374,7 @@ func AddRecord(record *Record) (bool, interface{}, error) {
 	return affected != 0, data, nil
 }
 
-func AddRecords(records []*Record, syncEnabled bool) (bool, interface{}, error) {
+func AddRecords(records []*Record, syncEnabled bool, lang string) (bool, interface{}, error) {
 	if len(records) == 0 {
 		return false, nil, nil
 	}
@@ -420,7 +421,7 @@ func AddRecords(records []*Record, syncEnabled bool) (bool, interface{}, error) 
 			for _, idx := range needCommitRecordsIdx {
 				needCommitRecords = append(needCommitRecords, records[idx])
 			}
-			_, commitResults := CommitRecords(needCommitRecords)
+			_, commitResults := CommitRecords(needCommitRecords, lang)
 			for i, idx := range needCommitRecordsIdx {
 				data[idx] = commitResults[i]
 			}
@@ -459,18 +460,18 @@ func (record *Record) getId() string {
 	return fmt.Sprintf("%s/%s", record.Owner, record.Name)
 }
 
-func (r *Record) updateErrorText(errText string) (bool, error) {
+func (r *Record) updateErrorText(errText string, lang string) (bool, error) {
 	r.ErrorText = errText
 	if r.Id != 0 {
 		affected, err := adapter.engine.Where("owner = ? AND name = ?", r.Owner, r.Name).Cols("error_text").Update(r)
 		if err != nil {
-			return affected > 0, fmt.Errorf("failed to update error text for record %s: %s", r.getId(), err)
+			return affected > 0, fmt.Errorf(i18n.Translate(lang, "object:failed to update error text for record %s: %s"), r.getId(), err)
 		}
 		return affected > 0, nil
 	} else {
 		affected, err := adapter.engine.ID(r.Id).Cols("error_text").Update(r)
 		if err != nil {
-			return affected > 0, fmt.Errorf("failed to update error text for record %s: %s", r.getUniqueId(), err)
+			return affected > 0, fmt.Errorf(i18n.Translate(lang, "object:failed to update error text for record %s: %s"), r.getUniqueId(), err)
 		}
 		return affected > 0, nil
 	}

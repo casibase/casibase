@@ -22,6 +22,7 @@ import (
 	"regexp"
 
 	"github.com/beego/beego/logs"
+	"github.com/casibase/casibase/i18n"
 	"github.com/volcengine/volcengine-go-sdk/service/arkruntime"
 	"github.com/volcengine/volcengine-go-sdk/service/arkruntime/model"
 	"github.com/volcengine/volcengine-go-sdk/volcengine"
@@ -97,7 +98,7 @@ https://www.volcengine.com/docs/82379/1099320
 `
 }
 
-func (p *VolcengineModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *VolcengineModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
 		// Deep thinking models
@@ -166,7 +167,7 @@ func (p *VolcengineModelProvider) calculatePrice(modelResult *ModelResult) error
 		outputPrice := getPrice(modelResult.ResponseTokenCount, priceItem[1])
 		price = inputPrice + outputPrice
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), subType)
 	}
 
 	modelResult.TotalPrice = price
@@ -174,11 +175,11 @@ func (p *VolcengineModelProvider) calculatePrice(modelResult *ModelResult) error
 	return nil
 }
 
-func (p *VolcengineModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *VolcengineModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 	client := arkruntime.NewClientWithApiKey(p.apiKey)
 
@@ -243,7 +244,7 @@ func (p *VolcengineModelProvider) QueryText(question string, writer io.Writer, h
 		}
 	}
 
-	err = p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

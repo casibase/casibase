@@ -17,7 +17,10 @@ package pkgmachine
 import (
 	"fmt"
 
-	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
+	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
+	ecs20140526 "github.com/alibabacloud-go/ecs-20140526/v4/client"
+	"github.com/alibabacloud-go/tea/tea"
+	"github.com/casibase/casibase/i18n"
 )
 
 type Machine struct {
@@ -47,15 +50,17 @@ type Machine struct {
 }
 
 type MachineAliyunClient struct {
-	Client *ecs.Client
+	Client *ecs20140526.Client
 }
 
 func newMachineAliyunClient(accessKeyId string, accessKeySecret string, region string) (MachineAliyunClient, error) {
-	client, err := ecs.NewClientWithAccessKey(
-		region,
-		accessKeyId,
-		accessKeySecret,
-	)
+	config := &openapi.Config{
+		AccessKeyId:     tea.String(accessKeyId),
+		AccessKeySecret: tea.String(accessKeySecret),
+		RegionId:        tea.String(region),
+		Endpoint:        tea.String("ecs." + region + ".aliyuncs.com"),
+	}
+	client, err := ecs20140526.NewClient(config)
 	if err != nil {
 		return MachineAliyunClient{}, err
 	}
@@ -63,46 +68,49 @@ func newMachineAliyunClient(accessKeyId string, accessKeySecret string, region s
 	return MachineAliyunClient{Client: client}, nil
 }
 
-func getMachineFromInstance(instance ecs.Instance) *Machine {
+func getMachineFromInstance(instance *ecs20140526.DescribeInstancesResponseBodyInstancesInstance) *Machine {
 	machine := &Machine{
-		Name:        instance.InstanceName,
-		Id:          instance.InstanceId,
-		CreatedTime: getLocalTimestamp(instance.CreationTime),
-		UpdatedTime: getLocalTimestamp(instance.LastInvokedTime),
-		ExpireTime:  getLocalTimestamp(instance.ExpiredTime),
-		DisplayName: instance.InstanceName,
-		Region:      instance.RegionId,
-		Zone:        instance.ZoneId,
-		Category:    instance.InstanceTypeFamily,
-		Type:        instance.InstanceChargeType,
-		Size:        instance.InstanceType,
-		State:       instance.Status,
-		Image:       instance.ImageId,
-		Os:          instance.OSName,
-		CpuSize:     fmt.Sprintf("%d", instance.Cpu),
-		MemSize:     fmt.Sprintf("%d", instance.Memory),
+		Name:        tea.StringValue(instance.InstanceName),
+		Id:          tea.StringValue(instance.InstanceId),
+		CreatedTime: getLocalTimestamp(tea.StringValue(instance.CreationTime)),
+		UpdatedTime: getLocalTimestamp(tea.StringValue(instance.StartTime)),
+		ExpireTime:  getLocalTimestamp(tea.StringValue(instance.ExpiredTime)),
+		DisplayName: tea.StringValue(instance.InstanceName),
+		Region:      tea.StringValue(instance.RegionId),
+		Zone:        tea.StringValue(instance.ZoneId),
+		Category:    tea.StringValue(instance.InstanceTypeFamily),
+		Type:        tea.StringValue(instance.InstanceChargeType),
+		Size:        tea.StringValue(instance.InstanceType),
+		State:       tea.StringValue(instance.Status),
+		Image:       tea.StringValue(instance.ImageId),
+		Os:          tea.StringValue(instance.OSName),
+		CpuSize:     fmt.Sprintf("%d", tea.Int32Value(instance.Cpu)),
+		MemSize:     fmt.Sprintf("%d", tea.Int32Value(instance.Memory)),
 	}
 
-	for _, tag := range instance.Tags.Tag {
-		machine.Tag += fmt.Sprintf("%s=%s,", tag.Key, tag.Value)
+	if instance.Tags != nil && instance.Tags.Tag != nil {
+		for _, tag := range instance.Tags.Tag {
+			machine.Tag += fmt.Sprintf("%s=%s,", tea.StringValue(tag.TagKey), tea.StringValue(tag.TagValue))
+		}
 	}
 
-	if instance.EipAddress.IpAddress != "" {
-		machine.PublicIp = instance.EipAddress.IpAddress
-	} else if len(instance.PublicIpAddress.IpAddress) > 0 {
-		machine.PublicIp = instance.PublicIpAddress.IpAddress[0]
+	if instance.EipAddress != nil && tea.StringValue(instance.EipAddress.IpAddress) != "" {
+		machine.PublicIp = tea.StringValue(instance.EipAddress.IpAddress)
+	} else if instance.PublicIpAddress != nil && len(instance.PublicIpAddress.IpAddress) > 0 {
+		machine.PublicIp = tea.StringValue(instance.PublicIpAddress.IpAddress[0])
 	}
 
-	if len(instance.VpcAttributes.PrivateIpAddress.IpAddress) > 0 {
-		machine.PrivateIp = instance.VpcAttributes.PrivateIpAddress.IpAddress[0]
+	if instance.VpcAttributes != nil && instance.VpcAttributes.PrivateIpAddress != nil && len(instance.VpcAttributes.PrivateIpAddress.IpAddress) > 0 {
+		machine.PrivateIp = tea.StringValue(instance.VpcAttributes.PrivateIpAddress.IpAddress[0])
 	}
 
 	return machine
 }
 
-func (client MachineAliyunClient) GetMachines() ([]*Machine, error) {
-	request := ecs.CreateDescribeInstancesRequest()
-	request.PageSize = "100"
+func (client MachineAliyunClient) GetMachines(lang string) ([]*Machine, error) {
+	request := &ecs20140526.DescribeInstancesRequest{
+		PageSize: tea.Int32(100),
+	}
 
 	response, err := client.Client.DescribeInstances(request)
 	if err != nil {
@@ -110,60 +118,65 @@ func (client MachineAliyunClient) GetMachines() ([]*Machine, error) {
 	}
 
 	machines := []*Machine{}
-	for _, instance := range response.Instances.Instance {
-		machine := getMachineFromInstance(instance)
-		machines = append(machines, machine)
+	if response.Body.Instances != nil && response.Body.Instances.Instance != nil {
+		for _, instance := range response.Body.Instances.Instance {
+			machine := getMachineFromInstance(instance)
+			machines = append(machines, machine)
+		}
 	}
 
 	return machines, nil
 }
 
-func (client MachineAliyunClient) GetMachine(name string) (*Machine, error) {
-	request := ecs.CreateDescribeInstancesRequest()
-	request.InstanceName = name
+func (client MachineAliyunClient) GetMachine(name string, lang string) (*Machine, error) {
+	request := &ecs20140526.DescribeInstancesRequest{
+		InstanceName: tea.String(name),
+	}
 
 	response, err := client.Client.DescribeInstances(request)
 	if err != nil {
 		return nil, err
 	}
 
-	if len(response.Instances.Instance) == 0 {
+	if response.Body.Instances == nil || response.Body.Instances.Instance == nil || len(response.Body.Instances.Instance) == 0 {
 		return nil, nil
 	}
 
-	instance := response.Instances.Instance[0]
+	instance := response.Body.Instances.Instance[0]
 	machine := getMachineFromInstance(instance)
 	return machine, nil
 }
 
-func (client MachineAliyunClient) UpdateMachineState(name string, state string) (bool, string, error) {
-	machine, err := client.GetMachine(name)
+func (client MachineAliyunClient) UpdateMachineState(name string, state string, lang string) (bool, string, error) {
+	machine, err := client.GetMachine(name, lang)
 	if err != nil {
 		return false, "", err
 	}
 
 	if machine == nil {
-		return false, fmt.Sprintf("Instance: [%s] is not found", name), nil
+		return false, fmt.Sprintf(i18n.Translate(lang, "pkgmachine:Instance: [%s] is not found"), name), nil
 	}
 
 	instanceId := machine.Id
 
 	switch state {
 	case "Running":
-		startRequest := ecs.CreateStartInstanceRequest()
-		startRequest.InstanceId = instanceId
+		startRequest := &ecs20140526.StartInstanceRequest{
+			InstanceId: tea.String(instanceId),
+		}
 		_, err = client.Client.StartInstance(startRequest)
 	case "Stopped":
-		stopRequest := ecs.CreateStopInstanceRequest()
-		stopRequest.InstanceId = instanceId
+		stopRequest := &ecs20140526.StopInstanceRequest{
+			InstanceId: tea.String(instanceId),
+		}
 		_, err = client.Client.StopInstance(stopRequest)
 	default:
-		return false, fmt.Sprintf("Unsupported state: %s", state), nil
+		return false, fmt.Sprintf(i18n.Translate(lang, "pkgmachine:Unsupported state: %s"), state), nil
 	}
 
 	if err != nil {
 		return false, "", err
 	}
 
-	return true, fmt.Sprintf("Instance: [%s]'s state has been successfully updated to: [%s]", name, state), nil
+	return true, fmt.Sprintf(i18n.Translate(lang, "pkgmachine:Instance: [%s]'s state has been successfully updated to: [%s]"), name, state), nil
 }

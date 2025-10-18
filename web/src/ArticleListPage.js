@@ -96,6 +96,7 @@ class ArticleListPage extends BaseListPage {
         key: "name",
         width: "160px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/articles/${text}`}>
@@ -110,6 +111,7 @@ class ArticleListPage extends BaseListPage {
         key: "displayName",
         width: "200px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        ...this.getColumnSearchProps("displayName"),
       },
       {
         title: i18next.t("store:Workflow"),
@@ -117,6 +119,7 @@ class ArticleListPage extends BaseListPage {
         key: "workflow",
         width: "250px",
         sorter: (a, b) => a.workflow.localeCompare(b.workflow),
+        ...this.getColumnSearchProps("workflow"),
         render: (text, record, index) => {
           return (
             <Link to={`/workflows/${text}`}>
@@ -176,7 +179,7 @@ class ArticleListPage extends BaseListPage {
         },
       },
     ];
-
+    columns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
     if (!this.props.account || this.props.account.name !== "admin") {
       columns = columns.filter(column => column.key !== "provider");
     }

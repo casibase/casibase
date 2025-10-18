@@ -33,8 +33,25 @@ class ChatListPage extends BaseListPage {
       ...this.state,
       messagesMap: {},
       filterSingleChat: Setting.getBoolValue("filterSingleChat", false),
+      maximizeMessages: this.getMaximizeMessagesFromStorage(),
     };
   }
+
+  getMaximizeMessagesFromStorage() {
+    const saved = localStorage.getItem("maximizeMessages");
+    if (saved === null || saved === undefined) {
+      return false;
+    }
+    return JSON.parse(saved) === true;
+  }
+
+  toggleMaximizeMessages = () => {
+    const newValue = !this.state.maximizeMessages;
+    this.setState({
+      maximizeMessages: newValue,
+    });
+    localStorage.setItem("maximizeMessages", JSON.stringify(newValue));
+  };
 
   getMessages(chatName) {
     MessageBackend.getChatMessages("admin", chatName)
@@ -137,6 +154,20 @@ class ChatListPage extends BaseListPage {
     }
   }
 
+  getMessagesColumnSearchProps = () => ({
+    ...this.getColumnSearchProps("messages"),
+    onFilter: (value, record) => {
+      const messages = this.state.messagesMap[record.name];
+      if (!messages || messages.length === 0) {
+        return false;
+      }
+      // Search through all messages' text content
+      return messages.some(message =>
+        message.text && message.text.toLowerCase().includes(value.toLowerCase())
+      );
+    },
+  });
+
   renderTable(chats) {
     let columns = [
       // {
@@ -152,6 +183,7 @@ class ChatListPage extends BaseListPage {
         key: "name",
         width: "100px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`chats/${text}`}>
@@ -218,7 +250,7 @@ class ChatListPage extends BaseListPage {
         key: "user",
         width: "90px",
         sorter: (a, b) => a.user.localeCompare(b.user),
-        // ...this.getColumnSearchProps("user"),
+        ...this.getColumnSearchProps("user"),
         render: (text, record, index) => {
           if (text.startsWith("u-")) {
             return text;
@@ -282,6 +314,7 @@ class ChatListPage extends BaseListPage {
         key: "clientIp",
         width: "120px",
         sorter: (a, b) => a.clientIp.localeCompare(b.clientIp),
+        ...this.getColumnSearchProps("clientIp"),
         render: (text, record, index) => {
           if (text === "") {
             return null;
@@ -348,12 +381,15 @@ class ChatListPage extends BaseListPage {
         title: i18next.t("general:Messages"),
         dataIndex: "messages",
         key: "messages",
-        width: "800px",
+        width: this.state.maximizeMessages ? "70vw" : "800px",
+        ...this.getMessagesColumnSearchProps(),
         render: (text, record, index) => {
           const messages = this.state.messagesMap[record.name];
           if (messages === undefined || messages.length === 0) {
             return null;
           }
+
+          const messagesWidth = this.state.maximizeMessages ? "70vw" : "800px";
 
           return (
             <div style={{
@@ -361,7 +397,7 @@ class ChatListPage extends BaseListPage {
               margin: "5px",
               background: "rgb(191,191,191)",
               borderRadius: "10px",
-              width: "800px",
+              width: messagesWidth,
               // boxSizing: "border-box",
               // boxShadow: "0 0 0 1px inset",
             }}>
@@ -383,7 +419,7 @@ class ChatListPage extends BaseListPage {
         key: "isDeleted",
         width: "120px",
         sorter: (a, b) => a.isDeleted - b.isDeleted,
-        // ...this.getColumnSearchProps("isDeleted"),
+        ...this.getColumnFilterProps("isDeleted"),
         render: (text, record, index) => {
           return (
             <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
@@ -453,6 +489,10 @@ class ChatListPage extends BaseListPage {
                   </Button>
                 </Popconfirm>
               )}
+              <span style={{marginLeft: 32}}>
+                {i18next.t("chat:Maximize messages")}:
+                <Switch checked={this.state.maximizeMessages} onChange={this.toggleMaximizeMessages} style={{marginLeft: 8}} />
+              </span>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               &nbsp;&nbsp;&nbsp;&nbsp;
               {i18next.t("general:Users")}:

@@ -19,6 +19,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 )
@@ -95,7 +96,7 @@ func (client ContainerClient) GetContainers() ([]*Container, error) {
 	return containers, nil
 }
 
-func (client ContainerClient) GetContainer(name string) (*Container, error) {
+func (client ContainerClient) GetContainer(name string, lang string) (*Container, error) {
 	sum, err := client.Client.ContainerList(context.Background(), container.ListOptions{All: true})
 	if err != nil {
 		return nil, err
@@ -105,11 +106,11 @@ func (client ContainerClient) GetContainer(name string) (*Container, error) {
 			return getContainerFromSummary(summary), nil
 		}
 	}
-	return nil, fmt.Errorf("Container %s not found", name)
+	return nil, fmt.Errorf(i18n.Translate(lang, "pkgdocker:Container %s not found"), name)
 }
 
-func (client ContainerClient) UpdateContainerState(name string, state string) (bool, string, error) {
-	myContainer, err := client.GetContainer(name)
+func (client ContainerClient) UpdateContainerState(name string, state string, lang string) (bool, string, error) {
+	myContainer, err := client.GetContainer(name, lang)
 	if err != nil {
 		return false, "", err
 	}

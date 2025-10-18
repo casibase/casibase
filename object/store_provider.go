@@ -79,8 +79,8 @@ func isObjectLeaf(object *storage.Object) bool {
 	return isLeaf
 }
 
-func (store *Store) Populate(origin string) error {
-	storageProviderObj, err := store.GetStorageProviderObj()
+func (store *Store) Populate(origin string, lang string) error {
+	storageProviderObj, err := store.GetStorageProviderObj(lang)
 	if err != nil {
 		return err
 	}
@@ -134,8 +134,8 @@ func (store *Store) Populate(origin string) error {
 	return nil
 }
 
-func (store *Store) GetVideoData() ([]string, error) {
-	storageProviderObj, err := store.GetStorageProviderObj()
+func (store *Store) GetVideoData(lang string) ([]string, error) {
+	storageProviderObj, err := store.GetStorageProviderObj(lang)
 	if err != nil {
 		return nil, err
 	}
@@ -156,4 +156,29 @@ func (store *Store) GetVideoData() ([]string, error) {
 	}
 
 	return res, nil
+}
+
+func SyncDefaultProvidersToStore(store *Store) error {
+	defaultStore, err := GetDefaultStore("admin")
+	if err != nil {
+		return err
+	}
+	if defaultStore == nil {
+		return nil
+	}
+
+	if store.ImageProvider == "" && defaultStore.ImageProvider != "" {
+		store.ImageProvider = defaultStore.ImageProvider
+	}
+	if store.TextToSpeechProvider == "Browser Built-In" && defaultStore.TextToSpeechProvider != "" {
+		store.TextToSpeechProvider = defaultStore.TextToSpeechProvider
+	}
+	if store.SpeechToTextProvider == "Browser Built-In" && defaultStore.SpeechToTextProvider != "" {
+		store.SpeechToTextProvider = defaultStore.SpeechToTextProvider
+	}
+	if store.AgentProvider == "" && defaultStore.AgentProvider != "" {
+		store.AgentProvider = defaultStore.AgentProvider
+	}
+
+	return nil
 }

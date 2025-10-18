@@ -25,6 +25,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -79,7 +80,7 @@ func (p *LocalModelProvider) GetPricing() string {
 	return getOpenAIModelPrice()
 }
 
-func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *LocalModelProvider) CalculatePrice(modelResult *ModelResult, lang string) error {
 	// local custom model:
 	if p.subType == "custom-model" {
 		inputPrice := getPrice(modelResult.PromptTokenCount, p.inputPricePerThousandTokens)
@@ -88,13 +89,13 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 		modelResult.Currency = p.currency
 		return nil
 	}
-	return CalculateOpenAIModelPrice(p.subType, modelResult)
+	return CalculateOpenAIModelPrice(p.subType, modelResult, lang)
 }
 
-func flushDataAzure(data string, writer io.Writer) error {
+func flushDataAzure(data string, writer io.Writer, lang string) error {
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return fmt.Errorf("writer does not implement http.Flusher")
+		return fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 	for _, runeValue := range data {
 		char := string(runeValue)
@@ -132,10 +133,10 @@ func flushDataAzure(data string, writer io.Writer) error {
 	return nil
 }
 
-func flushDataOpenai(data string, writer io.Writer) error {
+func flushDataOpenai(data string, writer io.Writer, lang string) error {
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return fmt.Errorf("writer does not implement http.Flusher")
+		return fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 	if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
 		return err
@@ -144,10 +145,10 @@ func flushDataOpenai(data string, writer io.Writer) error {
 	return nil
 }
 
-func flushDataThink(data string, eventType string, writer io.Writer) error {
+func flushDataThink(data string, eventType string, writer io.Writer, lang string) error {
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return fmt.Errorf("writer does not implement http.Flusher")
+		return fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 	if _, err := fmt.Fprintf(writer, "event: %s\ndata: %s\n\n", eventType, data); err != nil {
 		return err
@@ -156,7 +157,7 @@ func flushDataThink(data string, eventType string, writer io.Writer) error {
 	return nil
 }
 
-func (p *LocalModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *LocalModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	var client *openai.Client
 	var flushData interface{} // Can be either flushData or flushDataThink
 
@@ -180,7 +181,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 
 	model := p.subType
@@ -199,7 +200,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 	modelResult := &ModelResult{}
 	if getOpenAiModelType(p.subType) == "Chat" {
-		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
+		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -225,7 +226,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 		modelResult.PromptTokenCount = promptTokenCount
 		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
-		err = p.calculatePrice(modelResult)
+		err = p.CalculatePrice(modelResult, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -234,7 +235,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			if GetOpenAiMaxTokens(p.subType) > modelResult.TotalTokenCount {
 				return modelResult, nil
 			} else {
-				return nil, fmt.Errorf("exceed max tokens")
+				return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
 			}
 		}
 
@@ -285,12 +286,12 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			// Handle both regular content and reasoning content
 			if p.typ == "Custom-think" {
 				// For Custom-think type, we'll handle both reasoning and regular content
-				flushThink := flushData.(func(string, string, io.Writer) error)
+				flushThink := flushData.(func(string, string, io.Writer, string) error)
 
 				// Check if we have reasoning content (think_content)
 				if completion.Choices[0].Delta.ReasoningContent != "" {
 					reasoningData := completion.Choices[0].Delta.ReasoningContent
-					err = flushThink(reasoningData, "reason", writer)
+					err = flushThink(reasoningData, "reason", writer, lang)
 					if err != nil {
 						return nil, err
 					}
@@ -307,7 +308,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 						}
 					}
 
-					err = flushThink(data, "message", writer)
+					err = flushThink(data, "message", writer, lang)
 					if err != nil {
 						return nil, err
 					}
@@ -316,7 +317,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				}
 			} else {
 				// For all other provider types, use the standard flush function
-				flushStandard := flushData.(func(string, io.Writer) error)
+				flushStandard := flushData.(func(string, io.Writer, string) error)
 
 				data := completion.Choices[0].Delta.Content
 				if isLeadingReturn && len(data) != 0 {
@@ -327,7 +328,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 					}
 				}
 
-				err = flushStandard(data, writer)
+				err = flushStandard(data, writer, lang)
 				if err != nil {
 					return nil, err
 				}
@@ -336,7 +337,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			}
 		}
 
-		err = handleToolCalls(toolCalls, flushData, writer)
+		err = handleToolCalls(toolCalls, flushData, writer, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -353,7 +354,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 		modelResult.ResponseTokenCount += responseTokenCount
 		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
-		err = p.calculatePrice(modelResult)
+		err = p.CalculatePrice(modelResult, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -381,7 +382,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 		modelResult.ImageCount = 1
 		modelResult.TotalTokenCount = modelResult.ImageCount
-		err = p.calculatePrice(modelResult)
+		err = p.CalculatePrice(modelResult, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -426,11 +427,11 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 			// Here we also need to handle the different flush functions
 			if p.typ == "Custom-think" {
-				flushThink := flushData.(func(string, string, io.Writer) error)
-				err = flushThink(data, "message", writer)
+				flushThink := flushData.(func(string, string, io.Writer, string) error)
+				err = flushThink(data, "message", writer, lang)
 			} else {
-				flushStandard := flushData.(func(string, io.Writer) error)
-				err = flushStandard(data, writer)
+				flushStandard := flushData.(func(string, io.Writer, string) error)
+				err = flushStandard(data, writer, lang)
 			}
 
 			if err != nil {
@@ -446,6 +447,6 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		modelResult, err = getDefaultModelResult(model, question, response.String())
 		return modelResult, nil
 	} else {
-		return nil, fmt.Errorf("QueryText() error: unknown model type: %s", p.subType)
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:QueryText() error: unknown model type: %s"), p.subType)
 	}
 }

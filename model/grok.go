@@ -18,6 +18,8 @@ import (
 	"fmt"
 	"io"
 	"strings"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 type GrokModelProvider struct {
@@ -55,7 +57,7 @@ grok-2-image-1212| $0.07
 `
 }
 
-func (p *GrokModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *GrokModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 
 	if strings.Contains(p.subType, "grok-code-fast-1") {
@@ -76,7 +78,7 @@ func (p *GrokModelProvider) calculatePrice(modelResult *ModelResult) error {
 		modelResult.Currency = "USD"
 		return nil
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
@@ -86,7 +88,7 @@ func (p *GrokModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *GrokModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *GrokModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	// Create a LocalModelProvider to handle the request
 	const BaseUrl = "https://api.x.ai/v1"
 	localProvider, err := NewLocalModelProvider("Custom", "custom-model", p.secretKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "USD")
@@ -94,12 +96,12 @@ func (p *GrokModelProvider) QueryText(question string, writer io.Writer, history
 		return nil, err
 	}
 
-	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo)
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo, lang)
 	if err != nil {
 		return nil, err
 	}
 
-	err = p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

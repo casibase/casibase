@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/digitalocean/go-libvirt"
 )
 
@@ -67,7 +68,7 @@ func getMachineFromDom(l *libvirt.Libvirt, dom libvirt.Domain) (*Machine, error)
 	return machine, nil
 }
 
-func (client MachineKvmClient) GetMachines() ([]*Machine, error) {
+func (client MachineKvmClient) GetMachines(lang string) ([]*Machine, error) {
 	flags := libvirt.ConnectListDomainsActive | libvirt.ConnectListDomainsInactive
 	doms, _, err := client.L.ConnectListAllDomains(1, flags)
 	if err != nil {
@@ -86,7 +87,7 @@ func (client MachineKvmClient) GetMachines() ([]*Machine, error) {
 	return machines, nil
 }
 
-func (client MachineKvmClient) GetMachine(name string) (*Machine, error) {
+func (client MachineKvmClient) GetMachine(name string, lang string) (*Machine, error) {
 	dom, err := client.L.DomainLookupByName(name)
 	if err != nil {
 		return nil, err
@@ -100,7 +101,7 @@ func (client MachineKvmClient) GetMachine(name string) (*Machine, error) {
 	return machine, nil
 }
 
-func (client MachineKvmClient) UpdateMachineState(name string, state string) (bool, string, error) {
+func (client MachineKvmClient) UpdateMachineState(name string, state string, lang string) (bool, string, error) {
 	dom, err := client.L.DomainLookupByName(name)
 	if err != nil {
 		return false, "", err
@@ -112,12 +113,12 @@ func (client MachineKvmClient) UpdateMachineState(name string, state string) (bo
 	case "Stopped":
 		err = client.L.DomainShutdown(dom)
 	default:
-		return false, fmt.Sprintf("Unsupported state: %s", state), nil
+		return false, fmt.Sprintf(i18n.Translate(lang, "pkgmachine:Unsupported state: %s"), state), nil
 	}
 
 	if err != nil {
 		return false, "", err
 	}
 
-	return true, fmt.Sprintf("Domain: [%s]'s state has been successfully updated to: [%s]", name, state), nil
+	return true, fmt.Sprintf(i18n.Translate(lang, "pkgmachine:Domain: [%s]'s state has been successfully updated to: [%s]"), name, state), nil
 }

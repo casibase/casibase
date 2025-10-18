@@ -32,7 +32,7 @@ class FormListPage extends BaseListPage {
   newForm() {
     const randomName = Setting.getRandomName();
     return {
-      owner: this.props.account.name,
+      owner: this.props.account.owner,
       name: `form_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Form - ${randomName}`,
@@ -98,6 +98,7 @@ class FormListPage extends BaseListPage {
         key: "name",
         width: "160px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/forms/${text}`}>
@@ -112,6 +113,7 @@ class FormListPage extends BaseListPage {
         key: "displayName",
         width: "200px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        ...this.getColumnSearchProps("displayName"),
       },
       {
         title: i18next.t("form:Position"),
@@ -126,6 +128,7 @@ class FormListPage extends BaseListPage {
         key: "category",
         width: "90px",
         sorter: (a, b) => a.category.localeCompare(b.category),
+        ...this.getColumnSearchProps("category"),
       },
       {
         title: i18next.t("general:Type"),
@@ -133,6 +136,7 @@ class FormListPage extends BaseListPage {
         key: "type",
         width: "120px",
         sorter: (a, b) => a.type.localeCompare(b.type),
+        ...this.getColumnSearchProps("type"),
         render: (text, record, index) => {
           const typeOption = formTypeOptions.find(option => option.id === text);
           return typeOption ? i18next.t(typeOption.name) : text;
@@ -144,6 +148,7 @@ class FormListPage extends BaseListPage {
         key: "url",
         width: "220px",
         sorter: (a, b) => a.url.localeCompare(b.url),
+        ...this.getColumnSearchProps("url"),
         render: (text, record, index) => {
           return (
             <a target="_blank" rel="noreferrer" href={text}>
@@ -256,7 +261,7 @@ class FormListPage extends BaseListPage {
     const field = params.searchedColumn, value = params.searchText;
     const sortField = params.sortField, sortOrder = params.sortOrder;
     this.setState({loading: true});
-    FormBackend.getForms(this.props.account.name, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    FormBackend.getForms(this.props.account.owner, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,

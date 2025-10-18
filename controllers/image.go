@@ -39,7 +39,7 @@ func (c *ApiController) GetImages() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 
-	_, err := object.SyncImagesCloud(owner)
+	_, err := object.SyncImagesCloud(owner, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

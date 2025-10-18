@@ -17,6 +17,7 @@ package object
 import (
 	"fmt"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -38,6 +39,7 @@ type Form struct {
 	Position    string `xorm:"varchar(100)" json:"position"`
 	Category    string `xorm:"varchar(100)" json:"category"`
 	Type        string `xorm:"varchar(100)" json:"type"`
+	Tag         string `xorm:"varchar(100)" json:"tag"`
 	Url         string `xorm:"varchar(100)" json:"url"`
 
 	FormItems []*FormItem `xorm:"varchar(5000)" json:"formItems"`
@@ -105,9 +107,12 @@ func GetForm(id string) (*Form, error) {
 	return getForm(owner, name)
 }
 
-func UpdateForm(id string, form *Form) (bool, error) {
+func UpdateForm(id string, form *Form, lang string) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getForm(owner, name)
+	existingForm, err := getForm(owner, name)
+	if existingForm == nil {
+		return false, fmt.Errorf(i18n.Translate(lang, "object:the form: %s is not found"), id)
+	}
 	if err != nil {
 		return false, err
 	}

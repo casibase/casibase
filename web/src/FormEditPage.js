@@ -20,6 +20,13 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import FormItemTable from "./table/FormItemTable";
 import RecordListPage from "./RecordListPage";
+import StoreListPage from "./StoreListPage";
+import VectorListPage from "./VectorListPage";
+import VideoListPage from "./VideoListPage";
+import TaskListPage from "./TaskListPage";
+import WorkflowListPage from "./WorkflowListPage";
+import ArticleListPage from "./ArticleListPage";
+import GraphListPage from "./GraphListPage";
 
 const { Option } = Select;
 const formTypeOptions = Setting.getFormTypeOptions();
@@ -40,7 +47,7 @@ class FormEditPage extends React.Component {
   }
 
   getForm() {
-    FormBackend.getForm(this.props.account.name, this.state.formName)
+    FormBackend.getForm(this.props.account.owner, this.state.formName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -169,6 +176,7 @@ class FormEditPage extends React.Component {
                     onChange={value => {
                       this.updateFormField("type", value);
                       this.updateFormField("name", value);
+                      this.updateFormField("displayName", value);
                       const defaultItems = new FormItemTable({ formType: value }).getItems();
                       this.updateFormField("formItems", defaultItems);
                     }}
@@ -177,6 +185,17 @@ class FormEditPage extends React.Component {
                       <Option key={option.id} value={option.id}>{i18next.t(option.name)}</Option>
                     ))}
                   </Select>
+                </Col>
+              </Row>
+              <Row style={{ marginTop: "20px" }}>
+                <Col style={{ marginTop: "5px" }} span={Setting.isMobile() ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("general:Tag"), i18next.t("general:Tag - Tooltip"))} :
+                </Col>
+                <Col span={22}>
+                  <Input value={this.state.form.tag} onChange={e => {
+                    this.updateFormField("tag", e.target.value);
+                    this.updateFormField("name", e.target.value ? `${this.state.form.type}-tag-${e.target.value}` : this.state.form.type);
+                  }} />
                 </Col>
               </Row>
               <Row style={{ marginTop: "20px" }}>
@@ -223,6 +242,20 @@ class FormEditPage extends React.Component {
 
     if (this.state.form.type === "records") {
       listPageComponent = (<RecordListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "stores") {
+      listPageComponent = (<StoreListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "vectors") {
+      listPageComponent = (<VectorListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "videos") {
+      listPageComponent = (<VideoListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "tasks") {
+      listPageComponent = (<TaskListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "workflows") {
+      listPageComponent = (<WorkflowListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "articles") {
+      listPageComponent = (<ArticleListPage {...this.props} formItems={this.state.form.formItems} />);
+    } else if (this.state.form.type === "graphs") {
+      listPageComponent = (<GraphListPage {...this.props} formItems={this.state.form.formItems} />);
     }
 
     return (

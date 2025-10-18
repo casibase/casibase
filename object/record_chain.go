@@ -20,6 +20,7 @@ import (
 
 	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/chain"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 	"github.com/robfig/cron/v3"
 )
@@ -35,7 +36,7 @@ var (
 	scanNeedCommitRecordsMutex sync.Mutex
 )
 
-func (record *Record) getRecordProvider(chainProvider string) (*Provider, error) {
+func (record *Record) getRecordProvider(chainProvider string, lang string) (*Provider, error) {
 	if chainProvider != "" {
 		provider, err := getProvider("admin", chainProvider)
 		if err != nil {
@@ -43,7 +44,7 @@ func (record *Record) getRecordProvider(chainProvider string) (*Provider, error)
 		}
 
 		if provider == nil {
-			return nil, fmt.Errorf("the blockchain provider: %s is not found", chainProvider)
+			return nil, fmt.Errorf(i18n.Translate(lang, "object:the blockchain provider: %s is not found"), chainProvider)
 		}
 
 		return provider, nil
@@ -57,16 +58,16 @@ func (record *Record) getRecordProvider(chainProvider string) (*Provider, error)
 	return provider, nil
 }
 
-func (record *Record) getRecordChainClient(chainProvider string) (chain.ChainClientInterface, *Provider, error) {
-	provider, err := record.getRecordProvider(chainProvider)
+func (record *Record) getRecordChainClient(chainProvider string, lang string) (chain.ChainClientInterface, *Provider, error) {
+	provider, err := record.getRecordProvider(chainProvider, lang)
 	if err != nil {
 		return nil, nil, err
 	}
 	if provider == nil {
-		return nil, nil, fmt.Errorf("there is no active blockchain provider")
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "object:there is no active blockchain provider"))
 	}
 
-	client, err := chain.NewChainClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region, provider.Network, provider.Chain, provider.ProviderUrl, provider.Text, provider.UserKey, provider.UserCert, provider.SignKey, provider.SignCert, provider.ContractName, provider.ContractMethod)
+	client, err := chain.NewChainClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region, provider.Network, provider.Chain, provider.ProviderUrl, provider.Text, provider.UserKey, provider.UserCert, provider.SignKey, provider.SignCert, provider.ContractName, provider.ContractMethod, lang)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -126,14 +127,14 @@ func (record *Record) toParam() string {
 	return util.StructToJson(res)
 }
 
-func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
+func CommitRecord(record *Record, lang string) (bool, map[string]interface{}, error) {
 	if record.Block != "" {
-		return false, nil, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getUniqueId(), record.Block)
+		return false, nil, fmt.Errorf(i18n.Translate(lang, "object:the record: %s has already been committed, blockId = %s"), record.getUniqueId(), record.Block)
 	}
 
-	client, provider, err := record.getRecordChainClient(record.Provider)
+	client, provider, err := record.getRecordChainClient(record.Provider, lang)
 	if err != nil {
-		_, updateErr := record.updateErrorText(err.Error())
+		_, updateErr := record.updateErrorText(err.Error(), lang)
 		if updateErr != nil {
 			err = updateErr
 		}
@@ -141,9 +142,9 @@ func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 	}
 	record.Provider = provider.Name
 
-	blockId, transactionId, blockHash, err := client.Commit(record.toParam())
+	blockId, transactionId, blockHash, err := client.Commit(record.toParam(), lang)
 	if err != nil {
-		_, updateErr := record.updateErrorText(err.Error())
+		_, updateErr := record.updateErrorText(err.Error(), lang)
 		if updateErr != nil {
 			err = updateErr
 		}
@@ -165,9 +166,9 @@ func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 	var affected bool
 	if record.Id == 0 {
 		// If the record ID is 0, it means batch insert, so using getId()
-		affected, err = UpdateRecordFields(record.getId(), data)
+		affected, err = UpdateRecordFields(record.getId(), data, lang)
 	} else {
-		affected, err = UpdateRecordFields(record.getUniqueId(), data)
+		affected, err = UpdateRecordFields(record.getUniqueId(), data, lang)
 	}
 
 	delete(data, "error_text")
@@ -178,15 +179,15 @@ func CommitRecord(record *Record) (bool, map[string]interface{}, error) {
 	return affected, data, err
 }
 
-
-func CommitRecordWithMethod(record *Record, funcName, contractName string) (bool, map[string]interface{}, error) {
+	
+func CommitRecordWithMethod(record *Record, funcName, contractName,lang string) (bool, map[string]interface{}, error) {
 	if record.Block != "" {
 		return false, nil, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getUniqueId(), record.Block)
 	}
 
-	client, provider, err := record.getRecordChainClient(record.Provider)
+	client, provider, err := record.getRecordChainClient(record.Provider, lang)
 	if err != nil {
-		_, updateErr := record.updateErrorText(err.Error())
+		_, updateErr := record.updateErrorText(err.Error(),lang)
 		if updateErr != nil {
 			err = updateErr
 		}
@@ -194,9 +195,9 @@ func CommitRecordWithMethod(record *Record, funcName, contractName string) (bool
 	}
 	record.Provider = provider.Name
 
-	blockId, transactionId, blockHash, err := client.CommitWithMethodAndContractName(record.toParam(), funcName, contractName)
+	blockId, transactionId, blockHash, err := client.CommitWithMethodAndContractName(record.toParam(), funcName, contractName, lang)
 	if err != nil {
-		_, updateErr := record.updateErrorText(err.Error())
+		_, updateErr := record.updateErrorText(err.Error(),lang)
 		if updateErr != nil {
 			err = updateErr
 		}
@@ -218,9 +219,9 @@ func CommitRecordWithMethod(record *Record, funcName, contractName string) (bool
 	var affected bool
 	if record.Id == 0 {
 		// If the record ID is 0, it means batch insert, so using getId()
-		affected, err = UpdateRecordFields(record.getId(), data)
+		affected, err = UpdateRecordFields(record.getId(), data, lang)
 	} else {
-		affected, err = UpdateRecordFields(record.getUniqueId(), data)
+		affected, err = UpdateRecordFields(record.getUniqueId(), data, lang)
 	}
 
 	delete(data, "error_text")
@@ -231,18 +232,18 @@ func CommitRecordWithMethod(record *Record, funcName, contractName string) (bool
 	return affected, data, err
 }
 
-func CommitRecordSecond(record *Record) (bool, error) {
+func CommitRecordSecond(record *Record, lang string) (bool, error) {
 	if record.Block2 != "" {
-		return false, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getUniqueId(), record.Block2)
+		return false, fmt.Errorf(i18n.Translate(lang, "object:the record: %s has already been committed, blockId = %s"), record.getUniqueId(), record.Block2)
 	}
 
-	client, provider, err := record.getRecordChainClient(record.Provider2)
+	client, provider, err := record.getRecordChainClient(record.Provider2, lang)
 	if err != nil {
 		return false, err
 	}
 	record.Provider2 = provider.Name
 
-	blockId, transactionId, blockHash, err := client.Commit(record.toParam())
+	blockId, transactionId, blockHash, err := client.Commit(record.toParam(), lang)
 	if err != nil {
 		return false, err
 	}
@@ -255,12 +256,12 @@ func CommitRecordSecond(record *Record) (bool, error) {
 	}
 
 	// Update the record fields to avoid concurrent update race conditions
-	affected, err := UpdateRecordFields(record.getUniqueId(), data)
+	affected, err := UpdateRecordFields(record.getUniqueId(), data, lang)
 	return affected, err
 }
 
 // CommitRecords commits multiple records to the blockchain.
-func CommitRecords(records []*Record) (int, []map[string]interface{}) {
+func CommitRecords(records []*Record, lang string) (int, []map[string]interface{}) {
 	if len(records) == 0 {
 		return 0, nil
 	}
@@ -273,7 +274,7 @@ func CommitRecords(records []*Record) (int, []map[string]interface{}) {
 
 	for _, record := range records {
 		// Get the record from the database to ensure it is up-to-date
-		record, err := GetRecord(record.getId())
+		record, err := GetRecord(record.getId(), lang)
 		if err != nil {
 			data = append(data, map[string]interface{}{
 				"name":       record.Name,
@@ -292,7 +293,7 @@ func CommitRecords(records []*Record) (int, []map[string]interface{}) {
 			continue
 		}
 
-		recordAffected, commitResult, err := CommitRecord(record)
+		recordAffected, commitResult, err := CommitRecord(record, lang)
 		if err != nil {
 			data = append(data, map[string]interface{}{
 				"name":       record.Name,
@@ -309,25 +310,25 @@ func CommitRecords(records []*Record) (int, []map[string]interface{}) {
 	return affected, data
 }
 
-func QueryRecord(id string) (string, error) {
-	record, err := GetRecord(id)
+func QueryRecord(id string, lang string) (string, error) {
+	record, err := GetRecord(id, lang)
 	if err != nil {
 		return "", err
 	}
 	if record == nil {
-		return "", fmt.Errorf("the record: %s does not exist", id)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:the record: %s does not exist"), id)
 	}
 
 	if record.Block == "" {
-		return "", fmt.Errorf("the record: %s's block ID should not be empty", id)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:the record: %s's block ID should not be empty"), id)
 	}
 
-	client, _, err := record.getRecordChainClient(record.Provider)
+	client, _, err := record.getRecordChainClient(record.Provider, lang)
 	if err != nil {
 		return "", err
 	}
 
-	res, err := client.Query(record.Transaction, record.toParam())
+	res, err := client.Query(record.Transaction, record.toParam(), lang)
 	if err != nil {
 		return "", err
 	}
@@ -335,25 +336,25 @@ func QueryRecord(id string) (string, error) {
 	return res, nil
 }
 
-func QueryRecordSecond(id string) (string, error) {
-	record, err := GetRecord(id)
+func QueryRecordSecond(id string, lang string) (string, error) {
+	record, err := GetRecord(id, lang)
 	if err != nil {
 		return "", err
 	}
 	if record == nil {
-		return "", fmt.Errorf("the record: %s does not exist", id)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:the record: %s does not exist"), id)
 	}
 
 	if record.Block2 == "" {
-		return "", fmt.Errorf("the record: %s's block ID should not be empty", id)
+		return "", fmt.Errorf(i18n.Translate(lang, "object:the record: %s's block ID should not be empty"), id)
 	}
 
-	client, _, err := record.getRecordChainClient(record.Provider2)
+	client, _, err := record.getRecordChainClient(record.Provider2, lang)
 	if err != nil {
 		return "", err
 	}
 
-	res, err := client.Query(record.Transaction2, record.toParam())
+	res, err := client.Query(record.Transaction2, record.toParam(), lang)
 	if err != nil {
 		return "", err
 	}
@@ -379,7 +380,7 @@ func ScanNeedCommitRecords() {
 	var errors []string
 
 	for _, record := range records {
-		if _, _, err := CommitRecord(record); err != nil {
+		if _, _, err := CommitRecord(record, "en"); err != nil {
 			errors = append(errors, err.Error())
 		}
 	}

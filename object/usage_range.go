@@ -18,10 +18,11 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/model"
 )
 
-func GetRangeUsages(rangeType string, count int, user string, storeName string) ([]*Usage, error) {
+func GetRangeUsages(rangeType string, count int, user string, storeName string, lang string) ([]*Usage, error) {
 	messages, err := GetGlobalMessagesByStoreName(storeName)
 	if err != nil {
 		return nil, err
@@ -46,7 +47,7 @@ func GetRangeUsages(rangeType string, count int, user string, storeName string) 
 	case "Month":
 		startDateTime = now.Truncate(24*time.Hour).AddDate(0, -count+1, 0)
 	default:
-		return nil, fmt.Errorf("invalid range type: %s", rangeType)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:invalid range type: %s"), rangeType)
 	}
 
 	usages := make([]*Usage, count)

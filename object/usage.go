@@ -20,6 +20,7 @@ import (
 
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/conf"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/model"
 )
 
@@ -189,14 +190,14 @@ func GetUsage(date string) (*Usage, error) {
 	return usage, nil
 }
 
-func GetUsageMetadata() (*UsageMetadata, error) {
+func GetUsageMetadata(lang string) (*UsageMetadata, error) {
 	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
 	organization, err := casdoorsdk.GetOrganization(casdoorOrganization)
 	if err != nil {
 		return nil, err
 	}
 	if organization == nil {
-		return nil, fmt.Errorf("Casdoor organization: [%s] doesn't exist", casdoorOrganization)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:Casdoor organization: [%s] doesn't exist"), casdoorOrganization)
 	}
 
 	casdoorApplication := conf.GetConfigString("casdoorApplication")
@@ -205,7 +206,7 @@ func GetUsageMetadata() (*UsageMetadata, error) {
 		return nil, err
 	}
 	if application == nil {
-		return nil, fmt.Errorf("Casdoor application: [%s] doesn't exist", casdoorApplication)
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:Casdoor application: [%s] doesn't exist"), casdoorApplication)
 	}
 
 	res := &UsageMetadata{

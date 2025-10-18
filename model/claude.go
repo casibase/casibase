@@ -23,6 +23,7 @@ import (
 
 	"github.com/anthropics/anthropic-sdk-go"
 	"github.com/anthropics/anthropic-sdk-go/option"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/proxy"
 )
 
@@ -54,7 +55,7 @@ https://docs.anthropic.com/en/docs/about-claude/pricing
 `
 }
 
-func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	priceTable := map[string][]float64{
 		"claude-opus-4-1":            {0.015, 0.075},
@@ -77,7 +78,7 @@ func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
 		inputPricePerThousandTokens = priceItem[0]
 		outputPricePerThousandTokens = priceItem[1]
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
@@ -87,7 +88,7 @@ func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	client := anthropic.NewClient(
 		option.WithAPIKey(p.secretKey),
 		option.WithHTTPClient(proxy.ProxyHttpClient),
@@ -96,12 +97,12 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
-			return nil, fmt.Errorf("cannot calculate tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))
 		}
 		if getContextLength(p.subType) > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
-			return nil, fmt.Errorf("exceed max tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
 		}
 	}
 
@@ -141,7 +142,7 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 
 	flushData := func(event string, data string) error {
@@ -184,7 +185,7 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 	}
 	modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
 
-	err := p.calculatePrice(modelResult)
+	err := p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

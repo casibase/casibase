@@ -23,6 +23,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -58,18 +59,18 @@ type ethereumUploadData struct {
 // newEthereumClient creates a new Ethereum client with the given parameters
 // It connects to the Ethereum RPC, sets up the private key and contract address,
 // and prepares the client for sending transactions and querying data.
-func newEthereumClient(rpcURL, privateKeyHex, contractAddressHex, contractMethod string) (*EthereumClient, error) {
+func newEthereumClient(rpcURL, privateKeyHex, contractAddressHex, contractMethod string, lang string) (*EthereumClient, error) {
 	privateKeyHex = removeHexPrefix(privateKeyHex)
 	contractAddressHex = removeHexPrefix(contractAddressHex)
 
 	client, err := ethclient.Dial(rpcURL)
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to Ethereum RPC: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "chain:failed to connect to Ethereum RPC: %v"), err)
 	}
 
 	privateKey, err := crypto.HexToECDSA(privateKeyHex)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse private key: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "chain:failed to parse private key: %v"), err)
 	}
 	fromAddr := crypto.PubkeyToAddress(privateKey.PublicKey)
 	return &EthereumClient{
@@ -82,20 +83,20 @@ func newEthereumClient(rpcURL, privateKeyHex, contractAddressHex, contractMethod
 }
 
 // Commit sends a transaction to the Ethereum network to invoke a contract method with the provided data.
-func (client *EthereumClient) Commit(data string) (string, string, string, error) {
+func (client *EthereumClient) Commit(data string, lang string) (string, string, string, error) {
 	nonce, err := client.Client.PendingNonceAt(context.Background(), client.FromAddress)
 	if err != nil {
-		return "", "", "", fmt.Errorf("failed to get pending nonce: %v", err)
+		return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:failed to get pending nonce: %v"), err)
 	}
 	gasPrice, err := client.Client.SuggestGasPrice(context.Background())
 	if err != nil {
-		return "", "", "", fmt.Errorf("failed to suggest gas price: %v", err)
+		return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:failed to suggest gas price: %v"), err)
 	}
 	value := big.NewInt(0)
 
-	dataBytes, err := packFunctionData(client.ContractMethod, data)
+	dataBytes, err := packFunctionData(client.ContractMethod, data, lang)
 	if err != nil {
-		return "", "", "", fmt.Errorf("failed to pack function data: %v", err)
+		return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:failed to pack function data: %v"), err)
 	}
 
 	msg := ethereum.CallMsg{
@@ -107,21 +108,21 @@ func (client *EthereumClient) Commit(data string) (string, string, string, error
 	}
 	gasLimit, err := client.Client.EstimateGas(context.Background(), msg)
 	if err != nil {
-		return "", "", "", fmt.Errorf("failed to estimate gas: %v", err)
+		return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:failed to estimate gas: %v"), err)
 	}
 
 	tx := types.NewTransaction(nonce, client.ContractAddress, value, gasLimit, gasPrice, dataBytes)
 	chainID, err := client.Client.ChainID(context.Background())
 	if err != nil {
-		return "", "", "", fmt.Errorf("failed to get chain ID: %v", err)
+		return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:failed to get chain ID: %v"), err)
 	}
 	signedTx, err := types.SignTx(tx, types.LatestSignerForChainID(chainID), client.PrivateKey)
 	if err != nil {
-		return "", "", "", fmt.Errorf("failed to sign transaction: %v", err)
+		return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:failed to sign transaction: %v"), err)
 	}
 	err = client.Client.SendTransaction(context.Background(), signedTx)
 	if err != nil {
-		return "", "", "", fmt.Errorf("failed to send transaction: %v", err)
+		return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:failed to send transaction: %v"), err)
 	}
 
 	txHash := signedTx.Hash()
@@ -131,7 +132,7 @@ func (client *EthereumClient) Commit(data string) (string, string, string, error
 
 	receipt, err := bind.WaitMined(ctx, client.Client, signedTx)
 	if err != nil {
-		return "", "", "", fmt.Errorf("transaction failed to be mined: %v", err)
+		return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:transaction failed to be mined: %v"), err)
 	}
 
 	if receipt.Status != types.ReceiptStatusSuccessful {
@@ -151,7 +152,7 @@ func (client *EthereumClient) Commit(data string) (string, string, string, error
 		} else if err != nil {
 			revertReason = fmt.Sprintf("eth_call error: %v", err)
 		}
-		return "", "", "", fmt.Errorf("transaction failed with status: %d, reason: %s", receipt.Status, revertReason)
+		return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:transaction failed with status: %d, reason: %s"), receipt.Status, revertReason)
 	}
 
 	blockHash := receipt.BlockHash.Hex()
@@ -172,18 +173,18 @@ func (client *EthereumClient) QueryWithMethodAndContractName(data, funcName, con
 }
 
 // Query retrieves the transaction receipt and decodes the event logs to get the data.
-func (client *EthereumClient) Query(txHash string, data string) (string, error) {
+func (client *EthereumClient) Query(txHash string, data string, lang string) (string, error) {
 	hash := common.HexToHash(txHash)
 
 	receipt, err := client.Client.TransactionReceipt(context.Background(), hash)
 	if err != nil {
-		return "", fmt.Errorf("failed to get transaction receipt: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "chain:failed to get transaction receipt: %v"), err)
 	}
 	blockId := receipt.BlockNumber.String()
 
 	stringType, err := abi.NewType("string", "", nil)
 	if err != nil {
-		return "", fmt.Errorf("failed to create string type: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "chain:failed to create string type: %v"), err)
 	}
 	arguments := abi.Arguments{
 		{Type: stringType},
@@ -196,20 +197,20 @@ func (client *EthereumClient) Query(txHash string, data string) (string, error) 
 		if len(log.Data) > 0 {
 			eventData, err := arguments.Unpack(log.Data)
 			if err != nil {
-				return "", fmt.Errorf("failed to unpack event log: %v", err)
+				return "", fmt.Errorf(i18n.Translate(lang, "chain:failed to unpack event log: %v"), err)
 			}
 			for _, v := range eventData {
 				if str, ok := v.(string); ok {
 					events = append(events, str)
 				} else {
-					return "", fmt.Errorf("event log value is not string: %v", v)
+					return "", fmt.Errorf(i18n.Translate(lang, "chain:event log value is not string: %v"), v)
 				}
 			}
 		}
 	}
 
 	if len(events) < 3 {
-		return "", fmt.Errorf("not enough string events found in transaction logs, expected at least 3, got %d", len(events))
+		return "", fmt.Errorf(i18n.Translate(lang, "chain:not enough string events found in transaction logs, expected at least 3, got %d"), len(events))
 	}
 
 	savedData := ethereumUploadData{
@@ -249,10 +250,10 @@ func (client *EthereumClient) Query(txHash string, data string) (string, error) 
 //  2. Defines the tuple type with three string fields.
 //  3. Packs the tuple using ABI encoding.
 //  4. Concatenates the selector and encoded arguments to produce the final call data.
-func packFunctionData(method, data string) ([]byte, error) {
+func packFunctionData(method, data string, lang string) ([]byte, error) {
 	var uploadData ethereumUploadData
 	if err := json.Unmarshal([]byte(data), &uploadData); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal JSON: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "chain:failed to unmarshal JSON: %v"), err)
 	}
 
 	// 1. Get function selector first 4 bytes
@@ -265,7 +266,7 @@ func packFunctionData(method, data string) ([]byte, error) {
 		{Name: "value", Type: "string"},
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to create tuple type: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "chain:failed to create tuple type: %v"), err)
 	}
 
 	arguments := abi.Arguments{
@@ -275,7 +276,7 @@ func packFunctionData(method, data string) ([]byte, error) {
 	// 3. Encode parameters
 	encodedArgs, err := arguments.Pack(uploadData)
 	if err != nil {
-		return nil, fmt.Errorf("failed to pack arguments: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "chain:failed to pack arguments: %v"), err)
 	}
 
 	// 4. Combine function selector and encoded parameters

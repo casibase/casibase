@@ -236,6 +236,7 @@ class StoreListPage extends BaseListPage {
         key: "name",
         width: "120px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/stores/${record.owner}/${text}/view`}>
@@ -250,6 +251,7 @@ class StoreListPage extends BaseListPage {
         key: "displayName",
         // width: "600px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        ...this.getColumnSearchProps("displayName"),
       },
       {
         title: i18next.t("store:Is default"),
@@ -257,7 +259,7 @@ class StoreListPage extends BaseListPage {
         key: "isDefault",
         width: "120px",
         sorter: (a, b) => a.isDefault - b.isDefault,
-        // ...this.getColumnSearchProps("isDefault"),
+        ...this.getColumnFilterProps("isDefault"),
         render: (text, record, index) => {
           return (
             <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
@@ -298,6 +300,7 @@ class StoreListPage extends BaseListPage {
         key: "storageProvider",
         width: "250px",
         sorter: (a, b) => a.storageProvider.localeCompare(b.storageProvider),
+        ...this.getColumnSearchProps("storageProvider"),
         render: (text, record, index) => {
           if (text === "") {
             return null;
@@ -318,6 +321,7 @@ class StoreListPage extends BaseListPage {
         key: "imageProvider",
         width: "300px",
         sorter: (a, b) => a.imageProvider.localeCompare(b.imageProvider),
+        ...this.getColumnSearchProps("imageProvider"),
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
         },
@@ -328,6 +332,7 @@ class StoreListPage extends BaseListPage {
         key: "modelProvider",
         width: "330px",
         sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
+        ...this.getColumnSearchProps("modelProvider"),
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
         },
@@ -338,6 +343,7 @@ class StoreListPage extends BaseListPage {
         key: "embeddingProvider",
         width: "300px",
         sorter: (a, b) => a.embeddingProvider.localeCompare(b.embeddingProvider),
+        ...this.getColumnSearchProps("embeddingProvider"),
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
         },
@@ -348,6 +354,7 @@ class StoreListPage extends BaseListPage {
         key: "textToSpeechProvider",
         width: "300px",
         sorter: (a, b) => a.textToSpeechProvider.localeCompare(b.textToSpeechProvider),
+        ...this.getColumnSearchProps("textToSpeechProvider"),
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
         },
@@ -358,6 +365,7 @@ class StoreListPage extends BaseListPage {
         key: "speechToTextProvider",
         width: "200px",
         sorter: (a, b) => a.speechToTextProvider.localeCompare(b.speechToTextProvider),
+        ...this.getColumnSearchProps("speechToTextProvider"),
         render: (text) => {
           return this.renderProviderInfo(text);
         },
@@ -368,6 +376,7 @@ class StoreListPage extends BaseListPage {
         key: "agentProvider",
         width: "250px",
         sorter: (a, b) => a.agentProvider.localeCompare(b.agentProvider),
+        ...this.getColumnSearchProps("agentProvider"),
         render: (text) => {
           return this.renderProviderInfo(text);
         },
@@ -385,6 +394,7 @@ class StoreListPage extends BaseListPage {
         key: "state",
         width: "90px",
         sorter: (a, b) => a.state.localeCompare(b.state),
+        ...this.getColumnSearchProps("state"),
       },
       {
         title: i18next.t("general:Action"),
@@ -423,7 +433,7 @@ class StoreListPage extends BaseListPage {
         },
       },
     ];
-
+    const filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
     const paginationProps = {
       total: this.state.pagination.total,
       showQuickJumper: true,
@@ -434,7 +444,7 @@ class StoreListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={stores} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={filteredColumns} dataSource={stores} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Stores")}&nbsp;&nbsp;&nbsp;&nbsp;

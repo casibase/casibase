@@ -21,6 +21,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 type Definitions struct {
@@ -108,12 +110,12 @@ func PathToString(node *PathNode, indent string) string {
 	return sb.String()
 }
 
-func ParseBPMN(bpmnText string) (map[string]Task, map[string][]SequenceFlow, map[string]bool, map[string]bool, map[string]int, []string, error) {
+func ParseBPMN(bpmnText string, lang string) (map[string]Task, map[string][]SequenceFlow, map[string]bool, map[string]bool, map[string]int, []string, error) {
 	bytes := []byte(bpmnText)
 	var definitions Definitions
 	err := xml.Unmarshal(bytes, &definitions)
 	if err != nil {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("Error parsing BPMN file: %v", err)
+		return nil, nil, nil, nil, nil, nil, fmt.Errorf(i18n.Translate(lang, "bpmn:Error parsing BPMN file: %v"), err)
 	}
 
 	tasks := map[string]Task{}
@@ -380,13 +382,13 @@ func ComparePaths(standardPath, actualPath *PathNode, variance *int, mandatoryTa
 	}
 }
 
-func ComparePath(standardBpmnText string, unknownBpmnText string) string {
-	standardTasks, standardSequenceFlows, standardExclusiveGateways, standardParallelGateways, standardTimerEvents, standardStartEvents, err := ParseBPMN(standardBpmnText)
+func ComparePath(standardBpmnText string, unknownBpmnText string, lang string) string {
+	standardTasks, standardSequenceFlows, standardExclusiveGateways, standardParallelGateways, standardTimerEvents, standardStartEvents, err := ParseBPMN(standardBpmnText, lang)
 	if err != nil {
 		return fmt.Sprintf("解析标准BPMN文件时出错：%v", err)
 	}
 
-	unknownTasks, unknownSequenceFlows, unknownExclusiveGateways, unknownParallelGateways, unknownTimerEvents, unknownStartEvents, err := ParseBPMN(unknownBpmnText)
+	unknownTasks, unknownSequenceFlows, unknownExclusiveGateways, unknownParallelGateways, unknownTimerEvents, unknownStartEvents, err := ParseBPMN(unknownBpmnText, lang)
 	if err != nil {
 		return fmt.Sprintf("解析待比较BPMN文件时出错：%v", err)
 	}

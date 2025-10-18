@@ -23,6 +23,7 @@ import (
 
 	textv1 "github.com/ConnectAI-E/go-minimax/gen/go/minimax/text/v1"
 	"github.com/ConnectAI-E/go-minimax/minimax"
+	"github.com/casibase/casibase/i18n"
 )
 
 type MiniMaxModelProvider struct {
@@ -53,7 +54,7 @@ MiniMax-VL-01 | 0.001 CNY                     | 0.008 CNY
 `
 }
 
-func (p *MiniMaxModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *MiniMaxModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
 		"MiniMax-M1":      {0.0008, 0.008},
@@ -66,7 +67,7 @@ func (p *MiniMaxModelProvider) calculatePrice(modelResult *ModelResult) error {
 		outputPrice := getPrice(modelResult.TotalTokenCount, pricePerThousandTokens[1])
 		price = inputPrice + outputPrice
 	} else {
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	modelResult.TotalPrice = price
@@ -74,7 +75,7 @@ func (p *MiniMaxModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	ctx := context.Background()
 	client, err := minimax.New(
 		minimax.WithApiToken(p.apiKey),
@@ -87,12 +88,12 @@ func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, hist
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
-			return nil, fmt.Errorf("cannot calculate tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))
 		}
 		if getContextLength(p.subType) > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
-			return nil, fmt.Errorf("exceed max tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
 		}
 	}
 
@@ -113,7 +114,7 @@ func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, hist
 
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 
 	flushData := func(data string) error {
@@ -132,7 +133,7 @@ func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, hist
 	totalTokens := int(res.Usage.TotalTokens)
 	modelResult := &ModelResult{ResponseTokenCount: totalTokens}
 
-	err = p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

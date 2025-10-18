@@ -52,9 +52,17 @@ func getAllI18nStringsFrontend(fileContent string) []string {
 	return res
 }
 
-func getAllI18nStringsBackend(fileContent string, isObjectPackage bool) []string {
+func getAllI18nStringsBackend(fileContent string, isControllerPackage bool) []string {
 	res := []string{}
-	if isObjectPackage {
+	if isControllerPackage {
+		matches := reI18nBackendController.FindAllStringSubmatch(fileContent, -1)
+		if matches == nil {
+			return res
+		}
+		for _, match := range matches {
+			res = append(res, match[1][1:])
+		}
+	} else {
 		matches := reI18nBackendObject.FindAllStringSubmatch(fileContent, -1)
 		if matches == nil {
 			return res
@@ -62,14 +70,6 @@ func getAllI18nStringsBackend(fileContent string, isObjectPackage bool) []string
 		for _, match := range matches {
 			match := strings.SplitN(match[1], ",", 2)
 			res = append(res, match[1][2:])
-		}
-	} else {
-		matches := reI18nBackendController.FindAllStringSubmatch(fileContent, -1)
-		if matches == nil {
-			return res
-		}
-		for _, match := range matches {
-			res = append(res, match[1][1:])
 		}
 	}
 
@@ -117,8 +117,8 @@ func parseAllWords(category string) *I18nData {
 
 		var words []string
 		if category == "backend" {
-			isObjectPackage := strings.Contains(path, "object")
-			words = getAllI18nStringsBackend(fileContent, isObjectPackage)
+			isControllerPackage := strings.Contains(path, "controller")
+			words = getAllI18nStringsBackend(fileContent, isControllerPackage)
 		} else {
 			words = getAllI18nStringsFrontend(fileContent)
 		}

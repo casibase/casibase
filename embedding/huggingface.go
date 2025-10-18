@@ -18,7 +18,7 @@ import (
 	"context"
 
 	"github.com/casibase/casibase/proxy"
-	"github.com/henomis/lingoose/embedder/huggingface"
+	huggingfaceembedder "github.com/henomis/lingoose/embedder/huggingface"
 )
 
 type HuggingFaceEmbeddingProvider struct {
@@ -42,7 +42,7 @@ func (p *HuggingFaceEmbeddingProvider) calculatePrice(res *EmbeddingResult) erro
 	return nil
 }
 
-func (p *HuggingFaceEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+func (p *HuggingFaceEmbeddingProvider) QueryVector(text string, ctx context.Context, lang string) ([]float32, *EmbeddingResult, error) {
 	client := huggingfaceembedder.New().WithToken(p.secretKey).WithModel(p.subType).WithHTTPClient(proxy.ProxyHttpClient)
 	embed, err := client.Embed(ctx, []string{text})
 	if err != nil {

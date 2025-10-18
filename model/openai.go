@@ -23,6 +23,7 @@ import (
 	"strings"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/proxy"
 	"github.com/openai/openai-go/v2"
 	"github.com/openai/openai-go/v2/option"
@@ -52,7 +53,7 @@ func NewOpenAiModelProvider(subType string, secretKey string, temperature float3
 	return p, nil
 }
 
-func CalculateOpenAIModelPrice(model string, modelResult *ModelResult) error {
+func CalculateOpenAIModelPrice(model string, modelResult *ModelResult, lang string) error {
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	switch {
 	// gpt 3.5 turbo model Support:
@@ -147,7 +148,7 @@ func CalculateOpenAIModelPrice(model string, modelResult *ModelResult) error {
 	default:
 		// inputPricePerThousandTokens = 0
 		// outputPricePerThousandTokens = 0
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", model)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), model)
 	}
 
 	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
@@ -204,7 +205,7 @@ func GetOpenAiClientFromToken(authToken string) openai.Client {
 	return c
 }
 
-func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	var client openai.Client
 	var flushData interface{}
 
@@ -214,7 +215,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 
 	model := p.subType
@@ -227,7 +228,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 
 	modelResult := &ModelResult{}
 	if getOpenAiModelType(model) == "Chat" {
-		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
+		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -255,7 +256,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 
 			modelResult.PromptTokenCount = promptTokenCount
 			modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
-			err = CalculateOpenAIModelPrice(model, modelResult)
+			err = CalculateOpenAIModelPrice(model, modelResult, lang)
 			if err != nil {
 				return nil, err
 			}
@@ -263,7 +264,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 			if GetOpenAiMaxTokens(model) > modelResult.TotalTokenCount {
 				return modelResult, nil
 			} else {
-				return nil, fmt.Errorf("exceed max tokens")
+				return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
 			}
 		}
 
@@ -290,7 +291,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 
 		isLeadingReturn := true
 		for respStream.Next() {
-			flushStandard := flushData.(func(string, io.Writer) error)
+			flushStandard := flushData.(func(string, io.Writer, string) error)
 			response := respStream.Current()
 			switch variant := response.AsAny().(type) {
 			case responses.ResponseTextDeltaEvent:
@@ -303,7 +304,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 					}
 				}
 
-				err = flushStandard(data, writer)
+				err = flushStandard(data, writer, lang)
 				if err != nil {
 					return nil, err
 				}
@@ -323,7 +324,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 			return nil, respStream.Err()
 		}
 
-		err = handleMcpToolCalls(toolCalls, flushData, writer)
+		err = handleMcpToolCalls(toolCalls, flushData, writer, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -332,7 +333,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 			agentInfo.AgentMessages.ToolCalls = toolCalls
 		}
 
-		err = CalculateOpenAIModelPrice(model, modelResult)
+		err = CalculateOpenAIModelPrice(model, modelResult, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -362,7 +363,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 
 		modelResult.ImageCount = 1
 		modelResult.TotalTokenCount = modelResult.ImageCount
-		err = CalculateOpenAIModelPrice(model, modelResult)
+		err = CalculateOpenAIModelPrice(model, modelResult, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -396,8 +397,8 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 				}
 			}
 
-			flushStandard := flushData.(func(string, io.Writer) error)
-			err := flushStandard(data, writer)
+			flushStandard := flushData.(func(string, io.Writer, string) error)
+			err := flushStandard(data, writer, lang)
 			if err != nil {
 				return nil, err
 			}
@@ -429,7 +430,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 
 		return modelResult, nil
 	} else {
-		return nil, fmt.Errorf("QueryText() error: unknown model type: %s", model)
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:QueryText() error: unknown model type: %s"), model)
 	}
 }
 
@@ -656,14 +657,14 @@ func reverseMcpToolsToOpenAi(tools []*protocol.Tool) ([]responses.ToolUnionParam
 	return openaiTools, nil
 }
 
-func handleMcpToolCalls(toolCalls []responses.ResponseFunctionToolCall, flushData interface{}, writer io.Writer) error {
+func handleMcpToolCalls(toolCalls []responses.ResponseFunctionToolCall, flushData interface{}, writer io.Writer, lang string) error {
 	if toolCalls == nil {
 		return nil
 	}
 
-	if flushThink, ok := flushData.(func(string, string, io.Writer) error); ok {
+	if flushThink, ok := flushData.(func(string, string, io.Writer, string) error); ok {
 		for _, toolCall := range toolCalls {
-			err := flushThink("\n"+"Call result from "+toolCall.Name+"\n", "reason", writer)
+			err := flushThink("\n"+"Call result from "+toolCall.Name+"\n", "reason", writer, lang)
 			if err != nil {
 				return err
 			}

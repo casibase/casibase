@@ -17,6 +17,7 @@ package object
 import (
 	"fmt"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/pkgkubernetes"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
@@ -110,7 +111,7 @@ func GetMaskedPods(pods []*Pod, errs ...error) ([]*Pod, error) {
 	return pods, nil
 }
 
-func UpdatePod(id string, pod *Pod) (bool, error) {
+func UpdatePod(id string, pod *Pod, lang string) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	oldPod, err := getPod(owner, name)
 	if err != nil {
@@ -119,7 +120,7 @@ func UpdatePod(id string, pod *Pod) (bool, error) {
 		return false, nil
 	}
 
-	_, err = updatePod(oldPod, pod)
+	_, err = updatePod(oldPod, pod, lang)
 	if err != nil {
 		return false, err
 	}
@@ -201,13 +202,13 @@ func SyncKubernetesPods(owner string) (bool, error) {
 	return affected, err
 }
 
-func updatePod(oldPod *Pod, pod *Pod) (bool, error) {
+func updatePod(oldPod *Pod, pod *Pod, lang string) (bool, error) {
 	provider, err := getProvider("admin", oldPod.Provider)
 	if err != nil {
 		return false, err
 	}
 	if provider == nil {
-		return false, fmt.Errorf("The provider: %s does not exist", pod.Provider)
+		return false, fmt.Errorf(i18n.Translate(lang, "object:The provider: %s does not exist"), pod.Provider)
 	}
 
 	client, err := pkgkubernetes.NewPodClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region)

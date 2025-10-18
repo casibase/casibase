@@ -20,6 +20,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/casibase/casibase/i18n"
 	cohere "github.com/cohere-ai/cohere-go/v2"
 	cohereclient "github.com/cohere-ai/cohere-go/v2/client"
 )
@@ -72,7 +73,7 @@ Embed Model:
 `
 }
 
-func (p *CohereModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *CohereModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	switch p.subType {
 	case "command-light", "command-light-nightly":
@@ -82,7 +83,7 @@ func (p *CohereModelProvider) calculatePrice(modelResult *ModelResult) error {
 		inputPricePerThousandTokens = 0.001
 		outputPricePerThousandTokens = 0.002
 	default:
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
@@ -92,7 +93,7 @@ func (p *CohereModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *CohereModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func (p *CohereModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	client := cohereclient.NewClient(
 		cohereclient.WithToken(p.secretKey),
 	)
@@ -103,12 +104,12 @@ func (p *CohereModelProvider) QueryText(message string, writer io.Writer, chat_h
 	if strings.HasPrefix(message, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, message, "")
 		if err != nil {
-			return nil, fmt.Errorf("cannot calculate tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))
 		}
 		if maxTokens > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
-			return nil, fmt.Errorf("exceed max tokens")
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
 		}
 	}
 	generation, err := client.Generate(
@@ -124,7 +125,7 @@ func (p *CohereModelProvider) QueryText(message string, writer io.Writer, chat_h
 		return nil, err
 	}
 	if len(generation.Generations) == 0 {
-		return nil, fmt.Errorf("no generations returned")
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:no generations returned"))
 	}
 
 	output := generation.Generations[0].Text
@@ -140,7 +141,7 @@ func (p *CohereModelProvider) QueryText(message string, writer io.Writer, chat_h
 	modelResult := &ModelResult{PromptTokenCount: promptTokenCount, ResponseTokenCount: responseTokenCount}
 	modelResult.TotalTokenCount = modelResult.ResponseTokenCount + modelResult.PromptTokenCount
 
-	err = p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}

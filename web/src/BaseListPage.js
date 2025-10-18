@@ -70,7 +70,29 @@ class BaseListPage extends React.Component {
   UNSAFE_componentWillMount() {
     const {pagination} = this.state;
     this.fetch({pagination});
-    FormBackend.getForm(this.props.account.name, this.props.match?.path?.replace(/^\//, ""))
+    this.getForm();
+  }
+  getForm() {
+    const tag = this.props.account.tag;
+    const formType = this.props.match?.path?.replace(/^\//, "");
+    let formName = formType;
+    if (tag !== "") {
+      formName = formType + "-tag-" + tag;
+      FormBackend.getForm(this.props.account.owner, formName)
+        .then(res => {
+          if (res.status === "ok" && res.data) {
+            this.setState({formItems: res.data.formItems});
+          } else {
+            this.fetchFormWithoutTag(formType);
+          }
+        });
+    } else {
+      this.fetchFormWithoutTag(formType);
+    }
+  }
+
+  fetchFormWithoutTag(formName) {
+    FormBackend.getForm(this.props.account.owner, formName)
       .then(res => {
         if (res.status === "ok" && res.data) {
           this.setState({formItems: res.data.formItems});
@@ -153,6 +175,15 @@ class BaseListPage extends React.Component {
         
     })
   };
+
+  getColumnFilterProps = dataIndex => ({
+    filterMultiple: false,
+    filters: [
+      {text: "ON", value: true},
+      {text: "OFF", value: false},
+    ],
+    onFilter: (value, record) => record[dataIndex] === value,
+  });
 
   getRowSelection = () => ({
     selectedRowKeys: this.state.selectedRowKeys,

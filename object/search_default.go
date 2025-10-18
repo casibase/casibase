@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/casibase/casibase/embedding"
+	"github.com/casibase/casibase/i18n"
 )
 
 type DefaultSearchProvider struct {
@@ -28,18 +29,18 @@ func NewDefaultSearchProvider(owner string) (*DefaultSearchProvider, error) {
 	return &DefaultSearchProvider{owner: owner}, nil
 }
 
-func (p *DefaultSearchProvider) Search(storeName string, embeddingProviderName string, embeddingProviderObj embedding.EmbeddingProvider, modelProviderName string, text string, knowledgeCount int) ([]Vector, *embedding.EmbeddingResult, error) {
-	vectors, err := getRelatedVectors(storeName, embeddingProviderName)
+func (p *DefaultSearchProvider) Search(relatedStores []string, embeddingProviderName string, embeddingProviderObj embedding.EmbeddingProvider, modelProviderName string, text string, knowledgeCount int, lang string) ([]Vector, *embedding.EmbeddingResult, error) {
+	vectors, err := getRelatedVectors(relatedStores, embeddingProviderName)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	qVector, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text)
+	qVector, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text, lang)
 	if err != nil {
 		return nil, embeddingResult, err
 	}
 	if qVector == nil || len(qVector) == 0 {
-		return nil, embeddingResult, fmt.Errorf("no qVector found")
+		return nil, embeddingResult, fmt.Errorf(i18n.Translate(lang, "object:no qVector found"))
 	}
 
 	var vectorData [][]float32

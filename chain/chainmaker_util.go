@@ -21,6 +21,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/casibase/casibase/i18n"
 )
 
 type ChainmakerResponse struct {
@@ -30,7 +32,7 @@ type ChainmakerResponse struct {
 	BlockHash string `json:"block_hash"`
 }
 
-func SendChainmakerRequest(info *ChainChainmakerClient, method string) (*ChainmakerResponse, error) {
+func SendChainmakerRequest(info *ChainChainmakerClient, method string, lang string) (*ChainmakerResponse, error) {
 	jsonData, err := json.Marshal(info)
 	if err != nil {
 		return nil, err
@@ -38,7 +40,7 @@ func SendChainmakerRequest(info *ChainChainmakerClient, method string) (*Chainma
 
 	serverUrl := info.ChainConfig.ChainmakerEndpoint
 	if serverUrl == "" {
-		return nil, fmt.Errorf("chainmakerEndpoint is not configured")
+		return nil, fmt.Errorf(i18n.Translate(lang, "chain:chainmakerEndpoint is not configured"))
 	}
 
 	if !strings.HasPrefix(serverUrl, "http://") && !strings.HasPrefix(serverUrl, "https://") {
@@ -94,15 +96,15 @@ func SendChainmakerRequest(info *ChainChainmakerClient, method string) (*Chainma
 	return &chainmakerResp, nil
 }
 
-func normalizeChainData(data string) (string, error) {
+func normalizeChainData(data string, lang string) (string, error) {
 	var originChainData map[string]interface{}
 	if err := json.Unmarshal([]byte(data), &originChainData); err != nil {
-		return "", fmt.Errorf("parse json data error: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "chain:parse json data error: %v"), err)
 	}
 
 	normalizedData, err := json.Marshal(originChainData)
 	if err != nil {
-		return "", fmt.Errorf("marshal normalized data error: %v", err)
+		return "", fmt.Errorf(i18n.Translate(lang, "chain:marshal normalized data error: %v"), err)
 	}
 	return string(normalizedData), nil
 }

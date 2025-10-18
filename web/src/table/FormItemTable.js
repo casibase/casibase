@@ -191,6 +191,29 @@ class FormItemTable extends React.Component {
         },
       },
       {
+        title: i18next.t("general:Label"),
+        dataIndex: "label",
+        key: "label",
+        width: "200px",
+        render: (text, record, index) => {
+          const items = this.getItems();
+          const selectedItem = items.find(item => item.name === text);
+          const currentLabel = selectedItem?.label || text;
+          return (
+            <Input
+              value={i18next.t(currentLabel)}
+              onChange={e => {
+                const newLabel = e.target.value;
+                this.updateField(this.props.table, index, "label", newLabel);
+                if (selectedItem) {
+                  selectedItem.label = newLabel;
+                }
+              }}
+            />
+          );
+        },
+      },
+      {
         title: i18next.t("general:Visible"),
         dataIndex: "visible",
         key: "visible",

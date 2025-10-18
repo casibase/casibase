@@ -41,9 +41,54 @@ const MessageItem = ({
   isLoadingTTS, // Added new prop for TTS loading state
   readingMessage,
   sendMessage,
+  hideThinking,
 }) => {
   const [avatarSrc, setAvatarSrc] = useState(null);
   const [isRegenerating, setIsRegenerating] = useState(false);
+
+  const renderThinkingAnimation = () => {
+    return (
+      <div className="message-thinking" style={{
+        padding: "10px",
+        borderRadius: "5px",
+        display: "flex",
+        alignItems: "center",
+      }}>
+        <div style={{
+          fontWeight: "bold",
+          color: "#1890ff",
+        }}>
+          {i18next.t("chat:Thinking")}
+        </div>
+        <div className="thinking-animation" style={{
+          marginLeft: "8px",
+          display: "flex",
+        }}>
+          {[0, 1, 2].map((i) => (
+            <div key={i} style={{
+              width: "6px",
+              height: "6px",
+              backgroundColor: "#1890ff",
+              borderRadius: "50%",
+              margin: "0 2px",
+              animation: "thinkingDot 1.4s infinite ease-in-out both",
+              animationDelay: i * 0.16 + "s",
+            }} />
+          ))}
+        </div>
+        <style>{`
+          @keyframes thinkingDot {
+            0%, 80%, 100% { 
+              transform: scale(0);
+            } 
+            40% { 
+              transform: scale(1.0);
+            }
+          }
+        `}</style>
+      </div>
+    );
+  };
 
   const {isEditing,
     setIsHovering,
@@ -125,23 +170,25 @@ const MessageItem = ({
     if (!message.isReasoningPhase && message.reasonText && message.author === "AI") {
       return (
         <div className="message-content">
-          <div className="message-reason" style={{
-            marginBottom: "15px",
-            padding: "10px",
-            borderRadius: "5px",
-            borderLeft: "3px solid #1890ff",
-          }}>
-            <div className="reason-label" style={{
-              fontWeight: "bold",
-              marginBottom: "5px",
-              color: "#1890ff",
+          {!hideThinking && (
+            <div className="message-reason" style={{
+              marginBottom: "15px",
+              padding: "10px",
+              borderRadius: "5px",
+              borderLeft: "3px solid #1890ff",
             }}>
-              {i18next.t("chat:Reasoning process")}:
+              <div className="reason-label" style={{
+                fontWeight: "bold",
+                marginBottom: "5px",
+                color: "#1890ff",
+              }}>
+                {i18next.t("chat:Reasoning process")}:
+              </div>
+              <div className="reason-content">
+                {renderText(message.reasonText)}
+              </div>
             </div>
-            <div className="reason-content">
-              {renderText(message.reasonText)}
-            </div>
-          </div>
+          )}
 
           <div className="message-answer">
             {message.html || renderText(message.text)}
@@ -165,27 +212,29 @@ const MessageItem = ({
           <Bubble
             placement="start"
             content={
-              <div className="message-reason" style={{
-                padding: "10px",
-                borderRadius: "5px",
-                borderLeft: "3px solid #1890ff",
-              }}>
-                <div className="reason-label" style={{
-                  fontWeight: "bold",
-                  marginBottom: "5px",
-                  color: "#1890ff",
+              hideThinking ? renderThinkingAnimation() : (
+                <div className="message-reason" style={{
+                  padding: "10px",
+                  borderRadius: "5px",
+                  borderLeft: "3px solid #1890ff",
                 }}>
-                  {i18next.t("chat:Reasoning process")}:
+                  <div className="reason-label" style={{
+                    fontWeight: "bold",
+                    marginBottom: "5px",
+                    color: "#1890ff",
+                  }}>
+                    {i18next.t("chat:Reasoning process")}:
+                  </div>
+                  <div className="reason-content">
+                    {renderText(message.reasonText)}
+                  </div>
                 </div>
-                <div className="reason-content">
-                  {renderText(message.reasonText)}
-                </div>
-              </div>
+              )
             }
-            typing={{
+            typing={!hideThinking ? {
               step: 2,
               interval: 50,
-            }}
+            } : undefined}
             avatar={{
               src: avatarSrc,
               onError: handleAvatarError,

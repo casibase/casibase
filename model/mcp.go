@@ -23,6 +23,7 @@ import (
 	"github.com/ThinkInAIXYZ/go-mcp/client"
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
 	"github.com/casibase/casibase/agent"
+	"github.com/casibase/casibase/i18n"
 	"github.com/openai/openai-go/v2/responses"
 	"github.com/sashabaranov/go-openai"
 )
@@ -68,14 +69,14 @@ func reverseToolsToOpenAi(tools []*protocol.Tool) ([]openai.Tool, error) {
 	return openaiTools, nil
 }
 
-func handleToolCalls(toolCalls []openai.ToolCall, flushData interface{}, writer io.Writer) error {
+func handleToolCalls(toolCalls []openai.ToolCall, flushData interface{}, writer io.Writer, lang string) error {
 	if toolCalls == nil {
 		return nil
 	}
 
-	if flushThink, ok := flushData.(func(string, string, io.Writer) error); ok {
+	if flushThink, ok := flushData.(func(string, string, io.Writer, string) error); ok {
 		for _, toolCall := range toolCalls {
-			err := flushThink("\n"+"Call result from "+toolCall.Function.Name+"\n", "reason", writer)
+			err := flushThink("\n"+"Call result from "+toolCall.Function.Name+"\n", "reason", writer, lang)
 			if err != nil {
 				return err
 			}
@@ -105,9 +106,9 @@ func handleToolCallsParameters(toolCall openai.ToolCall, toolCalls []openai.Tool
 	return toolCalls, toolCallsMap
 }
 
-func QueryTextWithTools(p ModelProvider, question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo) (*ModelResult, error) {
+func QueryTextWithTools(p ModelProvider, question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	var messages []*RawMessage
-	modelResult, err := p.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo)
+	modelResult, err := p.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo, lang)
 	if err != nil {
 		return nil, err
 	}
@@ -143,13 +144,13 @@ func QueryTextWithTools(p ModelProvider, question string, writer io.Writer, hist
 				ToolCall: toolCall,
 			})
 
-			messages, err = callTools(toolCall, toolName, mcpClient, messages)
+			messages, err = callTools(toolCall, toolName, mcpClient, messages, lang)
 			if err != nil {
 				return nil, err
 			}
 		}
 		agentInfo.AgentMessages.Messages = messages
-		modelResult, err = p.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo)
+		modelResult, err = p.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -181,12 +182,12 @@ func createToolMessage(toolCall openai.ToolCall, text string) *RawMessage {
 	}
 }
 
-func callTools(toolCall openai.ToolCall, functionName string, mcpClient *client.Client, messages []*RawMessage) ([]*RawMessage, error) {
+func callTools(toolCall openai.ToolCall, functionName string, mcpClient *client.Client, messages []*RawMessage, lang string) ([]*RawMessage, error) {
 	var arguments map[string]interface{}
 	ctx := context.Background()
 
 	if err := json.Unmarshal([]byte(toolCall.Function.Arguments), &arguments); err != nil {
-		return nil, fmt.Errorf("failed to parse tool arguments: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:failed to parse tool arguments: %v"), err)
 	}
 
 	req := &protocol.CallToolRequest{
@@ -212,7 +213,7 @@ func callTools(toolCall openai.ToolCall, functionName string, mcpClient *client.
 
 	responseJson, err := json.Marshal(response)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal tool response: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:failed to marshal tool response: %v"), err)
 	}
 
 	messages = append(messages, createToolMessage(toolCall, string(responseJson)))

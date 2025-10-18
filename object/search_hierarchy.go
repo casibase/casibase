@@ -19,6 +19,7 @@ import (
 	"strings"
 
 	"github.com/casibase/casibase/embedding"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/model"
 )
 
@@ -30,8 +31,8 @@ func NewHierarchySearchProvider(owner string) (*HierarchySearchProvider, error) 
 	return &HierarchySearchProvider{owner: owner}, nil
 }
 
-func (p *HierarchySearchProvider) Search(storeName string, embeddingProviderName string, embeddingProviderObj embedding.EmbeddingProvider, modelProviderName string, text string, knowledgeCount int) ([]Vector, *embedding.EmbeddingResult, error) {
-	vectors, err := getRelatedVectors(storeName, embeddingProviderName)
+func (p *HierarchySearchProvider) Search(relatedStores []string, embeddingProviderName string, embeddingProviderObj embedding.EmbeddingProvider, modelProviderName string, text string, knowledgeCount int, lang string) ([]Vector, *embedding.EmbeddingResult, error) {
+	vectors, err := getRelatedVectors(relatedStores, embeddingProviderName)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -54,17 +55,17 @@ func (p *HierarchySearchProvider) Search(storeName string, embeddingProviderName
 		titleCandidates = append(titleCandidates, title)
 	}
 
-	question, _, err := getEnhancedQuestionByModel(modelProviderName, text, titleCandidates, knowledgeCount)
+	question, _, err := getEnhancedQuestionByModel(modelProviderName, text, titleCandidates, knowledgeCount, lang)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	qVector, embeddingResult, err := queryVectorSafe(embeddingProviderObj, question)
+	qVector, embeddingResult, err := queryVectorSafe(embeddingProviderObj, question, lang)
 	if err != nil {
 		return nil, nil, err
 	}
 	if qVector == nil || len(qVector) == 0 {
-		return nil, embeddingResult, fmt.Errorf("no qVector found")
+		return nil, embeddingResult, fmt.Errorf(i18n.Translate(lang, "object:no qVector found"))
 	}
 
 	similarities, err := getNearestVectors(qVector, vectorData, knowledgeCount)
@@ -82,14 +83,14 @@ func (p *HierarchySearchProvider) Search(storeName string, embeddingProviderName
 	return res, embeddingResult, nil
 }
 
-func getEnhancedQuestionByModel(modelProviderName string, text string, titleCandidates []string, candidateTitlesNum int) (string, *model.ModelResult, error) {
+func getEnhancedQuestionByModel(modelProviderName string, text string, titleCandidates []string, candidateTitlesNum int, lang string) (string, *model.ModelResult, error) {
 	prompt := fmt.Sprintf("Please help me select the top %d titles that are most likely to contain the answer. Just return the title list. No other content.", candidateTitlesNum)
 
 	question := fmt.Sprintf("Please select the titles most relevant to the following question and choose the %v most relevant items. Just return the title list. No other content.\nquestion:\n %s \n\nTitles: \n%s", candidateTitlesNum, text, "• "+strings.Join(titleCandidates, "\n• "))
 
 	history := []*model.RawMessage{}
 	knowledge := []*model.RawMessage{}
-	res, modelResult, err := GetAnswerWithContext(modelProviderName, question, history, knowledge, prompt)
+	res, modelResult, err := GetAnswerWithContext(modelProviderName, question, history, knowledge, prompt, lang)
 	if err != nil {
 		return "", nil, err
 	}

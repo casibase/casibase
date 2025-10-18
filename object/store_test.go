@@ -32,7 +32,7 @@ func TestUpdateStoreFolders(t *testing.T) {
 	//	panic(err)
 	//}
 
-	_, err = store.GetVideoData()
+	_, err = store.GetVideoData("en")
 	if err != nil {
 		panic(err)
 	}

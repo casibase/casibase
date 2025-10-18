@@ -25,6 +25,7 @@ import (
 
 	dashscopego "github.com/casibase/dashscope-go-sdk"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/dashscope-go-sdk/paraformer"
 )
 
@@ -88,7 +89,7 @@ func getFullTranscript(completedSegments []*SpeechSegment, currentSegment *Speec
 }
 
 // ProcessAudio processes an audio stream and returns the transcribed text
-func (p *AlibabacloudSpeechToTextProvider) ProcessAudio(audioReader io.Reader, ctx context.Context) (string, *SpeechToTextResult, error) {
+func (p *AlibabacloudSpeechToTextProvider) ProcessAudio(audioReader io.Reader, ctx context.Context, lang string) (string, *SpeechToTextResult, error) {
 	res := &SpeechToTextResult{
 		AudioDurationSeconds: 0,
 		Price:                0.0,
@@ -231,7 +232,7 @@ func (p *AlibabacloudSpeechToTextProvider) ProcessAudio(audioReader io.Reader, c
 			}
 
 			mutex.Lock()
-			recognitionError = fmt.Errorf("API error: %s", message)
+			recognitionError = fmt.Errorf(i18n.Translate(lang, "stt:API error: %s"), message)
 			recognitionDone = true
 			mutex.Unlock()
 
@@ -324,7 +325,7 @@ func (p *AlibabacloudSpeechToTextProvider) ProcessAudio(audioReader io.Reader, c
 
 		case err := <-apiCallDone:
 			if err != nil {
-				return "", res, fmt.Errorf("speech recognition API error: %v", err)
+				return "", res, fmt.Errorf(i18n.Translate(lang, "stt:speech recognition API error: %v"), err)
 			}
 			apiCallCompleted = true
 			timeoutTimer.Reset(waitAfterAPICallTime)
@@ -366,7 +367,7 @@ func (p *AlibabacloudSpeechToTextProvider) ProcessAudio(audioReader io.Reader, c
 				return fullTranscript, res, nil
 			}
 
-			return "", res, fmt.Errorf("speech recognition timed out after %v seconds", timeout.Seconds())
+			return "", res, fmt.Errorf(i18n.Translate(lang, "stt:speech recognition timed out after %v seconds"), timeout.Seconds())
 		}
 	}
 }

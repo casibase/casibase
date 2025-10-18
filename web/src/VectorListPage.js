@@ -121,6 +121,7 @@ class VectorListPage extends BaseListPage {
         key: "name",
         width: "140px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/vectors/${text}`}>
@@ -142,6 +143,7 @@ class VectorListPage extends BaseListPage {
         key: "store",
         width: "130px",
         sorter: (a, b) => a.store.localeCompare(b.store),
+        ...this.getColumnSearchProps("store"),
         render: (text, record, index) => {
           return (
             <Link to={`/stores/${record.owner}/${text}`}>
@@ -156,6 +158,7 @@ class VectorListPage extends BaseListPage {
         key: "provider",
         width: "200px",
         sorter: (a, b) => a.provider.localeCompare(b.provider),
+        ...this.getColumnSearchProps("provider"),
         render: (text, record, index) => {
           return (
             <Link to={`/providers/${text}`}>
@@ -170,6 +173,7 @@ class VectorListPage extends BaseListPage {
         key: "file",
         width: "200px",
         sorter: (a, b) => a.file.localeCompare(b.file),
+        ...this.getColumnSearchProps("file"),
       },
       {
         title: i18next.t("vector:Index"),
@@ -184,6 +188,7 @@ class VectorListPage extends BaseListPage {
         key: "text",
         width: "200px",
         sorter: (a, b) => a.text.localeCompare(b.text),
+        ...this.getColumnSearchProps("text"),
         render: (text, record, index) => {
           return (
             <Popover placement="left" content={
@@ -250,7 +255,7 @@ class VectorListPage extends BaseListPage {
         },
       },
     ];
-
+    const filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
     const paginationProps = {
       total: this.state.pagination.total,
       showQuickJumper: true,
@@ -261,7 +266,7 @@ class VectorListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={vectors} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={filteredColumns} dataSource={vectors} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Vectors")}&nbsp;&nbsp;&nbsp;&nbsp;

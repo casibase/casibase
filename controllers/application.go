@@ -45,7 +45,7 @@ func (c *ApiController) GetApplications() {
 			c.ResponseError(err.Error())
 			return
 		}
-		object.AddDetails(applications)
+		object.AddDetails(applications, c.GetAcceptLanguage())
 		c.ResponseOk(applications)
 	} else {
 		limit := util.ParseInt(limit)
@@ -62,7 +62,7 @@ func (c *ApiController) GetApplications() {
 			return
 		}
 
-		object.AddDetails(applications)
+		object.AddDetails(applications, c.GetAcceptLanguage())
 		c.ResponseOk(applications, paginator.Nums())
 	}
 }
@@ -84,7 +84,7 @@ func (c *ApiController) GetApplication() {
 	}
 
 	if res != nil {
-		object.AddDetails([]*object.Application{res})
+		object.AddDetails([]*object.Application{res}, c.GetAcceptLanguage())
 	}
 
 	c.ResponseOk(res)
@@ -108,7 +108,7 @@ func (c *ApiController) UpdateApplication() {
 		return
 	}
 
-	success, err := object.UpdateApplication(id, &application)
+	success, err := object.UpdateApplication(id, &application, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -173,7 +173,7 @@ func (c *ApiController) DeleteApplication() {
 		return
 	}
 
-	success, err := object.DeleteApplication(&application)
+	success, err := object.DeleteApplication(&application, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -210,7 +210,7 @@ func (c *ApiController) DeployApplication() {
 		return
 	}
 
-	success, err := object.UpdateApplication(id, &application)
+	success, err := object.UpdateApplication(id, &application, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -221,7 +221,7 @@ func (c *ApiController) DeployApplication() {
 	}
 
 	// Deploy the application synchronously and wait for completion
-	success, err = object.DeployApplicationSync(&application)
+	success, err = object.DeployApplicationSync(&application, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -260,7 +260,7 @@ func (c *ApiController) UndeployApplication() {
 	owner, name := util.GetOwnerAndNameFromId(id)
 
 	// Undeploy the application synchronously and wait for completion
-	success, err := object.UndeployApplicationSync(owner, name, application.Namespace)
+	success, err := object.UndeployApplicationSync(owner, name, application.Namespace, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

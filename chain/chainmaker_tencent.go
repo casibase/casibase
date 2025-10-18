@@ -17,6 +17,7 @@ package chain
 import (
 	"fmt"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
@@ -32,14 +33,14 @@ type ChainTencentChainmakerClient struct {
 	Client       *tbaas.Client
 }
 
-func newChainTencentChainmakerClient(clientId, clientSecret, region, networkId, chainId string) (*ChainTencentChainmakerClient, error) {
+func newChainTencentChainmakerClient(clientId, clientSecret, region, networkId, chainId string, lang string) (*ChainTencentChainmakerClient, error) {
 	credential := common.NewCredential(clientId, clientSecret)
 	cpf := profile.NewClientProfile()
 	cpf.HttpProfile.Endpoint = "tbaas.tencentcloudapi.com"
 
 	client, err := tbaas.NewClient(credential, region, cpf)
 	if err != nil {
-		return nil, fmt.Errorf("newChainTencentChainmakerClient() error: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "chain:newChainTencentChainmakerClient() error: %v"), err)
 	}
 
 	return &ChainTencentChainmakerClient{
@@ -53,7 +54,7 @@ func newChainTencentChainmakerClient(clientId, clientSecret, region, networkId, 
 }
 
 
-func (client *ChainTencentChainmakerClient) CommitWithMethodAndContractName(data, funcName, contractName string) (string, string, string, error) {
+func (client *ChainTencentChainmakerClient) CommitWithMethodAndContractName(data, funcName, contractName string, lang string) (string, string, string, error) {
 	request := tbaas.NewInvokeRequest()
 	request.Module = common.StringPtr("transaction")
 	request.Operation = common.StringPtr("invoke")
@@ -73,10 +74,10 @@ func (client *ChainTencentChainmakerClient) CommitWithMethodAndContractName(data
 	response, err := client.Client.Invoke(request)
 	if err != nil {
 		if sdkErr, ok := err.(*errors.TencentCloudSDKError); ok {
-			return "", "", "", fmt.Errorf("TencentCloudSDKError: %v", sdkErr)
+			return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:TencentCloudSDKError: %v"), sdkErr)
 		}
 
-		return "", "", "", fmt.Errorf("ChainTencentChainmakerClient.Client.Invoke() error: %v", err)
+		return "", "", "", fmt.Errorf(i18n.Translate(lang, "chain:ChainTencentChainmakerClient.Client.Invoke() error: %v"), err)
 	}
 
 	return response.ToJsonString(), "", "", nil
@@ -92,7 +93,7 @@ func (client *ChainTencentChainmakerClient) QueryWithMethodAndContractName(data,
 	return "未实现", "未实现", nil
 }
 
-func (client ChainTencentChainmakerClient) Query(blockId string, data string) (string, error) {
+func (client ChainTencentChainmakerClient) Query(blockId string, data string, lang string) (string, error) {
 	return "", nil
 	//// simulate the situation that error occurs
 	//if strings.HasSuffix(data["id"], "0") {

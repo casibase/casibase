@@ -21,6 +21,7 @@ import (
 	"strings"
 	"unicode"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/pkoukk/tiktoken-go"
 	"github.com/sashabaranov/go-openai"
 )
@@ -182,7 +183,7 @@ func getHistoryMessages(recentMessages []*RawMessage, model string, leftTokens i
 	return res, nil
 }
 
-func OpenaiGenerateMessages(prompt string, question string, recentMessages []*RawMessage, knowledgeMessages []*RawMessage, model string, maxTokens int) ([]*RawMessage, error) {
+func OpenaiGenerateMessages(prompt string, question string, recentMessages []*RawMessage, knowledgeMessages []*RawMessage, model string, maxTokens int, lang string) ([]*RawMessage, error) {
 	queryMessage := &RawMessage{
 		Text:   question,
 		Author: openai.ChatMessageRoleUser,
@@ -194,7 +195,7 @@ func OpenaiGenerateMessages(prompt string, question string, recentMessages []*Ra
 
 	leftTokens := maxTokens - queryMessageSize
 	if leftTokens <= 0 {
-		return nil, fmt.Errorf("the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", queryMessageSize, model, maxTokens)
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]"), queryMessageSize, model, maxTokens)
 	}
 
 	for i, message := range knowledgeMessages {

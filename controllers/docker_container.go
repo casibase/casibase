@@ -116,7 +116,7 @@ func (c *ApiController) UpdateContainer() {
 		return
 	}
 
-	c.ResponseOk(object.UpdateContainer(id, &container))
+	c.ResponseOk(object.UpdateContainer(id, &container, c.GetAcceptLanguage()))
 }
 
 // AddContainer

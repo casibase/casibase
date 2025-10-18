@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/storage"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
@@ -89,10 +90,12 @@ type Store struct {
 	LogoUrl             string   `xorm:"varchar(200)" json:"logoUrl"`
 	FooterHtml          string   `xorm:"mediumtext" json:"footerHtml"`
 	NavItems            []string `xorm:"text" json:"navItems"`
+	VectorStores        []string `xorm:"varchar(500)" json:"vectorStores"`
 	ChildStores         []string `xorm:"varchar(500)" json:"childStores"`
 	ChildModelProviders []string `xorm:"varchar(500)" json:"childModelProviders"`
 	ShowAutoRead        bool     `json:"showAutoRead"`
 	DisableFileUpload   bool     `json:"disableFileUpload"`
+	HideThinking        bool     `json:"hideThinking"`
 	IsDefault           bool     `json:"isDefault"`
 	State               string   `xorm:"varchar(100)" json:"state"`
 
@@ -208,7 +211,7 @@ func (store *Store) GetId() string {
 	return fmt.Sprintf("%s/%s", store.Owner, store.Name)
 }
 
-func (store *Store) GetStorageProviderObj() (storage.StorageProvider, error) {
+func (store *Store) GetStorageProviderObj(lang string) (storage.StorageProvider, error) {
 	var provider *Provider
 	var err error
 	if store.StorageProvider == "" {
@@ -223,12 +226,12 @@ func (store *Store) GetStorageProviderObj() (storage.StorageProvider, error) {
 
 	var storageProvider storage.StorageProvider
 	if provider != nil {
-		storageProvider, err = provider.GetStorageProviderObj(store.VectorStoreId)
+		storageProvider, err = provider.GetStorageProviderObj(store.VectorStoreId, lang)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		storageProvider, err = storage.NewCasdoorProvider(store.StorageProvider)
+		storageProvider, err = storage.NewCasdoorProvider(store.StorageProvider, lang)
 		if err != nil {
 			return nil, err
 		}
@@ -237,12 +240,12 @@ func (store *Store) GetStorageProviderObj() (storage.StorageProvider, error) {
 	return NewSubpathStorageProvider(storageProvider, store.StorageSubpath), nil
 }
 
-func (store *Store) GetImageProviderObj() (storage.StorageProvider, error) {
+func (store *Store) GetImageProviderObj(lang string) (storage.StorageProvider, error) {
 	if store.ImageProvider == "" {
-		return nil, fmt.Errorf("The image provider for store: %s should not be empty", store.GetId())
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:The image provider for store: %s should not be empty"), store.GetId())
 	}
 
-	return storage.NewCasdoorProvider(store.ImageProvider)
+	return storage.NewCasdoorProvider(store.ImageProvider, lang)
 }
 
 func (store *Store) GetModelProvider() (*Provider, error) {
@@ -281,8 +284,8 @@ func (store *Store) GetEmbeddingProvider() (*Provider, error) {
 	return GetProvider(providerId)
 }
 
-func RefreshStoreVectors(store *Store) (bool, error) {
-	storageProviderObj, err := store.GetStorageProviderObj()
+func RefreshStoreVectors(store *Store, lang string) (bool, error) {
+	storageProviderObj, err := store.GetStorageProviderObj(lang)
 	if err != nil {
 		return false, err
 	}
@@ -292,7 +295,7 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 		return false, err
 	}
 	if modelProvider == nil {
-		return false, fmt.Errorf("The model provider for store: %s is not found", store.GetId())
+		return false, fmt.Errorf(i18n.Translate(lang, "object:The model provider for store: %s is not found"), store.GetId())
 	}
 
 	embeddingProvider, err := store.GetEmbeddingProvider()
@@ -300,25 +303,25 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 		return false, err
 	}
 	if embeddingProvider == nil {
-		return false, fmt.Errorf("The embedding provider for store: %s is not found", store.GetId())
+		return false, fmt.Errorf(i18n.Translate(lang, "object:The embedding provider for store: %s is not found"), store.GetId())
 	}
 
-	embeddingProviderObj, err := embeddingProvider.GetEmbeddingProvider()
+	embeddingProviderObj, err := embeddingProvider.GetEmbeddingProvider(lang)
 	if err != nil {
 		return false, err
 	}
 
-	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType)
+	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, lang)
 	return ok, err
 }
 
-func refreshVector(vector *Vector) (bool, error) {
-	_, embeddingProviderObj, err := getEmbeddingProviderFromName("admin", vector.Provider)
+func refreshVector(vector *Vector, lang string) (bool, error) {
+	_, embeddingProviderObj, err := getEmbeddingProviderFromName("admin", vector.Provider, lang)
 	if err != nil {
 		return false, err
 	}
 
-	data, _, err := queryVectorSafe(embeddingProviderObj, vector.Text)
+	data, _, err := queryVectorSafe(embeddingProviderObj, vector.Text, lang)
 	if err != nil {
 		return false, err
 	}

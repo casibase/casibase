@@ -119,6 +119,7 @@ class WorkflowListPage extends BaseListPage {
         key: "name",
         width: "160px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/workflows/${text}`}>
@@ -133,6 +134,7 @@ class WorkflowListPage extends BaseListPage {
         key: "displayName",
         width: "200px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        ...this.getColumnSearchProps("displayName"),
       },
       {
         title: i18next.t("general:Text"),
@@ -196,6 +198,7 @@ class WorkflowListPage extends BaseListPage {
         key: "message",
         // width: "160px",
         sorter: (a, b) => a.text.localeCompare(b.text),
+        ...this.getColumnSearchProps("message"),
         render: (text, record, index) => {
           return (
             <Tooltip placement="left" styles={{body: {width: "815px", maxHeight: "355px"}}} title={
@@ -214,6 +217,7 @@ class WorkflowListPage extends BaseListPage {
         key: "questionTemplate",
         // width: "160px",
         sorter: (a, b) => a.questionTemplate.localeCompare(b.questionTemplate),
+        ...this.getColumnSearchProps("questionTemplate"),
         render: (text, record, index) => {
           return (
             <Popover
@@ -279,7 +283,7 @@ class WorkflowListPage extends BaseListPage {
         },
       },
     ];
-
+    const filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
     const paginationProps = {
       total: this.state.pagination.total,
       showQuickJumper: true,
@@ -290,7 +294,7 @@ class WorkflowListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={workflows} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={filteredColumns} dataSource={workflows} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Workflows")}&nbsp;&nbsp;&nbsp;&nbsp;

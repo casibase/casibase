@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -91,7 +92,7 @@ func GetApplication(id string) (*Application, error) {
 	return getApplication(owner, name)
 }
 
-func UpdateApplication(id string, application *Application) (bool, error) {
+func UpdateApplication(id string, application *Application, lang string) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	application.UpdatedTime = util.GetCurrentTime()
 	_, err := getApplication(owner, name)
@@ -119,9 +120,9 @@ func UpdateApplication(id string, application *Application) (bool, error) {
 	}
 
 	// Apply Kustomize overlays
-	application.Manifest, err = generateManifestWithKustomize(application.Manifest, application.Parameters)
+	application.Manifest, err = generateManifestWithKustomize(application.Manifest, application.Parameters, lang)
 	if err != nil {
-		return false, fmt.Errorf("failed to generate manifest: %v", err)
+		return false, fmt.Errorf(i18n.Translate(lang, "object:failed to generate manifest: %v"), err)
 	}
 
 	affected, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(application)
@@ -156,11 +157,11 @@ func AddApplication(application *Application) (bool, error) {
 	return affected != 0, nil
 }
 
-func DeleteApplication(application *Application) (bool, error) {
+func DeleteApplication(application *Application, lang string) (bool, error) {
 	owner, name, namespace := application.Owner, application.Name, application.Namespace
 	// First, delete the deployment if it exists
 	go func() {
-		_, err := UndeployApplication(owner, name, namespace)
+		_, err := UndeployApplication(owner, name, namespace, lang)
 		if err != nil {
 			return
 		}

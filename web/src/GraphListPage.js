@@ -95,6 +95,7 @@ class GraphListPage extends BaseListPage {
         key: "name",
         width: "160px",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
             <Link to={`/graphs/${text}`}>
@@ -109,6 +110,7 @@ class GraphListPage extends BaseListPage {
         key: "displayName",
         width: "200px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        ...this.getColumnSearchProps("displayName"),
       },
       {
         title: i18next.t("general:Created time"),
@@ -198,7 +200,7 @@ class GraphListPage extends BaseListPage {
         },
       },
     ];
-
+    const filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
     const paginationProps = {
       total: this.state.pagination.total,
       showQuickJumper: true,
@@ -209,7 +211,7 @@ class GraphListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: 1600}} tableLayout="fixed" columns={columns} dataSource={graphs} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: 1600}} tableLayout="fixed" columns={filteredColumns} dataSource={graphs} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Graphs")}&nbsp;&nbsp;&nbsp;&nbsp;

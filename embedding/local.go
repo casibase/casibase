@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -75,7 +76,7 @@ Embedding models:
 `
 }
 
-func (p *LocalEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
+func (p *LocalEmbeddingProvider) calculatePrice(res *EmbeddingResult, lang string) error {
 	embeddingModel := p.subType
 	var pricePerThousandTokens float64
 	res.Currency = "USD"
@@ -90,14 +91,14 @@ func (p *LocalEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 		pricePerThousandTokens = p.pricePerThousandTokens
 		res.Currency = p.currency
 	default:
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", embeddingModel)
+		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), embeddingModel)
 	}
 
 	res.Price = getPrice(res.TokenCount, pricePerThousandTokens)
 	return nil
 }
 
-func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context, lang string) ([]float32, *EmbeddingResult, error) {
 	var client *openai.Client
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
@@ -112,7 +113,7 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 	if model == "custom-embedding" && p.compatibleProvider != "" {
 		model = p.compatibleProvider
 	} else if model == "custom-embedding" && p.compatibleProvider == "" {
-		return nil, nil, fmt.Errorf("no embedding provider specified")
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "embedding:no embedding provider specified"))
 	}
 
 	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
@@ -127,7 +128,7 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 	embeddingResult := &EmbeddingResult{TokenCount: tokenCount}
 
 	if p.typ != "Custom" {
-		err = p.calculatePrice(embeddingResult)
+		err = p.calculatePrice(embeddingResult, lang)
 		if err != nil {
 			return nil, nil, err
 		}
