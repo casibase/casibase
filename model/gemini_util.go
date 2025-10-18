@@ -17,7 +17,7 @@ package model
 import genai "google.golang.org/genai"
 
 func GenaiRawMessagesToMessages(question string, history []*RawMessage) []*genai.Content {
-	var messages []*genai.Content
+	messages := make([]*genai.Content, 0, len(history)+1)
 	for _, rawMessage := range history {
 		var role string
 		switch rawMessage.Author {
