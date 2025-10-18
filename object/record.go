@@ -366,7 +366,7 @@ func AddRecord(record *Record, lang string) (bool, interface{}, error) {
 		}
 	}
 
-	go AddRecordToArchiveQueueFromRecordAdd(record)
+	go AddRecordToArchiveQueueFromRecordAdd(record, lang)
 
 	// 异步执行
 	go UploadObjectToIPFS(record)
@@ -434,7 +434,7 @@ func AddRecords(records []*Record, syncEnabled bool, lang string) (bool, interfa
 	// 异步执行
 	go func() {
 		for _, record := range validRecords {
-			AddRecordToArchiveQueueFromRecordAdd(record)
+			AddRecordToArchiveQueueFromRecordAdd(record,lang)
 			UploadObjectToIPFS(record)
 		}
 	}()

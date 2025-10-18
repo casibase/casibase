@@ -270,6 +270,12 @@
     "Password - Tooltip": "Login password",
     "Pause": "Pause",
     "Permissions": "Permissions",
+    "Permission check failed": "Permission check failed",
+    "Permission denied: You don't have access to this resource": "Permission denied: You don't have access to this resource",
+    
+    "Checking permissions...": "Checking permissions...",
+    "You don't have permission to access this page": "You don't have permission to access this page",
+    "Failed to check page permission": "Failed to check page permission",
     "Pods": "Pods",
     "Preview": "Preview",
     "Preview - Tooltip": "Real-time preview",

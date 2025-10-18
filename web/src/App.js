@@ -108,6 +108,8 @@ import DynamicConfigPage from "./DynamicConfigPage";
 import PatientChainDataIntro from "./introduce/PatientChainDataIntro"
 import MedicalRecordChainIntro from "./introduce/MedicalRecordChainIntro"
 
+import withPagePermission from "./component/PagePermissionGuard";
+
 
 
 
@@ -652,6 +654,12 @@ class App extends Component {
       return [];
     }
 
+    // 检查当前用户是否为管理员
+    const isAdmin = this.state.account.isAdmin || this.state.account.type === "chat-admin";
+
+    // 获取用户标签，用于控制界面元素显示
+    const userTag = this.state.account?.tag || '';
+
     const navItems = this.state.store?.navItems;
 
     if (this.state.account.type.startsWith("video-")) {
@@ -753,28 +761,31 @@ class App extends Component {
         Setting.getItem(<Link to="/dashboard">{i18next.t("leftSideMedMenu:Dashboard")}</Link>, "/dashboard"),
         // Setting.getItem(<Link to="/forms/专病库知识图谱/data">{i18next.t("leftSideMedMenu:knowledge graph")}</Link>, "/forms/专病库知识图谱/data"),
 
-        Setting.getItem(
+        // 专病知识图谱 - 仅对非 user 标签用户可见
+        ...(userTag !== 'user' ? [Setting.getItem(
           <a target="_blank" rel="noreferrer" href="https://rws.neusoft.com:10100/medkb/#/login">
             {i18next.t("leftSideMedMenu:knowledge graph")}
             {Setting.renderExternalLink()}
           </a>, "/knowledge-graph"),
+        ] : []),
       ]));
 
       // 上链服务
+      const canViewBlockchainExplorer = isAdmin && userTag !== 'user' && userTag !== 'doctor';
 
-      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/records">{i18next.t("leftSideMedMenu:Chain Services")}</Link>, "/records", <ApiTwoTone twoToneColor={twoToneColor} />, [
-
+      const chainServicesItems = [
         Setting.getItem(<Link to="/ipfs-archive">{i18next.t("leftSideMedMenu:IpfsArchives")}</Link>, "/ipfs-archive"),
         Setting.getItem(<Link to="/records">{i18next.t("leftSideMedMenu:Records")}</Link>, "/records"),
-        // Setting.getItem(<Link to="/forms/区块链浏览器/data">{i18next.t("leftSideMedMenu:chainExpoler")}</Link>, "/forms/区块链浏览器/data"),
-        Setting.getItem(
+        // 区块链浏览器 - 仅管理员可见，隐藏 user 和 doctor 标签用户
+        ...(canViewBlockchainExplorer ? [Setting.getItem(
           <a target="_blank" rel="noreferrer" href="http://192.168.0.228:9996/chain1/home">
             {i18next.t("leftSideMedMenu:chainExpoler")}
             {Setting.renderExternalLink()}
-          </a>, "http://192.168.0.228:9996/chain1/home"),
+          </a>, "http://192.168.0.228:9996/chain1/home")] : []),
         Setting.getItem(<Link to="/ipfs-search">{i18next.t("leftSideMedMenu:Audit")}</Link>, "/ipfs-search"),
-        // Setting.getItem(<Link to="/audit">{i18next.t("leftSideMedMenu:Audit")}</Link>, "/audit"),
-      ]));
+      ];
+
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/records">{i18next.t("leftSideMedMenu:Chain Services")}</Link>, "/records", <ApiTwoTone twoToneColor={twoToneColor} />, chainServicesItems));
 
       // 共享服务
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/yolov8mi">{i18next.t("leftSideMedMenu:Sharing Services")}</Link>, "/yolov8mi", <BuildTwoTone twoToneColor={twoToneColor} />, [
@@ -785,11 +796,12 @@ class App extends Component {
         Setting.getItem(<Link to="/forms/SM9-IPFE/data">{i18next.t("leftSideMedMenu:Privacy-Preserving Inference")}</Link>, "/forms/SM9-IPFE/data"),
         Setting.getItem(<Link to="/forms/受控使用/data">{i18next.t("leftSideMedMenu:Controlled Usage")}</Link>, "/forms/受控使用/data"),
         // Setting.getItem(<Link to="/forms/联邦学习/data">{i18next.t("leftSideMedMenu:Federated Learning")}</Link>, "/forms/联邦学习/data"),
-        Setting.getItem(
+        // 联邦学习 - 仅对非 user 标签用户可见
+        ...(userTag !== 'user' ? [Setting.getItem(
           <a target="_blank" rel="noreferrer" href="http://172.25.77.152">
             {i18next.t("leftSideMedMenu:Federated Learning")}
             {Setting.renderExternalLink()}
-          </a>, "http://172.25.77.152/"),
+          </a>, "http://172.25.77.152/")] : []),
         // 预留：受控使用、密文计算
 
       ],
@@ -807,35 +819,37 @@ class App extends Component {
 
 
       // 系统管理
-      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sysinfo">{i18next.t("leftSideMedMenu:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
+      const adminMenuItems = [
         Setting.getItem(<Link to="/sysinfo">{i18next.t("leftSideMedMenu:System Info")}</Link>, "/sysinfo"),
-
         Setting.getItem(<Link to="/stores">{i18next.t("leftSideMedMenu:Stores")}</Link>, "/stores"),
         Setting.getItem(<Link to="/providers">{i18next.t("leftSideMedMenu:Providers")}</Link>, "/providers"),
         Setting.getItem(<Link to="/sessions">{i18next.t("leftSideMedMenu:Sessions")}</Link>, "/sessions"),
-        Setting.getItem(
+        // 资源管理 - 隐藏 user 和 doctor 标签用户
+        ...(userTag !== 'user' && userTag !== 'doctor' ? [Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
             {i18next.t("leftSideMedMenu:Resources")}
             {Setting.renderExternalLink()}
-          </a>, "/resources"),
-        Setting.getItem(
+          </a>, "/resources")] : []),
+        // 用户管理 - 隐藏 user 和 doctor 标签用户
+        ...(userTag !== 'user' && userTag !== 'doctor' ? [Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
             {i18next.t("leftSideMedMenu:Users")}
             {Setting.renderExternalLink()}
-          </a>, "/users"),
-
-        Setting.getItem(
+          </a>, "/users")] : []),
+        // 权限管理 - 仅管理员可见，且隐藏 user 和 doctor 标签用户
+        ...(isAdmin && userTag !== 'user' && userTag !== 'doctor' ? [Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
             {i18next.t("leftSideMedMenu:Permissions")}
             {Setting.renderExternalLink()}
-          </a>, "/permissions"),
+          </a>, "/permissions")] : []),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
             {i18next.t("leftSideMedMenu:Swagger")}
             {Setting.renderExternalLink()}
           </a>, "/swagger"),
+      ];
 
-      ]));
+      res.push(Setting.getItem(<Link style={{ color: textColor }} to="/sysinfo">{i18next.t("leftSideMedMenu:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, adminMenuItems));
 
 
       // 旧版
@@ -1033,7 +1047,11 @@ class App extends Component {
         <Route exact path="/videos/:owner/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/public-videos" render={(props) => <PublicVideoListPage {...props} />} />
         <Route exact path="/public-videos/:owner/:videoName" render={(props) => <VideoPage account={this.state.account} {...props} />} />
-        <Route exact path="/dashboard" render={(props) => this.renderSigninIfNotSignedIn(<DashboardPage account={this.state.account} {...props} />)} />
+        {/* <Route exact path="/dashboard" render={(props) => this.renderSigninIfNotSignedIn(<DashboardPage account={this.state.account} {...props} />)} /> */}
+        <Route exact path="/dashboard" render={(props) => {
+          const DashboardWithPermission = withPagePermission(DashboardPage, "/dashboard");
+          return this.renderSigninIfNotSignedIn(<DashboardWithPermission account={this.state.account} {...props} />);
+        }} />
         <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />
         <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/vectors" render={(props) => this.renderSigninIfNotSignedIn(<VectorListPage account={this.state.account} {...props} />)} />
@@ -1064,9 +1082,18 @@ class App extends Component {
         <Route exact path="/ipfs-archive/add" render={(props) => this.renderSigninIfNotSignedIn(<IpfsArchiveEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/ipfs-search" render={(props) => this.renderSigninIfNotSignedIn(<IpfsSearchPage account={this.state.account} {...props} />)} />
         <Route exact path="/search-audit" render={(props) => this.renderSigninIfNotSignedIn(<NewAuditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/multi-center" render={(props) => this.renderSigninIfNotSignedIn(<MuiltiCenter account={this.state.account} {...props} />)} />
-        <Route exact path="/multi-center/data-workbench" render={(props) => this.renderSigninIfNotSignedIn(<DataWorkBench account={this.state.account} {...props} />)} />
-        <Route exact path="/multi-center/audit-log" render={(props) => this.renderSigninIfNotSignedIn(<DataAuditLog account={this.state.account} {...props} />)} />
+        <Route exact path="/multi-center" render={(props) => {
+          const MultiCenterWithPermission = withPagePermission(MuiltiCenter, "/multi-center");
+          return this.renderSigninIfNotSignedIn(<MultiCenterWithPermission account={this.state.account} {...props} />);
+        }} />
+        <Route exact path="/multi-center/data-workbench" render={(props) => {
+          const DataWorkBenchWithPermission = withPagePermission(DataWorkBench, "/multi-center");
+          return this.renderSigninIfNotSignedIn(<DataWorkBenchWithPermission account={this.state.account} {...props} />);
+        }} />
+        <Route exact path="/multi-center/audit-log" render={(props) => {
+          const DataAuditLogWithPermission = withPagePermission(DataAuditLog, "/multi-center");
+          return this.renderSigninIfNotSignedIn(<DataAuditLogWithPermission account={this.state.account} {...props} />);
+        }} />
 
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)} />
@@ -1081,7 +1108,10 @@ class App extends Component {
         <Route exact path="/workflows/:workflowName" render={(props) => this.renderSigninIfNotSignedIn(<WorkflowEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/audit" render={(props) => this.renderSigninIfNotSignedIn(<AuditPage account={this.state.account} {...props} />)} />
         <Route exact path="/yolov8mi" render={(props) => this.renderSigninIfNotSignedIn(<PythonYolov8miPage account={this.state.account} {...props} />)} />
-        <Route exact path="/sr" render={(props) => this.renderSigninIfNotSignedIn(<PythonSrPage account={this.state.account} {...props} />)} />
+        <Route exact path="/sr" render={(props) => {
+          const PythonSrPageWithPermission = withPagePermission(PythonSrPage, "/sr");
+          return this.renderSigninIfNotSignedIn(<PythonSrPageWithPermission account={this.state.account} {...props} />);
+        }} />
         <Route exact path="/tasks" render={(props) => this.renderSigninIfNotSignedIn(<TaskListPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks/:taskName" render={(props) => this.renderSigninIfNotSignedIn(<TaskEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/forms" render={(props) => this.renderSigninIfNotSignedIn(<FormListPage account={this.state.account} {...props} />)} />

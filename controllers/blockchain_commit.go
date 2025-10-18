@@ -29,9 +29,15 @@ func (c *ApiController) SendBlockchainCommit() {
 	contractName := chainConfig.ContractName
 	provider := chainConfig.Provider
 
+	// 获取语言
+	lang := c.GetAcceptLanguage()
+	if lang == "" {
+		lang = "zh-CN"
+	}		
+
 	
 	// 调用区块链合约
-	block, txId, blockHash, err := object.CallBlockchainContract(provider, funcName, contractName, data)
+	block, txId, blockHash, err := object.CallBlockchainContract(provider, funcName, contractName, data, lang)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -69,9 +75,14 @@ func (c *ApiController) QueryBlockchainCommit() {
 	contractName := chainConfig.ContractName
 	provider := chainConfig.Provider
 
+	// 获取语言
+	lang := c.GetAcceptLanguage()
+	if lang == "" {
+		lang = "zh-CN"
+	}
 	
 	// 调用区块链合约
-	res, msg,err := object.QueryBlockchainContract(provider, funcName, contractName, data)
+	res, msg,err := object.QueryBlockchainContract(provider, funcName, contractName, data, lang)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

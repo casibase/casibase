@@ -162,12 +162,12 @@ func (client *EthereumClient) Commit(data string, lang string) (string, string, 
 }
 
 // CommitWithMethodAndContractName commits a transaction with the specified method and contract name.
-func (client *EthereumClient) CommitWithMethodAndContractName(data, funcName, contractName string) (string, string, string, error) {
+func (client *EthereumClient) CommitWithMethodAndContractName(data, funcName, contractName, lang string) (string, string, string, error) {
 	// 暂不支持指定funcName和contractName
-	return client.Commit(data)
+	return client.Commit(data,lang)
 }
 
-func (client *EthereumClient) QueryWithMethodAndContractName(data, funcName, contractName string) (string,string, error) {
+func (client *EthereumClient) QueryWithMethodAndContractName(data, funcName, contractName,lang string) (string,string, error) {
 	// 返回报错，未实现
 	return "未实现", "未实现", nil
 }

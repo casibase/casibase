@@ -241,7 +241,7 @@ func DeleteIpfsArchiveById(id int64) (bool, error) {
 
 // ============== 队列信息 ==================
 // 设定记录归档队列
-func AddRecordToArchiveQueueFromRecordAdd(record *Record) {
+func AddRecordToArchiveQueueFromRecordAdd(record *Record, lang string) {
     if record == nil {
         return
     }
@@ -268,7 +268,7 @@ func AddRecordToArchiveQueueFromRecordAdd(record *Record) {
 	recordOwner := record.Owner
 	// 根据name和owner获取最新的record
 
-	recordFromDb, err := GetRecord(fmt.Sprintf("%s/%s", recordOwner, recordName))
+	recordFromDb, err := GetRecord(fmt.Sprintf("%s/%s", recordOwner, recordName),lang)
 	
 	if err != nil {
 		

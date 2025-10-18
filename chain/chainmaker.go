@@ -68,12 +68,12 @@ func (client *ChainChainmakerClient) Commit(data string, lang string) (string, s
 	return response.Block, response.TxId, response.BlockHash, nil
 }
 
-func (client *ChainChainmakerClient) CommitWithMethodAndContractName(data, funcName, contractName string) (string, string, string, error) {
+func (client *ChainChainmakerClient) CommitWithMethodAndContractName(data, funcName, contractName, lang string) (string, string, string, error) {
 	// 未经测试
 	client.Data = data
 	client.ContractName = contractName
 	client.ContractMethod = funcName
-	response, err := SendChainmakerRequest(client, "invoke-contract")
+	response, err := SendChainmakerRequest(client, "invoke-contract", lang)
 	if err != nil {
 		return "", "", "", err
 	}
@@ -81,7 +81,7 @@ func (client *ChainChainmakerClient) CommitWithMethodAndContractName(data, funcN
 	return response.Block, response.TxId, response.BlockHash, nil
 }
 
-func (client *ChainChainmakerClient) QueryWithMethodAndContractName(data, funcName, contractName string) (string,string, error) { 
+func (client *ChainChainmakerClient) QueryWithMethodAndContractName(data, funcName, contractName, lang string) (string, string, error) {
 	// 返回报错，未实现
 	return "未实现", "未实现", nil
 }

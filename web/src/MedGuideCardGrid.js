@@ -77,6 +77,53 @@ const MedGuideCardGrid = (props) => {
     const [activeIdx, setActiveIdx] = useState(0); // 默认分组1
     const account = props.account;
 
+    // 根据用户标签过滤按钮，隐藏特定按钮给不同标签用户
+    const filterButtonsByUserTag = (buttons) => {
+        const userTag = account?.tag || '';
+        const isAdmin = account?.isAdmin || account?.type === "chat-admin";
+
+        return buttons.filter(button => {
+            // 区块链浏览器 - 需要管理员权限且不是 user/doctor 标签
+            if (button.title === "区块链浏览器") {
+                const canViewBlockchainExplorer = isAdmin && userTag !== 'user' && userTag !== 'doctor';
+                return canViewBlockchainExplorer;
+            }
+            // 可信联邦 - 需要管理员权限且不是 user 标签
+            if (button.title === "可信联邦") {
+                const canViewTrustFederation = isAdmin && userTag !== 'user';
+                return canViewTrustFederation;
+            }
+            // 专病知识图谱 - 不是 user 标签
+            if (button.title === "专病知识图谱") {
+                const canViewKnowledgeGraph = userTag !== 'user';
+                return canViewKnowledgeGraph;
+            }
+            // 用户管理 - 不是 user 和 doctor 标签
+            if (button.title === "用户管理") {
+                const canViewUserManagement = userTag !== 'user' && userTag !== 'doctor';
+                return canViewUserManagement;
+            }
+            // 权限管理 - 需要管理员权限且不是 user 和 doctor 标签
+            if (button.title === "权限管理") {
+                const canViewPermissionManagement = isAdmin && userTag !== 'user' && userTag !== 'doctor';
+                return canViewPermissionManagement;
+            }
+            // 资源管理 - 不是 user 和 doctor 标签（如果有这个按钮的话）
+            if (button.title === "资源管理") {
+                const canViewResourceManagement = userTag !== 'user' && userTag !== 'doctor';
+                return canViewResourceManagement;
+            }
+            // 其他按钮正常显示
+            return true;
+        });
+    };
+
+    // 创建过滤后的分组数据
+    const filteredGroups = GROUPS.map(group => ({
+        ...group,
+        buttons: filterButtonsByUserTag(group.buttons)
+    }));
+
     useEffect(() => {
         const style = document.createElement("style");
         style.innerHTML = `
@@ -96,10 +143,13 @@ const MedGuideCardGrid = (props) => {
     }, []);
 
 
-    // 动态处理系统管理分组的部分按钮route
+    // 动态处理分组按钮：设置路由和根据用户标签过滤按钮
     const groups = GROUPS.map((g, idx) => {
+        let processedGroup = { ...g };
+
+        // 处理系统管理分组的路由
         if (g.name === "系统管理" && account) {
-            return {
+            processedGroup = {
                 ...g,
                 buttons: g.buttons.map(btn => {
                     if (btn.title === "用户管理") {
@@ -112,7 +162,14 @@ const MedGuideCardGrid = (props) => {
                 })
             };
         }
-        return g;
+
+        // 对所有分组应用按钮过滤（隐藏区块链浏览器给特定标签用户）
+        processedGroup = {
+            ...processedGroup,
+            buttons: filterButtonsByUserTag(processedGroup.buttons)
+        };
+
+        return processedGroup;
     });
 
     const handleGroupClick = idx => setActiveIdx(idx);

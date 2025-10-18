@@ -24,7 +24,7 @@ type ChainConfig struct {
 
 // CallBlockchainContract 通用区块链合约调用
 // providerId: "owner/name" 格式，funcName: 合约方法名，contractName: 合约名，data: 传入的 json 字符串
-func CallBlockchainContract(providerId, funcName, contractName, data string) (block, txId, blockHash string, err error) {
+func CallBlockchainContract(providerId, funcName, contractName, data, lang string) (block, txId, blockHash string, err error) {
 	// 查询 provider
 	// 打印
 	fmt.Println("providerId:", providerId)
@@ -53,6 +53,7 @@ func CallBlockchainContract(providerId, funcName, contractName, data string) (bl
 		provider.SignCert,
 		contractName,
 		funcName,
+		lang,
 	)
 	if err != nil {
 		return "", "", "", fmt.Errorf("初始化链信息错误: %w", err)
@@ -72,7 +73,7 @@ func CallBlockchainContract(providerId, funcName, contractName, data string) (bl
 	}
 
 	// 调用区块链合约
-	block, txId, blockHash, err = client.CommitWithMethodAndContractName(dataStr, funcName, contractName)
+	block, txId, blockHash, err = client.CommitWithMethodAndContractName(dataStr, funcName, contractName, lang)
 	if err != nil {
 		return "", "", "", fmt.Errorf("调用区块链失败: %w", err)
 	}
@@ -80,7 +81,7 @@ func CallBlockchainContract(providerId, funcName, contractName, data string) (bl
 }
 
 
-func QueryBlockchainContract(providerId, funcName, contractName, data string) (res, msg string, err error) {
+func QueryBlockchainContract(providerId, funcName, contractName, data, lang string) (res, msg string, err error) {
 	// 查询 provider
 	// 打印
 	fmt.Println("providerId:", providerId)
@@ -109,6 +110,7 @@ func QueryBlockchainContract(providerId, funcName, contractName, data string) (r
 		provider.SignCert,
 		contractName,
 		funcName,
+		lang,
 	)
 	if err != nil {
 		return "", "", fmt.Errorf("初始化链信息错误: %w", err)
@@ -128,7 +130,7 @@ func QueryBlockchainContract(providerId, funcName, contractName, data string) (r
 	}
 
 	// 调用区块链合约
-	res, msg, err = client.QueryWithMethodAndContractName(dataStr, funcName, contractName)
+	res, msg, err = client.QueryWithMethodAndContractName(dataStr, funcName, contractName,lang)
 	if err != nil {
 		return res, msg,  fmt.Errorf("调用查询区块链失败: %w", err)
 	}

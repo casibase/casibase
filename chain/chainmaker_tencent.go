@@ -83,12 +83,12 @@ func (client *ChainTencentChainmakerClient) CommitWithMethodAndContractName(data
 	return response.ToJsonString(), "", "", nil
 }
 
-func (client *ChainTencentChainmakerClient) Commit(data string) (string, string, string, error) {
-	return client.CommitWithMethodAndContractName(data, "save", "ChainMakerDemo")
+func (client *ChainTencentChainmakerClient) Commit(data,lang string) (string, string, string, error) {
+	return client.CommitWithMethodAndContractName(data, "save", "ChainMakerDemo", lang)
 }
 
 
-func (client *ChainTencentChainmakerClient) QueryWithMethodAndContractName(data, funcName, contractName string) (string,string, error) { 
+func (client *ChainTencentChainmakerClient) QueryWithMethodAndContractName(data, funcName, contractName string, lang string) (string,string, error) { 
 	// 无法实现
 	return "未实现", "未实现", nil
 }
