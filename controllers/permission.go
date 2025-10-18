@@ -31,6 +31,7 @@ import (
 
 const (
 	PERMISSION_CASDOOR_ENFORCE_ENABLE = "permission.casdoorEnforceEnable"
+	PERMISSION_CASDOOR_ENFORCEID = "permission.casdoorEnforceId"
 )
 
 // GetPermissions
