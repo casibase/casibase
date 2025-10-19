@@ -62,15 +62,202 @@ class FileTree extends React.Component {
       uploadFileType: null,
       file: null,
       info: null,
+      isDragging: false,
+      dragTarget: null,
     };
 
     this.filePane = React.createRef();
     this.uploadedFileIdMap = {};
+    this.treeContainerRef = React.createRef();
   }
 
   UNSAFE_componentWillMount() {
     this.getPermissions();
   }
+
+  componentDidMount() {
+    // Add keyboard event listener for Delete key
+    document.addEventListener("keydown", this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    // Remove keyboard event listener
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
+
+  handleKeyDown = (e) => {
+    // Handle Delete key for selected files/folders
+    if (e.key === "Delete" && (this.state.selectedFile || this.state.checkedFiles.length > 0)) {
+      e.preventDefault();
+      this.handleDeleteKey();
+    }
+  };
+
+  handleDeleteKey = () => {
+    // Delete checked files if any, otherwise delete selected file
+    if (this.state.checkedFiles.length > 0) {
+      this.deleteMultipleFiles();
+    } else if (this.state.selectedFile) {
+      this.deleteSingleFile();
+    }
+  };
+
+  deleteSingleFile = () => {
+    const file = this.state.selectedFile;
+    if (!this.isFileWritable(file)) {
+      Setting.showMessage("error", i18next.t("store:Sorry, you are unauthorized to delete this file or folder"));
+      return;
+    }
+
+    Modal.confirm({
+      title: `${i18next.t("general:Sure to delete")}: ${file.title} ?`,
+      onOk: () => {
+        this.deleteFile(file, file.isLeaf);
+      },
+    });
+  };
+
+  deleteMultipleFiles = () => {
+    const files = this.state.checkedFiles;
+    const unauthorizedFiles = files.filter(file => !this.isFileWritable(file));
+
+    if (unauthorizedFiles.length > 0) {
+      Setting.showMessage("error", i18next.t("store:Sorry, you are unauthorized to delete some selected files or folders"));
+      return;
+    }
+
+    Modal.confirm({
+      title: `${i18next.t("general:Sure to delete")} ${files.length} ${i18next.t("store:items")}?`,
+      onOk: () => {
+        files.forEach((file) => {
+          this.deleteFile(file, file.isLeaf);
+        });
+      },
+    });
+  };
+
+  handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!this.state.isDragging) {
+      this.setState({isDragging: true});
+    }
+  };
+
+  handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only set isDragging to false if we're leaving the container entirely
+    if (e.target === this.treeContainerRef.current) {
+      this.setState({isDragging: false, dragTarget: null});
+    }
+  };
+
+  handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({isDragging: false, dragTarget: null});
+
+    const items = e.dataTransfer.items;
+    const files = e.dataTransfer.files;
+
+    if (items && items.length > 0) {
+      // Handle directory and file uploads
+      this.handleFilesDrop(items, files);
+    }
+  };
+
+  handleFilesDrop = async(items, files) => {
+    // Determine the target folder - use selected folder or root
+    let targetFile = this.state.selectedFile;
+    if (!targetFile || targetFile.isLeaf) {
+      targetFile = {key: "/", title: "Root"};
+    }
+
+    if (!this.isFileWritable(targetFile)) {
+      Setting.showMessage("error", i18next.t("store:Sorry, you are unauthorized to upload to this folder"));
+      return;
+    }
+
+    const allFiles = [];
+
+    // Process all items (including directories)
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i].webkitGetAsEntry();
+      if (item) {
+        await this.traverseFileTree(item, "", allFiles);
+      }
+    }
+
+    if (allFiles.length === 0 && files.length > 0) {
+      // Fallback to files if no items could be processed
+      for (let i = 0; i < files.length; i++) {
+        allFiles.push({file: files[i], path: files[i].name});
+      }
+    }
+
+    if (allFiles.length > 0) {
+      this.uploadDroppedFiles(targetFile, allFiles);
+    }
+  };
+
+  traverseFileTree = (item, path, allFiles) => {
+    return new Promise((resolve) => {
+      if (item.isFile) {
+        item.file((file) => {
+          allFiles.push({
+            file: file,
+            path: path + file.name,
+          });
+          resolve();
+        });
+      } else if (item.isDirectory) {
+        const dirReader = item.createReader();
+        dirReader.readEntries((entries) => {
+          const promises = [];
+          for (let i = 0; i < entries.length; i++) {
+            promises.push(
+              this.traverseFileTree(entries[i], path + item.name + "/", allFiles)
+            );
+          }
+          Promise.all(promises).then(() => resolve());
+        });
+      }
+    });
+  };
+
+  uploadDroppedFiles = (targetFile, allFiles) => {
+    const storeId = `${this.props.store.owner}/${this.props.store.name}`;
+    const promises = [];
+
+    allFiles.forEach((fileObj) => {
+      const uploadPath = fileObj.path;
+      promises.push(
+        FileBackend.addFile(storeId, targetFile.key, true, uploadPath, fileObj.file)
+      );
+    });
+
+    Promise.all(promises)
+      .then((values) => {
+        let errorCount = 0;
+        values.forEach((res) => {
+          if (res.status !== "ok") {
+            errorCount++;
+          }
+        });
+
+        if (errorCount === 0) {
+          Setting.showMessage("success", i18next.t("general:Successfully uploaded") + ` ${allFiles.length} ${i18next.t("store:files")}`);
+        } else {
+          Setting.showMessage("warning", `${i18next.t("general:Successfully uploaded")} ${allFiles.length - errorCount}/${allFiles.length} ${i18next.t("store:files")}`);
+        }
+
+        this.props.onRefresh();
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
+      });
+  };
 
   getPermissionMap(permissions) {
     const permissionMap = {};
@@ -559,19 +746,41 @@ class FileTree extends React.Component {
                         </Tooltip>
                         <Tooltip title={i18next.t("store:Upload file")}>
                           <span onClick={(e) => e.stopPropagation()}>
-                            <Upload multiple={true} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={(info) => {
-                              if (this.checkUploadFile(info)) {
-                                this.setState({
-                                  isUploadFileModalVisible: true,
-                                  file: file,
-                                  info: info,
-                                });
-                              } else {
-                                this.uploadFile(file, info);
-                              }
-                            }}
+                            <Upload
+                              multiple={true}
+                              directory={false}
+                              accept="*"
+                              showUploadList={false}
+                              beforeUpload={file => {return false;}}
+                              onChange={(info) => {
+                                if (this.checkUploadFile(info)) {
+                                  this.setState({
+                                    isUploadFileModalVisible: true,
+                                    file: file,
+                                    info: info,
+                                  });
+                                } else {
+                                  this.uploadFile(file, info);
+                                }
+                              }}
                             >
                               <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
+                            </Upload>
+                          </span>
+                        </Tooltip>
+                        <Tooltip title={i18next.t("store:Upload folder")}>
+                          <span onClick={(e) => e.stopPropagation()}>
+                            <Upload
+                              multiple={true}
+                              directory={true}
+                              accept="*"
+                              showUploadList={false}
+                              beforeUpload={file => {return false;}}
+                              onChange={(info) => {
+                                this.uploadFile(file, info);
+                              }}
+                            >
+                              <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" />
                             </Upload>
                           </span>
                         </Tooltip>
@@ -924,7 +1133,45 @@ class FileTree extends React.Component {
         <Row>
           <Col span={8}>
             <Card className="content-warp-card-filetreeleft" style={{marginRight: "10px"}}>
-              <div style={{margin: "-25px"}}>
+              <div
+                ref={this.treeContainerRef}
+                style={{
+                  margin: "-25px",
+                  position: "relative",
+                }}
+                onDragOver={this.handleDragOver}
+                onDragLeave={this.handleDragLeave}
+                onDrop={this.handleDrop}
+              >
+                {this.state.isDragging && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: "rgba(24, 144, 255, 0.1)",
+                      border: "2px dashed rgb(24, 144, 255)",
+                      borderRadius: "6px",
+                      zIndex: 1000,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      pointerEvents: "none",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "16px",
+                        color: "rgb(24, 144, 255)",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {i18next.t("store:Drop files here to upload")}
+                    </div>
+                  </div>
+                )}
                 {
                   this.renderSearch(this.props.store)
                 }
