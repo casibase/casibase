@@ -19,11 +19,20 @@ import genai "google.golang.org/genai"
 func GenaiRawMessagesToMessages(question string, history []*RawMessage) []*genai.Content {
 	var messages []*genai.Content
 	for _, rawMessage := range history {
+		// Map Author to valid Gemini roles: "user" or "model"
+		var role string
+		if rawMessage.Author == "AI" {
+			role = genai.RoleModel
+		} else {
+			// All other roles (System, Tool, User, etc.) map to RoleUser
+			role = genai.RoleUser
+		}
+		
 		messages = append(messages, &genai.Content{
 			Parts: []*genai.Part{
 				{Text: rawMessage.Text},
 			},
-			Role: rawMessage.Author,
+			Role: role,
 		})
 	}
 	messages = append(messages, &genai.Content{
