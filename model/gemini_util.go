@@ -27,7 +27,7 @@ func GenaiRawMessagesToMessages(question string, history []*RawMessage) []*genai
 			// All other roles (System, Tool, User, etc.) map to RoleUser
 			role = genai.RoleUser
 		}
-		
+
 		messages = append(messages, &genai.Content{
 			Parts: []*genai.Part{
 				{Text: rawMessage.Text},
