@@ -579,6 +579,8 @@
     "Child stores": "Unterdatenrepositories",
     "Child stores - Tooltip": "Bezogene Unterladennamen (für die cross-Repository-Wissenssuche)",
     "Chinese": "Chinesisch",
+    "Forbidden words": "Verbotene Wörter",
+    "Forbidden words - Tooltip": "Wörter, die in Chat-Nachrichten nicht erlaubt sind. Nachrichten mit diesen Wörtern werden abgelehnt.",
     "Collected time": "Erfassungszeit",
     "Disable file upload": "Dateihochladen verbieten",
     "Disable file upload - Tooltip": "Benutzern das Hochladen von Dateien verbieten (wenn aktiviert, kann das Wissensrepository nur von Administratoren aktualisiert werden)",

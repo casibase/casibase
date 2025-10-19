@@ -579,6 +579,8 @@
     "Child stores": "부속 데이터 저장소",
     "Child stores - Tooltip": "연결된 자식 저장소 이름(다른 저장소에서 지식 검색용)",
     "Chinese": "국어",
+    "Forbidden words": "금지어",
+    "Forbidden words - Tooltip": "채팅 메시지에서 허용되지 않는 단어입니다. 이러한 단어가 포함된 메시지는 거부됩니다.",
     "Collected time": "수집 시간",
     "Disable file upload": "파일 업로드 금지",
     "Disable file upload - Tooltip": "사용자가 파일을 업로드하는 것을 금지함(활성화 후 지식 데이터베이스는 관리자만 업데이트할 수 있음)",
