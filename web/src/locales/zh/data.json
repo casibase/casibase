@@ -578,6 +578,8 @@
     "Child model providers - Tooltip": "备用模型服务列表（在主模型故障时自动切换）",
     "Child stores": "附属数据仓库",
     "Child stores - Tooltip": "关联子存储名称（用于跨存储知识检索）",
+    "Forbidden words": "禁用词",
+    "Forbidden words - Tooltip": "聊天消息中不允许出现的词汇。包含这些词的消息将被拒绝。",
     "Chinese": "语文",
     "Collected time": "采集时间",
     "Disable file upload": "禁止文件上传",

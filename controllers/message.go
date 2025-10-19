@@ -294,6 +294,21 @@ func (c *ApiController) AddMessage() {
 		return
 	}
 
+	// Check for forbidden words
+	storeId := util.GetId(message.Owner, message.Store)
+	store, err := object.GetStore(storeId)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	if store != nil {
+		contains, forbiddenWord := store.ContainsForbiddenWords(message.Text)
+		if contains {
+			c.ResponseError(fmt.Sprintf("Your message contains a forbidden word: \"%s\"", forbiddenWord))
+			return
+		}
+	}
+
 	success, err := object.AddMessage(&message)
 	if err != nil {
 		c.ResponseError(err.Error())

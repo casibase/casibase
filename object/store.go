@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/casibase/casibase/i18n"
@@ -93,6 +94,7 @@ type Store struct {
 	VectorStores        []string `xorm:"varchar(500)" json:"vectorStores"`
 	ChildStores         []string `xorm:"varchar(500)" json:"childStores"`
 	ChildModelProviders []string `xorm:"varchar(500)" json:"childModelProviders"`
+	ForbiddenWords      []string `xorm:"text" json:"forbiddenWords"`
 	ShowAutoRead        bool     `json:"showAutoRead"`
 	DisableFileUpload   bool     `json:"disableFileUpload"`
 	HideThinking        bool     `json:"hideThinking"`
@@ -360,4 +362,22 @@ func GetPaginationStores(offset, limit int, name, field, value, sortField, sortO
 	}
 
 	return stores, nil
+}
+
+func (store *Store) ContainsForbiddenWords(text string) (bool, string) {
+	if store.ForbiddenWords == nil || len(store.ForbiddenWords) == 0 {
+		return false, ""
+	}
+
+	lowerText := strings.ToLower(text)
+	for _, forbiddenWord := range store.ForbiddenWords {
+		if forbiddenWord == "" {
+			continue
+		}
+		lowerForbiddenWord := strings.ToLower(forbiddenWord)
+		if strings.Contains(lowerText, lowerForbiddenWord) {
+			return true, forbiddenWord
+		}
+	}
+	return false, ""
 }

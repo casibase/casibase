@@ -579,6 +579,8 @@
     "Child stores": "子データストア",
     "Child stores - Tooltip": "関連付けられた子ストア名（クロスストア知識検索用）",
     "Chinese": "中国語",
+    "Forbidden words": "禁止ワード",
+    "Forbidden words - Tooltip": "チャットメッセージで許可されていない言葉。これらの言葉を含むメッセージは拒否されます。",
     "Collected time": "収集時間",
     "Disable file upload": "ファイルアップロードを禁止",
     "Disable file upload - Tooltip": "ユーザーのファイルアップロードを禁止（有効化後、知識ベースは管理者のみ更新可能）",
