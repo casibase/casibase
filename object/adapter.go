@@ -279,4 +279,29 @@ func (a *Adapter) createTable() {
 	if err != nil {
 		panic(err)
 	}
+
+	err = a.engine.Sync2(new(Hospital))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Doctor))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Patient))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Caase))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Consultation))
+	if err != nil {
+		panic(err)
+	}
 }
