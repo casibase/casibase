@@ -430,7 +430,56 @@
   "med": {
     "Audit": "Аудит",
     "Medical Image Analysis": "Анализ медицинских изображений",
-    "Super Resolution": "Сверхразрешение"
+    "Super Resolution": "Сверхразрешение",
+    "Access level": "Уровень доступа",
+    "Access level - Tooltip": "Уровень разрешений для доступа к медицинским записям",
+    "Authorized hospital": "Авторизованная больница",
+    "Authorized hospital - Tooltip": "Больница, авторизованная для доступа к записям консультаций",
+    "Caases": "Случаи",
+    "Consultations": "Консультации",
+    "Department": "Отделение",
+    "Department - Tooltip": "Медицинское отделение или специальность",
+    "Diagnosis": "Диагноз",
+    "Diagnosis - Tooltip": "Медицинский диагноз",
+    "Diagnosis date": "Дата диагноза",
+    "Diagnosis date - Tooltip": "Дата диагноза",
+    "Doctor name": "Имя врача",
+    "Doctor name - Tooltip": "Имя лечащего врача",
+    "Doctors": "Врачи",
+    "Edit Caase": "Редактировать случай",
+    "Edit Consultation": "Редактировать консультацию",
+    "Edit Doctor": "Редактировать врача",
+    "Edit Hospital": "Редактировать больницу",
+    "Edit Patient": "Редактировать пациента",
+    "Expired time": "Время истечения",
+    "Expired time - Tooltip": "Время истечения консультации",
+    "Follow up": "Последующее наблюдение",
+    "Follow up - Tooltip": "Инструкции по последующему уходу",
+    "Gender": "Пол",
+    "Gender - Tooltip": "Пол",
+    "HIS interface info": "Информация об интерфейсе МИС",
+    "HIS interface info - Tooltip": "Детали интерфейса медицинской информационной системы",
+    "Hospital name": "Название больницы",
+    "Hospital name - Tooltip": "Название больницы",
+    "Hospitals": "Больницы",
+    "Integrated care organization Id": "Id организации интегрированной помощи",
+    "Integrated care organization Id - Tooltip": "Идентификатор организации интегрированной помощи",
+    "New Caase": "Новый случай",
+    "New Consultation": "Новая консультация",
+    "New Doctor": "Новый врач",
+    "New Hospital": "Новая больница",
+    "New Patient": "Новый пациент",
+    "Patient name": "Имя пациента",
+    "Patient name - Tooltip": "Имя пациента",
+    "Patients": "Пациенты",
+    "Prescription": "Рецепт",
+    "Prescription - Tooltip": "Назначенное лекарство или лечение",
+    "Primary care physician": "Лечащий врач",
+    "Primary care physician - Tooltip": "Имя лечащего врача",
+    "Specialist alliance Id": "Id альянса специалистов",
+    "Specialist alliance Id - Tooltip": "Идентификатор альянса специалистов",
+    "Symptoms": "Симптомы",
+    "Symptoms - Tooltip": "Симптомы пациента"
   },
   "message": {
     "Author": "Автор",
@@ -814,5 +863,25 @@
   },
   "workflow": {
     "Edit Workflow": "Редактировать рабочий процесс"
+  },
+  "caase": {
+    "Edit Caase": "Редактировать случай",
+    "New Caase": "Новый случай"
+  },
+  "consultation": {
+    "Edit Consultation": "Редактировать консультацию",
+    "New Consultation": "Новая консультация"
+  },
+  "doctor": {
+    "Edit Doctor": "Редактировать врача",
+    "New Doctor": "Новый врач"
+  },
+  "hospital": {
+    "Edit Hospital": "Редактировать больницу",
+    "New Hospital": "Новая больница"
+  },
+  "patient": {
+    "Edit Patient": "Редактировать пациента",
+    "New Patient": "Новый пациент"
   }
 }

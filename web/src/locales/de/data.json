@@ -430,7 +430,56 @@
   "med": {
     "Audit": "Audit",
     "Medical Image Analysis": "Medizinische Bildanalyse",
-    "Super Resolution": "Image Super-Resolution"
+    "Super Resolution": "Image Super-Resolution",
+    "Access level": "Zugriffsstufe",
+    "Access level - Tooltip": "Berechtigungsstufe für den Zugriff auf Krankenakten",
+    "Authorized hospital": "Autorisiertes Krankenhaus",
+    "Authorized hospital - Tooltip": "Krankenhaus, das zum Zugriff auf Konsultationsaufzeichnungen autorisiert ist",
+    "Caases": "Fälle",
+    "Consultations": "Konsultationen",
+    "Department": "Abteilung",
+    "Department - Tooltip": "Medizinische Abteilung oder Fachgebiet",
+    "Diagnosis": "Diagnose",
+    "Diagnosis - Tooltip": "Medizinische Diagnose",
+    "Diagnosis date": "Diagnosedatum",
+    "Diagnosis date - Tooltip": "Datum der Diagnose",
+    "Doctor name": "Arztname",
+    "Doctor name - Tooltip": "Name des behandelnden Arztes",
+    "Doctors": "Ärzte",
+    "Edit Caase": "Fall bearbeiten",
+    "Edit Consultation": "Konsultation bearbeiten",
+    "Edit Doctor": "Arzt bearbeiten",
+    "Edit Hospital": "Krankenhaus bearbeiten",
+    "Edit Patient": "Patient bearbeiten",
+    "Expired time": "Ablaufzeit",
+    "Expired time - Tooltip": "Ablaufzeit der Konsultation",
+    "Follow up": "Nachsorge",
+    "Follow up - Tooltip": "Nachsorgeanweisungen",
+    "Gender": "Geschlecht",
+    "Gender - Tooltip": "Geschlecht",
+    "HIS interface info": "KIS-Schnittstelleninfo",
+    "HIS interface info - Tooltip": "Krankenhausinformationssystem-Schnittstellendetails",
+    "Hospital name": "Krankenhausname",
+    "Hospital name - Tooltip": "Name des Krankenhauses",
+    "Hospitals": "Krankenhäuser",
+    "Integrated care organization Id": "Integrierte Pflegeorganisations-Id",
+    "Integrated care organization Id - Tooltip": "Kennung der integrierten Pflegeorganisation",
+    "New Caase": "Neuer Fall",
+    "New Consultation": "Neue Konsultation",
+    "New Doctor": "Neuer Arzt",
+    "New Hospital": "Neues Krankenhaus",
+    "New Patient": "Neuer Patient",
+    "Patient name": "Patientenname",
+    "Patient name - Tooltip": "Name des Patienten",
+    "Patients": "Patienten",
+    "Prescription": "Verschreibung",
+    "Prescription - Tooltip": "Verschriebene Medikamente oder Behandlung",
+    "Primary care physician": "Hausarzt",
+    "Primary care physician - Tooltip": "Name des Hausarztes",
+    "Specialist alliance Id": "Spezialistenbündnis-Id",
+    "Specialist alliance Id - Tooltip": "Kennung des Spezialistenbündnisses",
+    "Symptoms": "Symptome",
+    "Symptoms - Tooltip": "Patientensymptome"
   },
   "message": {
     "Author": "Autor",
@@ -814,5 +863,25 @@
   },
   "workflow": {
     "Edit Workflow": "Arbeitsfluss bearbeiten"
+  },
+  "caase": {
+    "Edit Caase": "Fall bearbeiten",
+    "New Caase": "Neuer Fall"
+  },
+  "consultation": {
+    "Edit Consultation": "Konsultation bearbeiten",
+    "New Consultation": "Neue Konsultation"
+  },
+  "doctor": {
+    "Edit Doctor": "Arzt bearbeiten",
+    "New Doctor": "Neuer Arzt"
+  },
+  "hospital": {
+    "Edit Hospital": "Krankenhaus bearbeiten",
+    "New Hospital": "Neues Krankenhaus"
+  },
+  "patient": {
+    "Edit Patient": "Patient bearbeiten",
+    "New Patient": "Neuer Patient"
   }
 }

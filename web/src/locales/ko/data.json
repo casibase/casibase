@@ -430,7 +430,56 @@
   "med": {
     "Audit": "감사",
     "Medical Image Analysis": "의료 영상 분석",
-    "Super Resolution": "이미지 슈퍼 리졸루션"
+    "Super Resolution": "이미지 슈퍼 리졸루션",
+    "Access level": "액세스 레벨",
+    "Access level - Tooltip": "의료 기록에 액세스하기 위한 권한 레벨",
+    "Authorized hospital": "승인된 병원",
+    "Authorized hospital - Tooltip": "상담 기록에 액세스할 수 있도록 승인된 병원",
+    "Caases": "사례",
+    "Consultations": "상담",
+    "Department": "부서",
+    "Department - Tooltip": "의료 부서 또는 전문 분야",
+    "Diagnosis": "진단",
+    "Diagnosis - Tooltip": "의료 진단",
+    "Diagnosis date": "진단 날짜",
+    "Diagnosis date - Tooltip": "진단 날짜",
+    "Doctor name": "의사 이름",
+    "Doctor name - Tooltip": "담당 의사 이름",
+    "Doctors": "의사",
+    "Edit Caase": "사례 편집",
+    "Edit Consultation": "상담 편집",
+    "Edit Doctor": "의사 편집",
+    "Edit Hospital": "병원 편집",
+    "Edit Patient": "환자 편집",
+    "Expired time": "만료 시간",
+    "Expired time - Tooltip": "상담 만료 시간",
+    "Follow up": "후속 조치",
+    "Follow up - Tooltip": "후속 조치 지침",
+    "Gender": "성별",
+    "Gender - Tooltip": "성별",
+    "HIS interface info": "HIS 인터페이스 정보",
+    "HIS interface info - Tooltip": "병원 정보 시스템 인터페이스 세부 정보",
+    "Hospital name": "병원 이름",
+    "Hospital name - Tooltip": "병원 이름",
+    "Hospitals": "병원",
+    "Integrated care organization Id": "통합 진료 조직 Id",
+    "Integrated care organization Id - Tooltip": "통합 진료 조직 식별자",
+    "New Caase": "새 사례",
+    "New Consultation": "새 상담",
+    "New Doctor": "새 의사",
+    "New Hospital": "새 병원",
+    "New Patient": "새 환자",
+    "Patient name": "환자 이름",
+    "Patient name - Tooltip": "환자 이름",
+    "Patients": "환자",
+    "Prescription": "처방",
+    "Prescription - Tooltip": "처방된 약물 또는 치료",
+    "Primary care physician": "주치의",
+    "Primary care physician - Tooltip": "주치의 이름",
+    "Specialist alliance Id": "전문의 연합 Id",
+    "Specialist alliance Id - Tooltip": "전문의 연합 식별자",
+    "Symptoms": "증상",
+    "Symptoms - Tooltip": "환자 증상"
   },
   "message": {
     "Author": "작성자",
@@ -814,5 +863,25 @@
   },
   "workflow": {
     "Edit Workflow": "워크플로 편집"
+  },
+  "caase": {
+    "Edit Caase": "사례 편집",
+    "New Caase": "새 사례"
+  },
+  "consultation": {
+    "Edit Consultation": "상담 편집",
+    "New Consultation": "새 상담"
+  },
+  "doctor": {
+    "Edit Doctor": "의사 편집",
+    "New Doctor": "새 의사"
+  },
+  "hospital": {
+    "Edit Hospital": "병원 편집",
+    "New Hospital": "새 병원"
+  },
+  "patient": {
+    "Edit Patient": "환자 편집",
+    "New Patient": "새 환자"
   }
 }
