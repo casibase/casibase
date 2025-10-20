@@ -863,5 +863,25 @@
   },
   "workflow": {
     "Edit Workflow": "Редактировать рабочий процесс"
+  },
+  "caase": {
+    "Edit Caase": "Редактировать случай",
+    "New Caase": "Новый случай"
+  },
+  "consultation": {
+    "Edit Consultation": "Редактировать консультацию",
+    "New Consultation": "Новая консультация"
+  },
+  "doctor": {
+    "Edit Doctor": "Редактировать врача",
+    "New Doctor": "Новый врач"
+  },
+  "hospital": {
+    "Edit Hospital": "Редактировать больницу",
+    "New Hospital": "Новая больница"
+  },
+  "patient": {
+    "Edit Patient": "Редактировать пациента",
+    "New Patient": "Новый пациент"
   }
 }

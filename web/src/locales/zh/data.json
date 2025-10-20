@@ -428,11 +428,9 @@
     "Zone": "区域"
   },
   "med": {
-    "Audit": "审计",
-    "Medical Image Analysis": "医学影像分析",
-    "Super Resolution": "图像超分",
     "Access level": "访问级别",
     "Access level - Tooltip": "访问医疗记录的权限级别",
+    "Audit": "Audit",
     "Authorized hospital": "授权医院",
     "Authorized hospital - Tooltip": "授权访问咨询记录的医院",
     "Caases": "病例",
@@ -446,11 +444,6 @@
     "Doctor name": "医生姓名",
     "Doctor name - Tooltip": "主治医生姓名",
     "Doctors": "医生",
-    "Edit Caase": "编辑病例",
-    "Edit Consultation": "编辑咨询",
-    "Edit Doctor": "编辑医生",
-    "Edit Hospital": "编辑医院",
-    "Edit Patient": "编辑患者",
     "Expired time": "过期时间",
     "Expired time - Tooltip": "咨询过期时间",
     "Follow up": "随访",
@@ -464,11 +457,7 @@
     "Hospitals": "医院",
     "Integrated care organization Id": "综合医疗组织Id",
     "Integrated care organization Id - Tooltip": "综合医疗组织标识符",
-    "New Caase": "新建病例",
-    "New Consultation": "新建咨询",
-    "New Doctor": "新建医生",
-    "New Hospital": "新建医院",
-    "New Patient": "新建患者",
+    "Medical Image Analysis": "Medical Image Analysis",
     "Patient name": "患者姓名",
     "Patient name - Tooltip": "患者姓名",
     "Patients": "患者",
@@ -478,6 +467,7 @@
     "Primary care physician - Tooltip": "主治医生姓名",
     "Specialist alliance Id": "专家联盟Id",
     "Specialist alliance Id - Tooltip": "专家联盟标识符",
+    "Super Resolution": "Super Resolution",
     "Symptoms": "症状",
     "Symptoms - Tooltip": "患者症状"
   },
@@ -863,5 +853,25 @@
   },
   "workflow": {
     "Edit Workflow": "编辑工作流"
+  },
+  "caase": {
+    "Edit Caase": "编辑病例",
+    "New Caase": "新建病例"
+  },
+  "consultation": {
+    "Edit Consultation": "编辑咨询",
+    "New Consultation": "新建咨询"
+  },
+  "doctor": {
+    "Edit Doctor": "编辑医生",
+    "New Doctor": "新建医生"
+  },
+  "hospital": {
+    "Edit Hospital": "编辑医院",
+    "New Hospital": "新建医院"
+  },
+  "patient": {
+    "Edit Patient": "编辑患者",
+    "New Patient": "新建患者"
   }
 }

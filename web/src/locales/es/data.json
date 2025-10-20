@@ -863,5 +863,25 @@
   },
   "workflow": {
     "Edit Workflow": "Editar flujo de trabajo"
+  },
+  "caase": {
+    "Edit Caase": "Editar caso",
+    "New Caase": "Nuevo caso"
+  },
+  "consultation": {
+    "Edit Consultation": "Editar consulta",
+    "New Consultation": "Nueva consulta"
+  },
+  "doctor": {
+    "Edit Doctor": "Editar doctor",
+    "New Doctor": "Nuevo doctor"
+  },
+  "hospital": {
+    "Edit Hospital": "Editar hospital",
+    "New Hospital": "Nuevo hospital"
+  },
+  "patient": {
+    "Edit Patient": "Editar paciente",
+    "New Patient": "Nuevo paciente"
   }
 }

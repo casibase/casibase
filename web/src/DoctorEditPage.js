@@ -73,8 +73,8 @@ class DoctorEditPage extends React.Component {
         title={
           <div>
             {this.state.mode === "add"
-              ? i18next.t("medical:New Doctor")
-              : i18next.t("medical:Edit Doctor")}
+              ? i18next.t("doctor:New Doctor")
+              : i18next.t("doctor:Edit Doctor")}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <Button onClick={() => this.submitDoctorEdit(false)}>
               {i18next.t("general:Save")}

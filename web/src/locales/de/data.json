@@ -863,5 +863,25 @@
   },
   "workflow": {
     "Edit Workflow": "Arbeitsfluss bearbeiten"
+  },
+  "caase": {
+    "Edit Caase": "Fall bearbeiten",
+    "New Caase": "Neuer Fall"
+  },
+  "consultation": {
+    "Edit Consultation": "Konsultation bearbeiten",
+    "New Consultation": "Neue Konsultation"
+  },
+  "doctor": {
+    "Edit Doctor": "Arzt bearbeiten",
+    "New Doctor": "Neuer Arzt"
+  },
+  "hospital": {
+    "Edit Hospital": "Krankenhaus bearbeiten",
+    "New Hospital": "Neues Krankenhaus"
+  },
+  "patient": {
+    "Edit Patient": "Patient bearbeiten",
+    "New Patient": "Neuer Patient"
   }
 }

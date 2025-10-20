@@ -69,7 +69,7 @@ class PatientEditPage extends React.Component {
     return (
       <Card size="small" title={
         <div>
-          {this.state.mode === "add" ? i18next.t("medical:New Patient") : i18next.t("medical:Edit Patient")}&nbsp;&nbsp;&nbsp;&nbsp;
+          {this.state.mode === "add" ? i18next.t("patient:New Patient") : i18next.t("patient:Edit Patient")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitPatientEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitPatientEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
           {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deletePatient()}>{i18next.t("general:Cancel")}</Button> : null}

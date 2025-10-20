@@ -428,11 +428,9 @@
     "Zone": "Zone"
   },
   "med": {
-    "Audit": "Audit",
-    "Medical Image Analysis": "Medical Image Analysis",
-    "Super Resolution": "Super Resolution",
     "Access level": "Access level",
     "Access level - Tooltip": "Permission level for accessing medical records",
+    "Audit": "Audit",
     "Authorized hospital": "Authorized hospital",
     "Authorized hospital - Tooltip": "Hospital authorized to access consultation records",
     "Caases": "Cases",
@@ -446,11 +444,6 @@
     "Doctor name": "Doctor name",
     "Doctor name - Tooltip": "Name of the attending doctor",
     "Doctors": "Doctors",
-    "Edit Caase": "Edit Case",
-    "Edit Consultation": "Edit Consultation",
-    "Edit Doctor": "Edit Doctor",
-    "Edit Hospital": "Edit Hospital",
-    "Edit Patient": "Edit Patient",
     "Expired time": "Expired time",
     "Expired time - Tooltip": "Consultation expiration time",
     "Follow up": "Follow up",
@@ -464,11 +457,7 @@
     "Hospitals": "Hospitals",
     "Integrated care organization Id": "Integrated care organization Id",
     "Integrated care organization Id - Tooltip": "Integrated care organization identifier",
-    "New Caase": "New Case",
-    "New Consultation": "New Consultation",
-    "New Doctor": "New Doctor",
-    "New Hospital": "New Hospital",
-    "New Patient": "New Patient",
+    "Medical Image Analysis": "Medical Image Analysis",
     "Patient name": "Patient name",
     "Patient name - Tooltip": "Name of the patient",
     "Patients": "Patients",
@@ -478,6 +467,7 @@
     "Primary care physician - Tooltip": "Primary care physician name",
     "Specialist alliance Id": "Specialist alliance Id",
     "Specialist alliance Id - Tooltip": "Specialist alliance identifier",
+    "Super Resolution": "Super Resolution",
     "Symptoms": "Symptoms",
     "Symptoms - Tooltip": "Patient symptoms"
   },
@@ -863,5 +853,25 @@
   },
   "workflow": {
     "Edit Workflow": "Edit Workflow"
+  },
+  "caase": {
+    "Edit Caase": "Edit Case",
+    "New Caase": "New Case"
+  },
+  "consultation": {
+    "Edit Consultation": "Edit Consultation",
+    "New Consultation": "New Consultation"
+  },
+  "doctor": {
+    "Edit Doctor": "Edit Doctor",
+    "New Doctor": "New Doctor"
+  },
+  "hospital": {
+    "Edit Hospital": "Edit Hospital",
+    "New Hospital": "New Hospital"
+  },
+  "patient": {
+    "Edit Patient": "Edit Patient",
+    "New Patient": "New Patient"
   }
 }

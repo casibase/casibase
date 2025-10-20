@@ -863,5 +863,25 @@
   },
   "workflow": {
     "Edit Workflow": "Sunting alur kerja"
+  },
+  "caase": {
+    "Edit Caase": "Edit kasus",
+    "New Caase": "Kasus baru"
+  },
+  "consultation": {
+    "Edit Consultation": "Edit konsultasi",
+    "New Consultation": "Konsultasi baru"
+  },
+  "doctor": {
+    "Edit Doctor": "Edit dokter",
+    "New Doctor": "Dokter baru"
+  },
+  "hospital": {
+    "Edit Hospital": "Edit rumah sakit",
+    "New Hospital": "Rumah sakit baru"
+  },
+  "patient": {
+    "Edit Patient": "Edit pasien",
+    "New Patient": "Pasien baru"
   }
 }

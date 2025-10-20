@@ -863,5 +863,25 @@
   },
   "workflow": {
     "Edit Workflow": "ワークフローを編集"
+  },
+  "caase": {
+    "Edit Caase": "症例を編集",
+    "New Caase": "新しい症例"
+  },
+  "consultation": {
+    "Edit Consultation": "相談を編集",
+    "New Consultation": "新しい相談"
+  },
+  "doctor": {
+    "Edit Doctor": "医師を編集",
+    "New Doctor": "新しい医師"
+  },
+  "hospital": {
+    "Edit Hospital": "病院を編集",
+    "New Hospital": "新しい病院"
+  },
+  "patient": {
+    "Edit Patient": "患者を編集",
+    "New Patient": "新しい患者"
   }
 }

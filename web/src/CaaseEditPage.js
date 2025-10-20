@@ -23,7 +23,7 @@ class CaaseEditPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      
+
       caaseName: props.match.params.caaseName,
       caase: null,
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
@@ -72,8 +72,8 @@ class CaaseEditPage extends React.Component {
         title={
           <div>
             {this.state.mode === "add"
-              ? i18next.t("medical:New Caase")
-              : i18next.t("medical:Edit Caase")}
+              ? i18next.t("caase:New Caase")
+              : i18next.t("caase:Edit Caase")}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <Button onClick={() => this.submitCaaseEdit(false)}>
               {i18next.t("general:Save")}
