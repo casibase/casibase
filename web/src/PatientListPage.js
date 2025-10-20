@@ -20,7 +20,7 @@ import moment from "moment";
 import * as Setting from "./Setting";
 import * as PatientBackend from "./backend/PatientBackend";
 import i18next from "i18next";
-import PopconfirmModal from "./common/modal/PopconfirmModal";
+import PopconfirmModal from "./modal/PopconfirmModal";
 
 class PatientListPage extends BaseListPage {
   constructor(props) {

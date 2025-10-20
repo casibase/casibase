@@ -20,7 +20,7 @@ import moment from "moment";
 import * as Setting from "./Setting";
 import * as CaaseBackend from "./backend/CaaseBackend";
 import i18next from "i18next";
-import PopconfirmModal from "./common/modal/PopconfirmModal";
+import PopconfirmModal from "./modal/PopconfirmModal";
 
 class CaaseListPage extends BaseListPage {
   constructor(props) {
