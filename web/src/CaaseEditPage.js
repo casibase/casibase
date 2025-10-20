@@ -135,8 +135,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Symptoms"),
-              i18next.t("medical:Symptoms - Tooltip")
+              i18next.t("med:Symptoms"),
+              i18next.t("med:Symptoms - Tooltip")
             )}{" "}
             :
           </Col>
@@ -152,8 +152,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Diagnosis"),
-              i18next.t("medical:Diagnosis - Tooltip")
+              i18next.t("med:Diagnosis"),
+              i18next.t("med:Diagnosis - Tooltip")
             )}{" "}
             :
           </Col>
@@ -169,8 +169,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Diagnosis date"),
-              i18next.t("medical:Diagnosis date - Tooltip")
+              i18next.t("med:Diagnosis date"),
+              i18next.t("med:Diagnosis date - Tooltip")
             )}{" "}
             :
           </Col>
@@ -186,8 +186,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Prescription"),
-              i18next.t("medical:Prescription - Tooltip")
+              i18next.t("med:Prescription"),
+              i18next.t("med:Prescription - Tooltip")
             )}{" "}
             :
           </Col>
@@ -203,8 +203,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Follow up"),
-              i18next.t("medical:Follow up - Tooltip")
+              i18next.t("med:Follow up"),
+              i18next.t("med:Follow up - Tooltip")
             )}{" "}
             :
           </Col>
@@ -220,8 +220,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:HIS interface info"),
-              i18next.t("medical:HIS interface info - Tooltip")
+              i18next.t("med:HIS interface info"),
+              i18next.t("med:HIS interface info - Tooltip")
             )}{" "}
             :
           </Col>
@@ -237,8 +237,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Primary care physician"),
-              i18next.t("medical:Primary care physician - Tooltip")
+              i18next.t("med:Primary care physician"),
+              i18next.t("med:Primary care physician - Tooltip")
             )}{" "}
             :
           </Col>
@@ -271,8 +271,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Patient name"),
-              i18next.t("medical:Patient name - Tooltip")
+              i18next.t("med:Patient name"),
+              i18next.t("med:Patient name - Tooltip")
             )}{" "}
             :
           </Col>
@@ -288,8 +288,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Doctor name"),
-              i18next.t("medical:Doctor name - Tooltip")
+              i18next.t("med:Doctor name"),
+              i18next.t("med:Doctor name - Tooltip")
             )}{" "}
             :
           </Col>
@@ -305,8 +305,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Specialist alliance Id"),
-              i18next.t("medical:Specialist alliance Id - Tooltip")
+              i18next.t("med:Specialist alliance Id"),
+              i18next.t("med:Specialist alliance Id - Tooltip")
             )}{" "}
             :
           </Col>
@@ -322,8 +322,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Integrated care organization Id"),
-              i18next.t("medical:Integrated care organization Id - Tooltip")
+              i18next.t("med:Integrated care organization Id"),
+              i18next.t("med:Integrated care organization Id - Tooltip")
             )}{" "}
             :
           </Col>

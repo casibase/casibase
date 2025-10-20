@@ -137,49 +137,49 @@ class CaaseListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Symptoms"),
+        title: i18next.t("med:Symptoms"),
         dataIndex: "symptoms",
         key: "symptoms",
         width: "160px",
         sorter: (a, b) => a.symptoms.localeCompare(b.symptoms),
       },
       {
-        title: i18next.t("general:Diagnosis"),
+        title: i18next.t("med:Diagnosis"),
         dataIndex: "diagnosis",
         key: "diagnosis",
         width: "160px",
         sorter: (a, b) => a.diagnosis.localeCompare(b.diagnosis),
       },
       {
-        title: i18next.t("general:Diagnosis Date"),
+        title: i18next.t("med:Diagnosis date"),
         dataIndex: "diagnosisDate",
         key: "diagnosisDate",
         width: "160px",
         sorter: (a, b) => a.diagnosisDate.localeCompare(b.diagnosisDate),
       },
       {
-        title: i18next.t("general:Prescription"),
+        title: i18next.t("med:Prescription"),
         dataIndex: "prescription",
         key: "prescription",
         width: "160px",
         sorter: (a, b) => a.prescription.localeCompare(b.prescription),
       },
       {
-        title: i18next.t("general:Follow Up"),
+        title: i18next.t("med:Follow up"),
         dataIndex: "followUp",
         key: "followUp",
         width: "160px",
         sorter: (a, b) => a.followUp.localeCompare(b.followUp),
       },
       {
-        title: i18next.t("general:HIS Interface Info"),
+        title: i18next.t("med:HIS interface info"),
         dataIndex: "hisInterfaceInfo",
         key: "hisInterfaceInfo",
         width: "160px",
         sorter: (a, b) => a.hisInterfaceInfo.localeCompare(b.hisInterfaceInfo),
       },
       {
-        title: i18next.t("general:Primary Care Physician"),
+        title: i18next.t("med:Primary care physician"),
         dataIndex: "primaryCarePhysician",
         key: "primaryCarePhysician",
         width: "160px",
@@ -194,7 +194,7 @@ class CaaseListPage extends BaseListPage {
         sorter: (a, b) => a.type.localeCompare(b.type),
       },
       {
-        title: i18next.t("general:Patient Name"),
+        title: i18next.t("med:Patient name"),
         dataIndex: "patientName",
         key: "patientName",
         width: "90px",
@@ -211,7 +211,7 @@ class CaaseListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Doctor Name"),
+        title: i18next.t("med:Doctor name"),
         dataIndex: "doctorName",
         key: "doctorName",
         width: "90px",
@@ -228,7 +228,7 @@ class CaaseListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Specialist Alliance ID"),
+        title: i18next.t("med:Specialist alliance Id"),
         dataIndex: "specialistAllianceId",
         key: "specialistAllianceId",
         width: "160px",
@@ -236,7 +236,7 @@ class CaaseListPage extends BaseListPage {
           a.specialistAllianceId.localeCompare(b.specialistAllianceId),
       },
       {
-        title: i18next.t("general:Integrated Care Organization ID"),
+        title: i18next.t("med:Integrated care organization Id"),
         dataIndex: "integratedCareOrganizationId",
         key: "integratedCareOrganizationId",
         width: "160px",
@@ -305,7 +305,7 @@ class CaaseListPage extends BaseListPage {
           pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Caases")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("med:Caases")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button
                 type="primary"
                 size="small"

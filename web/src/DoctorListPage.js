@@ -130,7 +130,7 @@ class DoctorListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Department"),
+        title: i18next.t("med:Department"),
         dataIndex: "department",
         key: "department",
         width: "120px",
@@ -138,7 +138,7 @@ class DoctorListPage extends BaseListPage {
       },
 
       {
-        title: i18next.t("general:Gender"),
+        title: i18next.t("med:Gender"),
         dataIndex: "gender",
         key: "gender",
         width: "100px",
@@ -146,14 +146,14 @@ class DoctorListPage extends BaseListPage {
       },
 
       {
-        title: i18next.t("general:Access Level"),
+        title: i18next.t("med:Access level"),
         dataIndex: "accessLevel",
         key: "accessLevel",
         width: "120px",
         sorter: (a, b) => a.accessLevel.localeCompare(b.accessLevel),
       },
       {
-        title: i18next.t("general:Hospital Name"),
+        title: i18next.t("med:Hospital name"),
         dataIndex: "hospitalName",
         key: "hospitalName",
         width: "90px",
@@ -229,7 +229,7 @@ class DoctorListPage extends BaseListPage {
           pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Doctors")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("med:Doctors")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button
                 type="primary"
                 size="small"

@@ -97,7 +97,7 @@ class PatientEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Gender"), i18next.t("general:Gender - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Gender"), i18next.t("med:Gender - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.patient.gender} onChange={e => {
@@ -107,7 +107,7 @@ class PatientEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Address"), i18next.t("general:Address - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Address"), i18next.t("med:Address - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.patient.address} onChange={e => {
@@ -117,7 +117,7 @@ class PatientEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Email"), i18next.t("general:Email - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Email"), i18next.t("med:Email - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.patient.email} onChange={e => {
@@ -127,7 +127,7 @@ class PatientEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Blood Type"), i18next.t("general:Blood Type - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Blood type"), i18next.t("med:Blood type - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.patient.bloodType} onChange={e => {
@@ -137,7 +137,7 @@ class PatientEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Allergies"), i18next.t("general:Allergies - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Allergies"), i18next.t("med:Allergies - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.patient.allergies} onChange={e => {
