@@ -503,3 +503,18 @@ func UploadObjectToIPFS (r *Record) (bool, error) {
 	}
 	return affected > 0, nil
 }
+
+
+
+// GetPatientByHashID 根据患者HashID查询就诊记录
+func GetPatientByHashID(hashID string) ([]*Record, error) {
+	records := []*Record{}
+	
+	// 查询object字段包含指定HashID且requestUri为/api/add-outpatient的记录
+	err := adapter.engine.Where("object LIKE ? AND request_uri = ?", "%"+hashID+"%", "/api/add-outpatient").Find(&records)
+	if err != nil {
+		return records, err
+	}
+	
+	return records, nil
+}

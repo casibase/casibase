@@ -1,0 +1,26 @@
+-- 创建授权请求表
+CREATE TABLE `authorization_request` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `request_id` varchar(100) NOT NULL COMMENT '请求唯一标识',
+  `doctor_name` varchar(100) NOT NULL COMMENT '医生姓名',
+  `doctor_id` varchar(100) NOT NULL COMMENT '医生ID',
+  `doctor_contact` varchar(200) DEFAULT NULL COMMENT '医生联系方式',
+  `patient_hash_id` varchar(200) NOT NULL COMMENT '患者HashID',
+  `hospitals` text NOT NULL COMMENT '申请的医院列表(JSON格式)',
+  `validity_period` int(11) NOT NULL COMMENT '授权有效期(天数)',
+  `data_time_range_start` datetime DEFAULT NULL COMMENT '数据时间范围开始',
+  `data_time_range_end` datetime DEFAULT NULL COMMENT '数据时间范围结束',
+  `application_note` text DEFAULT NULL COMMENT '申请说明',
+  `status` varchar(20) NOT NULL DEFAULT 'pending' COMMENT '请求状态: pending(待处理), approved(已批准), rejected(已拒绝), expired(已过期)',
+  `created_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `processed_time` datetime DEFAULT NULL COMMENT '处理时间',
+  `processed_by` varchar(100) DEFAULT NULL COMMENT '处理人',
+  `reject_reason` text DEFAULT NULL COMMENT '拒绝原因',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_request_id` (`request_id`),
+  KEY `idx_doctor_id` (`doctor_id`),
+  KEY `idx_patient_hash_id` (`patient_hash_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_created_time` (`created_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='授权请求表';
