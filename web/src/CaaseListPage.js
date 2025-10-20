@@ -39,7 +39,7 @@ class CaaseListPage extends BaseListPage {
       diagnosisDate: moment().format(),
       prescription: "",
       followUp: "",
-      HIS interface info: "",
+      hisInterfaceInfo: "",
       primaryCarePhysician: "",
       patientName: "",
       doctorName: "",
@@ -173,10 +173,10 @@ class CaaseListPage extends BaseListPage {
       },
       {
         title: i18next.t("general:HIS Interface Info"),
-        dataIndex: "HIS interface info",
-        key: "HIS interface info",
+        dataIndex: "hisInterfaceInfo",
+        key: "hisInterfaceInfo",
         width: "160px",
-        sorter: (a, b) => a.HIS interface info.localeCompare(b.HIS interface info),
+        sorter: (a, b) => a.hisInterfaceInfo.localeCompare(b.hisInterfaceInfo),
       },
       {
         title: i18next.t("general:Primary Care Physician"),

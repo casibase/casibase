@@ -35,7 +35,7 @@ type Caase struct {
 	FollowUp      string `xorm:"varchar(100)" json:"followUp"`
 
 	Variation                    bool   `xorm:"bool" json:"variation"`
-	HISInterfaceInfo             string `xorm:"varchar(100)" json:"HISInterfaceInfo"`
+	HISInterfaceInfo             string `xorm:"varchar(100)" json:"hisInterfaceInfo"`
 	PrimaryCarePhysician         string `xorm:"varchar(100)" json:"primaryCarePhysician"`
 	Type                         string `xorm:"varchar(100)" json:"type"`
 	PatientName                  string `xorm:"varchar(100)" json:"patientName"`

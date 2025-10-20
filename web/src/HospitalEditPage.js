@@ -24,7 +24,7 @@ class HospitalEditPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      
+
       hospitalName: props.match.params.hospitalName,
       hospital: null,
       mode: props.location.mode !== undefined ? props.location.mode : "edit",

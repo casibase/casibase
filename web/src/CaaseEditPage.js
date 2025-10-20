@@ -227,9 +227,9 @@ class CaaseEditPage extends React.Component {
           </Col>
           <Col span={22}>
             <Input
-              value={this.state.caase.HIS interface info}
+              value={this.state.caase.hisInterfaceInfo}
               onChange={(e) => {
-                this.updateCaaseField("HIS interface info", e.target.value);
+                this.updateCaaseField("hisInterfaceInfo", e.target.value);
               }}
             />
           </Col>
