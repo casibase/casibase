@@ -1,4 +1,4 @@
-// Copyright 2024 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,12 +39,12 @@ class CaaseListPage extends BaseListPage {
       diagnosisDate: moment().format(),
       prescription: "",
       followUp: "",
-      HISInterfaceInfo: "",
+      HIS interface info: "",
       primaryCarePhysician: "",
       patientName: "",
       doctorName: "",
-      specialistAllianceID: "",
-      integratedCareOrganizationID: "",
+      specialistAllianceId: "",
+      integratedCareOrganizationId: "",
     };
   }
 
@@ -173,10 +173,10 @@ class CaaseListPage extends BaseListPage {
       },
       {
         title: i18next.t("general:HIS Interface Info"),
-        dataIndex: "HISInterfaceInfo",
-        key: "HISInterfaceInfo",
+        dataIndex: "HIS interface info",
+        key: "HIS interface info",
         width: "160px",
-        sorter: (a, b) => a.HISInterfaceInfo.localeCompare(b.HISInterfaceInfo),
+        sorter: (a, b) => a.HIS interface info.localeCompare(b.HIS interface info),
       },
       {
         title: i18next.t("general:Primary Care Physician"),
@@ -229,20 +229,20 @@ class CaaseListPage extends BaseListPage {
       },
       {
         title: i18next.t("general:Specialist Alliance ID"),
-        dataIndex: "specialistAllianceID",
-        key: "specialistAllianceID",
+        dataIndex: "specialistAllianceId",
+        key: "specialistAllianceId",
         width: "160px",
         sorter: (a, b) =>
-          a.specialistAllianceID.localeCompare(b.specialistAllianceID),
+          a.specialistAllianceId.localeCompare(b.specialistAllianceId),
       },
       {
         title: i18next.t("general:Integrated Care Organization ID"),
-        dataIndex: "integratedCareOrganizationID",
-        key: "integratedCareOrganizationID",
+        dataIndex: "integratedCareOrganizationId",
+        key: "integratedCareOrganizationId",
         width: "160px",
         sorter: (a, b) =>
-          a.integratedCareOrganizationID.localeCompare(
-            b.integratedCareOrganizationID
+          a.integratedCareOrganizationId.localeCompare(
+            b.integratedCareOrganizationId
           ),
       },
       {

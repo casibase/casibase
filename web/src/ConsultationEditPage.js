@@ -1,4 +1,4 @@
-// Copyright 2024 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ class ConsultationEditPage extends React.Component {
     return (
       <Card size="small" title={
         <div>
-          {this.state.mode === "add" ? i18next.t("consultation:New Consultation") : i18next.t("consultation:Edit Consultation")}&nbsp;&nbsp;&nbsp;&nbsp;
+          {this.state.mode === "add" ? i18next.t("medical:New Consultation") : i18next.t("medical:Edit Consultation")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitConsultationEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitConsultationEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
           {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteConsultation()}>{i18next.t("general:Cancel")}</Button> : null}
@@ -97,7 +97,7 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("consultation:State"), i18next.t("consultation:State - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.consultation.state} onChange={value => {
@@ -111,7 +111,7 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("consultation:PatientName"), i18next.t("consultation:PatientName - Tooltip"))} :
+            {Setting.getLabel(i18next.t("medical:Patient name"), i18next.t("medical:Patient name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.consultation.patientName} onChange={e => {
@@ -121,7 +121,7 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("consultation:DoctorName"), i18next.t("consultation:DoctorName - Tooltip"))} :
+            {Setting.getLabel(i18next.t("medical:Doctor name"), i18next.t("medical:Doctor name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.consultation.doctor} onChange={e => {
@@ -131,7 +131,7 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("consultation:ExpiredTime"), i18next.t("consultation:ExpiredTime - Tooltip"))} :
+            {Setting.getLabel(i18next.t("medical:Expired time"), i18next.t("medical:Expired time - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.consultation.expiredTime} onChange={e => {
@@ -141,7 +141,7 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("consultation:AuthorizedHospital"), i18next.t("consultation:AuthorizedHospital - Tooltip"))} :
+            {Setting.getLabel(i18next.t("medical:Authorized hospital"), i18next.t("medical:Authorized hospital - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.consultation.authorizedHospital} onChange={e => {

@@ -1,4 +1,4 @@
-// Copyright 2024 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ type Caase struct {
 	Type                         string `xorm:"varchar(100)" json:"type"`
 	PatientName                  string `xorm:"varchar(100)" json:"patientName"`
 	DoctorName                   string `xorm:"varchar(100)" json:"doctorName"`
-	SpecialistAllianceID         string `xorm:"varchar(100)" json:"specialistAllianceID"`
-	IntegratedCareOrganizationID string `xorm:"varchar(100)" json:"integratedCareOrganizationID"`
+	SpecialistAllianceId         string `xorm:"varchar(100)" json:"specialistAllianceId"`
+	IntegratedCareOrganizationId string `xorm:"varchar(100)" json:"integratedCareOrganizationId"`
 }
 
 func GetCaaseCount(owner, field, value string) (int64, error) {

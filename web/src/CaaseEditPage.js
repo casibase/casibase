@@ -1,4 +1,4 @@
-// Copyright 2024 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -72,8 +72,8 @@ class CaaseEditPage extends React.Component {
         title={
           <div>
             {this.state.mode === "add"
-              ? i18next.t("caase:New Caase")
-              : i18next.t("caase:Edit Caase")}
+              ? i18next.t("medical:New Caase")
+              : i18next.t("medical:Edit Caase")}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <Button onClick={() => this.submitCaaseEdit(false)}>
               {i18next.t("general:Save")}
@@ -135,8 +135,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("caase:Symptoms"),
-              i18next.t("caase:Symptoms - Tooltip")
+              i18next.t("medical:Symptoms"),
+              i18next.t("medical:Symptoms - Tooltip")
             )}{" "}
             :
           </Col>
@@ -152,8 +152,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("caase:Diagnosis"),
-              i18next.t("caase:Diagnosis - Tooltip")
+              i18next.t("medical:Diagnosis"),
+              i18next.t("medical:Diagnosis - Tooltip")
             )}{" "}
             :
           </Col>
@@ -169,8 +169,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("caase:DiagnosisDate"),
-              i18next.t("caase:DiagnosisDate - Tooltip")
+              i18next.t("medical:Diagnosis date"),
+              i18next.t("medical:Diagnosis date - Tooltip")
             )}{" "}
             :
           </Col>
@@ -186,8 +186,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("caase:Prescription"),
-              i18next.t("caase:Prescription - Tooltip")
+              i18next.t("medical:Prescription"),
+              i18next.t("medical:Prescription - Tooltip")
             )}{" "}
             :
           </Col>
@@ -203,8 +203,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("caase:FollowUp"),
-              i18next.t("caase:FollowUp - Tooltip")
+              i18next.t("medical:Follow up"),
+              i18next.t("medical:Follow up - Tooltip")
             )}{" "}
             :
           </Col>
@@ -220,16 +220,16 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("caase:HISInterfaceInfo"),
-              i18next.t("caase:HISInterfaceInfo - Tooltip")
+              i18next.t("medical:HIS interface info"),
+              i18next.t("medical:HIS interface info - Tooltip")
             )}{" "}
             :
           </Col>
           <Col span={22}>
             <Input
-              value={this.state.caase.HISInterfaceInfo}
+              value={this.state.caase.HIS interface info}
               onChange={(e) => {
-                this.updateCaaseField("HISInterfaceInfo", e.target.value);
+                this.updateCaaseField("HIS interface info", e.target.value);
               }}
             />
           </Col>
@@ -237,8 +237,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("caase:PrimaryCarePhysician"),
-              i18next.t("caase:PrimaryCarePhysician - Tooltip")
+              i18next.t("medical:Primary care physician"),
+              i18next.t("medical:Primary care physician - Tooltip")
             )}{" "}
             :
           </Col>
@@ -254,8 +254,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("caase:Type"),
-              i18next.t("caase:Type - Tooltip")
+              i18next.t("general:Type"),
+              i18next.t("general:Type - Tooltip")
             )}{" "}
             :
           </Col>
@@ -271,8 +271,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("caase:PatientName"),
-              i18next.t("caase:PatientName - Tooltip")
+              i18next.t("medical:Patient name"),
+              i18next.t("medical:Patient name - Tooltip")
             )}{" "}
             :
           </Col>
@@ -288,8 +288,8 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("caase:DoctorName"),
-              i18next.t("caase:DoctorName - Tooltip")
+              i18next.t("medical:Doctor name"),
+              i18next.t("medical:Doctor name - Tooltip")
             )}{" "}
             :
           </Col>
@@ -305,16 +305,16 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("caase:SpecialistAllianceID"),
-              i18next.t("caase:SpecialistAllianceID - Tooltip")
+              i18next.t("medical:Specialist alliance Id"),
+              i18next.t("medical:Specialist alliance Id - Tooltip")
             )}{" "}
             :
           </Col>
           <Col span={22}>
             <Input
-              value={this.state.caase.specialistAllianceID}
+              value={this.state.caase.specialistAllianceId}
               onChange={(e) => {
-                this.updateCaaseField("specialistAllianceID", e.target.value);
+                this.updateCaaseField("specialistAllianceId", e.target.value);
               }}
             />
           </Col>
@@ -322,17 +322,17 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("caase:IntegratedCareOrganizationID"),
-              i18next.t("caase:IntegratedCareOrganizationID - Tooltip")
+              i18next.t("medical:Integrated care organization Id"),
+              i18next.t("medical:Integrated care organization Id - Tooltip")
             )}{" "}
             :
           </Col>
           <Col span={22}>
             <Input
-              value={this.state.caase.integratedCareOrganizationID}
+              value={this.state.caase.integratedCareOrganizationId}
               onChange={(e) => {
                 this.updateCaaseField(
-                  "integratedCareOrganizationID",
+                  "integratedCareOrganizationId",
                   e.target.value
                 );
               }}

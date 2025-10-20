@@ -1,4 +1,4 @@
-// Copyright 2024 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -73,8 +73,8 @@ class DoctorEditPage extends React.Component {
         title={
           <div>
             {this.state.mode === "add"
-              ? i18next.t("doctor:New Doctor")
-              : i18next.t("doctor:Edit Doctor")}
+              ? i18next.t("medical:New Doctor")
+              : i18next.t("medical:Edit Doctor")}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <Button onClick={() => this.submitDoctorEdit(false)}>
               {i18next.t("general:Save")}
@@ -136,8 +136,8 @@ class DoctorEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("doctor:Department"),
-              i18next.t("doctor:Department - Tooltip")
+              i18next.t("medical:Department"),
+              i18next.t("medical:Department - Tooltip")
             )}{" "}
             :
           </Col>
@@ -153,8 +153,8 @@ class DoctorEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("doctor:Gender"),
-              i18next.t("doctor:Gender - Tooltip")
+              i18next.t("medical:Gender"),
+              i18next.t("medical:Gender - Tooltip")
             )}{" "}
             :
           </Col>
@@ -177,8 +177,8 @@ class DoctorEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("doctor:AccessLevel"),
-              i18next.t("doctor:AccessLevel - Tooltip")
+              i18next.t("medical:Access level"),
+              i18next.t("medical:Access level - Tooltip")
             )}{" "}
             :
           </Col>
@@ -194,8 +194,8 @@ class DoctorEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("doctor:HospitalName"),
-              i18next.t("doctor:HospitalName - Tooltip")
+              i18next.t("medical:Hospital name"),
+              i18next.t("medical:Hospital name - Tooltip")
             )}{" "}
             :
           </Col>
