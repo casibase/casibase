@@ -582,6 +582,8 @@
     "Child stores": "Magasins de données enfants",
     "Child stores - Tooltip": "Noms de sous-magasins associés (pour la recherche de connaissances trans-magasin)",
     "Chinese": "Chinois",
+    "Forbidden words": "Mots interdits",
+    "Forbidden words - Tooltip": "Mots non autorisés dans les messages de chat. Les messages contenant ces mots seront rejetés.",
     "Collected time": "Date de collecte",
     "Disable file upload": "Désactiver le téléchargement de fichiers",
     "Disable file upload - Tooltip": "Interdire aux utilisateurs de télécharger des fichiers (une fois activé, la base de connaissances ne peut être mise à jour que par les administrateurs)",

@@ -582,6 +582,8 @@
     "Child stores": "Almacenes de datos secundarios",
     "Child stores - Tooltip": "Nombre del subalmacén asociado (para la recuperación de conocimiento a través del almacén)",
     "Chinese": "Chino",
+    "Forbidden words": "Palabras prohibidas",
+    "Forbidden words - Tooltip": "Palabras no permitidas en los mensajes de chat. Los mensajes que contengan estas palabras serán rechazados.",
     "Collected time": "Tiempo de colección",
     "Disable file upload": "Deshabilitar carga de archivos",
     "Disable file upload - Tooltip": "Prohibir a los usuarios cargar archivos (cuando se habilita, el repositorio de conocimiento solo se puede actualizar por administradores)",

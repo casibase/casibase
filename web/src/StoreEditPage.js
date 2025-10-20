@@ -648,6 +648,15 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{ marginTop: "20px" }} >
           <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("store:Forbidden words"), i18next.t("store:Forbidden words - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} mode="tags" style={{ width: "100%" }} value={this.state.store.forbiddenWords} onChange={(value => { this.updateStoreField("forbiddenWords", value); })}>
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Show auto read"), i18next.t("store:Show auto read - Tooltip"))} :
           </Col>
           <Col span={1}>
