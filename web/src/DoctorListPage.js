@@ -50,13 +50,13 @@ class DoctorListPage extends BaseListPage {
             pathname: `/doctors/${newDoctor.name}`,
             mode: "add",
           });
-          Setting.showMessage("success", "Doctor added successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
-          Setting.showMessage("error", `Failed to add Doctor: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
       })
       .catch((error) => {
-        Setting.showMessage("error", `Doctor failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
       });
   }
 
@@ -64,7 +64,7 @@ class DoctorListPage extends BaseListPage {
     DoctorBackend.deleteDoctor(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Doctor deleted successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully deleted"));
           this.setState({
             data: Setting.deleteRow(this.state.data, i),
             pagination: {
@@ -73,11 +73,11 @@ class DoctorListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Failed to delete Doctor: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch((error) => {
-        Setting.showMessage("error", `Doctor failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
       });
   }
 

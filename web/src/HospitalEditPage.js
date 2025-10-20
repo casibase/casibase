@@ -43,7 +43,7 @@ class HospitalEditPage extends React.Component {
             hospital: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get hospital: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -115,7 +115,7 @@ class HospitalEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               hospitalName: this.state.hospital.name,
             });
@@ -126,15 +126,15 @@ class HospitalEditPage extends React.Component {
             }
             // this.getHospital(true);
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("general:Failed to save"));
             this.updateHospitalField("name", this.state.hospitalName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
       });
   }
 

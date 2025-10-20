@@ -42,7 +42,7 @@ class CaaseEditPage extends React.Component {
             caase: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get caase: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       }
     );
@@ -353,7 +353,7 @@ class CaaseEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               caaseName: this.state.caase.name,
             });
@@ -366,15 +366,15 @@ class CaaseEditPage extends React.Component {
             }
             // this.getCaase(true);
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("general:Failed to save"));
             this.updateCaaseField("name", this.state.caaseName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
         }
       })
       .catch((error) => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
       });
   }
 
