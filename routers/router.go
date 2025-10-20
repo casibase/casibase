@@ -270,4 +270,10 @@ func initAPI() {
 	beego.Router("/api/get-dynamic-config-by-key", &controllers.ApiController{}, "GET:GetDynamicConfigValueByKey")
 	
 	beego.Router("/api/wecom-bot/callback/:botId", &controllers.ApiController{}, "GET:WecomBotVerifyUrl;POST:WecomBotHandleMessage")
+
+
+	// bugfix
+	beego.Router("/api/bugfix/create-bug-fix", &controllers.ApiController{}, "POST:BugFixCreate")
+	beego.Router("/api/bugfix/get-current-bug-fix", &controllers.ApiController{}, "GET:BugFixGetCurrent")
+	beego.Router("/api/bugfix/stop-bug-fix", &controllers.ApiController{}, "POST:BugfixStop")
 }

@@ -32,7 +32,7 @@ func (c *ApiController) SendBlockchainCommit() {
 	// 获取语言
 	lang := c.GetAcceptLanguage()
 	if lang == "" {
-		lang = "zh-CN"
+		lang = "zh"
 	}		
 
 	

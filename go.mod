@@ -9,6 +9,7 @@ require (
 	github.com/ConnectAI-E/go-minimax v0.0.1
 	github.com/ThinkInAIXYZ/go-mcp v0.2.10
 	github.com/WqyJh/go-cosyvoice v0.1.0
+	github.com/alibabacloud-go/darabonba-openapi v0.1.18
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.10
 	github.com/alibabacloud-go/ecs-20140526/v4 v4.26.10
 	github.com/alibabacloud-go/tea v1.2.2
@@ -22,10 +23,10 @@ require (
 	github.com/baidubce/bce-qianfan-sdk/go/qianfan v0.0.14
 	github.com/beego/beego v1.12.12
 	github.com/carmel/gooxml v0.0.0-20220216072414-40ff56130850
+	github.com/casbin/casbin/v2 v2.1.2
 	github.com/casdoor/casdoor-go-sdk v1.14.0
 	github.com/casibase/dashscope-go-sdk v0.0.2
 	github.com/casibase/go-openrouter v1.0.0
-	github.com/casibase/pdf v1.2.0
 	github.com/casibase/pdf v1.2.0
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/cohere-ai/cohere-go/v2 v2.5.2
@@ -54,7 +55,6 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sashabaranov/go-openai v1.32.0
 	github.com/schollz/progressbar/v3 v3.18.0
-	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/tealeg/xlsx v1.0.5
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1116
@@ -81,8 +81,8 @@ require (
 )
 
 require (
+	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/alibabacloud-go/alibabacloud-gateway-spi v0.0.5 // indirect
-	github.com/alibabacloud-go/darabonba-openapi v0.1.18 // indirect
 	github.com/alibabacloud-go/debug v1.0.1 // indirect
 	github.com/alibabacloud-go/endpoint-util v1.1.0 // indirect
 	github.com/alibabacloud-go/openapi-util v0.1.1 // indirect
@@ -283,7 +283,6 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1
 	gopkg.in/yaml.v3 v3.0.1
 	gotest.tools/v3 v3.5.2 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect

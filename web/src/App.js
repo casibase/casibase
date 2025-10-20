@@ -109,6 +109,7 @@ import PatientChainDataIntro from "./introduce/PatientChainDataIntro"
 import MedicalRecordChainIntro from "./introduce/MedicalRecordChainIntro"
 
 import withPagePermission from "./component/PagePermissionGuard";
+import BugFixTaskPage from "./BugFixTaskPage";
 
 
 
@@ -1138,6 +1139,7 @@ class App extends Component {
         <Route exact path="/introduce/patient-chain-data" render={(props) => this.renderSigninIfNotSignedIn(<PatientChainDataIntro account={this.state.account} {...props} />)} />
         <Route exact path="/introduce/medical-record-chain" render={(props) => this.renderSigninIfNotSignedIn(<MedicalRecordChainIntro account={this.state.account} {...props} />)} />
         <Route exact path="/lion" render={(props) => this.renderSigninIfNotSignedIn(<DynamicConfigPage account={this.state.account} {...props} />)} />
+        <Route exact path="/bugfix" render={(props) => this.renderSigninIfNotSignedIn(<BugFixTaskPage account={this.state.account} {...props} />)} />
 
         <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
       </Switch>

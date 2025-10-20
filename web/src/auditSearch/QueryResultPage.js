@@ -16,6 +16,15 @@ const FIELD_CONFIG = [
     { key: "admType", label: "入院类型" },
     { key: "Diagnoses", label: "诊断" },
     { key: "hospital", label: "医院" },
+
+    { key: "correlationId", label: "身份证号" },
+    { key: "patientName", label: "患者姓名" },
+    { key: "localDBIndex", label: "本地索引信息" },
+    { key: "consultationTime", label: "就诊时间" },
+    { key: "section", label: "医院名称" },
+    { key: "unit", label: "就诊科室" },
+    { key: "diagnosis", label: "诊断" }
+
 ];
 
 // 过滤并翻译字段，只保留常量池中且实际存在的字段

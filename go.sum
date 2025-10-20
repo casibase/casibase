@@ -41,6 +41,7 @@ github.com/ConnectAI-E/go-minimax v0.0.1/go.mod h1:c+9xxqMgmtwdpZEq/lBtrwkbwlK7d
 github.com/DataDog/zstd v1.4.5 h1:EndNeuB0l9syBZhut0wns3gV1hL8zX8LIu6ZiVHWLIQ=
 github.com/DataDog/zstd v1.4.5/go.mod h1:1jcaCB/ufaK+sKp1NBhlGmpz41jOoPQ35bpF36t7BBo=
 github.com/Knetic/govaluate v3.0.0+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
+github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible h1:1G1pk05UrOh0NlF1oeaaix1x8XzrfjIDK47TY0Zehcw=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=
 github.com/Microsoft/go-winio v0.5.2/go.mod h1:WpS1mjBmmwHBEWmogvA2mj8546UReBk4v8QkMxJ6pZY=
@@ -200,7 +201,9 @@ github.com/carapace-sh/carapace-shlex v1.0.1 h1:ww0JCgWpOVuqWG7k3724pJ18Lq8gh5pH
 github.com/carapace-sh/carapace-shlex v1.0.1/go.mod h1:lJ4ZsdxytE0wHJ8Ta9S7Qq0XpjgjU0mdfCqiI2FHx7M=
 github.com/carmel/gooxml v0.0.0-20220216072414-40ff56130850 h1:5HOeLYzNkwXRWppRFonU+3ecOq+PjLvnwpAaTSdvsNs=
 github.com/carmel/gooxml v0.0.0-20220216072414-40ff56130850/go.mod h1:2u6ODG4PzDELX8qnX0wOGCdPJpWxnC5hBM7542SFrYc=
+github.com/casbin/casbin v1.7.0 h1:PuzlE8w0JBg/DhIqnkF1Dewf3z+qmUZMVN07PonvVUQ=
 github.com/casbin/casbin v1.7.0/go.mod h1:c67qKN6Oum3UF5Q1+BByfFxkwKvhwW57ITjqwtzR1KE=
+github.com/casbin/casbin/v2 v2.1.2 h1:bTwon/ECRx9dwBy2ewRVr5OiqjeXSGiTUY74sDPQi/g=
 github.com/casbin/casbin/v2 v2.1.2/go.mod h1:YcPU1XXisHhLzuxH9coDNf2FbKpjGlbCg3n9yuLkIJQ=
 github.com/casdoor/casdoor-go-sdk v1.14.0 h1:HrvwBxF0Vt+BSuNsf5MfhCvqSfETolpv4hzvP5XcCXc=
 github.com/casdoor/casdoor-go-sdk v1.14.0/go.mod h1:cMnkCQJgMYpgAlgEx8reSt1AVaDIQLcJ1zk5pzBaz+4=
@@ -552,6 +555,8 @@ github.com/huin/goupnp v1.3.0 h1:UvLUlWDNpoUdYzb2TCn+MuTWtcjXKSza2n6CBdQ0xXc=
 github.com/huin/goupnp v1.3.0/go.mod h1:gnGPsThkYa7bFi/KWmEysQRf48l2dvR5bxr2OFckNX8=
 github.com/hupe1980/go-huggingface v0.0.15 h1:tTWmUGGunC/BYz4hrwS8SSVtMYVYjceG2uhL8HxeXvw=
 github.com/hupe1980/go-huggingface v0.0.15/go.mod h1:IRvsik3+b9BJyw9hCfw1arI6gDObcVto1UA8f3kt8mM=
+github.com/iflytek/spark-ai-go v0.0.0-20240509090842-11decd0816f6 h1:R1/gPjO0VeJ+12x/wWd2J59zNLCRmz6hay/PV0bqvk0=
+github.com/iflytek/spark-ai-go v0.0.0-20240509090842-11decd0816f6/go.mod h1:2w534as5XquG0kmDy4Fv6t4vtPrH75BlFHk1coKxJr4=
 github.com/imdario/mergo v0.3.6 h1:xTNEAn+kxVO7dTZGu0CegyqKZmoWFI0rF8UxjlB2d28=
 github.com/imdario/mergo v0.3.6/go.mod h1:2EnlNZ0deacrJVfApfmtdGgDfMuh/nq6Ok1EcJh5FfA=
 github.com/imroc/req/v3 v3.35.1 h1:xrsuKq4FHWqxU2DM8lWbTwmxiObGfR7B/zgEBMmy8Wc=

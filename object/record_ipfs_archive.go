@@ -459,6 +459,16 @@ func AddUnUploadIpfsDataToQueue() error {
 
 		// 添加到队列
 		recordArchiveQueues[dataType][archive.RecordId] = record
+
+		userId := record.User
+		// 检查队列大小是否达到阈值
+		if len(recordArchiveQueues[dataType]) >= maxQueueSize {
+			// 触发IPFS归档流程
+			fmt.Println(">> [AddRecordToArchiveQueue]触发IPFS归档流程")
+			go ArchiveToIPFS(dataType, userId)
+			// 休息2s
+			time.Sleep(2 * time.Second)
+		}
 	}
 
 	return nil
