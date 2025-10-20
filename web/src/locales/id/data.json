@@ -389,7 +389,12 @@
     "Zone - Tooltip": "Zona tersedia",
     "empty": "Kosong",
     "items": "Item",
-    "{total} in total": "{total} total"
+    "{total} in total": "{total} total",
+    "Hospitals": "Rumah Sakit",
+    "Doctors": "Dokter",
+    "Patients": "Pasien",
+    "Caases": "Kasus",
+    "Consultations": "Konsultasi"
   },
   "graph": {
     "Edit Graph": "Edit Graph"

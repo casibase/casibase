@@ -389,7 +389,12 @@
     "Zone - Tooltip": "사용 가능한 지역",
     "empty": "빈",
     "items": "항목",
-    "{total} in total": "{total} 총계"
+    "{total} in total": "{total} 총계",
+    "Hospitals": "병원",
+    "Doctors": "의사",
+    "Patients": "환자",
+    "Caases": "사례",
+    "Consultations": "상담"
   },
   "graph": {
     "Edit Graph": "Edit Graph"

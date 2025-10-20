@@ -389,7 +389,12 @@
     "Zone - Tooltip": "利用可能ゾーン",
     "empty": "空",
     "items": "項目",
-    "{total} in total": "{total} 合計"
+    "{total} in total": "{total} 合計",
+    "Hospitals": "病院",
+    "Doctors": "医師",
+    "Patients": "患者",
+    "Caases": "症例",
+    "Consultations": "相談"
   },
   "graph": {
     "Edit Graph": "Edit Graph"

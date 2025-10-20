@@ -92,6 +92,16 @@ import ApplicationEditPage from "./ApplicationEditPage";
 import ApplicationStorePage from "./ApplicationStorePage";
 import StoreSelect from "./StoreSelect";
 import ApplicationDetailsPage from "./ApplicationViewPage";
+import HospitalListPage from "./HospitalListPage";
+import HospitalEditPage from "./HospitalEditPage";
+import DoctorListPage from "./DoctorListPage";
+import DoctorEditPage from "./DoctorEditPage";
+import PatientListPage from "./PatientListPage";
+import PatientEditPage from "./PatientEditPage";
+import CaaseListPage from "./CaaseListPage";
+import CaaseEditPage from "./CaaseEditPage";
+import ConsultationListPage from "./ConsultationListPage";
+import ConsultationEditPage from "./ConsultationEditPage";
 
 const {Header, Footer, Content} = Layout;
 
@@ -240,6 +250,16 @@ class App extends Component {
       this.setState({selectedMenuKey: "/forms"});
     } else if (uri.includes("/articles")) {
       this.setState({selectedMenuKey: "/articles"});
+    } else if (uri.includes("/hospitals")) {
+      this.setState({selectedMenuKey: "/hospitals"});
+    } else if (uri.includes("/doctors")) {
+      this.setState({selectedMenuKey: "/doctors"});
+    } else if (uri.includes("/patients")) {
+      this.setState({selectedMenuKey: "/patients"});
+    } else if (uri.includes("/caases")) {
+      this.setState({selectedMenuKey: "/caases"});
+    } else if (uri.includes("/consultations")) {
+      this.setState({selectedMenuKey: "/consultations"});
     } else if (uri.includes("/public-videos")) {
       this.setState({selectedMenuKey: "/public-videos"});
     } else if (uri.includes("/videos")) {
@@ -676,6 +696,11 @@ class App extends Component {
         Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"),
         Setting.getItem(<Link to="/forms">{i18next.t("general:Forms")}</Link>, "/forms"),
         Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows"),
+        Setting.getItem(<Link to="/hospitals">{i18next.t("general:Hospitals")}</Link>, "/hospitals"),
+        Setting.getItem(<Link to="/doctors">{i18next.t("general:Doctors")}</Link>, "/doctors"),
+        Setting.getItem(<Link to="/patients">{i18next.t("general:Patients")}</Link>, "/patients"),
+        Setting.getItem(<Link to="/caases">{i18next.t("general:Caases")}</Link>, "/caases"),
+        Setting.getItem(<Link to="/consultations">{i18next.t("general:Consultations")}</Link>, "/consultations"),
         Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"),
         Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
         Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"),
@@ -819,6 +844,16 @@ class App extends Component {
         <Route exact path="/forms/:formName/data" render={(props) => this.renderSigninIfNotSignedIn(<FormDataPage key={props.match.params.formName} account={this.state.account} {...props} />)} />
         <Route exact path="/articles" render={(props) => this.renderSigninIfNotSignedIn(<ArticleListPage account={this.state.account} {...props} />)} />
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/hospitals" render={(props) => this.renderSigninIfNotSignedIn(<HospitalListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/hospitals/:hospitalName" render={(props) => this.renderSigninIfNotSignedIn(<HospitalEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/doctors" render={(props) => this.renderSigninIfNotSignedIn(<DoctorListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/doctors/:doctorName" render={(props) => this.renderSigninIfNotSignedIn(<DoctorEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/patients" render={(props) => this.renderSigninIfNotSignedIn(<PatientListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/patients/:patientName" render={(props) => this.renderSigninIfNotSignedIn(<PatientEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/caases" render={(props) => this.renderSigninIfNotSignedIn(<CaaseListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/caases/:caaseName" render={(props) => this.renderSigninIfNotSignedIn(<CaaseEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/consultations" render={(props) => this.renderSigninIfNotSignedIn(<ConsultationListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/consultations/:consultationName" render={(props) => this.renderSigninIfNotSignedIn(<ConsultationEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />

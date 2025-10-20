@@ -389,7 +389,12 @@
     "Zone - Tooltip": "Zona disponible",
     "empty": "Vacio",
     "items": "Elementos",
-    "{total} in total": "{total} en total"
+    "{total} in total": "{total} en total",
+    "Hospitals": "Hospitales",
+    "Doctors": "Doctores",
+    "Patients": "Pacientes",
+    "Caases": "Casos",
+    "Consultations": "Consultas"
   },
   "graph": {
     "Edit Graph": "Edit Graph"

@@ -389,7 +389,12 @@
     "Zone - Tooltip": "Доступная зона",
     "empty": "Пустой",
     "items": "Пункты",
-    "{total} in total": "{total} Итого"
+    "{total} in total": "{total} Итого",
+    "Hospitals": "Больницы",
+    "Doctors": "Врачи",
+    "Patients": "Пациенты",
+    "Caases": "Случаи",
+    "Consultations": "Консультации"
   },
   "graph": {
     "Edit Graph": "Edit Graph"

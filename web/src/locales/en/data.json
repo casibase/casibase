@@ -389,7 +389,12 @@
     "Zone - Tooltip": "Availability zone",
     "empty": "empty",
     "items": "items",
-    "{total} in total": "{total} in total"
+    "{total} in total": "{total} in total",
+    "Hospitals": "Hospitals",
+    "Doctors": "Doctors",
+    "Patients": "Patients",
+    "Caases": "Caases",
+    "Consultations": "Consultations"
   },
   "graph": {
     "Edit Graph": "Edit Graph"
