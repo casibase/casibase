@@ -62,6 +62,7 @@ class FileTree extends React.Component {
       uploadFileType: null,
       file: null,
       info: null,
+      dragOverKey: null,
     };
 
     this.filePane = React.createRef();
@@ -352,6 +353,70 @@ class FileTree extends React.Component {
     return filename;
   }
 
+  handleDrop = (e, file) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Clear drag-over styling
+    this.setState({dragOverKey: null});
+
+    if (!this.isFileWritable(file)) {
+      Setting.showMessage("error", i18next.t("store:Sorry, you are unauthorized to upload files to this folder"));
+      return;
+    }
+
+    const files = e.dataTransfer.files;
+    if (files.length === 0) {
+      return;
+    }
+
+    // Determine the target folder
+    let targetFolder = file;
+    if (file.isLeaf) {
+      // If dropped on a file, upload to its parent folder
+      targetFolder = file.parent || {key: "/"};
+    }
+
+    // Create a file list for upload
+    const fileList = Array.from(files).map((f, index) => ({
+      uid: `${Date.now()}-${index}`,
+      name: f.name,
+      originFileObj: f,
+    }));
+
+    const info = {
+      fileList: fileList,
+    };
+
+    if (this.checkUploadFile(info)) {
+      this.setState({
+        isUploadFileModalVisible: true,
+        file: targetFolder,
+        info: info,
+      });
+    } else {
+      this.uploadFile(targetFolder, info);
+    }
+  };
+
+  handleDragOver = (e, fileKey) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Set drag-over styling
+    if (this.state.dragOverKey !== fileKey) {
+      this.setState({dragOverKey: fileKey});
+    }
+  };
+
+  handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Clear drag-over styling
+    this.setState({dragOverKey: null});
+  };
+
   renderTree(store) {
     const onSelect = (selectedKeys, info) => {
       if (!this.isFileReadable(info.node)) {
@@ -458,162 +523,182 @@ class FileTree extends React.Component {
           }
 
           if (file.isLeaf) {
+            const isDragOver = this.state.dragOverKey === file.key;
+            const dragOverStyle = isDragOver ? {backgroundColor: "rgba(24, 144, 255, 0.1)", border: "1px dashed #1890ff"} : {};
+
             return (
-              <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
-                <div>
-                  {
-                    !isReadable ? null : (
-                      <Tooltip title={i18next.t("general:Download")}>
-                        <Button style={{marginRight: "5px"}} icon={<DownloadOutlined />} size="small" onClick={(e) => {
-                          Setting.showMessage("success", i18next.t("general:Successfully downloaded"));
-                          Setting.openLink(file.url);
-                          e.stopPropagation();
-                        }} />
-                      </Tooltip>
-                    )
-                  }
-                  {
-                    !isWritable ? null : (
-                      <React.Fragment>
-                        {/* <Tooltip title={i18next.t("store:Rename")}>*/}
-                        {/*  <Button style={{marginRight: "5px"}} icon={<EditOutlined />} size="small" onClick={(e) => {*/}
-                        {/*    Setting.showMessage("error", "Rename");*/}
-                        {/*    e.stopPropagation();*/}
-                        {/*  }} />*/}
-                        {/* </Tooltip>*/}
-                        {/* <Tooltip title={i18next.t("store:Move")}>*/}
-                        {/*  <Button style={{marginRight: "5px"}} icon={<RadiusSettingOutlined />} size="small" onClick={(e) => {*/}
-                        {/*    Setting.showMessage("error", "Move");*/}
-                        {/*    e.stopPropagation();*/}
-                        {/*  }} />*/}
-                        {/* </Tooltip>*/}
-                        <Tooltip title={i18next.t("general:Delete")}>
-                          <span onClick={(e) => e.stopPropagation()}>
-                            <Popconfirm
-                              title={`${i18next.t("general:Sure to delete")}: ${file.title} ?`}
-                              onConfirm={(e) => {
-                                this.deleteFile(file, true);
-                              }}
-                              okText={i18next.t("general:OK")}
-                              cancelText={i18next.t("general:Cancel")}
-                            >
-                              <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
-                            </Popconfirm>
-                          </span>
+              <div
+                onDrop={(e) => this.handleDrop(e, file)}
+                onDragOver={(e) => this.handleDragOver(e, file.key)}
+                onDragLeave={this.handleDragLeave}
+                style={{...dragOverStyle, padding: "2px"}}
+              >
+                <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
+                  <div>
+                    {
+                      !isReadable ? null : (
+                        <Tooltip title={i18next.t("general:Download")}>
+                          <Button style={{marginRight: "5px"}} icon={<DownloadOutlined />} size="small" onClick={(e) => {
+                            Setting.showMessage("success", i18next.t("general:Successfully downloaded"));
+                            Setting.openLink(file.url);
+                            e.stopPropagation();
+                          }} />
                         </Tooltip>
-                      </React.Fragment>
-                    )
+                      )
+                    }
+                    {
+                      !isWritable ? null : (
+                        <React.Fragment>
+                          {/* <Tooltip title={i18next.t("store:Rename")}>*/}
+                          {/*  <Button style={{marginRight: "5px"}} icon={<EditOutlined />} size="small" onClick={(e) => {*/}
+                          {/*    Setting.showMessage("error", "Rename");*/}
+                          {/*    e.stopPropagation();*/}
+                          {/*  }} />*/}
+                          {/* </Tooltip>*/}
+                          {/* <Tooltip title={i18next.t("store:Move")}>*/}
+                          {/*  <Button style={{marginRight: "5px"}} icon={<RadiusSettingOutlined />} size="small" onClick={(e) => {*/}
+                          {/*    Setting.showMessage("error", "Move");*/}
+                          {/*    e.stopPropagation();*/}
+                          {/*  }} />*/}
+                          {/* </Tooltip>*/}
+                          <Tooltip title={i18next.t("general:Delete")}>
+                            <span onClick={(e) => e.stopPropagation()}>
+                              <Popconfirm
+                                title={`${i18next.t("general:Sure to delete")}: ${file.title} ?`}
+                                onConfirm={(e) => {
+                                  this.deleteFile(file, true);
+                                }}
+                                okText={i18next.t("general:OK")}
+                                cancelText={i18next.t("general:Cancel")}
+                              >
+                                <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
+                              </Popconfirm>
+                            </span>
+                          </Tooltip>
+                        </React.Fragment>
+                      )
+                    }
+                    <Tooltip title={isAdmin ? i18next.t("store:Add Permission") :
+                      i18next.t("store:Apply for Permission")}>
+                      <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
+                        PermissionUtil.addPermission(this.props.account, this.props.store, file);
+                        e.stopPropagation();
+                      }} />
+                    </Tooltip>
+                  </div>
+                }>
+                  <span style={tagStyle}>
+                    {`${file.title} (${Setting.getFriendlyFileSize(file.size)})`}
+                  </span>
+                  &nbsp;
+                  &nbsp;
+                  {
+                    (this.state.permissionMap === null) ? null : this.renderPermissions(this.state.permissionMap[file.key], isReadable)
                   }
-                  <Tooltip title={isAdmin ? i18next.t("store:Add Permission") :
-                    i18next.t("store:Apply for Permission")}>
-                    <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
-                      PermissionUtil.addPermission(this.props.account, this.props.store, file);
-                      e.stopPropagation();
-                    }} />
-                  </Tooltip>
-                </div>
-              }>
-                <span style={tagStyle}>
-                  {`${file.title} (${Setting.getFriendlyFileSize(file.size)})`}
-                </span>
-                &nbsp;
-                &nbsp;
-                {
-                  (this.state.permissionMap === null) ? null : this.renderPermissions(this.state.permissionMap[file.key], isReadable)
-                }
-              </Tooltip>
+                </Tooltip>
+              </div>
             );
           } else {
+            const isDragOver = this.state.dragOverKey === file.key;
+            const dragOverStyle = isDragOver ? {backgroundColor: "rgba(24, 144, 255, 0.1)", border: "1px dashed #1890ff"} : {};
+
             return (
-              <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
-                <div>
-                  {
-                    !isWritable ? null : (
-                      <React.Fragment>
-                        <Tooltip color={"rgb(255,255,255)"} placement="top" title={
-                          <span onClick={(e) => e.stopPropagation()}>
-                            <div style={{color: "black"}}>
-                              {i18next.t("store:New folder")}:
-                            </div>
-                            <Input.Group style={{marginTop: "5px"}} compact>
-                              <Input style={{width: "100px"}} value={this.state.newFolder} onChange={e => {
-                                this.setState({
-                                  newFolder: e.target.value,
-                                });
-                              }} />
-                              <Button type="primary" onClick={(e) => {
-                                this.addFile(file, this.state.newFolder);
+              <div
+                onDrop={(e) => this.handleDrop(e, file)}
+                onDragOver={(e) => this.handleDragOver(e, file.key)}
+                onDragLeave={this.handleDragLeave}
+                style={{...dragOverStyle, padding: "2px"}}
+              >
+                <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
+                  <div>
+                    {
+                      !isWritable ? null : (
+                        <React.Fragment>
+                          <Tooltip color={"rgb(255,255,255)"} placement="top" title={
+                            <span onClick={(e) => e.stopPropagation()}>
+                              <div style={{color: "black"}}>
+                                {i18next.t("store:New folder")}:
+                              </div>
+                              <Input.Group style={{marginTop: "5px"}} compact>
+                                <Input style={{width: "100px"}} value={this.state.newFolder} onChange={e => {
+                                  this.setState({
+                                    newFolder: e.target.value,
+                                  });
+                                }} />
+                                <Button type="primary" onClick={(e) => {
+                                  this.addFile(file, this.state.newFolder);
+                                  e.stopPropagation();
+                                }}
+                                >
+                                  OK
+                                </Button>
+                              </Input.Group>
+                            </span>
+                          }>
+                            <span onClick={(e) => e.stopPropagation()}>
+                              <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" onClick={(e) => {
                                 e.stopPropagation();
+                              }} />
+                            </span>
+                          </Tooltip>
+                          <Tooltip title={i18next.t("store:Upload file")}>
+                            <span onClick={(e) => e.stopPropagation()}>
+                              <Upload multiple={true} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={(info) => {
+                                if (this.checkUploadFile(info)) {
+                                  this.setState({
+                                    isUploadFileModalVisible: true,
+                                    file: file,
+                                    info: info,
+                                  });
+                                } else {
+                                  this.uploadFile(file, info);
+                                }
                               }}
                               >
-                                OK
-                              </Button>
-                            </Input.Group>
-                          </span>
-                        }>
-                          <span onClick={(e) => e.stopPropagation()}>
-                            <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" onClick={(e) => {
-                              e.stopPropagation();
-                            }} />
-                          </span>
-                        </Tooltip>
-                        <Tooltip title={i18next.t("store:Upload file")}>
-                          <span onClick={(e) => e.stopPropagation()}>
-                            <Upload multiple={true} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={(info) => {
-                              if (this.checkUploadFile(info)) {
-                                this.setState({
-                                  isUploadFileModalVisible: true,
-                                  file: file,
-                                  info: info,
-                                });
-                              } else {
-                                this.uploadFile(file, info);
-                              }
-                            }}
-                            >
-                              <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
-                            </Upload>
-                          </span>
-                        </Tooltip>
-                        {
-                          file.key === "/" ? null : (
-                            <Tooltip title={i18next.t("general:Delete")}>
-                              <span onClick={(e) => e.stopPropagation()}>
-                                <Popconfirm
-                                  title={`${i18next.t("general:Sure to delete")}: ${file.title} ?`}
-                                  onConfirm={(e) => {
-                                    this.deleteFile(file, false);
-                                  }}
-                                  okText={i18next.t("general:OK")}
-                                  cancelText={i18next.t("general:Cancel")}
-                                >
-                                  <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
-                                </Popconfirm>
-                              </span>
-                            </Tooltip>
-                          )
-                        }
-                      </React.Fragment>
-                    )
+                                <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
+                              </Upload>
+                            </span>
+                          </Tooltip>
+                          {
+                            file.key === "/" ? null : (
+                              <Tooltip title={i18next.t("general:Delete")}>
+                                <span onClick={(e) => e.stopPropagation()}>
+                                  <Popconfirm
+                                    title={`${i18next.t("general:Sure to delete")}: ${file.title} ?`}
+                                    onConfirm={(e) => {
+                                      this.deleteFile(file, false);
+                                    }}
+                                    okText={i18next.t("general:OK")}
+                                    cancelText={i18next.t("general:Cancel")}
+                                  >
+                                    <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
+                                  </Popconfirm>
+                                </span>
+                              </Tooltip>
+                            )
+                          }
+                        </React.Fragment>
+                      )
+                    }
+                    <Tooltip title={isAdmin ? i18next.t("store:Add Permission") :
+                      i18next.t("store:Apply for Permission")}>
+                      <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
+                        PermissionUtil.addPermission(this.props.account, this.props.store, file);
+                        e.stopPropagation();
+                      }} />
+                    </Tooltip>
+                  </div>
+                }>
+                  <span style={tagStyle}>
+                    {file.title}
+                  </span>
+                  &nbsp;
+                  &nbsp;
+                  {
+                    (this.state.permissionMap === null) ? null : this.renderPermissions(this.state.permissionMap[file.key], isReadable)
                   }
-                  <Tooltip title={isAdmin ? i18next.t("store:Add Permission") :
-                    i18next.t("store:Apply for Permission")}>
-                    <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
-                      PermissionUtil.addPermission(this.props.account, this.props.store, file);
-                      e.stopPropagation();
-                    }} />
-                  </Tooltip>
-                </div>
-              }>
-                <span style={tagStyle}>
-                  {file.title}
-                </span>
-                &nbsp;
-                &nbsp;
-                {
-                  (this.state.permissionMap === null) ? null : this.renderPermissions(this.state.permissionMap[file.key], isReadable)
-                }
-              </Tooltip>
+                </Tooltip>
+              </div>
             );
           }
         }}
