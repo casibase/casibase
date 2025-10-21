@@ -128,3 +128,7 @@ func GetServerNameAndToolNameFromId(id string) (string, string) {
 func GetIdFromServerNameAndToolName(ServerName, toolName string) string {
 	return ServerName + "__" + toolName
 }
+
+func IsIdFromMcpServer(id string) bool {
+	return strings.Contains(id, "__")
+}

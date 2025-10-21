@@ -24,6 +24,7 @@ import (
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
 	"github.com/casibase/casibase/agent"
 	"github.com/casibase/casibase/i18n"
+	"github.com/casibase/casibase/tools"
 	"github.com/openai/openai-go/v2/responses"
 	"github.com/sashabaranov/go-openai"
 )
@@ -131,6 +132,21 @@ func QueryTextWithTools(p ModelProvider, question string, writer io.Writer, hist
 
 	for len(toolCalls) > 0 {
 		for _, toolCall := range toolCalls {
+			// Check if this is a builtin tool (no MCP server prefix)
+			if !agent.IsIdFromMcpServer(toolCall.Function.Name) {
+				messages = append(messages, &RawMessage{
+					Text:     "Call result from " + toolCall.Function.Name,
+					Author:   "AI",
+					ToolCall: toolCall,
+				})
+
+				messages, err = callBuiltinTool(toolCall, messages, lang)
+				if err != nil {
+					return nil, err
+				}
+				continue
+			}
+
 			serverName, toolName := agent.GetServerNameAndToolNameFromId(toolCall.Function.Name)
 
 			mcpClient, ok := agentInfo.AgentClients.Clients[serverName]
@@ -218,4 +234,33 @@ func callTools(toolCall openai.ToolCall, functionName string, mcpClient *client.
 
 	messages = append(messages, createToolMessage(toolCall, string(responseJson)))
 	return messages, nil
+}
+
+func callBuiltinTool(toolCall openai.ToolCall, messages []*RawMessage, lang string) ([]*RawMessage, error) {
+	// Import tools package at the top of the file - we'll need to add this
+	response := &ToolCallResponse{
+		ToolName: toolCall.Function.Name,
+	}
+
+	// Execute the builtin tool
+	result, err := executeBuiltinTool(toolCall.Function.Name, toolCall.Function.Arguments)
+	if err != nil {
+		response.Success = false
+		response.Error = err.Error()
+	} else {
+		response.Success = true
+		response.Data = result
+	}
+
+	responseJson, err := json.Marshal(response)
+	if err != nil {
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:failed to marshal tool response: %v"), err)
+	}
+
+	messages = append(messages, createToolMessage(toolCall, string(responseJson)))
+	return messages, nil
+}
+
+func executeBuiltinTool(toolName string, arguments string) (string, error) {
+	return tools.ExecuteBuiltinTool(toolName, arguments)
 }

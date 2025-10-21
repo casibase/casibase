@@ -160,7 +160,7 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	agentClients, err := object.GetAgentClients(agentProviderObj)
+	agentClients, err := object.GetAgentClientsWithBuiltinTools(agentProviderObj, store.BuiltinTools)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return

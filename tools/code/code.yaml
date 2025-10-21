@@ -1,0 +1,14 @@
+name: execute_code
+description: Execute code in a sandboxed environment (placeholder - not yet implemented)
+inputSchema:
+  type: object
+  properties:
+    code:
+      type: string
+      description: "The code to execute"
+    language:
+      type: string
+      description: "Programming language (e.g., python, javascript)"
+      default: "python"
+  required:
+    - code

@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ThinkInAIXYZ/go-mcp/protocol"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/agent"
 	"github.com/casibase/casibase/embedding"
@@ -25,6 +26,7 @@ import (
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/storage"
 	"github.com/casibase/casibase/stt"
+	"github.com/casibase/casibase/tools"
 	"github.com/casibase/casibase/tts"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
@@ -418,6 +420,47 @@ func GetAgentClients(agentProviderObj agent.AgentProvider) (*agent.AgentClients,
 		return nil, nil
 	}
 	return agentProviderObj.GetAgentClients()
+}
+
+func GetAgentClientsWithBuiltinTools(agentProviderObj agent.AgentProvider, builtinTools []string) (*agent.AgentClients, error) {
+	var agentClients *agent.AgentClients
+	var err error
+
+	// Get tools from agent provider if it exists
+	if agentProviderObj != nil {
+		agentClients, err = agentProviderObj.GetAgentClients()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// If no builtin tools are enabled, return the agent clients as-is
+	if len(builtinTools) == 0 {
+		return agentClients, nil
+	}
+
+	// Load builtin tools
+	// Import the tools package - we'll need to add this at the top of the file
+	builtinToolsObjs, err := loadBuiltinTools(builtinTools)
+	if err != nil {
+		return nil, err
+	}
+
+	// If we have no agent provider, create a new AgentClients with only builtin tools
+	if agentClients == nil {
+		return &agent.AgentClients{
+			Clients: nil,
+			Tools:   builtinToolsObjs,
+		}, nil
+	}
+
+	// Merge builtin tools with existing tools
+	agentClients.Tools = append(agentClients.Tools, builtinToolsObjs...)
+	return agentClients, nil
+}
+
+func loadBuiltinTools(enabledTools []string) ([]*protocol.Tool, error) {
+	return tools.GetEnabledTools(enabledTools)
 }
 
 func GetProviderCount(owner, storeName, field, value string) (int64, error) {

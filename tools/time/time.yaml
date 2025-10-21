@@ -1,0 +1,14 @@
+name: current_time
+description: Get the current time in a specific timezone and format
+inputSchema:
+  type: object
+  properties:
+    timezone:
+      type: string
+      description: "Timezone name (e.g., UTC, America/New_York, Asia/Shanghai, Europe/London)"
+      default: "UTC"
+    format:
+      type: string
+      description: "Time format in Go time layout format (e.g., '2006-01-02 15:04:05')"
+      default: "2006-01-02 15:04:05"
+  required: []
