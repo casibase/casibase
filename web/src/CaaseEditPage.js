@@ -13,8 +13,10 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row} from "antd";
+import {Button, Card, Col, Input, Row, Select} from "antd";
 import * as CaaseBackend from "./backend/CaaseBackend";
+import * as PatientBackend from "./backend/PatientBackend";
+import * as DoctorBackend from "./backend/DoctorBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
@@ -26,12 +28,16 @@ class CaaseEditPage extends React.Component {
 
       caaseName: props.match.params.caaseName,
       caase: null,
+      patients: [],
+      doctors: [],
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getCaase();
+    this.getPatients();
+    this.getDoctors();
   }
 
   getCaase() {
@@ -46,6 +52,32 @@ class CaaseEditPage extends React.Component {
         }
       }
     );
+  }
+
+  getPatients() {
+    PatientBackend.getPatients(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            patients: res.data || [],
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getDoctors() {
+    DoctorBackend.getDoctors(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            doctors: res.data || [],
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
   }
 
   parseCaaseField(key, value) {
@@ -99,23 +131,6 @@ class CaaseEditPage extends React.Component {
         type="inner"
       >
         <Row style={{marginTop: "10px"}}>
-          <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-            {Setting.getLabel(
-              i18next.t("general:Organization"),
-              i18next.t("general:Organization - Tooltip")
-            )}{" "}
-            :
-          </Col>
-          <Col span={22}>
-            <Input
-              value={this.state.caase.owner}
-              onChange={(e) => {
-                this.updateCaaseField("owner", e.target.value);
-              }}
-            />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
               i18next.t("general:Name"),
@@ -271,34 +286,46 @@ class CaaseEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("med:Patient name"),
-              i18next.t("med:Patient name - Tooltip")
+              i18next.t("med:Patient"),
+              i18next.t("med:Patient - Tooltip")
             )}{" "}
             :
           </Col>
           <Col span={22}>
-            <Input
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
               value={this.state.caase.patientName}
-              onChange={(e) => {
-                this.updateCaaseField("patientName", e.target.value);
+              onChange={(value) => {
+                this.updateCaaseField("patientName", value);
               }}
+              options={this.state.patients.map((patient) => ({
+                label: patient.displayName || patient.name,
+                value: patient.name,
+              }))}
             />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("med:Doctor name"),
-              i18next.t("med:Doctor name - Tooltip")
+              i18next.t("med:Doctor"),
+              i18next.t("med:Doctor - Tooltip")
             )}{" "}
             :
           </Col>
           <Col span={22}>
-            <Input
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
               value={this.state.caase.doctorName}
-              onChange={(e) => {
-                this.updateCaaseField("doctorName", e.target.value);
+              onChange={(value) => {
+                this.updateCaaseField("doctorName", value);
               }}
+              options={this.state.doctors.map((doctor) => ({
+                label: doctor.displayName || doctor.name,
+                value: doctor.name,
+              }))}
             />
           </Col>
         </Row>

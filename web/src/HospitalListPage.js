@@ -78,21 +78,6 @@ class HospitalListPage extends BaseListPage {
   renderTable(hospitals) {
     const columns = [
       {
-        title: i18next.t("general:Organization"),
-        dataIndex: "owner",
-        key: "owner",
-        width: "110px",
-        sorter: true,
-        ...this.getColumnSearchProps("owner"),
-        render: (text, hospital, index) => {
-          return (
-            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/organizations/${text}`)}>
-              {text}
-            </a>
-          );
-        },
-      },
-      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",

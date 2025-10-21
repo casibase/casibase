@@ -91,28 +91,6 @@ class CaaseListPage extends BaseListPage {
   renderTable(caases) {
     const columns = [
       {
-        title: i18next.t("general:Organization"),
-        dataIndex: "owner",
-        key: "owner",
-        width: "110px",
-        sorter: true,
-        ...this.getColumnSearchProps("owner"),
-        render: (text, caase, index) => {
-          return (
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href={Setting.getMyProfileUrl(this.props.account).replace(
-                "/account",
-                `/organizations/${text}`
-              )}
-            >
-              {text}
-            </a>
-          );
-        },
-      },
-      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
@@ -194,7 +172,7 @@ class CaaseListPage extends BaseListPage {
         sorter: (a, b) => a.type.localeCompare(b.type),
       },
       {
-        title: i18next.t("med:Patient name"),
+        title: i18next.t("med:Patient"),
         dataIndex: "patientName",
         key: "patientName",
         width: "90px",
@@ -211,7 +189,7 @@ class CaaseListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("med:Doctor name"),
+        title: i18next.t("med:Doctor"),
         dataIndex: "doctorName",
         key: "doctorName",
         width: "90px",
