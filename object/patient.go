@@ -17,6 +17,7 @@ package object
 import (
 	"fmt"
 
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -32,8 +33,9 @@ type Patient struct {
 	Address string `xorm:"varchar(100)" json:"address"`
 	Email   string `xorm:"varchar(100)" json:"email"`
 
-	BloodType string `xorm:"varchar(100)" json:"bloodType"`
-	Allergies string `xorm:"varchar(100)" json:"allergies"`
+	BloodType string   `xorm:"varchar(100)" json:"bloodType"`
+	Allergies string   `xorm:"varchar(100)" json:"allergies"`
+	Owners    []string `xorm:"mediumtext" json:"owners"`
 }
 
 func GetPatientCount(owner, field, value string) (int64, error) {
@@ -150,4 +152,79 @@ func DeletePatient(patient *Patient) (bool, error) {
 
 func (patient *Patient) getId() string {
 	return fmt.Sprintf("%s/%s", patient.Owner, patient.Name)
+}
+
+func IsAdmin(user *casdoorsdk.User) bool {
+	if user == nil {
+		return false
+	}
+	return user.IsAdmin || user.Tag == "Admin"
+}
+
+func IsDoctor(user *casdoorsdk.User) bool {
+	if user == nil {
+		return false
+	}
+	return user.Tag == "Doctor"
+}
+
+func IsPatient(user *casdoorsdk.User) bool {
+	if user == nil {
+		return false
+	}
+	return user.Tag == "Patient"
+}
+
+func CanEditPatient(user *casdoorsdk.User, patient *Patient) bool {
+	if user == nil || patient == nil {
+		return false
+	}
+
+	// Admins can edit all patients
+	if IsAdmin(user) {
+		return true
+	}
+
+	// Doctors who are owners can edit
+	if IsDoctor(user) {
+		for _, owner := range patient.Owners {
+			if owner == user.Name {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func FilterPatientsByUser(user *casdoorsdk.User, patients []*Patient) []*Patient {
+	if user == nil {
+		return []*Patient{}
+	}
+
+	// Admins can view all patients
+	if IsAdmin(user) {
+		return patients
+	}
+
+	// Patients cannot view any patients
+	if IsPatient(user) {
+		return []*Patient{}
+	}
+
+	// Doctors can only view their own patients
+	if IsDoctor(user) {
+		filtered := []*Patient{}
+		for _, patient := range patients {
+			for _, owner := range patient.Owners {
+				if owner == user.Name {
+					filtered = append(filtered, patient)
+					break
+				}
+			}
+		}
+		return filtered
+	}
+
+	return []*Patient{}
 }

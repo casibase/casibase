@@ -428,13 +428,17 @@
     "Zone": "Zona"
   },
   "med": {
-    "Audit": "Audit",
-    "Medical Image Analysis": "Analisis gambar medis",
-    "Super Resolution": "Super resolusi gambar",
     "Access level": "Tingkat akses",
     "Access level - Tooltip": "Tingkat izin untuk mengakses catatan medis",
+    "Address": "Alamat",
+    "Address - Tooltip": "Alamat",
+    "Allergies": "Alergi",
+    "Allergies - Tooltip": "Alergi",
+    "Audit": "Audit",
     "Authorized hospital": "Rumah sakit yang berwenang",
     "Authorized hospital - Tooltip": "Rumah sakit yang berwenang untuk mengakses catatan konsultasi",
+    "Blood type": "Golongan darah",
+    "Blood type - Tooltip": "Golongan darah",
     "Caases": "Kasus",
     "Consultations": "Konsultasi",
     "Department": "Departemen",
@@ -451,6 +455,8 @@
     "Edit Doctor": "Edit dokter",
     "Edit Hospital": "Edit rumah sakit",
     "Edit Patient": "Edit pasien",
+    "Email": "Email",
+    "Email - Tooltip": "Email",
     "Expired time": "Waktu kadaluarsa",
     "Expired time - Tooltip": "Waktu kadaluarsa konsultasi",
     "Follow up": "Tindak lanjut",
@@ -464,11 +470,14 @@
     "Hospitals": "Rumah Sakit",
     "Integrated care organization Id": "Id organisasi perawatan terintegrasi",
     "Integrated care organization Id - Tooltip": "Pengidentifikasi organisasi perawatan terintegrasi",
+    "Medical Image Analysis": "Analisis gambar medis",
     "New Caase": "Kasus baru",
     "New Consultation": "Konsultasi baru",
     "New Doctor": "Dokter baru",
     "New Hospital": "Rumah sakit baru",
     "New Patient": "Pasien baru",
+    "Owners": "Pemilik",
+    "Owners - Tooltip": "Dokter yang memiliki izin untuk mengelola pasien ini",
     "Patient name": "Nama pasien",
     "Patient name - Tooltip": "Nama pasien",
     "Patients": "Pasien",
@@ -478,6 +487,7 @@
     "Primary care physician - Tooltip": "Nama dokter perawatan primer",
     "Specialist alliance Id": "Id aliansi spesialis",
     "Specialist alliance Id - Tooltip": "Pengidentifikasi aliansi spesialis",
+    "Super Resolution": "Super resolusi gambar",
     "Symptoms": "Gejala",
     "Symptoms - Tooltip": "Gejala pasien"
   },
@@ -882,6 +892,7 @@
   },
   "patient": {
     "Edit Patient": "Edit pasien",
-    "New Patient": "Pasien baru"
+    "New Patient": "Pasien baru",
+    "View Patient": "Lihat pasien"
   }
 }

@@ -428,13 +428,17 @@
     "Zone": "Zona"
   },
   "med": {
-    "Audit": "Auditoría",
-    "Medical Image Analysis": "Análisis de imágenes médicas",
-    "Super Resolution": "Super resolución de imagen",
     "Access level": "Nivel de acceso",
     "Access level - Tooltip": "Nivel de permiso para acceder a registros médicos",
+    "Address": "Dirección",
+    "Address - Tooltip": "Dirección",
+    "Allergies": "Alergias",
+    "Allergies - Tooltip": "Alergias",
+    "Audit": "Auditoría",
     "Authorized hospital": "Hospital autorizado",
     "Authorized hospital - Tooltip": "Hospital autorizado para acceder a registros de consultas",
+    "Blood type": "Tipo de sangre",
+    "Blood type - Tooltip": "Tipo de sangre",
     "Caases": "Casos",
     "Consultations": "Consultas",
     "Department": "Departamento",
@@ -451,6 +455,8 @@
     "Edit Doctor": "Editar doctor",
     "Edit Hospital": "Editar hospital",
     "Edit Patient": "Editar paciente",
+    "Email": "Correo electrónico",
+    "Email - Tooltip": "Correo electrónico",
     "Expired time": "Tiempo de expiración",
     "Expired time - Tooltip": "Tiempo de expiración de la consulta",
     "Follow up": "Seguimiento",
@@ -464,11 +470,14 @@
     "Hospitals": "Hospitales",
     "Integrated care organization Id": "Id de organización de atención integrada",
     "Integrated care organization Id - Tooltip": "Identificador de organización de atención integrada",
+    "Medical Image Analysis": "Análisis de imágenes médicas",
     "New Caase": "Nuevo caso",
     "New Consultation": "Nueva consulta",
     "New Doctor": "Nuevo doctor",
     "New Hospital": "Nuevo hospital",
     "New Patient": "Nuevo paciente",
+    "Owners": "Propietarios",
+    "Owners - Tooltip": "Médicos que tienen permiso para gestionar este paciente",
     "Patient name": "Nombre del paciente",
     "Patient name - Tooltip": "Nombre del paciente",
     "Patients": "Pacientes",
@@ -478,6 +487,7 @@
     "Primary care physician - Tooltip": "Nombre del médico de atención primaria",
     "Specialist alliance Id": "Id de alianza de especialistas",
     "Specialist alliance Id - Tooltip": "Identificador de alianza de especialistas",
+    "Super Resolution": "Super resolución de imagen",
     "Symptoms": "Síntomas",
     "Symptoms - Tooltip": "Síntomas del paciente"
   },
@@ -882,6 +892,7 @@
   },
   "patient": {
     "Edit Patient": "Editar paciente",
-    "New Patient": "Nuevo paciente"
+    "New Patient": "Nuevo paciente",
+    "View Patient": "Ver paciente"
   }
 }

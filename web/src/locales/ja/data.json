@@ -428,13 +428,17 @@
     "Zone": "ゾーン"
   },
   "med": {
-    "Audit": "監査",
-    "Medical Image Analysis": "医学画像解析",
-    "Super Resolution": "画像超解像",
     "Access level": "アクセスレベル",
     "Access level - Tooltip": "医療記録にアクセスするための許可レベル",
+    "Address": "住所",
+    "Address - Tooltip": "住所",
+    "Allergies": "アレルギー",
+    "Allergies - Tooltip": "アレルギー",
+    "Audit": "監査",
     "Authorized hospital": "承認された病院",
     "Authorized hospital - Tooltip": "相談記録にアクセスすることが承認された病院",
+    "Blood type": "血液型",
+    "Blood type - Tooltip": "血液型",
     "Caases": "症例",
     "Consultations": "相談",
     "Department": "診療科",
@@ -451,6 +455,8 @@
     "Edit Doctor": "医師を編集",
     "Edit Hospital": "病院を編集",
     "Edit Patient": "患者を編集",
+    "Email": "メール",
+    "Email - Tooltip": "メール",
     "Expired time": "有効期限",
     "Expired time - Tooltip": "相談の有効期限",
     "Follow up": "フォローアップ",
@@ -464,11 +470,14 @@
     "Hospitals": "病院",
     "Integrated care organization Id": "統合ケア組織Id",
     "Integrated care organization Id - Tooltip": "統合ケア組織の識別子",
+    "Medical Image Analysis": "医学画像解析",
     "New Caase": "新しい症例",
     "New Consultation": "新しい相談",
     "New Doctor": "新しい医師",
     "New Hospital": "新しい病院",
     "New Patient": "新しい患者",
+    "Owners": "所有者",
+    "Owners - Tooltip": "この患者を管理する権限を持つ医師",
     "Patient name": "患者名",
     "Patient name - Tooltip": "患者の名前",
     "Patients": "患者",
@@ -478,6 +487,7 @@
     "Primary care physician - Tooltip": "主治医の名前",
     "Specialist alliance Id": "専門医連合Id",
     "Specialist alliance Id - Tooltip": "専門医連合の識別子",
+    "Super Resolution": "画像超解像",
     "Symptoms": "症状",
     "Symptoms - Tooltip": "患者の症状"
   },
@@ -882,6 +892,7 @@
   },
   "patient": {
     "Edit Patient": "患者を編集",
-    "New Patient": "新しい患者"
+    "New Patient": "新しい患者",
+    "View Patient": "患者を表示"
   }
 }

@@ -466,6 +466,8 @@
     "Integrated care organization Id": "综合医疗组织Id",
     "Integrated care organization Id - Tooltip": "综合医疗组织标识符",
     "Medical Image Analysis": "医学影像分析",
+    "Owners": "负责医生",
+    "Owners - Tooltip": "有权管理此患者的医生",
     "Patient name": "患者姓名",
     "Patient name - Tooltip": "患者姓名",
     "Patients": "患者",
@@ -880,6 +882,7 @@
   },
   "patient": {
     "Edit Patient": "编辑患者",
-    "New Patient": "新建患者"
+    "New Patient": "新建患者",
+    "View Patient": "查看患者"
   }
 }
