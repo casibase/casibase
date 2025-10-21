@@ -428,13 +428,17 @@
     "Zone": "Зона"
   },
   "med": {
-    "Audit": "Аудит",
-    "Medical Image Analysis": "Анализ медицинских изображений",
-    "Super Resolution": "Сверхразрешение",
     "Access level": "Уровень доступа",
     "Access level - Tooltip": "Уровень разрешений для доступа к медицинским записям",
+    "Address": "Адрес",
+    "Address - Tooltip": "Адрес",
+    "Allergies": "Аллергии",
+    "Allergies - Tooltip": "Аллергии",
+    "Audit": "Аудит",
     "Authorized hospital": "Авторизованная больница",
     "Authorized hospital - Tooltip": "Больница, авторизованная для доступа к записям консультаций",
+    "Blood type": "Группа крови",
+    "Blood type - Tooltip": "Группа крови",
     "Caases": "Случаи",
     "Consultations": "Консультации",
     "Department": "Отделение",
@@ -451,6 +455,8 @@
     "Edit Doctor": "Редактировать врача",
     "Edit Hospital": "Редактировать больницу",
     "Edit Patient": "Редактировать пациента",
+    "Email": "Эл. почта",
+    "Email - Tooltip": "Эл. почта",
     "Expired time": "Время истечения",
     "Expired time - Tooltip": "Время истечения консультации",
     "Follow up": "Последующее наблюдение",
@@ -464,11 +470,14 @@
     "Hospitals": "Больницы",
     "Integrated care organization Id": "Id организации интегрированной помощи",
     "Integrated care organization Id - Tooltip": "Идентификатор организации интегрированной помощи",
+    "Medical Image Analysis": "Анализ медицинских изображений",
     "New Caase": "Новый случай",
     "New Consultation": "Новая консультация",
     "New Doctor": "Новый врач",
     "New Hospital": "Новая больница",
     "New Patient": "Новый пациент",
+    "Owners": "Владельцы",
+    "Owners - Tooltip": "Врачи, имеющие право управлять этим пациентом",
     "Patient name": "Имя пациента",
     "Patient name - Tooltip": "Имя пациента",
     "Patients": "Пациенты",
@@ -478,6 +487,7 @@
     "Primary care physician - Tooltip": "Имя лечащего врача",
     "Specialist alliance Id": "Id альянса специалистов",
     "Specialist alliance Id - Tooltip": "Идентификатор альянса специалистов",
+    "Super Resolution": "Сверхразрешение",
     "Symptoms": "Симптомы",
     "Symptoms - Tooltip": "Симптомы пациента"
   },
@@ -882,6 +892,7 @@
   },
   "patient": {
     "Edit Patient": "Редактировать пациента",
-    "New Patient": "Новый пациент"
+    "New Patient": "Новый пациент",
+    "View Patient": "Просмотреть пациента"
   }
 }

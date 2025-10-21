@@ -428,13 +428,17 @@
     "Zone": "Zone"
   },
   "med": {
-    "Audit": "Audit",
-    "Medical Image Analysis": "Medizinische Bildanalyse",
-    "Super Resolution": "Image Super-Resolution",
     "Access level": "Zugriffsstufe",
     "Access level - Tooltip": "Berechtigungsstufe für den Zugriff auf Krankenakten",
+    "Address": "Adresse",
+    "Address - Tooltip": "Adresse",
+    "Allergies": "Allergien",
+    "Allergies - Tooltip": "Allergien",
+    "Audit": "Audit",
     "Authorized hospital": "Autorisiertes Krankenhaus",
     "Authorized hospital - Tooltip": "Krankenhaus, das zum Zugriff auf Konsultationsaufzeichnungen autorisiert ist",
+    "Blood type": "Blutgruppe",
+    "Blood type - Tooltip": "Blutgruppe",
     "Caases": "Fälle",
     "Consultations": "Konsultationen",
     "Department": "Abteilung",
@@ -451,6 +455,8 @@
     "Edit Doctor": "Arzt bearbeiten",
     "Edit Hospital": "Krankenhaus bearbeiten",
     "Edit Patient": "Patient bearbeiten",
+    "Email": "E-Mail",
+    "Email - Tooltip": "E-Mail",
     "Expired time": "Ablaufzeit",
     "Expired time - Tooltip": "Ablaufzeit der Konsultation",
     "Follow up": "Nachsorge",
@@ -464,11 +470,14 @@
     "Hospitals": "Krankenhäuser",
     "Integrated care organization Id": "Integrierte Pflegeorganisations-Id",
     "Integrated care organization Id - Tooltip": "Kennung der integrierten Pflegeorganisation",
+    "Medical Image Analysis": "Medizinische Bildanalyse",
     "New Caase": "Neuer Fall",
     "New Consultation": "Neue Konsultation",
     "New Doctor": "Neuer Arzt",
     "New Hospital": "Neues Krankenhaus",
     "New Patient": "Neuer Patient",
+    "Owners": "Besitzer",
+    "Owners - Tooltip": "Ärzte, die berechtigt sind, diesen Patienten zu verwalten",
     "Patient name": "Patientenname",
     "Patient name - Tooltip": "Name des Patienten",
     "Patients": "Patienten",
@@ -478,6 +487,7 @@
     "Primary care physician - Tooltip": "Name des Hausarztes",
     "Specialist alliance Id": "Spezialistenbündnis-Id",
     "Specialist alliance Id - Tooltip": "Kennung des Spezialistenbündnisses",
+    "Super Resolution": "Image Super-Resolution",
     "Symptoms": "Symptome",
     "Symptoms - Tooltip": "Patientensymptome"
   },
@@ -882,6 +892,7 @@
   },
   "patient": {
     "Edit Patient": "Patient bearbeiten",
-    "New Patient": "Neuer Patient"
+    "New Patient": "Neuer Patient",
+    "View Patient": "Patient anzeigen"
   }
 }

@@ -59,6 +59,25 @@ class PatientListPage extends BaseListPage {
       });
   }
 
+  canEditPatient(patient) {
+    const account = this.props.account;
+    if (!account) {
+      return false;
+    }
+
+    // Admins can edit all patients
+    if (Setting.isAdminUser(account) || account.tag === "Admin") {
+      return true;
+    }
+
+    // Doctors who are owners can edit
+    if (account.tag === "Doctor" && patient.owners) {
+      return patient.owners.includes(account.name);
+    }
+
+    return false;
+  }
+
   deletePatient(i) {
     PatientBackend.deletePatient(this.state.data[i])
       .then((res) => {
@@ -163,15 +182,16 @@ class PatientListPage extends BaseListPage {
         width: "130px",
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, patient, index) => {
+          const canEdit = this.canEditPatient(patient);
           return (
             <div>
               <Button
                 style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
                 onClick={() => this.props.history.push(`/patients/${patient.name}`)}
-              >{i18next.t("general:Edit")}
+              >{canEdit ? i18next.t("general:Edit") : i18next.t("general:View")}
               </Button>
               <PopconfirmModal
-                disabled={patient.owner !== this.props.account.owner}
+                disabled={!canEdit}
                 style={{marginBottom: "10px"}}
                 title={i18next.t("general:Sure to delete") + `: ${patient.name} ?`}
                 onConfirm={() => this.deletePatient(index)}

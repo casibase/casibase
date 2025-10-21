@@ -466,6 +466,8 @@
     "Integrated care organization Id": "Integrated care organization Id",
     "Integrated care organization Id - Tooltip": "Integrated care organization identifier",
     "Medical Image Analysis": "Medical Image Analysis",
+    "Owners": "Owners",
+    "Owners - Tooltip": "Doctors who have permission to manage this patient",
     "Patient name": "Patient name",
     "Patient name - Tooltip": "Name of the patient",
     "Patients": "Patients",
@@ -880,6 +882,7 @@
   },
   "patient": {
     "Edit Patient": "Edit Patient",
-    "New Patient": "New Patient"
+    "New Patient": "New Patient",
+    "View Patient": "View Patient"
   }
 }

@@ -13,9 +13,10 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row} from "antd";
+import {Button, Card, Col, Input, Row, Select} from "antd";
 // import {LinkOutlined} from "@ant-design/icons";
 import * as PatientBackend from "./backend/PatientBackend";
+import * as DoctorBackend from "./backend/DoctorBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
@@ -27,20 +28,39 @@ class PatientEditPage extends React.Component {
 
       patientName: props.match.params.patientName,
       patient: null,
+      doctors: [],
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getPatient();
+    this.getDoctors();
   }
 
   getPatient() {
     PatientBackend.getPatient(this.props.account.owner, this.state.patientName)
       .then((res) => {
         if (res.status === "ok") {
+          const patient = res.data;
+          if (!patient.owners) {
+            patient.owners = [];
+          }
           this.setState({
-            patient: res.data,
+            patient: patient,
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getDoctors() {
+    DoctorBackend.getDoctors(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            doctors: res.data || [],
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -65,13 +85,40 @@ class PatientEditPage extends React.Component {
     });
   }
 
+  canEditPatient() {
+    const account = this.props.account;
+    const patient = this.state.patient;
+    if (!account || !patient) {
+      return false;
+    }
+
+    // Admins can edit all patients
+    if (Setting.isAdminUser(account) || account.tag === "Admin") {
+      return true;
+    }
+
+    // Doctors who are owners can edit
+    if (account.tag === "Doctor" && patient.owners) {
+      return patient.owners.includes(account.name);
+    }
+
+    return false;
+  }
+
   renderPatient() {
+    const canEdit = this.canEditPatient();
+    const isViewMode = !canEdit && this.state.mode === "edit";
+
     return (
       <Card size="small" title={
         <div>
-          {this.state.mode === "add" ? i18next.t("patient:New Patient") : i18next.t("patient:Edit Patient")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button onClick={() => this.submitPatientEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitPatientEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? i18next.t("patient:New Patient") : (isViewMode ? i18next.t("patient:View Patient") : i18next.t("patient:Edit Patient"))}&nbsp;&nbsp;&nbsp;&nbsp;
+          {canEdit ? (
+            <>
+              <Button onClick={() => this.submitPatientEdit(false)}>{i18next.t("general:Save")}</Button>
+              <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitPatientEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+            </>
+          ) : null}
           {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deletePatient()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
@@ -80,7 +127,7 @@ class PatientEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Organization"), i18next.t("general:Organization - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.patient.owner} onChange={e => {
+            <Input disabled={!canEdit} value={this.state.patient.owner} onChange={e => {
               this.updatePatientField("owner", e.target.value);
             }} />
           </Col>
@@ -90,9 +137,30 @@ class PatientEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.patient.name} onChange={e => {
+            <Input disabled={!canEdit} value={this.state.patient.name} onChange={e => {
               this.updatePatientField("name", e.target.value);
             }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("med:Owners"), i18next.t("med:Owners - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Select
+              virtual={false}
+              mode="multiple"
+              style={{width: "100%"}}
+              disabled={!canEdit}
+              value={this.state.patient.owners || []}
+              onChange={(value) => {
+                this.updatePatientField("owners", value);
+              }}
+              options={this.state.doctors.map((doctor) => ({
+                label: `${doctor.displayName || doctor.name} (${doctor.name})`,
+                value: doctor.name,
+              }))}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -100,7 +168,7 @@ class PatientEditPage extends React.Component {
             {Setting.getLabel(i18next.t("med:Gender"), i18next.t("med:Gender - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.patient.gender} onChange={e => {
+            <Input disabled={!canEdit} value={this.state.patient.gender} onChange={e => {
               this.updatePatientField("gender", e.target.value);
             }} />
           </Col>
@@ -110,7 +178,7 @@ class PatientEditPage extends React.Component {
             {Setting.getLabel(i18next.t("med:Address"), i18next.t("med:Address - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.patient.address} onChange={e => {
+            <Input disabled={!canEdit} value={this.state.patient.address} onChange={e => {
               this.updatePatientField("address", e.target.value);
             }} />
           </Col>
@@ -120,7 +188,7 @@ class PatientEditPage extends React.Component {
             {Setting.getLabel(i18next.t("med:Email"), i18next.t("med:Email - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.patient.email} onChange={e => {
+            <Input disabled={!canEdit} value={this.state.patient.email} onChange={e => {
               this.updatePatientField("email", e.target.value);
             }} />
           </Col>
@@ -130,7 +198,7 @@ class PatientEditPage extends React.Component {
             {Setting.getLabel(i18next.t("med:Blood type"), i18next.t("med:Blood type - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.patient.bloodType} onChange={e => {
+            <Input disabled={!canEdit} value={this.state.patient.bloodType} onChange={e => {
               this.updatePatientField("bloodType", e.target.value);
             }} />
           </Col>
@@ -140,7 +208,7 @@ class PatientEditPage extends React.Component {
             {Setting.getLabel(i18next.t("med:Allergies"), i18next.t("med:Allergies - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.patient.allergies} onChange={e => {
+            <Input disabled={!canEdit} value={this.state.patient.allergies} onChange={e => {
               this.updatePatientField("allergies", e.target.value);
             }} />
           </Col>
@@ -193,16 +261,20 @@ class PatientEditPage extends React.Component {
   }
 
   render() {
+    const canEdit = this.canEditPatient();
+
     return (
       <div>
         {
           this.state.patient !== null ? this.renderPatient() : null
         }
-        <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button size="large" onClick={() => this.submitPatientEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitPatientEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
-          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.deletePatient()}>{i18next.t("general:Cancel")}</Button> : null}
-        </div>
+        {canEdit ? (
+          <div style={{marginTop: "20px", marginLeft: "40px"}}>
+            <Button size="large" onClick={() => this.submitPatientEdit(false)}>{i18next.t("general:Save")}</Button>
+            <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitPatientEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+            {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.deletePatient()}>{i18next.t("general:Cancel")}</Button> : null}
+          </div>
+        ) : null}
       </div>
     );
   }

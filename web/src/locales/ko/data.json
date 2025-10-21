@@ -428,13 +428,17 @@
     "Zone": "지역"
   },
   "med": {
-    "Audit": "감사",
-    "Medical Image Analysis": "의료 영상 분석",
-    "Super Resolution": "이미지 슈퍼 리졸루션",
     "Access level": "액세스 레벨",
     "Access level - Tooltip": "의료 기록에 액세스하기 위한 권한 레벨",
+    "Address": "주소",
+    "Address - Tooltip": "주소",
+    "Allergies": "알레르기",
+    "Allergies - Tooltip": "알레르기",
+    "Audit": "감사",
     "Authorized hospital": "승인된 병원",
     "Authorized hospital - Tooltip": "상담 기록에 액세스할 수 있도록 승인된 병원",
+    "Blood type": "혈액형",
+    "Blood type - Tooltip": "혈액형",
     "Caases": "사례",
     "Consultations": "상담",
     "Department": "부서",
@@ -451,6 +455,8 @@
     "Edit Doctor": "의사 편집",
     "Edit Hospital": "병원 편집",
     "Edit Patient": "환자 편집",
+    "Email": "이메일",
+    "Email - Tooltip": "이메일",
     "Expired time": "만료 시간",
     "Expired time - Tooltip": "상담 만료 시간",
     "Follow up": "후속 조치",
@@ -464,11 +470,14 @@
     "Hospitals": "병원",
     "Integrated care organization Id": "통합 진료 조직 Id",
     "Integrated care organization Id - Tooltip": "통합 진료 조직 식별자",
+    "Medical Image Analysis": "의료 영상 분석",
     "New Caase": "새 사례",
     "New Consultation": "새 상담",
     "New Doctor": "새 의사",
     "New Hospital": "새 병원",
     "New Patient": "새 환자",
+    "Owners": "소유자",
+    "Owners - Tooltip": "이 환자를 관리할 권한이 있는 의사",
     "Patient name": "환자 이름",
     "Patient name - Tooltip": "환자 이름",
     "Patients": "환자",
@@ -478,6 +487,7 @@
     "Primary care physician - Tooltip": "주치의 이름",
     "Specialist alliance Id": "전문의 연합 Id",
     "Specialist alliance Id - Tooltip": "전문의 연합 식별자",
+    "Super Resolution": "이미지 슈퍼 리졸루션",
     "Symptoms": "증상",
     "Symptoms - Tooltip": "환자 증상"
   },
@@ -882,6 +892,7 @@
   },
   "patient": {
     "Edit Patient": "환자 편집",
-    "New Patient": "새 환자"
+    "New Patient": "새 환자",
+    "View Patient": "환자 보기"
   }
 }

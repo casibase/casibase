@@ -31,6 +31,7 @@ import (
 // @Success 200 {object} object.Patient The Response object
 // @router /get-patients [get]
 func (c *ApiController) GetPatients() {
+	user := c.GetSessionUser()
 	owner := c.Input().Get("owner")
 	limit := c.Input().Get("pageSize")
 	page := c.Input().Get("p")
@@ -45,6 +46,9 @@ func (c *ApiController) GetPatients() {
 			c.ResponseError(err.Error())
 			return
 		}
+
+		// Filter patients by user role
+		patients = object.FilterPatientsByUser(user, patients)
 
 		c.ResponseOk(patients)
 	} else {
@@ -61,6 +65,9 @@ func (c *ApiController) GetPatients() {
 			c.ResponseError(err.Error())
 			return
 		}
+
+		// Filter patients by user role
+		patients = object.FilterPatientsByUser(user, patients)
 
 		c.ResponseOk(patients, paginator.Nums())
 	}
@@ -94,12 +101,19 @@ func (c *ApiController) GetPatient() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-patient [post]
 func (c *ApiController) UpdatePatient() {
+	user := c.GetSessionUser()
 	id := c.Input().Get("id")
 
 	var patient object.Patient
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &patient)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	// Check if user has permission to update
+	if !object.CanEditPatient(user, &patient) {
+		c.ResponseError("Unauthorized operation")
 		return
 	}
 
@@ -122,6 +136,11 @@ func (c *ApiController) AddPatient() {
 		return
 	}
 
+	// Initialize Owners if not set
+	if patient.Owners == nil {
+		patient.Owners = []string{}
+	}
+
 	c.Data["json"] = wrapActionResponse(object.AddPatient(&patient))
 	c.ServeJSON()
 }
@@ -134,10 +153,18 @@ func (c *ApiController) AddPatient() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /delete-patient [post]
 func (c *ApiController) DeletePatient() {
+	user := c.GetSessionUser()
+
 	var patient object.Patient
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &patient)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	// Check if user has permission to delete
+	if !object.CanEditPatient(user, &patient) {
+		c.ResponseError("Unauthorized operation")
 		return
 	}
 
