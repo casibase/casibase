@@ -1,0 +1,14 @@
+name: process_json
+description: Process and manipulate JSON data (placeholder - not yet implemented)
+inputSchema:
+  type: object
+  properties:
+    json_data:
+      type: string
+      description: "JSON data to process"
+    operation:
+      type: string
+      description: "Operation to perform (e.g., parse, format, query)"
+      default: "parse"
+  required:
+    - json_data

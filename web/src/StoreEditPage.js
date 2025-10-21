@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, InputNumber, Popover, Row, Select, Switch} from "antd";
+import {Button, Card, Checkbox, Col, Input, InputNumber, Popover, Row, Select, Switch} from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -357,6 +357,60 @@ class StoreEditPage extends React.Component {
                 this.state.agentProviders.map((provider, index) => this.renderProviderOption(provider, index))
               }
             </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("store:Builtin tools"), i18next.t("store:Builtin tools - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Checkbox
+              checked={this.state.store.builtinTools && this.state.store.builtinTools.includes("time")}
+              onChange={e => {
+                const tools = this.state.store.builtinTools || [];
+                if (e.target.checked) {
+                  if (!tools.includes("time")) {
+                    this.updateStoreField("builtinTools", [...tools, "time"]);
+                  }
+                } else {
+                  this.updateStoreField("builtinTools", tools.filter(t => t !== "time"));
+                }
+              }}
+            >
+              {i18next.t("store:Time tool")}
+            </Checkbox>
+            <br />
+            <Checkbox
+              checked={this.state.store.builtinTools && this.state.store.builtinTools.includes("code")}
+              onChange={e => {
+                const tools = this.state.store.builtinTools || [];
+                if (e.target.checked) {
+                  if (!tools.includes("code")) {
+                    this.updateStoreField("builtinTools", [...tools, "code"]);
+                  }
+                } else {
+                  this.updateStoreField("builtinTools", tools.filter(t => t !== "code"));
+                }
+              }}
+            >
+              {i18next.t("store:Code execution tool")} ({i18next.t("store:Placeholder")})
+            </Checkbox>
+            <br />
+            <Checkbox
+              checked={this.state.store.builtinTools && this.state.store.builtinTools.includes("json")}
+              onChange={e => {
+                const tools = this.state.store.builtinTools || [];
+                if (e.target.checked) {
+                  if (!tools.includes("json")) {
+                    this.updateStoreField("builtinTools", [...tools, "json"]);
+                  }
+                } else {
+                  this.updateStoreField("builtinTools", tools.filter(t => t !== "json"));
+                }
+              }}
+            >
+              {i18next.t("store:JSON processing tool")} ({i18next.t("store:Placeholder")})
+            </Checkbox>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
