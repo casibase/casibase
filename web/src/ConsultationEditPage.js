@@ -111,7 +111,7 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("medical:Patient name"), i18next.t("medical:Patient name - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Patient name"), i18next.t("med:Patient name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.consultation.patientName} onChange={e => {
@@ -121,7 +121,7 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("medical:Doctor name"), i18next.t("medical:Doctor name - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Doctor name"), i18next.t("med:Doctor name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.consultation.doctor} onChange={e => {
@@ -131,7 +131,7 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("medical:Expired time"), i18next.t("medical:Expired time - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Expired time"), i18next.t("med:Expired time - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.consultation.expiredTime} onChange={e => {
@@ -141,7 +141,7 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("medical:Authorized hospital"), i18next.t("medical:Authorized hospital - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Authorized hospital"), i18next.t("med:Authorized hospital - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.consultation.authorizedHospital} onChange={e => {

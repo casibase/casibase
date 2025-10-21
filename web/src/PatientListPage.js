@@ -122,35 +122,35 @@ class PatientListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Gender"),
+        title: i18next.t("med:Gender"),
         dataIndex: "gender",
         key: "gender",
         width: "100px",
         sorter: (a, b) => a.gender.localeCompare(b.gender),
       },
       {
-        title: i18next.t("general:Address"),
+        title: i18next.t("med:Address"),
         dataIndex: "address",
         key: "address",
         width: "200px",
         sorter: (a, b) => a.address.localeCompare(b.address),
       },
       {
-        title: i18next.t("general:Email"),
+        title: i18next.t("med:Email"),
         dataIndex: "email",
         key: "email",
         width: "200px",
         sorter: (a, b) => a.email.localeCompare(b.email),
       },
       {
-        title: i18next.t("general:Blood Type"),
+        title: i18next.t("med:Blood type"),
         dataIndex: "bloodType",
         key: "bloodType",
         width: "100px",
         sorter: (a, b) => a.bloodType.localeCompare(b.bloodType),
       },
       {
-        title: i18next.t("general:Allergies"),
+        title: i18next.t("med:Allergies"),
         dataIndex: "allergies",
         key: "allergies",
         width: "200px",
@@ -196,7 +196,7 @@ class PatientListPage extends BaseListPage {
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={patients} rowKey={(patient) => `${patient.owner}/${patient.name}`} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Patients")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("med:Patients")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addPatient.bind(this)}>{i18next.t("general:Add")}</Button>
             </div>
           )}

@@ -120,7 +120,7 @@ class ConsultationListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Patient Name"),
+        title: i18next.t("med:Patient name"),
         dataIndex: "patientName",
         key: "patientName",
         width: "90px",
@@ -137,7 +137,7 @@ class ConsultationListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Doctor Name"),
+        title: i18next.t("med:Doctor name"),
         dataIndex: "doctorName",
         key: "doctorName",
         width: "90px",
@@ -154,14 +154,14 @@ class ConsultationListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Expired Time"),
+        title: i18next.t("med:Expired time"),
         dataIndex: "expiredTime",
         key: "expiredTime",
         width: "120px",
-        sorter: (a, b) => a.category.localeCompare(b.category),
+        sorter: (a, b) => a.expiredTime.localeCompare(b.expiredTime),
       },
       {
-        title: i18next.t("general:Authorized Hospital"),
+        title: i18next.t("med:Authorized hospital"),
         dataIndex: "authorizedHospital",
         key: "authorizedHospital",
         width: "90px",
@@ -217,7 +217,7 @@ class ConsultationListPage extends BaseListPage {
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={consultations} rowKey={(consultation) => `${consultation.owner}/${consultation.name}`} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Consultations")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("med:Consultations")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addConsultation.bind(this)}>{i18next.t("general:Add")}</Button>
             </div>
           )}

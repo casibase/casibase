@@ -117,7 +117,7 @@ class HospitalListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Address"),
+        title: i18next.t("med:Address"),
         dataIndex: "address",
         key: "state",
         width: "90px",
@@ -163,7 +163,7 @@ class HospitalListPage extends BaseListPage {
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={hospitals} rowKey={(hospital) => `${hospital.owner}/${hospital.name}`} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Hospitals")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("med:Hospitals")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addHospital.bind(this)}>{i18next.t("general:Add")}</Button>
             </div>
           )}

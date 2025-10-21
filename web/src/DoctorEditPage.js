@@ -136,8 +136,8 @@ class DoctorEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Department"),
-              i18next.t("medical:Department - Tooltip")
+              i18next.t("med:Department"),
+              i18next.t("med:Department - Tooltip")
             )}{" "}
             :
           </Col>
@@ -153,8 +153,8 @@ class DoctorEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Gender"),
-              i18next.t("medical:Gender - Tooltip")
+              i18next.t("med:Gender"),
+              i18next.t("med:Gender - Tooltip")
             )}{" "}
             :
           </Col>
@@ -177,8 +177,8 @@ class DoctorEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Access level"),
-              i18next.t("medical:Access level - Tooltip")
+              i18next.t("med:Access level"),
+              i18next.t("med:Access level - Tooltip")
             )}{" "}
             :
           </Col>
@@ -194,8 +194,8 @@ class DoctorEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("medical:Hospital name"),
-              i18next.t("medical:Hospital name - Tooltip")
+              i18next.t("med:Hospital name"),
+              i18next.t("med:Hospital name - Tooltip")
             )}{" "}
             :
           </Col>
