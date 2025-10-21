@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, InputNumber, Popover, Row, Select, Switch, Checkbox} from "antd";
+import {Button, Card, Checkbox, Col, Input, InputNumber, Popover, Row, Select, Switch} from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
