@@ -13,362 +13,16 @@
 // limitations under the License.
 
 import React, { Component } from "react";
-import { Card, Row, Col, Statistic, Image } from "antd";
+import { Card, Row, Col, Statistic, DatePicker, Select, Button, Space, Typography } from "antd";
+import { CalendarOutlined, BarChartOutlined, PieChartOutlined, LineChartOutlined } from '@ant-design/icons';
 import ReactEcharts from "echarts-for-react";
 import * as DashboardBackend from "../backend/DashboardBackend.js"
+import hospitalBg from "./hospital_back_bg.jpg";
 
-const mockData = {
-  "status": "ok",
-  "msg": "",
-  "data": {
-    "action": [
-      {
-        "date": "2025-08-14",
-        "FieldCount": {
-          "add-application": 8,
-          "add-chat": 78,
-          "add-message": 987,
-          "add-node-tunnel": 7,
-          "add-provider": 1,
-          "add-template": 7,
-          "add-workflow": 2,
-          "delete-application": 8,
-          "delete-chat": 7,
-          "delete-template": 4,
-          "delete-workflow": 2,
-          "deploy-application": 29,
-          "generate-text-to-speech-audio": 28,
-          "signin": 152,
-          "signout": 34,
-          "undeploy-application": 4,
-          "update-application": 9,
-          "update-chat": 126,
-          "update-message": 119,
-          "update-provider": 23,
-          "update-store": 1,
-          "update-template": 6,
-          "update-workflow": 1
-        }
-      },
-      {
-        "date": "2025-08-15",
-        "FieldCount": {
-          "add-application": 8,
-          "add-chat": 83,
-          "add-message": 1038,
-          "add-node-tunnel": 8,
-          "add-provider": 1,
-          "add-template": 7,
-          "add-workflow": 2,
-          "delete-application": 8,
-          "delete-chat": 7,
-          "delete-template": 4,
-          "delete-workflow": 2,
-          "deploy-application": 29,
-          "generate-text-to-speech-audio": 30,
-          "signin": 155,
-          "signout": 34,
-          "undeploy-application": 4,
-          "update-application": 9,
-          "update-chat": 126,
-          "update-message": 131,
-          "update-provider": 23,
-          "update-store": 1,
-          "update-template": 6,
-          "update-workflow": 1
-        }
-      },
-      {
-        "date": "2025-08-16",
-        "FieldCount": {
-          "add-application": 8,
-          "add-chat": 83,
-          "add-message": 1057,
-          "add-node-tunnel": 8,
-          "add-provider": 1,
-          "add-template": 7,
-          "add-workflow": 2,
-          "delete-application": 8,
-          "delete-chat": 7,
-          "delete-template": 4,
-          "delete-workflow": 2,
-          "deploy-application": 29,
-          "generate-text-to-speech-audio": 30,
-          "signin": 157,
-          "signout": 34,
-          "undeploy-application": 4,
-          "update-application": 9,
-          "update-chat": 126,
-          "update-message": 132,
-          "update-provider": 23,
-          "update-store": 1,
-          "update-template": 6,
-          "update-workflow": 1
-        }
-      }
-    ],
-    "diseaseCategory": [
-      {
-        "date": "2025-08-14",
-        "FieldCount": {
-          "呼吸外科": 95,
-          "消化内科": 157,
-          "血管外科": 118,
-          "骨科": 44
-        }
-      },
-      {
-        "date": "2025-08-15",
-        "FieldCount": {
-          "呼吸外科": 95,
-          "消化内科": 157,
-          "血管外科": 118,
-          "骨科": 44
-        }
-      },
-      {
-        "date": "2025-08-16",
-        "FieldCount": {
-          "呼吸外科": 95,
-          "消化内科": 157,
-          "血管外科": 118,
-          "骨科": 44
-        }
-      }
-    ],
-    "section": [
-      {
-        "date": "2025-08-14",
-        "FieldCount": {
-          "北京协和医院": 104,
-          "医大一院": 65,
-          "广东省人民医院": 120,
-          "江苏省人民医院": 91,
-          "深圳中医院": 58,
-          "第六医院": 31
-        }
-      },
-      {
-        "date": "2025-08-15",
-        "FieldCount": {
-          "北京协和医院": 104,
-          "医大一院": 65,
-          "广东省人民医院": 120,
-          "江苏省人民医院": 91,
-          "深圳中医院": 58,
-          "第六医院": 31
-        }
-      },
-      {
-        "date": "2025-08-16",
-        "FieldCount": {
-          "北京协和医院": 104,
-          "医大一院": 65,
-          "广东省人民医院": 120,
-          "江苏省人民医院": 91,
-          "深圳中医院": 58,
-          "第六医院": 31
-        }
-      }
-    ],
-    "region": [
-      {
-        "date": "2025-08-14",
-        "FieldCount": {
-          "北京市": 120,
-          "广东省": 95,
-          "江苏省": 88,
-          "上海市": 76,
-          "浙江省": 65,
-          "其他": 45
-        }
-      },
-      {
-        "date": "2025-08-15",
-        "FieldCount": {
-          "北京市": 125,
-          "广东省": 98,
-          "江苏省": 92,
-          "上海市": 78,
-          "浙江省": 68,
-          "其他": 47
-        }
-      },
-      {
-        "date": "2025-08-16",
-        "FieldCount": {
-          "北京市": 130,
-          "广东省": 102,
-          "江苏省": 95,
-          "上海市": 80,
-          "浙江省": 70,
-          "其他": 49
-        }
-      }
-    ],
-    "city": [
-      {
-        "date": "2025-08-14",
-        "FieldCount": {
-          "北京": 120,
-          "广州": 85,
-          "南京": 88,
-          "上海": 76,
-          "杭州": 65,
-          "深圳": 45
-        }
-      },
-      {
-        "date": "2025-08-15",
-        "FieldCount": {
-          "北京": 125,
-          "广州": 88,
-          "南京": 92,
-          "上海": 78,
-          "杭州": 68,
-          "深圳": 47
-        }
-      },
-      {
-        "date": "2025-08-16",
-        "FieldCount": {
-          "北京": 130,
-          "广州": 92,
-          "南京": 95,
-          "上海": 80,
-          "杭州": 70,
-          "深圳": 49
-        }
-      }
-    ],
-    "client_ip": [
-      {
-        "date": "2025-08-14",
-        "FieldCount": {
-          "192.168.1.100": 45,
-          "192.168.1.101": 38,
-          "192.168.1.102": 32,
-          "10.0.0.50": 28,
-          "10.0.0.51": 25,
-          "172.16.0.10": 20,
-          "其他": 15
-        }
-      },
-      {
-        "date": "2025-08-15",
-        "FieldCount": {
-          "192.168.1.100": 48,
-          "192.168.1.101": 40,
-          "192.168.1.102": 35,
-          "10.0.0.50": 30,
-          "10.0.0.51": 27,
-          "172.16.0.10": 22,
-          "其他": 18
-        }
-      },
-      {
-        "date": "2025-08-16",
-        "FieldCount": {
-          "192.168.1.100": 50,
-          "192.168.1.101": 42,
-          "192.168.1.102": 38,
-          "10.0.0.50": 32,
-          "10.0.0.51": 29,
-          "172.16.0.10": 24,
-          "其他": 20
-        }
-      }
-    ],
-    "organization": [
-      {
-        "date": "2025-08-14",
-        "FieldCount": {
-          "三甲医院": 280,
-          "二甲医院": 120,
-          "专科医院": 85,
-          "社区医院": 60
-        }
-      },
-      {
-        "date": "2025-08-15",
-        "FieldCount": {
-          "三甲医院": 290,
-          "二甲医院": 125,
-          "专科医院": 88,
-          "社区医院": 62
-        }
-      },
-      {
-        "date": "2025-08-16",
-        "FieldCount": {
-          "三甲医院": 300,
-          "二甲医院": 130,
-          "专科医院": 92,
-          "社区医院": 65
-        }
-      }
-    ],
-    "response": [
-      {
-        "date": "2025-08-14",
-        "FieldCount": {
-          "ok": 420,
-          "error": 25,
-          "warning": 15,
-          "info": 5
-        }
-      },
-      {
-        "date": "2025-08-15",
-        "FieldCount": {
-          "ok": 435,
-          "error": 20,
-          "warning": 12,
-          "info": 8
-        }
-      },
-      {
-        "date": "2025-08-16",
-        "FieldCount": {
-          "ok": 450,
-          "error": 18,
-          "warning": 10,
-          "info": 7
-        }
-      }
-    ],
-    "user_agent": [
-      {
-        "date": "2025-08-14",
-        "FieldCount": {
-          "Chrome": 280,
-          "Safari": 120,
-          "Firefox": 45,
-          "Edge": 20
-        }
-      },
-      {
-        "date": "2025-08-15",
-        "FieldCount": {
-          "Chrome": 290,
-          "Safari": 125,
-          "Firefox": 48,
-          "Edge": 22
-        }
-      },
-      {
-        "date": "2025-08-16",
-        "FieldCount": {
-          "Chrome": 300,
-          "Safari": 130,
-          "Firefox": 50,
-          "Edge": 25
-        }
-      }
-    ]
-  },
-  "data2": null
-}
+const { RangePicker } = DatePicker;
+const { Option } = Select;
+const { Title, Text } = Typography;
+
 
 class DashboardPage extends Component {
   constructor(props) {
@@ -382,7 +36,6 @@ class DashboardPage extends Component {
         values: []
       },
       loading: true,
-      isDarkMode: false,
       // 新增统计维度
       regions: [],
       cities: [],
@@ -391,34 +44,86 @@ class DashboardPage extends Component {
       responseStatus: [],
       actionStats: [],
       userAgents: [],
-      dateTrend: []
+      dateTrend: [],
+      // 时间选择相关
+      dateRange: null,
+      trendDays: 15,
+      allData: null
     };
   }
 
   componentDidMount() {
-    this.checkDarkMode();
     this.fetchDashboardData();
   }
 
-  // 检查深色模式
-  checkDarkMode = () => {
-    const savedTheme = localStorage.getItem('dashboard-theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const isDarkMode = savedTheme ? savedTheme === 'dark' : prefersDark;
+  // 处理趋势数据
+  processTrendData = (data) => {
+    const { dateRange, trendDays } = this.state;
+    const dateTrend = [];
 
-    this.setState({ isDarkMode });
+    if (data.section && data.section.length > 0) {
+      let filteredDays = data.section;
+
+      // 如果选择了日期范围，则过滤数据
+      if (dateRange && dateRange.length === 2) {
+        const startDate = dateRange[0].format('YYYY-MM-DD');
+        const endDate = dateRange[1].format('YYYY-MM-DD');
+        filteredDays = data.section.filter(day =>
+          day.date >= startDate && day.date <= endDate
+        );
+      } else {
+        // 否则使用最近N天的数据
+        filteredDays = data.section.slice(-trendDays);
+      }
+
+      let previousTotal = 0;
+      filteredDays.forEach((day, index) => {
+        const currentTotal = Object.values(day.FieldCount).reduce((sum, count) => sum + count, 0);
+        const growth = index === 0 ? currentTotal : currentTotal - previousTotal;
+        dateTrend.push({
+          date: day.date,
+          value: growth
+        });
+        previousTotal = currentTotal;
+      });
+    }
+
+    return dateTrend;
   }
 
-  // 切换主题
-  toggleTheme = () => {
-    const newTheme = !this.state.isDarkMode;
-    this.setState({ isDarkMode: newTheme });
-    localStorage.setItem('dashboard-theme', newTheme ? 'dark' : 'light');
+  // 处理日期范围变化
+  handleDateRangeChange = (dates) => {
+    this.setState({ dateRange: dates }, () => {
+      if (this.state.allData) {
+        this.updateTrendData();
+      }
+    });
+  }
+
+  // 处理天数选择变化
+  handleTrendDaysChange = (days) => {
+    this.setState({ trendDays: days, dateRange: null }, () => {
+      if (this.state.allData) {
+        this.updateTrendData();
+      }
+    });
+  }
+
+  // 更新趋势数据
+  updateTrendData = () => {
+    const { allData } = this.state;
+    if (allData) {
+      const dateTrend = this.processTrendData(allData);
+      this.setState({ dateTrend });
+    }
   }
 
   // 处理数据的辅助方法
   processData = (data) => {
     console.log("Processing data:", data); // 调试日志
+
+    // 保存原始数据
+    this.setState({ allData: data });
 
     // 安全地获取最后一天的数据
     const lastDayAction = data.action && data.action.length > 0 ? data.action[data.action.length - 1] : null;
@@ -511,19 +216,8 @@ class DashboardPage extends Component {
       });
     }
 
-    // 处理日期趋势数据（最近7天）- 只统计医疗相关操作
-    const dateTrend = [];
-    if (data.section && data.section.length > 0) {
-      const recentDays = data.section.slice(-7);
-      recentDays.forEach(day => {
-        // 使用section数据作为医疗访问趋势，而不是所有系统操作
-        const totalCount = Object.values(day.FieldCount).reduce((sum, count) => sum + count, 0);
-        dateTrend.push({
-          date: day.date,
-          value: totalCount
-        });
-      });
-    }
+    // 处理日期趋势数据 - 根据选择的时间范围计算数据增长量
+    const dateTrend = this.processTrendData(data);
 
     // 处理医院提交量
     const hospitalNames = hospitals.map(item => item.name);
@@ -560,12 +254,40 @@ class DashboardPage extends Component {
         console.log("使用真实数据");
         this.processData(response.data);
       } else {
-        console.warn("API返回数据格式异常，使用mock数据");
-        this.processData(mockData.data);
+        console.error("API返回数据格式异常:", response);
+        this.setState({
+          loading: false,
+          totalRecords: 0,
+          hospitals: [],
+          diseases: [],
+          hospitalSubmissions: { names: [], values: [] },
+          regions: [],
+          cities: [],
+          clientIps: [],
+          organizations: [],
+          responseStatus: [],
+          actionStats: [],
+          userAgents: [],
+          dateTrend: []
+        });
       }
     } catch (error) {
-      console.error("API调用失败，使用mock数据:", error);
-      this.processData(mockData.data);
+      console.error("API调用失败:", error);
+      this.setState({
+        loading: false,
+        totalRecords: 0,
+        hospitals: [],
+        diseases: [],
+        hospitalSubmissions: { names: [], values: [] },
+        regions: [],
+        cities: [],
+        clientIps: [],
+        organizations: [],
+        responseStatus: [],
+        actionStats: [],
+        userAgents: [],
+        dateTrend: []
+      });
     }
   }
 
@@ -1211,7 +933,7 @@ class DashboardPage extends Component {
 
   // 渲染日期趋势图
   renderDateTrendChart() {
-    const { dateTrend } = this.state;
+    const { dateTrend, dateRange, trendDays } = this.state;
 
     if (!dateTrend || dateTrend.length === 0) {
       return <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999' }}>
@@ -1222,7 +944,9 @@ class DashboardPage extends Component {
     const option = {
       backgroundColor: 'transparent',
       title: {
-        text: "访问趋势（最近7天）",
+        text: dateRange && dateRange.length === 2
+          ? `访问趋势（${dateRange[0].format('MM-DD')} 至 ${dateRange[1].format('MM-DD')} 数据增长量）`
+          : `访问趋势（最近${trendDays}天数据增长量）`,
         left: 'center',
         textStyle: {
           fontSize: 18,
@@ -1243,7 +967,7 @@ class DashboardPage extends Component {
           return `
             <div style="padding: 8px;">
               <div style="font-weight: bold; margin-bottom: 4px;">${data.name}</div>
-              <div>访问量: <span style="color: #4facfe; font-weight: bold;">${data.value}</span></div>
+              <div>数据增长量: <span style="color: #4facfe; font-weight: bold;">${data.value}</span></div>
             </div>
           `;
         }
@@ -1276,7 +1000,7 @@ class DashboardPage extends Component {
       },
       yAxis: {
         type: 'value',
-        name: '访问量',
+        name: '数据增长量',
         nameTextStyle: {
           color: '#666',
           fontSize: 12
@@ -1304,7 +1028,7 @@ class DashboardPage extends Component {
       },
       series: [
         {
-          name: '访问量',
+          name: '数据增长量',
           type: 'line',
           smooth: true,
           symbol: 'circle',
@@ -1341,18 +1065,16 @@ class DashboardPage extends Component {
   }
 
   render() {
-    const { totalRecords, loading, isDarkMode } = this.state;
+    const { totalRecords, loading, dateRange, trendDays } = this.state;
 
     const themeStyles = {
-      background: isDarkMode
-        ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'
-        : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-      cardBackground: isDarkMode ? '#2c3e50' : '#fff',
-      textColor: isDarkMode ? '#ecf0f1' : '#2c3e50',
-      subTextColor: isDarkMode ? '#bdc3c7' : '#7f8c8d',
-      cardShadow: isDarkMode
-        ? '0 8px 32px rgba(0,0,0,0.3)'
-        : '0 8px 32px rgba(0,0,0,0.1)'
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      cardBackground: '#fff',
+      textColor: '#2c3e50',
+      subTextColor: '#7f8c8d',
+      cardShadow: '0 12px 40px rgba(0,0,0,0.15)',
+      primaryColor: '#667eea',
+      secondaryColor: '#764ba2'
     };
 
     return (
@@ -1364,64 +1086,31 @@ class DashboardPage extends Component {
       }}>
         <div style={{
           textAlign: 'center',
-          marginBottom: '32px',
+          marginBottom: '40px',
           position: 'relative'
         }}>
-          <h1 style={{
-            fontSize: '32px',
-            fontWeight: 'bold',
-            color: themeStyles.textColor,
+          <Title level={1} style={{
+            color: '#fff',
             margin: 0,
-            textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+            fontSize: '42px',
+            fontWeight: 'bold',
+            textShadow: '2px 2px 8px rgba(0,0,0,0.3)',
+            background: 'linear-gradient(45deg, #fff, #f0f8ff)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
           }}>
             可信共享数据总览
-          </h1>
-          <p style={{
-            fontSize: '16px',
-            color: themeStyles.subTextColor,
-            marginTop: '8px',
-            marginBottom: 0
+          </Title>
+          <Text style={{
+            fontSize: '18px',
+            color: 'rgba(255,255,255,0.9)',
+            marginTop: '12px',
+            display: 'block',
+            textShadow: '1px 1px 4px rgba(0,0,0,0.2)'
           }}>
-            医疗数据统计分析与可视化展示
-          </p>
-
-          {/* 主题切换按钮 */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            right: 0
-          }}>
-            <button
-              onClick={this.toggleTheme}
-              style={{
-                background: isDarkMode
-                  ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                  : 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
-                border: 'none',
-                borderRadius: '50px',
-                padding: '12px 20px',
-                color: '#fff',
-                fontSize: '14px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-                transition: 'all 0.3s ease',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-              onMouseOver={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)';
-              }}
-              onMouseOut={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
-              }}
-            >
-              {isDarkMode ? '🌙' : '☀️'} {isDarkMode ? '深色模式' : '浅色模式'}
-            </button>
-          </div>
+            📊 医疗数据统计分析与可视化展示
+          </Text>
         </div>
 
         <Row gutter={[24, 24]}>
@@ -1432,13 +1121,11 @@ class DashboardPage extends Component {
               bordered={false}
               style={{
                 height: '100%',
-                background: isDarkMode
-                  ? 'linear-gradient(135deg, rgba(44, 62, 80, 0.9) 0%, rgba(52, 73, 94, 0.9) 100%), url("./hospital_back_bg.jpg")'
-                  : 'linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%), url("./hospital_back_bg.jpg")',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
+                background: `linear-gradient(135deg, rgba(102, 126, 234, 0.5) 0%, rgba(118, 75, 162, 0.5) 100%), url(${hospitalBg})`,
+                backgroundSize: 'auto 80%',
+                backgroundPosition: 'right bottom',
                 backgroundRepeat: 'no-repeat',
-                borderRadius: '16px',
+                borderRadius: '20px',
                 boxShadow: themeStyles.cardShadow,
                 border: 'none',
                 overflow: 'hidden',
@@ -1485,7 +1172,7 @@ class DashboardPage extends Component {
                   fontSize: '14px',
                   color: 'rgba(255,255,255,0.8)'
                 }}>
-                  📊 按患者就诊记录统计（非索引编号）
+                  📊 按患者就诊记录统计
                 </div>
               </div>
             </Card>
@@ -1494,20 +1181,28 @@ class DashboardPage extends Component {
           {/* 基础统计图表 */}
           <Col span={24} lg={12}>
             <Card
-              title="各家医院数据量占比"
+              title={
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <PieChartOutlined style={{ color: themeStyles.primaryColor, fontSize: '20px' }} />
+                  <span>各家医院数据量占比</span>
+                </div>
+              }
               bordered={false}
               loading={loading}
               style={{
-                borderRadius: '16px',
+                borderRadius: '20px',
                 boxShadow: themeStyles.cardShadow,
                 border: 'none',
-                background: themeStyles.cardBackground
+                background: themeStyles.cardBackground,
+                overflow: 'hidden'
               }}
               headStyle={{
-                fontSize: '16px',
+                fontSize: '18px',
                 fontWeight: 'bold',
                 color: themeStyles.textColor,
-                borderBottom: isDarkMode ? '2px solid #34495e' : '2px solid #f0f0f0'
+                borderBottom: '2px solid #f0f0f0',
+                background: 'linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%)',
+                padding: '20px 24px'
               }}
             >
               {!loading && this.renderHospitalPieChart()}
@@ -1516,20 +1211,28 @@ class DashboardPage extends Component {
 
           <Col span={24} lg={12}>
             <Card
-              title="专病种数据分布"
+              title={
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <PieChartOutlined style={{ color: themeStyles.secondaryColor, fontSize: '20px' }} />
+                  <span>专病种数据分布</span>
+                </div>
+              }
               bordered={false}
               loading={loading}
               style={{
-                borderRadius: '16px',
+                borderRadius: '20px',
                 boxShadow: themeStyles.cardShadow,
                 border: 'none',
-                background: themeStyles.cardBackground
+                background: themeStyles.cardBackground,
+                overflow: 'hidden'
               }}
               headStyle={{
-                fontSize: '16px',
+                fontSize: '18px',
                 fontWeight: 'bold',
                 color: themeStyles.textColor,
-                borderBottom: isDarkMode ? '2px solid #34495e' : '2px solid #f0f0f0'
+                borderBottom: '2px solid #f0f0f0',
+                background: 'linear-gradient(135deg, #f0f8ff 0%, #e0f0ff 100%)',
+                padding: '20px 24px'
               }}
             >
               {!loading && this.renderDiseasePieChart()}
@@ -1538,44 +1241,83 @@ class DashboardPage extends Component {
 
           <Col span={24}>
             <Card
-              title="各家医院提交量"
+              title={
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <BarChartOutlined style={{ color: themeStyles.primaryColor, fontSize: '20px' }} />
+                  <span>各家医院提交量</span>
+                </div>
+              }
               bordered={false}
               loading={loading}
               style={{
-                borderRadius: '16px',
+                borderRadius: '20px',
                 boxShadow: themeStyles.cardShadow,
                 border: 'none',
-                background: themeStyles.cardBackground
+                background: themeStyles.cardBackground,
+                overflow: 'hidden'
               }}
               headStyle={{
-                fontSize: '16px',
+                fontSize: '18px',
                 fontWeight: 'bold',
                 color: themeStyles.textColor,
-                borderBottom: isDarkMode ? '2px solid #34495e' : '2px solid #f0f0f0'
+                borderBottom: '2px solid #f0f0f0',
+                background: 'linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%)',
+                padding: '20px 24px'
               }}
             >
               {!loading && this.renderHospitalSubmissionChart()}
             </Card>
           </Col>
 
-          {/* 新增统计图表 */}
+          {/* 访问趋势分析 */}
           <Col span={24}>
             <Card
-              title="访问趋势分析"
+              title={
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <LineChartOutlined style={{ color: themeStyles.primaryColor, fontSize: '20px' }} />
+                  <span>访问趋势分析</span>
+                </div>
+              }
               bordered={false}
               loading={loading}
               style={{
-                borderRadius: '16px',
+                borderRadius: '20px',
                 boxShadow: themeStyles.cardShadow,
                 border: 'none',
-                background: themeStyles.cardBackground
+                background: themeStyles.cardBackground,
+                overflow: 'hidden'
               }}
               headStyle={{
-                fontSize: '16px',
+                fontSize: '18px',
                 fontWeight: 'bold',
                 color: themeStyles.textColor,
-                borderBottom: isDarkMode ? '2px solid #34495e' : '2px solid #f0f0f0'
+                borderBottom: '2px solid #f0f0f0',
+                background: 'linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%)',
+                padding: '20px 24px'
               }}
+              extra={
+                <Space size="middle">
+                  <Select
+                    value={trendDays}
+                    onChange={this.handleTrendDaysChange}
+                    style={{ width: 120 }}
+                    placeholder="选择天数"
+                    suffixIcon={<CalendarOutlined />}
+                  >
+                    <Option value={7}>最近7天</Option>
+                    <Option value={15}>最近15天</Option>
+                    <Option value={30}>最近30天</Option>
+                    <Option value={60}>最近60天</Option>
+                  </Select>
+                  <RangePicker
+                    value={dateRange}
+                    onChange={this.handleDateRangeChange}
+                    style={{ width: 240 }}
+                    placeholder={['开始日期', '结束日期']}
+                    suffixIcon={<CalendarOutlined />}
+                  />
+                </Space>
+              }
             >
               {!loading && this.renderDateTrendChart()}
             </Card>
@@ -1583,20 +1325,28 @@ class DashboardPage extends Component {
 
           <Col span={24} lg={12}>
             <Card
-              title="客户端IP访问分布"
+              title={
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <PieChartOutlined style={{ color: '#ff6b6b', fontSize: '20px' }} />
+                  <span>客户端IP访问分布</span>
+                </div>
+              }
               bordered={false}
               loading={loading}
               style={{
-                borderRadius: '16px',
+                borderRadius: '20px',
                 boxShadow: themeStyles.cardShadow,
                 border: 'none',
-                background: themeStyles.cardBackground
+                background: themeStyles.cardBackground,
+                overflow: 'hidden'
               }}
               headStyle={{
-                fontSize: '16px',
+                fontSize: '18px',
                 fontWeight: 'bold',
                 color: themeStyles.textColor,
-                borderBottom: isDarkMode ? '2px solid #34495e' : '2px solid #f0f0f0'
+                borderBottom: '2px solid #f0f0f0',
+                background: 'linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%)',
+                padding: '20px 24px'
               }}
             >
               {!loading && this.renderClientIpChart()}
@@ -1605,20 +1355,28 @@ class DashboardPage extends Component {
 
           <Col span={24} lg={12}>
             <Card
-              title="响应状态统计"
+              title={
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <PieChartOutlined style={{ color: '#4ecdc4', fontSize: '20px' }} />
+                  <span>响应状态统计</span>
+                </div>
+              }
               bordered={false}
               loading={loading}
               style={{
-                borderRadius: '16px',
+                borderRadius: '20px',
                 boxShadow: themeStyles.cardShadow,
                 border: 'none',
-                background: themeStyles.cardBackground
+                background: themeStyles.cardBackground,
+                overflow: 'hidden'
               }}
               headStyle={{
-                fontSize: '16px',
+                fontSize: '18px',
                 fontWeight: 'bold',
                 color: themeStyles.textColor,
-                borderBottom: isDarkMode ? '2px solid #34495e' : '2px solid #f0f0f0'
+                borderBottom: '2px solid #f0f0f0',
+                background: 'linear-gradient(135deg, #f0fffe 0%, #e0fffe 100%)',
+                padding: '20px 24px'
               }}
             >
               {!loading && this.renderResponseStatusChart()}
@@ -1627,20 +1385,28 @@ class DashboardPage extends Component {
 
           <Col span={24}>
             <Card
-              title="操作类型统计"
+              title={
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <BarChartOutlined style={{ color: '#feca57', fontSize: '20px' }} />
+                  <span>操作类型统计</span>
+                </div>
+              }
               bordered={false}
               loading={loading}
               style={{
-                borderRadius: '16px',
+                borderRadius: '20px',
                 boxShadow: themeStyles.cardShadow,
                 border: 'none',
-                background: themeStyles.cardBackground
+                background: themeStyles.cardBackground,
+                overflow: 'hidden'
               }}
               headStyle={{
-                fontSize: '16px',
+                fontSize: '18px',
                 fontWeight: 'bold',
                 color: themeStyles.textColor,
-                borderBottom: isDarkMode ? '2px solid #34495e' : '2px solid #f0f0f0'
+                borderBottom: '2px solid #f0f0f0',
+                background: 'linear-gradient(135deg, #fffbf0 0%, #fff8e0 100%)',
+                padding: '20px 24px'
               }}
             >
               {!loading && this.renderActionStatsChart()}

@@ -226,8 +226,8 @@ func fixRecordObject(taskId, params string) {
 		}
 		// 进行修复操作
 		fixRecord(record,paramsMap["section"].(string))
-		// 休息1s
-		time.Sleep(1 * time.Second)
+		// 休息30
+		time.Sleep(30 * time.Millisecond)
 	}
 
 	setBugfixField("status", "finished")
@@ -245,6 +245,12 @@ func fixRecord(record *Record,section_ string) {
 
 	// prepare string id for logging / wrongRecords
 	idStr := strconv.Itoa(record.Id)
+
+	// 如果已经有了correlationId字段，就不用修复了
+	if _, ok := objMap["correlationId"]; ok {
+		return
+	}
+
 
 	// 将objMap的key进行修正，原本的数据
 	// 提取原本的字段值
@@ -357,7 +363,7 @@ func reUploadRecordObject(taskId, params string) {
 		go UploadObjectToIPFS(record)
 		incNowFinishRecordsCount()
 		// 休息1s
-		time.Sleep(1 * time.Second)
+		time.Sleep(10 * time.Millisecond)
 	}
 
 
@@ -418,8 +424,8 @@ func reCommitRecordToChain(taskId, params string) {
 		go  commitRecordForce(record, record.Language)
 
 		incNowFinishRecordsCount()
-		// 休息1s
-		time.Sleep(1 * time.Second)
+		// 休息30ms
+		time.Sleep(30 * time.Millisecond)
 	}
 
 
