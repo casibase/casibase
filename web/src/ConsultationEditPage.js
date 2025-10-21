@@ -16,6 +16,9 @@ import React from "react";
 import {Button, Card, Col, Input, Row, Select} from "antd";
 // import {LinkOutlined} from "@ant-design/icons";
 import * as ConsultationBackend from "./backend/ConsultationBackend";
+import * as PatientBackend from "./backend/PatientBackend";
+import * as DoctorBackend from "./backend/DoctorBackend";
+import * as HospitalBackend from "./backend/HospitalBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
@@ -27,12 +30,18 @@ class ConsultationEditPage extends React.Component {
 
       consultationName: props.match.params.consultationName,
       consultation: null,
+      patients: [],
+      doctors: [],
+      hospitals: [],
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getConsultation();
+    this.getPatients();
+    this.getDoctors();
+    this.getHospitals();
   }
 
   getConsultation() {
@@ -41,6 +50,45 @@ class ConsultationEditPage extends React.Component {
         if (res.status === "ok") {
           this.setState({
             consultation: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getPatients() {
+    PatientBackend.getPatients(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            patients: res.data || [],
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getDoctors() {
+    DoctorBackend.getDoctors(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            doctors: res.data || [],
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getHospitals() {
+    HospitalBackend.getHospitals(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            hospitals: res.data || [],
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -77,16 +125,6 @@ class ConsultationEditPage extends React.Component {
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Organization"), i18next.t("general:Organization - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.consultation.owner} onChange={e => {
-              this.updateConsultationField("owner", e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -111,22 +149,40 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("med:Patient name"), i18next.t("med:Patient name - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Patient"), i18next.t("med:Patient - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.consultation.patientName} onChange={e => {
-              this.updateConsultationField("patientName", e.target.value);
-            }} />
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              value={this.state.consultation.patientName}
+              onChange={(value) => {
+                this.updateConsultationField("patientName", value);
+              }}
+              options={this.state.patients.map((patient) => ({
+                label: patient.displayName || patient.name,
+                value: patient.name,
+              }))}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("med:Doctor name"), i18next.t("med:Doctor name - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Doctor"), i18next.t("med:Doctor - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.consultation.doctor} onChange={e => {
-              this.updateConsultationField("doctor", e.target.value);
-            }} />
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              value={this.state.consultation.doctorName}
+              onChange={(value) => {
+                this.updateConsultationField("doctorName", value);
+              }}
+              options={this.state.doctors.map((doctor) => ({
+                label: doctor.displayName || doctor.name,
+                value: doctor.name,
+              }))}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}}>
@@ -141,12 +197,21 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("med:Authorized hospital"), i18next.t("med:Authorized hospital - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Hospital"), i18next.t("med:Hospital - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.consultation.authorizedHospital} onChange={e => {
-              this.updateConsultationField("authorizedHospital", e.target.value);
-            }} />
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              value={this.state.consultation.authorizedHospital}
+              onChange={(value) => {
+                this.updateConsultationField("authorizedHospital", value);
+              }}
+              options={this.state.hospitals.map((hospital) => ({
+                label: hospital.displayName || hospital.name,
+                value: hospital.name,
+              }))}
+            />
           </Col>
         </Row>
 

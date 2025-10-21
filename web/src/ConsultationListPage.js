@@ -81,21 +81,6 @@ class ConsultationListPage extends BaseListPage {
   renderTable(consultations) {
     const columns = [
       {
-        title: i18next.t("general:Organization"),
-        dataIndex: "owner",
-        key: "owner",
-        width: "110px",
-        sorter: true,
-        ...this.getColumnSearchProps("owner"),
-        render: (text, consultation, index) => {
-          return (
-            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/organizations/${text}`)}>
-              {text}
-            </a>
-          );
-        },
-      },
-      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
@@ -120,7 +105,7 @@ class ConsultationListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("med:Patient name"),
+        title: i18next.t("med:Patient"),
         dataIndex: "patientName",
         key: "patientName",
         width: "90px",
@@ -137,7 +122,7 @@ class ConsultationListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("med:Doctor name"),
+        title: i18next.t("med:Doctor"),
         dataIndex: "doctorName",
         key: "doctorName",
         width: "90px",
@@ -161,7 +146,7 @@ class ConsultationListPage extends BaseListPage {
         sorter: (a, b) => a.expiredTime.localeCompare(b.expiredTime),
       },
       {
-        title: i18next.t("med:Authorized hospital"),
+        title: i18next.t("med:Hospital"),
         dataIndex: "authorizedHospital",
         key: "authorizedHospital",
         width: "90px",

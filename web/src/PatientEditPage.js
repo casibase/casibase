@@ -124,16 +124,6 @@ class PatientEditPage extends React.Component {
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Organization"), i18next.t("general:Organization - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input disabled={!canEdit} value={this.state.patient.owner} onChange={e => {
-              this.updatePatientField("owner", e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -168,9 +158,20 @@ class PatientEditPage extends React.Component {
             {Setting.getLabel(i18next.t("med:Gender"), i18next.t("med:Gender - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input disabled={!canEdit} value={this.state.patient.gender} onChange={e => {
-              this.updatePatientField("gender", e.target.value);
-            }} />
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              disabled={!canEdit}
+              value={this.state.patient.gender}
+              onChange={(value) => {
+                this.updatePatientField("gender", value);
+              }}
+              options={[
+                {value: "Male", label: i18next.t("med:Male")},
+                {value: "Female", label: i18next.t("med:Female")},
+                {value: "Other", label: i18next.t("med:Other")},
+              ].map((item) => Setting.getOption(item.label, item.value))}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -198,9 +199,25 @@ class PatientEditPage extends React.Component {
             {Setting.getLabel(i18next.t("med:Blood type"), i18next.t("med:Blood type - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input disabled={!canEdit} value={this.state.patient.bloodType} onChange={e => {
-              this.updatePatientField("bloodType", e.target.value);
-            }} />
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              disabled={!canEdit}
+              value={this.state.patient.bloodType}
+              onChange={(value) => {
+                this.updatePatientField("bloodType", value);
+              }}
+              options={[
+                {value: "A+", label: i18next.t("med:A+")},
+                {value: "A-", label: i18next.t("med:A-")},
+                {value: "B+", label: i18next.t("med:B+")},
+                {value: "B-", label: i18next.t("med:B-")},
+                {value: "AB+", label: i18next.t("med:AB+")},
+                {value: "AB-", label: i18next.t("med:AB-")},
+                {value: "O+", label: i18next.t("med:O+")},
+                {value: "O-", label: i18next.t("med:O-")},
+              ].map((item) => Setting.getOption(item.label, item.value))}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

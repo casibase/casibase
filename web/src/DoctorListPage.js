@@ -84,28 +84,6 @@ class DoctorListPage extends BaseListPage {
   renderTable(doctors) {
     const columns = [
       {
-        title: i18next.t("general:Organization"),
-        dataIndex: "owner",
-        key: "owner",
-        width: "110px",
-        sorter: true,
-        ...this.getColumnSearchProps("owner"),
-        render: (text, doctor, index) => {
-          return (
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href={Setting.getMyProfileUrl(this.props.account).replace(
-                "/account",
-                `/organizations/${text}`
-              )}
-            >
-              {text}
-            </a>
-          );
-        },
-      },
-      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
@@ -153,7 +131,7 @@ class DoctorListPage extends BaseListPage {
         sorter: (a, b) => a.accessLevel.localeCompare(b.accessLevel),
       },
       {
-        title: i18next.t("med:Hospital name"),
+        title: i18next.t("med:Hospital"),
         dataIndex: "hospitalName",
         key: "hospitalName",
         width: "90px",

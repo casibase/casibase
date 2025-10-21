@@ -15,6 +15,7 @@
 import React from "react";
 import {Button, Card, Col, Input, Row, Select} from "antd";
 import * as DoctorBackend from "./backend/DoctorBackend";
+import * as HospitalBackend from "./backend/HospitalBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
@@ -26,12 +27,14 @@ class DoctorEditPage extends React.Component {
 
       doctorName: props.match.params.doctorName,
       doctor: null,
+      hospitals: [],
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getDoctor();
+    this.getHospitals();
   }
 
   getDoctor() {
@@ -47,6 +50,19 @@ class DoctorEditPage extends React.Component {
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
       }
     });
+  }
+
+  getHospitals() {
+    HospitalBackend.getHospitals(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            hospitals: res.data || [],
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
   }
 
   parseDoctorField(key, value) {
@@ -100,23 +116,6 @@ class DoctorEditPage extends React.Component {
         type="inner"
       >
         <Row style={{marginTop: "10px"}}>
-          <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-            {Setting.getLabel(
-              i18next.t("general:Organization"),
-              i18next.t("general:Organization - Tooltip")
-            )}{" "}
-            :
-          </Col>
-          <Col span={22}>
-            <Input
-              value={this.state.doctor.owner}
-              onChange={(e) => {
-                this.updateDoctorField("owner", e.target.value);
-              }}
-            />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
               i18next.t("general:Name"),
@@ -194,17 +193,23 @@ class DoctorEditPage extends React.Component {
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(
-              i18next.t("med:Hospital name"),
-              i18next.t("med:Hospital name - Tooltip")
+              i18next.t("med:Hospital"),
+              i18next.t("med:Hospital - Tooltip")
             )}{" "}
             :
           </Col>
           <Col span={22}>
-            <Input
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
               value={this.state.doctor.hospitalName}
-              onChange={(e) => {
-                this.updateDoctorField("hospitalName", e.target.value);
+              onChange={(value) => {
+                this.updateDoctorField("hospitalName", value);
               }}
+              options={this.state.hospitals.map((hospital) => ({
+                label: hospital.displayName || hospital.name,
+                value: hospital.name,
+              }))}
             />
           </Col>
         </Row>
