@@ -25,7 +25,34 @@ import (
 )
 
 func UpdateFile(storeId string, key string, file *File) bool {
-	return true
+	owner, storeName := util.GetOwnerAndNameFromId(storeId)
+	
+	// Update file data in database
+	fileData := &FileData{
+		Owner:       owner,
+		Store:       storeName,
+		Key:         key,
+		Title:       file.Title,
+		Size:        file.Size,
+		CreatedTime: file.CreatedTime,
+		IsLeaf:      file.IsLeaf,
+		Url:         file.Url,
+		Status:      file.Status,
+		ParentKey:   "",
+	}
+	
+	// Extract parent key from the key
+	tokens := strings.Split(strings.Trim(key, "/"), "/")
+	if len(tokens) > 1 {
+		fileData.ParentKey = strings.Join(tokens[:len(tokens)-1], "/")
+	}
+	
+	success, err := UpdateFileData(owner, storeName, key, fileData)
+	if err != nil {
+		return false
+	}
+	
+	return success
 }
 
 func AddFile(storeId string, userName string, key string, isLeaf bool, filename string, file multipart.File, lang string) (bool, []byte, error) {
