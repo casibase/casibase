@@ -30,6 +30,7 @@ class CaaseEditPage extends React.Component {
       caase: null,
       patients: [],
       doctors: [],
+      hospitals: [],
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
   }
@@ -38,6 +39,7 @@ class CaaseEditPage extends React.Component {
     this.getCaase();
     this.getPatients();
     this.getDoctors();
+    this.getHospitals();
   }
 
   getCaase() {
@@ -73,6 +75,20 @@ class CaaseEditPage extends React.Component {
         if (res.status === "ok") {
           this.setState({
             doctors: res.data || [],
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getHospitals() {
+    const HospitalBackend = require("./backend/HospitalBackend");
+    HospitalBackend.getHospitals(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            hospitals: res.data || [],
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -325,6 +341,29 @@ class CaaseEditPage extends React.Component {
               options={this.state.doctors.map((doctor) => ({
                 label: doctor.name,
                 value: doctor.name,
+              }))}
+            />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
+            {Setting.getLabel(
+              i18next.t("med:Hospital"),
+              i18next.t("med:Hospital - Tooltip")
+            )}{" "}
+            :
+          </Col>
+          <Col span={22}>
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              value={this.state.caase.hospitalName}
+              onChange={(value) => {
+                this.updateCaaseField("hospitalName", value);
+              }}
+              options={this.state.hospitals.map((hospital) => ({
+                label: hospital.name,
+                value: hospital.name,
               }))}
             />
           </Col>

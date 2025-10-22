@@ -40,6 +40,7 @@ type Caase struct {
 	Type                         string `xorm:"varchar(100)" json:"type"`
 	PatientName                  string `xorm:"varchar(100)" json:"patientName"`
 	DoctorName                   string `xorm:"varchar(100)" json:"doctorName"`
+	HospitalName                 string `xorm:"varchar(100)" json:"hospitalName"`
 	SpecialistAllianceId         string `xorm:"varchar(100)" json:"specialistAllianceId"`
 	IntegratedCareOrganizationId string `xorm:"varchar(100)" json:"integratedCareOrganizationId"`
 }

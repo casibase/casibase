@@ -31,6 +31,7 @@ import (
 // @Success 200 {object} object.Consultation The Response object
 // @router /get-consultations [get]
 func (c *ApiController) GetConsultations() {
+	user := c.GetSessionUser()
 	owner := c.Input().Get("owner")
 	limit := c.Input().Get("pageSize")
 	page := c.Input().Get("p")
@@ -45,6 +46,9 @@ func (c *ApiController) GetConsultations() {
 			c.ResponseError(err.Error())
 			return
 		}
+
+		// Filter consultations by user role
+		consultations = object.FilterConsultationsByUser(user, consultations)
 
 		c.ResponseOk(consultations)
 	} else {
@@ -61,6 +65,9 @@ func (c *ApiController) GetConsultations() {
 			c.ResponseError(err.Error())
 			return
 		}
+
+		// Filter consultations by user role
+		consultations = object.FilterConsultationsByUser(user, consultations)
 
 		c.ResponseOk(consultations, paginator.Nums())
 	}
