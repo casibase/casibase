@@ -112,7 +112,7 @@ class HospitalEditPage extends React.Component {
             if (willExist) {
               this.props.history.push("/hospitals");
             } else {
-              this.props.history.push(`/hospitals/${this.state.hospital.owner}/${encodeURIComponent(this.state.hospital.name)}`);
+              this.props.history.push(`/hospitals/${encodeURIComponent(this.state.hospital.name)}`);
             }
             // this.getHospital(true);
           } else {

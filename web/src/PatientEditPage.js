@@ -147,7 +147,7 @@ class PatientEditPage extends React.Component {
                 this.updatePatientField("owners", value);
               }}
               options={this.state.doctors.map((doctor) => ({
-                label: `${doctor.displayName || doctor.name} (${doctor.name})`,
+                label: doctor.name,
                 value: doctor.name,
               }))}
             />
@@ -208,14 +208,10 @@ class PatientEditPage extends React.Component {
                 this.updatePatientField("bloodType", value);
               }}
               options={[
-                {value: "A+", label: i18next.t("med:A+")},
-                {value: "A-", label: i18next.t("med:A-")},
-                {value: "B+", label: i18next.t("med:B+")},
-                {value: "B-", label: i18next.t("med:B-")},
-                {value: "AB+", label: i18next.t("med:AB+")},
-                {value: "AB-", label: i18next.t("med:AB-")},
-                {value: "O+", label: i18next.t("med:O+")},
-                {value: "O-", label: i18next.t("med:O-")},
+                {value: "A", label: "A"},
+                {value: "B", label: "B"},
+                {value: "AB", label: "AB"},
+                {value: "O", label: "O"},
               ].map((item) => Setting.getOption(item.label, item.value))}
             />
           </Col>
@@ -247,7 +243,7 @@ class PatientEditPage extends React.Component {
             if (willExist) {
               this.props.history.push("/patients");
             } else {
-              this.props.history.push(`/patients/${this.state.patient.owner}/${encodeURIComponent(this.state.patient.name)}`);
+              this.props.history.push(`/patients/${encodeURIComponent(this.state.patient.name)}`);
             }
             // this.getPatient(true);
           } else {

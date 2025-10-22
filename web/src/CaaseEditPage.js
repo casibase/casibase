@@ -300,7 +300,7 @@ class CaaseEditPage extends React.Component {
                 this.updateCaaseField("patientName", value);
               }}
               options={this.state.patients.map((patient) => ({
-                label: patient.displayName || patient.name,
+                label: patient.name,
                 value: patient.name,
               }))}
             />
@@ -323,7 +323,7 @@ class CaaseEditPage extends React.Component {
                 this.updateCaaseField("doctorName", value);
               }}
               options={this.state.doctors.map((doctor) => ({
-                label: doctor.displayName || doctor.name,
+                label: doctor.name,
                 value: doctor.name,
               }))}
             />
@@ -372,11 +372,7 @@ class CaaseEditPage extends React.Component {
 
   submitCaaseEdit(willExist) {
     const caase = Setting.deepCopy(this.state.caase);
-    CaaseBackend.updateCaase(
-      this.state.caase.owner,
-      this.state.caaseName,
-      caase
-    )
+    CaaseBackend.updateCaase(this.state.caase.owner, this.state.caaseName, caase)
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
@@ -387,9 +383,7 @@ class CaaseEditPage extends React.Component {
             if (willExist) {
               this.props.history.push("/caases");
             } else {
-              this.props.history.push(
-                `/caases/${this.state.caase.owner}/${encodeURIComponent(this.state.caase.name)}`
-              );
+              this.props.history.push(`/caases/${encodeURIComponent(this.state.caase.name)}`);
             }
             // this.getCaase(true);
           } else {

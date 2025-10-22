@@ -135,20 +135,6 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.consultation.state} onChange={value => {
-              this.updateConsultationField("state", value);
-            }}
-            options={[
-              {value: "Active", label: "Active"},
-              {value: "Inactive", label: "Inactive"},
-            ].map(item => Setting.getOption(item.label, item.value))} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}}>
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("med:Patient"), i18next.t("med:Patient - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -160,7 +146,7 @@ class ConsultationEditPage extends React.Component {
                 this.updateConsultationField("patientName", value);
               }}
               options={this.state.patients.map((patient) => ({
-                label: patient.displayName || patient.name,
+                label: patient.name,
                 value: patient.name,
               }))}
             />
@@ -179,7 +165,7 @@ class ConsultationEditPage extends React.Component {
                 this.updateConsultationField("doctorName", value);
               }}
               options={this.state.doctors.map((doctor) => ({
-                label: doctor.displayName || doctor.name,
+                label: doctor.name,
                 value: doctor.name,
               }))}
             />
@@ -208,13 +194,26 @@ class ConsultationEditPage extends React.Component {
                 this.updateConsultationField("authorizedHospital", value);
               }}
               options={this.state.hospitals.map((hospital) => ({
-                label: hospital.displayName || hospital.name,
+                label: hospital.name,
                 value: hospital.name,
               }))}
             />
           </Col>
         </Row>
-
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.consultation.state} onChange={value => {
+              this.updateConsultationField("state", value);
+            }}
+            options={[
+              {value: "Active", label: "Active"},
+              {value: "Inactive", label: "Inactive"},
+            ].map(item => Setting.getOption(item.label, item.value))} />
+          </Col>
+        </Row>
       </Card>
     );
   }
@@ -232,7 +231,7 @@ class ConsultationEditPage extends React.Component {
             if (willExist) {
               this.props.history.push("/consultations");
             } else {
-              this.props.history.push(`/consultations/${this.state.consultation.owner}/${encodeURIComponent(this.state.consultation.name)}`);
+              this.props.history.push(`/consultations/${encodeURIComponent(this.state.consultation.name)}`);
             }
             // this.getConsultation(true);
           } else {

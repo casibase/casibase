@@ -81,7 +81,7 @@ class HospitalListPage extends BaseListPage {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "120px",
+        width: "300px",
         sorter: true,
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
@@ -94,7 +94,7 @@ class HospitalListPage extends BaseListPage {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",
-        width: "160px",
+        width: "200px",
         // sorter: true,
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, hospital, index) => {
@@ -104,15 +104,15 @@ class HospitalListPage extends BaseListPage {
       {
         title: i18next.t("med:Address"),
         dataIndex: "address",
-        key: "state",
-        width: "90px",
-        sorter: (a, b) => a.state.localeCompare(b.state),
+        key: "address",
+        // width: "90px",
+        sorter: (a, b) => a.address.localeCompare(b.address),
       },
       {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "130px",
+        width: "220px",
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, hospital, index) => {
           return (

@@ -207,7 +207,7 @@ class DoctorEditPage extends React.Component {
                 this.updateDoctorField("hospitalName", value);
               }}
               options={this.state.hospitals.map((hospital) => ({
-                label: hospital.displayName || hospital.name,
+                label: hospital.name,
                 value: hospital.name,
               }))}
             />
@@ -219,11 +219,7 @@ class DoctorEditPage extends React.Component {
 
   submitDoctorEdit(willExist) {
     const doctor = Setting.deepCopy(this.state.doctor);
-    DoctorBackend.updateDoctor(
-      this.state.doctor.owner,
-      this.state.doctorName,
-      doctor
-    )
+    DoctorBackend.updateDoctor(this.state.doctor.owner, this.state.doctorName, doctor)
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
@@ -234,11 +230,9 @@ class DoctorEditPage extends React.Component {
             if (willExist) {
               this.props.history.push("/doctors");
             } else {
-              this.props.history.push(
-                `/doctors/${this.state.doctor.owner}/${encodeURIComponent(this.state.doctor.name)}`
-              );
+              this.props.history.push(`/doctors/${encodeURIComponent(this.state.doctor.name)}`);
             }
-            // this.getDoctor(true);
+          // this.getDoctor(true);
           } else {
             Setting.showMessage("error", i18next.t("general:Failed to save"));
             this.updateDoctorField("name", this.state.doctorName);

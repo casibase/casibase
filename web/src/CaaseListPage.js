@@ -115,6 +115,40 @@ class CaaseListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("med:Patient"),
+        dataIndex: "patientName",
+        key: "patientName",
+        width: "90px",
+        sorter: true,
+        ...this.getColumnSearchProps("patientName"),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/patients/${text}`}>
+              {
+                Setting.getShortText(text, 25)
+              }
+            </Link>
+          );
+        },
+      },
+      {
+        title: i18next.t("med:Doctor"),
+        dataIndex: "doctorName",
+        key: "doctorName",
+        width: "90px",
+        sorter: true,
+        ...this.getColumnSearchProps("doctorName"),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/doctors/${text}`}>
+              {
+                Setting.getShortText(text, 25)
+              }
+            </Link>
+          );
+        },
+      },
+      {
         title: i18next.t("med:Symptoms"),
         dataIndex: "symptoms",
         key: "symptoms",
@@ -172,40 +206,6 @@ class CaaseListPage extends BaseListPage {
         sorter: (a, b) => a.type.localeCompare(b.type),
       },
       {
-        title: i18next.t("med:Patient"),
-        dataIndex: "patientName",
-        key: "patientName",
-        width: "90px",
-        sorter: true,
-        ...this.getColumnSearchProps("patientName"),
-        render: (text, record, index) => {
-          return (
-            <Link to={`/patients/${record.owner}/${text}`}>
-              {
-                Setting.getShortText(text, 25)
-              }
-            </Link>
-          );
-        },
-      },
-      {
-        title: i18next.t("med:Doctor"),
-        dataIndex: "doctorName",
-        key: "doctorName",
-        width: "90px",
-        sorter: true,
-        ...this.getColumnSearchProps("doctorName"),
-        render: (text, record, index) => {
-          return (
-            <Link to={`/doctors/${record.owner}/${text}`}>
-              {
-                Setting.getShortText(text, 25)
-              }
-            </Link>
-          );
-        },
-      },
-      {
         title: i18next.t("med:Specialist alliance Id"),
         dataIndex: "specialistAllianceId",
         key: "specialistAllianceId",
@@ -227,7 +227,7 @@ class CaaseListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "130px",
+        width: "220px",
         fixed: Setting.isMobile() ? "false" : "right",
         render: (text, caase, index) => {
           return (
