@@ -121,6 +121,23 @@
     "Edit Doctor": "Edit dokter",
     "New Doctor": "Dokter baru"
   },
+  "file": {
+    "Active": "Aktif",
+    "Edit File": "Edit file",
+    "Error": "Kesalahan",
+    "Filename": "Nama file",
+    "Filename - Tooltip": "Nama file",
+    "Inactive": "Tidak aktif",
+    "Path": "Jalur",
+    "Path - Tooltip": "Jalur lengkap ke file",
+    "Processing": "Pemrosesan",
+    "Size": "Ukuran",
+    "Size - Tooltip": "Ukuran file dalam byte",
+    "Storage Provider": "Penyedia penyimpanan",
+    "Storage Provider - Tooltip": "Penyedia penyimpanan untuk file",
+    "Token Count": "Jumlah token",
+    "Token Count - Tooltip": "Jumlah token dalam file"
+  },
   "form": {
     "Edit Form": "Sunting formulir",
     "Form items": "Item formulir",
@@ -208,6 +225,7 @@
     "Favicon URL - Tooltip": "URL Favicon - Keterangan",
     "Footer HTML": "HTML Footer",
     "Footer HTML - Tooltip": "HTML Footer - Keterangan",
+    "Files": "File",
     "Forms": "Formulir",
     "Go to writable demo site?": "Masuk ke situs demo dapat ditulis?",
     "Graphs": "Graphs",

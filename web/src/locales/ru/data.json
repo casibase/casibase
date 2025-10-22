@@ -121,6 +121,23 @@
     "Edit Doctor": "Редактировать врача",
     "New Doctor": "Новый врач"
   },
+  "file": {
+    "Active": "Активно",
+    "Edit File": "Редактировать файл",
+    "Error": "Ошибка",
+    "Filename": "Имя файла",
+    "Filename - Tooltip": "Имя файла",
+    "Inactive": "Неактивно",
+    "Path": "Путь",
+    "Path - Tooltip": "Полный путь к файлу",
+    "Processing": "Обработка",
+    "Size": "Размер",
+    "Size - Tooltip": "Размер файла в байтах",
+    "Storage Provider": "Поставщик хранилища",
+    "Storage Provider - Tooltip": "Поставщик хранилища для файла",
+    "Token Count": "Количество токенов",
+    "Token Count - Tooltip": "Количество токенов в файле"
+  },
   "form": {
     "Edit Form": "Редактировать форму",
     "Form items": "Поля формы",
@@ -208,6 +225,7 @@
     "Favicon URL - Tooltip": "URL фавикона - Подсказка",
     "Footer HTML": "HTML низа страницы",
     "Footer HTML - Tooltip": "HTML низа страницы - Подсказка",
+    "Files": "Файлы",
     "Forms": "Формы",
     "Go to writable demo site?": "Перейти на демо-сайт для записи?",
     "Graphs": "Graphs",

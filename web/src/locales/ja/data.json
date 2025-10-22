@@ -121,6 +121,23 @@
     "Edit Doctor": "医師を編集",
     "New Doctor": "新しい医師"
   },
+  "file": {
+    "Active": "アクティブ",
+    "Edit File": "ファイルを編集",
+    "Error": "エラー",
+    "Filename": "ファイル名",
+    "Filename - Tooltip": "ファイルの名前",
+    "Inactive": "非アクティブ",
+    "Path": "パス",
+    "Path - Tooltip": "ファイルへの完全なパス",
+    "Processing": "処理中",
+    "Size": "サイズ",
+    "Size - Tooltip": "ファイルサイズ（バイト）",
+    "Storage Provider": "ストレージプロバイダー",
+    "Storage Provider - Tooltip": "ファイルのストレージプロバイダー",
+    "Token Count": "トークン数",
+    "Token Count - Tooltip": "ファイル内のトークン数"
+  },
   "form": {
     "Edit Form": "フォームを編集",
     "Form items": "フォーム項目",
@@ -208,6 +225,7 @@
     "Favicon URL - Tooltip": "ファビコンURL - ツールチップ",
     "Footer HTML": "フッターHTML",
     "Footer HTML - Tooltip": "フッターHTML - ツールチップ",
+    "Files": "ファイル",
     "Forms": "フォーム",
     "Go to writable demo site?": "書き込み可能なデモサイトに移動しますか？",
     "Graphs": "Graphs",

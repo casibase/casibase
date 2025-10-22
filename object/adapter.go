@@ -190,6 +190,11 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
+	err = a.engine.Sync2(new(File))
+	if err != nil {
+		panic(err)
+	}
+
 	err = a.engine.Sync2(new(Vector))
 	if err != nil {
 		panic(err)

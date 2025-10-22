@@ -121,6 +121,23 @@
     "Edit Doctor": "编辑医生",
     "New Doctor": "新建医生"
   },
+  "file": {
+    "Active": "激活",
+    "Edit File": "编辑文件",
+    "Error": "错误",
+    "Filename": "文件名",
+    "Filename - Tooltip": "文件的名称",
+    "Inactive": "未激活",
+    "Path": "路径",
+    "Path - Tooltip": "文件的完整路径",
+    "Processing": "处理中",
+    "Size": "大小",
+    "Size - Tooltip": "文件大小（字节）",
+    "Storage Provider": "存储提供商",
+    "Storage Provider - Tooltip": "文件的存储提供商",
+    "Token Count": "令牌数",
+    "Token Count - Tooltip": "文件中的令牌数量"
+  },
   "form": {
     "Edit Form": "编辑表单",
     "Form items": "表单项",
@@ -208,6 +225,7 @@
     "Favicon URL - Tooltip": "网站图标 URL - 提示信息",
     "Footer HTML": "页脚 HTML",
     "Footer HTML - Tooltip": "页脚 HTML - 提示信息",
+    "Files": "文件",
     "Forms": "表单",
     "Go to writable demo site?": "前往可写的演示站点？",
     "Graphs": "图",
