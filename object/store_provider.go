@@ -172,8 +172,14 @@ func (store *Store) Populate(origin string, lang string) error {
 				}
 			}
 
+			// Default to "Active" if status is empty
+			status := fileData.Status
+			if status == "" {
+				status = "Active"
+			}
+
 			tokens := strings.Split(strings.Trim(fileData.Key, "/"), "/")
-			store.createPathIfNotExisted(tokens, fileData.Size, url, fileData.CreatedTime, fileData.IsLeaf, fileData.Status)
+			store.createPathIfNotExisted(tokens, fileData.Size, url, fileData.CreatedTime, fileData.IsLeaf, status)
 		}
 	}
 
