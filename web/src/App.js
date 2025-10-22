@@ -26,6 +26,8 @@ import * as Conf from "./Conf";
 import HomePage from "./HomePage";
 import StoreListPage from "./StoreListPage";
 import StoreEditPage from "./StoreEditPage";
+import FileObjectListPage from "./FileObjectListPage";
+import FileObjectEditPage from "./FileObjectEditPage";
 import FileTreePage from "./FileTreePage";
 import VideoListPage from "./VideoListPage";
 import VideoEditPage from "./VideoEditPage";
@@ -674,6 +676,7 @@ class App extends Component {
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:AI Setting")}</Link>, "/ai-setting", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"),
+        Setting.getItem(<Link to="/files">{i18next.t("general:Files")}</Link>, "/files"),
         Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"),
         Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"),
       ]));
@@ -802,6 +805,8 @@ class App extends Component {
         <Route exact path="/public-videos/:owner/:videoName" render={(props) => <VideoPage account={this.state.account} {...props} />} />
         <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />
         <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/files" render={(props) => this.renderSigninIfNotSignedIn(<FileObjectListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/files/:fileObjectName" render={(props) => this.renderSigninIfNotSignedIn(<FileObjectEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/vectors" render={(props) => this.renderSigninIfNotSignedIn(<VectorListPage account={this.state.account} {...props} />)} />
         <Route exact path="/vectors/:vectorName" render={(props) => this.renderSigninIfNotSignedIn(<VectorEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />

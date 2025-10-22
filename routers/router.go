@@ -71,6 +71,13 @@ func initAPI() {
 	beego.Router("/api/delete-provider", &controllers.ApiController{}, "POST:DeleteProvider")
 	beego.Router("/api/refresh-mcp-tools", &controllers.ApiController{}, "POST:RefreshMcpTools")
 
+	beego.Router("/api/get-global-file-objects", &controllers.ApiController{}, "GET:GetGlobalFileObjects")
+	beego.Router("/api/get-file-objects", &controllers.ApiController{}, "GET:GetFileObjects")
+	beego.Router("/api/get-file-object", &controllers.ApiController{}, "GET:GetFileObject")
+	beego.Router("/api/update-file-object", &controllers.ApiController{}, "POST:UpdateFileObject")
+	beego.Router("/api/add-file-object", &controllers.ApiController{}, "POST:AddFileObject")
+	beego.Router("/api/delete-file-object", &controllers.ApiController{}, "POST:DeleteFileObject")
+
 	beego.Router("/api/get-global-vectors", &controllers.ApiController{}, "GET:GetGlobalVectors")
 	beego.Router("/api/get-vectors", &controllers.ApiController{}, "GET:GetVectors")
 	beego.Router("/api/get-vector", &controllers.ApiController{}, "GET:GetVector")

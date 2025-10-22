@@ -121,6 +121,23 @@
     "Edit Doctor": "Editar doctor",
     "New Doctor": "Nuevo doctor"
   },
+  "file": {
+    "Active": "Activo",
+    "Edit File": "Editar archivo",
+    "Error": "Error",
+    "Filename": "Nombre de archivo",
+    "Filename - Tooltip": "Nombre del archivo",
+    "Inactive": "Inactivo",
+    "Path": "Ruta",
+    "Path - Tooltip": "Ruta completa al archivo",
+    "Processing": "Procesando",
+    "Size": "Tamaño",
+    "Size - Tooltip": "Tamaño del archivo en bytes",
+    "Storage Provider": "Proveedor de almacenamiento",
+    "Storage Provider - Tooltip": "Proveedor de almacenamiento para el archivo",
+    "Token Count": "Recuento de tokens",
+    "Token Count - Tooltip": "Número de tokens en el archivo"
+  },
   "form": {
     "Edit Form": "Editar formulario",
     "Form items": "Elementos del formulario",
@@ -208,6 +225,7 @@
     "Favicon URL - Tooltip": "URL del Favicon - Información",
     "Footer HTML": "HTML del Pie de Página",
     "Footer HTML - Tooltip": "HTML del Pie de Página - Información",
+    "Files": "Archivos",
     "Forms": "Formularios",
     "Go to writable demo site?": "¿Ir al sitio de demostración editable?",
     "Graphs": "Graphs",

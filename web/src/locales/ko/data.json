@@ -121,6 +121,23 @@
     "Edit Doctor": "의사 편집",
     "New Doctor": "새 의사"
   },
+  "file": {
+    "Active": "활성",
+    "Edit File": "파일 편집",
+    "Error": "오류",
+    "Filename": "파일명",
+    "Filename - Tooltip": "파일의 이름",
+    "Inactive": "비활성",
+    "Path": "경로",
+    "Path - Tooltip": "파일의 전체 경로",
+    "Processing": "처리 중",
+    "Size": "크기",
+    "Size - Tooltip": "파일 크기(바이트)",
+    "Storage Provider": "스토리지 제공자",
+    "Storage Provider - Tooltip": "파일의 스토리지 제공자",
+    "Token Count": "토큰 수",
+    "Token Count - Tooltip": "파일의 토큰 수"
+  },
   "form": {
     "Edit Form": "폼 편집",
     "Form items": "폼 항목",
@@ -208,6 +225,7 @@
     "Favicon URL - Tooltip": "파비콘 URL - 툴팁",
     "Footer HTML": "푸터 HTML",
     "Footer HTML - Tooltip": "푸터 HTML - 툴팁",
+    "Files": "파일",
     "Forms": "폼",
     "Go to writable demo site?": "쓰기 가능한 데모 사이트로 이동하시겠습니까?",
     "Graphs": "Graphs",
