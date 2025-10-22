@@ -22,13 +22,13 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-// GetGlobalFileObjects
-// @Title GetGlobalFileObjects
-// @Tag FileObject API
+// GetGlobalFiles
+// @Title GetGlobalFiles
+// @Tag File API
 // @Description get global file objects
-// @Success 200 {array} object.FileObject The Response object
-// @router /get-global-file-objects [get]
-func (c *ApiController) GetGlobalFileObjects() {
+// @Success 200 {array} object.File The Response object
+// @router /get-global-files [get]
+func (c *ApiController) GetGlobalFiles() {
 	limit := c.Input().Get("pageSize")
 	page := c.Input().Get("p")
 	field := c.Input().Get("field")
@@ -37,100 +37,100 @@ func (c *ApiController) GetGlobalFileObjects() {
 	sortOrder := c.Input().Get("sortOrder")
 
 	if limit == "" || page == "" {
-		fileObjects, err := object.GetGlobalFileObjects()
+		files, err := object.GetGlobalFiles()
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
-		c.ResponseOk(fileObjects)
+		c.ResponseOk(files)
 	} else {
 		if !c.RequireAdmin() {
 			return
 		}
 
 		limit := util.ParseInt(limit)
-		count, err := object.GetFileObjectCount("", field, value)
+		count, err := object.GetFileCount("", field, value)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		fileObjects, err := object.GetPaginationFileObjects("", paginator.Offset(), limit, field, value, sortField, sortOrder)
+		files, err := object.GetPaginationFiles("", paginator.Offset(), limit, field, value, sortField, sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
-		c.ResponseOk(fileObjects, paginator.Nums())
+		c.ResponseOk(files, paginator.Nums())
 	}
 }
 
-// GetFileObjects
-// @Title GetFileObjects
-// @Tag FileObject API
+// GetFiles
+// @Title GetFiles
+// @Tag File API
 // @Description get file objects
 // @Param owner query string true "The owner of the file object"
-// @Success 200 {array} object.FileObject The Response object
-// @router /get-file-objects [get]
-func (c *ApiController) GetFileObjects() {
+// @Success 200 {array} object.File The Response object
+// @router /get-files [get]
+func (c *ApiController) GetFiles() {
 	owner := c.Input().Get("owner")
 	store := c.Input().Get("store")
 
-	var fileObjects []*object.FileObject
+	var files []*object.File
 	var err error
 	if store != "" {
-		fileObjects, err = object.GetFileObjectsByStore(owner, store)
+		files, err = object.GetFilesByStore(owner, store)
 	} else {
-		fileObjects, err = object.GetFileObjects(owner)
+		files, err = object.GetFiles(owner)
 	}
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(fileObjects)
+	c.ResponseOk(files)
 }
 
-// GetFileObject
-// @Title GetFileObject
-// @Tag FileObject API
+// GetFile
+// @Title GetFile
+// @Tag File API
 // @Description get file object
 // @Param id query string true "The id (owner/name) of the file object"
-// @Success 200 {object} object.FileObject The Response object
-// @router /get-file-object [get]
-func (c *ApiController) GetFileObject() {
+// @Success 200 {object} object.File The Response object
+// @router /get-file [get]
+func (c *ApiController) GetFile() {
 	id := c.Input().Get("id")
 
-	fileObject, err := object.GetFileObject(id)
+	file, err := object.GetFile(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(fileObject)
+	c.ResponseOk(file)
 }
 
-// UpdateFileObject
-// @Title UpdateFileObject
-// @Tag FileObject API
+// UpdateFile
+// @Title UpdateFile
+// @Tag File API
 // @Description update file object
 // @Param id   query string       true "The id (owner/name) of the file object"
-// @Param body body  object.FileObject true "The details of the file object"
+// @Param body body  object.File true "The details of the file object"
 // @Success 200 {object} controllers.Response The Response object
-// @router /update-file-object [post]
-func (c *ApiController) UpdateFileObject() {
+// @router /update-file [post]
+func (c *ApiController) UpdateFile() {
 	id := c.Input().Get("id")
 
-	var fileObject object.FileObject
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &fileObject)
+	var file object.File
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &file)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := object.UpdateFileObject(id, &fileObject)
+	success, err := object.UpdateFile(id, &file)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -139,22 +139,22 @@ func (c *ApiController) UpdateFileObject() {
 	c.ResponseOk(success)
 }
 
-// AddFileObject
-// @Title AddFileObject
-// @Tag FileObject API
+// AddFile
+// @Title AddFile
+// @Tag File API
 // @Description add file object
-// @Param body body object.FileObject true "The details of the file object"
+// @Param body body object.File true "The details of the file object"
 // @Success 200 {object} controllers.Response The Response object
-// @router /add-file-object [post]
-func (c *ApiController) AddFileObject() {
-	var fileObject object.FileObject
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &fileObject)
+// @router /add-file [post]
+func (c *ApiController) AddFile() {
+	var file object.File
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &file)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := object.AddFileObject(&fileObject)
+	success, err := object.AddFile(&file)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -163,22 +163,22 @@ func (c *ApiController) AddFileObject() {
 	c.ResponseOk(success)
 }
 
-// DeleteFileObject
-// @Title DeleteFileObject
-// @Tag FileObject API
+// DeleteFile
+// @Title DeleteFile
+// @Tag File API
 // @Description delete file object
-// @Param body body object.FileObject true "The details of the file object"
+// @Param body body object.File true "The details of the file object"
 // @Success 200 {object} controllers.Response The Response object
-// @router /delete-file-object [post]
-func (c *ApiController) DeleteFileObject() {
-	var fileObject object.FileObject
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &fileObject)
+// @router /delete-file [post]
+func (c *ApiController) DeleteFile() {
+	var file object.File
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &file)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := object.DeleteFileObject(&fileObject)
+	success, err := object.DeleteFile(&file)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

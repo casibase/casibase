@@ -21,7 +21,7 @@ import (
 	"xorm.io/core"
 )
 
-type FileObject struct {
+type File struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
@@ -36,66 +36,66 @@ type FileObject struct {
 	Status          string `xorm:"varchar(100)" json:"status"`
 }
 
-func GetGlobalFileObjects() ([]*FileObject, error) {
-	fileObjects := []*FileObject{}
-	err := adapter.engine.Asc("owner").Desc("created_time").Find(&fileObjects)
+func GetGlobalFiles() ([]*File, error) {
+	files := []*File{}
+	err := adapter.engine.Asc("owner").Desc("created_time").Find(&files)
 	if err != nil {
-		return fileObjects, err
+		return files, err
 	}
 
-	return fileObjects, nil
+	return files, nil
 }
 
-func GetFileObjects(owner string) ([]*FileObject, error) {
-	fileObjects := []*FileObject{}
-	err := adapter.engine.Desc("created_time").Find(&fileObjects, &FileObject{Owner: owner})
+func GetFiles(owner string) ([]*File, error) {
+	files := []*File{}
+	err := adapter.engine.Desc("created_time").Find(&files, &File{Owner: owner})
 	if err != nil {
-		return fileObjects, err
+		return files, err
 	}
 
-	return fileObjects, nil
+	return files, nil
 }
 
-func GetFileObjectsByStore(owner string, store string) ([]*FileObject, error) {
-	fileObjects := []*FileObject{}
-	err := adapter.engine.Desc("created_time").Find(&fileObjects, &FileObject{Owner: owner, Store: store})
+func GetFilesByStore(owner string, store string) ([]*File, error) {
+	files := []*File{}
+	err := adapter.engine.Desc("created_time").Find(&files, &File{Owner: owner, Store: store})
 	if err != nil {
-		return fileObjects, err
+		return files, err
 	}
 
-	return fileObjects, nil
+	return files, nil
 }
 
-func getFileObject(owner string, name string) (*FileObject, error) {
-	fileObject := FileObject{Owner: owner, Name: name}
-	existed, err := adapter.engine.Get(&fileObject)
+func getFile(owner string, name string) (*File, error) {
+	file := File{Owner: owner, Name: name}
+	existed, err := adapter.engine.Get(&file)
 	if err != nil {
-		return &fileObject, err
+		return &file, err
 	}
 
 	if existed {
-		return &fileObject, nil
+		return &file, nil
 	} else {
 		return nil, nil
 	}
 }
 
-func GetFileObject(id string) (*FileObject, error) {
+func GetFile(id string) (*File, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	return getFileObject(owner, name)
+	return getFile(owner, name)
 }
 
-func UpdateFileObject(id string, fileObject *FileObject) (bool, error) {
+func UpdateFile(id string, file *File) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getFileObject(owner, name)
+	_, err := getFile(owner, name)
 	if err != nil {
 		return false, err
 	}
-	if fileObject == nil {
+	if file == nil {
 		return false, nil
 	}
 
-	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(fileObject)
+	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(file)
 	if err != nil {
 		return false, err
 	}
@@ -103,8 +103,8 @@ func UpdateFileObject(id string, fileObject *FileObject) (bool, error) {
 	return true, nil
 }
 
-func AddFileObject(fileObject *FileObject) (bool, error) {
-	affected, err := adapter.engine.Insert(fileObject)
+func AddFile(file *File) (bool, error) {
+	affected, err := adapter.engine.Insert(file)
 	if err != nil {
 		return false, err
 	}
@@ -112,8 +112,8 @@ func AddFileObject(fileObject *FileObject) (bool, error) {
 	return affected != 0, nil
 }
 
-func DeleteFileObject(fileObject *FileObject) (bool, error) {
-	affected, err := adapter.engine.ID(core.PK{fileObject.Owner, fileObject.Name}).Delete(&FileObject{})
+func DeleteFile(file *File) (bool, error) {
+	affected, err := adapter.engine.ID(core.PK{file.Owner, file.Name}).Delete(&File{})
 	if err != nil {
 		return false, err
 	}
@@ -121,22 +121,22 @@ func DeleteFileObject(fileObject *FileObject) (bool, error) {
 	return affected != 0, nil
 }
 
-func (fileObject *FileObject) GetId() string {
-	return fmt.Sprintf("%s/%s", fileObject.Owner, fileObject.Name)
+func (file *File) GetId() string {
+	return fmt.Sprintf("%s/%s", file.Owner, file.Name)
 }
 
-func GetFileObjectCount(owner, field, value string) (int64, error) {
+func GetFileCount(owner, field, value string) (int64, error) {
 	session := GetDbSession(owner, -1, -1, field, value, "", "")
-	return session.Count(&FileObject{})
+	return session.Count(&File{})
 }
 
-func GetPaginationFileObjects(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*FileObject, error) {
-	fileObjects := []*FileObject{}
+func GetPaginationFiles(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*File, error) {
+	files := []*File{}
 	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
-	err := session.Find(&fileObjects)
+	err := session.Find(&files)
 	if err != nil {
-		return fileObjects, err
+		return files, err
 	}
 
-	return fileObjects, nil
+	return files, nil
 }

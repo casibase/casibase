@@ -16,30 +16,30 @@ import React from "react";
 import {Button, Card, Col, Input, InputNumber, Row, Select} from "antd";
 import i18next from "i18next";
 import * as Setting from "./Setting";
-import * as FileObjectBackend from "./backend/FileObjectBackend";
+import * as FileBackend from "./backend/FileBackend";
 
 const {Option} = Select;
 
-class FileObjectEditPage extends React.Component {
+class FileEditPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      fileObjectName: props.match.params.fileObjectName,
-      fileObject: null,
+      fileName: props.match.params.fileName,
+      file: null,
     };
   }
 
   UNSAFE_componentWillMount() {
-    this.getFileObject();
+    this.getFile();
   }
 
-  getFileObject() {
-    FileObjectBackend.getFileObject("admin", this.props.match.params.fileObjectName)
+  getFile() {
+    FileBackend.getFile("admin", this.props.match.params.fileName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
-            fileObject: res.data,
+            file: res.data,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -47,30 +47,30 @@ class FileObjectEditPage extends React.Component {
       });
   }
 
-  parseFileObjectField(key, value) {
+  parseFileField(key, value) {
     if (["size", "tokenCount"].includes(key)) {
       value = Setting.myParseInt(value);
     }
     return value;
   }
 
-  updateFileObjectField(key, value) {
-    value = this.parseFileObjectField(key, value);
+  updateFileField(key, value) {
+    value = this.parseFileField(key, value);
 
-    const fileObject = this.state.fileObject;
-    fileObject[key] = value;
+    const file = this.state.file;
+    file[key] = value;
     this.setState({
-      fileObject: fileObject,
+      file: file,
     });
   }
 
-  renderFileObject() {
+  renderFile() {
     return (
       <Card size="small" title={
         <div>
           {i18next.t("file:Edit File")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button onClick={() => this.submitFileObjectEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitFileObjectEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          <Button onClick={() => this.submitFileEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitFileEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -78,8 +78,8 @@ class FileObjectEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.fileObject.name} onChange={e => {
-              this.updateFileObjectField("name", e.target.value);
+            <Input value={this.state.file.name} onChange={e => {
+              this.updateFileField("name", e.target.value);
             }} />
           </Col>
         </Row>
@@ -88,8 +88,8 @@ class FileObjectEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.fileObject.displayName} onChange={e => {
-              this.updateFileObjectField("displayName", e.target.value);
+            <Input value={this.state.file.displayName} onChange={e => {
+              this.updateFileField("displayName", e.target.value);
             }} />
           </Col>
         </Row>
@@ -98,8 +98,8 @@ class FileObjectEditPage extends React.Component {
             {Setting.getLabel(i18next.t("file:Filename"), i18next.t("file:Filename - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.fileObject.filename} onChange={e => {
-              this.updateFileObjectField("filename", e.target.value);
+            <Input value={this.state.file.filename} onChange={e => {
+              this.updateFileField("filename", e.target.value);
             }} />
           </Col>
         </Row>
@@ -108,8 +108,8 @@ class FileObjectEditPage extends React.Component {
             {Setting.getLabel(i18next.t("file:Path"), i18next.t("file:Path - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.fileObject.path} onChange={e => {
-              this.updateFileObjectField("path", e.target.value);
+            <Input value={this.state.file.path} onChange={e => {
+              this.updateFileField("path", e.target.value);
             }} />
           </Col>
         </Row>
@@ -118,8 +118,8 @@ class FileObjectEditPage extends React.Component {
             {Setting.getLabel(i18next.t("file:Size"), i18next.t("file:Size - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <InputNumber value={this.state.fileObject.size} onChange={value => {
-              this.updateFileObjectField("size", value);
+            <InputNumber value={this.state.file.size} onChange={value => {
+              this.updateFileField("size", value);
             }} />
           </Col>
         </Row>
@@ -128,8 +128,8 @@ class FileObjectEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Store"), i18next.t("general:Store - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.fileObject.store} onChange={e => {
-              this.updateFileObjectField("store", e.target.value);
+            <Input value={this.state.file.store} onChange={e => {
+              this.updateFileField("store", e.target.value);
             }} />
           </Col>
         </Row>
@@ -138,8 +138,8 @@ class FileObjectEditPage extends React.Component {
             {Setting.getLabel(i18next.t("file:Storage Provider"), i18next.t("file:Storage Provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.fileObject.storageProvider} onChange={e => {
-              this.updateFileObjectField("storageProvider", e.target.value);
+            <Input value={this.state.file.storageProvider} onChange={e => {
+              this.updateFileField("storageProvider", e.target.value);
             }} />
           </Col>
         </Row>
@@ -148,8 +148,8 @@ class FileObjectEditPage extends React.Component {
             {Setting.getLabel(i18next.t("file:Token Count"), i18next.t("file:Token Count - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <InputNumber value={this.state.fileObject.tokenCount} onChange={value => {
-              this.updateFileObjectField("tokenCount", value);
+            <InputNumber value={this.state.file.tokenCount} onChange={value => {
+              this.updateFileField("tokenCount", value);
             }} />
           </Col>
         </Row>
@@ -158,8 +158,8 @@ class FileObjectEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Status"), i18next.t("general:Status - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.fileObject.status} onChange={(value) => {
-              this.updateFileObjectField("status", value);
+            <Select virtual={false} style={{width: "100%"}} value={this.state.file.status} onChange={(value) => {
+              this.updateFileField("status", value);
             }}>
               <Option value="Active">{i18next.t("file:Active")}</Option>
               <Option value="Inactive">{i18next.t("file:Inactive")}</Option>
@@ -172,26 +172,26 @@ class FileObjectEditPage extends React.Component {
     );
   }
 
-  submitFileObjectEdit(exitAfterSave) {
-    const fileObject = Setting.deepCopy(this.state.fileObject);
-    FileObjectBackend.updateFileObject(this.state.fileObject.owner, this.state.fileObjectName, fileObject)
+  submitFileEdit(exitAfterSave) {
+    const file = Setting.deepCopy(this.state.file);
+    FileBackend.updateFile(this.state.file.owner, this.state.fileName, file)
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
-              fileObjectName: this.state.fileObject.name,
+              fileName: this.state.file.name,
             });
 
             if (exitAfterSave) {
               this.props.history.push("/files");
             } else {
-              this.props.history.push(`/files/${this.state.fileObject.name}`);
-              this.getFileObject();
+              this.props.history.push(`/files/${this.state.file.name}`);
+              this.getFile();
             }
           } else {
             Setting.showMessage("error", i18next.t("general:Failed to save"));
-            this.updateFileObjectField("name", this.state.fileObjectName);
+            this.updateFileField("name", this.state.fileName);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
@@ -206,15 +206,15 @@ class FileObjectEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.fileObject !== null ? this.renderFileObject() : null
+          this.state.file !== null ? this.renderFile() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button size="large" onClick={() => this.submitFileObjectEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitFileObjectEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          <Button size="large" onClick={() => this.submitFileEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitFileEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );
   }
 }
 
-export default FileObjectEditPage;
+export default FileEditPage;

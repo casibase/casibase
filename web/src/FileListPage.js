@@ -18,16 +18,16 @@ import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
-import * as FileObjectBackend from "./backend/FileObjectBackend";
+import * as FileBackend from "./backend/FileBackend";
 import i18next from "i18next";
 import {DeleteOutlined} from "@ant-design/icons";
 
-class FileObjectListPage extends BaseListPage {
+class FileListPage extends BaseListPage {
   constructor(props) {
     super(props);
   }
 
-  newFileObject() {
+  newFile() {
     const randomName = Setting.getRandomName();
     const storeName = Setting.isDefaultStoreSelected(this.props.account) ? "store-built-in" : Setting.getRequestStore(this.props.account);
     return {
@@ -45,14 +45,14 @@ class FileObjectListPage extends BaseListPage {
     };
   }
 
-  addFileObject() {
-    const newFileObject = this.newFileObject();
-    FileObjectBackend.addFileObject(newFileObject)
+  addFile() {
+    const newFile = this.newFile();
+    FileBackend.addFile(newFile)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
           this.setState({
-            data: Setting.prependRow(this.state.data, newFileObject),
+            data: Setting.prependRow(this.state.data, newFile),
             pagination: {
               ...this.state.pagination,
               total: this.state.pagination.total + 1,
@@ -68,11 +68,11 @@ class FileObjectListPage extends BaseListPage {
   }
 
   deleteItem = async(i) => {
-    return FileObjectBackend.deleteFileObject(this.state.data[i]);
+    return FileBackend.deleteFile(this.state.data[i]);
   };
 
-  deleteFileObject(record) {
-    FileObjectBackend.deleteFileObject(record)
+  deleteFile(record) {
+    FileBackend.deleteFile(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deleted"));
@@ -92,7 +92,7 @@ class FileObjectListPage extends BaseListPage {
       });
   }
 
-  renderTable(fileObjects) {
+  renderTable(files) {
     const columns = [
       {
         title: i18next.t("general:Name"),
@@ -192,7 +192,7 @@ class FileObjectListPage extends BaseListPage {
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/files/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteFileObject(record)}
+                onConfirm={() => this.deleteFile(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
@@ -214,11 +214,11 @@ class FileObjectListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={filteredColumns} dataSource={fileObjects} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={filteredColumns} dataSource={files} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Files")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button type="primary" size="small" onClick={this.addFileObject.bind(this)}>{i18next.t("general:Add")}</Button>
+              <Button type="primary" size="small" onClick={this.addFile.bind(this)}>{i18next.t("general:Add")}</Button>
               {this.state.selectedRowKeys.length > 0 && (
                 <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
                   <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
@@ -236,11 +236,11 @@ class FileObjectListPage extends BaseListPage {
   }
 
   fetch = (params = {}) => {
-    const field = params.searchedColumn, value = params.searchText;
-    const sortField = params.sortField, sortOrder = params.sortOrder;
+    //     const field = params.searchedColumn, value = params.searchText;
+    //     const sortField = params.sortField, sortOrder = params.sortOrder;
     this.setState({loading: true});
     const store = Setting.getRequestStore(this.props.account);
-    FileObjectBackend.getFileObjects("admin", store)
+    FileBackend.getFiles("admin", store)
       .then((res) => {
         this.setState({
           loading: false,
@@ -268,4 +268,4 @@ class FileObjectListPage extends BaseListPage {
   };
 }
 
-export default FileObjectListPage;
+export default FileListPage;
