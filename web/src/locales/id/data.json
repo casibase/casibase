@@ -46,6 +46,22 @@
     "ZH 🡰 EN": "Bahasa Cina 🡰 Bahasa Inggris",
     "ZH 🡲 EN": "Bahasa Cina 🡲 Bahasa Inggris"
   },
+  "asset": {
+    "Edit Asset": "Sunting aset",
+    "Failed to scan assets": "Gagal memindai aset",
+    "New Asset": "Aset baru",
+    "Please select a provider": "Silakan pilih penyedia",
+    "Properties": "Properti",
+    "Properties - Tooltip": "Properti sumber daya dalam format JSON",
+    "Provider": "Penyedia",
+    "Provider - Tooltip": "Nama penyedia cloud",
+    "Resource ID": "ID sumber daya",
+    "Resource ID - Tooltip": "Pengenal unik sumber daya cloud",
+    "Resource type": "Jenis sumber daya",
+    "Resource type - Tooltip": "Jenis sumber daya cloud (Instans ECS, Disk, VPC, dll.)",
+    "Scan": "Pindai",
+    "Successfully scanned assets": "Berhasil memindai aset"
+  },
   "caase": {
     "Edit Caase": "Edit kasus",
     "New Caase": "Kasus baru"
@@ -163,6 +179,7 @@
     "Application Store": "Application Store",
     "Applications": "Applications",
     "Articles": "Artikel",
+    "Assets": "Aset",
     "Audit": "Auditir",
     "Avatar": "Avatar",
     "Avatar - Tooltip": "URL avatar",
@@ -223,9 +240,9 @@
     "Failed to undeploy": "Gagal membatalkan penerapan",
     "Favicon URL": "URL Favicon",
     "Favicon URL - Tooltip": "URL Favicon - Keterangan",
+    "Files": "File",
     "Footer HTML": "HTML Footer",
     "Footer HTML - Tooltip": "HTML Footer - Keterangan",
-    "Files": "File",
     "Forms": "Formulir",
     "Go to writable demo site?": "Masuk ke situs demo dapat ditulis?",
     "Graphs": "Graphs",

@@ -46,6 +46,22 @@
     "ZH 🡰 EN": "Китайский 🡰 Английский",
     "ZH 🡲 EN": "Китайский 🡲 Английский"
   },
+  "asset": {
+    "Edit Asset": "Sunting aset",
+    "Failed to scan assets": "Gagal memindai aset",
+    "New Asset": "Aset baru",
+    "Please select a provider": "Silakan pilih penyedia",
+    "Properties": "Properti",
+    "Properties - Tooltip": "Properti sumber daya dalam format JSON",
+    "Provider": "Penyedia",
+    "Provider - Tooltip": "Nama penyedia cloud",
+    "Resource ID": "ID sumber daya",
+    "Resource ID - Tooltip": "Pengenal unik sumber daya cloud",
+    "Resource type": "Jenis sumber daya",
+    "Resource type - Tooltip": "Jenis sumber daya cloud (Instans ECS, Disk, VPC, dll.)",
+    "Scan": "Pindai",
+    "Successfully scanned assets": "Berhasil memindai aset"
+  },
   "caase": {
     "Edit Caase": "Редактировать случай",
     "New Caase": "Новый случай"
@@ -163,6 +179,7 @@
     "Application Store": "Application Store",
     "Applications": "Applications",
     "Articles": "Статьи",
+    "Assets": "Aset",
     "Audit": "Аудит",
     "Avatar": "Аватар",
     "Avatar - Tooltip": "URL-адрес аватара",
@@ -223,9 +240,9 @@
     "Failed to undeploy": "Failed to undeploy",
     "Favicon URL": "URL фавикона",
     "Favicon URL - Tooltip": "URL фавикона - Подсказка",
+    "Files": "Файлы",
     "Footer HTML": "HTML низа страницы",
     "Footer HTML - Tooltip": "HTML низа страницы - Подсказка",
-    "Files": "Файлы",
     "Forms": "Формы",
     "Go to writable demo site?": "Перейти на демо-сайт для записи?",
     "Graphs": "Graphs",

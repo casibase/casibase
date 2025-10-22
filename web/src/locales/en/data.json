@@ -46,6 +46,22 @@
     "ZH 🡰 EN": "ZH 🡰 EN",
     "ZH 🡲 EN": "ZH 🡲 EN"
   },
+  "asset": {
+    "Edit Asset": "Edit Asset",
+    "Failed to scan assets": "Failed to scan assets",
+    "New Asset": "New Asset",
+    "Please select a provider": "Please select a provider",
+    "Properties": "Properties",
+    "Properties - Tooltip": "Resource properties in JSON format",
+    "Provider": "Provider",
+    "Provider - Tooltip": "Cloud provider name",
+    "Resource ID": "Resource ID",
+    "Resource ID - Tooltip": "Unique identifier of the cloud resource",
+    "Resource type": "Resource type",
+    "Resource type - Tooltip": "Type of cloud resource (ECS Instance, Disk, VPC, etc.)",
+    "Scan": "Scan",
+    "Successfully scanned assets": "Successfully scanned assets"
+  },
   "caase": {
     "Edit Caase": "Edit Case",
     "New Caase": "New Case"
@@ -163,6 +179,7 @@
     "Application Store": "Application Store",
     "Applications": "Applications",
     "Articles": "Articles",
+    "Assets": "Assets",
     "Audit": "Audit",
     "Avatar": "Avatar",
     "Avatar - Tooltip": "Icon URL for visual identification",
@@ -223,9 +240,9 @@
     "Failed to undeploy": "Failed to undeploy",
     "Favicon URL": "Favicon URL",
     "Favicon URL - Tooltip": "Favicon URL - Tooltip",
+    "Files": "Files",
     "Footer HTML": "Footer HTML",
     "Footer HTML - Tooltip": "Footer HTML - Tooltip",
-    "Files": "Files",
     "Forms": "Forms",
     "Go to writable demo site?": "Go to writable demo site?",
     "Graphs": "Graphs",

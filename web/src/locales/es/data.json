@@ -46,6 +46,22 @@
     "ZH 🡰 EN": "Chino 🡰 Inglés",
     "ZH 🡲 EN": "Chino 🡲 Inglés"
   },
+  "asset": {
+    "Edit Asset": "Editar activo",
+    "Failed to scan assets": "Error al escanear activos",
+    "New Asset": "Nuevo activo",
+    "Please select a provider": "Por favor seleccione un proveedor",
+    "Properties": "Propiedades",
+    "Properties - Tooltip": "Propiedades del recurso en formato JSON",
+    "Provider": "Proveedor",
+    "Provider - Tooltip": "Nombre del proveedor de nube",
+    "Resource ID": "ID de recurso",
+    "Resource ID - Tooltip": "Identificador único del recurso en la nube",
+    "Resource type": "Tipo de recurso",
+    "Resource type - Tooltip": "Tipo de recurso en la nube (Instancia ECS, Disco, VPC, etc.)",
+    "Scan": "Escanear",
+    "Successfully scanned assets": "Activos escaneados exitosamente"
+  },
   "caase": {
     "Edit Caase": "Editar caso",
     "New Caase": "Nuevo caso"
@@ -163,6 +179,7 @@
     "Application Store": "Application Store",
     "Applications": "Applications",
     "Articles": "Artículos",
+    "Assets": "Activos",
     "Audit": "Auditoría",
     "Avatar": "Avatar",
     "Avatar - Tooltip": "URL del avatar",
@@ -223,9 +240,9 @@
     "Failed to undeploy": "Error al anular el despliegue",
     "Favicon URL": "URL del Favicon",
     "Favicon URL - Tooltip": "URL del Favicon - Información",
+    "Files": "Archivos",
     "Footer HTML": "HTML del Pie de Página",
     "Footer HTML - Tooltip": "HTML del Pie de Página - Información",
-    "Files": "Archivos",
     "Forms": "Formularios",
     "Go to writable demo site?": "¿Ir al sitio de demostración editable?",
     "Graphs": "Graphs",

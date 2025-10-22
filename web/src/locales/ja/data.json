@@ -46,6 +46,22 @@
     "ZH 🡰 EN": "中国語 🡰 英語",
     "ZH 🡲 EN": "中国語 🡲 英語"
   },
+  "asset": {
+    "Edit Asset": "Sunting aset",
+    "Failed to scan assets": "Gagal memindai aset",
+    "New Asset": "Aset baru",
+    "Please select a provider": "Silakan pilih penyedia",
+    "Properties": "Properti",
+    "Properties - Tooltip": "Properti sumber daya dalam format JSON",
+    "Provider": "Penyedia",
+    "Provider - Tooltip": "Nama penyedia cloud",
+    "Resource ID": "ID sumber daya",
+    "Resource ID - Tooltip": "Pengenal unik sumber daya cloud",
+    "Resource type": "Jenis sumber daya",
+    "Resource type - Tooltip": "Jenis sumber daya cloud (Instans ECS, Disk, VPC, dll.)",
+    "Scan": "Pindai",
+    "Successfully scanned assets": "Berhasil memindai aset"
+  },
   "caase": {
     "Edit Caase": "症例を編集",
     "New Caase": "新しい症例"
@@ -163,6 +179,7 @@
     "Application Store": "Application Store",
     "Applications": "Applications",
     "Articles": "記事",
+    "Assets": "Aset",
     "Audit": "監査",
     "Avatar": "アバター",
     "Avatar - Tooltip": "アバターに対応するURL",
@@ -223,9 +240,9 @@
     "Failed to undeploy": "アンデプロイに失敗しました",
     "Favicon URL": "ファビコンURL",
     "Favicon URL - Tooltip": "ファビコンURL - ツールチップ",
+    "Files": "ファイル",
     "Footer HTML": "フッターHTML",
     "Footer HTML - Tooltip": "フッターHTML - ツールチップ",
-    "Files": "ファイル",
     "Forms": "フォーム",
     "Go to writable demo site?": "書き込み可能なデモサイトに移動しますか？",
     "Graphs": "Graphs",

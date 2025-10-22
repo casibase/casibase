@@ -46,6 +46,22 @@
     "ZH 🡰 EN": "CN 🡰 EN",
     "ZH 🡲 EN": "CN 🡲 EN"
   },
+  "asset": {
+    "Edit Asset": "Vermögenswert bearbeiten",
+    "Failed to scan assets": "Fehler beim Scannen von Vermögenswerten",
+    "New Asset": "Neuer Vermögenswert",
+    "Please select a provider": "Bitte wählen Sie einen Anbieter",
+    "Properties": "Eigenschaften",
+    "Properties - Tooltip": "Ressourceneigenschaften im JSON-Format",
+    "Provider": "Anbieter",
+    "Provider - Tooltip": "Cloud-Anbietername",
+    "Resource ID": "Ressourcen-ID",
+    "Resource ID - Tooltip": "Eindeutige Kennung der Cloud-Ressource",
+    "Resource type": "Ressourcentyp",
+    "Resource type - Tooltip": "Typ der Cloud-Ressource (ECS-Instanz, Disk, VPC usw.)",
+    "Scan": "Scannen",
+    "Successfully scanned assets": "Vermögenswerte erfolgreich gescannt"
+  },
   "caase": {
     "Edit Caase": "Fall bearbeiten",
     "New Caase": "Neuer Fall"
@@ -163,6 +179,7 @@
     "Application Store": "Application Store",
     "Applications": "Applications",
     "Articles": "Artikel",
+    "Assets": "Vermögenswerte",
     "Audit": "Auditierung",
     "Avatar": "Avatar",
     "Avatar - Tooltip": "URL des Profilbilds",
@@ -223,9 +240,9 @@
     "Failed to undeploy": "Aufheben der Bereitstellung fehlgeschlagen",
     "Favicon URL": "Favicon-URL",
     "Favicon URL - Tooltip": "Favicon-URL - Tooltip",
+    "Files": "Dateien",
     "Footer HTML": "Fußzeilen-HTML",
     "Footer HTML - Tooltip": "Fußzeilen-HTML - Tooltip",
-    "Files": "Dateien",
     "Forms": "Formulare",
     "Go to writable demo site?": "Gehen Sie zur beschreibbaren Demoseite?",
     "Graphs": "Graphs",
