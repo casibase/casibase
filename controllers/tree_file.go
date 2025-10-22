@@ -23,11 +23,11 @@ import (
 
 // UpdateTreeFile
 // @Title UpdateTreeFile
-// @Tag File API
+// @Tag Tree File API
 // @Description update tree file
 // @Param storeId query string true "The store id of the file"
 // @Param key query string true "The key of the file"
-// @Param body body object.File true "The details of the File"
+// @Param body body object.TreeFile true "The details of the Tree File"
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-tree-file [post]
 func (c *ApiController) UpdateTreeFile() {
@@ -39,7 +39,7 @@ func (c *ApiController) UpdateTreeFile() {
 	storeId := c.Input().Get("store")
 	key := c.Input().Get("key")
 
-	var file object.File
+	var file object.TreeFile
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &file)
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -60,7 +60,7 @@ func (c *ApiController) UpdateTreeFile() {
 
 // AddTreeFile
 // @Title AddTreeFile
-// @Tag File API
+// @Tag Tree File API
 // @Description add tree file
 // @Param store query string true "The store of the file"
 // @Param key query string true "The key of the file"
@@ -115,7 +115,7 @@ func (c *ApiController) AddTreeFile() {
 
 // DeleteTreeFile
 // @Title DeleteTreeFile
-// @Tag File API
+// @Tag Tree File API
 // @Description delete tree file
 // @Param store query string true "The store of the file"
 // @Param key query string true "The key of the file"

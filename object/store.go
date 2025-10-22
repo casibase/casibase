@@ -25,16 +25,16 @@ import (
 	"xorm.io/core"
 )
 
-type File struct {
-	Key         string  `xorm:"varchar(100)" json:"key"`
-	Title       string  `xorm:"varchar(100)" json:"title"`
-	Size        int64   `json:"size"`
-	CreatedTime string  `xorm:"varchar(100)" json:"createdTime"`
-	IsLeaf      bool    `json:"isLeaf"`
-	Url         string  `xorm:"varchar(255)" json:"url"`
-	Children    []*File `xorm:"varchar(1000)" json:"children"`
+type TreeFile struct {
+	Key         string      `xorm:"varchar(100)" json:"key"`
+	Title       string      `xorm:"varchar(100)" json:"title"`
+	Size        int64       `json:"size"`
+	CreatedTime string      `xorm:"varchar(100)" json:"createdTime"`
+	IsLeaf      bool        `json:"isLeaf"`
+	Url         string      `xorm:"varchar(255)" json:"url"`
+	Children    []*TreeFile `xorm:"varchar(1000)" json:"children"`
 
-	ChildrenMap map[string]*File `xorm:"-" json:"-"`
+	ChildrenMap map[string]*TreeFile `xorm:"-" json:"-"`
 }
 
 type Properties struct {
@@ -105,7 +105,7 @@ type Store struct {
 	ChatCount    int `xorm:"-" json:"chatCount"`
 	MessageCount int `xorm:"-" json:"messageCount"`
 
-	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
+	FileTree      *TreeFile              `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
 }
 

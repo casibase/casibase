@@ -22,7 +22,7 @@ import (
 	"strings"
 )
 
-func UpdateTreeFile(storeId string, key string, file *File) bool {
+func UpdateTreeFile(storeId string, key string, file *TreeFile) bool {
 	return true
 }
 
