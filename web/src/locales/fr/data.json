@@ -46,6 +46,10 @@
     "ZH 🡰 EN": "Chinois 🡰 Anglais",
     "ZH 🡲 EN": "Chinois 🡲 Anglais"
   },
+  "caase": {
+    "Edit Caase": "Modifier le cas",
+    "New Caase": "Nouveau cas"
+  },
   "cert": {
     "Sign cert": "Certificat de signature",
     "Sign cert - Tooltip": "Certificat de signature",
@@ -95,6 +99,10 @@
     "History": "Historique",
     "Online": "En ligne"
   },
+  "consultation": {
+    "Edit Consultation": "Modifier la consultation",
+    "New Consultation": "Nouvelle consultation"
+  },
   "container": {
     "Command": "Commande",
     "Command - Tooltip": "Commande de démarrage du conteneur",
@@ -108,6 +116,10 @@
     "Size RW - Tooltip": "Taille de stockage de la coucheritable (unité : MB)",
     "Size root FS": "Taille du système de fichiers racine",
     "Size root FS - Tooltip": "Taille du système de fichiers racine (unité : MB)"
+  },
+  "doctor": {
+    "Edit Doctor": "Modifier le médecin",
+    "New Doctor": "Nouveau médecin"
   },
   "form": {
     "Edit Form": "Éditer le formulaire",
@@ -395,6 +407,10 @@
   "graph": {
     "Edit Graph": "Edit Graph"
   },
+  "hospital": {
+    "Edit Hospital": "Modifier l'hôpital",
+    "New Hospital": "Nouvel hôpital"
+  },
   "image": {
     "Arch": "Architecture",
     "Arch - Tooltip": "Architecture système",
@@ -440,8 +456,6 @@
     "Allergies": "Allergies",
     "Allergies - Tooltip": "Allergies",
     "Audit": "Audit",
-    "Authorized hospital": "Hôpital autorisé",
-    "Authorized hospital - Tooltip": "Hôpital autorisé à accéder aux dossiers de consultation",
     "B+": "B+",
     "B-": "B-",
     "Blood type": "Groupe sanguin",
@@ -456,14 +470,7 @@
     "Diagnosis date - Tooltip": "Date du diagnostic",
     "Doctor": "Médecin",
     "Doctor - Tooltip": "Médecin traitant",
-    "Doctor name": "Nom du médecin",
-    "Doctor name - Tooltip": "Nom du médecin traitant",
     "Doctors": "Médecins",
-    "Edit Caase": "Modifier le cas",
-    "Edit Consultation": "Modifier la consultation",
-    "Edit Doctor": "Modifier le médecin",
-    "Edit Hospital": "Modifier l'hôpital",
-    "Edit Patient": "Modifier le patient",
     "Email": "E-mail",
     "Email - Tooltip": "E-mail",
     "Expired time": "Temps d'expiration",
@@ -477,18 +484,11 @@
     "HIS interface info - Tooltip": "Détails de l'interface du Système d'Information Hospitalier",
     "Hospital": "Hôpital",
     "Hospital - Tooltip": "Hôpital",
-    "Hospital name": "Nom de l'hôpital",
-    "Hospital name - Tooltip": "Nom de l'hôpital",
     "Hospitals": "Hôpitaux",
     "Integrated care organization Id": "Id d'organisation de soins intégrés",
     "Integrated care organization Id - Tooltip": "Identifiant d'organisation de soins intégrés",
     "Male": "Masculin",
     "Medical Image Analysis": "Analyse d'images médicales",
-    "New Caase": "Nouveau cas",
-    "New Consultation": "Nouvelle consultation",
-    "New Doctor": "Nouveau médecin",
-    "New Hospital": "Nouvel hôpital",
-    "New Patient": "Nouveau patient",
     "O+": "O+",
     "O-": "O-",
     "Other": "Autre",
@@ -496,8 +496,6 @@
     "Owners - Tooltip": "Médecins autorisés à gérer ce patient",
     "Patient": "Patient",
     "Patient - Tooltip": "Patient",
-    "Patient name": "Nom du patient",
-    "Patient name - Tooltip": "Nom du patient",
     "Patients": "Patients",
     "Prescription": "Ordonnance",
     "Prescription - Tooltip": "Médicament ou traitement prescrit",
@@ -545,11 +543,18 @@
     "Services": "Services",
     "Services - Tooltip": "Configuration de surveillance des services exécutés sur le nœud (port/processus)"
   },
+  "patient": {
+    "Edit Patient": "Modifier le patient",
+    "New Patient": "Nouveau patient",
+    "View Patient": "Voir le patient"
+  },
   "pod": {
     "Edit Pod": "Éditer le Pod",
     "New Pod": "Nouveau Pod"
   },
   "provider": {
+    "AES key": "Clé AES",
+    "AES key - Tooltip": "Clé de chiffrement AES",
     "API key": "Clé API",
     "API key - Tooltip": "Clé API du modèle (visible uniquement pour les administrateurs)",
     "API version": "Version de l'API",
@@ -557,6 +562,8 @@
     "Add Storage Provider": "Ajouter un fournisseur de stockage",
     "Auth type": "Type d'authentification",
     "Auth type - Tooltip": "Type d'authentification",
+    "Bot ID": "ID du bot",
+    "Bot ID - Tooltip": "Identifiant unique du bot",
     "Browser URL": "URL du navigateur",
     "Browser URL - Tooltip": "URL du navigateur blockchain",
     "Category": "Catégorie",
@@ -625,6 +632,8 @@
     "Temperature - Tooltip": "Contrôle de diversité de génération (0=conservateur, 2=créatif)",
     "Thinking tokens": "Tokens de pensée",
     "Thinking tokens - Tooltip": "Tokens de pensée",
+    "Token": "Jeton",
+    "Token - Tooltip": "Jeton d'accès",
     "Tools": "Outils",
     "Top K": "Top K",
     "Top K - Tooltip": "Limite du nombre de tokens candidates (1-6)",
@@ -650,6 +659,8 @@
     "Are you sure you want to delete the selected items?": "Are you sure you want to delete the selected items?",
     "Auto read": "Lecture automatique",
     "Biology": "Biologie",
+    "Builtin tools": "Outils intégrés",
+    "Builtin tools - Tooltip": "Sélectionnez les outils intégrés à activer (par exemple, temps, exécution de code, traitement JSON, etc.)",
     "Chat count": "Nombre de chats",
     "Chemistry": "Chimie",
     "Child model providers": "Fournisseurs de sous-modèles",
@@ -657,8 +668,6 @@
     "Child stores": "Magasins de données enfants",
     "Child stores - Tooltip": "Noms de sous-magasins associés (pour la recherche de connaissances trans-magasin)",
     "Chinese": "Chinois",
-    "Forbidden words": "Mots interdits",
-    "Forbidden words - Tooltip": "Mots non autorisés dans les messages de chat. Les messages contenant ces mots seront rejetés.",
     "Collected time": "Date de collecte",
     "Disable file upload": "Désactiver le téléchargement de fichiers",
     "Disable file upload - Tooltip": "Interdire aux utilisateurs de télécharger des fichiers (une fois activé, la base de connaissances ne peut être mise à jour que par les administrateurs)",
@@ -677,6 +686,8 @@
     "File type": "Type de fichier",
     "Folder": "Dossier",
     "Footer HTML - Edit": "Éditer HTML du Pied de Page",
+    "Forbidden words": "Mots interdits",
+    "Forbidden words - Tooltip": "Mots non autorisés dans les messages de chat. Les messages contenant ces mots seront rejetés.",
     "Frequency": "Fréquence",
     "Frequency - Tooltip": "Limite de fréquence d'appel du modèle IA (fois/minute)",
     "Hide thinking": "Cacher le pensée",
@@ -718,6 +729,7 @@
     "Science": "Science",
     "Search provider": "Fournisseur de recherche",
     "Search provider - Tooltip": "Fournisseur de services de recherche web et de documents",
+    "Select builtin tools": "Sélectionner les outils intégrés",
     "Show auto read": "Afficher la lecture automatique",
     "Show auto read - Tooltip": "Afficher si la réponse IA doit être lue automatiquement (nécessite l'activation du service TTS)",
     "Sorry, you are unauthorized to access this file or folder": "Désolé, vous n'êtes pas autorisé à accéder à ce fichier ou dossier",
@@ -741,6 +753,8 @@
     "Upload folder": "Upload folder",
     "Vector store id": "Vector store id",
     "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector stores": "Magasins de vecteurs",
+    "Vector stores - Tooltip": "Configuration des magasins de vecteurs",
     "Welcome": "Message de bienvenue",
     "Welcome - Tooltip": "Message de bienvenue affiché lors de la première entrée dans le chat",
     "Welcome text": "Texte de bienvenue",
@@ -893,26 +907,5 @@
   },
   "workflow": {
     "Edit Workflow": "Éditer le flux de travail"
-  },
-  "caase": {
-    "Edit Caase": "Modifier le cas",
-    "New Caase": "Nouveau cas"
-  },
-  "consultation": {
-    "Edit Consultation": "Modifier la consultation",
-    "New Consultation": "Nouvelle consultation"
-  },
-  "doctor": {
-    "Edit Doctor": "Modifier le médecin",
-    "New Doctor": "Nouveau médecin"
-  },
-  "hospital": {
-    "Edit Hospital": "Modifier l'hôpital",
-    "New Hospital": "Nouvel hôpital"
-  },
-  "patient": {
-    "Edit Patient": "Modifier le patient",
-    "New Patient": "Nouveau patient",
-    "View Patient": "Voir le patient"
   }
 }

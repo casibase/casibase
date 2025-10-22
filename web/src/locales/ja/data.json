@@ -46,6 +46,10 @@
     "ZH 🡰 EN": "中国語 🡰 英語",
     "ZH 🡲 EN": "中国語 🡲 英語"
   },
+  "caase": {
+    "Edit Caase": "症例を編集",
+    "New Caase": "新しい症例"
+  },
   "cert": {
     "Sign cert": "署名証明書",
     "Sign cert - Tooltip": "署名証明書",
@@ -95,6 +99,10 @@
     "History": "履歴",
     "Online": "オンライン"
   },
+  "consultation": {
+    "Edit Consultation": "相談を編集",
+    "New Consultation": "新しい相談"
+  },
   "container": {
     "Command": "コマンド",
     "Command - Tooltip": "コンテナ起動コマンド",
@@ -108,6 +116,10 @@
     "Size RW - Tooltip": "書き込み可能層のストレージサイズ（単位：MB）",
     "Size root FS": "ルートファイルシステムサイズ",
     "Size root FS - Tooltip": "ルートファイルシステムサイズ（単位：MB）"
+  },
+  "doctor": {
+    "Edit Doctor": "医師を編集",
+    "New Doctor": "新しい医師"
   },
   "form": {
     "Edit Form": "フォームを編集",
@@ -395,6 +407,10 @@
   "graph": {
     "Edit Graph": "Edit Graph"
   },
+  "hospital": {
+    "Edit Hospital": "病院を編集",
+    "New Hospital": "新しい病院"
+  },
   "image": {
     "Arch": "アーキテクチャ",
     "Arch - Tooltip": "システムアーキテクチャ",
@@ -440,8 +456,6 @@
     "Allergies": "アレルギー",
     "Allergies - Tooltip": "アレルギー",
     "Audit": "監査",
-    "Authorized hospital": "承認された病院",
-    "Authorized hospital - Tooltip": "相談記録にアクセスすることが承認された病院",
     "B+": "B+",
     "B-": "B-",
     "Blood type": "血液型",
@@ -456,14 +470,7 @@
     "Diagnosis date - Tooltip": "診断日",
     "Doctor": "医師",
     "Doctor - Tooltip": "担当医師",
-    "Doctor name": "医師名",
-    "Doctor name - Tooltip": "担当医師の名前",
     "Doctors": "医師",
-    "Edit Caase": "症例を編集",
-    "Edit Consultation": "相談を編集",
-    "Edit Doctor": "医師を編集",
-    "Edit Hospital": "病院を編集",
-    "Edit Patient": "患者を編集",
     "Email": "メール",
     "Email - Tooltip": "メール",
     "Expired time": "有効期限",
@@ -477,18 +484,11 @@
     "HIS interface info - Tooltip": "病院情報システムのインターフェース詳細",
     "Hospital": "病院",
     "Hospital - Tooltip": "病院",
-    "Hospital name": "病院名",
-    "Hospital name - Tooltip": "病院の名前",
     "Hospitals": "病院",
     "Integrated care organization Id": "統合ケア組織Id",
     "Integrated care organization Id - Tooltip": "統合ケア組織の識別子",
     "Male": "男性",
     "Medical Image Analysis": "医学画像解析",
-    "New Caase": "新しい症例",
-    "New Consultation": "新しい相談",
-    "New Doctor": "新しい医師",
-    "New Hospital": "新しい病院",
-    "New Patient": "新しい患者",
     "O+": "O+",
     "O-": "O-",
     "Other": "その他",
@@ -496,8 +496,6 @@
     "Owners - Tooltip": "この患者を管理する権限を持つ医師",
     "Patient": "患者",
     "Patient - Tooltip": "患者",
-    "Patient name": "患者名",
-    "Patient name - Tooltip": "患者の名前",
     "Patients": "患者",
     "Prescription": "処方",
     "Prescription - Tooltip": "処方された薬または治療",
@@ -545,11 +543,18 @@
     "Services": "サービス",
     "Services - Tooltip": "ノードが実行するサービス監視設定（ポート/プロセス）"
   },
+  "patient": {
+    "Edit Patient": "患者を編集",
+    "New Patient": "新しい患者",
+    "View Patient": "患者を表示"
+  },
   "pod": {
     "Edit Pod": "Podを編集",
     "New Pod": "新規Pod"
   },
   "provider": {
+    "AES key": "AESキー",
+    "AES key - Tooltip": "AES暗号化キー",
     "API key": "APIキー",
     "API key - Tooltip": "モデルAPIキー（管理者のみ表示可能）",
     "API version": "APIバージョン",
@@ -557,6 +562,8 @@
     "Add Storage Provider": "ストレージプロバイダを追加",
     "Auth type": "認証タイプ",
     "Auth type - Tooltip": "認証タイプ",
+    "Bot ID": "ボットID",
+    "Bot ID - Tooltip": "ボットの一意識別子",
     "Browser URL": "ブラウザURL",
     "Browser URL - Tooltip": "ブロックチェーンブラウザURL",
     "Category": "カテゴリ",
@@ -625,6 +632,8 @@
     "Temperature - Tooltip": "生成多様性制御（0=保守的、2=創造的）",
     "Thinking tokens": "思考トークン",
     "Thinking tokens - Tooltip": "思考トークン",
+    "Token": "トークン",
+    "Token - Tooltip": "アクセストークン",
     "Tools": "ツール",
     "Top K": "Top K",
     "Top K - Tooltip": "候補token数制限（1-6）",
@@ -650,6 +659,8 @@
     "Are you sure you want to delete the selected items?": "Are you sure you want to delete the selected items?",
     "Auto read": "自動読み上げ",
     "Biology": "生物学",
+    "Builtin tools": "組み込みツール",
+    "Builtin tools - Tooltip": "有効にする組み込みツールを選択（時間、コード実行、JSON処理など）",
     "Chat count": "チャット数",
     "Chemistry": "化学",
     "Child model providers": "子モデルプロバイダ",
@@ -657,8 +668,6 @@
     "Child stores": "子データストア",
     "Child stores - Tooltip": "関連付けられた子ストア名（クロスストア知識検索用）",
     "Chinese": "中国語",
-    "Forbidden words": "禁止ワード",
-    "Forbidden words - Tooltip": "チャットメッセージで許可されていない言葉。これらの言葉を含むメッセージは拒否されます。",
     "Collected time": "収集時間",
     "Disable file upload": "ファイルアップロードを禁止",
     "Disable file upload - Tooltip": "ユーザーのファイルアップロードを禁止（有効化後、知識ベースは管理者のみ更新可能）",
@@ -677,6 +686,8 @@
     "File type": "ファイルタイプ",
     "Folder": "フォルダ",
     "Footer HTML - Edit": "フッターHTMLを編集",
+    "Forbidden words": "禁止ワード",
+    "Forbidden words - Tooltip": "チャットメッセージで許可されていない言葉。これらの言葉を含むメッセージは拒否されます。",
     "Frequency": "周波数",
     "Frequency - Tooltip": "AIモデル呼び出し周波数制限（回/分）",
     "Hide thinking": "推論を非表示",
@@ -718,6 +729,7 @@
     "Science": "科学",
     "Search provider": "検索プロバイダ",
     "Search provider - Tooltip": "ウェブ検索およびドキュメント検索サービスプロバイダ",
+    "Select builtin tools": "組み込みツールを選択",
     "Show auto read": "自動読み上げを表示",
     "Show auto read - Tooltip": "AIの返答を自動的に読み上げるかどうか（TTSサービスを有効化する必要があります）",
     "Sorry, you are unauthorized to access this file or folder": "申し訳ありませんが、このファイルまたはフォルダにアクセスする権限がありません",
@@ -741,6 +753,8 @@
     "Upload folder": "Upload folder",
     "Vector store id": "Vector store id",
     "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector stores": "ベクトルストア",
+    "Vector stores - Tooltip": "ベクトルストアの設定",
     "Welcome": "歓迎プロンプト",
     "Welcome - Tooltip": "ユーザーが初めてチャットに入ったときに表示する歓迎メッセージ",
     "Welcome text": "歓迎テキスト",
@@ -893,26 +907,5 @@
   },
   "workflow": {
     "Edit Workflow": "ワークフローを編集"
-  },
-  "caase": {
-    "Edit Caase": "症例を編集",
-    "New Caase": "新しい症例"
-  },
-  "consultation": {
-    "Edit Consultation": "相談を編集",
-    "New Consultation": "新しい相談"
-  },
-  "doctor": {
-    "Edit Doctor": "医師を編集",
-    "New Doctor": "新しい医師"
-  },
-  "hospital": {
-    "Edit Hospital": "病院を編集",
-    "New Hospital": "新しい病院"
-  },
-  "patient": {
-    "Edit Patient": "患者を編集",
-    "New Patient": "新しい患者",
-    "View Patient": "患者を表示"
   }
 }

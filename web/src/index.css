@@ -1,3 +1,5 @@
+/* stylelint-disable selector-class-pattern max-line-length */
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "Roboto", "Oxygen",
@@ -108,3 +110,12 @@ code {
 /*  background-color: transparent !important;*/
 /*  box-shadow: none !important;*/
 /*}*/
+
+.builtin-tools-cascader .ant-cascader-menu {
+  min-width: 300px !important;
+  height: 400px !important;
+}
+
+.builtin-tools-cascader .ant-cascader-menu-item-content {
+  padding: 8px 12px !important;
+}

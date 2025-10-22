@@ -46,6 +46,10 @@
     "ZH 🡰 EN": "ZH 🡰 EN",
     "ZH 🡲 EN": "ZH 🡲 EN"
   },
+  "caase": {
+    "Edit Caase": "Edit Case",
+    "New Caase": "New Case"
+  },
   "cert": {
     "Sign cert": "Sign cert",
     "Sign cert - Tooltip": "Sign cert - Tooltip",
@@ -95,6 +99,10 @@
     "History": "History",
     "Online": "Online"
   },
+  "consultation": {
+    "Edit Consultation": "Edit Consultation",
+    "New Consultation": "New Consultation"
+  },
   "container": {
     "Command": "Command",
     "Command - Tooltip": "Container entrypoint command",
@@ -108,6 +116,10 @@
     "Size RW - Tooltip": "Writable layer storage size (MB)",
     "Size root FS": "Size root FS",
     "Size root FS - Tooltip": "Root filesystem size (MB)"
+  },
+  "doctor": {
+    "Edit Doctor": "Edit Doctor",
+    "New Doctor": "New Doctor"
   },
   "form": {
     "Edit Form": "Edit Form",
@@ -395,6 +407,10 @@
   "graph": {
     "Edit Graph": "Edit Graph"
   },
+  "hospital": {
+    "Edit Hospital": "Edit Hospital",
+    "New Hospital": "New Hospital"
+  },
   "image": {
     "Arch": "Arch",
     "Arch - Tooltip": "CPU architecture compatibility",
@@ -440,8 +456,6 @@
     "Allergies": "Allergies",
     "Allergies - Tooltip": "Allergies",
     "Audit": "Audit",
-    "Authorized hospital": "Authorized hospital",
-    "Authorized hospital - Tooltip": "Hospital authorized to access consultation records",
     "B+": "B+",
     "B-": "B-",
     "Blood type": "Blood type",
@@ -456,8 +470,6 @@
     "Diagnosis date - Tooltip": "Date of diagnosis",
     "Doctor": "Doctor",
     "Doctor - Tooltip": "Attending doctor",
-    "Doctor name": "Doctor name",
-    "Doctor name - Tooltip": "Name of the attending doctor",
     "Doctors": "Doctors",
     "Email": "Email",
     "Email - Tooltip": "Email",
@@ -472,8 +484,6 @@
     "HIS interface info - Tooltip": "Hospital Information System interface details",
     "Hospital": "Hospital",
     "Hospital - Tooltip": "Hospital",
-    "Hospital name": "Hospital name",
-    "Hospital name - Tooltip": "Name of the hospital",
     "Hospitals": "Hospitals",
     "Integrated care organization Id": "Integrated care organization Id",
     "Integrated care organization Id - Tooltip": "Integrated care organization identifier",
@@ -486,8 +496,6 @@
     "Owners - Tooltip": "Doctors who have permission to manage this patient",
     "Patient": "Patient",
     "Patient - Tooltip": "Patient",
-    "Patient name": "Patient name",
-    "Patient name - Tooltip": "Name of the patient",
     "Patients": "Patients",
     "Prescription": "Prescription",
     "Prescription - Tooltip": "Prescribed medication or treatment",
@@ -535,11 +543,18 @@
     "Services": "Services",
     "Services - Tooltip": "Service monitoring configurations"
   },
+  "patient": {
+    "Edit Patient": "Edit Patient",
+    "New Patient": "New Patient",
+    "View Patient": "View Patient"
+  },
   "pod": {
     "Edit Pod": "Edit Pod",
     "New Pod": "New Pod"
   },
   "provider": {
+    "AES key": "AES key",
+    "AES key - Tooltip": "AES key - Tooltip",
     "API key": "API key",
     "API key - Tooltip": "Model API key (admin-only)",
     "API version": "API version",
@@ -547,6 +562,8 @@
     "Add Storage Provider": "Add Storage Provider",
     "Auth type": "Auth type",
     "Auth type - Tooltip": "Authentication type",
+    "Bot ID": "Bot ID",
+    "Bot ID - Tooltip": "Bot ID - Tooltip",
     "Browser URL": "Browser URL",
     "Browser URL - Tooltip": "Blockchain explorer URL",
     "Category": "Category",
@@ -615,6 +632,8 @@
     "Temperature - Tooltip": "Creativity control (0-2)",
     "Thinking tokens": "Thinking tokens",
     "Thinking tokens - Tooltip": "Thinking tokens - Tooltip",
+    "Token": "Token",
+    "Token - Tooltip": "Token - Tooltip",
     "Tools": "Tools",
     "Top K": "Top K",
     "Top K - Tooltip": "Number of candidate tokens",
@@ -640,6 +659,8 @@
     "Are you sure you want to delete the selected items?": "Are you sure you want to delete the selected items?",
     "Auto read": "Auto read",
     "Biology": "Biology",
+    "Builtin tools": "Builtin tools",
+    "Builtin tools - Tooltip": "Builtin tools - Tooltip",
     "Chat count": "Chat count",
     "Chemistry": "Chemistry",
     "Child model providers": "Child model providers",
@@ -647,8 +668,6 @@
     "Child stores": "Child stores",
     "Child stores - Tooltip": "Linked substores for cross-store knowledge",
     "Chinese": "Chinese",
-    "Forbidden words": "Forbidden words",
-    "Forbidden words - Tooltip": "Words not allowed in chat messages. Messages containing these words will be rejected.",
     "Collected time": "Collected time",
     "Disable file upload": "Disable file upload",
     "Disable file upload - Tooltip": "Disable user file uploads (admin-only updates)",
@@ -667,6 +686,8 @@
     "File type": "File type",
     "Folder": "Folder",
     "Footer HTML - Edit": "Footer HTML - Edit",
+    "Forbidden words": "Forbidden words",
+    "Forbidden words - Tooltip": "Words not allowed in chat messages. Messages containing these words will be rejected.",
     "Frequency": "Frequency",
     "Frequency - Tooltip": "Max API calls per minute",
     "Hide thinking": "Hide thinking",
@@ -708,6 +729,7 @@
     "Science": "Science",
     "Search provider": "Search provider",
     "Search provider - Tooltip": "Service provider for web search and document search capabilities",
+    "Select builtin tools": "Select builtin tools",
     "Show auto read": "Show auto read",
     "Show auto read - Tooltip": "Auto-read AI responses when TTS is enabled",
     "Sorry, you are unauthorized to access this file or folder": "Sorry, you are unauthorized to access this file or folder",
@@ -731,6 +753,8 @@
     "Upload folder": "Upload folder",
     "Vector store id": "Vector store id",
     "Vector store id - Tooltip": "The ID of the vector store that the files belong to",
+    "Vector stores": "Vector stores",
+    "Vector stores - Tooltip": "Vector stores - Tooltip",
     "Welcome": "Welcome",
     "Welcome - Tooltip": "Welcome message",
     "Welcome text": "Welcome text",
@@ -883,26 +907,5 @@
   },
   "workflow": {
     "Edit Workflow": "Edit Workflow"
-  },
-  "caase": {
-    "Edit Caase": "Edit Case",
-    "New Caase": "New Case"
-  },
-  "consultation": {
-    "Edit Consultation": "Edit Consultation",
-    "New Consultation": "New Consultation"
-  },
-  "doctor": {
-    "Edit Doctor": "Edit Doctor",
-    "New Doctor": "New Doctor"
-  },
-  "hospital": {
-    "Edit Hospital": "Edit Hospital",
-    "New Hospital": "New Hospital"
-  },
-  "patient": {
-    "Edit Patient": "Edit Patient",
-    "New Patient": "New Patient",
-    "View Patient": "View Patient"
   }
 }

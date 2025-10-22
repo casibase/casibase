@@ -46,6 +46,10 @@
     "ZH 🡰 EN": "CN 🡰 EN",
     "ZH 🡲 EN": "CN 🡲 EN"
   },
+  "caase": {
+    "Edit Caase": "Fall bearbeiten",
+    "New Caase": "Neuer Fall"
+  },
   "cert": {
     "Sign cert": "Signaturzertifikat",
     "Sign cert - Tooltip": "Signaturzertifikat",
@@ -95,6 +99,10 @@
     "History": "Verlauf",
     "Online": "Online"
   },
+  "consultation": {
+    "Edit Consultation": "Konsultation bearbeiten",
+    "New Consultation": "Neue Konsultation"
+  },
   "container": {
     "Command": "Befehl",
     "Command - Tooltip": "Container-Startbefehl",
@@ -108,6 +116,10 @@
     "Size RW - Tooltip": "Größe der beschreibbaren Schicht (Einheit: MB)",
     "Size root FS": "Größe des Root-Dateisystems",
     "Size root FS - Tooltip": "Größe des Root-Dateisystems (Einheit: MB)"
+  },
+  "doctor": {
+    "Edit Doctor": "Arzt bearbeiten",
+    "New Doctor": "Neuer Arzt"
   },
   "form": {
     "Edit Form": "Formular bearbeiten",
@@ -395,6 +407,10 @@
   "graph": {
     "Edit Graph": "Edit Graph"
   },
+  "hospital": {
+    "Edit Hospital": "Krankenhaus bearbeiten",
+    "New Hospital": "Neues Krankenhaus"
+  },
   "image": {
     "Arch": "Architektur",
     "Arch - Tooltip": "Systemarchitektur",
@@ -440,8 +456,6 @@
     "Allergies": "Allergien",
     "Allergies - Tooltip": "Allergien",
     "Audit": "Audit",
-    "Authorized hospital": "Autorisiertes Krankenhaus",
-    "Authorized hospital - Tooltip": "Krankenhaus, das zum Zugriff auf Konsultationsaufzeichnungen autorisiert ist",
     "B+": "B+",
     "B-": "B-",
     "Blood type": "Blutgruppe",
@@ -456,14 +470,7 @@
     "Diagnosis date - Tooltip": "Datum der Diagnose",
     "Doctor": "Arzt",
     "Doctor - Tooltip": "Behandelnder Arzt",
-    "Doctor name": "Arztname",
-    "Doctor name - Tooltip": "Name des behandelnden Arztes",
     "Doctors": "Ärzte",
-    "Edit Caase": "Fall bearbeiten",
-    "Edit Consultation": "Konsultation bearbeiten",
-    "Edit Doctor": "Arzt bearbeiten",
-    "Edit Hospital": "Krankenhaus bearbeiten",
-    "Edit Patient": "Patient bearbeiten",
     "Email": "E-Mail",
     "Email - Tooltip": "E-Mail",
     "Expired time": "Ablaufzeit",
@@ -477,18 +484,11 @@
     "HIS interface info - Tooltip": "Krankenhausinformationssystem-Schnittstellendetails",
     "Hospital": "Krankenhaus",
     "Hospital - Tooltip": "Krankenhaus",
-    "Hospital name": "Krankenhausname",
-    "Hospital name - Tooltip": "Name des Krankenhauses",
     "Hospitals": "Krankenhäuser",
     "Integrated care organization Id": "Integrierte Pflegeorganisations-Id",
     "Integrated care organization Id - Tooltip": "Kennung der integrierten Pflegeorganisation",
     "Male": "Männlich",
     "Medical Image Analysis": "Medizinische Bildanalyse",
-    "New Caase": "Neuer Fall",
-    "New Consultation": "Neue Konsultation",
-    "New Doctor": "Neuer Arzt",
-    "New Hospital": "Neues Krankenhaus",
-    "New Patient": "Neuer Patient",
     "O+": "O+",
     "O-": "O-",
     "Other": "Andere",
@@ -496,8 +496,6 @@
     "Owners - Tooltip": "Ärzte, die berechtigt sind, diesen Patienten zu verwalten",
     "Patient": "Patient",
     "Patient - Tooltip": "Patient",
-    "Patient name": "Patientenname",
-    "Patient name - Tooltip": "Name des Patienten",
     "Patients": "Patienten",
     "Prescription": "Verschreibung",
     "Prescription - Tooltip": "Verschriebene Medikamente oder Behandlung",
@@ -545,11 +543,18 @@
     "Services": "Dienste",
     "Services - Tooltip": "Konfiguration der Dienstüberwachung des Knotens (Port/Prozess)"
   },
+  "patient": {
+    "Edit Patient": "Patient bearbeiten",
+    "New Patient": "Neuer Patient",
+    "View Patient": "Patient anzeigen"
+  },
   "pod": {
     "Edit Pod": "Pod bearbeiten",
     "New Pod": "Neuen Pod erstellen"
   },
   "provider": {
+    "AES key": "AES-Schlüssel",
+    "AES key - Tooltip": "AES-Verschlüsselungsschlüssel",
     "API key": "API-Schlüssel",
     "API key - Tooltip": "Modul-API-Schlüssel (nur für Administratoren sichtbar)",
     "API version": "API-Version",
@@ -557,6 +562,8 @@
     "Add Storage Provider": "Speicheranbieter hinzufügen",
     "Auth type": "Authentifizierungstyp",
     "Auth type - Tooltip": "Authentifizierungstyp",
+    "Bot ID": "Bot-ID",
+    "Bot ID - Tooltip": "Bot-Kennung",
     "Browser URL": "Browser-URL",
     "Browser URL - Tooltip": "Blockchain-Browser-URL",
     "Category": "Kategorie",
@@ -625,6 +632,8 @@
     "Temperature - Tooltip": "Generierungsvielfalt steuern (0=konservativ, 2=kreativ)",
     "Thinking tokens": "Denken-Token",
     "Thinking tokens - Tooltip": "Denken-Token",
+    "Token": "Token",
+    "Token - Tooltip": "Zugriffstoken",
     "Tools": "Tools",
     "Top K": "Top K",
     "Top K - Tooltip": "Anzahl limit der Kandidaten-Token (1-6)",
@@ -650,6 +659,8 @@
     "Are you sure you want to delete the selected items?": "Are you sure you want to delete the selected items?",
     "Auto read": "Automatisches Vorlesen",
     "Biology": "Biologie",
+    "Builtin tools": "Integrierte Werkzeuge",
+    "Builtin tools - Tooltip": "Wählen Sie die zu aktivierenden integrierten Werkzeuge (z. B. Zeit, Codeausführung, JSON-Verarbeitung usw.)",
     "Chat count": "Chat-Anzahl",
     "Chemistry": "Chemie",
     "Child model providers": "Untermodellanbieter",
@@ -657,8 +668,6 @@
     "Child stores": "Unterdatenrepositories",
     "Child stores - Tooltip": "Bezogene Unterladennamen (für die cross-Repository-Wissenssuche)",
     "Chinese": "Chinesisch",
-    "Forbidden words": "Verbotene Wörter",
-    "Forbidden words - Tooltip": "Wörter, die in Chat-Nachrichten nicht erlaubt sind. Nachrichten mit diesen Wörtern werden abgelehnt.",
     "Collected time": "Erfassungszeit",
     "Disable file upload": "Dateihochladen verbieten",
     "Disable file upload - Tooltip": "Benutzern das Hochladen von Dateien verbieten (wenn aktiviert, kann das Wissensrepository nur von Administratoren aktualisiert werden)",
@@ -677,6 +686,8 @@
     "File type": "Dateityp",
     "Folder": "Ordner",
     "Footer HTML - Edit": "Fußzeilen-HTML bearbeiten",
+    "Forbidden words": "Verbotene Wörter",
+    "Forbidden words - Tooltip": "Wörter, die in Chat-Nachrichten nicht erlaubt sind. Nachrichten mit diesen Wörtern werden abgelehnt.",
     "Frequency": "Frequenz",
     "Frequency - Tooltip": "KI-Modellanruf-Frequenzbegrenzung (Anzahl pro Minute)",
     "Hide thinking": "Hide thinking",
@@ -718,6 +729,7 @@
     "Science": "Naturwissenschaften",
     "Search provider": "Suchanbieter",
     "Search provider - Tooltip": "Dienstleister für Web- und Dokumentensuche",
+    "Select builtin tools": "Integrierte Werkzeuge auswählen",
     "Show auto read": "Automatisches Vorlesen anzeigen",
     "Show auto read - Tooltip": "Ob die KI-Antwort automatisch vorgelesen werden soll (erfordert aktivierte TTS-Dienste)",
     "Sorry, you are unauthorized to access this file or folder": "Entschuldigung, Sie haben keine Berechtigung, auf diese Datei oder diesen Ordner zuzugreifen",
@@ -741,6 +753,8 @@
     "Upload folder": "Upload folder",
     "Vector store id": "Vector store id",
     "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector stores": "Vektorspeicher",
+    "Vector stores - Tooltip": "Vektorspeicherkonfiguration",
     "Welcome": "Willkommensprompt",
     "Welcome - Tooltip": "Willkommensnachricht, die beim ersten Eintreten in den Chat angezeigt wird",
     "Welcome text": "Willkommenstext",
@@ -893,26 +907,5 @@
   },
   "workflow": {
     "Edit Workflow": "Arbeitsfluss bearbeiten"
-  },
-  "caase": {
-    "Edit Caase": "Fall bearbeiten",
-    "New Caase": "Neuer Fall"
-  },
-  "consultation": {
-    "Edit Consultation": "Konsultation bearbeiten",
-    "New Consultation": "Neue Konsultation"
-  },
-  "doctor": {
-    "Edit Doctor": "Arzt bearbeiten",
-    "New Doctor": "Neuer Arzt"
-  },
-  "hospital": {
-    "Edit Hospital": "Krankenhaus bearbeiten",
-    "New Hospital": "Neues Krankenhaus"
-  },
-  "patient": {
-    "Edit Patient": "Patient bearbeiten",
-    "New Patient": "Neuer Patient",
-    "View Patient": "Patient anzeigen"
   }
 }

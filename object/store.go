@@ -60,18 +60,19 @@ type Store struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
-	StorageProvider      string `xorm:"varchar(100)" json:"storageProvider"`
-	StorageSubpath       string `xorm:"varchar(100)" json:"storageSubpath"`
-	ImageProvider        string `xorm:"varchar(100)" json:"imageProvider"`
-	SplitProvider        string `xorm:"varchar(100)" json:"splitProvider"`
-	SearchProvider       string `xorm:"varchar(100)" json:"searchProvider"`
-	ModelProvider        string `xorm:"varchar(100)" json:"modelProvider"`
-	EmbeddingProvider    string `xorm:"varchar(100)" json:"embeddingProvider"`
-	TextToSpeechProvider string `xorm:"varchar(100)" json:"textToSpeechProvider"`
-	EnableTtsStreaming   bool   `xorm:"bool" json:"enableTtsStreaming"`
-	SpeechToTextProvider string `xorm:"varchar(100)" json:"speechToTextProvider"`
-	AgentProvider        string `xorm:"varchar(100)" json:"agentProvider"`
-	VectorStoreId        string `xorm:"varchar(100)" json:"vectorStoreId"`
+	StorageProvider      string   `xorm:"varchar(100)" json:"storageProvider"`
+	StorageSubpath       string   `xorm:"varchar(100)" json:"storageSubpath"`
+	ImageProvider        string   `xorm:"varchar(100)" json:"imageProvider"`
+	SplitProvider        string   `xorm:"varchar(100)" json:"splitProvider"`
+	SearchProvider       string   `xorm:"varchar(100)" json:"searchProvider"`
+	ModelProvider        string   `xorm:"varchar(100)" json:"modelProvider"`
+	EmbeddingProvider    string   `xorm:"varchar(100)" json:"embeddingProvider"`
+	TextToSpeechProvider string   `xorm:"varchar(100)" json:"textToSpeechProvider"`
+	EnableTtsStreaming   bool     `xorm:"bool" json:"enableTtsStreaming"`
+	SpeechToTextProvider string   `xorm:"varchar(100)" json:"speechToTextProvider"`
+	AgentProvider        string   `xorm:"varchar(100)" json:"agentProvider"`
+	VectorStoreId        string   `xorm:"varchar(100)" json:"vectorStoreId"`
+	BuiltinTools         []string `xorm:"varchar(500)" json:"builtinTools"`
 
 	MemoryLimit         int      `json:"memoryLimit"`
 	Frequency           int      `json:"frequency"`

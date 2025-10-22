@@ -46,6 +46,10 @@
     "ZH 🡰 EN": "中文 🡰 英文",
     "ZH 🡲 EN": "中文 🡲 英文"
   },
+  "caase": {
+    "Edit Caase": "编辑病例",
+    "New Caase": "新建病例"
+  },
   "cert": {
     "Sign cert": "签名证书",
     "Sign cert - Tooltip": "签名证书",
@@ -95,6 +99,10 @@
     "History": "历史",
     "Online": "在线"
   },
+  "consultation": {
+    "Edit Consultation": "编辑咨询",
+    "New Consultation": "新建咨询"
+  },
   "container": {
     "Command": "命令",
     "Command - Tooltip": "容器启动命令",
@@ -108,6 +116,10 @@
     "Size RW - Tooltip": "可写层存储大小（单位：MB）",
     "Size root FS": "根文件系统大小",
     "Size root FS - Tooltip": "根文件系统大小（单位：MB）"
+  },
+  "doctor": {
+    "Edit Doctor": "编辑医生",
+    "New Doctor": "新建医生"
   },
   "form": {
     "Edit Form": "编辑表单",
@@ -395,6 +407,10 @@
   "graph": {
     "Edit Graph": "编辑图"
   },
+  "hospital": {
+    "Edit Hospital": "编辑医院",
+    "New Hospital": "新建医院"
+  },
   "image": {
     "Arch": "架构",
     "Arch - Tooltip": "系统架构",
@@ -440,8 +456,6 @@
     "Allergies": "过敏史",
     "Allergies - Tooltip": "过敏史",
     "Audit": "Audit",
-    "Authorized hospital": "授权医院",
-    "Authorized hospital - Tooltip": "授权访问咨询记录的医院",
     "B+": "B+",
     "B-": "B-",
     "Blood type": "血型",
@@ -456,8 +470,6 @@
     "Diagnosis date - Tooltip": "诊断日期",
     "Doctor": "医生",
     "Doctor - Tooltip": "主治医生",
-    "Doctor name": "医生姓名",
-    "Doctor name - Tooltip": "主治医生姓名",
     "Doctors": "医生",
     "Email": "邮箱",
     "Email - Tooltip": "邮箱",
@@ -472,8 +484,6 @@
     "HIS interface info - Tooltip": "医院信息系统接口详情",
     "Hospital": "医院",
     "Hospital - Tooltip": "医院",
-    "Hospital name": "医院名称",
-    "Hospital name - Tooltip": "医院名称",
     "Hospitals": "医院",
     "Integrated care organization Id": "综合医疗组织Id",
     "Integrated care organization Id - Tooltip": "综合医疗组织标识符",
@@ -486,8 +496,6 @@
     "Owners - Tooltip": "有权管理此患者的医生",
     "Patient": "患者",
     "Patient - Tooltip": "患者",
-    "Patient name": "患者姓名",
-    "Patient name - Tooltip": "患者姓名",
     "Patients": "患者",
     "Prescription": "处方",
     "Prescription - Tooltip": "处方药物或治疗",
@@ -535,11 +543,18 @@
     "Services": "服务",
     "Services - Tooltip": "节点运行的服务监控配置（端口/进程）"
   },
+  "patient": {
+    "Edit Patient": "编辑患者",
+    "New Patient": "新建患者",
+    "View Patient": "查看患者"
+  },
   "pod": {
     "Edit Pod": "编辑Pod",
     "New Pod": "新建Pod"
   },
   "provider": {
+    "AES key": "AES密钥",
+    "AES key - Tooltip": "AES加密密钥",
     "API key": "API密钥",
     "API key - Tooltip": "模型API密钥（仅管理员可见）",
     "API version": "API版本",
@@ -547,6 +562,8 @@
     "Add Storage Provider": "添加存储提供商",
     "Auth type": "认证类型",
     "Auth type - Tooltip": "认证类型",
+    "Bot ID": "机器人ID",
+    "Bot ID - Tooltip": "机器人唯一标识符",
     "Browser URL": "浏览器URL",
     "Browser URL - Tooltip": "区块链浏览器URL",
     "Category": "分类",
@@ -615,6 +632,8 @@
     "Temperature - Tooltip": "生成多样性控制（0=保守，2=创意）",
     "Thinking tokens": "思考token",
     "Thinking tokens - Tooltip": "思考token",
+    "Token": "令牌",
+    "Token - Tooltip": "访问令牌",
     "Tools": "工具",
     "Top K": "Top K",
     "Top K - Tooltip": "候选token数量限制（1-6）",
@@ -640,14 +659,14 @@
     "Are you sure you want to delete the selected items?": "确认要删除所选文件?",
     "Auto read": "自动朗读",
     "Biology": "生物",
+    "Builtin tools": "内置工具",
+    "Builtin tools - Tooltip": "选择要启用的内置工具（如时间、代码执行、JSON处理等）",
     "Chat count": "会话数量",
     "Chemistry": "化学",
     "Child model providers": "附属模型提供商",
     "Child model providers - Tooltip": "备用模型服务列表（在主模型故障时自动切换）",
     "Child stores": "附属数据仓库",
     "Child stores - Tooltip": "关联子存储名称（用于跨存储知识检索）",
-    "Forbidden words": "禁用词",
-    "Forbidden words - Tooltip": "聊天消息中不允许出现的词汇。包含这些词的消息将被拒绝。",
     "Chinese": "语文",
     "Collected time": "采集时间",
     "Disable file upload": "禁止文件上传",
@@ -667,6 +686,8 @@
     "File type": "文件类型",
     "Folder": "文件夹",
     "Footer HTML - Edit": "编辑页脚 HTML",
+    "Forbidden words": "禁用词",
+    "Forbidden words - Tooltip": "聊天消息中不允许出现的词汇。包含这些词的消息将被拒绝。",
     "Frequency": "频率",
     "Frequency - Tooltip": "AI模型调用频率限制（次/分钟）",
     "Hide thinking": "隐藏思维链",
@@ -708,6 +729,7 @@
     "Science": "科学",
     "Search provider": "搜索提供商",
     "Search provider - Tooltip": "网络搜索和文档搜索服务提供商",
+    "Select builtin tools": "选择内置工具",
     "Show auto read": "显示自动朗读",
     "Show auto read - Tooltip": "是否自动朗读AI回复（需要启用TTS服务）",
     "Sorry, you are unauthorized to access this file or folder": "抱歉，您无权访问此文件或文件夹",
@@ -731,6 +753,8 @@
     "Upload folder": "上传文件夹",
     "Vector store id": "向量存储ID",
     "Vector store id - Tooltip": "文件所属的向量存储ID",
+    "Vector stores": "向量存储",
+    "Vector stores - Tooltip": "向量存储配置",
     "Welcome": "欢迎提示词",
     "Welcome - Tooltip": "用户首次进入聊天时显示的欢迎语",
     "Welcome text": "欢迎文字",
@@ -883,26 +907,5 @@
   },
   "workflow": {
     "Edit Workflow": "编辑工作流"
-  },
-  "caase": {
-    "Edit Caase": "编辑病例",
-    "New Caase": "新建病例"
-  },
-  "consultation": {
-    "Edit Consultation": "编辑咨询",
-    "New Consultation": "新建咨询"
-  },
-  "doctor": {
-    "Edit Doctor": "编辑医生",
-    "New Doctor": "新建医生"
-  },
-  "hospital": {
-    "Edit Hospital": "编辑医院",
-    "New Hospital": "新建医院"
-  },
-  "patient": {
-    "Edit Patient": "编辑患者",
-    "New Patient": "新建患者",
-    "View Patient": "查看患者"
   }
 }
