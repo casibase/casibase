@@ -20,10 +20,8 @@ import (
 	"strings"
 
 	"github.com/beego/beego/logs"
-	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/split"
-	"github.com/casibase/casibase/storage"
 	"github.com/casibase/casibase/txt"
 	"github.com/cenkalti/backoff/v4"
 )
@@ -189,28 +187,4 @@ func ProcessFileTask(fileTask *FileTask, lang string) error {
 	}
 
 	return nil
-}
-
-func isRetryableError(err error) bool {
-	if err == nil {
-		return false
-	}
-	
-	errMsg := err.Error()
-	retryableErrors := []string{
-		"timeout",
-		"rate limit",
-		"too many requests",
-		"503",
-		"504",
-		"connection",
-	}
-	
-	for _, retryableErr := range retryableErrors {
-		if strings.Contains(strings.ToLower(errMsg), retryableErr) {
-			return true
-		}
-	}
-	
-	return false
 }
