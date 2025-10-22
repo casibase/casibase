@@ -99,7 +99,6 @@ class FileTree extends React.Component {
   }
 
   getFileTasks() {
-    const storeId = `${this.props.store.owner}/${this.props.store.name}`;
     FileTaskBackend.getFileTasks(this.props.store.owner, this.props.store.name)
       .then((res) => {
         if (res.status === "ok") {
