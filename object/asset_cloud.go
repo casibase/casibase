@@ -179,12 +179,12 @@ func scanAliyunDisks(owner string, provider *Provider, client *ecs20140526.Clien
 	if response.Body.Disks != nil && response.Body.Disks.Disk != nil {
 		for _, disk := range response.Body.Disks.Disk {
 			properties := map[string]interface{}{
-				"size":             tea.Int32Value(disk.Size),
-				"category":         tea.StringValue(disk.Category),
-				"type":             tea.StringValue(disk.Type),
-				"encrypted":        tea.BoolValue(disk.Encrypted),
-				"instanceId":       tea.StringValue(disk.InstanceId),
-				"diskChargeType":   tea.StringValue(disk.DiskChargeType),
+				"size":               tea.Int32Value(disk.Size),
+				"category":           tea.StringValue(disk.Category),
+				"type":               tea.StringValue(disk.Type),
+				"encrypted":          tea.BoolValue(disk.Encrypted),
+				"instanceId":         tea.StringValue(disk.InstanceId),
+				"diskChargeType":     tea.StringValue(disk.DiskChargeType),
 				"deleteWithInstance": tea.BoolValue(disk.DeleteWithInstance),
 			}
 
@@ -233,21 +233,14 @@ func scanAliyunVpcs(owner string, provider *Provider, client *ecs20140526.Client
 	if response.Body.Vpcs != nil && response.Body.Vpcs.Vpc != nil {
 		for _, vpc := range response.Body.Vpcs.Vpc {
 			properties := map[string]interface{}{
-				"cidrBlock":     tea.StringValue(vpc.CidrBlock),
-				"vRouterId":     tea.StringValue(vpc.VRouterId),
-				"isDefault":     tea.BoolValue(vpc.IsDefault),
-				"status":        tea.StringValue(vpc.Status),
-				"description":   tea.StringValue(vpc.Description),
+				"cidrBlock":   tea.StringValue(vpc.CidrBlock),
+				"vRouterId":   tea.StringValue(vpc.VRouterId),
+				"isDefault":   tea.BoolValue(vpc.IsDefault),
+				"status":      tea.StringValue(vpc.Status),
+				"description": tea.StringValue(vpc.Description),
 			}
 
 			propertiesJson, _ := json.Marshal(properties)
-
-			tag := ""
-			if vpc.Tags != nil && vpc.Tags.Tag != nil {
-				for _, t := range vpc.Tags.Tag {
-					tag += fmt.Sprintf("%s=%s,", tea.StringValue(t.TagKey), tea.StringValue(t.TagValue))
-				}
-			}
 
 			asset := &Asset{
 				Owner:        owner,
@@ -261,7 +254,7 @@ func scanAliyunVpcs(owner string, provider *Provider, client *ecs20140526.Client
 				Region:       tea.StringValue(vpc.RegionId),
 				Zone:         "",
 				State:        tea.StringValue(vpc.Status),
-				Tag:          tag,
+				Tag:          "",
 				Properties:   string(propertiesJson),
 			}
 			assets = append(assets, asset)
