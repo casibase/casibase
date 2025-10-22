@@ -14,7 +14,6 @@
 
 import React from "react";
 import {Button, Card, Col, Input, InputNumber, Row, Select} from "antd";
-import {LinkOutlined} from "@ant-design/icons";
 import * as FileDataBackend from "./backend/FileDataBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";

@@ -17,9 +17,9 @@ package controllers
 import (
 	"encoding/json"
 
+	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
-	"github.com/casibase/casibase/util/pagination"
 )
 
 // GetGlobalFilesData
@@ -122,7 +122,7 @@ func (c *ApiController) GetFileData() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-file-data [post]
 func (c *ApiController) UpdateFileData() {
-	userName, ok := c.RequireSignedIn()
+	_, ok := c.RequireSignedIn()
 	if !ok {
 		return
 	}
@@ -142,14 +142,6 @@ func (c *ApiController) UpdateFileData() {
 		return
 	}
 
-	if res {
-		err = addRecordForObject(c, "Update", "file-data", fileData.GetId(), userName, "", "", c.GetAcceptLanguage())
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-	}
-
 	c.ResponseOk(res)
 }
 
@@ -161,7 +153,7 @@ func (c *ApiController) UpdateFileData() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-file-data [post]
 func (c *ApiController) AddFileData() {
-	userName, ok := c.RequireSignedIn()
+	_, ok := c.RequireSignedIn()
 	if !ok {
 		return
 	}
@@ -179,14 +171,6 @@ func (c *ApiController) AddFileData() {
 		return
 	}
 
-	if res {
-		err = addRecordForObject(c, "Add", "file-data", fileData.GetId(), userName, "", "", c.GetAcceptLanguage())
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-	}
-
 	c.ResponseOk(res)
 }
 
@@ -198,7 +182,7 @@ func (c *ApiController) AddFileData() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /delete-file-data [post]
 func (c *ApiController) DeleteFileData() {
-	userName, ok := c.RequireSignedIn()
+	_, ok := c.RequireSignedIn()
 	if !ok {
 		return
 	}
@@ -214,14 +198,6 @@ func (c *ApiController) DeleteFileData() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
-	}
-
-	if res {
-		err = addRecordForObject(c, "Delete", "file-data", fileData.GetId(), userName, "", "", c.GetAcceptLanguage())
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
 	}
 
 	c.ResponseOk(res)
