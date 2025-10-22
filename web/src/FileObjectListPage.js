@@ -28,16 +28,18 @@ class FileObjectListPage extends BaseListPage {
   }
 
   newFileObject() {
+    const randomName = Setting.getRandomName();
+    const storeName = Setting.isDefaultStoreSelected(this.props.account) ? "store-built-in" : Setting.getRequestStore(this.props.account);
     return {
       owner: this.props.account.owner,
-      name: `file_${Setting.getRandomName()}`,
+      name: `file_${randomName}`,
       createdTime: moment().format(),
       updatedTime: moment().format(),
-      displayName: `New File - ${Setting.getRandomName()}`,
+      displayName: `New File - ${randomName}`,
       filename: "",
       path: "",
       size: 0,
-      store: "",
+      store: storeName,
       storageProvider: "",
       tokenCount: 0,
       status: "Active",
@@ -150,6 +152,13 @@ class FileObjectListPage extends BaseListPage {
         width: "120px",
         sorter: true,
         ...this.getColumnSearchProps("store"),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/stores/${record.owner}/${text}`}>
+              {text}
+            </Link>
+          );
+        },
       },
       {
         title: i18next.t("fileObject:Storage provider"),
