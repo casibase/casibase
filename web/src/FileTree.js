@@ -18,7 +18,7 @@ import {Button, Card, Col, DatePicker, Descriptions, Empty, Input, Modal, Popcon
 import {CloudUploadOutlined, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined, InfoCircleTwoTone, UploadOutlined, createFromIconfontCN} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
-import * as FileBackend from "./backend/FileBackend";
+import * as TreeFileBackend from "./backend/TreeFileBackend";
 import DocViewer, {DocViewerRenderers} from "@cyntler/react-doc-viewer";
 import FileViewer from "react-file-viewer";
 import ReactMarkdown from "react-markdown";
@@ -218,7 +218,7 @@ class FileTree extends React.Component {
         this.uploadedFileIdMap[uploadedFile.originFileObj.uid] = 1;
       }
 
-      promises.push(FileBackend.addFile(storeId, file.key, true, uploadedFile.name, uploadedFile.originFileObj));
+      promises.push(TreeFileBackend.addFile(storeId, file.key, true, uploadedFile.name, uploadedFile.originFileObj));
     });
 
     Promise.all(promises)
@@ -243,7 +243,7 @@ class FileTree extends React.Component {
 
   addFile(file, newFolder) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
-    FileBackend.addFile(storeId, file.key, false, newFolder, null)
+    TreeFileBackend.addFile(storeId, file.key, false, newFolder, null)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
@@ -259,7 +259,7 @@ class FileTree extends React.Component {
 
   deleteFile(file, isLeaf) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
-    FileBackend.deleteFile(storeId, file.key, isLeaf)
+    TreeFileBackend.deleteFile(storeId, file.key, isLeaf)
       .then((res) => {
         if (res.status === "ok") {
           if (res.data === true) {
@@ -433,7 +433,7 @@ class FileTree extends React.Component {
         const key = info.node.key;
         const filename = info.node.title;
         if (this.getCacheApp(filename) !== "") {
-          FileBackend.activateFile(key, filename)
+          TreeFileBackend.activateFile(key, filename)
             .then((res) => {
               if (res.status === "ok") {
                 if (res.data === true) {

@@ -46,7 +46,7 @@ func (c *ApiController) UpdateTreeFile() {
 		return
 	}
 
-	res := object.UpdateFile(storeId, key, &file)
+	res := object.UpdateTreeFile(storeId, key, &file)
 	if res {
 		err = addRecordForFile(c, userName, "Update", storeId, key, "", true, c.GetAcceptLanguage())
 		if err != nil {
@@ -90,7 +90,7 @@ func (c *ApiController) AddTreeFile() {
 		defer file.Close()
 	}
 
-	res, bs, err := object.AddFile(storeId, userName, key, isLeaf, filename, file, c.GetAcceptLanguage())
+	res, bs, err := object.AddTreeFile(storeId, userName, key, isLeaf, filename, file, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -132,7 +132,7 @@ func (c *ApiController) DeleteTreeFile() {
 	key := c.Input().Get("key")
 	isLeaf := c.Input().Get("isLeaf") == "1"
 
-	res, err := object.DeleteFile(storeId, key, isLeaf, c.GetAcceptLanguage())
+	res, err := object.DeleteTreeFile(storeId, key, isLeaf, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
