@@ -14,11 +14,12 @@
 
 import React from "react";
 import {withRouter} from "react-router-dom";
-import {Button, Card, Col, DatePicker, Descriptions, Empty, Input, Modal, Popconfirm, Radio, Result, Row, Select, Spin, Tooltip, Tree, Upload} from "antd";
+import {Button, Card, Col, DatePicker, Descriptions, Empty, Input, Modal, Popconfirm, Radio, Result, Row, Select, Spin, Tag, Tooltip, Tree, Upload} from "antd";
 import {CloudUploadOutlined, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined, InfoCircleTwoTone, UploadOutlined, createFromIconfontCN} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
+import * as FileTaskBackend from "./backend/FileTaskBackend";
 import DocViewer, {DocViewerRenderers} from "@cyntler/react-doc-viewer";
 import FileViewer from "react-file-viewer";
 import ReactMarkdown from "react-markdown";
@@ -62,6 +63,7 @@ class FileTree extends React.Component {
       uploadFileType: null,
       file: null,
       info: null,
+      fileTaskMap: {},
     };
 
     this.filePane = React.createRef();
@@ -71,10 +73,17 @@ class FileTree extends React.Component {
 
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyDown);
+    // Poll for file task updates every 5 seconds
+    this.fileTaskInterval = setInterval(() => {
+      this.getFileTasks();
+    }, 5000);
   }
 
   componentWillUnmount() {
     document.removeEventListener("keydown", this.handleKeyDown);
+    if (this.fileTaskInterval) {
+      clearInterval(this.fileTaskInterval);
+    }
   }
 
   handleKeyDown(e) {
@@ -86,6 +95,25 @@ class FileTree extends React.Component {
 
   UNSAFE_componentWillMount() {
     this.getPermissions();
+    this.getFileTasks();
+  }
+
+  getFileTasks() {
+    const storeId = `${this.props.store.owner}/${this.props.store.name}`;
+    FileTaskBackend.getFileTasks(this.props.store.owner, this.props.store.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          const fileTaskMap = {};
+          res.data.forEach(task => {
+            fileTaskMap[task.fileKey] = task;
+          });
+          this.setState({
+            fileTaskMap: fileTaskMap,
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
   }
 
   batchDeleteFiles() {
@@ -130,6 +158,45 @@ class FileTree extends React.Component {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
+  }
+
+  renderFileTaskStatus(file) {
+    if (!file.isLeaf) {
+      return null;
+    }
+
+    const fileTask = this.state.fileTaskMap[file.key];
+    if (!fileTask) {
+      return null;
+    }
+
+    let color = "default";
+    let text = fileTask.status;
+
+    switch (fileTask.status) {
+    case "Pending":
+      color = "processing";
+      text = i18next.t("store:File is being embedded");
+      break;
+    case "In Progress":
+      color = "processing";
+      text = i18next.t("store:File is being embedded");
+      break;
+    case "Completed":
+      color = "success";
+      text = i18next.t("store:Embedding completed");
+      break;
+    case "Failed":
+      color = "error";
+      text = i18next.t("store:Embedding failed");
+      break;
+    }
+
+    return (
+      <Tag color={color} style={{marginLeft: "8px"}}>
+        {text}
+      </Tag>
+    );
   }
 
   updateStore(store) {
@@ -233,8 +300,12 @@ class FileTree extends React.Component {
             return;
           }
         });
-        Setting.showMessage("success", i18next.t("general:Successfully uploaded"));
+        Setting.showMessage("success", i18next.t("store:File is being embedded"));
         this.props.onRefresh();
+        // Refresh file tasks after a short delay to get the newly created tasks
+        setTimeout(() => {
+          this.getFileTasks();
+        }, 1000);
       })
       .catch(error => {
         Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
@@ -587,6 +658,7 @@ class FileTree extends React.Component {
                 <span style={tagStyle}>
                   {`${file.title} (${Setting.getFriendlyFileSize(file.size)})`}
                 </span>
+                {this.renderFileTaskStatus(file)}
                 &nbsp;
                 &nbsp;
                 {
