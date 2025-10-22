@@ -21,7 +21,7 @@ import (
 	"github.com/casibase/casibase/storage"
 )
 
-func (store *Store) createPathIfNotExisted(tokens []string, size int64, url string, lastModifiedTime string, isLeaf bool) {
+func (store *Store) createPathIfNotExisted(tokens []string, size int64, url string, lastModifiedTime string, isLeaf bool, status string) {
 	currentFile := store.FileTree
 	for i, token := range tokens {
 		if currentFile.Children == nil {
@@ -48,6 +48,7 @@ func (store *Store) createPathIfNotExisted(tokens []string, size int64, url stri
 			Title:       token,
 			IsLeaf:      isLeafTmp,
 			Url:         url,
+			Status:      status,
 			Children:    []*File{},
 			ChildrenMap: map[string]*File{},
 		}
@@ -85,11 +86,6 @@ func (store *Store) Populate(origin string, lang string) error {
 		return err
 	}
 
-	objects, err := storageProviderObj.ListObjects("")
-	if err != nil {
-		return err
-	}
-
 	if store.FileTree == nil {
 		store.FileTree = &File{
 			Key:         "/",
@@ -97,38 +93,88 @@ func (store *Store) Populate(origin string, lang string) error {
 			CreatedTime: store.CreatedTime,
 			IsLeaf:      false,
 			Url:         "",
+			Status:      "Active",
 			Children:    []*File{},
 			ChildrenMap: map[string]*File{},
 		}
 	}
 
-	sortedObjects := []*storage.Object{}
-	for _, object := range objects {
-		if strings.HasSuffix(object.Key, "/_hidden.ini") {
-			sortedObjects = append(sortedObjects, object)
-		}
-	}
-	for _, object := range objects {
-		if !strings.HasSuffix(object.Key, "/_hidden.ini") {
-			sortedObjects = append(sortedObjects, object)
-		}
+	// Try to load from FileData table first
+	fileDataList, err := GetFileDataByStore(store.Owner, store.Name)
+	if err != nil {
+		return err
 	}
 
-	for _, object := range sortedObjects {
-		lastModifiedTime := object.LastModified
-		isLeaf := isObjectLeaf(object)
-		size := object.Size
-
-		var url string
-		url, err = getUrlFromPath(object.Url, origin)
+	// If FileData table is empty, populate from storage provider and save to table
+	if len(fileDataList) == 0 {
+		objects, err := storageProviderObj.ListObjects("")
 		if err != nil {
 			return err
 		}
 
-		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
-		store.createPathIfNotExisted(tokens, size, url, lastModifiedTime, isLeaf)
+		sortedObjects := []*storage.Object{}
+		for _, object := range objects {
+			if strings.HasSuffix(object.Key, "/_hidden.ini") {
+				sortedObjects = append(sortedObjects, object)
+			}
+		}
+		for _, object := range objects {
+			if !strings.HasSuffix(object.Key, "/_hidden.ini") {
+				sortedObjects = append(sortedObjects, object)
+			}
+		}
 
-		// fmt.Printf("%s, %d, %v\n", object.Key, object.Size, object.LastModified)
+		for _, object := range sortedObjects {
+			lastModifiedTime := object.LastModified
+			isLeaf := isObjectLeaf(object)
+			size := object.Size
+
+			var url string
+			url, err = getUrlFromPath(object.Url, origin)
+			if err != nil {
+				return err
+			}
+
+			tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
+			store.createPathIfNotExisted(tokens, size, url, lastModifiedTime, isLeaf, "Active")
+
+			// Save to FileData table
+			if !strings.HasSuffix(object.Key, "/_hidden.ini") {
+				fileData := &FileData{
+					Owner:       store.Owner,
+					Store:       store.Name,
+					Key:         object.Key,
+					Title:       tokens[len(tokens)-1],
+					Size:        size,
+					CreatedTime: lastModifiedTime,
+					IsLeaf:      isLeaf,
+					Url:         url,
+					Status:      "Active",
+					ParentKey:   "",
+				}
+				if len(tokens) > 1 {
+					fileData.ParentKey = strings.Join(tokens[:len(tokens)-1], "/")
+				}
+				_, _ = AddFileData(fileData)
+			}
+		}
+	} else {
+		// Use FileData from table
+		for _, fileData := range fileDataList {
+			var url string
+			if fileData.IsLeaf {
+				url = fileData.Url
+				if url == "" {
+					url, err = getUrlFromPath(fileData.Key, origin)
+					if err != nil {
+						return err
+					}
+				}
+			}
+
+			tokens := strings.Split(strings.Trim(fileData.Key, "/"), "/")
+			store.createPathIfNotExisted(tokens, fileData.Size, url, fileData.CreatedTime, fileData.IsLeaf, fileData.Status)
+		}
 	}
 
 	return nil

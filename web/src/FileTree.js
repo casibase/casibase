@@ -586,6 +586,7 @@ class FileTree extends React.Component {
               }>
                 <span style={tagStyle}>
                   {`${file.title} (${Setting.getFriendlyFileSize(file.size)})`}
+                  {file.status && file.status !== "Active" ? ` [${file.status}]` : ""}
                 </span>
                 &nbsp;
                 &nbsp;
@@ -703,6 +704,7 @@ class FileTree extends React.Component {
                 }>
                   <span style={tagStyle}>
                     {file.title}
+                    {file.status && file.status !== "Active" ? ` [${file.status}]` : ""}
                   </span>
                   &nbsp;
                   &nbsp;

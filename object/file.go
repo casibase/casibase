@@ -20,6 +20,8 @@ import (
 	"io"
 	"mime/multipart"
 	"strings"
+
+	"github.com/casibase/casibase/util"
 )
 
 func UpdateFile(storeId string, key string, file *File) bool {
@@ -52,7 +54,25 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 		}
 
 		bs := fileBuffer.Bytes()
-		_, err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
+		url, err := storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
+		if err != nil {
+			return false, nil, err
+		}
+
+		// Save file data to database
+		fileData := &FileData{
+			Owner:       store.Owner,
+			Store:       store.Name,
+			Key:         objectKey,
+			Title:       filename,
+			Size:        int64(len(bs)),
+			CreatedTime: util.GetCurrentTime(),
+			IsLeaf:      true,
+			Url:         url,
+			Status:      "Active",
+			ParentKey:   key,
+		}
+		_, err = AddFileData(fileData)
 		if err != nil {
 			return false, nil, err
 		}
@@ -63,7 +83,27 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 		objectKey = strings.TrimLeft(objectKey, "/")
 		fileBuffer = bytes.NewBuffer(nil)
 		bs := fileBuffer.Bytes()
-		_, err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
+		_, err := storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
+		if err != nil {
+			return false, nil, err
+		}
+
+		// Save directory to database
+		dirKey := fmt.Sprintf("%s/%s", key, filename)
+		dirKey = strings.TrimLeft(dirKey, "/")
+		fileData := &FileData{
+			Owner:       store.Owner,
+			Store:       store.Name,
+			Key:         dirKey,
+			Title:       filename,
+			Size:        0,
+			CreatedTime: util.GetCurrentTime(),
+			IsLeaf:      false,
+			Url:         "",
+			Status:      "Active",
+			ParentKey:   key,
+		}
+		_, err = AddFileData(fileData)
 		if err != nil {
 			return false, nil, err
 		}
@@ -91,6 +131,12 @@ func DeleteFile(storeId string, key string, isLeaf bool, lang string) (bool, err
 		if err != nil {
 			return false, err
 		}
+
+		// Delete from FileData table
+		_, err = DeleteFileData(store.Owner, store.Name, key)
+		if err != nil {
+			return false, err
+		}
 	} else {
 		objects, err := storageProviderObj.ListObjects(key)
 		if err != nil {
@@ -102,6 +148,12 @@ func DeleteFile(storeId string, key string, isLeaf bool, lang string) (bool, err
 			if err != nil {
 				return false, err
 			}
+		}
+
+		// Delete from FileData table (directory and all children)
+		_, err = DeleteFileDataByPrefix(store.Owner, store.Name, key)
+		if err != nil {
+			return false, err
 		}
 	}
 	return true, nil
