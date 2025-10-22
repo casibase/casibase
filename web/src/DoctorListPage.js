@@ -87,7 +87,7 @@ class DoctorListPage extends BaseListPage {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "120px",
+        width: "200px",
         sorter: true,
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
@@ -100,7 +100,7 @@ class DoctorListPage extends BaseListPage {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",
-        width: "160px",
+        width: "180px",
         // sorter: true,
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, doctor, index) => {
@@ -111,7 +111,7 @@ class DoctorListPage extends BaseListPage {
         title: i18next.t("med:Department"),
         dataIndex: "department",
         key: "department",
-        width: "120px",
+        width: "150px",
         sorter: (a, b) => a.department.localeCompare(b.department),
       },
 
@@ -119,7 +119,7 @@ class DoctorListPage extends BaseListPage {
         title: i18next.t("med:Gender"),
         dataIndex: "gender",
         key: "gender",
-        width: "100px",
+        width: "150px",
         sorter: (a, b) => a.gender.localeCompare(b.gender),
       },
 
@@ -127,19 +127,19 @@ class DoctorListPage extends BaseListPage {
         title: i18next.t("med:Access level"),
         dataIndex: "accessLevel",
         key: "accessLevel",
-        width: "120px",
+        width: "150px",
         sorter: (a, b) => a.accessLevel.localeCompare(b.accessLevel),
       },
       {
         title: i18next.t("med:Hospital"),
         dataIndex: "hospitalName",
         key: "hospitalName",
-        width: "90px",
+        // width: "90px",
         sorter: true,
         ...this.getColumnSearchProps("hospitalName"),
         render: (text, record, index) => {
           return (
-            <Link to={`/hospitals/${record.owner}/${text}`}>
+            <Link to={`/hospitals/${text}`}>
               {
                 Setting.getShortText(text, 25)
               }
@@ -151,7 +151,7 @@ class DoctorListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "130px",
+        width: "220px",
         fixed: Setting.isMobile() ? "false" : "right",
         render: (text, doctor, index) => {
           return (

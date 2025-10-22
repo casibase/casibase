@@ -84,7 +84,7 @@ class ConsultationListPage extends BaseListPage {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "120px",
+        width: "200px",
         sorter: true,
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
@@ -97,7 +97,7 @@ class ConsultationListPage extends BaseListPage {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",
-        width: "160px",
+        width: "180px",
         // sorter: true,
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, consultation, index) => {
@@ -105,15 +105,22 @@ class ConsultationListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("med:Expired time"),
+        dataIndex: "expiredTime",
+        key: "expiredTime",
+        width: "180px",
+        sorter: (a, b) => a.expiredTime.localeCompare(b.expiredTime),
+      },
+      {
         title: i18next.t("med:Patient"),
         dataIndex: "patientName",
         key: "patientName",
-        width: "90px",
+        width: "150px",
         sorter: true,
         ...this.getColumnSearchProps("patientName"),
         render: (text, record, index) => {
           return (
-            <Link to={`/patients/${record.owner}/${text}`}>
+            <Link to={`/patients/${text}`}>
               {
                 Setting.getShortText(text, 25)
               }
@@ -125,12 +132,12 @@ class ConsultationListPage extends BaseListPage {
         title: i18next.t("med:Doctor"),
         dataIndex: "doctorName",
         key: "doctorName",
-        width: "90px",
+        width: "150px",
         sorter: true,
         ...this.getColumnSearchProps("doctorName"),
         render: (text, record, index) => {
           return (
-            <Link to={`/doctors/${record.owner}/${text}`}>
+            <Link to={`/doctors/${text}`}>
               {
                 Setting.getShortText(text, 25)
               }
@@ -139,22 +146,15 @@ class ConsultationListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("med:Expired time"),
-        dataIndex: "expiredTime",
-        key: "expiredTime",
-        width: "120px",
-        sorter: (a, b) => a.expiredTime.localeCompare(b.expiredTime),
-      },
-      {
         title: i18next.t("med:Hospital"),
         dataIndex: "authorizedHospital",
         key: "authorizedHospital",
-        width: "90px",
+        // width: "90px",
         sorter: true,
         ...this.getColumnSearchProps("authorizedHospital"),
         render: (text, record, index) => {
           return (
-            <Link to={`/hospitals/${record.owner}/${text}`}>
+            <Link to={`/hospitals/${text}`}>
               {
                 Setting.getShortText(text, 25)
               }
@@ -166,7 +166,7 @@ class ConsultationListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "130px",
+        width: "220px",
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, consultation, index) => {
           return (

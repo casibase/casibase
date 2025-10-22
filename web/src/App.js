@@ -701,7 +701,7 @@ class App extends Component {
         Setting.getItem(<Link to="/patients">{i18next.t("med:Patients")}</Link>, "/patients"),
         Setting.getItem(<Link to="/caases">{i18next.t("med:Caases")}</Link>, "/caases"),
         Setting.getItem(<Link to="/consultations">{i18next.t("med:Consultations")}</Link>, "/consultations"),
-        Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"),
+        Setting.getItem(<Link to="/audit">{i18next.t("general:Audit")}</Link>, "/audit"),
         Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
         Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"),
         Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"),

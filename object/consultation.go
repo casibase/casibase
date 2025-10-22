@@ -32,6 +32,7 @@ type Consultation struct {
 	DoctorName         string `xorm:"varchar(100)" json:"doctorName"`
 	ExpiredTime        string `xorm:"varchar(100)" json:"expiredTime"`
 	AuthorizedHospital string `xorm:"varchar(256)" json:"authorizedHospital"`
+	State              string `xorm:"varchar(100)" json:"state"`
 }
 
 func GetConsultationCount(owner, field, value string) (int64, error) {
