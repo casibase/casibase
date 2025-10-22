@@ -206,9 +206,9 @@ class StoreListPage extends BaseListPage {
     StoreBackend.refreshStoreVectors(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Vectors generated successfully"));
+          Setting.showMessage("success", i18next.t("general:Embeddings synced successfully"));
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Vectors failed to generate")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Embeddings failed to sync")}: ${res.msg}`);
         }
         this.setState(prevState => ({
           generating: {
@@ -218,7 +218,7 @@ class StoreListPage extends BaseListPage {
         }));
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Vectors failed to generate")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Embeddings failed to sync")}: ${error}`);
         this.setState(prevState => ({
           generating: {
             ...prevState.generating,
@@ -415,7 +415,7 @@ class StoreListPage extends BaseListPage {
               {
                 !Setting.isLocalAdminUser(this.props.account) ? null : (
                   <React.Fragment>
-                    <Button style={{marginBottom: "10px", marginRight: "10px"}} loading={this.state.generating[index]} onClick={() => this.refreshStoreVectors(index)}>{i18next.t("store:Refresh Vectors")}</Button>
+                    <Button style={{marginBottom: "10px", marginRight: "10px"}} loading={this.state.generating[index]} onClick={() => this.refreshStoreVectors(index)}>{i18next.t("store:Force Sync Embedding")}</Button>
                     <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
                     <Popconfirm
                       title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
