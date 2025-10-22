@@ -146,6 +146,7 @@
     "Application Store": "Application Store",
     "Applications": "Applications",
     "Articles": "Artículos",
+    "Assets": "Activos",
     "Audit": "Auditoría",
     "Avatar": "Avatar",
     "Avatar - Tooltip": "URL del avatar",
@@ -443,6 +444,22 @@
     "Public IP": "IP pública",
     "Public IP - Tooltip": "Dirección IP pública (accesible a Internet)",
     "Zone": "Zona"
+  },
+  "asset": {
+    "Edit Asset": "Editar activo",
+    "Failed to scan assets": "Error al escanear activos",
+    "New Asset": "Nuevo activo",
+    "Please select a provider": "Por favor seleccione un proveedor",
+    "Properties": "Propiedades",
+    "Properties - Tooltip": "Propiedades del recurso en formato JSON",
+    "Provider": "Proveedor",
+    "Provider - Tooltip": "Nombre del proveedor de nube",
+    "Resource ID": "ID de recurso",
+    "Resource ID - Tooltip": "Identificador único del recurso en la nube",
+    "Resource type": "Tipo de recurso",
+    "Resource type - Tooltip": "Tipo de recurso en la nube (Instancia ECS, Disco, VPC, etc.)",
+    "Scan": "Escanear",
+    "Successfully scanned assets": "Activos escaneados exitosamente"
   },
   "med": {
     "Access level": "Nivel de acceso",

@@ -146,6 +146,7 @@
     "Application Store": "应用商店",
     "Applications": "应用",
     "Articles": "案例",
+    "Assets": "资产",
     "Audit": "审计",
     "Avatar": "头像",
     "Avatar - Tooltip": "头像对应的URL",
@@ -443,6 +444,22 @@
     "Public IP": "公网IP",
     "Public IP - Tooltip": "公网IP地址（可访问互联网）",
     "Zone": "区域"
+  },
+  "asset": {
+    "Edit Asset": "编辑资产",
+    "Failed to scan assets": "扫描资产失败",
+    "New Asset": "新建资产",
+    "Please select a provider": "请选择提供商",
+    "Properties": "属性",
+    "Properties - Tooltip": "JSON格式的资源属性",
+    "Provider": "提供商",
+    "Provider - Tooltip": "云提供商名称",
+    "Resource ID": "资源ID",
+    "Resource ID - Tooltip": "云资源的唯一标识符",
+    "Resource type": "资源类型",
+    "Resource type - Tooltip": "云资源类型（ECS实例、磁盘、VPC等）",
+    "Scan": "扫描",
+    "Successfully scanned assets": "成功扫描资产"
   },
   "med": {
     "Access level": "访问级别",

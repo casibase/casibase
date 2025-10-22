@@ -146,6 +146,7 @@
     "Application Store": "Application Store",
     "Applications": "Applications",
     "Articles": "Artikel",
+    "Assets": "Vermögenswerte",
     "Audit": "Auditierung",
     "Avatar": "Avatar",
     "Avatar - Tooltip": "URL des Profilbilds",
@@ -443,6 +444,22 @@
     "Public IP": "Öffentliche IP",
     "Public IP - Tooltip": "Öffentliche IP-Adresse (Internetzugänglich)",
     "Zone": "Zone"
+  },
+  "asset": {
+    "Edit Asset": "Vermögenswert bearbeiten",
+    "Failed to scan assets": "Fehler beim Scannen von Vermögenswerten",
+    "New Asset": "Neuer Vermögenswert",
+    "Please select a provider": "Bitte wählen Sie einen Anbieter",
+    "Properties": "Eigenschaften",
+    "Properties - Tooltip": "Ressourceneigenschaften im JSON-Format",
+    "Provider": "Anbieter",
+    "Provider - Tooltip": "Cloud-Anbietername",
+    "Resource ID": "Ressourcen-ID",
+    "Resource ID - Tooltip": "Eindeutige Kennung der Cloud-Ressource",
+    "Resource type": "Ressourcentyp",
+    "Resource type - Tooltip": "Typ der Cloud-Ressource (ECS-Instanz, Disk, VPC usw.)",
+    "Scan": "Scannen",
+    "Successfully scanned assets": "Vermögenswerte erfolgreich gescannt"
   },
   "med": {
     "Access level": "Zugriffsstufe",
