@@ -19,6 +19,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/storage"
 	"github.com/casibase/casibase/util"
@@ -314,6 +315,16 @@ func RefreshStoreVectors(store *Store, lang string) (bool, error) {
 		return false, err
 	}
 
+	// Step 1: Delete all existing vectors for this store
+	logs.Info("Force Sync Embedding: Deleting all vectors for store: %s", store.Name)
+	deletedCount, err := DeleteVectorsByStore(store.Owner, store.Name)
+	if err != nil {
+		return false, fmt.Errorf("failed to delete vectors for store: %s, error: %v", store.GetId(), err)
+	}
+	logs.Info("Force Sync Embedding: Deleted %d vectors for store: %s", deletedCount, store.Name)
+
+	// Step 2: Re-acquire all files from storage provider and re-vectorize them entirely
+	logs.Info("Force Sync Embedding: Re-acquiring files and generating embeddings for store: %s", store.Name)
 	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, lang)
 	return ok, err
 }
