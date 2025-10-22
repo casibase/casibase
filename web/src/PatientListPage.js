@@ -126,6 +126,42 @@ class PatientListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("med:Owners"),
+        dataIndex: "owners",
+        key: "owners",
+        width: "200px",
+        render: (text, patient, index) => {
+          if (!patient.owners || patient.owners.length === 0) {
+            return "";
+          }
+          return (
+            <span>
+              {patient.owners.map((owner, idx) => (
+                <span key={idx}>
+                  <Link to={`/doctors/${owner}`}>{owner}</Link>
+                  {idx < patient.owners.length - 1 ? ", " : ""}
+                </span>
+              ))}
+            </span>
+          );
+        },
+      },
+      {
+        title: i18next.t("med:Hospital"),
+        dataIndex: "hospitalName",
+        key: "hospitalName",
+        width: "150px",
+        sorter: (a, b) => (a.hospitalName || "").localeCompare(b.hospitalName || ""),
+        render: (text, record, index) => {
+          if (!text) {
+            return "";
+          }
+          return (
+            <Link to={`/hospitals/${text}`}>{text}</Link>
+          );
+        },
+      },
+      {
         title: i18next.t("med:Gender"),
         dataIndex: "gender",
         key: "gender",

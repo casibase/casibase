@@ -31,6 +31,7 @@ import (
 // @Success 200 {object} object.Caase The Response object
 // @router /get-caases [get]
 func (c *ApiController) GetCaases() {
+	user := c.GetSessionUser()
 	owner := c.Input().Get("owner")
 	limit := c.Input().Get("pageSize")
 	page := c.Input().Get("p")
@@ -45,6 +46,9 @@ func (c *ApiController) GetCaases() {
 			c.ResponseError(err.Error())
 			return
 		}
+
+		// Filter cases by user role
+		caases = object.FilterCaasesByUser(user, caases)
 
 		c.ResponseOk(caases)
 	} else {
@@ -61,6 +65,9 @@ func (c *ApiController) GetCaases() {
 			c.ResponseError(err.Error())
 			return
 		}
+
+		// Filter cases by user role
+		caases = object.FilterCaasesByUser(user, caases)
 
 		c.ResponseOk(caases, paginator.Nums())
 	}

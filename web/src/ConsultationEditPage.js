@@ -48,8 +48,13 @@ class ConsultationEditPage extends React.Component {
     ConsultationBackend.getConsultation(this.props.account.owner, this.state.consultationName)
       .then((res) => {
         if (res.status === "ok") {
+          const consultation = res.data;
+          // Ensure doctorNames is an array
+          if (!consultation.doctorNames) {
+            consultation.doctorNames = [];
+          }
           this.setState({
-            consultation: res.data,
+            consultation: consultation,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -146,7 +151,7 @@ class ConsultationEditPage extends React.Component {
                 this.updateConsultationField("patientName", value);
               }}
               options={this.state.patients.map((patient) => ({
-                label: patient.name,
+                label: patient.hospitalName ? `${patient.hospitalName}/${patient.name}` : patient.name,
                 value: patient.name,
               }))}
             />
@@ -154,18 +159,19 @@ class ConsultationEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("med:Doctor"), i18next.t("med:Doctor - Tooltip"))} :
+            {Setting.getLabel(i18next.t("med:Doctors"), i18next.t("med:Doctors - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select
               virtual={false}
+              mode="multiple"
               style={{width: "100%"}}
-              value={this.state.consultation.doctorName}
+              value={this.state.consultation.doctorNames || []}
               onChange={(value) => {
-                this.updateConsultationField("doctorName", value);
+                this.updateConsultationField("doctorNames", value);
               }}
               options={this.state.doctors.map((doctor) => ({
-                label: doctor.name,
+                label: doctor.hospitalName ? `${doctor.hospitalName}/${doctor.name}` : doctor.name,
                 value: doctor.name,
               }))}
             />
@@ -179,25 +185,6 @@ class ConsultationEditPage extends React.Component {
             <Input value={this.state.consultation.expiredTime} onChange={e => {
               this.updateConsultationField("expiredTime", e.target.value);
             }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}}>
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("med:Hospital"), i18next.t("med:Hospital - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select
-              virtual={false}
-              style={{width: "100%"}}
-              value={this.state.consultation.authorizedHospital}
-              onChange={(value) => {
-                this.updateConsultationField("authorizedHospital", value);
-              }}
-              options={this.state.hospitals.map((hospital) => ({
-                label: hospital.name,
-                value: hospital.name,
-              }))}
-            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}}>

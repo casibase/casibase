@@ -149,6 +149,21 @@ class CaaseListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("med:Hospital"),
+        dataIndex: "hospitalName",
+        key: "hospitalName",
+        width: "120px",
+        sorter: (a, b) => (a.hospitalName || "").localeCompare(b.hospitalName || ""),
+        render: (text, record, index) => {
+          if (!text) {
+            return "";
+          }
+          return (
+            <Link to={`/hospitals/${text}`}>{text}</Link>
+          );
+        },
+      },
+      {
         title: i18next.t("med:Symptoms"),
         dataIndex: "symptoms",
         key: "symptoms",

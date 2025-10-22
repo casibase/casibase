@@ -35,8 +35,7 @@ class ConsultationListPage extends BaseListPage {
       updatedTime: moment().format(),
       displayName: `New Consultation - ${Setting.getRandomName()}`,
       patientName: "Unknown",
-      doctorName: "Unknown",
-      authorizedHospital: "",
+      doctorNames: [],
       expirationTime: moment().add(1, "years").format(),
     };
   }
@@ -129,36 +128,23 @@ class ConsultationListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("med:Doctor"),
-        dataIndex: "doctorName",
-        key: "doctorName",
-        width: "150px",
-        sorter: true,
-        ...this.getColumnSearchProps("doctorName"),
+        title: i18next.t("med:Doctors"),
+        dataIndex: "doctorNames",
+        key: "doctorNames",
+        width: "200px",
         render: (text, record, index) => {
+          if (!record.doctorNames || record.doctorNames.length === 0) {
+            return "";
+          }
           return (
-            <Link to={`/doctors/${text}`}>
-              {
-                Setting.getShortText(text, 25)
-              }
-            </Link>
-          );
-        },
-      },
-      {
-        title: i18next.t("med:Hospital"),
-        dataIndex: "authorizedHospital",
-        key: "authorizedHospital",
-        // width: "90px",
-        sorter: true,
-        ...this.getColumnSearchProps("authorizedHospital"),
-        render: (text, record, index) => {
-          return (
-            <Link to={`/hospitals/${text}`}>
-              {
-                Setting.getShortText(text, 25)
-              }
-            </Link>
+            <span>
+              {record.doctorNames.map((doctor, idx) => (
+                <span key={idx}>
+                  <Link to={`/doctors/${doctor}`}>{doctor}</Link>
+                  {idx < record.doctorNames.length - 1 ? ", " : ""}
+                </span>
+              ))}
+            </span>
           );
         },
       },
