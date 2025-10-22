@@ -26,7 +26,7 @@ import (
 
 func UpdateFile(storeId string, key string, file *File) bool {
 	owner, storeName := util.GetOwnerAndNameFromId(storeId)
-	
+
 	// Update file data in database
 	fileData := &FileData{
 		Owner:       owner,
@@ -40,18 +40,18 @@ func UpdateFile(storeId string, key string, file *File) bool {
 		Status:      file.Status,
 		ParentKey:   "",
 	}
-	
+
 	// Extract parent key from the key
 	tokens := strings.Split(strings.Trim(key, "/"), "/")
 	if len(tokens) > 1 {
 		fileData.ParentKey = strings.Join(tokens[:len(tokens)-1], "/")
 	}
-	
+
 	success, err := UpdateFileData(owner, storeName, key, fileData)
 	if err != nil {
 		return false
 	}
-	
+
 	return success
 }
 
