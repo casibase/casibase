@@ -121,6 +121,17 @@
     "Edit Doctor": "Editar doctor",
     "New Doctor": "Nuevo doctor"
   },
+  "fileObject": {
+    "Edit File": "Editar archivo",
+    "Filename": "Nombre de archivo",
+    "New File": "Nuevo archivo",
+    "Path": "Ruta",
+    "Size": "Tamaño",
+    "Status": "Estado",
+    "Storage provider": "Proveedor de almacenamiento",
+    "Store": "Almacén",
+    "Token count": "Recuento de tokens"
+  },
   "form": {
     "Edit Form": "Editar formulario",
     "Form items": "Elementos del formulario",
@@ -206,6 +217,8 @@
     "Failed to undeploy": "Error al anular el despliegue",
     "Favicon URL": "URL del Favicon",
     "Favicon URL - Tooltip": "URL del Favicon - Información",
+    "File Objects": "Objetos de archivo",
+    "Files": "Archivos",
     "Footer HTML": "HTML del Pie de Página",
     "Footer HTML - Tooltip": "HTML del Pie de Página - Información",
     "Forms": "Formularios",

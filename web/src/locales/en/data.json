@@ -121,6 +121,17 @@
     "Edit Doctor": "Edit Doctor",
     "New Doctor": "New Doctor"
   },
+  "fileObject": {
+    "Edit File": "Edit File",
+    "Filename": "Filename",
+    "New File": "New File",
+    "Path": "Path",
+    "Size": "Size",
+    "Status": "Status",
+    "Storage provider": "Storage provider",
+    "Store": "Store",
+    "Token count": "Token count"
+  },
   "form": {
     "Edit Form": "Edit Form",
     "Form items": "Form items",
@@ -206,6 +217,8 @@
     "Failed to undeploy": "Failed to undeploy",
     "Favicon URL": "Favicon URL",
     "Favicon URL - Tooltip": "Favicon URL - Tooltip",
+    "File Objects": "File Objects",
+    "Files": "Files",
     "Footer HTML": "Footer HTML",
     "Footer HTML - Tooltip": "Footer HTML - Tooltip",
     "Forms": "Forms",

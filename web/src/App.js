@@ -98,6 +98,8 @@ import DoctorListPage from "./DoctorListPage";
 import DoctorEditPage from "./DoctorEditPage";
 import PatientListPage from "./PatientListPage";
 import PatientEditPage from "./PatientEditPage";
+import FileObjectListPage from "./FileObjectListPage";
+import FileObjectEditPage from "./FileObjectEditPage";
 import CaaseListPage from "./CaaseListPage";
 import CaaseEditPage from "./CaaseEditPage";
 import ConsultationListPage from "./ConsultationListPage";
@@ -256,6 +258,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/doctors"});
     } else if (uri.includes("/patients")) {
       this.setState({selectedMenuKey: "/patients"});
+    } else if (uri.includes("/file-objects")) {
+      this.setState({selectedMenuKey: "/file-objects"});
     } else if (uri.includes("/caases")) {
       this.setState({selectedMenuKey: "/caases"});
     } else if (uri.includes("/consultations")) {
@@ -676,6 +680,7 @@ class App extends Component {
         Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"),
         Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"),
         Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"),
+        Setting.getItem(<Link to="/file-objects">{i18next.t("general:Files")}</Link>, "/file-objects"),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/nodes">{i18next.t("general:Cloud Resources")}</Link>, "/cloud", <CloudTwoTone twoToneColor={twoToneColor} />, [
@@ -849,6 +854,8 @@ class App extends Component {
         <Route exact path="/doctors" render={(props) => this.renderSigninIfNotSignedIn(<DoctorListPage account={this.state.account} {...props} />)} />
         <Route exact path="/doctors/:doctorName" render={(props) => this.renderSigninIfNotSignedIn(<DoctorEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/patients" render={(props) => this.renderSigninIfNotSignedIn(<PatientListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/file-objects" render={(props) => this.renderSigninIfNotSignedIn(<FileObjectListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/file-objects/:fileObjectName" render={(props) => this.renderSigninIfNotSignedIn(<FileObjectEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/patients/:patientName" render={(props) => this.renderSigninIfNotSignedIn(<PatientEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/caases" render={(props) => this.renderSigninIfNotSignedIn(<CaaseListPage account={this.state.account} {...props} />)} />
         <Route exact path="/caases/:caaseName" render={(props) => this.renderSigninIfNotSignedIn(<CaaseEditPage account={this.state.account} {...props} />)} />

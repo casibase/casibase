@@ -121,6 +121,17 @@
     "Edit Doctor": "Редактировать врача",
     "New Doctor": "Новый врач"
   },
+  "fileObject": {
+    "Edit File": "Редактировать файл",
+    "Filename": "Имя файла",
+    "New File": "Новый файл",
+    "Path": "Путь",
+    "Size": "Размер",
+    "Status": "Статус",
+    "Storage provider": "Поставщик хранилища",
+    "Store": "Хранилище",
+    "Token count": "Количество токенов"
+  },
   "form": {
     "Edit Form": "Редактировать форму",
     "Form items": "Поля формы",
@@ -206,6 +217,8 @@
     "Failed to undeploy": "Failed to undeploy",
     "Favicon URL": "URL фавикона",
     "Favicon URL - Tooltip": "URL фавикона - Подсказка",
+    "File Objects": "Файловые объекты",
+    "Files": "Файлы",
     "Footer HTML": "HTML низа страницы",
     "Footer HTML - Tooltip": "HTML низа страницы - Подсказка",
     "Forms": "Формы",

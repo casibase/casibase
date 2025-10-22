@@ -121,6 +121,17 @@
     "Edit Doctor": "医師を編集",
     "New Doctor": "新しい医師"
   },
+  "fileObject": {
+    "Edit File": "ファイルを編集",
+    "Filename": "ファイル名",
+    "New File": "新しいファイル",
+    "Path": "パス",
+    "Size": "サイズ",
+    "Status": "ステータス",
+    "Storage provider": "ストレージプロバイダー",
+    "Store": "ストア",
+    "Token count": "トークン数"
+  },
   "form": {
     "Edit Form": "フォームを編集",
     "Form items": "フォーム項目",
@@ -206,6 +217,8 @@
     "Failed to undeploy": "アンデプロイに失敗しました",
     "Favicon URL": "ファビコンURL",
     "Favicon URL - Tooltip": "ファビコンURL - ツールチップ",
+    "File Objects": "ファイルオブジェクト",
+    "Files": "ファイル",
     "Footer HTML": "フッターHTML",
     "Footer HTML - Tooltip": "フッターHTML - ツールチップ",
     "Forms": "フォーム",

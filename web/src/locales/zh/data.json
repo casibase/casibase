@@ -121,6 +121,17 @@
     "Edit Doctor": "编辑医生",
     "New Doctor": "新建医生"
   },
+  "fileObject": {
+    "Edit File": "编辑文件",
+    "Filename": "文件名",
+    "New File": "新建文件",
+    "Path": "路径",
+    "Size": "大小",
+    "Status": "状态",
+    "Storage provider": "存储提供者",
+    "Store": "存储库",
+    "Token count": "令牌数量"
+  },
   "form": {
     "Edit Form": "编辑表单",
     "Form items": "表单项",
@@ -206,6 +217,8 @@
     "Failed to undeploy": "取消部署失败",
     "Favicon URL": "网站图标 URL",
     "Favicon URL - Tooltip": "网站图标 URL - 提示信息",
+    "File Objects": "文件对象",
+    "Files": "文件",
     "Footer HTML": "页脚 HTML",
     "Footer HTML - Tooltip": "页脚 HTML - 提示信息",
     "Forms": "表单",

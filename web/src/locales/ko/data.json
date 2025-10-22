@@ -121,6 +121,17 @@
     "Edit Doctor": "의사 편집",
     "New Doctor": "새 의사"
   },
+  "fileObject": {
+    "Edit File": "파일 편집",
+    "Filename": "파일 이름",
+    "New File": "새 파일",
+    "Path": "경로",
+    "Size": "크기",
+    "Status": "상태",
+    "Storage provider": "스토리지 제공자",
+    "Store": "저장소",
+    "Token count": "토큰 수"
+  },
   "form": {
     "Edit Form": "폼 편집",
     "Form items": "폼 항목",
@@ -206,6 +217,8 @@
     "Failed to undeploy": "배포 취소 실패",
     "Favicon URL": "파비콘 URL",
     "Favicon URL - Tooltip": "파비콘 URL - 툴팁",
+    "File Objects": "파일 객체",
+    "Files": "파일",
     "Footer HTML": "푸터 HTML",
     "Footer HTML - Tooltip": "푸터 HTML - 툴팁",
     "Forms": "폼",

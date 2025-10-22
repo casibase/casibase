@@ -121,6 +121,17 @@
     "Edit Doctor": "Modifier le médecin",
     "New Doctor": "Nouveau médecin"
   },
+  "fileObject": {
+    "Edit File": "Modifier le fichier",
+    "Filename": "Nom de fichier",
+    "New File": "Nouveau fichier",
+    "Path": "Chemin",
+    "Size": "Taille",
+    "Status": "Statut",
+    "Storage provider": "Fournisseur de stockage",
+    "Store": "Magasin",
+    "Token count": "Nombre de jetons"
+  },
   "form": {
     "Edit Form": "Éditer le formulaire",
     "Form items": "Éléments du formulaire",
@@ -206,6 +217,8 @@
     "Failed to undeploy": "Échec de l'annulation du déploiement",
     "Favicon URL": "URL du Favicon",
     "Favicon URL - Tooltip": "URL du Favicon - Info-bulle",
+    "File Objects": "Objets fichier",
+    "Files": "Fichiers",
     "Footer HTML": "HTML du Pied de Page",
     "Footer HTML - Tooltip": "HTML du Pied de Page - Info-bulle",
     "Forms": "Formulaires",

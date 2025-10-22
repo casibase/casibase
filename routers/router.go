@@ -265,6 +265,12 @@ func initAPI() {
 	beego.Router("/api/add-consultation", &controllers.ApiController{}, "POST:AddConsultation")
 	beego.Router("/api/delete-consultation", &controllers.ApiController{}, "POST:DeleteConsultation")
 
+	beego.Router("/api/get-file-objects", &controllers.ApiController{}, "GET:GetFileObjects")
+	beego.Router("/api/get-file-object", &controllers.ApiController{}, "GET:GetFileObject")
+	beego.Router("/api/update-file-object", &controllers.ApiController{}, "POST:UpdateFileObject")
+	beego.Router("/api/add-file-object", &controllers.ApiController{}, "POST:AddFileObject")
+	beego.Router("/api/delete-file-object", &controllers.ApiController{}, "POST:DeleteFileObject")
+
 	beego.Router("/api/get-system-info", &controllers.ApiController{}, "GET:GetSystemInfo")
 	beego.Router("/api/get-version-info", &controllers.ApiController{}, "GET:GetVersionInfo")
 	beego.Router("/api/health", &controllers.ApiController{}, "GET:Health")

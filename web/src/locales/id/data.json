@@ -121,6 +121,17 @@
     "Edit Doctor": "Edit dokter",
     "New Doctor": "Dokter baru"
   },
+  "fileObject": {
+    "Edit File": "Edit berkas",
+    "Filename": "Nama berkas",
+    "New File": "Berkas baru",
+    "Path": "Jalur",
+    "Size": "Ukuran",
+    "Status": "Status",
+    "Storage provider": "Penyedia penyimpanan",
+    "Store": "Toko",
+    "Token count": "Jumlah token"
+  },
   "form": {
     "Edit Form": "Sunting formulir",
     "Form items": "Item formulir",
@@ -206,6 +217,8 @@
     "Failed to undeploy": "Gagal membatalkan penerapan",
     "Favicon URL": "URL Favicon",
     "Favicon URL - Tooltip": "URL Favicon - Keterangan",
+    "File Objects": "Objek berkas",
+    "Files": "Berkas",
     "Footer HTML": "HTML Footer",
     "Footer HTML - Tooltip": "HTML Footer - Keterangan",
     "Forms": "Formulir",
