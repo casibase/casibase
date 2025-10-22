@@ -139,11 +139,7 @@ func scanAliyunVpcs(owner string, provider *Provider) ([]*Asset, error) {
 	for _, vpc := range response.Body.Vpcs.Vpc {
 		// Convert tags to JSON string
 		tagsMap := make(map[string]string)
-		if vpc.Tags != nil && vpc.Tags.Tag != nil {
-			for _, tag := range vpc.Tags.Tag {
-				tagsMap[tea.StringValue(tag.Key)] = tea.StringValue(tag.Value)
-			}
-		}
+		// Note: VPC Tags might not be available in all API versions
 		tagsJson, _ := json.Marshal(tagsMap)
 
 		// Convert properties to JSON string
@@ -220,7 +216,7 @@ func scanAliyunSecurityGroups(owner string, provider *Provider) ([]*Asset, error
 			ResourceId:   tea.StringValue(sg.SecurityGroupId),
 			ResourceType: "Security Group",
 			ResourceName: tea.StringValue(sg.SecurityGroupName),
-			Region:       tea.StringValue(sg.RegionId),
+			Region:       provider.Region,
 			Zone:         "",
 			Status:       "Available",
 			Tags:         string(tagsJson),

@@ -46,6 +46,23 @@
     "ZH 🡰 EN": "中文 🡰 英文",
     "ZH 🡲 EN": "中文 🡲 英文"
   },
+  "asset": {
+    "Edit Asset": "编辑资产",
+    "Failed to scan assets": "扫描资产失败",
+    "New Asset": "新建资产",
+    "Please select a provider": "请选择供应商",
+    "Properties": "属性",
+    "Provider": "供应商",
+    "Region": "区域",
+    "Resource ID": "资源ID",
+    "Resource Name": "资源名称",
+    "Resource Type": "资源类型",
+    "Scan": "扫描",
+    "Status": "状态",
+    "Successfully scanned assets": "扫描资产成功",
+    "Tags": "标签",
+    "Zone": "可用区"
+  },
   "caase": {
     "Edit Caase": "编辑病例",
     "New Caase": "新建病例"
@@ -146,6 +163,7 @@
     "Application Store": "应用商店",
     "Applications": "应用",
     "Articles": "案例",
+    "Assets": "资产",
     "Audit": "审计",
     "Avatar": "头像",
     "Avatar - Tooltip": "头像对应的URL",
