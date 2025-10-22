@@ -46,6 +46,10 @@
     "ZH 🡰 EN": "Bahasa Cina 🡰 Bahasa Inggris",
     "ZH 🡲 EN": "Bahasa Cina 🡲 Bahasa Inggris"
   },
+  "caase": {
+    "Edit Caase": "Edit kasus",
+    "New Caase": "Kasus baru"
+  },
   "cert": {
     "Sign cert": "Sertifikat tanda tangan",
     "Sign cert - Tooltip": "Sertifikat tanda tangan",
@@ -95,6 +99,10 @@
     "History": "Riwayat",
     "Online": "Online"
   },
+  "consultation": {
+    "Edit Consultation": "Edit konsultasi",
+    "New Consultation": "Konsultasi baru"
+  },
   "container": {
     "Command": "Perintah",
     "Command - Tooltip": "Perintah mulai kontainer",
@@ -108,6 +116,10 @@
     "Size RW - Tooltip": "Ukuran penyimpanan lapisan tertulis (satuan: MB)",
     "Size root FS": "Ukuran sistem file akar",
     "Size root FS - Tooltip": "Ukuran sistem file akar (satuan: MB)"
+  },
+  "doctor": {
+    "Edit Doctor": "Edit dokter",
+    "New Doctor": "Dokter baru"
   },
   "form": {
     "Edit Form": "Sunting formulir",
@@ -394,6 +406,10 @@
   "graph": {
     "Edit Graph": "Edit Graph"
   },
+  "hospital": {
+    "Edit Hospital": "Edit rumah sakit",
+    "New Hospital": "Rumah sakit baru"
+  },
   "image": {
     "Arch": "Arsitektur",
     "Arch - Tooltip": "Arsitektur sistem",
@@ -439,8 +455,6 @@
     "Allergies": "Alergi",
     "Allergies - Tooltip": "Alergi",
     "Audit": "Audit",
-    "Authorized hospital": "Rumah sakit yang berwenang",
-    "Authorized hospital - Tooltip": "Rumah sakit yang berwenang untuk mengakses catatan konsultasi",
     "B+": "B+",
     "B-": "B-",
     "Blood type": "Golongan darah",
@@ -455,14 +469,7 @@
     "Diagnosis date - Tooltip": "Tanggal diagnosis",
     "Doctor": "Dokter",
     "Doctor - Tooltip": "Dokter yang merawat",
-    "Doctor name": "Nama dokter",
-    "Doctor name - Tooltip": "Nama dokter yang merawat",
     "Doctors": "Dokter",
-    "Edit Caase": "Edit kasus",
-    "Edit Consultation": "Edit konsultasi",
-    "Edit Doctor": "Edit dokter",
-    "Edit Hospital": "Edit rumah sakit",
-    "Edit Patient": "Edit pasien",
     "Email": "Email",
     "Email - Tooltip": "Email",
     "Expired time": "Waktu kadaluarsa",
@@ -476,18 +483,11 @@
     "HIS interface info - Tooltip": "Detail antarmuka Sistem Informasi Rumah Sakit",
     "Hospital": "Rumah sakit",
     "Hospital - Tooltip": "Rumah sakit",
-    "Hospital name": "Nama rumah sakit",
-    "Hospital name - Tooltip": "Nama rumah sakit",
     "Hospitals": "Rumah Sakit",
     "Integrated care organization Id": "Id organisasi perawatan terintegrasi",
     "Integrated care organization Id - Tooltip": "Pengidentifikasi organisasi perawatan terintegrasi",
     "Male": "Laki-laki",
     "Medical Image Analysis": "Analisis gambar medis",
-    "New Caase": "Kasus baru",
-    "New Consultation": "Konsultasi baru",
-    "New Doctor": "Dokter baru",
-    "New Hospital": "Rumah sakit baru",
-    "New Patient": "Pasien baru",
     "O+": "O+",
     "O-": "O-",
     "Other": "Lainnya",
@@ -495,8 +495,6 @@
     "Owners - Tooltip": "Dokter yang memiliki izin untuk mengelola pasien ini",
     "Patient": "Pasien",
     "Patient - Tooltip": "Pasien",
-    "Patient name": "Nama pasien",
-    "Patient name - Tooltip": "Nama pasien",
     "Patients": "Pasien",
     "Prescription": "Resep",
     "Prescription - Tooltip": "Obat atau perawatan yang diresepkan",
@@ -544,11 +542,18 @@
     "Services": "Layanan",
     "Services - Tooltip": "Konfigurasi pemantauan layanan yang berjalan di node (port/proses)"
   },
+  "patient": {
+    "Edit Patient": "Edit pasien",
+    "New Patient": "Pasien baru",
+    "View Patient": "Lihat pasien"
+  },
   "pod": {
     "Edit Pod": "Sunting Pod",
     "New Pod": "Pod baru"
   },
   "provider": {
+    "AES key": "Kunci AES",
+    "AES key - Tooltip": "Kunci enkripsi AES",
     "API key": "Kunci API",
     "API key - Tooltip": "Kunci API model (hanya terlihat administrator)",
     "API version": "Versi API",
@@ -556,6 +561,8 @@
     "Add Storage Provider": "Tambahkan penyedia penyimpanan",
     "Auth type": "Tipe otentikasi",
     "Auth type - Tooltip": "Tipe otentikasi",
+    "Bot ID": "ID Bot",
+    "Bot ID - Tooltip": "Pengenal unik bot",
     "Browser URL": "URL browser",
     "Browser URL - Tooltip": "URL browser blockchain",
     "Category": "Kategori",
@@ -624,6 +631,8 @@
     "Temperature - Tooltip": "Kontrol keragaman generasi (0= konservatif, 2=kreatif)",
     "Thinking tokens": "Tokens pemikiran",
     "Thinking tokens - Tooltip": "Tokens pemikiran",
+    "Token": "Token",
+    "Token - Tooltip": "Token akses",
     "Tools": "Alat",
     "Top K": "Top K",
     "Top K - Tooltip": "Batas jumlah token kandidat (1-6)",
@@ -648,6 +657,8 @@
     "Apply for Permission": "Aplikasikan izin",
     "Auto read": "Bacaan otomatis",
     "Biology": "Biologi",
+    "Builtin tools": "Alat bawaan",
+    "Builtin tools - Tooltip": "Pilih alat bawaan untuk diaktifkan (misalnya waktu, eksekusi kode, pemrosesan JSON, dll.)",
     "Chat count": "Jumlah chat",
     "Chemistry": "Kimia",
     "Child model providers": "Penyedia model anak",
@@ -655,8 +666,6 @@
     "Child stores": "Rumah data anak",
     "Child stores - Tooltip": "Nama penyimpanan anak terkait (digunakan untuk pencarian pengetahuan lintas penyimpanan)",
     "Chinese": "Bahasa Cina",
-    "Forbidden words": "Kata-kata terlarang",
-    "Forbidden words - Tooltip": "Kata yang tidak diizinkan dalam pesan chat. Pesan yang berisi kata-kata ini akan ditolak.",
     "Collected time": "Waktu dikumpulkan",
     "Disable file upload": "Nonaktifkan unggah file",
     "Disable file upload - Tooltip": "Mencegah pengguna mengunggah file (setelah diaktifkan, database pengetahuan hanya dapat diupdate oleh administrator)",
@@ -675,6 +684,8 @@
     "File type": "Tipe file",
     "Folder": "Folder",
     "Footer HTML - Edit": "Edit HTML Footer",
+    "Forbidden words": "Kata-kata terlarang",
+    "Forbidden words - Tooltip": "Kata yang tidak diizinkan dalam pesan chat. Pesan yang berisi kata-kata ini akan ditolak.",
     "Frequency": "Frekuensi",
     "Frequency - Tooltip": "Batas frekuensi pemanggilan model AI (kali/permenit)",
     "Hide thinking": "Sembunyikan penalaran",
@@ -716,6 +727,7 @@
     "Science": "Ilmu pengetahuan",
     "Search provider": "Penyedia pencarian",
     "Search provider - Tooltip": "Penyedia layanan pencarian web dan dokumen",
+    "Select builtin tools": "Pilih alat bawaan",
     "Show auto read": "Tampilkan bacaan otomatis",
     "Show auto read - Tooltip": "Apakah membaca ulang AI secara otomatis (memerlukan layanan TTS diaktifkan)",
     "Sorry, you are unauthorized to access this file or folder": "Maaf, Anda tidak berhak mengakses file atau folder ini",
@@ -738,6 +750,8 @@
     "Upload file": "Unggah file",
     "Vector store id": "Vector store id",
     "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector stores": "Penyimpanan vektor",
+    "Vector stores - Tooltip": "Konfigurasi penyimpanan vektor",
     "Welcome": "Pemicu selamat datang",
     "Welcome - Tooltip": "Pesan selamat datang yang ditampilkan saat pengguna pertama kali masuk ke percakapan",
     "Welcome text": "Teks selamat datang",
@@ -890,26 +904,5 @@
   },
   "workflow": {
     "Edit Workflow": "Sunting alur kerja"
-  },
-  "caase": {
-    "Edit Caase": "Edit kasus",
-    "New Caase": "Kasus baru"
-  },
-  "consultation": {
-    "Edit Consultation": "Edit konsultasi",
-    "New Consultation": "Konsultasi baru"
-  },
-  "doctor": {
-    "Edit Doctor": "Edit dokter",
-    "New Doctor": "Dokter baru"
-  },
-  "hospital": {
-    "Edit Hospital": "Edit rumah sakit",
-    "New Hospital": "Rumah sakit baru"
-  },
-  "patient": {
-    "Edit Patient": "Edit pasien",
-    "New Patient": "Pasien baru",
-    "View Patient": "Lihat pasien"
   }
 }

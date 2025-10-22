@@ -46,6 +46,10 @@
     "ZH 🡰 EN": "중국어 🡰 영어",
     "ZH 🡲 EN": "중국어 🡲 영어"
   },
+  "caase": {
+    "Edit Caase": "사례 편집",
+    "New Caase": "새 사례"
+  },
   "cert": {
     "Sign cert": "서명 인증서",
     "Sign cert - Tooltip": "서명 인증서",
@@ -95,6 +99,10 @@
     "History": "히스토리",
     "Online": "온라인"
   },
+  "consultation": {
+    "Edit Consultation": "상담 편집",
+    "New Consultation": "새 상담"
+  },
   "container": {
     "Command": "명령",
     "Command - Tooltip": "컨테이너 시작 명령",
@@ -108,6 +116,10 @@
     "Size RW - Tooltip": "쓰기 가능 레이어 저장 크기(단위: MB)",
     "Size root FS": "루트 파일 시스템 크기",
     "Size root FS - Tooltip": "루트 파일 시스템 크기(단위: MB)"
+  },
+  "doctor": {
+    "Edit Doctor": "의사 편집",
+    "New Doctor": "새 의사"
   },
   "form": {
     "Edit Form": "폼 편집",
@@ -394,6 +406,10 @@
   "graph": {
     "Edit Graph": "Edit Graph"
   },
+  "hospital": {
+    "Edit Hospital": "병원 편집",
+    "New Hospital": "새 병원"
+  },
   "image": {
     "Arch": "아키텍처",
     "Arch - Tooltip": "시스템 아키텍처",
@@ -439,8 +455,6 @@
     "Allergies": "알레르기",
     "Allergies - Tooltip": "알레르기",
     "Audit": "감사",
-    "Authorized hospital": "승인된 병원",
-    "Authorized hospital - Tooltip": "상담 기록에 액세스할 수 있도록 승인된 병원",
     "B+": "B+",
     "B-": "B-",
     "Blood type": "혈액형",
@@ -455,14 +469,7 @@
     "Diagnosis date - Tooltip": "진단 날짜",
     "Doctor": "의사",
     "Doctor - Tooltip": "담당 의사",
-    "Doctor name": "의사 이름",
-    "Doctor name - Tooltip": "담당 의사 이름",
     "Doctors": "의사",
-    "Edit Caase": "사례 편집",
-    "Edit Consultation": "상담 편집",
-    "Edit Doctor": "의사 편집",
-    "Edit Hospital": "병원 편집",
-    "Edit Patient": "환자 편집",
     "Email": "이메일",
     "Email - Tooltip": "이메일",
     "Expired time": "만료 시간",
@@ -476,18 +483,11 @@
     "HIS interface info - Tooltip": "병원 정보 시스템 인터페이스 세부 정보",
     "Hospital": "병원",
     "Hospital - Tooltip": "병원",
-    "Hospital name": "병원 이름",
-    "Hospital name - Tooltip": "병원 이름",
     "Hospitals": "병원",
     "Integrated care organization Id": "통합 진료 조직 Id",
     "Integrated care organization Id - Tooltip": "통합 진료 조직 식별자",
     "Male": "남성",
     "Medical Image Analysis": "의료 영상 분석",
-    "New Caase": "새 사례",
-    "New Consultation": "새 상담",
-    "New Doctor": "새 의사",
-    "New Hospital": "새 병원",
-    "New Patient": "새 환자",
     "O+": "O+",
     "O-": "O-",
     "Other": "기타",
@@ -495,8 +495,6 @@
     "Owners - Tooltip": "이 환자를 관리할 권한이 있는 의사",
     "Patient": "환자",
     "Patient - Tooltip": "환자",
-    "Patient name": "환자 이름",
-    "Patient name - Tooltip": "환자 이름",
     "Patients": "환자",
     "Prescription": "처방",
     "Prescription - Tooltip": "처방된 약물 또는 치료",
@@ -544,11 +542,18 @@
     "Services": "서비스",
     "Services - Tooltip": "노드가 실행하는 서비스 모니터링 구성(포트/프로세스)"
   },
+  "patient": {
+    "Edit Patient": "환자 편집",
+    "New Patient": "새 환자",
+    "View Patient": "환자 보기"
+  },
   "pod": {
     "Edit Pod": "Pod 편집",
     "New Pod": "새 Pod 생성"
   },
   "provider": {
+    "AES key": "AES 키",
+    "AES key - Tooltip": "AES 암호화 키",
     "API key": "API 키",
     "API key - Tooltip": "모델 API 키(관리자만 가능)",
     "API version": "API 버전",
@@ -556,6 +561,8 @@
     "Add Storage Provider": "스토리지 공급자 추가",
     "Auth type": "인증 유형",
     "Auth type - Tooltip": "인증 유형",
+    "Bot ID": "봇 ID",
+    "Bot ID - Tooltip": "봇 고유 식별자",
     "Browser URL": "브라우저 URL",
     "Browser URL - Tooltip": "블록체인 브라우저 URL",
     "Category": "분류",
@@ -624,6 +631,8 @@
     "Temperature - Tooltip": "생성 다양성 제어(0=관수적, 2=창의적)",
     "Thinking tokens": "생각 토큰",
     "Thinking tokens - Tooltip": "생각 토큰",
+    "Token": "토큰",
+    "Token - Tooltip": "액세스 토큰",
     "Tools": "도구",
     "Top K": "Top K",
     "Top K - Tooltip": "후보 토큰 수량 제한(1-6)",
@@ -648,6 +657,8 @@
     "Apply for Permission": "권한 신청",
     "Auto read": "자동 읽기",
     "Biology": "생물",
+    "Builtin tools": "내장 도구",
+    "Builtin tools - Tooltip": "활성화할 내장 도구 선택 (예: 시간, 코드 실행, JSON 처리 등)",
     "Chat count": "채팅 수",
     "Chemistry": "화학",
     "Child model providers": "부속 모델 공급자",
@@ -655,8 +666,6 @@
     "Child stores": "부속 데이터 저장소",
     "Child stores - Tooltip": "연결된 자식 저장소 이름(다른 저장소에서 지식 검색용)",
     "Chinese": "국어",
-    "Forbidden words": "금지어",
-    "Forbidden words - Tooltip": "채팅 메시지에서 허용되지 않는 단어입니다. 이러한 단어가 포함된 메시지는 거부됩니다.",
     "Collected time": "수집 시간",
     "Disable file upload": "파일 업로드 금지",
     "Disable file upload - Tooltip": "사용자가 파일을 업로드하는 것을 금지함(활성화 후 지식 데이터베이스는 관리자만 업데이트할 수 있음)",
@@ -675,6 +684,8 @@
     "File type": "파일 유형",
     "Folder": "폴더",
     "Footer HTML - Edit": "푸터 HTML 편집",
+    "Forbidden words": "금지어",
+    "Forbidden words - Tooltip": "채팅 메시지에서 허용되지 않는 단어입니다. 이러한 단어가 포함된 메시지는 거부됩니다.",
     "Frequency": "주파수",
     "Frequency - Tooltip": "AI 모델 호출 주파수 제한(회/분)",
     "Hide thinking": "추론 숨기기",
@@ -716,6 +727,7 @@
     "Science": "과학",
     "Search provider": "검색 공급자",
     "Search provider - Tooltip": "검색 공급자",
+    "Select builtin tools": "내장 도구 선택",
     "Show auto read": "자동 읽기 표시",
     "Show auto read - Tooltip": "AI 응답을 자동으로 읽을지 여부를 표시함(TTS 서비스를 활성화해야 함)",
     "Sorry, you are unauthorized to access this file or folder": "죄송합니다. 이 파일 또는 폴더에 액세스할 권한이 없습니다",
@@ -738,6 +750,8 @@
     "Upload file": "파일 업로드",
     "Vector store id": "벡터 저장소 id",
     "Vector store id - Tooltip": "벡터 저장소 id",
+    "Vector stores": "벡터 저장소",
+    "Vector stores - Tooltip": "벡터 저장소 구성",
     "Welcome": "환영 프롬프트",
     "Welcome - Tooltip": "사용자가 처음으로 채팅에 들어갈 때 표시되는 환영 메시지",
     "Welcome text": "환영 텍스트",
@@ -890,26 +904,5 @@
   },
   "workflow": {
     "Edit Workflow": "워크플로 편집"
-  },
-  "caase": {
-    "Edit Caase": "사례 편집",
-    "New Caase": "새 사례"
-  },
-  "consultation": {
-    "Edit Consultation": "상담 편집",
-    "New Consultation": "새 상담"
-  },
-  "doctor": {
-    "Edit Doctor": "의사 편집",
-    "New Doctor": "새 의사"
-  },
-  "hospital": {
-    "Edit Hospital": "병원 편집",
-    "New Hospital": "새 병원"
-  },
-  "patient": {
-    "Edit Patient": "환자 편집",
-    "New Patient": "새 환자",
-    "View Patient": "환자 보기"
   }
 }
