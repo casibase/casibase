@@ -42,6 +42,7 @@ type Caase struct {
 	DoctorName                   string `xorm:"varchar(100)" json:"doctorName"`
 	SpecialistAllianceId         string `xorm:"varchar(100)" json:"specialistAllianceId"`
 	IntegratedCareOrganizationId string `xorm:"varchar(100)" json:"integratedCareOrganizationId"`
+	Hospital                     string `xorm:"varchar(100)" json:"hospital"`
 }
 
 func GetCaaseCount(owner, field, value string) (int64, error) {

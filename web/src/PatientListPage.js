@@ -161,6 +161,34 @@ class PatientListPage extends BaseListPage {
         sorter: (a, b) => a.allergies.localeCompare(b.allergies),
       },
       {
+        title: i18next.t("med:Hospital"),
+        dataIndex: "hospital",
+        key: "hospital",
+        width: "150px",
+        sorter: (a, b) => (a.hospital || "").localeCompare(b.hospital || ""),
+      },
+      {
+        title: i18next.t("med:Owners"),
+        dataIndex: "owners",
+        key: "owners",
+        width: "200px",
+        render: (text, record, index) => {
+          if (!record.owners || record.owners.length === 0) {
+            return null;
+          }
+          return (
+            <div>
+              {record.owners.map((owner, idx) => (
+                <span key={idx}>
+                  <Link to={`/doctors/${owner}`}>{owner}</Link>
+                  {idx < record.owners.length - 1 ? ", " : ""}
+                </span>
+              ))}
+            </div>
+          );
+        },
+      },
+      {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",

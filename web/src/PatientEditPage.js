@@ -17,6 +17,7 @@ import {Button, Card, Col, Input, Row, Select} from "antd";
 // import {LinkOutlined} from "@ant-design/icons";
 import * as PatientBackend from "./backend/PatientBackend";
 import * as DoctorBackend from "./backend/DoctorBackend";
+import * as HospitalBackend from "./backend/HospitalBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
@@ -29,6 +30,7 @@ class PatientEditPage extends React.Component {
       patientName: props.match.params.patientName,
       patient: null,
       doctors: [],
+      hospitals: [],
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
   }
@@ -36,6 +38,7 @@ class PatientEditPage extends React.Component {
   UNSAFE_componentWillMount() {
     this.getPatient();
     this.getDoctors();
+    this.getHospitals();
   }
 
   getPatient() {
@@ -61,6 +64,19 @@ class PatientEditPage extends React.Component {
         if (res.status === "ok") {
           this.setState({
             doctors: res.data || [],
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getHospitals() {
+    HospitalBackend.getHospitals(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            hospitals: res.data || [],
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -224,6 +240,26 @@ class PatientEditPage extends React.Component {
             <Input disabled={!canEdit} value={this.state.patient.allergies} onChange={e => {
               this.updatePatientField("allergies", e.target.value);
             }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("med:Hospital"), i18next.t("med:Hospital - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              disabled={!canEdit}
+              value={this.state.patient.hospital}
+              onChange={(value) => {
+                this.updatePatientField("hospital", value);
+              }}
+              options={this.state.hospitals.map((hospital) => ({
+                label: hospital.name,
+                value: hospital.name,
+              }))}
+            />
           </Col>
         </Row>
       </Card>

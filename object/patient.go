@@ -35,6 +35,7 @@ type Patient struct {
 	BloodType string   `xorm:"varchar(100)" json:"bloodType"`
 	Allergies string   `xorm:"varchar(100)" json:"allergies"`
 	Owners    []string `xorm:"mediumtext" json:"owners"`
+	Hospital  string   `xorm:"varchar(100)" json:"hospital"`
 }
 
 func GetPatientCount(owner, field, value string) (int64, error) {
