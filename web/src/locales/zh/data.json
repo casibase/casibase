@@ -194,6 +194,9 @@
     "Failed to undeploy": "取消部署失败",
     "Favicon URL": "网站图标 URL",
     "Favicon URL - Tooltip": "网站图标 URL - 提示信息",
+    "File": "文件",
+    "Files": "文件",
+    "Files Data": "文件数据",
     "Footer HTML": "页脚 HTML",
     "Footer HTML - Tooltip": "页脚 HTML - 提示信息",
     "Forms": "表单",
@@ -880,6 +883,16 @@
     "Video - Tooltip": "视频",
     "Video ID": "录像ID",
     "Video ID - Tooltip": "视频ID（唯一标识符）"
+  },
+  "fileData": {
+    "Edit File Data": "编辑文件数据",
+    "Embedding provider": "嵌入提供商",
+    "File ID": "文件 ID",
+    "File name": "文件名",
+    "New File Data": "新建文件数据",
+    "Size": "大小",
+    "Status": "状态",
+    "Token count": "令牌数"
   },
   "workflow": {
     "Edit Workflow": "编辑工作流"

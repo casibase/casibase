@@ -27,6 +27,8 @@ import HomePage from "./HomePage";
 import StoreListPage from "./StoreListPage";
 import StoreEditPage from "./StoreEditPage";
 import FileTreePage from "./FileTreePage";
+import FileDataListPage from "./FileDataListPage";
+import FileDataEditPage from "./FileDataEditPage";
 import VideoListPage from "./VideoListPage";
 import VideoEditPage from "./VideoEditPage";
 import VideoPage from "./VideoPage";
@@ -350,7 +352,7 @@ class App extends Component {
     if (uri.includes("/chat")) {
       return true;
     }
-    const enabledStartsWith = ["/stores", "/providers", "/vectors", "/chats", "/messages", "/usages"];
+    const enabledStartsWith = ["/stores", "/providers", "/vectors", "/files-data", "/chats", "/messages", "/usages"];
     if (enabledStartsWith.some(prefix => uri.startsWith(prefix))) {
       return true;
     }
@@ -674,6 +676,7 @@ class App extends Component {
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:AI Setting")}</Link>, "/ai-setting", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"),
+        Setting.getItem(<Link to="/files-data">{i18next.t("general:Files")}</Link>, "/files-data"),
         Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"),
         Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"),
       ]));
@@ -796,6 +799,8 @@ class App extends Component {
         <Route exact path="/stores/:owner/:storeName/view" render={(props) => this.renderSigninIfNotSignedIn(<FileTreePage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/files-data" render={(props) => this.renderSigninIfNotSignedIn(<FileDataListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/files-data/:owner/:fileDataName" render={(props) => this.renderSigninIfNotSignedIn(<FileDataEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)} />
         <Route exact path="/videos/:owner/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/public-videos" render={(props) => <PublicVideoListPage {...props} />} />

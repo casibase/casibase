@@ -194,6 +194,8 @@
     "Failed to undeploy": "アンデプロイに失敗しました",
     "Favicon URL": "ファビコンURL",
     "Favicon URL - Tooltip": "ファビコンURL - ツールチップ",
+    "Files": "Files",
+    "Files Data": "Files Data",
     "Footer HTML": "フッターHTML",
     "Footer HTML - Tooltip": "フッターHTML - ツールチップ",
     "Forms": "フォーム",
@@ -890,6 +892,16 @@
     "Video - Tooltip": "ビデオ",
     "Video ID": "ビデオID",
     "Video ID - Tooltip": "ビデオID（一意の識別子）"
+  },
+  "fileData": {
+    "Edit File Data": "Edit File Data",
+    "Embedding provider": "Embedding provider",
+    "File ID": "File ID",
+    "File name": "File name",
+    "New File Data": "New File Data",
+    "Size": "Size",
+    "Status": "Status",
+    "Token count": "Token count"
   },
   "workflow": {
     "Edit Workflow": "ワークフローを編集"

@@ -194,6 +194,8 @@
     "Failed to undeploy": "Error al anular el despliegue",
     "Favicon URL": "URL del Favicon",
     "Favicon URL - Tooltip": "URL del Favicon - Información",
+    "Files": "Files",
+    "Files Data": "Files Data",
     "Footer HTML": "HTML del Pie de Página",
     "Footer HTML - Tooltip": "HTML del Pie de Página - Información",
     "Forms": "Formularios",
@@ -890,6 +892,16 @@
     "Video - Tooltip": "Video",
     "Video ID": "ID de grabación",
     "Video ID - Tooltip": "ID de video (identificador único)"
+  },
+  "fileData": {
+    "Edit File Data": "Edit File Data",
+    "Embedding provider": "Embedding provider",
+    "File ID": "File ID",
+    "File name": "File name",
+    "New File Data": "New File Data",
+    "Size": "Size",
+    "Status": "Status",
+    "Token count": "Token count"
   },
   "workflow": {
     "Edit Workflow": "Editar flujo de trabajo"

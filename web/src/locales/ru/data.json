@@ -194,6 +194,8 @@
     "Failed to undeploy": "Failed to undeploy",
     "Favicon URL": "URL фавикона",
     "Favicon URL - Tooltip": "URL фавикона - Подсказка",
+    "Files": "Files",
+    "Files Data": "Files Data",
     "Footer HTML": "HTML низа страницы",
     "Footer HTML - Tooltip": "HTML низа страницы - Подсказка",
     "Forms": "Формы",
@@ -890,6 +892,16 @@
     "Video - Tooltip": "Видео",
     "Video ID": "ID записи",
     "Video ID - Tooltip": "ID видео (уникальный идентификатор)"
+  },
+  "fileData": {
+    "Edit File Data": "Edit File Data",
+    "Embedding provider": "Embedding provider",
+    "File ID": "File ID",
+    "File name": "File name",
+    "New File Data": "New File Data",
+    "Size": "Size",
+    "Status": "Status",
+    "Token count": "Token count"
   },
   "workflow": {
     "Edit Workflow": "Редактировать рабочий процесс"

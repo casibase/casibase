@@ -194,6 +194,8 @@
     "Failed to undeploy": "Aufheben der Bereitstellung fehlgeschlagen",
     "Favicon URL": "Favicon-URL",
     "Favicon URL - Tooltip": "Favicon-URL - Tooltip",
+    "Files": "Files",
+    "Files Data": "Files Data",
     "Footer HTML": "Fußzeilen-HTML",
     "Footer HTML - Tooltip": "Fußzeilen-HTML - Tooltip",
     "Forms": "Formulare",
@@ -890,6 +892,16 @@
     "Video - Tooltip": "Video",
     "Video ID": "Aufzeichnungs-ID",
     "Video ID - Tooltip": "Video-ID (eindeutiger Bezeichner)"
+  },
+  "fileData": {
+    "Edit File Data": "Edit File Data",
+    "Embedding provider": "Embedding provider",
+    "File ID": "File ID",
+    "File name": "File name",
+    "New File Data": "New File Data",
+    "Size": "Size",
+    "Status": "Status",
+    "Token count": "Token count"
   },
   "workflow": {
     "Edit Workflow": "Arbeitsfluss bearbeiten"

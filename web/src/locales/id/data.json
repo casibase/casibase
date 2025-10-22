@@ -194,6 +194,8 @@
     "Failed to undeploy": "Gagal membatalkan penerapan",
     "Favicon URL": "URL Favicon",
     "Favicon URL - Tooltip": "URL Favicon - Keterangan",
+    "Files": "Files",
+    "Files Data": "Files Data",
     "Footer HTML": "HTML Footer",
     "Footer HTML - Tooltip": "HTML Footer - Keterangan",
     "Forms": "Formulir",
@@ -668,7 +670,6 @@
     "Enable TTS streaming": "Aktifkan streaming TTS",
     "Enable TTS streaming - Tooltip": "Mulai sintesis suara streaming real-time (mengurangi latency, tetapi mungkin mempengaruhi stabilitas)",
     "English": "Bahasa Inggris",
-    "File": "File",
     "File - Tooltip": "Path file sumber",
     "File name": "Nama file",
     "File size": "Ukuran file",
@@ -890,6 +891,16 @@
     "Video - Tooltip": "Video",
     "Video ID": "ID rekaman",
     "Video ID - Tooltip": "ID video (identifikasi unik)"
+  },
+  "fileData": {
+    "Edit File Data": "Edit File Data",
+    "Embedding provider": "Embedding provider",
+    "File ID": "File ID",
+    "File name": "File name",
+    "New File Data": "New File Data",
+    "Size": "Size",
+    "Status": "Status",
+    "Token count": "Token count"
   },
   "workflow": {
     "Edit Workflow": "Sunting alur kerja"

@@ -194,6 +194,8 @@
     "Failed to undeploy": "배포 취소 실패",
     "Favicon URL": "파비콘 URL",
     "Favicon URL - Tooltip": "파비콘 URL - 툴팁",
+    "Files": "Files",
+    "Files Data": "Files Data",
     "Footer HTML": "푸터 HTML",
     "Footer HTML - Tooltip": "푸터 HTML - 툴팁",
     "Forms": "폼",
@@ -890,6 +892,16 @@
     "Video - Tooltip": "비디오",
     "Video ID": "녹화 ID",
     "Video ID - Tooltip": "비디오 ID(고유 식별자)"
+  },
+  "fileData": {
+    "Edit File Data": "Edit File Data",
+    "Embedding provider": "Embedding provider",
+    "File ID": "File ID",
+    "File name": "File name",
+    "New File Data": "New File Data",
+    "Size": "Size",
+    "Status": "Status",
+    "Token count": "Token count"
   },
   "workflow": {
     "Edit Workflow": "워크플로 편집"

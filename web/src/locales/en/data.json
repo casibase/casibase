@@ -194,6 +194,9 @@
     "Failed to undeploy": "Failed to undeploy",
     "Favicon URL": "Favicon URL",
     "Favicon URL - Tooltip": "Favicon URL - Tooltip",
+    "File": "File",
+    "Files": "Files",
+    "Files Data": "Files Data",
     "Footer HTML": "Footer HTML",
     "Footer HTML - Tooltip": "Footer HTML - Tooltip",
     "Forms": "Forms",
@@ -880,6 +883,16 @@
     "Video - Tooltip": "Video",
     "Video ID": "Video ID",
     "Video ID - Tooltip": "Platform-specific video ID"
+  },
+  "fileData": {
+    "Edit File Data": "Edit File Data",
+    "Embedding provider": "Embedding provider",
+    "File ID": "File ID",
+    "File name": "File name",
+    "New File Data": "New File Data",
+    "Size": "Size",
+    "Status": "Status",
+    "Token count": "Token count"
   },
   "workflow": {
     "Edit Workflow": "Edit Workflow"
