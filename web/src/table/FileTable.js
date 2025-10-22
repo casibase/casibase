@@ -18,7 +18,7 @@ import {DeleteOutlined, DownloadOutlined, FileDoneOutlined} from "@ant-design/ic
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import * as PermissionUtil from "../PermissionUtil";
-import * as FileBackend from "../backend/FileBackend";
+import * as TreeFileBackend from "../backend/TreeFileBackend";
 
 class FileTable extends React.Component {
   constructor(props) {
@@ -77,7 +77,7 @@ class FileTable extends React.Component {
 
   deleteFile(file, isLeaf) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
-    FileBackend.deleteFile(storeId, file.key, isLeaf)
+    TreeFileBackend.deleteFile(storeId, file.key, isLeaf)
       .then((res) => {
         if (res.status === "ok") {
           if (res.data === true) {

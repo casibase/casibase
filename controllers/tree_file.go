@@ -21,16 +21,16 @@ import (
 	"github.com/casibase/casibase/object"
 )
 
-// UpdateFile
-// @Title UpdateFile
+// UpdateTreeFile
+// @Title UpdateTreeFile
 // @Tag File API
-// @Description update file
+// @Description update tree file
 // @Param storeId query string true "The store id of the file"
 // @Param key query string true "The key of the file"
 // @Param body body object.File true "The details of the File"
 // @Success 200 {object} controllers.Response The Response object
-// @router /update-file [post]
-func (c *ApiController) UpdateFile() {
+// @router /update-tree-file [post]
+func (c *ApiController) UpdateTreeFile() {
 	userName, ok := c.RequireSignedIn()
 	if !ok {
 		return
@@ -46,7 +46,7 @@ func (c *ApiController) UpdateFile() {
 		return
 	}
 
-	res := object.UpdateFile(storeId, key, &file)
+	res := object.UpdateTreeFile(storeId, key, &file)
 	if res {
 		err = addRecordForFile(c, userName, "Update", storeId, key, "", true, c.GetAcceptLanguage())
 		if err != nil {
@@ -58,17 +58,17 @@ func (c *ApiController) UpdateFile() {
 	c.ResponseOk(res)
 }
 
-// AddFile
-// @Title AddFile
+// AddTreeFile
+// @Title AddTreeFile
 // @Tag File API
-// @Description add file
+// @Description add tree file
 // @Param store query string true "The store of the file"
 // @Param key query string true "The key of the file"
 // @Param isLeaf query string true "if is leaf"
 // @Param filename query string true "The name of the file"
 // @Success 200 {object} controllers.Response The Response object
-// @router /add-file [post]
-func (c *ApiController) AddFile() {
+// @router /add-tree-file [post]
+func (c *ApiController) AddTreeFile() {
 	userName, ok := c.RequireSignedIn()
 	if !ok {
 		return
@@ -90,7 +90,7 @@ func (c *ApiController) AddFile() {
 		defer file.Close()
 	}
 
-	res, bs, err := object.AddFile(storeId, userName, key, isLeaf, filename, file, c.GetAcceptLanguage())
+	res, bs, err := object.AddTreeFile(storeId, userName, key, isLeaf, filename, file, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -113,16 +113,16 @@ func (c *ApiController) AddFile() {
 	c.ResponseOk(res)
 }
 
-// DeleteFile
-// @Title DeleteFile
+// DeleteTreeFile
+// @Title DeleteTreeFile
 // @Tag File API
-// @Description delete file
+// @Description delete tree file
 // @Param store query string true "The store of the file"
 // @Param key query string true "The key of the file"
 // @Param isLeaf query string true "if is leaf"
 // @Success 200 {object} controllers.Response The Response object
-// @router /delete-file [post]
-func (c *ApiController) DeleteFile() {
+// @router /delete-tree-file [post]
+func (c *ApiController) DeleteTreeFile() {
 	userName, ok := c.RequireSignedIn()
 	if !ok {
 		return
@@ -132,7 +132,7 @@ func (c *ApiController) DeleteFile() {
 	key := c.Input().Get("key")
 	isLeaf := c.Input().Get("isLeaf") == "1"
 
-	res, err := object.DeleteFile(storeId, key, isLeaf, c.GetAcceptLanguage())
+	res, err := object.DeleteTreeFile(storeId, key, isLeaf, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
