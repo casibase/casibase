@@ -16,7 +16,7 @@ import * as Setting from "../Setting";
 
 export function updateFile(storeId, name, file) {
   const newFile = Setting.deepCopy(file);
-  return fetch(`${Setting.ServerUrl}/api/update-file?store=${storeId}&name=${name}`, {
+  return fetch(`${Setting.ServerUrl}/api/update-tree-file?store=${storeId}&name=${name}`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -29,7 +29,7 @@ export function updateFile(storeId, name, file) {
 export function addFile(storeId, key, isLeaf, filename, file) {
   const formData = new FormData();
   formData.append("file", file);
-  return fetch(`${Setting.ServerUrl}/api/add-file?store=${storeId}&key=${key}&isLeaf=${isLeaf ? 1 : 0}&filename=${filename}`, {
+  return fetch(`${Setting.ServerUrl}/api/add-tree-file?store=${storeId}&key=${key}&isLeaf=${isLeaf ? 1 : 0}&filename=${filename}`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -40,7 +40,7 @@ export function addFile(storeId, key, isLeaf, filename, file) {
 }
 
 export function deleteFile(storeId, key, isLeaf) {
-  return fetch(`${Setting.ServerUrl}/api/delete-file?store=${storeId}&key=${key}&isLeaf=${isLeaf ? 1 : 0}`, {
+  return fetch(`${Setting.ServerUrl}/api/delete-tree-file?store=${storeId}&key=${key}&isLeaf=${isLeaf ? 1 : 0}`, {
     method: "POST",
     credentials: "include",
     headers: {
