@@ -19,6 +19,7 @@ import (
 	"mime/multipart"
 
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/util"
 )
 
 // UpdateFile
@@ -107,6 +108,34 @@ func (c *ApiController) AddFile() {
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
+		}
+
+		// Create file task for automatic vectorization if it's a leaf file
+		if isLeaf {
+			owner, storeName := util.GetOwnerAndNameFromId(storeId)
+			fileKey := key
+			if key != "" && key != "/" {
+				fileKey = key + "/" + filename
+			} else {
+				fileKey = filename
+			}
+
+			fileTask := &object.FileTask{
+				Owner:       owner,
+				Name:        util.GetRandomName(),
+				CreatedTime: util.GetCurrentTime(),
+				UpdatedTime: util.GetCurrentTime(),
+				Store:       storeName,
+				FileKey:     fileKey,
+				FileName:    filename,
+				Status:      object.FileTaskStatusPending,
+			}
+
+			_, err = object.AddFileTask(fileTask)
+			if err != nil {
+				c.ResponseError(err.Error())
+				return
+			}
 		}
 	}
 
