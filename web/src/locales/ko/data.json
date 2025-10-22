@@ -173,6 +173,7 @@
     "Down": "아래로",
     "Download": "다운로드",
     "Edit": "편집",
+    "Edit File": "Edit File",
     "Error": "Error",
     "Exit": "나가기",
     "Expire time": "만료 시간",
@@ -195,7 +196,6 @@
     "Favicon URL": "파비콘 URL",
     "Favicon URL - Tooltip": "파비콘 URL - 툴팁",
     "Files": "Files",
-    "Files Data": "Files Data",
     "Footer HTML": "푸터 HTML",
     "Footer HTML - Tooltip": "푸터 HTML - 툴팁",
     "Forms": "폼",
@@ -246,6 +246,7 @@
     "Namespace - Tooltip": "네임스페이스",
     "Network": "네트워크",
     "Network - Tooltip": "블록체인 네트워크 유형",
+    "New File": "New File",
     "No audio data was captured. Please try again": "오디오 데이터가 캡처되지 않았습니다. 다시 시도하세요",
     "No data": "데이터 없음",
     "No.": "순번",
@@ -892,16 +893,6 @@
     "Video - Tooltip": "비디오",
     "Video ID": "녹화 ID",
     "Video ID - Tooltip": "비디오 ID(고유 식별자)"
-  },
-  "fileData": {
-    "Edit File Data": "Edit File Data",
-    "Embedding provider": "Embedding provider",
-    "File ID": "File ID",
-    "File name": "File name",
-    "New File Data": "New File Data",
-    "Size": "Size",
-    "Status": "Status",
-    "Token count": "Token count"
   },
   "workflow": {
     "Edit Workflow": "워크플로 편집"

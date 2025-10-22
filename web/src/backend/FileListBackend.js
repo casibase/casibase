@@ -14,8 +14,8 @@
 
 import * as Setting from "../Setting";
 
-export function getGlobalFilesData() {
-  return fetch(`${Setting.ServerUrl}/api/get-global-files-data`, {
+export function getGlobalFileLists() {
+  return fetch(`${Setting.ServerUrl}/api/get-global-files`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -24,8 +24,8 @@ export function getGlobalFilesData() {
   }).then(res => res.json());
 }
 
-export function getFilesData(owner, storeName, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
-  return fetch(`${Setting.ServerUrl}/api/get-files-data?owner=${owner}&store=${storeName}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
+export function getFileLists(owner, storeName, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
+  return fetch(`${Setting.ServerUrl}/api/get-files?owner=${owner}&store=${storeName}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -34,8 +34,8 @@ export function getFilesData(owner, storeName, page = "", pageSize = "", field =
   }).then(res => res.json());
 }
 
-export function getFileData(owner, name) {
-  return fetch(`${Setting.ServerUrl}/api/get-file-data?id=${owner}/${encodeURIComponent(name)}`, {
+export function getFileList(owner, name) {
+  return fetch(`${Setting.ServerUrl}/api/get-file?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -44,38 +44,38 @@ export function getFileData(owner, name) {
   }).then(res => res.json());
 }
 
-export function updateFileData(owner, name, fileData) {
-  const newFileData = Setting.deepCopy(fileData);
-  return fetch(`${Setting.ServerUrl}/api/update-file-data?id=${owner}/${encodeURIComponent(name)}`, {
+export function updateFileList(owner, name, fileList) {
+  const newFileList = Setting.deepCopy(fileList);
+  return fetch(`${Setting.ServerUrl}/api/update-file-list?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(newFileData),
+    body: JSON.stringify(newFileList),
   }).then(res => res.json());
 }
 
-export function addFileData(fileData) {
-  const newFileData = Setting.deepCopy(fileData);
-  return fetch(`${Setting.ServerUrl}/api/add-file-data`, {
+export function addFileList(fileList) {
+  const newFileList = Setting.deepCopy(fileList);
+  return fetch(`${Setting.ServerUrl}/api/add-file-list`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(newFileData),
+    body: JSON.stringify(newFileList),
   }).then(res => res.json());
 }
 
-export function deleteFileData(fileData) {
-  const newFileData = Setting.deepCopy(fileData);
-  return fetch(`${Setting.ServerUrl}/api/delete-file-data`, {
+export function deleteFileList(fileList) {
+  const newFileList = Setting.deepCopy(fileList);
+  return fetch(`${Setting.ServerUrl}/api/delete-file-list`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-    body: JSON.stringify(newFileData),
+    body: JSON.stringify(newFileList),
   }).then(res => res.json());
 }

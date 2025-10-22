@@ -169,12 +169,12 @@ func initAPI() {
 
 	beego.Router("/api/upload-file", &controllers.ApiController{}, "POST:UploadFile")
 
-	beego.Router("/api/get-global-files-data", &controllers.ApiController{}, "GET:GetGlobalFilesData")
-	beego.Router("/api/get-files-data", &controllers.ApiController{}, "GET:GetFilesData")
-	beego.Router("/api/get-file-data", &controllers.ApiController{}, "GET:GetFileData")
-	beego.Router("/api/update-file-data", &controllers.ApiController{}, "POST:UpdateFileData")
-	beego.Router("/api/add-file-data", &controllers.ApiController{}, "POST:AddFileData")
-	beego.Router("/api/delete-file-data", &controllers.ApiController{}, "POST:DeleteFileData")
+	beego.Router("/api/get-global-files", &controllers.ApiController{}, "GET:GetGlobalFileLists")
+	beego.Router("/api/get-files", &controllers.ApiController{}, "GET:GetFileLists")
+	beego.Router("/api/get-file", &controllers.ApiController{}, "GET:GetFileList")
+	beego.Router("/api/update-file-list", &controllers.ApiController{}, "POST:UpdateFileList")
+	beego.Router("/api/add-file-list", &controllers.ApiController{}, "POST:AddFileList")
+	beego.Router("/api/delete-file-list", &controllers.ApiController{}, "POST:DeleteFileList")
 
 	beego.Router("/api/get-permissions", &controllers.ApiController{}, "GET:GetPermissions")
 	beego.Router("/api/get-permission", &controllers.ApiController{}, "GET:GetPermission")

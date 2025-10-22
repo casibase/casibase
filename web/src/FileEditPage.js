@@ -14,34 +14,34 @@
 
 import React from "react";
 import {Button, Card, Col, Input, InputNumber, Row, Select} from "antd";
-import * as FileDataBackend from "./backend/FileDataBackend";
+import * as FileListBackend from "./backend/FileListBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import StoreSelect from "./StoreSelect";
 
 const {Option} = Select;
 
-class FileDataEditPage extends React.Component {
+class FileEditPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      fileDataName: props.match.params.fileDataName,
-      fileData: null,
+      fileName: props.match.params.fileName,
+      fileList: null,
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
   }
 
   UNSAFE_componentWillMount() {
-    this.getFileData();
+    this.getFileList();
   }
 
-  getFileData() {
-    FileDataBackend.getFileData("admin", this.state.fileDataName)
+  getFileList() {
+    FileListBackend.getFileList("admin", this.state.fileName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
-            fileData: res.data,
+            fileList: res.data,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -49,31 +49,31 @@ class FileDataEditPage extends React.Component {
       });
   }
 
-  parseFileDataField(key, value) {
+  parseFileListField(key, value) {
     if (["tokenCount", "size"].includes(key)) {
       value = Setting.myParseInt(value);
     }
     return value;
   }
 
-  updateFileDataField(key, value) {
-    value = this.parseFileDataField(key, value);
+  updateFileListField(key, value) {
+    value = this.parseFileListField(key, value);
 
-    const fileData = this.state.fileData;
-    fileData[key] = value;
+    const fileList = this.state.fileList;
+    fileList[key] = value;
     this.setState({
-      fileData: fileData,
+      fileList: fileList,
     });
   }
 
-  renderFileData() {
+  renderFileList() {
     return (
       <Card size="small" title={
         <div>
-          {this.state.mode === "add" ? i18next.t("fileData:New File Data") : i18next.t("fileData:Edit File Data")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button onClick={() => this.submitFileDataEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitFileDataEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
-          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteFileData()}>{i18next.t("general:Cancel")}</Button> : null}
+          {this.state.mode === "add" ? i18next.t("general:New File") : i18next.t("general:Edit File")}&nbsp;&nbsp;&nbsp;&nbsp;
+          <Button onClick={() => this.submitFileListEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitFileListEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteFileList()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -81,8 +81,8 @@ class FileDataEditPage extends React.Component {
             {i18next.t("general:Name")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.fileData.name} onChange={e => {
-              this.updateFileDataField("name", e.target.value);
+            <Input value={this.state.fileList.name} onChange={e => {
+              this.updateFileListField("name", e.target.value);
             }} />
           </Col>
         </Row>
@@ -91,28 +91,28 @@ class FileDataEditPage extends React.Component {
             {i18next.t("general:Display name")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.fileData.displayName} onChange={e => {
-              this.updateFileDataField("displayName", e.target.value);
+            <Input value={this.state.fileList.displayName} onChange={e => {
+              this.updateFileListField("displayName", e.target.value);
             }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("fileData:File name")}:
+            {i18next.t("store:File name")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.fileData.fileName} onChange={e => {
-              this.updateFileDataField("fileName", e.target.value);
+            <Input value={this.state.fileList.fileName} onChange={e => {
+              this.updateFileListField("fileName", e.target.value);
             }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("fileData:File ID")}:
+            {i18next.t("store:File ID")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.fileData.fileId} onChange={e => {
-              this.updateFileDataField("fileId", e.target.value);
+            <Input value={this.state.fileList.fileId} onChange={e => {
+              this.updateFileListField("fileId", e.target.value);
             }} />
           </Col>
         </Row>
@@ -121,26 +121,26 @@ class FileDataEditPage extends React.Component {
             {i18next.t("general:Store")}:
           </Col>
           <Col span={22} >
-            <StoreSelect account={this.props.account} labelSpan={0} store={this.state.fileData.store} onUpdateStore={(value) => {this.updateFileDataField("store", value);}} />
+            <StoreSelect account={this.props.account} labelSpan={0} store={this.state.fileList.store} onUpdateStore={(value) => {this.updateFileListField("store", value);}} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("fileData:Embedding provider")}:
+            {i18next.t("store:Embedding provider")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.fileData.embeddingProvider} onChange={e => {
-              this.updateFileDataField("embeddingProvider", e.target.value);
+            <Input value={this.state.fileList.embeddingProvider} onChange={e => {
+              this.updateFileListField("embeddingProvider", e.target.value);
             }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("fileData:Status")}:
+            {i18next.t("general:Status")}:
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.fileData.status} onChange={(value) => {
-              this.updateFileDataField("status", value);
+            <Select virtual={false} style={{width: "100%"}} value={this.state.fileList.status} onChange={(value) => {
+              this.updateFileListField("status", value);
             }}>
               {
                 ["Pending", "Processing", "Completed", "Failed"]
@@ -151,21 +151,21 @@ class FileDataEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("fileData:Token count")}:
+            {i18next.t("chat:Token count")}:
           </Col>
           <Col span={22} >
-            <InputNumber style={{width: "100%"}} value={this.state.fileData.tokenCount} onChange={value => {
-              this.updateFileDataField("tokenCount", value);
+            <InputNumber style={{width: "100%"}} value={this.state.fileList.tokenCount} onChange={value => {
+              this.updateFileListField("tokenCount", value);
             }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("fileData:Size")}:
+            {i18next.t("general:Size")}:
           </Col>
           <Col span={22} >
-            <InputNumber style={{width: "100%"}} value={this.state.fileData.size} onChange={value => {
-              this.updateFileDataField("size", value);
+            <InputNumber style={{width: "100%"}} value={this.state.fileList.size} onChange={value => {
+              this.updateFileListField("size", value);
             }} />
           </Col>
         </Row>
@@ -173,19 +173,19 @@ class FileDataEditPage extends React.Component {
     );
   }
 
-  submitFileDataEdit(exitAfterSave) {
-    const fileData = Setting.deepCopy(this.state.fileData);
-    FileDataBackend.updateFileData(this.state.fileData.owner, this.state.fileDataName, fileData)
+  submitFileListEdit(exitAfterSave) {
+    const fileList = Setting.deepCopy(this.state.fileList);
+    FileListBackend.updateFileList(this.state.fileList.owner, this.state.fileName, fileList)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully saved"));
           this.setState({
-            fileDataName: this.state.fileData.name,
+            fileName: this.state.fileList.name,
           });
           if (exitAfterSave) {
-            this.props.history.push("/files-data");
+            this.props.history.push("/files");
           } else {
-            this.props.history.push(`/files-data/${this.state.fileData.owner}/${this.state.fileData.name}`);
+            this.props.history.push(`/files/${this.state.fileList.owner}/${this.state.fileList.name}`);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
@@ -196,11 +196,11 @@ class FileDataEditPage extends React.Component {
       });
   }
 
-  deleteFileData() {
-    FileDataBackend.deleteFileData(this.state.fileData)
+  deleteFileList() {
+    FileListBackend.deleteFileList(this.state.fileList)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push("/files-data");
+          this.props.history.push("/files");
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
@@ -214,14 +214,14 @@ class FileDataEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.fileData !== null ? this.renderFileData() : null
+          this.state.fileList !== null ? this.renderFileList() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button size="large" onClick={() => this.props.history.push("/files-data")}>{i18next.t("general:Cancel")}</Button>
+          <Button size="large" onClick={() => this.props.history.push("/files")}>{i18next.t("general:Cancel")}</Button>
         </div>
       </div>
     );
   }
 }
 
-export default FileDataEditPage;
+export default FileEditPage;

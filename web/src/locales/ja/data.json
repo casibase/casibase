@@ -173,6 +173,7 @@
     "Down": "下移動",
     "Download": "ダウンロード",
     "Edit": "編集",
+    "Edit File": "Edit File",
     "Error": "Error",
     "Exit": "退出",
     "Expire time": "有効期限",
@@ -195,7 +196,6 @@
     "Favicon URL": "ファビコンURL",
     "Favicon URL - Tooltip": "ファビコンURL - ツールチップ",
     "Files": "Files",
-    "Files Data": "Files Data",
     "Footer HTML": "フッターHTML",
     "Footer HTML - Tooltip": "フッターHTML - ツールチップ",
     "Forms": "フォーム",
@@ -246,6 +246,7 @@
     "Namespace - Tooltip": "名前空間",
     "Network": "ネットワーク",
     "Network - Tooltip": "ブロックチェーンネットワークタイプ",
+    "New File": "New File",
     "No audio data was captured. Please try again": "オーディオデータがキャプチャされませんでした。もう一度試してください",
     "No data": "No data",
     "No.": "番号",
@@ -892,16 +893,6 @@
     "Video - Tooltip": "ビデオ",
     "Video ID": "ビデオID",
     "Video ID - Tooltip": "ビデオID（一意の識別子）"
-  },
-  "fileData": {
-    "Edit File Data": "Edit File Data",
-    "Embedding provider": "Embedding provider",
-    "File ID": "File ID",
-    "File name": "File name",
-    "New File Data": "New File Data",
-    "Size": "Size",
-    "Status": "Status",
-    "Token count": "Token count"
   },
   "workflow": {
     "Edit Workflow": "ワークフローを編集"

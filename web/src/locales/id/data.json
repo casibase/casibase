@@ -173,6 +173,7 @@
     "Down": "Turun",
     "Download": "Unduh",
     "Edit": "Sunting",
+    "Edit File": "Edit File",
     "Error": "Error",
     "Exit": "Keluar",
     "Expire time": "Waktu kedaluwarsa",
@@ -195,7 +196,6 @@
     "Favicon URL": "URL Favicon",
     "Favicon URL - Tooltip": "URL Favicon - Keterangan",
     "Files": "Files",
-    "Files Data": "Files Data",
     "Footer HTML": "HTML Footer",
     "Footer HTML - Tooltip": "HTML Footer - Keterangan",
     "Forms": "Formulir",
@@ -246,6 +246,7 @@
     "Namespace - Tooltip": "Ruang nama",
     "Network": "Jaringan",
     "Network - Tooltip": "Tipe jaringan blockchain",
+    "New File": "New File",
     "No audio data was captured. Please try again": "Tidak ada data audio yang tercapture. Coba lagi",
     "No data": "Tidak ada data",
     "No.": "Nomor",
@@ -891,16 +892,6 @@
     "Video - Tooltip": "Video",
     "Video ID": "ID rekaman",
     "Video ID - Tooltip": "ID video (identifikasi unik)"
-  },
-  "fileData": {
-    "Edit File Data": "Edit File Data",
-    "Embedding provider": "Embedding provider",
-    "File ID": "File ID",
-    "File name": "File name",
-    "New File Data": "New File Data",
-    "Size": "Size",
-    "Status": "Status",
-    "Token count": "Token count"
   },
   "workflow": {
     "Edit Workflow": "Sunting alur kerja"

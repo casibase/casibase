@@ -18,15 +18,15 @@ import {Button, Table} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
-import * as FileDataBackend from "./backend/FileDataBackend";
+import * as FileListBackend from "./backend/FileListBackend";
 import i18next from "i18next";
 
-class FileDataListPage extends BaseListPage {
+class FileListPage extends BaseListPage {
   constructor(props) {
     super(props);
   }
 
-  newFileData() {
+  newFileList() {
     const randomName = Setting.getRandomName();
     const storeName = Setting.isDefaultStoreSelected(this.props.account) ? "store-built-in" : Setting.getRequestStore(this.props.account);
     return {
@@ -44,14 +44,14 @@ class FileDataListPage extends BaseListPage {
     };
   }
 
-  addFileData() {
-    const newFileData = this.newFileData();
-    FileDataBackend.addFileData(newFileData)
+  addFileList() {
+    const newFileList = this.newFileList();
+    FileListBackend.addFileList(newFileList)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
           this.setState({
-            data: Setting.prependRow(this.state.data, newFileData),
+            data: Setting.prependRow(this.state.data, newFileList),
             pagination: {
               ...this.state.pagination,
               total: this.state.pagination.total + 1,
@@ -67,11 +67,11 @@ class FileDataListPage extends BaseListPage {
   }
 
   deleteItem = async(i) => {
-    return FileDataBackend.deleteFileData(this.state.data[i]);
+    return FileListBackend.deleteFileList(this.state.data[i]);
   };
 
-  deleteFileData(record) {
-    FileDataBackend.deleteFileData(record)
+  deleteFileList(record) {
+    FileListBackend.deleteFileList(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully deleted"));
@@ -91,7 +91,7 @@ class FileDataListPage extends BaseListPage {
       });
   }
 
-  renderTable(filesData) {
+  renderTable(fileLists) {
     const columns = [
       {
         title: i18next.t("general:Name"),
@@ -102,14 +102,14 @@ class FileDataListPage extends BaseListPage {
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
-            <Link to={`/files-data/${record.owner}/${text}`}>
+            <Link to={`/files/${record.owner}/${text}`}>
               {text}
             </Link>
           );
         },
       },
       {
-        title: i18next.t("fileData:File name"),
+        title: i18next.t("store:File name"),
         dataIndex: "fileName",
         key: "fileName",
         width: "200px",
@@ -120,7 +120,7 @@ class FileDataListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("fileData:File ID"),
+        title: i18next.t("store:File ID"),
         dataIndex: "fileId",
         key: "fileId",
         width: "150px",
@@ -145,7 +145,7 @@ class FileDataListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("fileData:Embedding provider"),
+        title: i18next.t("store:Embedding provider"),
         dataIndex: "embeddingProvider",
         key: "embeddingProvider",
         width: "180px",
@@ -162,7 +162,7 @@ class FileDataListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("fileData:Status"),
+        title: i18next.t("general:Status"),
         dataIndex: "status",
         key: "status",
         width: "120px",
@@ -179,7 +179,7 @@ class FileDataListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("fileData:Token count"),
+        title: i18next.t("chat:Token count"),
         dataIndex: "tokenCount",
         key: "tokenCount",
         width: "130px",
@@ -189,7 +189,7 @@ class FileDataListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("fileData:Size"),
+        title: i18next.t("general:Size"),
         dataIndex: "size",
         key: "size",
         width: "120px",
@@ -217,7 +217,7 @@ class FileDataListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/files-data/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/files/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               {this.renderDeleteButton(i18next.t("general:Delete"), index, record)}
             </div>
           );
@@ -241,11 +241,11 @@ class FileDataListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={filesData} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={fileLists} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Files Data")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button type="primary" size="small" onClick={this.addFileData.bind(this)}>{i18next.t("general:Add")}</Button>
+              {i18next.t("general:Files")}&nbsp;&nbsp;&nbsp;&nbsp;
+              <Button type="primary" size="small" onClick={this.addFileList.bind(this)}>{i18next.t("general:Add")}</Button>
             </div>
           )}
           loading={this.state.loading}
@@ -259,7 +259,7 @@ class FileDataListPage extends BaseListPage {
     const sortField = params.sortField, sortOrder = params.sortOrder;
     const store = Setting.getRequestStore(this.props.account);
     this.setState({loading: true});
-    FileDataBackend.getFilesData("admin", store, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    FileListBackend.getFileLists("admin", store, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -296,4 +296,4 @@ class FileDataListPage extends BaseListPage {
   }
 }
 
-export default FileDataListPage;
+export default FileListPage;

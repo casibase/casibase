@@ -173,6 +173,7 @@
     "Down": "Descendre",
     "Download": "Télécharger",
     "Edit": "Éditer",
+    "Edit File": "Edit File",
     "Error": "Error",
     "Exit": "Quitter",
     "Expire time": "Date d'expiration",
@@ -195,7 +196,6 @@
     "Favicon URL": "URL du Favicon",
     "Favicon URL - Tooltip": "URL du Favicon - Info-bulle",
     "Files": "Files",
-    "Files Data": "Files Data",
     "Footer HTML": "HTML du Pied de Page",
     "Footer HTML - Tooltip": "HTML du Pied de Page - Info-bulle",
     "Forms": "Formulaires",
@@ -246,6 +246,7 @@
     "Namespace - Tooltip": "Espace de noms",
     "Network": "Réseau",
     "Network - Tooltip": "Type de réseau blockchain",
+    "New File": "New File",
     "No audio data was captured. Please try again": "Aucune donnée audio n'a été capturée. Veuillez réessayer",
     "No data": "Aucune donnée",
     "No.": "N°",
@@ -892,16 +893,6 @@
     "Video - Tooltip": "Vidéo",
     "Video ID": "ID de l'enregistrement",
     "Video ID - Tooltip": "ID de la vidéo (identifiant unique)"
-  },
-  "fileData": {
-    "Edit File Data": "Edit File Data",
-    "Embedding provider": "Embedding provider",
-    "File ID": "File ID",
-    "File name": "File name",
-    "New File Data": "New File Data",
-    "Size": "Size",
-    "Status": "Status",
-    "Token count": "Token count"
   },
   "workflow": {
     "Edit Workflow": "Éditer le flux de travail"

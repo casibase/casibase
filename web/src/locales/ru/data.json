@@ -173,6 +173,7 @@
     "Down": "Вниз",
     "Download": "Скачать",
     "Edit": "Редактировать",
+    "Edit File": "Edit File",
     "Error": "Error",
     "Exit": "Выйти",
     "Expire time": "Время истечения срока действия",
@@ -195,7 +196,6 @@
     "Favicon URL": "URL фавикона",
     "Favicon URL - Tooltip": "URL фавикона - Подсказка",
     "Files": "Files",
-    "Files Data": "Files Data",
     "Footer HTML": "HTML низа страницы",
     "Footer HTML - Tooltip": "HTML низа страницы - Подсказка",
     "Forms": "Формы",
@@ -246,6 +246,7 @@
     "Namespace - Tooltip": "Имяпространство",
     "Network": "Сеть",
     "Network - Tooltip": "Тип блокчейновой сети",
+    "New File": "New File",
     "No audio data was captured. Please try again": "Не удалось захватить аудиоданные. Попробуйте снова",
     "No data": "Нет данных",
     "No.": "Номер",
@@ -892,16 +893,6 @@
     "Video - Tooltip": "Видео",
     "Video ID": "ID записи",
     "Video ID - Tooltip": "ID видео (уникальный идентификатор)"
-  },
-  "fileData": {
-    "Edit File Data": "Edit File Data",
-    "Embedding provider": "Embedding provider",
-    "File ID": "File ID",
-    "File name": "File name",
-    "New File Data": "New File Data",
-    "Size": "Size",
-    "Status": "Status",
-    "Token count": "Token count"
   },
   "workflow": {
     "Edit Workflow": "Редактировать рабочий процесс"

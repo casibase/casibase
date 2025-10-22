@@ -21,7 +21,7 @@ import (
 	"xorm.io/core"
 )
 
-type FileData struct {
+type FileList struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
@@ -36,56 +36,56 @@ type FileData struct {
 	Size              int64  `json:"size"`
 }
 
-func GetGlobalFilesData() ([]*FileData, error) {
-	filesData := []*FileData{}
-	err := adapter.engine.Asc("owner").Desc("created_time").Find(&filesData)
+func GetGlobalFileLists() ([]*FileList, error) {
+	fileLists := []*FileList{}
+	err := adapter.engine.Asc("owner").Desc("created_time").Find(&fileLists)
 	if err != nil {
-		return filesData, err
+		return fileLists, err
 	}
 
-	return filesData, nil
+	return fileLists, nil
 }
 
-func GetFilesData(owner string) ([]*FileData, error) {
-	filesData := []*FileData{}
-	err := adapter.engine.Desc("created_time").Find(&filesData, &FileData{Owner: owner})
+func GetFileLists(owner string) ([]*FileList, error) {
+	fileLists := []*FileList{}
+	err := adapter.engine.Desc("created_time").Find(&fileLists, &FileList{Owner: owner})
 	if err != nil {
-		return filesData, err
+		return fileLists, err
 	}
 
-	return filesData, nil
+	return fileLists, nil
 }
 
-func getFileData(owner string, name string) (*FileData, error) {
-	fileData := FileData{Owner: owner, Name: name}
-	existed, err := adapter.engine.Get(&fileData)
+func getFileList(owner string, name string) (*FileList, error) {
+	fileList := FileList{Owner: owner, Name: name}
+	existed, err := adapter.engine.Get(&fileList)
 	if err != nil {
-		return &fileData, err
+		return &fileList, err
 	}
 
 	if existed {
-		return &fileData, nil
+		return &fileList, nil
 	} else {
 		return nil, nil
 	}
 }
 
-func GetFileData(id string) (*FileData, error) {
+func GetFileList(id string) (*FileList, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	return getFileData(owner, name)
+	return getFileList(owner, name)
 }
 
-func UpdateFileData(id string, fileData *FileData) (bool, error) {
+func UpdateFileList(id string, fileList *FileList) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getFileData(owner, name)
+	_, err := getFileList(owner, name)
 	if err != nil {
 		return false, err
 	}
-	if fileData == nil {
+	if fileList == nil {
 		return false, nil
 	}
 
-	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(fileData)
+	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(fileList)
 	if err != nil {
 		return false, err
 	}
@@ -93,8 +93,8 @@ func UpdateFileData(id string, fileData *FileData) (bool, error) {
 	return true, nil
 }
 
-func AddFileData(fileData *FileData) (bool, error) {
-	affected, err := adapter.engine.Insert(fileData)
+func AddFileList(fileList *FileList) (bool, error) {
+	affected, err := adapter.engine.Insert(fileList)
 	if err != nil {
 		return false, err
 	}
@@ -102,8 +102,8 @@ func AddFileData(fileData *FileData) (bool, error) {
 	return affected != 0, nil
 }
 
-func DeleteFileData(fileData *FileData) (bool, error) {
-	affected, err := adapter.engine.ID(core.PK{fileData.Owner, fileData.Name}).Delete(&FileData{})
+func DeleteFileList(fileList *FileList) (bool, error) {
+	affected, err := adapter.engine.ID(core.PK{fileList.Owner, fileList.Name}).Delete(&FileList{})
 	if err != nil {
 		return false, err
 	}
@@ -111,30 +111,30 @@ func DeleteFileData(fileData *FileData) (bool, error) {
 	return affected != 0, nil
 }
 
-func (fileData *FileData) GetId() string {
-	return fmt.Sprintf("%s/%s", fileData.Owner, fileData.Name)
+func (fileList *FileList) GetId() string {
+	return fmt.Sprintf("%s/%s", fileList.Owner, fileList.Name)
 }
 
-func GetFileDataCount(owner, store, field, value string) (int64, error) {
+func GetFileListCount(owner, store, field, value string) (int64, error) {
 	session := GetDbSession("", -1, -1, field, value, "", "")
 	if store != "" {
-		return session.Count(&FileData{Owner: owner, Store: store})
+		return session.Count(&FileList{Owner: owner, Store: store})
 	}
-	return session.Count(&FileData{Owner: owner})
+	return session.Count(&FileList{Owner: owner})
 }
 
-func GetPaginationFilesData(owner, store string, offset, limit int, field, value, sortField, sortOrder string) ([]*FileData, error) {
-	filesData := []*FileData{}
+func GetPaginationFileLists(owner, store string, offset, limit int, field, value, sortField, sortOrder string) ([]*FileList, error) {
+	fileLists := []*FileList{}
 	session := GetDbSession("", offset, limit, field, value, sortField, sortOrder)
 	var err error
 	if store != "" {
-		err = session.Find(&filesData, &FileData{Owner: owner, Store: store})
+		err = session.Find(&fileLists, &FileList{Owner: owner, Store: store})
 	} else {
-		err = session.Find(&filesData, &FileData{Owner: owner})
+		err = session.Find(&fileLists, &FileList{Owner: owner})
 	}
 	if err != nil {
-		return filesData, err
+		return fileLists, err
 	}
 
-	return filesData, nil
+	return fileLists, nil
 }

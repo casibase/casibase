@@ -22,32 +22,32 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-// GetGlobalFilesData
-// @Title GetGlobalFilesData
-// @Tag FileData API
-// @Description get global files data
-// @Success 200 {array} object.FileData The Response object
-// @router /get-global-files-data [get]
-func (c *ApiController) GetGlobalFilesData() {
+// GetGlobalFileLists
+// @Title GetGlobalFileLists
+// @Tag FileList API
+// @Description get global file lists
+// @Success 200 {array} object.FileList The Response object
+// @router /get-global-files [get]
+func (c *ApiController) GetGlobalFileLists() {
 	_, ok := c.RequireSignedInUser()
 	if !ok {
 		return
 	}
 
-	filesData, err := object.GetGlobalFilesData()
+	fileLists, err := object.GetGlobalFileLists()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(filesData)
+	c.ResponseOk(fileLists)
 }
 
-// GetFilesData
-// @Title GetFilesData
-// @Tag FileData API
-// @Description get files data
-// @Param owner query string true "The owner of files data"
+// GetFileLists
+// @Title GetFileLists
+// @Tag FileList API
+// @Description get file lists
+// @Param owner query string true "The owner of file lists"
 // @Param store query string false "The store name to filter by"
 // @Param pageSize query string false "The page size"
 // @Param p query string false "The page number"
@@ -55,9 +55,9 @@ func (c *ApiController) GetGlobalFilesData() {
 // @Param value query string false "The value to filter by"
 // @Param sortField query string false "The field to sort by"
 // @Param sortOrder query string false "The sort order"
-// @Success 200 {array} object.FileData The Response object
-// @router /get-files-data [get]
-func (c *ApiController) GetFilesData() {
+// @Success 200 {array} object.FileList The Response object
+// @router /get-files [get]
+func (c *ApiController) GetFileLists() {
 	owner := c.Input().Get("owner")
 	store := c.Input().Get("store")
 	limit := c.Input().Get("pageSize")
@@ -68,60 +68,60 @@ func (c *ApiController) GetFilesData() {
 	sortOrder := c.Input().Get("sortOrder")
 
 	if limit == "" || page == "" {
-		filesData, err := object.GetFilesData(owner)
+		fileLists, err := object.GetFileLists(owner)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
-		c.ResponseOk(filesData)
+		c.ResponseOk(fileLists)
 	} else {
 		limit := util.ParseInt(limit)
-		count, err := object.GetFileDataCount(owner, store, field, value)
+		count, err := object.GetFileListCount(owner, store, field, value)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		filesData, err := object.GetPaginationFilesData(owner, store, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		fileLists, err := object.GetPaginationFileLists(owner, store, paginator.Offset(), limit, field, value, sortField, sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
-		c.ResponseOk(filesData, paginator.Nums())
+		c.ResponseOk(fileLists, paginator.Nums())
 	}
 }
 
-// GetFileData
-// @Title GetFileData
-// @Tag FileData API
-// @Description get file data
-// @Param id query string true "The id (owner/name) of the file data"
-// @Success 200 {object} object.FileData The Response object
-// @router /get-file-data [get]
-func (c *ApiController) GetFileData() {
+// GetFileList
+// @Title GetFileList
+// @Tag FileList API
+// @Description get file list
+// @Param id query string true "The id (owner/name) of the file list"
+// @Success 200 {object} object.FileList The Response object
+// @router /get-file [get]
+func (c *ApiController) GetFileList() {
 	id := c.Input().Get("id")
 
-	fileData, err := object.GetFileData(id)
+	fileList, err := object.GetFileList(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(fileData)
+	c.ResponseOk(fileList)
 }
 
-// UpdateFileData
-// @Title UpdateFileData
-// @Tag FileData API
-// @Description update file data
-// @Param id query string true "The id (owner/name) of the file data"
-// @Param body body object.FileData true "The details of the file data"
+// UpdateFileList
+// @Title UpdateFileList
+// @Tag FileList API
+// @Description update file list
+// @Param id query string true "The id (owner/name) of the file list"
+// @Param body body object.FileList true "The details of the file list"
 // @Success 200 {object} controllers.Response The Response object
-// @router /update-file-data [post]
-func (c *ApiController) UpdateFileData() {
+// @router /update-file [post]
+func (c *ApiController) UpdateFileList() {
 	_, ok := c.RequireSignedIn()
 	if !ok {
 		return
@@ -129,14 +129,14 @@ func (c *ApiController) UpdateFileData() {
 
 	id := c.Input().Get("id")
 
-	var fileData object.FileData
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &fileData)
+	var fileList object.FileList
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &fileList)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	res, err := object.UpdateFileData(id, &fileData)
+	res, err := object.UpdateFileList(id, &fileList)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -145,27 +145,27 @@ func (c *ApiController) UpdateFileData() {
 	c.ResponseOk(res)
 }
 
-// AddFileData
-// @Title AddFileData
-// @Tag FileData API
-// @Description add file data
-// @Param body body object.FileData true "The details of the file data"
+// AddFileList
+// @Title AddFileList
+// @Tag FileList API
+// @Description add file list
+// @Param body body object.FileList true "The details of the file list"
 // @Success 200 {object} controllers.Response The Response object
-// @router /add-file-data [post]
-func (c *ApiController) AddFileData() {
+// @router /add-file [post]
+func (c *ApiController) AddFileList() {
 	_, ok := c.RequireSignedIn()
 	if !ok {
 		return
 	}
 
-	var fileData object.FileData
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &fileData)
+	var fileList object.FileList
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &fileList)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	res, err := object.AddFileData(&fileData)
+	res, err := object.AddFileList(&fileList)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -174,27 +174,27 @@ func (c *ApiController) AddFileData() {
 	c.ResponseOk(res)
 }
 
-// DeleteFileData
-// @Title DeleteFileData
-// @Tag FileData API
-// @Description delete file data
-// @Param body body object.FileData true "The details of the file data"
+// DeleteFileList
+// @Title DeleteFileList
+// @Tag FileList API
+// @Description delete file list
+// @Param body body object.FileList true "The details of the file list"
 // @Success 200 {object} controllers.Response The Response object
-// @router /delete-file-data [post]
-func (c *ApiController) DeleteFileData() {
+// @router /delete-file [post]
+func (c *ApiController) DeleteFileList() {
 	_, ok := c.RequireSignedIn()
 	if !ok {
 		return
 	}
 
-	var fileData object.FileData
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &fileData)
+	var fileList object.FileList
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &fileList)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	res, err := object.DeleteFileData(&fileData)
+	res, err := object.DeleteFileList(&fileList)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
