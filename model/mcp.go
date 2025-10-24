@@ -20,7 +20,6 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/ThinkInAIXYZ/go-mcp/client"
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
 	"github.com/casibase/casibase/agent"
 	"github.com/casibase/casibase/i18n"
@@ -133,18 +132,13 @@ func QueryTextWithTools(p ModelProvider, question string, writer io.Writer, hist
 		for _, toolCall := range toolCalls {
 			serverName, toolName := agent.GetServerNameAndToolNameFromId(toolCall.Function.Name)
 
-			mcpClient, ok := agentInfo.AgentClients.Clients[serverName]
-			if !ok {
-				continue
-			}
-
 			messages = append(messages, &RawMessage{
 				Text:     "Call result from " + toolCall.Function.Name,
 				Author:   "AI",
 				ToolCall: toolCall,
 			})
 
-			messages, err = callTools(toolCall, toolName, mcpClient, messages, lang)
+			messages, err = callTools(toolCall, serverName, toolName, agentInfo.AgentClients, messages, lang)
 			if err != nil {
 				return nil, err
 			}
@@ -182,7 +176,7 @@ func createToolMessage(toolCall openai.ToolCall, text string) *RawMessage {
 	}
 }
 
-func callTools(toolCall openai.ToolCall, functionName string, mcpClient *client.Client, messages []*RawMessage, lang string) ([]*RawMessage, error) {
+func callTools(toolCall openai.ToolCall, serverName, toolName string, agentClients *agent.AgentClients, messages []*RawMessage, lang string) ([]*RawMessage, error) {
 	var arguments map[string]interface{}
 	ctx := context.Background()
 
@@ -190,12 +184,28 @@ func callTools(toolCall openai.ToolCall, functionName string, mcpClient *client.
 		return nil, fmt.Errorf(i18n.Translate(lang, "model:failed to parse tool arguments: %v"), err)
 	}
 
-	req := &protocol.CallToolRequest{
-		Name:      functionName,
-		Arguments: arguments,
+	var result *protocol.CallToolResult
+	var err error
+
+	if serverName == "" {
+		// builtin tools
+		if agentClients.BuiltinToolReg == nil {
+			return messages, nil
+		}
+		result, err = agentClients.BuiltinToolReg.ExecuteTool(ctx, toolName, arguments)
+	} else {
+		// MCP tools
+		mcpClient, ok := agentClients.Clients[serverName]
+		if !ok {
+			return messages, nil
+		}
+		req := &protocol.CallToolRequest{
+			Name:      toolName,
+			Arguments: arguments,
+		}
+		result, err = mcpClient.CallTool(ctx, req)
 	}
 
-	result, err := mcpClient.CallTool(ctx, req)
 	response := &ToolCallResponse{
 		ToolName: toolCall.Function.Name,
 	}
