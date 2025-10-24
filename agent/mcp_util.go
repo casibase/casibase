@@ -3,9 +3,7 @@ package agent
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/ThinkInAIXYZ/go-mcp/client"
@@ -114,17 +112,4 @@ func GetMCPClientMap(config string, toolsMap map[string]bool) (map[string]*clien
 	}
 
 	return clients, nil
-}
-
-func GetServerNameAndToolNameFromId(id string) (string, string) {
-	tokens := strings.Split(id, "__")
-	if len(tokens) != 2 {
-		panic(errors.New("GetServerNameAndToolNameFromName() error, wrong token count for ID: " + id))
-	}
-
-	return tokens[0], tokens[1]
-}
-
-func GetIdFromServerNameAndToolName(ServerName, toolName string) string {
-	return ServerName + "__" + toolName
 }
