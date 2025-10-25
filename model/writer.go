@@ -22,18 +22,20 @@ import (
 )
 
 type WriterModelProvider struct {
-	subType     string
-	apiKey      string
-	temperature float32
-	topP        float32
+	subType         string
+	apiKey          string
+	temperature     float32
+	topP            float32
+	enableWebSearch bool
 }
 
-func NewWriterModelProvider(subType string, apiKey string, temperature float32, topP float32) (*WriterModelProvider, error) {
+func NewWriterModelProvider(subType string, apiKey string, temperature float32, topP float32, enableWebSearch bool) (*WriterModelProvider, error) {
 	return &WriterModelProvider{
-		subType:     subType,
-		apiKey:      apiKey,
-		temperature: temperature,
-		topP:        topP,
+		subType:         subType,
+		apiKey:          apiKey,
+		temperature:     temperature,
+		topP:            topP,
+		enableWebSearch: enableWebSearch,
 	}, nil
 }
 
@@ -80,7 +82,7 @@ func (p *WriterModelProvider) QueryText(question string, writer io.Writer, histo
 	const BaseUrl = "https://api.writer.com/v1"
 
 	// Create a LocalModelProvider to handle the OpenAI-compatible API
-	localProvider, err := NewLocalModelProvider("Custom", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "USD")
+	localProvider, err := NewLocalModelProvider("Custom", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "USD", p.enableWebSearch)
 	if err != nil {
 		return nil, err
 	}

@@ -23,18 +23,20 @@ import (
 )
 
 type GrokModelProvider struct {
-	subType     string
-	secretKey   string
-	temperature float32
-	topP        float32
+	subType         string
+	secretKey       string
+	temperature     float32
+	topP            float32
+	enableWebSearch bool
 }
 
-func NewGrokModelProvider(subType string, secretKey string, temperature float32, topP float32) (*GrokModelProvider, error) {
+func NewGrokModelProvider(subType string, secretKey string, temperature float32, topP float32, enableWebSearch bool) (*GrokModelProvider, error) {
 	return &GrokModelProvider{
-		subType:     subType,
-		secretKey:   secretKey,
-		temperature: temperature,
-		topP:        topP,
+		subType:         subType,
+		secretKey:       secretKey,
+		temperature:     temperature,
+		topP:            topP,
+		enableWebSearch: enableWebSearch,
 	}, nil
 }
 
@@ -101,7 +103,7 @@ func (p *GrokModelProvider) calculatePrice(modelResult *ModelResult, lang string
 func (p *GrokModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	// Create a LocalModelProvider to handle the request
 	const BaseUrl = "https://api.x.ai/v1"
-	localProvider, err := NewLocalModelProvider("Custom", "custom-model", p.secretKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "USD")
+	localProvider, err := NewLocalModelProvider("Custom", "custom-model", p.secretKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "USD", p.enableWebSearch)
 	if err != nil {
 		return nil, err
 	}

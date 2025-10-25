@@ -44,9 +44,10 @@ type LocalModelProvider struct {
 	inputPricePerThousandTokens  float64
 	outputPricePerThousandTokens float64
 	currency                     string
+	enableWebSearch              bool
 }
 
-func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, compatibleProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string) (*LocalModelProvider, error) {
+func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, compatibleProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string, enableWebSearch bool) (*LocalModelProvider, error) {
 	p := &LocalModelProvider{
 		typ:                          typ,
 		subType:                      subType,
@@ -60,6 +61,7 @@ func NewLocalModelProvider(typ string, subType string, secretKey string, tempera
 		inputPricePerThousandTokens:  inputPricePerThousandTokens,
 		outputPricePerThousandTokens: outputPricePerThousandTokens,
 		currency:                     Currency,
+		enableWebSearch:              enableWebSearch,
 	}
 	return p, nil
 }
@@ -240,11 +242,24 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		req := ChatCompletionRequest(model, messages, temperature, topP, frequencyPenalty, presencePenalty)
+		var tools []openai.Tool
+		
 		if agentInfo != nil && agentInfo.AgentClients != nil {
-			tools, err := reverseToolsToOpenAi(agentInfo.AgentClients.Tools)
+			mcpTools, err := reverseToolsToOpenAi(agentInfo.AgentClients.Tools)
 			if err != nil {
 				return nil, err
 			}
+			tools = append(tools, mcpTools...)
+		}
+		
+		if p.enableWebSearch {
+			webSearchTool := openai.Tool{
+				Type: "web_search",
+			}
+			tools = append(tools, webSearchTool)
+		}
+		
+		if len(tools) > 0 {
 			req.Tools = tools
 			req.ToolChoice = "auto"
 		}

@@ -125,7 +125,7 @@ func (p *BaiduCloudModelProvider) calculatePrice(modelResult *ModelResult, lang 
 func (p *BaiduCloudModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	const BaseUrl = "https://qianfan.baidubce.com/v2"
 	// Create a new LocalModelProvider to handle the request
-	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
+	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY", false)
 	if err != nil {
 		return nil, err
 	}

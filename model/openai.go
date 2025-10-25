@@ -39,9 +39,10 @@ type OpenAiModelProvider struct {
 	topP             float32
 	frequencyPenalty float32
 	presencePenalty  float32
+	enableWebSearch  bool
 }
 
-func NewOpenAiModelProvider(subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32) (*OpenAiModelProvider, error) {
+func NewOpenAiModelProvider(subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, enableWebSearch bool) (*OpenAiModelProvider, error) {
 	p := &OpenAiModelProvider{
 		subType:          subType,
 		secretKey:        secretKey,
@@ -49,6 +50,7 @@ func NewOpenAiModelProvider(subType string, secretKey string, temperature float3
 		topP:             topP,
 		frequencyPenalty: frequencyPenalty,
 		presencePenalty:  presencePenalty,
+		enableWebSearch:  enableWebSearch,
 	}
 	return p, nil
 }
@@ -275,11 +277,23 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 			Temperature:  param.NewOpt[float64](float64(temperature)),
 			TopP:         param.NewOpt[float64](float64(topP)),
 		}
+		
+		var tools []responses.ToolUnionParam
+		
 		if agentInfo != nil && agentInfo.AgentClients != nil {
-			tools, err := reverseMcpToolsToOpenAi(agentInfo.AgentClients.Tools)
+			mcpTools, err := reverseMcpToolsToOpenAi(agentInfo.AgentClients.Tools)
 			if err != nil {
 				return nil, err
 			}
+			tools = append(tools, mcpTools...)
+		}
+		
+		if p.enableWebSearch {
+			webSearchTool := responses.ToolParamOfWebSearchPreview(responses.WebSearchToolTypeWebSearchPreview)
+			tools = append(tools, webSearchTool)
+		}
+		
+		if len(tools) > 0 {
 			req.Tools = tools
 			req.ToolChoice = responses.ResponseNewParamsToolChoiceUnion{
 				OfToolChoiceMode: param.NewOpt(responses.ToolChoiceOptionsAuto),

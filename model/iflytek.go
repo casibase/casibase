@@ -175,7 +175,7 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult, lang str
 
 func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	const BaseUrl = "https://spark-api-open.xf-yun.com/v1"
-	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.secretKey, p.temperature, 0, 0, 0, BaseUrl, "generalv3", 0, 0, "CNY")
+	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.secretKey, p.temperature, 0, 0, 0, BaseUrl, "generalv3", 0, 0, "CNY", false)
 	if err != nil {
 		return nil, err
 	}

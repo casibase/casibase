@@ -70,7 +70,7 @@ func (p *YiProvider) QueryText(question string, writer io.Writer, history []*Raw
 	const BaseUrl = "https://api.lingyiwanwu.com/v1"
 
 	// Create a new LocalModelProvider to handle the request
-	localProvider, err := NewLocalModelProvider("Custom", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
+	localProvider, err := NewLocalModelProvider("Custom", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY", false)
 	if err != nil {
 		return nil, err
 	}
