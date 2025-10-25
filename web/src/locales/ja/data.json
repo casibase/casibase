@@ -103,6 +103,7 @@
     "The response has been interrupted. Please do not refresh the page during responding.": "応答が中断されました。応答中はページを更新しないでください。",
     "Thinking": "推論中",
     "Token count": "トークン数",
+    "Tool calls": "ツール呼び出し",
     "Type message here": "ここにメッセージを入力してください",
     "User1": "ユーザー1",
     "User1 - Tooltip": "チャット発信者",
