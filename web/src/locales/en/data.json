@@ -103,6 +103,7 @@
     "The response has been interrupted. Please do not refresh the page during responding.": "The response has been interrupted. Please do not refresh the page during responding.",
     "Thinking": "Thinking",
     "Token count": "Token count",
+    "Tool calls": "Tool calls",
     "Type message here": "Type message here",
     "User1": "User1",
     "User1 - Tooltip": "Chat initiator",

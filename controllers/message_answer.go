@@ -15,6 +15,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -277,9 +278,27 @@ func (c *ApiController) GetMessageAnswer() {
 
 	answer := writer.MessageString()
 	message.ReasonText = writer.ReasonString()
+	toolCallsJSON := writer.ToolString()
 	message.TokenCount = modelResult.TotalTokenCount
 	message.Price = modelResult.TotalPrice
 	message.Currency = modelResult.Currency
+
+	// Parse tool calls from JSON
+	if toolCallsJSON != "" {
+		var toolCalls []object.ToolCall
+		// Split by newline in case multiple tool calls
+		toolCallLines := strings.Split(toolCallsJSON, "\n")
+		for _, line := range toolCallLines {
+			if line == "" {
+				continue
+			}
+			var toolCall object.ToolCall
+			if err := json.Unmarshal([]byte(line), &toolCall); err == nil {
+				toolCalls = append(toolCalls, toolCall)
+			}
+		}
+		message.ToolCalls = toolCalls
+	}
 
 	textAnswer := answer
 	textSuggestions := []object.Suggestion{}
