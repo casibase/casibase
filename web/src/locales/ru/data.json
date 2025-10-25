@@ -103,6 +103,7 @@
     "The response has been interrupted. Please do not refresh the page during responding.": "Ответ был прерван. Пожалуйста, не обновляйте страницу во время ответа.",
     "Thinking": "Мыслительный процесс",
     "Token count": "Количество токенов",
+    "Tool calls": "Вызовы инструментов",
     "Type message here": "Введите сообщение здесь",
     "User1": "Пользователь 1",
     "User1 - Tooltip": "Автор чата",

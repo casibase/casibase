@@ -29,10 +29,11 @@ type RefinedWriter struct {
 	buf           []byte
 	messageBuf    []byte
 	reasonBuf     []byte
+	toolBuf       []byte
 }
 
 func newRefinedWriter(w context.Response) *RefinedWriter {
-	return &RefinedWriter{w, *NewCleaner(6), []byte{}, []byte{}, []byte{}}
+	return &RefinedWriter{w, *NewCleaner(6), []byte{}, []byte{}, []byte{}, []byte{}}
 }
 
 func (w *RefinedWriter) Write(p []byte) (n int, err error) {
@@ -42,6 +43,11 @@ func (w *RefinedWriter) Write(p []byte) (n int, err error) {
 	if bytes.HasPrefix(p, []byte("event: reason")) {
 		eventType = "reason"
 		prefix := []byte("event: reason\ndata: ")
+		suffix := []byte("\n\n")
+		data = string(bytes.TrimSuffix(bytes.TrimPrefix(p, prefix), suffix))
+	} else if bytes.HasPrefix(p, []byte("event: tool")) {
+		eventType = "tool"
+		prefix := []byte("event: tool\ndata: ")
 		suffix := []byte("\n\n")
 		data = string(bytes.TrimSuffix(bytes.TrimPrefix(p, prefix), suffix))
 	} else {
@@ -57,6 +63,8 @@ func (w *RefinedWriter) Write(p []byte) (n int, err error) {
 		w.messageBuf = append(w.messageBuf, []byte(data)...)
 	} else if eventType == "reason" {
 		w.reasonBuf = append(w.reasonBuf, []byte(data)...)
+	} else if eventType == "tool" {
+		w.toolBuf = append(w.toolBuf, []byte(data)...)
 	}
 
 	if w.writerCleaner.cleaned == false && w.writerCleaner.dataTimes < w.writerCleaner.bufferSize {
@@ -91,6 +99,10 @@ func (w *RefinedWriter) MessageString() string {
 
 func (w *RefinedWriter) ReasonString() string {
 	return string(w.reasonBuf)
+}
+
+func (w *RefinedWriter) ToolString() string {
+	return string(w.toolBuf)
 }
 
 type Cleaner struct {

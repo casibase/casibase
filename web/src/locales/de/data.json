@@ -103,6 +103,7 @@
     "The response has been interrupted. Please do not refresh the page during responding.": "Die Antwort wurde unterbrochen. Bitte aktualisieren Sie die Seite nicht, während die Antwort erfolgt.",
     "Thinking": "Denkprozess",
     "Token count": "Token-Anzahl",
+    "Tool calls": "Tool-Aufrufe",
     "Type message here": "Nachricht hier eingeben",
     "User1": "Benutzer1",
     "User1 - Tooltip": "Chat-Ersteller",

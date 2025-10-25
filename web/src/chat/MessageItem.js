@@ -167,10 +167,10 @@ const MessageItem = ({
       return null;
     }
 
-    if (!message.isReasoningPhase && message.reasonText && message.author === "AI") {
+    if (!message.isReasoningPhase && (message.reasonText || message.toolCalls) && message.author === "AI") {
       return (
         <div className="message-content">
-          {!hideThinking && (
+          {!hideThinking && message.reasonText && (
             <div className="message-reason" style={{
               marginBottom: "15px",
               padding: "10px",
@@ -187,6 +187,50 @@ const MessageItem = ({
               <div className="reason-content">
                 {renderText(message.reasonText)}
               </div>
+            </div>
+          )}
+
+          {message.toolCalls && message.toolCalls.length > 0 && (
+            <div className="message-tools" style={{
+              marginBottom: "15px",
+              padding: "10px",
+              borderRadius: "5px",
+              borderLeft: "3px solid #52c41a",
+            }}>
+              <div className="tools-label" style={{
+                fontWeight: "bold",
+                marginBottom: "5px",
+                color: "#52c41a",
+              }}>
+                {i18next.t("chat:Tool calls")}:
+              </div>
+              {message.toolCalls.map((toolCall, idx) => (
+                <div key={idx} className="tool-call-item" style={{
+                  marginBottom: idx < message.toolCalls.length - 1 ? "10px" : "0",
+                  padding: "8px",
+                  backgroundColor: "#f6ffed",
+                  borderRadius: "4px",
+                }}>
+                  <div style={{
+                    fontWeight: "600",
+                    color: "#389e0d",
+                    marginBottom: "4px",
+                  }}>
+                    🛠️ {toolCall.name}
+                  </div>
+                  {toolCall.arguments && (
+                    <div style={{
+                      fontSize: "12px",
+                      color: "#595959",
+                      fontFamily: "monospace",
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                    }}>
+                      {toolCall.arguments}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           )}
 

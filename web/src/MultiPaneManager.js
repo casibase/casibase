@@ -127,6 +127,7 @@ const MultiPaneManager = ({
 
   const handleAIResponse = useCallback((paneIndex, chat, messages, lastMessage) => {
     let text = "", reasonText = "";
+    let toolCalls = [];
     setLoadingForPane(paneIndex, true);
 
     if (lastMessage.errorText) {
@@ -158,6 +159,9 @@ const MultiPaneManager = ({
         if (reasonText) {
           lastMessage2.reasonText = reasonText;
         }
+        if (toolCalls.length > 0) {
+          lastMessage2.toolCalls = toolCalls;
+        }
         messages[messages.length - 1] = lastMessage2;
         messages.forEach(msg => msg.html = renderText(msg.text));
 
@@ -174,6 +178,22 @@ const MultiPaneManager = ({
         lastMessage2.reasonText = reasonText;
         lastMessage2.isReasoningPhase = true;
         lastMessage2.text = "";
+
+        messages[messages.length - 1] = lastMessage2;
+        setPanes(prev => prev.map((pane, i) =>
+          i === paneIndex ? {...pane, messages: [...messages]} : pane
+        ));
+      },
+      (data) => {
+        const jsonData = JSON.parse(data);
+        
+        toolCalls.push({
+          name: jsonData.name,
+          arguments: jsonData.arguments,
+        });
+
+        const lastMessage2 = Setting.deepCopy(lastMessage);
+        lastMessage2.toolCalls = toolCalls;
 
         messages[messages.length - 1] = lastMessage2;
         setPanes(prev => prev.map((pane, i) =>
@@ -199,6 +219,10 @@ const MultiPaneManager = ({
 
         if (reasonText) {
           finalMessage.reasonText = reasonText;
+        }
+
+        if (toolCalls.length > 0) {
+          finalMessage.toolCalls = toolCalls;
         }
 
         const parsedResult = messageCarrier.parseAnswerWithCarriers(text);

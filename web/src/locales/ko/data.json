@@ -103,6 +103,7 @@
     "The response has been interrupted. Please do not refresh the page during responding.": "응답이 중단되었습니다. 응답하는 동안 페이지를 새로 고치지 마세요.",
     "Thinking": "추론 중",
     "Token count": "토큰 수",
+    "Tool calls": "도구 호출",
     "Type message here": "여기에 메시지를 입력하세요",
     "User1": "사용자1",
     "User1 - Tooltip": "채팅 발신자",
