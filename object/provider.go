@@ -52,6 +52,7 @@ type Provider struct {
 	ConfigText         string            `xorm:"mediumtext" json:"configText"`
 
 	EnableThinking   bool    `json:"enableThinking"`
+	EnableWebSearch  bool    `json:"enableWebSearch"`
 	Temperature      float32 `xorm:"float" json:"temperature"`
 	TopP             float32 `xorm:"float" json:"topP"`
 	TopK             int     `xorm:"int" json:"topK"`
@@ -295,7 +296,7 @@ func (p *Provider) GetStorageProviderObj(vectorStoreId string, lang string) (sto
 }
 
 func (p *Provider) GetModelProvider(lang string) (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.UserKey, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompatibleProvider, p.InputPricePerThousandTokens, p.OutputPricePerThousandTokens, p.Currency, p.EnableThinking)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.UserKey, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompatibleProvider, p.InputPricePerThousandTokens, p.OutputPricePerThousandTokens, p.Currency, p.EnableThinking, p.EnableWebSearch)
 	if err != nil {
 		return nil, err
 	}

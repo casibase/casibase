@@ -22,18 +22,20 @@ import (
 )
 
 type SiliconFlowProvider struct {
-	subType     string
-	apiKey      string
-	temperature float32
-	topP        float32
+	subType         string
+	apiKey          string
+	temperature     float32
+	topP            float32
+	enableWebSearch bool
 }
 
-func NewSiliconFlowProvider(subType string, apiKey string, temperature float32, topP float32) (*SiliconFlowProvider, error) {
+func NewSiliconFlowProvider(subType string, apiKey string, temperature float32, topP float32, enableWebSearch bool) (*SiliconFlowProvider, error) {
 	return &SiliconFlowProvider{
-		subType:     subType,
-		apiKey:      apiKey,
-		temperature: temperature,
-		topP:        topP,
+		subType:         subType,
+		apiKey:          apiKey,
+		temperature:     temperature,
+		topP:            topP,
+		enableWebSearch: enableWebSearch,
 	}, nil
 }
 
@@ -109,7 +111,7 @@ func (p *SiliconFlowProvider) calculatePrice(modelResult *ModelResult, lang stri
 func (p *SiliconFlowProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	const BaseUrl = "https://api.siliconflow.cn/v1"
 	// Create a new LocalModelProvider to handle the request
-	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "USD")
+	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "USD", p.enableWebSearch)
 	if err != nil {
 		return nil, err
 	}
