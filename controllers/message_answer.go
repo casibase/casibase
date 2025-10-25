@@ -185,7 +185,7 @@ func (c *ApiController) GetMessageAnswer() {
 		embeddingResult = &embedding.EmbeddingResult{}
 	}
 
-	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}, []byte{}, []byte{}}
+	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}, []byte{}, []byte{}, []byte{}}
 
 	if questionMessage != nil {
 		questionMessage.TokenCount = embeddingResult.TokenCount

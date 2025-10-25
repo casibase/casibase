@@ -416,7 +416,7 @@ class ChatWidget extends React.Component {
   handlePendingAIMessage(lastMessage, chat, messages) {
     let text = "";
     let reasonText = "";
-    let toolCalls = [];
+    const toolCalls = [];
     this.setState({
       messageLoading: true,
     });
