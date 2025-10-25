@@ -75,7 +75,16 @@ func handleToolCalls(toolCalls []openai.ToolCall, flushData interface{}, writer 
 
 	if flushThink, ok := flushData.(func(string, string, io.Writer, string) error); ok {
 		for _, toolCall := range toolCalls {
-			err := flushThink("\n"+"Call result from "+toolCall.Function.Name+"\n", "reason", writer, lang)
+			// Send tool call information as a "tool" event
+			toolCallData := map[string]string{
+				"name":      toolCall.Function.Name,
+				"arguments": toolCall.Function.Arguments,
+			}
+			toolCallJSON, err := json.Marshal(toolCallData)
+			if err != nil {
+				return err
+			}
+			err = flushThink(string(toolCallJSON), "tool", writer, lang)
 			if err != nil {
 				return err
 			}
