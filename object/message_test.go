@@ -106,7 +106,7 @@ func TestUpdateMessagePrices(t *testing.T) {
 			modelResult.ResponseTokenCount = responseTokenCount
 			modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
 
-			p, err := model.NewLocalModelProvider("", modelSubType, "", 0, 0, 0, 0, "", "", 0, 0, "USD")
+			p, err := model.NewLocalModelProvider("", modelSubType, "", 0, 0, 0, 0, "", "", 0, 0, "USD", false)
 			err = p.CalculatePrice(modelResult, "en")
 			if err != nil {
 				panic(err)
@@ -146,7 +146,7 @@ func TestUpdateMessagePricesFromTokens(t *testing.T) {
 		modelResult.ResponseTokenCount = message.TokenCount
 		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
 
-		p, err := model.NewLocalModelProvider("", modelSubType, "", 0, 0, 0, 0, "", "", 0, 0, "USD")
+		p, err := model.NewLocalModelProvider("", modelSubType, "", 0, 0, 0, 0, "", "", 0, 0, "USD", false)
 		err = p.CalculatePrice(modelResult, "en")
 		if err != nil {
 			panic(err)
