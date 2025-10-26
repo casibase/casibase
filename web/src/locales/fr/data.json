@@ -585,6 +585,7 @@
     "API key - Tooltip": "Clé API du modèle (visible uniquement pour les administrateurs)",
     "API version": "Version de l'API",
     "API version - Tooltip": "Version de l'API Azure",
+    "Add Remote Provider": "Ajouter un fournisseur distant",
     "Add Storage Provider": "Ajouter un fournisseur de stockage",
     "Auth type": "Type d'authentification",
     "Auth type - Tooltip": "Type d'authentification",
@@ -632,6 +633,8 @@
     "Input type - Tooltip": "Type d'entrée vectorisé : search_document (document) ou search_query (requête)",
     "Invoke method": "Méthode de mise en chaîne",
     "Invoke method - Tooltip": "Méthode de mise en chaîne",
+    "Is remote": "Est distant",
+    "Is remote - Tooltip": "Si ce fournisseur est un fournisseur distant",
     "MCP servers": "Points de terminaison du service outils MCP",
     "MCP servers - Tooltip": "Configuration des points de terminaison du service outils MCP (format JSON)",
     "MCP tools": "Outils MCP",
@@ -664,7 +667,8 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Limite du nombre de tokens candidates (1-6)",
     "Top P": "Top P",
-    "Top P - Tooltip": "Seuil d'échantillonnage probabiliste (0-1)"
+    "Top P - Tooltip": "Seuil d'échantillonnage probabiliste (0-1)",
+    "View Provider": "Voir le fournisseur"
   },
   "record": {
     "Commit": "Mise en chaîne",

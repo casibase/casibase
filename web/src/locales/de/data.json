@@ -585,6 +585,7 @@
     "API key - Tooltip": "Modul-API-Schlüssel (nur für Administratoren sichtbar)",
     "API version": "API-Version",
     "API version - Tooltip": "Azure-API-Version",
+    "Add Remote Provider": "Remote-Anbieter hinzufügen",
     "Add Storage Provider": "Speicheranbieter hinzufügen",
     "Auth type": "Authentifizierungstyp",
     "Auth type - Tooltip": "Authentifizierungstyp",
@@ -632,6 +633,8 @@
     "Input type - Tooltip": "Vektorisierter Eingabetyp: search_document (Dokument) oder search_query (Abfrage)",
     "Invoke method": "On-Chain-Methode",
     "Invoke method - Tooltip": "On-Chain-Methode",
+    "Is remote": "Ist Remote",
+    "Is remote - Tooltip": "Ob dieser Anbieter ein Remote-Anbieter ist",
     "MCP servers": "MCP-Tools-Dienstendpunkte",
     "MCP servers - Tooltip": "MCP-Tools-Dienstendpunktkonfiguration (JSON-Format)",
     "MCP tools": "MCP-Tools",
@@ -664,7 +667,8 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Anzahl limit der Kandidaten-Token (1-6)",
     "Top P": "Top P",
-    "Top P - Tooltip": "Wahrscheinlichkeitssampling-Schwelle (0-1)"
+    "Top P - Tooltip": "Wahrscheinlichkeitssampling-Schwelle (0-1)",
+    "View Provider": "Anbieter anzeigen"
   },
   "record": {
     "Commit": "On-Chain",

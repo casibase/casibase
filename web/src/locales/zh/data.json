@@ -585,6 +585,7 @@
     "API key - Tooltip": "模型API密钥（仅管理员可见）",
     "API version": "API版本",
     "API version - Tooltip": "Azure API版本",
+    "Add Remote Provider": "添加远程提供商",
     "Add Storage Provider": "添加存储提供商",
     "Auth type": "认证类型",
     "Auth type - Tooltip": "认证类型",
@@ -632,6 +633,8 @@
     "Input type - Tooltip": "向量化输入类型：search_document（文档）或 search_query（查询）",
     "Invoke method": "上链方法",
     "Invoke method - Tooltip": "上链方法",
+    "Is remote": "是远程",
+    "Is remote - Tooltip": "此提供商是否为远程提供商",
     "MCP servers": "MCP工具服务端点",
     "MCP servers - Tooltip": "MCP工具服务端点配置（JSON格式）",
     "MCP tools": "MCP工具",
@@ -664,7 +667,8 @@
     "Top K": "Top K",
     "Top K - Tooltip": "候选token数量限制（1-6）",
     "Top P": "Top P",
-    "Top P - Tooltip": "概率采样阈值（0-1）"
+    "Top P - Tooltip": "概率采样阈值（0-1）",
+    "View Provider": "查看提供商"
   },
   "record": {
     "Commit": "上链",

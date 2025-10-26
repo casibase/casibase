@@ -585,6 +585,7 @@
     "API key - Tooltip": "모델 API 키(관리자만 가능)",
     "API version": "API 버전",
     "API version - Tooltip": "Azure API 버전",
+    "Add Remote Provider": "원격 공급자 추가",
     "Add Storage Provider": "스토리지 공급자 추가",
     "Auth type": "인증 유형",
     "Auth type - Tooltip": "인증 유형",
@@ -632,6 +633,8 @@
     "Input type - Tooltip": "벡터화 입력 유형: search_document(문서) 또는 search_query(질의)",
     "Invoke method": "체인에 등록하는 방법",
     "Invoke method - Tooltip": "체인에 등록하는 방법",
+    "Is remote": "원격입니다",
+    "Is remote - Tooltip": "이 공급자가 원격 공급자인지 여부",
     "MCP servers": "MCP 도구 서비스 엔드포인트",
     "MCP servers - Tooltip": "MCP 도구 서비스 엔드포인트 구성(JSON 형식)",
     "MCP tools": "MCP 도구",
@@ -664,7 +667,8 @@
     "Top K": "Top K",
     "Top K - Tooltip": "후보 토큰 수량 제한(1-6)",
     "Top P": "Top P",
-    "Top P - Tooltip": "확률 샘플링 임계값(0-1)"
+    "Top P - Tooltip": "확률 샘플링 임계값(0-1)",
+    "View Provider": "공급자 보기"
   },
   "record": {
     "Commit": "체인 등록",

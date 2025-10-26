@@ -585,6 +585,7 @@
     "API key - Tooltip": "Ключ API модели (виден только администратору)",
     "API version": "Версия API",
     "API version - Tooltip": "Версия API Azure",
+    "Add Remote Provider": "Добавить удаленного провайдера",
     "Add Storage Provider": "Добавить провайдера хранилища",
     "Auth type": "Тип аутентификации",
     "Auth type - Tooltip": "Тип аутентификации",
@@ -632,6 +633,8 @@
     "Input type - Tooltip": "Тип векторизованного ввода: search_document (документ) или search_query (запрос)",
     "Invoke method": "Метод записи в блокчейн",
     "Invoke method - Tooltip": "Метод записи в блокчейн",
+    "Is remote": "Является удаленным",
+    "Is remote - Tooltip": "Является ли этот провайдер удаленным провайдером",
     "MCP servers": "Конечные точки сервисов инструментов MCP",
     "MCP servers - Tooltip": "Конфигурация конечных точек сервисов инструментов MCP (формат JSON)",
     "MCP tools": "Инструменты MCP",
@@ -664,7 +667,8 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Ограничение количества кандидатов токенов (1-6)",
     "Top P": "Top P",
-    "Top P - Tooltip": "Порог вероятностного сэмплирования (0-1)"
+    "Top P - Tooltip": "Порог вероятностного сэмплирования (0-1)",
+    "View Provider": "Просмотреть провайдера"
   },
   "record": {
     "Commit": "Записать в блокчейн",
