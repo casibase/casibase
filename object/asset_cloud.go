@@ -178,7 +178,11 @@ func convertResourceToAsset(owner string, provider *Provider, resource *resource
 		properties["resourceGroupId"] = tea.StringValue(resource.ResourceGroupId)
 	}
 
-	propertiesJson, _ := json.Marshal(properties)
+	propertiesJson, err := json.Marshal(properties)
+	if err != nil {
+		// This should rarely happen for simple map types, but handle it anyway
+		propertiesJson = []byte("{}")
+	}
 
 	// Extract tags
 	tag := ""
