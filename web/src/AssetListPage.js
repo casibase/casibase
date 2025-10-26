@@ -121,7 +121,7 @@ class AssetListPage extends BaseListPage {
     }
 
     this.setState({scanning: true});
-    AssetBackend.scanAssets(this.props.account.owner, this.state.selectedProvider)
+    AssetBackend.scanAssets("admin", this.state.selectedProvider)
       .then((res) => {
         this.setState({scanning: false});
         if (res.status === "ok") {
@@ -345,7 +345,7 @@ class AssetListPage extends BaseListPage {
       value = params.type;
     }
     this.setState({loading: true});
-    AssetBackend.getAssets(Setting.getRequestOrganization(this.props.account), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    AssetBackend.getAssets("admin", params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,

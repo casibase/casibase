@@ -37,7 +37,7 @@ class AssetEditPage extends React.Component {
   }
 
   getAsset() {
-    AssetBackend.getAsset(this.props.account.owner, this.state.assetName)
+    AssetBackend.getAsset("admin", this.state.assetName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
