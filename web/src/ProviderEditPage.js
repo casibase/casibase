@@ -466,7 +466,7 @@ class ProviderEditPage extends React.Component {
                     style={{width: "100%"}}
                     value={this.state.provider.subType}
                     disabled={isRemote}
-                  onChange={(value) => {
+                    onChange={(value) => {
                       this.updateProviderField("subType", value);
                     }}
                     options={Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type).map((item) => Setting.getOption(item.name, item.id))}
@@ -478,7 +478,7 @@ class ProviderEditPage extends React.Component {
                     style={{width: "100%"}}
                     value={this.state.provider.subType}
                     disabled={isRemote}
-                  onChange={(value) => {
+                    onChange={(value) => {
                       this.updateProviderField("subType", value);
                     }}
                     showSearch
@@ -1115,7 +1115,7 @@ class ProviderEditPage extends React.Component {
               </Col>
               <Col span={22} >
                 <CodeMirror
-                      editable={!isRemote}
+                  editable={!isRemote}
                   value={this.state.provider.configText}
                   disabled={!this.state.isAdmin}
                   options={{mode: "yaml", theme: "material-darker"}}

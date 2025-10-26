@@ -312,9 +312,9 @@ class ProviderListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <div>
-              <Button 
-                style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} 
-                type={record.isRemote ? "default" : "primary"} 
+              <Button
+                style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
+                type={record.isRemote ? "default" : "primary"}
                 onClick={() => this.props.history.push(`/providers/${record.name}`)}
               >
                 {record.isRemote ? i18next.t("general:View") : i18next.t("general:Edit")}
@@ -326,9 +326,9 @@ class ProviderListPage extends BaseListPage {
                 cancelText={i18next.t("general:Cancel")}
                 disabled={record.isRemote}
               >
-                <Button 
-                  style={{marginBottom: "10px"}} 
-                  type="primary" 
+                <Button
+                  style={{marginBottom: "10px"}}
+                  type="primary"
                   danger
                   disabled={record.isRemote}
                 >
@@ -389,14 +389,14 @@ class ProviderListPage extends BaseListPage {
         });
         if (res.status === "ok") {
           // Sort providers so local providers come before remote providers
-          let providers = res.data || [];
+          const providers = res.data || [];
           providers.sort((a, b) => {
             if (a.isRemote === b.isRemote) {
               return 0;
             }
             return a.isRemote ? 1 : -1;
           });
-          
+
           this.setState({
             data: providers,
             pagination: {
