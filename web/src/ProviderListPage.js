@@ -175,17 +175,20 @@ class ProviderListPage extends BaseListPage {
         width: "150px",
         align: "center",
         filterMultiple: false,
-        filters: (() => {
-          // Collect all unique types across all categories
-          const allTypes = new Set();
-          providerCategories.forEach(category => {
-            Setting.getProviderTypeOptions(category).forEach(type => {
-              allTypes.add(type.name);
-            });
-          });
-          // Convert to sorted array of filter options
-          return Array.from(allTypes).sort().map(type => ({text: type, value: type}));
-        })(),
+        filters: providerCategories.map(category => ({
+          text: category,
+          value: category,
+          children: Setting.getProviderTypeOptions(category).map(o => ({text: o.id, value: `${category}:${o.name}`})),
+        })),
+        onFilter: (value, record) => {
+          // Handle hierarchical filtering: "category:type" format
+          if (value.includes(":")) {
+            const [category, type] = value.split(":");
+            return record.category === category && record.type === type;
+          }
+          // Handle parent category selection
+          return record.category === value;
+        },
         sorter: (a, b) => a.type.localeCompare(b.type),
         render: (text, record, index) => {
           return Provider.getProviderLogoWidget(record);
@@ -330,8 +333,10 @@ class ProviderListPage extends BaseListPage {
       field = "category";
       value = params.category;
     } else if (params.type !== undefined && params.type !== null) {
-      field = "type";
-      value = params.type;
+      // Don't apply server-side filtering for type column
+      // because it uses client-side onFilter for hierarchical filtering
+      field = undefined;
+      value = undefined;
     }
     this.setState({loading: true});
     ProviderBackend.getProviders(this.props.account.name, Setting.getRequestStore(this.props.account), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
