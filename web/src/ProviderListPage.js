@@ -333,10 +333,18 @@ class ProviderListPage extends BaseListPage {
       field = "category";
       value = params.category;
     } else if (params.type !== undefined && params.type !== null) {
-      // Don't apply server-side filtering for type column
-      // because it uses client-side onFilter for hierarchical filtering
-      field = undefined;
-      value = undefined;
+      // Handle hierarchical type filter
+      if (params.type.includes(":")) {
+        // Child node selected: "category:type" format
+        // Extract type for server-side filtering, onFilter will verify category
+        const [, typeValue] = params.type.split(":");
+        field = "type";
+        value = typeValue;
+      } else {
+        // Parent node selected: filter by category
+        field = "category";
+        value = params.type;
+      }
     }
     this.setState({loading: true});
     ProviderBackend.getProviders(this.props.account.name, Setting.getRequestStore(this.props.account), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
