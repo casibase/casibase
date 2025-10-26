@@ -28,6 +28,7 @@ import (
 	"github.com/casibase/casibase/tts"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
+	"xorm.io/xorm"
 )
 
 type Provider struct {
@@ -246,18 +247,27 @@ func AddProvider(provider *Provider) (bool, error) {
 }
 
 func DeleteProvider(provider *Provider) (bool, error) {
+	var engine *xorm.Engine
 	if providerAdapter != nil && provider.Category != "Storage" {
-		affected, err := providerAdapter.engine.ID(core.PK{provider.Owner, provider.Name}).Delete(&Provider{})
+		engine = providerAdapter.engine
+	} else {
+		engine = adapter.engine
+	}
+
+	affected, err := engine.ID(core.PK{provider.Owner, provider.Name}).Delete(&Provider{})
+	if err != nil {
+		return false, err
+	}
+
+	if provider.Category == "Public Cloud" || provider.Category == "Private Cloud" {
+		condition := Asset{
+			Owner:    provider.Owner,
+			Provider: provider.Name,
+		}
+		_, err := adapter.engine.Delete(&condition)
 		if err != nil {
 			return false, err
 		}
-
-		return affected != 0, nil
-	}
-
-	affected, err := adapter.engine.ID(core.PK{provider.Owner, provider.Name}).Delete(&Provider{})
-	if err != nil {
-		return false, err
 	}
 
 	return affected != 0, nil

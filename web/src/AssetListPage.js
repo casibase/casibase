@@ -121,7 +121,7 @@ class AssetListPage extends BaseListPage {
     }
 
     this.setState({scanning: true});
-    AssetBackend.scanAssets(this.props.account.owner, this.state.selectedProvider)
+    AssetBackend.scanAssets("admin", this.state.selectedProvider)
       .then((res) => {
         this.setState({scanning: false});
         if (res.status === "ok") {
@@ -337,7 +337,7 @@ class AssetListPage extends BaseListPage {
     );
   }
 
-  fetch = (params = {}) => {
+  fetch = (params = {pagination: {}}) => {
     let field = params.searchedColumn, value = params.searchText;
     const sortField = params.sortField, sortOrder = params.sortOrder;
     if (params.type !== undefined && params.type !== null) {
@@ -345,7 +345,9 @@ class AssetListPage extends BaseListPage {
       value = params.type;
     }
     this.setState({loading: true});
-    AssetBackend.getAssets(Setting.getRequestOrganization(this.props.account), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    const currentPage = params.pagination.current || 1;
+    const pageSize = params.pagination.pageSize || 10;
+    AssetBackend.getAssets("admin", currentPage, pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,
