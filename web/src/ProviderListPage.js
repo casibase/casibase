@@ -161,8 +161,21 @@ class ProviderListPage extends BaseListPage {
         dataIndex: "category",
         key: "category",
         width: "110px",
+        filterMultiple: false,
+        filters: [
+          {text: "Model", value: "Model"},
+          {text: "Embedding", value: "Embedding"},
+          {text: "Storage", value: "Storage"},
+          {text: "Agent", value: "Agent"},
+          {text: "Public Cloud", value: "Public Cloud"},
+          {text: "Private Cloud", value: "Private Cloud"},
+          {text: "Blockchain", value: "Blockchain"},
+          {text: "Video", value: "Video"},
+          {text: "Text-to-Speech", value: "Text-to-Speech"},
+          {text: "Speech-to-Text", value: "Speech-to-Text"},
+          {text: "Bot", value: "Bot"},
+        ],
         sorter: (a, b) => a.category.localeCompare(b.category),
-        ...this.getColumnSearchProps("category"),
       },
       {
         title: i18next.t("general:Type"),
@@ -171,6 +184,19 @@ class ProviderListPage extends BaseListPage {
         width: "150px",
         align: "center",
         filterMultiple: false,
+        filters: [
+          {text: "Model", value: "Model", children: Setting.getProviderTypeOptions("Model").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Embedding", value: "Embedding", children: Setting.getProviderTypeOptions("Embedding").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Storage", value: "Storage", children: Setting.getProviderTypeOptions("Storage").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Agent", value: "Agent", children: Setting.getProviderTypeOptions("Agent").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Public Cloud", value: "Public Cloud", children: Setting.getProviderTypeOptions("Public Cloud").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Private Cloud", value: "Private Cloud", children: Setting.getProviderTypeOptions("Private Cloud").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Blockchain", value: "Blockchain", children: Setting.getProviderTypeOptions("Blockchain").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Video", value: "Video", children: Setting.getProviderTypeOptions("Video").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Text-to-Speech", value: "Text-to-Speech", children: Setting.getProviderTypeOptions("Text-to-Speech").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Speech-to-Text", value: "Speech-to-Text", children: Setting.getProviderTypeOptions("Speech-to-Text").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Bot", value: "Bot", children: Setting.getProviderTypeOptions("Bot").map((o) => {return {text: o.id, value: o.name};})},
+        ],
         sorter: (a, b) => a.type.localeCompare(b.type),
         render: (text, record, index) => {
           return Provider.getProviderLogoWidget(record);
@@ -311,7 +337,10 @@ class ProviderListPage extends BaseListPage {
   fetch = (params = {}) => {
     let field = params.searchedColumn, value = params.searchText;
     const sortField = params.sortField, sortOrder = params.sortOrder;
-    if (params.type !== undefined && params.type !== null) {
+    if (params.category !== undefined && params.category !== null) {
+      field = "category";
+      value = params.category;
+    } else if (params.type !== undefined && params.type !== null) {
       field = "type";
       value = params.type;
     }
