@@ -28,6 +28,7 @@ import (
 	"github.com/casibase/casibase/tts"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
+	"xorm.io/xorm"
 )
 
 type Provider struct {
@@ -446,24 +447,9 @@ func GetProviderCount(owner, storeName, field, value string) (int64, error) {
 
 	// Add count from remote adapter if available
 	if providerAdapter != nil {
-		session2 := providerAdapter.engine.NewSession()
-		if owner != "" {
-			session2 = session2.And("owner=?", owner)
-		}
-		if field != "" && value != "" {
-			if util.FilterField(field) {
-				session2 = session2.And(fmt.Sprintf("%s like ?", util.SnakeString(field)), fmt.Sprintf("%%%s%%", value))
-			}
-		}
-		if storeName != "" {
-			store, err := GetStore(util.GetIdFromOwnerAndName(owner, storeName))
-			if err != nil {
-				return count, err
-			}
-			providerNames := collectProviderNames(store)
-			if len(providerNames) > 0 {
-				session2 = session2.In("name", providerNames)
-			}
+		session2, err := buildRemoteProviderSession(owner, field, value, storeName)
+		if err != nil {
+			return count, err
 		}
 		count2, err := session2.Count(&Provider{})
 		if err != nil {
@@ -512,6 +498,29 @@ func collectProviderNames(store *Store) []string {
 	return providerNames
 }
 
+func buildRemoteProviderSession(owner, field, value, storeName string) (*xorm.Session, error) {
+	session := providerAdapter.engine.NewSession()
+	if owner != "" {
+		session = session.And("owner=?", owner)
+	}
+	if field != "" && value != "" {
+		if util.FilterField(field) {
+			session = session.And(fmt.Sprintf("%s like ?", util.SnakeString(field)), fmt.Sprintf("%%%s%%", value))
+		}
+	}
+	if storeName != "" {
+		store, err := GetStore(util.GetIdFromOwnerAndName(owner, storeName))
+		if err != nil {
+			return nil, err
+		}
+		providerNames := collectProviderNames(store)
+		if len(providerNames) > 0 {
+			session = session.In("name", providerNames)
+		}
+	}
+	return session, nil
+}
+
 func GetPaginationProviders(owner, storeName string, offset, limit int, field, value, sortField, sortOrder string) ([]*Provider, error) {
 	providers := []*Provider{}
 	// Fetch from local adapter without pagination to properly merge with remote providers
@@ -535,24 +544,9 @@ func GetPaginationProviders(owner, storeName string, offset, limit int, field, v
 	// Fetch from remote adapter if available
 	if providerAdapter != nil {
 		providers2 := []*Provider{}
-		session2 := providerAdapter.engine.NewSession()
-		if owner != "" {
-			session2 = session2.And("owner=?", owner)
-		}
-		if field != "" && value != "" {
-			if util.FilterField(field) {
-				session2 = session2.And(fmt.Sprintf("%s like ?", util.SnakeString(field)), fmt.Sprintf("%%%s%%", value))
-			}
-		}
-		if storeName != "" {
-			store, err := GetStore(util.GetIdFromOwnerAndName(owner, storeName))
-			if err != nil {
-				return providers, err
-			}
-			providerNames := collectProviderNames(store)
-			if len(providerNames) > 0 {
-				session2 = session2.In("name", providerNames)
-			}
+		session2, err := buildRemoteProviderSession(owner, field, value, storeName)
+		if err != nil {
+			return providers, err
 		}
 		// Apply same sort order to remote providers
 		sortFieldToUse := sortField
@@ -583,7 +577,7 @@ func GetPaginationProviders(owner, storeName string, offset, limit int, field, v
 	if offset != -1 && limit != -1 {
 		start := offset
 		end := offset + limit
-		if start > len(providers) {
+		if start >= len(providers) {
 			return []*Provider{}, nil
 		}
 		if end > len(providers) {
