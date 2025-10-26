@@ -132,6 +132,9 @@ class ProviderListPage extends BaseListPage {
   }
 
   renderTable(providers) {
+    // Define provider categories to avoid duplication
+    const providerCategories = ["Model", "Storage", "Embedding", "Agent", "Public Cloud", "Private Cloud", "Blockchain", "Video", "Text-to-Speech", "Speech-to-Text", "Bot"];
+
     const columns = [
       {
         title: i18next.t("general:Name"),
@@ -162,19 +165,7 @@ class ProviderListPage extends BaseListPage {
         key: "category",
         width: "110px",
         filterMultiple: false,
-        filters: [
-          {text: "Model", value: "Model"},
-          {text: "Storage", value: "Storage"},
-          {text: "Embedding", value: "Embedding"},
-          {text: "Agent", value: "Agent"},
-          {text: "Public Cloud", value: "Public Cloud"},
-          {text: "Private Cloud", value: "Private Cloud"},
-          {text: "Blockchain", value: "Blockchain"},
-          {text: "Video", value: "Video"},
-          {text: "Text-to-Speech", value: "Text-to-Speech"},
-          {text: "Speech-to-Text", value: "Speech-to-Text"},
-          {text: "Bot", value: "Bot"},
-        ],
+        filters: providerCategories.map(category => ({text: category, value: category})),
         sorter: (a, b) => a.category.localeCompare(b.category),
       },
       {
@@ -184,19 +175,11 @@ class ProviderListPage extends BaseListPage {
         width: "150px",
         align: "center",
         filterMultiple: false,
-        filters: [
-          {text: "Model", value: "Model", children: Setting.getProviderTypeOptions("Model").map((o) => {return {text: o.id, value: o.name};})},
-          {text: "Storage", value: "Storage", children: Setting.getProviderTypeOptions("Storage").map((o) => {return {text: o.id, value: o.name};})},
-          {text: "Embedding", value: "Embedding", children: Setting.getProviderTypeOptions("Embedding").map((o) => {return {text: o.id, value: o.name};})},
-          {text: "Agent", value: "Agent", children: Setting.getProviderTypeOptions("Agent").map((o) => {return {text: o.id, value: o.name};})},
-          {text: "Public Cloud", value: "Public Cloud", children: Setting.getProviderTypeOptions("Public Cloud").map((o) => {return {text: o.id, value: o.name};})},
-          {text: "Private Cloud", value: "Private Cloud", children: Setting.getProviderTypeOptions("Private Cloud").map((o) => {return {text: o.id, value: o.name};})},
-          {text: "Blockchain", value: "Blockchain", children: Setting.getProviderTypeOptions("Blockchain").map((o) => {return {text: o.id, value: o.name};})},
-          {text: "Video", value: "Video", children: Setting.getProviderTypeOptions("Video").map((o) => {return {text: o.id, value: o.name};})},
-          {text: "Text-to-Speech", value: "Text-to-Speech", children: Setting.getProviderTypeOptions("Text-to-Speech").map((o) => {return {text: o.id, value: o.name};})},
-          {text: "Speech-to-Text", value: "Speech-to-Text", children: Setting.getProviderTypeOptions("Speech-to-Text").map((o) => {return {text: o.id, value: o.name};})},
-          {text: "Bot", value: "Bot", children: Setting.getProviderTypeOptions("Bot").map((o) => {return {text: o.id, value: o.name};})},
-        ],
+        filters: providerCategories.map(category => ({
+          text: category,
+          value: category,
+          children: Setting.getProviderTypeOptions(category).map(o => ({text: o.id, value: o.name})),
+        })),
         sorter: (a, b) => a.type.localeCompare(b.type),
         render: (text, record, index) => {
           return Provider.getProviderLogoWidget(record);
