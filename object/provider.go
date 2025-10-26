@@ -499,6 +499,9 @@ func collectProviderNames(store *Store) []string {
 }
 
 func buildRemoteProviderSession(owner, field, value, storeName string) (*xorm.Session, error) {
+	if providerAdapter == nil {
+		return nil, fmt.Errorf("providerAdapter is nil")
+	}
 	session := providerAdapter.engine.NewSession()
 	if owner != "" {
 		session = session.And("owner=?", owner)
