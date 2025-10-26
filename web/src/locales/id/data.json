@@ -667,8 +667,7 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Batas jumlah token kandidat (1-6)",
     "Top P": "Top P",
-    "Top P - Tooltip": "Ambang sampling probabilitas (0-1)",
-    "View Provider": "Lihat penyedia"
+    "Top P - Tooltip": "Ambang sampling probabilitas (0-1)"
   },
   "record": {
     "Commit": "Komit",

@@ -84,41 +84,10 @@ class ProviderListPage extends BaseListPage {
   }
 
   newRemoteProvider() {
-    const randomName = Setting.getRandomName();
-    return {
-      owner: "admin",
-      name: `provider_${randomName}`,
-      createdTime: moment().format(),
-      displayName: `New Remote Provider - ${randomName}`,
-      category: "Model",
-      type: "OpenAI",
-      subType: "text-davinci-003",
-      clientId: "",
-      clientSecret: "",
-      mcpTools: [],
-      enableThinking: false,
-      temperature: 1,
-      topP: 1,
-      topK: 4,
-      frequencyPenalty: 0,
-      presencePenalty: 0,
-      inputPricePerThousandTokens: 0.0,
-      outputPricePerThousandTokens: 0.0,
-      currency: "USD",
-      providerUrl: "https://platform.openai.com/account/api-keys",
-      apiVersion: "",
-      apiKey: "",
-      network: "",
-      userKey: "",
-      userCert: "",
-      signKey: "",
-      signCert: "",
-      compatibleProvider: "",
-      contractName: "",
-      contractMethod: "",
-      state: "Active",
-      isRemote: true,
-    };
+    const provider = this.newProvider();
+    provider.displayName = `New Remote Provider - ${provider.name.split("_")[1]}`;
+    provider.isRemote = true;
+    return provider;
   }
 
   addProvider(isRemote = false) {
@@ -388,17 +357,8 @@ class ProviderListPage extends BaseListPage {
           loading: false,
         });
         if (res.status === "ok") {
-          // Sort providers so local providers come before remote providers
-          const providers = res.data || [];
-          providers.sort((a, b) => {
-            if (a.isRemote === b.isRemote) {
-              return 0;
-            }
-            return a.isRemote ? 1 : -1;
-          });
-
           this.setState({
-            data: providers,
+            data: res.data,
             pagination: {
               ...params.pagination,
               total: res.data2,

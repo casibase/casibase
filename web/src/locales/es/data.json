@@ -667,8 +667,7 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Límite de cantidad de tokens candidatos (1-6)",
     "Top P": "Top P",
-    "Top P - Tooltip": "Umbral de muestreo probabilístico (0-1)",
-    "View Provider": "Ver proveedor"
+    "Top P - Tooltip": "Umbral de muestreo probabilístico (0-1)"
   },
   "record": {
     "Commit": "Encadenar",

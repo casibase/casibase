@@ -667,8 +667,7 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Number of candidate tokens",
     "Top P": "Top P",
-    "Top P - Tooltip": "Probability sampling threshold",
-    "View Provider": "View Provider"
+    "Top P - Tooltip": "Probability sampling threshold"
   },
   "record": {
     "Commit": "Commit",

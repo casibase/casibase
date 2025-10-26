@@ -263,7 +263,7 @@ class ProviderEditPage extends React.Component {
     return (
       <Card size="small" title={
         <div>
-          {isRemote ? i18next.t("provider:View Provider") : i18next.t("provider:Edit Provider")}&nbsp;&nbsp;&nbsp;&nbsp;
+          {isRemote ? i18next.t("general:View") : i18next.t("provider:Edit Provider")}&nbsp;&nbsp;&nbsp;&nbsp;
           {!isRemote && <Button onClick={() => this.submitProviderEdit(false)}>{i18next.t("general:Save")}</Button>}
           {!isRemote && <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitProviderEdit(true)}>{i18next.t("general:Save & Exit")}</Button>}
         </div>
