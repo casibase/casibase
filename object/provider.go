@@ -73,6 +73,7 @@ type Provider struct {
 	TestContent    string `xorm:"varchar(100)" json:"testContent"`
 
 	IsDefault  bool   `json:"isDefault"`
+	IsRemote   bool   `json:"isRemote"`
 	State      string `xorm:"varchar(100)" json:"state"`
 	BrowserUrl string `xorm:"varchar(200)" json:"browserUrl"`
 }
@@ -127,12 +128,15 @@ func GetGlobalProviders() ([]*Provider, error) {
 	}
 
 	if providerAdapter != nil {
-		providers = getFilteredProviders(providers, true)
-
 		providers2 := []*Provider{}
 		err = providerAdapter.engine.Asc("owner").Desc("created_time").Find(&providers2)
 		if err != nil {
 			return providers2, err
+		}
+
+		// Mark remote providers
+		for _, provider := range providers2 {
+			provider.IsRemote = true
 		}
 
 		providers = append(providers, providers2...)
@@ -155,8 +159,11 @@ func GetProviders(owner string) ([]*Provider, error) {
 			return providers2, err
 		}
 
-		providers = getFilteredProviders(providers, true)
-		providers2 = getFilteredProviders(providers2, false)
+		// Mark remote providers
+		for _, provider := range providers2 {
+			provider.IsRemote = true
+		}
+
 		providers = append(providers, providers2...)
 	}
 
@@ -175,8 +182,8 @@ func getProvider(owner string, name string) (*Provider, error) {
 		if err != nil {
 			return &provider, err
 		}
-		if provider.Category == "Storage" {
-			return nil, nil
+		if existed {
+			provider.IsRemote = true
 		}
 	}
 
@@ -204,7 +211,7 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 
 	provider.processProviderParams(providerDb)
 
-	if providerAdapter != nil && provider.Category != "Storage" {
+	if providerAdapter != nil && provider.IsRemote {
 		_, err = providerAdapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
 		if err != nil {
 			return false, err
@@ -228,7 +235,7 @@ func AddProvider(provider *Provider) (bool, error) {
 		provider.ProviderKey = generateProviderKey()
 	}
 
-	if providerAdapter != nil && provider.Category != "Storage" {
+	if providerAdapter != nil && provider.IsRemote {
 		affected, err := providerAdapter.engine.Insert(provider)
 		if err != nil {
 			return false, err
@@ -246,7 +253,7 @@ func AddProvider(provider *Provider) (bool, error) {
 }
 
 func DeleteProvider(provider *Provider) (bool, error) {
-	if providerAdapter != nil && provider.Category != "Storage" {
+	if providerAdapter != nil && provider.IsRemote {
 		affected, err := providerAdapter.engine.ID(core.PK{provider.Owner, provider.Name}).Delete(&Provider{})
 		if err != nil {
 			return false, err

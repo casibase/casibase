@@ -62,6 +62,7 @@ class ProviderListPage extends BaseListPage {
       contractName: "",
       contractMethod: "",
       state: "Active",
+      isRemote: false,
     };
   }
 
@@ -78,13 +79,21 @@ class ProviderListPage extends BaseListPage {
       clientId: "C:/storage_casibase",
       providerUrl: "",
       state: "Active",
+      isRemote: false,
     };
   }
 
-  addProvider(needStorage = false) {
+  newRemoteProvider() {
+    const provider = this.newProvider();
+    provider.displayName = `New Remote Provider - ${provider.name.split("_")[1]}`;
+    provider.isRemote = true;
+    return provider;
+  }
+
+  addProvider(isRemote = false) {
     let newProvider = this.newProvider();
-    if (needStorage) {
-      newProvider = this.newStorageProvider();
+    if (isRemote) {
+      newProvider = this.newRemoteProvider();
     }
     ProviderBackend.addProvider(newProvider)
       .then((res) => {
@@ -271,6 +280,18 @@ class ProviderListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("provider:Is remote"),
+        dataIndex: "isRemote",
+        key: "isRemote",
+        width: "120px",
+        sorter: (a, b) => a.isRemote - b.isRemote,
+        render: (text, record, index) => {
+          return (
+            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+          );
+        },
+      },
+      {
         title: i18next.t("general:State"),
         dataIndex: "state",
         key: "state",
@@ -286,14 +307,28 @@ class ProviderListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/providers/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button
+                style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
+                type={record.isRemote ? "default" : "primary"}
+                onClick={() => this.props.history.push(`/providers/${record.name}`)}
+              >
+                {record.isRemote ? i18next.t("general:View") : i18next.t("general:Edit")}
+              </Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteProvider(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
+                disabled={record.isRemote}
               >
-                <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
+                <Button
+                  style={{marginBottom: "10px"}}
+                  type="primary"
+                  danger
+                  disabled={record.isRemote}
+                >
+                  {i18next.t("general:Delete")}
+                </Button>
               </Popconfirm>
             </div>
           );
@@ -315,7 +350,7 @@ class ProviderListPage extends BaseListPage {
           title={() => (
             <div>
               {i18next.t("general:Providers")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button type="primary" size="small" onClick={() => this.addProvider()}>{i18next.t("general:Add")}</Button>
+              <Button type="primary" size="small" onClick={() => this.addProvider(false)}>{i18next.t("general:Add")}</Button>
               {this.state.selectedRowKeys.length > 0 && (
                 <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
                   <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
@@ -324,7 +359,7 @@ class ProviderListPage extends BaseListPage {
                 </Popconfirm>
               )}
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <Button size="small" onClick={() => this.addProvider(true)}>{i18next.t("provider:Add Storage Provider")}</Button>
+              <Button size="small" onClick={() => this.addProvider(true)}>{i18next.t("provider:Add Remote Provider")}</Button>
             </div>
           )}
           loading={this.state.loading}
