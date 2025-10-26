@@ -142,7 +142,7 @@ func ScanAliyunAssets(owner string, provider *Provider) ([]*Asset, error) {
 
 func CheckResourceState(createTime *string, expireTime *string) (state string, err error) {
 	if expireTime == nil {
-		return "Avilable", nil
+		return "Available", nil
 	}
 	t, err := time.Parse(time.RFC3339, *expireTime)
 	if err != nil {
@@ -151,9 +151,9 @@ func CheckResourceState(createTime *string, expireTime *string) (state string, e
 	now := time.Now().UTC()
 	isAvailable := now.Before(t)
 	if isAvailable {
-		return "Avilable", nil
+		return "Available", nil
 	} else {
-		return "Not Avilable", nil
+		return "Not Available", nil
 	}
 }
 
