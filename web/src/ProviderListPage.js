@@ -175,11 +175,17 @@ class ProviderListPage extends BaseListPage {
         width: "150px",
         align: "center",
         filterMultiple: false,
-        filters: providerCategories.map(category => ({
-          text: category,
-          value: category,
-          children: Setting.getProviderTypeOptions(category).map(o => ({text: o.id, value: o.name})),
-        })),
+        filters: (() => {
+          // Collect all unique types across all categories
+          const allTypes = new Set();
+          providerCategories.forEach(category => {
+            Setting.getProviderTypeOptions(category).forEach(type => {
+              allTypes.add(type.name);
+            });
+          });
+          // Convert to sorted array of filter options
+          return Array.from(allTypes).sort().map(type => ({text: type, value: type}));
+        })(),
         sorter: (a, b) => a.type.localeCompare(b.type),
         render: (text, record, index) => {
           return Provider.getProviderLogoWidget(record);
