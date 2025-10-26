@@ -19,7 +19,8 @@ import (
 	"fmt"
 
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
-	ecs20140526 "github.com/alibabacloud-go/ecs-20140526/v4/client"
+	resourcecenter20221201 "github.com/alibabacloud-go/resourcecenter-20221201/client"
+	util2 "github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/casibase/casibase/util"
 )
@@ -66,200 +67,159 @@ func scanAliyunAssets(owner string, provider *Provider) ([]*Asset, error) {
 	config := &openapi.Config{
 		AccessKeyId:     tea.String(provider.ClientId),
 		AccessKeySecret: tea.String(provider.ClientSecret),
-		RegionId:        tea.String(provider.Region),
-		Endpoint:        tea.String("ecs." + provider.Region + ".aliyuncs.com"),
+		Endpoint:        tea.String("resourcecenter.aliyuncs.com"),
 	}
-	client, err := ecs20140526.NewClient(config)
+	client, err := resourcecenter20221201.NewClient(config)
 	if err != nil {
 		return nil, err
 	}
 
 	var assets []*Asset
 
-	// Scan ECS instances
-	ecsAssets, err := scanAliyunEcsInstances(owner, provider, client)
-	if err != nil {
-		return nil, err
-	}
-	assets = append(assets, ecsAssets...)
+	// Resource types to scan
+	resourceTypes := []string{"ACS::ECS::Instance", "ACS::ECS::Disk", "ACS::VPC::VPC"}
 
-	// Scan Disks
-	diskAssets, err := scanAliyunDisks(owner, provider, client)
-	if err != nil {
-		return nil, err
-	}
-	assets = append(assets, diskAssets...)
-
-	// Scan VPCs
-	vpcAssets, err := scanAliyunVpcs(owner, provider, client)
-	if err != nil {
-		return nil, err
-	}
-	assets = append(assets, vpcAssets...)
-
-	return assets, nil
-}
-
-func scanAliyunEcsInstances(owner string, provider *Provider, client *ecs20140526.Client) ([]*Asset, error) {
-	request := &ecs20140526.DescribeInstancesRequest{
-		PageSize: tea.Int32(100),
-	}
-
-	response, err := client.DescribeInstances(request)
-	if err != nil {
-		return nil, err
-	}
-
-	var assets []*Asset
-	if response.Body.Instances != nil && response.Body.Instances.Instance != nil {
-		for _, instance := range response.Body.Instances.Instance {
-			properties := map[string]interface{}{
-				"instanceType":       tea.StringValue(instance.InstanceType),
-				"imageId":            tea.StringValue(instance.ImageId),
-				"osName":             tea.StringValue(instance.OSName),
-				"cpu":                tea.Int32Value(instance.Cpu),
-				"memory":             tea.Int32Value(instance.Memory),
-				"publicIp":           "",
-				"privateIp":          "",
-				"instanceChargeType": tea.StringValue(instance.InstanceChargeType),
-			}
-
-			if instance.EipAddress != nil && tea.StringValue(instance.EipAddress.IpAddress) != "" {
-				properties["publicIp"] = tea.StringValue(instance.EipAddress.IpAddress)
-			} else if instance.PublicIpAddress != nil && len(instance.PublicIpAddress.IpAddress) > 0 {
-				properties["publicIp"] = tea.StringValue(instance.PublicIpAddress.IpAddress[0])
-			}
-
-			if instance.VpcAttributes != nil && instance.VpcAttributes.PrivateIpAddress != nil && len(instance.VpcAttributes.PrivateIpAddress.IpAddress) > 0 {
-				properties["privateIp"] = tea.StringValue(instance.VpcAttributes.PrivateIpAddress.IpAddress[0])
-			}
-
-			propertiesJson, _ := json.Marshal(properties)
-
-			tag := ""
-			if instance.Tags != nil && instance.Tags.Tag != nil {
-				for _, t := range instance.Tags.Tag {
-					tag += fmt.Sprintf("%s=%s,", tea.StringValue(t.TagKey), tea.StringValue(t.TagValue))
-				}
-			}
-
-			asset := &Asset{
-				Owner:        owner,
-				Name:         util.GenerateId(),
-				CreatedTime:  util.GetCurrentTime(),
-				UpdatedTime:  util.GetCurrentTime(),
-				DisplayName:  tea.StringValue(instance.InstanceName),
-				Provider:     provider.Name,
-				ResourceId:   tea.StringValue(instance.InstanceId),
-				ResourceType: "ECS Instance",
-				Region:       tea.StringValue(instance.RegionId),
-				Zone:         tea.StringValue(instance.ZoneId),
-				State:        tea.StringValue(instance.Status),
-				Tag:          tag,
-				Properties:   string(propertiesJson),
-			}
-			assets = append(assets, asset)
+	for _, resourceType := range resourceTypes {
+		typeAssets, err := scanAliyunResourcesByType(owner, provider, client, resourceType)
+		if err != nil {
+			return nil, err
 		}
+		assets = append(assets, typeAssets...)
 	}
 
 	return assets, nil
 }
 
-func scanAliyunDisks(owner string, provider *Provider, client *ecs20140526.Client) ([]*Asset, error) {
-	request := &ecs20140526.DescribeDisksRequest{
-		PageSize: tea.Int32(100),
-	}
-
-	response, err := client.DescribeDisks(request)
-	if err != nil {
-		return nil, err
-	}
-
+func scanAliyunResourcesByType(owner string, provider *Provider, client *resourcecenter20221201.Client, resourceType string) ([]*Asset, error) {
 	var assets []*Asset
-	if response.Body.Disks != nil && response.Body.Disks.Disk != nil {
-		for _, disk := range response.Body.Disks.Disk {
-			properties := map[string]interface{}{
-				"size":               tea.Int32Value(disk.Size),
-				"category":           tea.StringValue(disk.Category),
-				"type":               tea.StringValue(disk.Type),
-				"encrypted":          tea.BoolValue(disk.Encrypted),
-				"instanceId":         tea.StringValue(disk.InstanceId),
-				"diskChargeType":     tea.StringValue(disk.DiskChargeType),
-				"deleteWithInstance": tea.BoolValue(disk.DeleteWithInstance),
-			}
+	var nextToken *string
 
-			propertiesJson, _ := json.Marshal(properties)
-
-			tag := ""
-			if disk.Tags != nil && disk.Tags.Tag != nil {
-				for _, t := range disk.Tags.Tag {
-					tag += fmt.Sprintf("%s=%s,", tea.StringValue(t.TagKey), tea.StringValue(t.TagValue))
-				}
-			}
-
-			asset := &Asset{
-				Owner:        owner,
-				Name:         util.GenerateId(),
-				CreatedTime:  util.GetCurrentTime(),
-				UpdatedTime:  util.GetCurrentTime(),
-				DisplayName:  tea.StringValue(disk.DiskName),
-				Provider:     provider.Name,
-				ResourceId:   tea.StringValue(disk.DiskId),
-				ResourceType: "Disk",
-				Region:       tea.StringValue(disk.RegionId),
-				Zone:         tea.StringValue(disk.ZoneId),
-				State:        tea.StringValue(disk.Status),
-				Tag:          tag,
-				Properties:   string(propertiesJson),
-			}
-			assets = append(assets, asset)
+	for {
+		filter := []*resourcecenter20221201.SearchResourcesRequestFilter{
+			{
+				Key:       tea.String("ResourceType"),
+				MatchType: tea.String("Equals"),
+				Value:     []*string{tea.String(resourceType)},
+			},
 		}
+
+		// Add region filter if specified
+		if provider.Region != "" {
+			filter = append(filter, &resourcecenter20221201.SearchResourcesRequestFilter{
+				Key:       tea.String("RegionId"),
+				MatchType: tea.String("Equals"),
+				Value:     []*string{tea.String(provider.Region)},
+			})
+		}
+
+		request := &resourcecenter20221201.SearchResourcesRequest{
+			Filter:     filter,
+			MaxResults: tea.Int32(100),
+			NextToken:  nextToken,
+		}
+
+		response, err := client.SearchResourcesWithOptions(request, &util2.RuntimeOptions{})
+		if err != nil {
+			return nil, err
+		}
+
+		if response.Body.Resources != nil {
+			for _, resource := range response.Body.Resources {
+				asset := convertResourceToAsset(owner, provider, resource, resourceType)
+				assets = append(assets, asset)
+			}
+		}
+
+		// Check if there are more pages
+		if response.Body.NextToken == nil || tea.StringValue(response.Body.NextToken) == "" {
+			break
+		}
+		nextToken = response.Body.NextToken
 	}
 
 	return assets, nil
 }
 
-func scanAliyunVpcs(owner string, provider *Provider, client *ecs20140526.Client) ([]*Asset, error) {
-	request := &ecs20140526.DescribeVpcsRequest{
-		PageSize: tea.Int32(50),
-	}
-
-	response, err := client.DescribeVpcs(request)
-	if err != nil {
-		return nil, err
-	}
-
-	var assets []*Asset
-	if response.Body.Vpcs != nil && response.Body.Vpcs.Vpc != nil {
-		for _, vpc := range response.Body.Vpcs.Vpc {
-			properties := map[string]interface{}{
-				"cidrBlock":   tea.StringValue(vpc.CidrBlock),
-				"vRouterId":   tea.StringValue(vpc.VRouterId),
-				"isDefault":   tea.BoolValue(vpc.IsDefault),
-				"status":      tea.StringValue(vpc.Status),
-				"description": tea.StringValue(vpc.Description),
+func convertResourceToAsset(owner string, provider *Provider, resource *resourcecenter20221201.SearchResourcesResponseBodyResources, resourceType string) *Asset {
+	// Extract public and private IPs
+	publicIp := ""
+	privateIp := ""
+	if resource.IpAddressAttributes != nil {
+		for _, ipAttr := range resource.IpAddressAttributes {
+			if tea.StringValue(ipAttr.NetworkType) == "Public" {
+				publicIp = tea.StringValue(ipAttr.IpAddress)
+			} else if tea.StringValue(ipAttr.NetworkType) == "Private" {
+				privateIp = tea.StringValue(ipAttr.IpAddress)
 			}
-
-			propertiesJson, _ := json.Marshal(properties)
-
-			asset := &Asset{
-				Owner:        owner,
-				Name:         util.GenerateId(),
-				CreatedTime:  util.GetCurrentTime(),
-				UpdatedTime:  util.GetCurrentTime(),
-				DisplayName:  tea.StringValue(vpc.VpcName),
-				Provider:     provider.Name,
-				ResourceId:   tea.StringValue(vpc.VpcId),
-				ResourceType: "VPC",
-				Region:       tea.StringValue(vpc.RegionId),
-				Zone:         "",
-				State:        tea.StringValue(vpc.Status),
-				Tag:          "",
-				Properties:   string(propertiesJson),
-			}
-			assets = append(assets, asset)
 		}
 	}
 
-	return assets, nil
+	// Build properties map with available information
+	properties := map[string]interface{}{
+		"resourceType": resourceType,
+	}
+
+	if publicIp != "" {
+		properties["publicIp"] = publicIp
+	}
+	if privateIp != "" {
+		properties["privateIp"] = privateIp
+	}
+	if resource.IpAddresses != nil && len(resource.IpAddresses) > 0 {
+		properties["ipAddresses"] = resource.IpAddresses
+	}
+	if resource.CreateTime != nil {
+		properties["createTime"] = tea.StringValue(resource.CreateTime)
+	}
+	if resource.ExpireTime != nil {
+		properties["expireTime"] = tea.StringValue(resource.ExpireTime)
+	}
+	if resource.ResourceGroupId != nil {
+		properties["resourceGroupId"] = tea.StringValue(resource.ResourceGroupId)
+	}
+
+	propertiesJson, err := json.Marshal(properties)
+	if err != nil {
+		// This should rarely happen for simple map types, but handle it anyway
+		propertiesJson = []byte("{}")
+	}
+
+	// Extract tags
+	tag := ""
+	if resource.Tags != nil {
+		for _, t := range resource.Tags {
+			tag += fmt.Sprintf("%s=%s,", tea.StringValue(t.Key), tea.StringValue(t.Value))
+		}
+	}
+
+	// Determine display resource type
+	displayResourceType := ""
+	switch resourceType {
+	case "ACS::ECS::Instance":
+		displayResourceType = "ECS Instance"
+	case "ACS::ECS::Disk":
+		displayResourceType = "Disk"
+	case "ACS::VPC::VPC":
+		displayResourceType = "VPC"
+	default:
+		displayResourceType = resourceType
+	}
+
+	asset := &Asset{
+		Owner:        owner,
+		Name:         util.GenerateId(),
+		CreatedTime:  util.GetCurrentTime(),
+		UpdatedTime:  util.GetCurrentTime(),
+		DisplayName:  tea.StringValue(resource.ResourceName),
+		Provider:     provider.Name,
+		ResourceId:   tea.StringValue(resource.ResourceId),
+		ResourceType: displayResourceType,
+		Region:       tea.StringValue(resource.RegionId),
+		Zone:         tea.StringValue(resource.ZoneId),
+		State:        "", // State is not available in SearchResources API
+		Tag:          tag,
+		Properties:   string(propertiesJson),
+	}
+
+	return asset
 }

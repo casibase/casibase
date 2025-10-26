@@ -10,9 +10,11 @@ require (
 	github.com/ThinkInAIXYZ/go-mcp v0.2.10
 	github.com/WqyJh/go-cosyvoice v0.1.0
 	github.com/alibabacloud-go/darabonba-openapi v0.1.18
-	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.10
+	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.12
 	github.com/alibabacloud-go/ecs-20140526/v4 v4.26.10
-	github.com/alibabacloud-go/tea v1.2.2
+	github.com/alibabacloud-go/resourcecenter-20221201 v1.5.1
+	github.com/alibabacloud-go/tea v1.3.12
+	github.com/alibabacloud-go/tea-utils/v2 v2.0.7
 	github.com/alibabacloud-go/vod-20170321/v2 v2.16.10
 	github.com/aliyun/alibabacloud-oss-go-sdk-v2 v1.3.0
 	github.com/anthropics/anthropic-sdk-go v1.4.0
@@ -84,13 +86,12 @@ require (
 	github.com/alibabacloud-go/endpoint-util v1.1.0 // indirect
 	github.com/alibabacloud-go/openapi-util v0.1.1 // indirect
 	github.com/alibabacloud-go/tea-utils v1.4.5 // indirect
-	github.com/alibabacloud-go/tea-utils/v2 v2.0.6 // indirect
 	github.com/alibabacloud-go/tea-xml v1.1.3 // indirect
-	github.com/aliyun/credentials-go v1.3.10 // indirect
+	github.com/aliyun/credentials-go v1.4.5 // indirect
 	github.com/bits-and-blooms/bitset v1.20.0 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/carapace-sh/carapace-shlex v1.0.1 // indirect
-	github.com/clbanning/mxj/v2 v2.5.6 // indirect
+	github.com/clbanning/mxj/v2 v2.7.0 // indirect
 	github.com/consensys/gnark-crypto v0.18.0 // indirect
 	github.com/crate-crypto/go-eth-kzg v1.3.0 // indirect
 	github.com/crate-crypto/go-ipa v0.0.0-20240724233137-53bbb0ceb27a // indirect
