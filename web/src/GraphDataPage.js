@@ -35,7 +35,7 @@ class GraphErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      return this.props.children;
+      return null;
     }
     return this.props.children;
   }
@@ -61,9 +61,8 @@ class GraphDataPage extends React.Component {
       errorText: result.errorText,
       renderError: "",
     });
-    const finalError = result.errorText || this.state.renderError;
     if (this.props.onErrorChange) {
-      this.props.onErrorChange(finalError);
+      this.props.onErrorChange(result.errorText);
     }
 
     this.updateSize();
@@ -105,19 +104,20 @@ class GraphDataPage extends React.Component {
         errorText: result.errorText,
         renderError: "",
       });
-      const finalError = result.errorText || this.state.renderError;
       if (this.props.onErrorChange) {
-        this.props.onErrorChange(finalError);
+        this.props.onErrorChange(result.errorText);
       }
     }
   }
 
   handleRenderError(error) {
-    this.setState({renderError: error});
-    const finalError = this.state.errorText || error;
-    if (this.props.onErrorChange) {
-      this.props.onErrorChange(finalError);
-    }
+    const errorText = error || "";
+    this.setState({renderError: errorText}, () => {
+      if (this.props.onErrorChange) {
+        const finalError = this.state.errorText || this.state.renderError;
+        this.props.onErrorChange(finalError);
+      }
+    });
   }
 
   componentWillUnmount() {
