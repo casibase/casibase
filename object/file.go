@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,94 +15,128 @@
 package object
 
 import (
-	"bytes"
 	"fmt"
-	"io"
-	"mime/multipart"
-	"strings"
+
+	"github.com/casibase/casibase/util"
+	"xorm.io/core"
 )
 
-func UpdateFile(storeId string, key string, file *File) bool {
-	return true
+type File struct {
+	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
+	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
+	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
+	DisplayName string `xorm:"varchar(100)" json:"displayName"`
+
+	Filename        string `xorm:"varchar(255)" json:"filename"`
+	Path            string `xorm:"varchar(500)" json:"path"`
+	Size            int64  `json:"size"`
+	Store           string `xorm:"varchar(100)" json:"store"`
+	StorageProvider string `xorm:"varchar(100)" json:"storageProvider"`
+	TokenCount      int    `json:"tokenCount"`
+	Status          string `xorm:"varchar(100)" json:"status"`
 }
 
-func AddFile(storeId string, userName string, key string, isLeaf bool, filename string, file multipart.File, lang string) (bool, []byte, error) {
-	store, err := GetStore(storeId)
+func GetGlobalFiles() ([]*File, error) {
+	files := []*File{}
+	err := adapter.engine.Asc("owner").Desc("created_time").Find(&files)
 	if err != nil {
-		return false, nil, err
-	}
-	if store == nil {
-		return false, nil, nil
+		return files, err
 	}
 
-	storageProviderObj, err := store.GetStorageProviderObj(lang)
+	return files, nil
+}
+
+func GetFiles(owner string) ([]*File, error) {
+	files := []*File{}
+	err := adapter.engine.Desc("created_time").Find(&files, &File{Owner: owner})
 	if err != nil {
-		return false, nil, err
+		return files, err
 	}
 
-	var objectKey string
-	var fileBuffer *bytes.Buffer
-	if isLeaf {
-		objectKey = fmt.Sprintf("%s/%s", key, filename)
-		objectKey = strings.TrimLeft(objectKey, "/")
-		fileBuffer = bytes.NewBuffer(nil)
-		_, err = io.Copy(fileBuffer, file)
-		if err != nil {
-			return false, nil, err
-		}
+	return files, nil
+}
 
-		bs := fileBuffer.Bytes()
-		_, err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
-		if err != nil {
-			return false, nil, err
-		}
+func GetFilesByStore(owner string, store string) ([]*File, error) {
+	files := []*File{}
+	err := adapter.engine.Desc("created_time").Find(&files, &File{Owner: owner, Store: store})
+	if err != nil {
+		return files, err
+	}
 
-		return true, bs, nil
+	return files, nil
+}
+
+func getFile(owner string, name string) (*File, error) {
+	file := File{Owner: owner, Name: name}
+	existed, err := adapter.engine.Get(&file)
+	if err != nil {
+		return &file, err
+	}
+
+	if existed {
+		return &file, nil
 	} else {
-		objectKey = fmt.Sprintf("%s/%s/_hidden.ini", key, filename)
-		objectKey = strings.TrimLeft(objectKey, "/")
-		fileBuffer = bytes.NewBuffer(nil)
-		bs := fileBuffer.Bytes()
-		_, err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
-		if err != nil {
-			return false, nil, err
-		}
-
-		return true, bs, nil
+		return nil, nil
 	}
 }
 
-func DeleteFile(storeId string, key string, isLeaf bool, lang string) (bool, error) {
-	store, err := GetStore(storeId)
+func GetFile(id string) (*File, error) {
+	owner, name := util.GetOwnerAndNameFromId(id)
+	return getFile(owner, name)
+}
+
+func UpdateFile(id string, file *File) (bool, error) {
+	owner, name := util.GetOwnerAndNameFromId(id)
+	_, err := getFile(owner, name)
 	if err != nil {
 		return false, err
 	}
-	if store == nil {
+	if file == nil {
 		return false, nil
 	}
 
-	storageProviderObj, err := store.GetStorageProviderObj(lang)
+	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(file)
 	if err != nil {
 		return false, err
 	}
 
-	if isLeaf {
-		err = storageProviderObj.DeleteObject(key)
-		if err != nil {
-			return false, err
-		}
-	} else {
-		objects, err := storageProviderObj.ListObjects(key)
-		if err != nil {
-			return false, err
-		}
-
-		for _, object := range objects {
-			err = storageProviderObj.DeleteObject(object.Key)
-			if err != nil {
-				return false, err
-			}
-		}
-	}
 	return true, nil
+}
+
+func AddFile(file *File) (bool, error) {
+	affected, err := adapter.engine.Insert(file)
+	if err != nil {
+		return false, err
+	}
+
+	return affected != 0, nil
+}
+
+func DeleteFile(file *File) (bool, error) {
+	affected, err := adapter.engine.ID(core.PK{file.Owner, file.Name}).Delete(&File{})
+	if err != nil {
+		return false, err
+	}
+
+	return affected != 0, nil
+}
+
+func (file *File) GetId() string {
+	return fmt.Sprintf("%s/%s", file.Owner, file.Name)
+}
+
+func GetFileCount(owner, field, value string) (int64, error) {
+	session := GetDbSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&File{})
+}
+
+func GetPaginationFiles(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*File, error) {
+	files := []*File{}
+	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&files)
+	if err != nil {
+		return files, err
+	}
+
+	return files, nil
 }

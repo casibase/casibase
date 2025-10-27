@@ -15,10 +15,10 @@
 import React from "react";
 import {withRouter} from "react-router-dom";
 import {Button, Card, Col, DatePicker, Descriptions, Empty, Input, Modal, Popconfirm, Radio, Result, Row, Select, Spin, Tooltip, Tree, Upload} from "antd";
-import {CloudUploadOutlined, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined, InfoCircleTwoTone, createFromIconfontCN} from "@ant-design/icons";
+import {CloudUploadOutlined, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined, InfoCircleTwoTone, UploadOutlined, createFromIconfontCN} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
-import * as FileBackend from "./backend/FileBackend";
+import * as TreeFileBackend from "./backend/TreeFileBackend";
 import DocViewer, {DocViewerRenderers} from "@cyntler/react-doc-viewer";
 import FileViewer from "react-file-viewer";
 import ReactMarkdown from "react-markdown";
@@ -66,10 +66,44 @@ class FileTree extends React.Component {
 
     this.filePane = React.createRef();
     this.uploadedFileIdMap = {};
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
+
+  handleKeyDown(e) {
+    if (e.key === "Delete" && this.state.checkedFiles.length > 0) {
+      e.preventDefault();
+      this.batchDeleteFiles();
+    }
   }
 
   UNSAFE_componentWillMount() {
     this.getPermissions();
+  }
+
+  batchDeleteFiles() {
+    Modal.confirm({
+      title: i18next.t("general:Confirm deletion"),
+      content: i18next.t("store:Are you sure you want to delete the selected items?"),
+      okText: i18next.t("general:OK"),
+      cancelText: i18next.t("general:Cancel"),
+      onOk: () => {
+        this.state.checkedFiles.forEach(file => {
+          this.deleteFile(file, file.isLeaf);
+        });
+        this.setState({
+          checkedKeys: [],
+          checkedFiles: [],
+        });
+      },
+    });
   }
 
   getPermissionMap(permissions) {
@@ -160,6 +194,19 @@ class FileTree extends React.Component {
     );
   }
 
+  uploadFiles(file, files) {
+    const info = {
+      fileList: Array.from(files).map(file => {
+        file.uid = Date.now() + Math.floor(Math.random() * 1000);
+        return {
+          name: file.name,
+          originFileObj: file,
+        };
+      }),
+    };
+    this.uploadFile(file, info);
+  }
+
   uploadFile(file, info) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
 
@@ -171,7 +218,7 @@ class FileTree extends React.Component {
         this.uploadedFileIdMap[uploadedFile.originFileObj.uid] = 1;
       }
 
-      promises.push(FileBackend.addFile(storeId, file.key, true, uploadedFile.name, uploadedFile.originFileObj));
+      promises.push(TreeFileBackend.addFile(storeId, file.key, true, uploadedFile.name, uploadedFile.originFileObj));
     });
 
     Promise.all(promises)
@@ -196,7 +243,7 @@ class FileTree extends React.Component {
 
   addFile(file, newFolder) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
-    FileBackend.addFile(storeId, file.key, false, newFolder, null)
+    TreeFileBackend.addFile(storeId, file.key, false, newFolder, null)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
@@ -212,7 +259,7 @@ class FileTree extends React.Component {
 
   deleteFile(file, isLeaf) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
-    FileBackend.deleteFile(storeId, file.key, isLeaf)
+    TreeFileBackend.deleteFile(storeId, file.key, isLeaf)
       .then((res) => {
         if (res.status === "ok") {
           if (res.data === true) {
@@ -386,7 +433,7 @@ class FileTree extends React.Component {
         const key = info.node.key;
         const filename = info.node.title;
         if (this.getCacheApp(filename) !== "") {
-          FileBackend.activateFile(key, filename)
+          TreeFileBackend.activateFile(key, filename)
             .then((res) => {
               if (res.status === "ok") {
                 if (res.data === true) {
@@ -457,6 +504,30 @@ class FileTree extends React.Component {
             tagStyle = {color: "rgba(100,100,100,0.6)", backgroundColor: "rgba(225,225,225,0.4)"};
           }
 
+          const targetKey = file.isLeaf ? file.parentKey : file.key;
+          const isDraggingOver = this.state.dragOverKey === targetKey;
+
+          const handleDragOver = (e) => {
+            e.preventDefault();
+            this.setState({dragOverKey: targetKey});
+          };
+
+          const handleDragLeave = (e) => {
+            e.preventDefault();
+            this.setState({dragOverKey: null});
+          };
+
+          const handleDrop = (e) => {
+            e.preventDefault();
+            this.setState({dragOverKey: null});
+
+            const files = Array.from(e.dataTransfer.files || []);
+            if (files.length === 0) {return;}
+            if (!file.isLeaf) {
+              this.uploadFiles?.(file, files);
+            }
+          };
+
           if (file.isLeaf) {
             return (
               <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
@@ -525,95 +596,121 @@ class FileTree extends React.Component {
             );
           } else {
             return (
-              <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
-                <div>
-                  {
-                    !isWritable ? null : (
-                      <React.Fragment>
-                        <Tooltip color={"rgb(255,255,255)"} placement="top" title={
-                          <span onClick={(e) => e.stopPropagation()}>
-                            <div style={{color: "black"}}>
-                              {i18next.t("store:New folder")}:
-                            </div>
-                            <Input.Group style={{marginTop: "5px"}} compact>
-                              <Input style={{width: "100px"}} value={this.state.newFolder} onChange={e => {
-                                this.setState({
-                                  newFolder: e.target.value,
-                                });
-                              }} />
-                              <Button type="primary" onClick={(e) => {
-                                this.addFile(file, this.state.newFolder);
+              <div
+                style={{background: isDraggingOver ? "rgba(24,144,255,0.15)" : "transparent", transition: "background 0.2s", gap: "8px"}}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                <IconFont type="icon-testfolder" />
+                <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
+                  <div>
+                    {
+                      !isWritable ? null : (
+                        <React.Fragment>
+                          <Tooltip color={"rgb(255,255,255)"} placement="top" title={
+                            <span onClick={(e) => e.stopPropagation()}>
+                              <div style={{color: "black"}}>
+                                {i18next.t("store:New folder")}:
+                              </div>
+                              <Input.Group style={{marginTop: "5px"}} compact>
+                                <Input style={{width: "100px"}} value={this.state.newFolder} onChange={e => {
+                                  this.setState({
+                                    newFolder: e.target.value,
+                                  });
+                                }} />
+                                <Button type="primary" onClick={(e) => {
+                                  this.addFile(file, this.state.newFolder);
+                                  e.stopPropagation();
+                                }}
+                                >
+                                  OK
+                                </Button>
+                              </Input.Group>
+                            </span>
+                          }>
+                            <span onClick={(e) => e.stopPropagation()}>
+                              <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" onClick={(e) => {
                                 e.stopPropagation();
+                              }} />
+                            </span>
+                          </Tooltip>
+                          <Tooltip title={i18next.t("store:Upload file")}>
+                            <span onClick={(e) => e.stopPropagation()}>
+                              <Upload directory={false} multiple={true} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={(info) => {
+                                if (this.checkUploadFile(info)) {
+                                  this.setState({
+                                    isUploadFileModalVisible: true,
+                                    file: file,
+                                    info: info,
+                                  });
+                                } else {
+                                  this.uploadFile(file, info);
+                                }
                               }}
                               >
-                                OK
-                              </Button>
-                            </Input.Group>
-                          </span>
-                        }>
-                          <span onClick={(e) => e.stopPropagation()}>
-                            <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" onClick={(e) => {
-                              e.stopPropagation();
-                            }} />
-                          </span>
-                        </Tooltip>
-                        <Tooltip title={i18next.t("store:Upload file")}>
-                          <span onClick={(e) => e.stopPropagation()}>
-                            <Upload multiple={true} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={(info) => {
-                              if (this.checkUploadFile(info)) {
-                                this.setState({
-                                  isUploadFileModalVisible: true,
-                                  file: file,
-                                  info: info,
-                                });
-                              } else {
-                                this.uploadFile(file, info);
-                              }
-                            }}
-                            >
-                              <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
-                            </Upload>
-                          </span>
-                        </Tooltip>
-                        {
-                          file.key === "/" ? null : (
-                            <Tooltip title={i18next.t("general:Delete")}>
-                              <span onClick={(e) => e.stopPropagation()}>
-                                <Popconfirm
-                                  title={`${i18next.t("general:Sure to delete")}: ${file.title} ?`}
-                                  onConfirm={(e) => {
-                                    this.deleteFile(file, false);
-                                  }}
-                                  okText={i18next.t("general:OK")}
-                                  cancelText={i18next.t("general:Cancel")}
-                                >
-                                  <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
-                                </Popconfirm>
-                              </span>
-                            </Tooltip>
-                          )
-                        }
-                      </React.Fragment>
-                    )
+                                <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
+                              </Upload>
+                            </span>
+                          </Tooltip>
+                          <Tooltip title={i18next.t("store:Upload folder")}>
+                            <span onClick={(e) => e.stopPropagation()}>
+                              <Upload directory={true} multiple={true} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={(info) => {
+                                if (this.checkUploadFile(info)) {
+                                  this.setState({
+                                    isUploadFileModalVisible: true,
+                                    file: file,
+                                    info: info,
+                                  });
+                                } else {
+                                  this.uploadFile(file, info);
+                                }
+                              }}
+                              >
+                                <Button style={{marginRight: "5px"}} icon={<UploadOutlined />} size="small" />
+                              </Upload>
+                            </span>
+                          </Tooltip>
+                          {
+                            file.key === "/" ? null : (
+                              <Tooltip title={i18next.t("general:Delete")}>
+                                <span onClick={(e) => e.stopPropagation()}>
+                                  <Popconfirm
+                                    title={`${i18next.t("general:Sure to delete")}: ${file.title} ?`}
+                                    onConfirm={(e) => {
+                                      this.deleteFile(file, false);
+                                    }}
+                                    okText={i18next.t("general:OK")}
+                                    cancelText={i18next.t("general:Cancel")}
+                                  >
+                                    <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
+                                  </Popconfirm>
+                                </span>
+                              </Tooltip>
+                            )
+                          }
+                        </React.Fragment>
+                      )
+                    }
+                    <Tooltip title={isAdmin ? i18next.t("store:Add Permission") :
+                      i18next.t("store:Apply for Permission")}>
+                      <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
+                        PermissionUtil.addPermission(this.props.account, this.props.store, file);
+                        e.stopPropagation();
+                      }} />
+                    </Tooltip>
+                  </div>
+                }>
+                  <span style={tagStyle}>
+                    {file.title}
+                  </span>
+                  &nbsp;
+                  &nbsp;
+                  {
+                    (this.state.permissionMap === null) ? null : this.renderPermissions(this.state.permissionMap[file.key], isReadable)
                   }
-                  <Tooltip title={isAdmin ? i18next.t("store:Add Permission") :
-                    i18next.t("store:Apply for Permission")}>
-                    <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
-                      PermissionUtil.addPermission(this.props.account, this.props.store, file);
-                      e.stopPropagation();
-                    }} />
-                  </Tooltip>
-                </div>
-              }>
-                <span style={tagStyle}>
-                  {file.title}
-                </span>
-                &nbsp;
-                &nbsp;
-                {
-                  (this.state.permissionMap === null) ? null : this.renderPermissions(this.state.permissionMap[file.key], isReadable)
-                }
-              </Tooltip>
+                </Tooltip>
+              </div>
             );
           }
         }}
@@ -641,8 +738,6 @@ class FileTree extends React.Component {
             } else {
               return <IconFont type="icon-testfile-unknown" />;
             }
-          } else {
-            return <IconFont type="icon-testfolder" />;
           }
         }}
       />

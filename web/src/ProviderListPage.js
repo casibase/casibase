@@ -62,6 +62,7 @@ class ProviderListPage extends BaseListPage {
       contractName: "",
       contractMethod: "",
       state: "Active",
+      isRemote: false,
     };
   }
 
@@ -78,14 +79,12 @@ class ProviderListPage extends BaseListPage {
       clientId: "C:/storage_casibase",
       providerUrl: "",
       state: "Active",
+      isRemote: false,
     };
   }
 
-  addProvider(needStorage = false) {
-    let newProvider = this.newProvider();
-    if (needStorage) {
-      newProvider = this.newStorageProvider();
-    }
+  addProvider() {
+    const newProvider = this.newProvider();
     ProviderBackend.addProvider(newProvider)
       .then((res) => {
         if (res.status === "ok") {
@@ -161,8 +160,21 @@ class ProviderListPage extends BaseListPage {
         dataIndex: "category",
         key: "category",
         width: "110px",
+        filterMultiple: false,
+        filters: [
+          {text: "Model", value: "Model"},
+          {text: "Embedding", value: "Embedding"},
+          {text: "Storage", value: "Storage"},
+          {text: "Agent", value: "Agent"},
+          {text: "Public Cloud", value: "Public Cloud"},
+          {text: "Private Cloud", value: "Private Cloud"},
+          {text: "Blockchain", value: "Blockchain"},
+          {text: "Video", value: "Video"},
+          {text: "Text-to-Speech", value: "Text-to-Speech"},
+          {text: "Speech-to-Text", value: "Speech-to-Text"},
+          {text: "Bot", value: "Bot"},
+        ],
         sorter: (a, b) => a.category.localeCompare(b.category),
-        ...this.getColumnSearchProps("category"),
       },
       {
         title: i18next.t("general:Type"),
@@ -171,6 +183,19 @@ class ProviderListPage extends BaseListPage {
         width: "150px",
         align: "center",
         filterMultiple: false,
+        filters: [
+          {text: "Model", value: "Model", children: Setting.getProviderTypeOptions("Model").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Embedding", value: "Embedding", children: Setting.getProviderTypeOptions("Embedding").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Storage", value: "Storage", children: Setting.getProviderTypeOptions("Storage").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Agent", value: "Agent", children: Setting.getProviderTypeOptions("Agent").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Public Cloud", value: "Public Cloud", children: Setting.getProviderTypeOptions("Public Cloud").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Private Cloud", value: "Private Cloud", children: Setting.getProviderTypeOptions("Private Cloud").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Blockchain", value: "Blockchain", children: Setting.getProviderTypeOptions("Blockchain").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Video", value: "Video", children: Setting.getProviderTypeOptions("Video").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Text-to-Speech", value: "Text-to-Speech", children: Setting.getProviderTypeOptions("Text-to-Speech").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Speech-to-Text", value: "Speech-to-Text", children: Setting.getProviderTypeOptions("Speech-to-Text").map((o) => {return {text: o.id, value: o.name};})},
+          {text: "Bot", value: "Bot", children: Setting.getProviderTypeOptions("Bot").map((o) => {return {text: o.id, value: o.name};})},
+        ],
         sorter: (a, b) => a.type.localeCompare(b.type),
         render: (text, record, index) => {
           return Provider.getProviderLogoWidget(record);
@@ -245,6 +270,18 @@ class ProviderListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("provider:Is remote"),
+        dataIndex: "isRemote",
+        key: "isRemote",
+        width: "120px",
+        sorter: (a, b) => a.isRemote - b.isRemote,
+        render: (text, record, index) => {
+          return (
+            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+          );
+        },
+      },
+      {
         title: i18next.t("general:State"),
         dataIndex: "state",
         key: "state",
@@ -260,14 +297,28 @@ class ProviderListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/providers/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button
+                style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
+                type={record.isRemote ? "default" : "primary"}
+                onClick={() => this.props.history.push(`/providers/${record.name}`)}
+              >
+                {record.isRemote ? i18next.t("general:View") : i18next.t("general:Edit")}
+              </Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteProvider(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
+                disabled={record.isRemote}
               >
-                <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
+                <Button
+                  style={{marginBottom: "10px"}}
+                  type="primary"
+                  danger
+                  disabled={record.isRemote}
+                >
+                  {i18next.t("general:Delete")}
+                </Button>
               </Popconfirm>
             </div>
           );
@@ -297,8 +348,6 @@ class ProviderListPage extends BaseListPage {
                   </Button>
                 </Popconfirm>
               )}
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <Button size="small" onClick={() => this.addProvider(true)}>{i18next.t("provider:Add Storage Provider")}</Button>
             </div>
           )}
           loading={this.state.loading}
@@ -311,7 +360,10 @@ class ProviderListPage extends BaseListPage {
   fetch = (params = {}) => {
     let field = params.searchedColumn, value = params.searchText;
     const sortField = params.sortField, sortOrder = params.sortOrder;
-    if (params.type !== undefined && params.type !== null) {
+    if (params.category !== undefined && params.category !== null) {
+      field = "category";
+      value = params.category;
+    } else if (params.type !== undefined && params.type !== null) {
       field = "type";
       value = params.type;
     }

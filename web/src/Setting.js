@@ -2407,3 +2407,44 @@ export function filterTableColumns(columns, formItems, actionKey = "action") {
     actionColumn,
   ].filter(col => col);
 }
+
+export function getBuiltinTools() {
+  return [
+    {
+      category: "time",
+      name: "Time Tools",
+      icon: "🕐",
+      tools: [
+        {name: "current_time", description: "Get current time"},
+        {name: "localtime_to_timestamp", description: "Convert local time to timestamp"},
+        {name: "timestamp_to_localtime", description: "Convert timestamp to local time"},
+        {name: "timezone_conversion", description: "Convert timezone"},
+        {name: "weekday", description: "Calculate weekday"},
+      ],
+    },
+    {
+      category: "code",
+      name: "Code Tools",
+      icon: "💻",
+      tools: [
+        {name: "execute_code", description: "Execute code"},
+      ],
+    },
+    {
+      category: "json",
+      name: "JSON Tools",
+      icon: "📋",
+      tools: [
+        {name: "process_json", description: "Process JSON"},
+      ],
+    },
+  ];
+}
+
+export function getFormattedSize(bytes) {
+  if (bytes === 0) {return "0 Bytes";}
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+}

@@ -49,6 +49,26 @@
     "ZH 🡰 EN": "ZH 🡰 EN",
     "ZH 🡲 EN": "ZH 🡲 EN"
   },
+  "asset": {
+    "Edit Asset": "Edit Asset",
+    "Failed to scan assets": "Failed to scan assets",
+    "New Asset": "New Asset",
+    "Please select a provider": "Please select a provider",
+    "Properties": "Properties",
+    "Properties - Tooltip": "Resource properties in JSON format",
+    "Provider": "Provider",
+    "Provider - Tooltip": "Cloud provider name",
+    "Resource ID": "Resource ID",
+    "Resource ID - Tooltip": "Unique identifier of the cloud resource",
+    "Resource type": "Resource type",
+    "Resource type - Tooltip": "Type of cloud resource (ECS Instance, Disk, VPC, etc.)",
+    "Scan": "Scan",
+    "Successfully scanned assets": "Successfully scanned assets"
+  },
+  "caase": {
+    "Edit Caase": "Edit Case",
+    "New Caase": "New Case"
+  },
   "cert": {
     "Sign cert": "Sign cert",
     "Sign cert - Tooltip": "Sign cert - Tooltip",
@@ -98,6 +118,10 @@
     "History": "History",
     "Online": "Online"
   },
+  "consultation": {
+    "Edit Consultation": "Edit Consultation",
+    "New Consultation": "New Consultation"
+  },
   "container": {
     "Command": "Command",
     "Command - Tooltip": "Container entrypoint command",
@@ -111,6 +135,27 @@
     "Size RW - Tooltip": "Writable layer storage size (MB)",
     "Size root FS": "Size root FS",
     "Size root FS - Tooltip": "Root filesystem size (MB)"
+  },
+  "doctor": {
+    "Edit Doctor": "Edit Doctor",
+    "New Doctor": "New Doctor"
+  },
+  "file": {
+    "Active": "Active",
+    "Edit File": "Edit File",
+    "Error": "Error",
+    "Filename": "Filename",
+    "Filename - Tooltip": "Name of the file",
+    "Inactive": "Inactive",
+    "Path": "Path",
+    "Path - Tooltip": "Full path to the file",
+    "Processing": "Processing",
+    "Size": "Size",
+    "Size - Tooltip": "File size in bytes",
+    "Storage Provider": "Storage Provider",
+    "Storage Provider - Tooltip": "Storage provider for the file",
+    "Token Count": "Token Count",
+    "Token Count - Tooltip": "Number of tokens in the file"
   },
   "form": {
     "Edit Form": "Edit Form",
@@ -138,6 +183,7 @@
     "Application Store": "Application Store",
     "Applications": "Applications",
     "Articles": "Articles",
+    "Assets": "Assets",
     "Audit": "Audit",
     "Avatar": "Avatar",
     "Avatar - Tooltip": "Icon URL for visual identification",
@@ -157,6 +203,7 @@
     "Client IP - Tooltip": "Client's original IP address",
     "Close": "Close",
     "Cloud Resources": "Cloud Resources",
+    "Confirm deletion": "Confirm deletion",
     "Connections": "Connections",
     "Containers": "Containers",
     "Copied to clipboard successfully": "Copied to clipboard successfully",
@@ -198,6 +245,7 @@
     "Failed to undeploy": "Failed to undeploy",
     "Favicon URL": "Favicon URL",
     "Favicon URL - Tooltip": "Favicon URL - Tooltip",
+    "Files": "Files",
     "Footer HTML": "Footer HTML",
     "Footer HTML - Tooltip": "Footer HTML - Tooltip",
     "Forms": "Forms",
@@ -405,6 +453,10 @@
   "graph": {
     "Edit Graph": "Edit Graph"
   },
+  "hospital": {
+    "Edit Hospital": "Edit Hospital",
+    "New Hospital": "New Hospital"
+  },
   "image": {
     "Arch": "Arch",
     "Arch - Tooltip": "CPU architecture compatibility",
@@ -568,11 +620,18 @@
     "Services": "Services",
     "Services - Tooltip": "Service monitoring configurations"
   },
+  "patient": {
+    "Edit Patient": "Edit Patient",
+    "New Patient": "New Patient",
+    "View Patient": "View Patient"
+  },
   "pod": {
     "Edit Pod": "Edit Pod",
     "New Pod": "New Pod"
   },
   "provider": {
+    "AES key": "AES key",
+    "AES key - Tooltip": "AES key - Tooltip",
     "API key": "API key",
     "API key - Tooltip": "Model API key (admin-only)",
     "API version": "API version",
@@ -580,6 +639,8 @@
     "Add Storage Provider": "Add Storage Provider",
     "Auth type": "Auth type",
     "Auth type - Tooltip": "Authentication type",
+    "Bot ID": "Bot ID",
+    "Bot ID - Tooltip": "Bot ID - Tooltip",
     "Browser URL": "Browser URL",
     "Browser URL - Tooltip": "Blockchain explorer URL",
     "Category": "Category",
@@ -622,6 +683,8 @@
     "Input type - Tooltip": "Input type for embedding (doc vs query)",
     "Invoke method": "Invoke method",
     "Invoke method - Tooltip": "Blockchain method invocation",
+    "Is remote": "Is remote",
+    "Is remote - Tooltip": "Whether this provider is a remote provider",
     "MCP servers": "MCP servers",
     "MCP servers - Tooltip": "MCP tool endpoints in JSON format",
     "MCP tools": "MCP tools",
@@ -648,6 +711,8 @@
     "Temperature - Tooltip": "Creativity control (0-2)",
     "Thinking tokens": "Thinking tokens",
     "Thinking tokens - Tooltip": "Thinking tokens - Tooltip",
+    "Token": "Token",
+    "Token - Tooltip": "Token - Tooltip",
     "Tools": "Tools",
     "Top K": "Top K",
     "Top K - Tooltip": "Number of candidate tokens",
@@ -670,8 +735,11 @@
     "Agent provider - Tooltip": "Agent service provider",
     "All": "All",
     "Apply for Permission": "Apply for Permission",
+    "Are you sure you want to delete the selected items?": "Are you sure you want to delete the selected items?",
     "Auto read": "Auto read",
     "Biology": "Biology",
+    "Builtin tools": "Builtin tools",
+    "Builtin tools - Tooltip": "Builtin tools - Tooltip",
     "Chat count": "Chat count",
     "Chemistry": "Chemistry",
     "Child model providers": "Child model providers",
@@ -679,8 +747,6 @@
     "Child stores": "Child stores",
     "Child stores - Tooltip": "Linked substores for cross-store knowledge",
     "Chinese": "Chinese",
-    "Forbidden words": "Forbidden words",
-    "Forbidden words - Tooltip": "Words not allowed in chat messages. Messages containing these words will be rejected.",
     "Collected time": "Collected time",
     "Disable file upload": "Disable file upload",
     "Disable file upload - Tooltip": "Disable user file uploads (admin-only updates)",
@@ -699,6 +765,8 @@
     "File type": "File type",
     "Folder": "Folder",
     "Footer HTML - Edit": "Footer HTML - Edit",
+    "Forbidden words": "Forbidden words",
+    "Forbidden words - Tooltip": "Words not allowed in chat messages. Messages containing these words will be rejected.",
     "Frequency": "Frequency",
     "Frequency - Tooltip": "Max API calls per minute",
     "Hide thinking": "Hide thinking",
@@ -740,6 +808,7 @@
     "Science": "Science",
     "Search provider": "Search provider",
     "Search provider - Tooltip": "Service provider for web search and document search capabilities",
+    "Select builtin tools": "Select builtin tools",
     "Show auto read": "Show auto read",
     "Show auto read - Tooltip": "Auto-read AI responses when TTS is enabled",
     "Sorry, you are unauthorized to access this file or folder": "Sorry, you are unauthorized to access this file or folder",
@@ -760,8 +829,11 @@
     "Theme color": "Theme color",
     "Theme color - Tooltip": "Primary color for UI theme",
     "Upload file": "Upload file",
+    "Upload folder": "Upload folder",
     "Vector store id": "Vector store id",
     "Vector store id - Tooltip": "The ID of the vector store that the files belong to",
+    "Vector stores": "Vector stores",
+    "Vector stores - Tooltip": "Vector stores - Tooltip",
     "Welcome": "Welcome",
     "Welcome - Tooltip": "Welcome message",
     "Welcome text": "Welcome text",

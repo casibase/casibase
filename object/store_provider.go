@@ -25,10 +25,10 @@ func (store *Store) createPathIfNotExisted(tokens []string, size int64, url stri
 	currentFile := store.FileTree
 	for i, token := range tokens {
 		if currentFile.Children == nil {
-			currentFile.Children = []*File{}
+			currentFile.Children = []*TreeFile{}
 		}
 		if currentFile.ChildrenMap == nil {
-			currentFile.ChildrenMap = map[string]*File{}
+			currentFile.ChildrenMap = map[string]*TreeFile{}
 		}
 
 		tmpFile, ok := currentFile.ChildrenMap[token]
@@ -43,13 +43,13 @@ func (store *Store) createPathIfNotExisted(tokens []string, size int64, url stri
 		}
 
 		key := strings.Join(tokens[:i+1], "/")
-		newFile := &File{
+		newFile := &TreeFile{
 			Key:         key,
 			Title:       token,
 			IsLeaf:      isLeafTmp,
 			Url:         url,
-			Children:    []*File{},
-			ChildrenMap: map[string]*File{},
+			Children:    []*TreeFile{},
+			ChildrenMap: map[string]*TreeFile{},
 		}
 
 		if i == len(tokens)-1 {
@@ -91,14 +91,14 @@ func (store *Store) Populate(origin string, lang string) error {
 	}
 
 	if store.FileTree == nil {
-		store.FileTree = &File{
+		store.FileTree = &TreeFile{
 			Key:         "/",
 			Title:       store.DisplayName,
 			CreatedTime: store.CreatedTime,
 			IsLeaf:      false,
 			Url:         "",
-			Children:    []*File{},
-			ChildrenMap: map[string]*File{},
+			Children:    []*TreeFile{},
+			ChildrenMap: map[string]*TreeFile{},
 		}
 	}
 

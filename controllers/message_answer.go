@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/casibase/casibase/agent"
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
@@ -165,6 +166,8 @@ func (c *ApiController) GetMessageAnswer() {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
+
+	agentClients = agent.MergeBuiltinTools(agentClients, store.BuiltinTools)
 
 	knowledgeCount := store.KnowledgeCount
 	if knowledgeCount <= 0 {

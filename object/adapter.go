@@ -62,6 +62,11 @@ func InitAdapter() {
 	adapter = NewAdapter(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName())
 
 	providerDbName := conf.GetConfigString("providerDbName")
+
+	if adapter.DbName == providerDbName {
+		providerDbName = ""
+	}
+
 	if providerDbName != "" {
 		providerAdapter = NewAdapterWithDbName(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName(), providerDbName)
 	}
@@ -190,6 +195,11 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
+	err = a.engine.Sync2(new(File))
+	if err != nil {
+		panic(err)
+	}
+
 	err = a.engine.Sync2(new(Vector))
 	if err != nil {
 		panic(err)
@@ -276,6 +286,36 @@ func (a *Adapter) createTable() {
 	}
 
 	err = a.engine.Sync2(new(Graph))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Hospital))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Doctor))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Patient))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Caase))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Consultation))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Asset))
 	if err != nil {
 		panic(err)
 	}

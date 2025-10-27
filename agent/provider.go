@@ -19,6 +19,7 @@ import (
 
 	"github.com/ThinkInAIXYZ/go-mcp/client"
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
+	"github.com/casibase/casibase/agent/builtin_tool"
 	"github.com/casibase/casibase/i18n"
 )
 
@@ -27,8 +28,9 @@ type AgentProvider interface {
 }
 
 type AgentClients struct {
-	Clients map[string]*client.Client
-	Tools   []*protocol.Tool
+	Clients        map[string]*client.Client
+	Tools          []*protocol.Tool
+	BuiltinToolReg *builtin_tool.ToolRegistry
 }
 
 func GetAgentProvider(typ string, subType string, text string, mcpTools []*McpTools, lang string) (AgentProvider, error) {
