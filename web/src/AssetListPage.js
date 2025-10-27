@@ -126,7 +126,7 @@ class AssetListPage extends BaseListPage {
         this.setState({scanning: false});
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("asset:Successfully scanned assets"));
-          this.fetch();
+          this.fetch({pagination: this.state.pagination});
         } else {
           Setting.showMessage("error", `${i18next.t("asset:Failed to scan assets")}: ${res.msg}`);
         }
