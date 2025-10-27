@@ -37,6 +37,7 @@ type Graph struct {
 
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 	Text        string `xorm:"mediumtext" json:"text"`
+	ErrorText   string `xorm:"mediumtext" json:"errorText"`
 }
 
 func GetMaskedGraph(graph *Graph, isMaskEnabled bool) *Graph {

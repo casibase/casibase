@@ -20,6 +20,7 @@ class GraphDataPage extends React.Component {
     super(props);
     this.state = {
       data: {nodes: [], links: []},
+      errorText: "",
     };
     this.fgRef = React.createRef();
     this.containerRef = React.createRef();
@@ -27,10 +28,14 @@ class GraphDataPage extends React.Component {
   }
 
   componentDidMount() {
-    const obj = this.parseData();
+    const result = this.parseData();
     this.setState({
-      data: {nodes: obj.nodes || [], links: obj.links || []},
+      data: {nodes: result.data.nodes || [], links: result.data.links || []},
+      errorText: result.errorText,
     });
+    if (this.props.onErrorChange) {
+      this.props.onErrorChange(result.errorText);
+    }
 
     this.updateSize();
 
@@ -65,10 +70,14 @@ class GraphDataPage extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.graphText !== prevProps.graphText) {
-      const obj = this.parseData();
+      const result = this.parseData();
       this.setState({
-        data: {nodes: obj.nodes || [], links: obj.links || []},
+        data: {nodes: result.data.nodes || [], links: result.data.links || []},
+        errorText: result.errorText,
       });
+      if (this.props.onErrorChange) {
+        this.props.onErrorChange(result.errorText);
+      }
     }
   }
 
@@ -86,15 +95,17 @@ class GraphDataPage extends React.Component {
     const defaultData = {nodes: [], links: []};
     const text = this.props.graphText || "";
     if (text.trim() === "") {
-      return defaultData;
+      return {data: defaultData, errorText: "Graph text is empty"};
     }
     try {
       const obj = JSON.parse(text);
       if (Array.isArray(obj.nodes) && Array.isArray(obj.links)) {
-        return obj;
+        return {data: obj, errorText: ""};
+      } else {
+        return {data: defaultData, errorText: "Invalid graph format: must have 'nodes' and 'links' arrays"};
       }
     } catch (e) {
-      return defaultData;
+      return {data: defaultData, errorText: `JSON parse error: ${e.message}`};
     }
   }
 
@@ -137,6 +148,28 @@ class GraphDataPage extends React.Component {
           position: "relative",
         }}
       >
+        {this.state.errorText && (
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              background: "rgba(255, 77, 79, 0.9)",
+              color: "white",
+              padding: "20px",
+              borderRadius: 8,
+              fontSize: 14,
+              maxWidth: "80%",
+              textAlign: "center",
+              zIndex: 1000,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+            }}
+          >
+            <div style={{fontWeight: "bold", marginBottom: "8px"}}>Graph Error</div>
+            <div>{this.state.errorText}</div>
+          </div>
+        )}
         <ForceGraph2D
           ref={this.fgRef}
           graphData={graphData}

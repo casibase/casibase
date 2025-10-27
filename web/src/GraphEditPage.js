@@ -65,6 +65,10 @@ class GraphEditPage extends React.Component {
     });
   }
 
+  handleErrorChange(errorText) {
+    this.updateGraphField("errorText", errorText);
+  }
+
   renderGraph() {
     return (
       <Card size="small" title={
@@ -116,7 +120,7 @@ class GraphEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div key={this.state.graphCount} style={{height: "640px", width: "100%"}}>
-              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} />
+              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
             </div>
           </Col>
         </Row>
