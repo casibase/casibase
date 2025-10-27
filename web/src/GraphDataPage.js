@@ -111,10 +111,10 @@ class GraphDataPage extends React.Component {
   }
 
   handleRenderError(error) {
-    const errorText = error || "";
+    const errorText = error ? error.toString() : "";
     this.setState({renderError: errorText}, () => {
       if (this.props.onErrorChange) {
-        const finalError = this.state.errorText || this.state.renderError;
+        const finalError = this.state.errorText || errorText;
         this.props.onErrorChange(finalError);
       }
     });
