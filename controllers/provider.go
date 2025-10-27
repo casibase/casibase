@@ -244,5 +244,13 @@ func (c *ApiController) TestScan() {
 		return
 	}
 
+	// Store the scan result in provider.Text field
+	provider.Text = result
+	_, err = object.UpdateProvider(id, provider)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
 	c.ResponseOk(result)
 }

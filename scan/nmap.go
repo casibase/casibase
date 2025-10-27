@@ -25,12 +25,12 @@ type NmapScanProvider struct {
 	nmapPath string
 }
 
-func NewNmapScanProvider(path string) (*NmapScanProvider, error) {
+func NewNmapScanProvider(clientId string) (*NmapScanProvider, error) {
 	provider := &NmapScanProvider{
-		nmapPath: path,
+		nmapPath: clientId,
 	}
 
-	// If path is empty, try to find nmap in system PATH
+	// If clientId is empty, try to find nmap in system PATH
 	if provider.nmapPath == "" {
 		nmapPath, err := exec.LookPath("nmap")
 		if err != nil {

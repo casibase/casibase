@@ -52,7 +52,6 @@ type Provider struct {
 	McpTools           []*agent.McpTools `xorm:"text" json:"mcpTools"`
 	Text               string            `xorm:"mediumtext" json:"text"`
 	ConfigText         string            `xorm:"mediumtext" json:"configText"`
-	Path               string            `xorm:"varchar(200)" json:"path"`
 
 	EnableThinking   bool    `json:"enableThinking"`
 	Temperature      float32 `xorm:"float" json:"temperature"`
@@ -370,7 +369,7 @@ func (p *Provider) GetSpeechToTextProvider(lang string) (stt.SpeechToTextProvide
 }
 
 func (p *Provider) GetScanProvider(lang string) (scan.ScanProvider, error) {
-	pProvider, err := scan.GetScanProvider(p.Type, p.Path, lang)
+	pProvider, err := scan.GetScanProvider(p.Type, p.ClientId, lang)
 	if err != nil {
 		return nil, err
 	}

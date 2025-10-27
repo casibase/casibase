@@ -18,12 +18,12 @@ type ScanProvider interface {
 	Scan(target string) (string, error)
 }
 
-func GetScanProvider(typ string, path string, lang string) (ScanProvider, error) {
+func GetScanProvider(typ string, clientId string, lang string) (ScanProvider, error) {
 	var p ScanProvider
 	var err error
 
 	if typ == "Nmap" {
-		p, err = NewNmapScanProvider(path)
+		p, err = NewNmapScanProvider(clientId)
 	} else {
 		return nil, nil
 	}

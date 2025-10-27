@@ -34,16 +34,17 @@ class TestScanWidget extends React.Component {
 
   componentDidMount() {
     if (this.props.provider && this.props.provider.category === "Scan") {
-      // Set default test content if empty
-      if (this.props.provider.testContent === "") {
-        this.props.provider.testContent = "127.0.0.1";
+      // Set default network if empty
+      if (this.props.provider.network === "") {
+        this.props.provider.network = "127.0.0.1";
         // Call the update function if provided
         if (this.props.onUpdateProvider) {
-          this.props.onUpdateProvider("testContent", "127.0.0.1");
+          this.props.onUpdateProvider("network", "127.0.0.1");
         }
       }
       this.setState({
-        scanTarget: this.props.provider.testContent || "127.0.0.1",
+        scanTarget: this.props.provider.network || "127.0.0.1",
+        scanResult: this.props.provider.text || "",
       });
     }
   }
@@ -51,16 +52,17 @@ class TestScanWidget extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.provider?.name !== this.props.provider?.name &&
         this.props.provider?.category === "Scan") {
-      // Set default test content if empty
-      if (this.props.provider.testContent === "") {
-        this.props.provider.testContent = "127.0.0.1";
+      // Set default network if empty
+      if (this.props.provider.network === "") {
+        this.props.provider.network = "127.0.0.1";
         // Call the update function if provided
         if (this.props.onUpdateProvider) {
-          this.props.onUpdateProvider("testContent", "127.0.0.1");
+          this.props.onUpdateProvider("network", "127.0.0.1");
         }
       }
       this.setState({
-        scanTarget: this.props.provider.testContent || "127.0.0.1",
+        scanTarget: this.props.provider.network || "127.0.0.1",
+        scanResult: this.props.provider.text || "",
       });
     }
   }
@@ -73,19 +75,23 @@ class TestScanWidget extends React.Component {
     ProviderBackend.testScan(this.props.provider.owner, this.props.provider.name, this.state.scanTarget)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("provider:Scan completed successfully"));
+          Setting.showMessage("success", i18next.t("general:Successfully executed"));
           this.setState({
             scanResult: res.data,
           });
+          // Update the provider text field
+          if (this.props.onUpdateProvider) {
+            this.props.onUpdateProvider("text", res.data);
+          }
         } else {
-          Setting.showMessage("error", `${i18next.t("provider:Scan failed")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
           this.setState({
             scanResult: `Error: ${res.msg}`,
           });
         }
       })
       .catch((error) => {
-        Setting.showMessage("error", `${i18next.t("provider:Scan failed")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${error}`);
         this.setState({
           scanResult: `Error: ${error}`,
         });
@@ -106,7 +112,7 @@ class TestScanWidget extends React.Component {
       <div>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-            {Setting.getLabel(i18next.t("provider:Test content"), i18next.t("provider:Test content - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Network"), i18next.t("general:Network - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input
@@ -115,10 +121,9 @@ class TestScanWidget extends React.Component {
               onChange={e => {
                 this.setState({scanTarget: e.target.value});
                 if (this.props.onUpdateProvider) {
-                  this.props.onUpdateProvider("testContent", e.target.value);
+                  this.props.onUpdateProvider("network", e.target.value);
                 }
               }}
-              placeholder={i18next.t("provider:Enter scan target (IP or domain)")}
             />
           </Col>
         </Row>

@@ -1148,25 +1148,6 @@ class ProviderEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        {
-          this.state.provider.category === "Scan" ? (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path - Tooltip"))} :
-              </Col>
-              <Col span={22} >
-                <Input
-                  disabled={isRemote}
-                  value={this.state.provider.path}
-                  onChange={e => {
-                    this.updateProviderField("path", e.target.value);
-                  }}
-                  placeholder={i18next.t("provider:Leave empty to use system PATH")}
-                />
-              </Col>
-            </Row>
-          ) : null
-        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Is default"), i18next.t("store:Is default - Tooltip"))} :
