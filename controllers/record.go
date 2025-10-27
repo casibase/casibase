@@ -282,11 +282,11 @@ func (c *ApiController) GetPatientByHashID() {
 	fmt.Printf("开始查询患者就诊记录，HashID: %s，过滤条件: requestUri=/api/add-outpatient\n", hashID)
 		
 	// 调试：打印前几条记录的object内容
-	for i, record := range records {
-		if i < 3 { // 只打印前3条记录
-			fmt.Printf("记录 %d 的object内容: %s\n", i, record.Object)
-		}
-	}
+	// for i, record := range records {
+	// 	if i < 3 { // 只打印前3条记录
+	// 		fmt.Printf("记录 %d 的object内容: %s\n", i, record.Object)
+	// 	}
+	// }
 	
 	records, err := object.GetPatientByHashID(hashID)
 	if err != nil {
