@@ -83,18 +83,8 @@ class ProviderListPage extends BaseListPage {
     };
   }
 
-  newRemoteProvider() {
-    const provider = this.newProvider();
-    provider.displayName = `New Remote Provider - ${provider.name.split("_")[1]}`;
-    provider.isRemote = true;
-    return provider;
-  }
-
-  addProvider(isRemote = false) {
-    let newProvider = this.newProvider();
-    if (isRemote) {
-      newProvider = this.newRemoteProvider();
-    }
+  addProvider() {
+    const newProvider = this.newProvider();
     ProviderBackend.addProvider(newProvider)
       .then((res) => {
         if (res.status === "ok") {
@@ -350,7 +340,7 @@ class ProviderListPage extends BaseListPage {
           title={() => (
             <div>
               {i18next.t("general:Providers")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button type="primary" size="small" onClick={() => this.addProvider(false)}>{i18next.t("general:Add")}</Button>
+              <Button type="primary" size="small" onClick={() => this.addProvider()}>{i18next.t("general:Add")}</Button>
               {this.state.selectedRowKeys.length > 0 && (
                 <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
                   <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
@@ -358,8 +348,6 @@ class ProviderListPage extends BaseListPage {
                   </Button>
                 </Popconfirm>
               )}
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <Button size="small" onClick={() => this.addProvider(true)}>{i18next.t("provider:Add Remote Provider")}</Button>
             </div>
           )}
           loading={this.state.loading}
