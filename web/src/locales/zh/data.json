@@ -440,7 +440,12 @@
     "{total} in total": "{total} 总计"
   },
   "graph": {
-    "Edit Graph": "编辑图"
+    "Circular": "环形",
+    "Edit Graph": "编辑图",
+    "Force": "力导向",
+    "Layout": "布局",
+    "Layout - Tooltip": "图布局类型",
+    "None": "无"
   },
   "hospital": {
     "Edit Hospital": "编辑医院",

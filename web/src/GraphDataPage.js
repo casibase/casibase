@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import ForceGraph2D from "react-force-graph-2d";
+import ReactEcharts from "echarts-for-react";
 
 class GraphErrorBoundary extends React.Component {
   constructor(props) {
@@ -45,62 +45,32 @@ class GraphDataPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: {nodes: [], links: []},
+      data: {nodes: [], links: [], categories: []},
       errorText: "",
       renderError: "",
     };
-    this.fgRef = React.createRef();
+    this.chartRef = React.createRef();
     this.containerRef = React.createRef();
-    this.hiddenGroups = new Set();
+    this.hiddenCategories = new Set();
   }
 
   componentDidMount() {
     const result = this.parseData();
     this.setState({
-      data: {nodes: result.data.nodes || [], links: result.data.links || []},
+      data: result.data,
       errorText: result.errorText,
       renderError: "",
     });
     if (this.props.onErrorChange) {
       this.props.onErrorChange(result.errorText);
     }
-
-    this.updateSize();
-
-    this.handleResize = () => {
-      if (this.resizeTimer) {
-        clearTimeout(this.resizeTimer);
-      }
-      this.resizeTimer = setTimeout(() => {
-        this.updateSize();
-        setTimeout(() => {
-          if (this.fgRef.current) {
-            this.fgRef.current.zoomToFit(200, 20);
-          }
-        }, 100);
-      }, 300);
-    };
-
-    window.addEventListener("resize", this.handleResize);
-  }
-
-  updateSize() {
-    setTimeout(() => {
-      if (this.containerRef.current) {
-        const rect = this.containerRef.current.getBoundingClientRect();
-        this.setState({
-          actualWidth: rect.width,
-          actualHeight: rect.height,
-        });
-      }
-    }, 0);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.graphText !== prevProps.graphText) {
+    if (this.props.graphText !== prevProps.graphText || this.props.layout !== prevProps.layout) {
       const result = this.parseData();
       this.setState({
-        data: {nodes: result.data.nodes || [], links: result.data.links || []},
+        data: result.data,
         errorText: result.errorText,
         renderError: "",
       });
@@ -120,18 +90,8 @@ class GraphDataPage extends React.Component {
     });
   }
 
-  componentWillUnmount() {
-    if (this.handleResize) {
-      window.removeEventListener("resize", this.handleResize);
-    }
-
-    if (this.resizeTimer) {
-      clearTimeout(this.resizeTimer);
-    }
-  }
-
   parseData() {
-    const defaultData = {nodes: [], links: []};
+    const defaultData = {nodes: [], links: [], categories: []};
     const text = this.props.graphText || "";
     if (text.trim() === "") {
       return {data: defaultData, errorText: "Graph text is empty"};
@@ -139,7 +99,9 @@ class GraphDataPage extends React.Component {
     try {
       const obj = JSON.parse(text);
       if (Array.isArray(obj.nodes) && Array.isArray(obj.links)) {
-        return {data: obj, errorText: ""};
+        // Process categories
+        const categories = obj.categories || [];
+        return {data: {nodes: obj.nodes, links: obj.links, categories}, errorText: ""};
       } else {
         return {data: defaultData, errorText: "Invalid graph format: must have 'nodes' and 'links' arrays"};
       }
@@ -148,36 +110,103 @@ class GraphDataPage extends React.Component {
     }
   }
 
-  render() {
-    const raw = this.state.data || {nodes: [], links: []};
-    const nodes = raw.nodes || [];
-    const links = (raw.links || [])
-      .map(l => {
-        let s = l.source, t = l.target;
-        if (typeof s === "number") {s = nodes[s]?.id;}
-        if (typeof t === "number") {t = nodes[t]?.id;}
-        const src = typeof s === "object" && s ? s.id || s.name : s;
-        const dst = typeof t === "object" && t ? t.id || t.name : t;
-        return {...l, source: src, target: dst};
-      });
-    const graphData = {nodes, links};
+  getOption() {
+    const {nodes, links, categories} = this.state.data;
+    const layout = this.props.layout || "force";
 
-    const groups = [...new Set(nodes.map(n => n.group))].filter(g => g !== null).sort();
-    const colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
-
-    const getGroupColor = (group) => {
-      const index = groups.indexOf(group);
-      return colors[index % colors.length];
-    };
-
-    const nodeColorFunc = (node) => getGroupColor(node.group);
-
-    const legendItems = groups.map((group) => ({
-      group,
-      color: getGroupColor(group),
-      hidden: this.hiddenGroups.has(group),
+    // Transform nodes to ECharts format
+    const echartNodes = nodes.map(node => ({
+      id: node.id,
+      name: node.name || node.id,
+      symbolSize: node.symbolSize || 50,
+      x: node.x,
+      y: node.y,
+      value: node.value,
+      category: node.category,
+      // Support for icon
+      symbol: node.icon ? `image://${node.icon}` : "circle",
+      label: {
+        show: true,
+        position: "bottom",
+        formatter: node.icon ? `{name|${node.name || node.id}}` : "{b}",
+        rich: {
+          name: {
+            fontSize: 12,
+            color: "#333",
+            padding: [2, 0, 0, 0],
+          },
+        },
+      },
     }));
 
+    // Transform links to ECharts format
+    const echartLinks = links.map(link => ({
+      source: link.source,
+      target: link.target,
+    }));
+
+    const option = {
+      tooltip: {
+        trigger: "item",
+        formatter: (params) => {
+          if (params.dataType === "node") {
+            return `${params.data.name}<br/>Value: ${params.data.value || "N/A"}`;
+          } else if (params.dataType === "edge") {
+            return `${params.data.source} → ${params.data.target}`;
+          }
+          return "";
+        },
+      },
+      legend: this.props.showLegend !== false && categories.length > 0 ? [
+        {
+          data: categories.map((cat, index) => ({
+            name: cat.name,
+            icon: "circle",
+          })),
+          orient: "horizontal",
+          top: 10,
+          left: "center",
+        },
+      ] : [],
+      series: [
+        {
+          type: "graph",
+          layout: layout,
+          data: echartNodes,
+          links: echartLinks,
+          categories: categories,
+          roam: true,
+          draggable: true,
+          label: {
+            show: true,
+            position: "bottom",
+          },
+          lineStyle: {
+            color: "source",
+            curveness: 0.3,
+          },
+          emphasis: {
+            focus: "adjacency",
+            lineStyle: {
+              width: 3,
+            },
+          },
+          force: layout === "force" ? {
+            repulsion: 500,
+            edgeLength: 100,
+            layoutAnimation: false,
+          } : undefined,
+          circular: layout === "circular" ? {
+            rotateLabel: true,
+          } : undefined,
+        },
+      ],
+    };
+
+    return option;
+  }
+
+  render() {
     return (
       <div
         ref={this.containerRef}
@@ -209,84 +238,16 @@ class GraphDataPage extends React.Component {
             <div>{this.state.errorText || this.state.renderError}</div>
           </div>
         )}
-        <GraphErrorBoundary onError={(error) => this.handleRenderError(error)}>
-          <ForceGraph2D
-            ref={this.fgRef}
-            graphData={graphData}
-            cooldownTicks={100}
-            width={this.state.actualWidth}
-            height={this.state.actualHeight}
-            nodeLabel="id"
-            nodeColor={nodeColorFunc}
-            backgroundColor="transparent"
-            nodeVisibility={node => !this.hiddenGroups.has(node.group)}
-            linkVisibility={link => {
-              const sourceGroup = typeof link.source === "object" ? link.source.group :
-                nodes.find(n => n.id === link.source)?.group;
-              const targetGroup = typeof link.target === "object" ? link.target.group :
-                nodes.find(n => n.id === link.target)?.group;
-              return !this.hiddenGroups.has(sourceGroup) && !this.hiddenGroups.has(targetGroup);
-            }}
-            onEngineStop={() => {
-              if (this.fgRef.current) {
-                this.fgRef.current.zoomToFit(200, 20);
-              }
-            }}
-          />
-        </GraphErrorBoundary>
-        {this.props.showLegend !== false && legendItems.length > 0 && (
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              transform: "translateX(-50%)",
-              top: 8,
-              background: "rgba(255,255,255,0.9)",
-              padding: "6px 12px",
-              borderRadius: 6,
-              fontSize: 12,
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              flexWrap: "wrap",
-              pointerEvents: "auto",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            }}
-          >
-            {legendItems.map(item => (
-              <div
-                key={item.group}
-                onClick={() => {
-                  if (item.hidden) {
-                    this.hiddenGroups.delete(item.group);
-                  } else {
-                    this.hiddenGroups.add(item.group);
-                  }
-                  this.forceUpdate();
-                }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  cursor: "pointer",
-                  padding: "4px 8px",
-                  borderRadius: 4,
-                  opacity: item.hidden ? 0.5 : 1,
-                  transition: "opacity 0.2s ease",
-                }}
-              >
-                <div
-                  style={{
-                    width: 12,
-                    height: 12,
-                    borderRadius: "50%",
-                    backgroundColor: item.hidden ? "#ccc" : item.color,
-                  }}
-                />
-                <span style={{fontSize: 11}}>{item.group}</span>
-              </div>
-            ))}
-          </div>
+        {!this.state.errorText && !this.state.renderError && (
+          <GraphErrorBoundary onError={(error) => this.handleRenderError(error)}>
+            <ReactEcharts
+              ref={this.chartRef}
+              option={this.getOption()}
+              style={{height: "100%", width: "100%"}}
+              notMerge={true}
+              lazyUpdate={true}
+            />
+          </GraphErrorBoundary>
         )}
       </div>
     );
