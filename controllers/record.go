@@ -280,6 +280,13 @@ func (c *ApiController) GetPatientByHashID() {
 	}
 
 	fmt.Printf("开始查询患者就诊记录，HashID: %s，过滤条件: requestUri=/api/add-outpatient\n", hashID)
+		
+	// 调试：打印前几条记录的object内容
+	for i, record := range records {
+		if i < 3 { // 只打印前3条记录
+			fmt.Printf("记录 %d 的object内容: %s\n", i, record.Object)
+		}
+	}
 	
 	records, err := object.GetPatientByHashID(hashID)
 	if err != nil {
@@ -429,9 +436,9 @@ func (c *ApiController) GetPatientAuthorizationRequests() {
 		return
 	}
 
-	fmt.Printf("查询患者授权请求，患者ID: %s\n", patientId)
+	fmt.Printf("查询患者待审批授权请求，患者ID: %s\n", patientId)
 	
-	// 根据患者ID查询待审批的授权请求
+	// 根据患者ID查询待审批的授权请求（只查询pending状态）
 	requests, err := object.GetAuthorizationRequestsByPatientId(patientId)
 	if err != nil {
 		fmt.Printf("查询患者授权请求失败: %v\n", err)
@@ -439,9 +446,18 @@ func (c *ApiController) GetPatientAuthorizationRequests() {
 		return
 	}
 	
-	fmt.Printf("查询到 %d 条授权请求\n", len(requests))
-	c.ResponseOk(requests)
+	// 过滤出待审批的请求（只返回pending状态）
+	var pendingRequests []*object.AuthorizationRequest
+	for _, request := range requests {
+		if request.Status == "pending" {
+			pendingRequests = append(pendingRequests, request)
+		}
+	}
+	
+	fmt.Printf("查询到 %d 条待审批的授权请求\n", len(pendingRequests))
+	c.ResponseOk(pendingRequests)
 }
+
 
 // ProcessAuthorizationRequest
 // @Title ProcessAuthorizationRequest
@@ -525,16 +541,23 @@ func (c *ApiController) ProcessAuthorizationRequest() {
 // @Tag Authorization Request API
 // @Description get doctor's authorization requests history
 // @Param   doctorId     query    string  true        "医生ID"
+// @Param   patientHashId query   string  false       "患者HashID（可选，用于过滤特定患者的申请）"
 // @Success 200 {object} []object.AuthorizationRequest The Response object
 // @router /get-doctor-authorization-requests [get]
 func (c *ApiController) GetDoctorAuthorizationRequests() {
 	doctorId := c.Input().Get("doctorId")
+	patientHashId := c.Input().Get("patientHashId")
+	
 	if doctorId == "" {
 		c.ResponseError("医生ID不能为空")
 		return
 	}
 
-	fmt.Printf("查询医生授权请求历史，医生ID: %s\n", doctorId)
+	fmt.Printf("查询医生授权请求历史，医生ID: %s", doctorId)
+	if patientHashId != "" {
+		fmt.Printf(", 患者HashID: %s", patientHashId)
+	}
+	fmt.Println()
 	
 	// 根据医生ID查询所有授权请求
 	requests, err := object.GetAuthorizationRequestsByDoctorId(doctorId)
@@ -544,8 +567,20 @@ func (c *ApiController) GetDoctorAuthorizationRequests() {
 		return
 	}
 	
-	fmt.Printf("查询到 %d 条授权请求\n", len(requests))
-	c.ResponseOk(requests)
+	// 如果指定了患者HashID，则过滤出该患者的申请
+	var filteredRequests []*object.AuthorizationRequest
+	if patientHashId != "" {
+		for _, request := range requests {
+			if request.PatientHashId == patientHashId {
+				filteredRequests = append(filteredRequests, request)
+			}
+		}
+		fmt.Printf("过滤后得到 %d 条该患者的申请记录\n", len(filteredRequests))
+		c.ResponseOk(filteredRequests)
+	} else {
+		fmt.Printf("查询到 %d 条授权请求\n", len(requests))
+		c.ResponseOk(requests)
+	}
 }
 
 // GetPatientAuthorizationHistory
@@ -610,4 +645,53 @@ func (c *ApiController) DebugAuthorizationRequests() {
 	}
 	
 	c.ResponseOk(requests)
+}
+
+// GetAuthorizedPatientRecords
+// @Title GetAuthorizedPatientRecords
+// @Tag Authorization Request API
+// @Description get authorized patient's medical records
+// @Param   doctorId     query    string  true        "医生ID"
+// @Success 200 {object} []object.Record The Response object
+// @router /get-authorized-patient-records [get]
+func (c *ApiController) GetAuthorizedPatientRecords() {
+	doctorId := c.Input().Get("doctorId")
+	if doctorId == "" {
+		c.ResponseError("医生ID不能为空")
+		return
+	}
+
+	fmt.Printf("查询已授权患者的就诊记录，医生ID: %s\n", doctorId)
+	
+	// 获取该医生的所有已授权的请求
+	requests, err := object.GetAuthorizationRequestsByDoctorId(doctorId)
+	if err != nil {
+		fmt.Printf("查询医生授权请求失败: %v\n", err)
+		c.ResponseError(fmt.Sprintf("查询失败: %v", err))
+		return
+	}
+	
+	// 过滤出已授权的请求
+	var authorizedRequests []*object.AuthorizationRequest
+	for _, request := range requests {
+		if request.Status == "approved" {
+			authorizedRequests = append(authorizedRequests, request)
+		}
+	}
+	
+	fmt.Printf("找到 %d 条已授权的请求\n", len(authorizedRequests))
+	
+	// 获取所有已授权患者的就诊记录
+	var allRecords []*object.Record
+	for _, request := range authorizedRequests {
+		records, err := object.GetPatientByHashID(request.PatientHashId)
+		if err != nil {
+			fmt.Printf("获取患者 %s 的就诊记录失败: %v\n", request.PatientHashId, err)
+			continue
+		}
+		allRecords = append(allRecords, records...)
+	}
+	
+	fmt.Printf("获取到 %d 条已授权患者的就诊记录\n", len(allRecords))
+	c.ResponseOk(allRecords)
 }

@@ -50,6 +50,9 @@ class PythonSrPage extends React.Component {
       patientHistoryRequests: [],
       isLoadingDoctorHistory: false,
       isLoadingPatientHistory: false,
+      // 已授权患者记录
+      authorizedPatientRecords: [],
+      isLoadingAuthorizedRecords: false,
     };
     this.chartRef = React.createRef();
     this.formRef = React.createRef();
@@ -269,6 +272,13 @@ class PythonSrPage extends React.Component {
         });
 
         message.success(`找到 ${records.length} 条就诊记录，涉及 ${hospitals.length} 家医院`);
+
+        // 搜索成功后，更新医生的历史申请记录（只显示该患者的申请）
+        const { account } = this.props;
+        const userTag = account?.tag || '';
+        if (userTag === 'doctor') {
+          this.fetchDoctorHistoryRequests(searchHashId);
+        }
       } else {
         console.error('API返回错误:', res);
         const errorMsg = res.msg || '查询失败';
@@ -309,11 +319,27 @@ class PythonSrPage extends React.Component {
           return;
         }
 
-        const objectData = JSON.parse(record.object);
-        validRecordCount++;
+        console.log(`记录 ${index} 的原始object内容:`, record.object);
+        console.log(`记录 ${index} 的object类型:`, typeof record.object);
+        console.log(`记录 ${index} 的object长度:`, record.object.length);
 
-        if (objectData.admHosName) {
-          const hospitalName = objectData.admHosName;
+        // 尝试清理可能的转义字符
+        let cleanObject = record.object;
+        if (typeof cleanObject === 'string') {
+          // 移除可能的双重转义
+          cleanObject = cleanObject.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+        }
+
+        console.log(`记录 ${index} 清理后的object内容:`, cleanObject);
+
+        const objectData = JSON.parse(cleanObject);
+        validRecordCount++;
+        console.log(`记录 ${index} 解析后的数据:`, objectData);
+
+        // 检查所有可能的医院名称字段（根据实际数据结构调整）
+        const hospitalName = objectData.admHosName || objectData.section || objectData.hospitalName || objectData.hosName || objectData.admHos;
+
+        if (hospitalName) {
           console.log(`记录 ${index} 找到医院: ${hospitalName}`);
 
           if (hospitalMap.has(hospitalName)) {
@@ -322,12 +348,32 @@ class PythonSrPage extends React.Component {
             hospitalMap.set(hospitalName, 1);
           }
         } else {
-          console.warn(`记录 ${index} 没有admHosName字段`);
+          console.warn(`记录 ${index} 没有找到医院名称字段，可用字段:`, Object.keys(objectData));
+          console.warn(`记录 ${index} 完整数据:`, objectData);
         }
       } catch (error) {
         parseErrorCount++;
         console.error(`解析记录 ${index} 时发生错误:`, error);
         console.error('问题记录内容:', record);
+        console.error('问题记录的object字段:', record.object);
+
+        // 尝试手动解析（如果JSON.parse失败）
+        try {
+          const manualParse = this.manualParseObject(record.object);
+          if (manualParse && manualParse.admHosName) {
+            console.log(`记录 ${index} 手动解析成功，医院: ${manualParse.admHosName}`);
+            const hospitalName = manualParse.admHosName;
+            if (hospitalMap.has(hospitalName)) {
+              hospitalMap.set(hospitalName, hospitalMap.get(hospitalName) + 1);
+            } else {
+              hospitalMap.set(hospitalName, 1);
+            }
+            validRecordCount++;
+            parseErrorCount--;
+          }
+        } catch (manualError) {
+          console.error(`记录 ${index} 手动解析也失败:`, manualError);
+        }
       }
     });
 
@@ -340,6 +386,29 @@ class PythonSrPage extends React.Component {
 
     console.log('最终医院统计结果:', result);
     return result;
+  }
+
+  // 手动解析object字段（备用方法）
+  manualParseObject = (objectString) => {
+    try {
+      // 尝试提取医院名称字段（优先section，然后是admHosName）
+      const sectionMatch = objectString.match(/"section"\s*:\s*"([^"]+)"/);
+      const admHosNameMatch = objectString.match(/"admHosName"\s*:\s*"([^"]+)"/);
+
+      if (sectionMatch) {
+        return {
+          admHosName: sectionMatch[1] // 使用section作为医院名称
+        };
+      } else if (admHosNameMatch) {
+        return {
+          admHosName: admHosNameMatch[1]
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error('手动解析失败:', error);
+      return null;
+    }
   }
 
 
@@ -508,33 +577,71 @@ class PythonSrPage extends React.Component {
     }
   }
 
-  // 拒绝请求
-  rejectRequest = () => {
-    const { selectedRequest, rejectReason } = this.state;
-    if (selectedRequest) {
-      if (!rejectReason.trim()) {
-        message.warning('请填写拒绝原因');
-        return;
-      }
-      this.processAuthorizationRequest(selectedRequest.requestId, 'reject', rejectReason);
+  // 获取进度百分比
+  getProgressPercent = (status) => {
+    switch (status) {
+      case 'pending':
+        return 33; // 已发起
+      case 'approved':
+        return 100; // 已完成
+      case 'rejected':
+        return 66; // 患者确认但被拒绝
+      default:
+        return 0;
     }
   }
 
-  // 组件挂载时获取数据
-  componentDidMount() {
+  // 获取进度条颜色
+  getProgressColor = (status) => {
+    switch (status) {
+      case 'pending':
+        return '#ff7d00'; // 橙色
+      case 'approved':
+        return '#00B42A'; // 绿色
+      case 'rejected':
+        return '#ff4d4f'; // 红色
+      default:
+        return '#86909C'; // 灰色
+    }
+  }
+
+  // 获取已授权患者的就诊记录
+  fetchAuthorizedPatientRecords = async () => {
     const { account } = this.props;
-    const userTag = account?.tag || '';
-    if (userTag === 'user') {
-      this.fetchPatientAuthorizationRequests();
-      this.fetchPatientOwnRecords();
-      this.fetchPatientHistoryRequests();
-    } else if (userTag === 'doctor') {
-      this.fetchDoctorHistoryRequests();
+    if (!account?.id) {
+      message.warning('无法获取医生身份信息');
+      return;
+    }
+
+    this.setState({ isLoadingAuthorizedRecords: true });
+
+    try {
+      const response = await fetch(`${Setting.ServerUrl}/api/get-authorized-patient-records?doctorId=${encodeURIComponent(account.id)}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      const res = await response.json();
+
+      if (res.status === 'ok') {
+        const records = res.data || [];
+        this.setState({ authorizedPatientRecords: records });
+        console.log('获取到已授权患者的就诊记录:', records);
+      } else {
+        message.error(res.msg || '获取已授权患者记录失败');
+        this.setState({ authorizedPatientRecords: [] });
+      }
+    } catch (error) {
+      console.error('获取已授权患者记录时发生错误:', error);
+      message.error('获取失败，请稍后重试');
+      this.setState({ authorizedPatientRecords: [] });
+    } finally {
+      this.setState({ isLoadingAuthorizedRecords: false });
     }
   }
 
-  // 获取医生历史申请记录
-  fetchDoctorHistoryRequests = async () => {
+  // 获取医生历史申请记录（基于搜索的患者HashID）
+  fetchDoctorHistoryRequests = async (patientHashId = null) => {
     const { account } = this.props;
     if (!account?.id) {
       message.warning('无法获取医生身份信息');
@@ -544,7 +651,12 @@ class PythonSrPage extends React.Component {
     this.setState({ isLoadingDoctorHistory: true });
 
     try {
-      const response = await fetch(`${Setting.ServerUrl}/api/get-doctor-authorization-requests?doctorId=${encodeURIComponent(account.id)}`, {
+      let url = `${Setting.ServerUrl}/api/get-doctor-authorization-requests?doctorId=${encodeURIComponent(account.id)}`;
+      if (patientHashId) {
+        url += `&patientHashId=${encodeURIComponent(patientHashId)}`;
+      }
+
+      const response = await fetch(url, {
         method: 'GET',
         credentials: 'include',
       });
@@ -605,6 +717,20 @@ class PythonSrPage extends React.Component {
       this.setState({ patientHistoryRequests: [] });
     } finally {
       this.setState({ isLoadingPatientHistory: false });
+    }
+  }
+
+  // 组件挂载时获取数据
+  componentDidMount() {
+    const { account } = this.props;
+    const userTag = account?.tag || '';
+    if (userTag === 'user') {
+      this.fetchPatientAuthorizationRequests();
+      this.fetchPatientOwnRecords();
+      this.fetchPatientHistoryRequests();
+    } else if (userTag === 'doctor') {
+      this.fetchDoctorHistoryRequests();
+      this.fetchAuthorizedPatientRecords();
     }
   }
 
@@ -1209,81 +1335,75 @@ class PythonSrPage extends React.Component {
                   </Space>
                 }
               >
-                <Space direction="vertical" style={{ width: '100%' }} size="large">
-                  {/* 授权请求1 */}
-                  <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                      <Space>
-                        <span style={{ fontWeight: 500 }}>广东省人民医院 - 全部记录</span>
-                        <span style={{ padding: '2px 8px', backgroundColor: '#fff7e6', color: '#ff7d00', fontSize: '12px', borderRadius: '12px' }}>待医院审核</span>
-                      </Space>
-                      <span style={{ fontSize: '12px', color: '#86909C' }}>发起于 今天 09:23</span>
-                    </div>
-
-                    <Progress
-                      percent={50}
-                      strokeColor={{
-                        '0%': '#00B42A',
-                        '50%': '#00B42A',
-                        '100%': '#ff7d00',
-                      }}
-                      showInfo={false}
-                    />
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
-                      <Space direction="vertical" align="center" size="small">
-                        <CheckCircleOutlined style={{ color: '#00B42A' }} />
-                        <span style={{ fontSize: '12px' }}>已发起</span>
-                      </Space>
-                      <Space direction="vertical" align="center" size="small">
-                        <CheckCircleOutlined style={{ color: '#00B42A' }} />
-                        <span style={{ fontSize: '12px' }}>患者确认</span>
-                      </Space>
-                      <Space direction="vertical" align="center" size="small">
-                        <ClockCircleOutlined style={{ color: '#ff7d00' }} />
-                        <span style={{ fontSize: '12px' }}>医院审核</span>
-                      </Space>
-                      <Space direction="vertical" align="center" size="small">
-                        <LockOutlined style={{ color: '#86909C' }} />
-                        <span style={{ fontSize: '12px' }}>可查看</span>
-                      </Space>
-                    </div>
+                {this.state.doctorHistoryRequests.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px', color: '#86909C' }}>
+                    <div style={{ fontSize: '14px' }}>暂无授权请求</div>
+                    <div style={{ fontSize: '12px' }}>发送授权请求后，进度将在这里显示</div>
                   </div>
+                ) : (
+                  <Space direction="vertical" style={{ width: '100%' }} size="large">
+                    {this.state.doctorHistoryRequests.slice(0, 3).map((request, index) => (
+                      <div key={request.requestId}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                          <Space>
+                            <span style={{ fontWeight: 500 }}>
+                              {JSON.parse(request.hospitals || '[]').slice(0, 2).join('、')}
+                              {JSON.parse(request.hospitals || '[]').length > 2 && `等${JSON.parse(request.hospitals || '[]').length}家医院`}
+                            </span>
+                            <span style={{
+                              padding: '2px 8px',
+                              backgroundColor: request.status === 'approved' ? '#f6ffed' : request.status === 'rejected' ? '#fff2f0' : '#fff7e6',
+                              color: request.status === 'approved' ? '#52c41a' : request.status === 'rejected' ? '#ff4d4f' : '#ff7d00',
+                              fontSize: '12px',
+                              borderRadius: '12px'
+                            }}>
+                              {request.status === 'approved' ? '已授权' : request.status === 'rejected' ? '已拒绝' : '待审批'}
+                            </span>
+                          </Space>
+                          <span style={{ fontSize: '12px', color: '#86909C' }}>
+                            发起于 {moment(request.createdTime).format('MM-DD HH:mm')}
+                          </span>
+                        </div>
 
-                  {/* 授权请求2 */}
-                  <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                      <Space>
-                        <span style={{ fontWeight: 500 }}>江苏省人民医院 - 检查报告与用药记录</span>
-                        <span style={{ padding: '2px 8px', backgroundColor: '#f6ffed', color: '#00B42A', fontSize: '12px', borderRadius: '12px' }}>已通过</span>
-                      </Space>
-                      <span style={{ fontSize: '12px', color: '#86909C' }}>发起于 昨天 14:56</span>
-                    </div>
-
-                    <Progress
-                      percent={100}
-                      strokeColor="#00B42A"
-                      showInfo={false}
-                    />
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
-                      <Space direction="vertical" align="center" size="small">
-                        <CheckCircleOutlined style={{ color: '#00B42A' }} />
-                        <span style={{ fontSize: '12px' }}>已发起</span>
-                      </Space>
-                      <Space direction="vertical" align="center" size="small">
-                        <CheckCircleOutlined style={{ color: '#00B42A' }} />
-                        <span style={{ fontSize: '12px' }}>患者确认</span>
-                      </Space>
-                      <Space direction="vertical" align="center" size="small">
-                        <CheckCircleOutlined style={{ color: '#00B42A' }} />
-                        <span style={{ fontSize: '12px' }}>医院审核</span>
-                      </Space>
-                      <Space direction="vertical" align="center" size="small">
-                        <CheckCircleOutlined style={{ color: '#00B42A' }} />
-                        <span style={{ fontSize: '12px' }}>可查看</span>
-                      </Space>
-                    </div>
-                  </div>
-                </Space>
+                        <Progress
+                          percent={this.getProgressPercent(request.status)}
+                          strokeColor={this.getProgressColor(request.status)}
+                          showInfo={false}
+                        />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
+                          <Space direction="vertical" align="center" size="small">
+                            <CheckCircleOutlined style={{ color: '#00B42A' }} />
+                            <span style={{ fontSize: '12px' }}>已发起</span>
+                          </Space>
+                          <Space direction="vertical" align="center" size="small">
+                            {request.status === 'pending' ? (
+                              <ClockCircleOutlined style={{ color: '#ff7d00' }} />
+                            ) : (
+                              <CheckCircleOutlined style={{ color: '#00B42A' }} />
+                            )}
+                            <span style={{ fontSize: '12px' }}>患者确认</span>
+                          </Space>
+                          <Space direction="vertical" align="center" size="small">
+                            {request.status === 'approved' ? (
+                              <CheckCircleOutlined style={{ color: '#00B42A' }} />
+                            ) : request.status === 'rejected' ? (
+                              <CloseOutlined style={{ color: '#ff4d4f' }} />
+                            ) : (
+                              <LockOutlined style={{ color: '#86909C' }} />
+                            )}
+                            <span style={{ fontSize: '12px' }}>可查看</span>
+                          </Space>
+                        </div>
+                        {request.status === 'rejected' && request.rejectReason && (
+                          <div style={{ marginTop: '8px', padding: '8px', backgroundColor: '#fff2f0', borderRadius: '4px' }}>
+                            <div style={{ fontSize: '12px', color: '#ff4d4f', marginBottom: '4px' }}>拒绝原因</div>
+                            <div style={{ fontSize: '12px', color: '#666' }}>{request.rejectReason}</div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </Space>
+                )}
               </Card>
 
               {/* 授权后记录查看 */}
@@ -1294,88 +1414,97 @@ class PythonSrPage extends React.Component {
                     授权通过的历史记录
                   </Space>
                 }
+                extra={
+                  <Button
+                    onClick={this.fetchAuthorizedPatientRecords}
+                    loading={this.state.isLoadingAuthorizedRecords}
+                  >
+                    刷新
+                  </Button>
+                }
               >
-                <Tabs defaultActiveKey="1">
-                  <TabPane tab="江苏省人民医院" key="1">
-                    <Space direction="vertical" style={{ width: '100%' }} size="middle">
-                      <Card size="small" hoverable>
-                        <div style={{ backgroundColor: '#f2f3f5', padding: '12px 16px', margin: '-12px -16px 12px -16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Space>
-                            <MedicineBoxOutlined style={{ color: '#165DFF' }} />
-                            <span style={{ fontWeight: 500 }}>2023年4月15日 - 心脏科门诊</span>
-                          </Space>
-                          <Button type="text" icon={<DownloadOutlined />} />
-                        </div>
-                        <Row gutter={16}>
-                          <Col xs={24} md={12}>
-                            <div style={{ marginBottom: '8px' }}>
-                              <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>诊断结果</p>
-                              <p style={{ margin: 0 }}>高血压2级，冠心病</p>
+                {this.state.isLoadingAuthorizedRecords ? (
+                  <div style={{ textAlign: 'center', padding: '40px' }}>
+                    <Progress type="circle" />
+                  </div>
+                ) : this.state.authorizedPatientRecords.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px', color: '#86909C' }}>
+                    <div style={{ fontSize: '14px' }}>暂无已授权的患者记录</div>
+                    <div style={{ fontSize: '12px' }}>当患者同意您的授权请求后，记录将在这里显示</div>
+                  </div>
+                ) : (
+                  <Space direction="vertical" style={{ width: '100%' }} size="middle">
+                    {this.state.authorizedPatientRecords.map((record, index) => {
+                      try {
+                        const recordData = JSON.parse(record.object || '{}');
+                        return (
+                          <Card key={record.id} size="small" hoverable>
+                            <div style={{ backgroundColor: '#f2f3f5', padding: '12px 16px', margin: '-12px -16px 12px -16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <Space>
+                                <MedicineBoxOutlined style={{ color: '#165DFF' }} />
+                                <span style={{ fontWeight: 500 }}>
+                                  {recordData.consultationTime ? moment(recordData.consultationTime).format('YYYY年MM月DD日') : '未知时间'} - {recordData.unit || '未知科室'}
+                                </span>
+                              </Space>
+                              <Button type="text" icon={<DownloadOutlined />} />
                             </div>
-                            <div style={{ marginBottom: '8px' }}>
-                              <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>主治医生</p>
-                              <p style={{ margin: 0 }}>王医生</p>
+                            <Row gutter={16}>
+                              <Col xs={24} md={12}>
+                                <div style={{ marginBottom: '8px' }}>
+                                  <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>患者姓名</p>
+                                  <p style={{ margin: 0 }}>{recordData.patientName || recordData.name || '未知'}</p>
+                                </div>
+                                <div style={{ marginBottom: '8px' }}>
+                                  <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>身份证号</p>
+                                  <p style={{ margin: 0, fontFamily: 'monospace', fontSize: '11px' }}>
+                                    {recordData.idCardNo ? recordData.idCardNo.substring(0, 16) + '...' : '未知'}
+                                  </p>
+                                </div>
+                                <div style={{ marginBottom: '8px' }}>
+                                  <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>就诊类型</p>
+                                  <p style={{ margin: 0 }}>{recordData.admType || '门诊'}</p>
+                                </div>
+                              </Col>
+                              <Col xs={24} md={12}>
+                                <div style={{ marginBottom: '8px' }}>
+                                  <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>医院名称</p>
+                                  <p style={{ margin: 0 }}>{recordData.section || recordData.admHosName || '未知医院'}</p>
+                                </div>
+                                <div style={{ marginBottom: '8px' }}>
+                                  <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>就诊科室</p>
+                                  <p style={{ margin: 0 }}>{recordData.unit || recordData.admDepartment || '未知科室'}</p>
+                                </div>
+                                <div style={{ marginBottom: '8px' }}>
+                                  <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>就诊ID</p>
+                                  <p style={{ margin: 0, fontFamily: 'monospace' }}>{recordData.localDBIndex || recordData.admId || '未知'}</p>
+                                </div>
+                              </Col>
+                            </Row>
+                            <div style={{ marginTop: '12px' }}>
+                              <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>就诊时间</p>
+                              <p style={{ fontSize: '12px', margin: 0 }}>
+                                {recordData.consultationTime ? moment(recordData.consultationTime).format('YYYY-MM-DD HH:mm:ss') : '未知时间'}
+                              </p>
                             </div>
-                          </Col>
-                          <Col xs={24} md={12}>
-                            <div style={{ marginBottom: '8px' }}>
-                              <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>检查项目</p>
-                              <p style={{ margin: 0 }}>心电图、心脏彩超、血脂检查</p>
+                            <Button type="link" style={{ padding: 0, marginTop: '12px' }}>
+                              查看完整记录 →
+                            </Button>
+                          </Card>
+                        );
+                      } catch (error) {
+                        console.error('解析记录数据失败:', error, record);
+                        return (
+                          <Card key={record.id} size="small" hoverable>
+                            <div style={{ padding: '20px', textAlign: 'center', color: '#86909C' }}>
+                              <div style={{ fontSize: '14px' }}>记录数据解析失败</div>
+                              <div style={{ fontSize: '12px' }}>记录ID: {record.id}</div>
                             </div>
-                            <div style={{ marginBottom: '8px' }}>
-                              <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>处方药物</p>
-                              <p style={{ margin: 0 }}>阿司匹林、硝苯地平</p>
-                            </div>
-                          </Col>
-                        </Row>
-                        <div style={{ marginTop: '12px' }}>
-                          <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>医生建议</p>
-                          <p style={{ fontSize: '12px', margin: 0 }}>低盐低脂饮食，定期监测血压，避免剧烈运动，3个月后复查。</p>
-                        </div>
-                        <Button type="link" style={{ padding: 0, marginTop: '12px' }}>
-                          查看完整记录 →
-                        </Button>
-                      </Card>
-
-                      <Card size="small" hoverable>
-                        <div style={{ backgroundColor: '#f2f3f5', padding: '12px 16px', margin: '-12px -16px 12px -16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Space>
-                            <ExperimentOutlined style={{ color: '#165DFF' }} />
-                            <span style={{ fontWeight: 500 }}>2023年2月20日 - 体检中心</span>
-                          </Space>
-                          <Button type="text" icon={<DownloadOutlined />} />
-                        </div>
-                        <Row gutter={16}>
-                          <Col xs={24} md={12}>
-                            <div style={{ marginBottom: '8px' }}>
-                              <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>体检类型</p>
-                              <p style={{ margin: 0 }}>年度常规体检</p>
-                            </div>
-                          </Col>
-                          <Col xs={24} md={12}>
-                            <div style={{ marginBottom: '8px' }}>
-                              <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>异常指标</p>
-                              <p style={{ margin: 0 }}>血压偏高、血脂异常</p>
-                            </div>
-                          </Col>
-                        </Row>
-                        <Button type="link" style={{ padding: 0, marginTop: '12px' }}>
-                          查看完整记录 →
-                        </Button>
-                      </Card>
-                    </Space>
-                  </TabPane>
-                  <TabPane tab="广东省人民医院" key="2">
-                    <div style={{ textAlign: 'center', padding: '40px 0', color: '#86909C' }}>
-                      暂无授权通过的记录
-                    </div>
-                  </TabPane>
-                  <TabPane tab="医大一院" key="3">
-                    <div style={{ textAlign: 'center', padding: '40px 0', color: '#86909C' }}>
-                      暂无授权通过的记录
-                    </div>
-                  </TabPane>
-                </Tabs>
+                          </Card>
+                        );
+                      }
+                    })}
+                  </Space>
+                )}
               </Card>
             </Space>
           </Col>

@@ -233,6 +233,7 @@ func initAPI() {
 	beego.Router("/api/process-authorization-request", &controllers.ApiController{}, "POST:ProcessAuthorizationRequest")
 	beego.Router("/api/get-doctor-authorization-requests", &controllers.ApiController{}, "GET:GetDoctorAuthorizationRequests")
 	beego.Router("/api/get-patient-authorization-history", &controllers.ApiController{}, "GET:GetPatientAuthorizationHistory")
+	beego.Router("/api/get-authorized-patient-records", &controllers.ApiController{}, "GET:GetAuthorizedPatientRecords")
 	beego.Router("/api/debug-authorization-requests", &controllers.ApiController{}, "GET:DebugAuthorizationRequests")
 	beego.Router("/api/update-record", &controllers.ApiController{}, "POST:UpdateRecord")
 	beego.Router("/api/add-record", &controllers.ApiController{}, "POST:AddRecord")
