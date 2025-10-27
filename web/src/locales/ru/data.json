@@ -585,7 +585,6 @@
     "API key - Tooltip": "Ключ API модели (виден только администратору)",
     "API version": "Версия API",
     "API version - Tooltip": "Версия API Azure",
-    "Add Remote Provider": "Добавить удаленного провайдера",
     "Add Storage Provider": "Добавить провайдера хранилища",
     "Auth type": "Тип аутентификации",
     "Auth type - Tooltip": "Тип аутентификации",

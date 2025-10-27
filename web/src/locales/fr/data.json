@@ -585,7 +585,6 @@
     "API key - Tooltip": "Clé API du modèle (visible uniquement pour les administrateurs)",
     "API version": "Version de l'API",
     "API version - Tooltip": "Version de l'API Azure",
-    "Add Remote Provider": "Ajouter un fournisseur distant",
     "Add Storage Provider": "Ajouter un fournisseur de stockage",
     "Auth type": "Type d'authentification",
     "Auth type - Tooltip": "Type d'authentification",

@@ -585,7 +585,6 @@
     "API key - Tooltip": "モデルAPIキー（管理者のみ表示可能）",
     "API version": "APIバージョン",
     "API version - Tooltip": "Azure APIバージョン",
-    "Add Remote Provider": "リモートプロバイダを追加",
     "Add Storage Provider": "ストレージプロバイダを追加",
     "Auth type": "認証タイプ",
     "Auth type - Tooltip": "認証タイプ",

@@ -585,7 +585,6 @@
     "API key - Tooltip": "모델 API 키(관리자만 가능)",
     "API version": "API 버전",
     "API version - Tooltip": "Azure API 버전",
-    "Add Remote Provider": "원격 공급자 추가",
     "Add Storage Provider": "스토리지 공급자 추가",
     "Auth type": "인증 유형",
     "Auth type - Tooltip": "인증 유형",
