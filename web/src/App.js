@@ -116,6 +116,8 @@ import NewAuditPage from "./auditSearch/NewAuditPage";
 import MuiltiCenter from "./multicentre/MuiltiCenter";
 import DataWorkBench from "./multicentre/DataWorkBench";
 import DataAuditLog from "./multicentre/DataAuditLog";
+import MyDataSet from "./multicentre/DataUsage/MyDataSet";
+
 import DynamicConfigPage from "./DynamicConfigPage";
 
 // 功能介绍页面组
@@ -1129,6 +1131,10 @@ class App extends Component {
         <Route exact path="/multi-center/audit-log" render={(props) => {
           const DataAuditLogWithPermission = withPagePermission(DataAuditLog, "/multi-center");
           return this.renderSigninIfNotSignedIn(<DataAuditLogWithPermission account={this.state.account} {...props} />);
+        }} />
+        <Route exact path="/multi-center/data-usage/my-data-set" render={(props) => {
+          const DataCenterWithPermission = withPagePermission(MyDataSet, "/multi-center");
+          return this.renderSigninIfNotSignedIn(<DataCenterWithPermission account={this.state.account} {...props} />);
         }} />
 
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
