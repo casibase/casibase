@@ -100,7 +100,6 @@ class TestScanWidget extends React.Component {
       return null;
     }
 
-    const editorWidth = Setting.isMobile() ? 22 : 9;
     const isRemote = this.props.provider.isRemote;
 
     return (
