@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row} from "antd";
+import {Button, Card, Col, Input, Row, Select} from "antd";
 import * as GraphBackend from "./backend/GraphBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -100,6 +100,24 @@ class GraphEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("graph:Layout"), i18next.t("graph:Layout - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Select
+              style={{width: "100%"}}
+              value={this.state.graph.layout || "force"}
+              onChange={value => {
+                this.updateGraphField("layout", value);
+              }}
+            >
+              <Select.Option value="force">{i18next.t("graph:Force")}</Select.Option>
+              <Select.Option value="circular">{i18next.t("graph:Circular")}</Select.Option>
+              <Select.Option value="none">{i18next.t("graph:None")}</Select.Option>
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -120,7 +138,7 @@ class GraphEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div key={this.state.graphCount} style={{height: "640px", width: "100%"}}>
-              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
+              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} layout={this.state.graph?.layout} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
             </div>
           </Col>
         </Row>

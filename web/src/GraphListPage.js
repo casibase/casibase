@@ -36,6 +36,7 @@ class GraphListPage extends BaseListPage {
       name: `graph_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Graph - ${randomName}`,
+      layout: "force",
       text: "",
     };
   }
@@ -113,6 +114,16 @@ class GraphListPage extends BaseListPage {
         ...this.getColumnSearchProps("displayName"),
       },
       {
+        title: i18next.t("graph:Layout"),
+        dataIndex: "layout",
+        key: "layout",
+        width: "120px",
+        sorter: (a, b) => (a.layout || "").localeCompare(b.layout || ""),
+        render: (text, record, index) => {
+          return text || "force";
+        },
+      },
+      {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",
@@ -171,6 +182,7 @@ class GraphListPage extends BaseListPage {
                 owner={record.owner}
                 graphName={record.name}
                 graphText={text}
+                layout={record.layout}
                 showLegend={false}
               />
             </div>
