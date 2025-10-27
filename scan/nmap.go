@@ -55,7 +55,7 @@ func (p *NmapScanProvider) Scan(target string) (string, error) {
 
 	// Run nmap with basic scan options
 	cmd := exec.Command(p.nmapPath, "-sn", target)
-	
+
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
