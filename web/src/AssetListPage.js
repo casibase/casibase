@@ -46,7 +46,7 @@ class AssetListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           const cloudProviders = res.data.filter(provider =>
-            provider.category === "Public Cloud" || provider.category === "Private Cloud"
+            provider.category === "Public Cloud"
           );
           this.setState({
             providers: cloudProviders,
@@ -301,8 +301,8 @@ class AssetListPage extends BaseListPage {
               {i18next.t("general:Assets")}
               <span style={{marginLeft: 32}}>
                 {i18next.t("asset:Provider")}:
-                <Select
-                  style={{width: 200, marginLeft: 8, marginRight: 16}}
+                <Select size={"small"}
+                  style={{width: 280, marginLeft: 8, marginRight: 16, marginTop: 2}}
                   value={this.state.selectedProvider}
                   onChange={(value) => this.setState({selectedProvider: value})}
                 >
@@ -318,7 +318,7 @@ class AssetListPage extends BaseListPage {
                     );
                   })}
                 </Select>
-                <Button
+                <Button size={"small"}
                   type="primary"
                   icon={<ReloadOutlined />}
                   loading={this.state.scanning}
