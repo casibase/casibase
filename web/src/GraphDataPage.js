@@ -114,30 +114,46 @@ class GraphDataPage extends React.Component {
     const {nodes, links, categories} = this.state.data;
     const layout = this.props.layout || "force";
 
+    // Helper function to validate and sanitize icon URLs
+    const sanitizeIconUrl = (iconUrl) => {
+      if (!iconUrl || typeof iconUrl !== "string") {
+        return null;
+      }
+      // Only allow http, https, and data URLs
+      const urlPattern = /^(https?:\/\/|data:image\/)/i;
+      if (!urlPattern.test(iconUrl)) {
+        return null;
+      }
+      return iconUrl;
+    };
+
     // Transform nodes to ECharts format
-    const echartNodes = nodes.map(node => ({
-      id: node.id,
-      name: node.name || node.id,
-      symbolSize: node.symbolSize || 50,
-      x: node.x,
-      y: node.y,
-      value: node.value,
-      category: node.category,
-      // Support for icon
-      symbol: node.icon ? `image://${node.icon}` : "circle",
-      label: {
-        show: true,
-        position: "bottom",
-        formatter: node.icon ? `{name|${node.name || node.id}}` : "{b}",
-        rich: {
-          name: {
-            fontSize: 12,
-            color: "#333",
-            padding: [2, 0, 0, 0],
+    const echartNodes = nodes.map(node => {
+      const sanitizedIcon = sanitizeIconUrl(node.icon);
+      return {
+        id: node.id,
+        name: node.name || node.id,
+        symbolSize: node.symbolSize || 50,
+        x: node.x,
+        y: node.y,
+        value: node.value,
+        category: node.category,
+        // Support for icon
+        symbol: sanitizedIcon ? `image://${sanitizedIcon}` : "circle",
+        label: {
+          show: true,
+          position: "bottom",
+          formatter: sanitizedIcon ? `{name|${node.name || node.id}}` : "{b}",
+          rich: {
+            name: {
+              fontSize: 12,
+              color: "#333",
+              padding: [2, 0, 0, 0],
+            },
           },
         },
-      },
-    }));
+      };
+    });
 
     // Transform links to ECharts format
     const echartLinks = links.map(link => ({
@@ -159,7 +175,7 @@ class GraphDataPage extends React.Component {
       },
       legend: this.props.showLegend !== false && categories.length > 0 ? [
         {
-          data: categories.map((cat, index) => ({
+          data: categories.map(cat => ({
             name: cat.name,
             icon: "circle",
           })),
