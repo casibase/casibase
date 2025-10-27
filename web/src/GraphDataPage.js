@@ -15,12 +15,39 @@
 import React from "react";
 import ForceGraph2D from "react-force-graph-2d";
 
+class GraphErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {hasError: false, error: null};
+  }
+
+  static getDerivedStateFromError(error) {
+    return {hasError: true, error: error};
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // eslint-disable-next-line no-console
+    console.error("Graph rendering error:", error, errorInfo);
+    if (this.props.onError) {
+      this.props.onError(`Graph rendering error: ${error.message}`);
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.children;
+    }
+    return this.props.children;
+  }
+}
+
 class GraphDataPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       data: {nodes: [], links: []},
       errorText: "",
+      renderError: "",
     };
     this.fgRef = React.createRef();
     this.containerRef = React.createRef();
@@ -32,9 +59,11 @@ class GraphDataPage extends React.Component {
     this.setState({
       data: {nodes: result.data.nodes || [], links: result.data.links || []},
       errorText: result.errorText,
+      renderError: "",
     });
+    const finalError = result.errorText || this.state.renderError;
     if (this.props.onErrorChange) {
-      this.props.onErrorChange(result.errorText);
+      this.props.onErrorChange(finalError);
     }
 
     this.updateSize();
@@ -74,10 +103,20 @@ class GraphDataPage extends React.Component {
       this.setState({
         data: {nodes: result.data.nodes || [], links: result.data.links || []},
         errorText: result.errorText,
+        renderError: "",
       });
+      const finalError = result.errorText || this.state.renderError;
       if (this.props.onErrorChange) {
-        this.props.onErrorChange(result.errorText);
+        this.props.onErrorChange(finalError);
       }
+    }
+  }
+
+  handleRenderError(error) {
+    this.setState({renderError: error});
+    const finalError = this.state.errorText || error;
+    if (this.props.onErrorChange) {
+      this.props.onErrorChange(finalError);
     }
   }
 
@@ -148,7 +187,7 @@ class GraphDataPage extends React.Component {
           position: "relative",
         }}
       >
-        {this.state.errorText && (
+        {(this.state.errorText || this.state.renderError) && (
           <div
             style={{
               position: "absolute",
@@ -167,32 +206,34 @@ class GraphDataPage extends React.Component {
             }}
           >
             <div style={{fontWeight: "bold", marginBottom: "8px"}}>Graph Error</div>
-            <div>{this.state.errorText}</div>
+            <div>{this.state.errorText || this.state.renderError}</div>
           </div>
         )}
-        <ForceGraph2D
-          ref={this.fgRef}
-          graphData={graphData}
-          cooldownTicks={100}
-          width={this.state.actualWidth}
-          height={this.state.actualHeight}
-          nodeLabel="id"
-          nodeColor={nodeColorFunc}
-          backgroundColor="transparent"
-          nodeVisibility={node => !this.hiddenGroups.has(node.group)}
-          linkVisibility={link => {
-            const sourceGroup = typeof link.source === "object" ? link.source.group :
-              nodes.find(n => n.id === link.source)?.group;
-            const targetGroup = typeof link.target === "object" ? link.target.group :
-              nodes.find(n => n.id === link.target)?.group;
-            return !this.hiddenGroups.has(sourceGroup) && !this.hiddenGroups.has(targetGroup);
-          }}
-          onEngineStop={() => {
-            if (this.fgRef.current) {
-              this.fgRef.current.zoomToFit(200, 20);
-            }
-          }}
-        />
+        <GraphErrorBoundary onError={(error) => this.handleRenderError(error)}>
+          <ForceGraph2D
+            ref={this.fgRef}
+            graphData={graphData}
+            cooldownTicks={100}
+            width={this.state.actualWidth}
+            height={this.state.actualHeight}
+            nodeLabel="id"
+            nodeColor={nodeColorFunc}
+            backgroundColor="transparent"
+            nodeVisibility={node => !this.hiddenGroups.has(node.group)}
+            linkVisibility={link => {
+              const sourceGroup = typeof link.source === "object" ? link.source.group :
+                nodes.find(n => n.id === link.source)?.group;
+              const targetGroup = typeof link.target === "object" ? link.target.group :
+                nodes.find(n => n.id === link.target)?.group;
+              return !this.hiddenGroups.has(sourceGroup) && !this.hiddenGroups.has(targetGroup);
+            }}
+            onEngineStop={() => {
+              if (this.fgRef.current) {
+                this.fgRef.current.zoomToFit(200, 20);
+              }
+            }}
+          />
+        </GraphErrorBoundary>
         {this.props.showLegend !== false && legendItems.length > 0 && (
           <div
             style={{
