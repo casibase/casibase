@@ -62,6 +62,11 @@ func InitAdapter() {
 	adapter = NewAdapter(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName())
 
 	providerDbName := conf.GetConfigString("providerDbName")
+
+	if adapter.DbName == providerDbName {
+		providerDbName = ""
+	}
+
 	if providerDbName != "" {
 		providerAdapter = NewAdapterWithDbName(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName(), providerDbName)
 	}
