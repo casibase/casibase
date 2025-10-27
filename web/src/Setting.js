@@ -1210,6 +1210,10 @@ export function getProviderTypeOptions(category) {
     return [
       {id: "Tencent", name: "Tencent"},
     ];
+  } else if (category === "Scan") {
+    return [
+      {id: "Nmap", name: "Nmap"},
+    ];
   } else {
     return [];
   }

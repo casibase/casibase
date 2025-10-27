@@ -24,6 +24,7 @@ import McpToolsTable from "./table/McpToolsTable";
 import ModelTestWidget from "./common/TestModelWidget";
 import TtsTestWidget from "./common/TestTtsWidget";
 import EmbedTestWidget from "./common/TestEmbedWidget";
+import TestScanWidget from "./common/TestScanWidget";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -319,6 +320,9 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Bot") {
                 this.updateProviderField("type", "Tencent");
                 this.updateProviderField("subType", "WeCom Bot");
+              } else if (value === "Scan") {
+                this.updateProviderField("type", "Nmap");
+                this.updateProviderField("subType", "Default");
               }
             })}>
               {
@@ -334,6 +338,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
                   {id: "Speech-to-Text", name: "Speech-to-Text"},
                   {id: "Bot", name: "Bot"},
+                  {id: "Scan", name: "Scan"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
@@ -1089,6 +1094,12 @@ class ProviderEditPage extends React.Component {
           account={this.props.account}
           onUpdateProvider={this.updateProviderField.bind(this)}
         />
+        <TestScanWidget
+          provider={this.state.provider}
+          originalProvider={this.state.originalProvider}
+          account={this.props.account}
+          onUpdateProvider={this.updateProviderField.bind(this)}
+        />
         {
           this.state.provider.category === "Model" ? (
             <Row style={{marginTop: "20px"}} >
@@ -1137,6 +1148,25 @@ class ProviderEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        {
+          this.state.provider.category === "Scan" ? (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input
+                  disabled={isRemote}
+                  value={this.state.provider.path}
+                  onChange={e => {
+                    this.updateProviderField("path", e.target.value);
+                  }}
+                  placeholder={i18next.t("provider:Leave empty to use system PATH")}
+                />
+              </Col>
+            </Row>
+          ) : null
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Is default"), i18next.t("store:Is default - Tooltip"))} :
