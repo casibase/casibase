@@ -207,3 +207,50 @@ func (c *ApiController) RefreshMcpTools() {
 
 	c.ResponseOk(&provider)
 }
+
+// TestScan
+// @Title TestScan
+// @Tag Provider API
+// @Description test scan provider
+// @Param id query string true "The id (owner/name) of the provider"
+// @Param target query string true "The scan target (IP or domain)"
+// @Success 200 {object} controllers.Response The Response object
+// @router /test-scan [post]
+func (c *ApiController) TestScan() {
+	id := c.Input().Get("id")
+	target := c.Input().Get("target")
+	lang := c.GetAcceptLanguage()
+
+	provider, err := object.GetProvider(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	if provider == nil {
+		c.ResponseError("Provider not found")
+		return
+	}
+
+	scanProvider, err := provider.GetScanProvider(lang)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	result, err := scanProvider.Scan(target)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	// Store the scan result in provider.Text field
+	provider.Text = result
+	_, err = object.UpdateProvider(id, provider)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(result)
+}

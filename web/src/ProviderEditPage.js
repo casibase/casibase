@@ -24,6 +24,7 @@ import McpToolsTable from "./table/McpToolsTable";
 import ModelTestWidget from "./common/TestModelWidget";
 import TtsTestWidget from "./common/TestTtsWidget";
 import EmbedTestWidget from "./common/TestEmbedWidget";
+import TestScanWidget from "./common/TestScanWidget";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -319,6 +320,9 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Bot") {
                 this.updateProviderField("type", "Tencent");
                 this.updateProviderField("subType", "WeCom Bot");
+              } else if (value === "Scan") {
+                this.updateProviderField("type", "Nmap");
+                this.updateProviderField("subType", "Default");
               }
             })}>
               {
@@ -334,6 +338,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
                   {id: "Speech-to-Text", name: "Speech-to-Text"},
                   {id: "Bot", name: "Bot"},
+                  {id: "Scan", name: "Scan"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
@@ -1084,6 +1089,12 @@ class ProviderEditPage extends React.Component {
           onUpdateProvider={this.updateProviderField.bind(this)}
         />
         <TtsTestWidget
+          provider={this.state.provider}
+          originalProvider={this.state.originalProvider}
+          account={this.props.account}
+          onUpdateProvider={this.updateProviderField.bind(this)}
+        />
+        <TestScanWidget
           provider={this.state.provider}
           originalProvider={this.state.originalProvider}
           account={this.props.account}
