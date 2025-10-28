@@ -81,10 +81,46 @@ func (p *AlibabaCloudParser) ScanAssets(owner string, provider *Provider) ([]*As
 		nextToken = response.Body.NextToken
 	}
 
-	// Enrich assets with detailed information from 2nd level APIs
-	err = p.enrichAssetsWithDetailedInfo(provider, assets)
-	if err != nil {
-		return nil, err
+	// Group assets by resource type to check what types exist
+	resourceTypes := make(map[string]bool)
+	for _, asset := range assets {
+		resourceTypes[asset.ResourceType] = true
+	}
+
+	// Create ECS client if needed
+	var ecsClient *ecs20140526.Client
+	if resourceTypes["ECS Instance"] || resourceTypes["Disk"] || resourceTypes["VPC"] {
+		ecsClient, err = p.createEcsClient(provider)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// Get and merge ECS instance details if ECS instances exist
+	if resourceTypes["ECS Instance"] {
+		ecsDetails, err := p.getEcsInstances(ecsClient, assets)
+		if err != nil {
+			return nil, err
+		}
+		p.mergeEcsDetails(assets, ecsDetails)
+	}
+
+	// Get and merge disk details if disks exist
+	if resourceTypes["Disk"] {
+		diskDetails, err := p.getDisks(ecsClient, assets)
+		if err != nil {
+			return nil, err
+		}
+		p.mergeDiskDetails(assets, diskDetails)
+	}
+
+	// Get and merge VPC details if VPCs exist
+	if resourceTypes["VPC"] {
+		vpcDetails, err := p.getVpcs(ecsClient, assets)
+		if err != nil {
+			return nil, err
+		}
+		p.mergeVpcDetails(assets, vpcDetails)
 	}
 
 	return assets, nil
@@ -229,53 +265,6 @@ func (p *AlibabaCloudParser) getDisplayResourceType(resourceType string) string 
 	return resourceType
 }
 
-// enrichAssetsWithDetailedInfo calls 2nd level APIs to get detailed information for assets
-func (p *AlibabaCloudParser) enrichAssetsWithDetailedInfo(provider *Provider, assets []*Asset) error {
-	// Group assets by resource type
-	ecsAssets := []*Asset{}
-	diskAssets := []*Asset{}
-	vpcAssets := []*Asset{}
-
-	for _, asset := range assets {
-		switch asset.ResourceType {
-		case "ECS Instance":
-			ecsAssets = append(ecsAssets, asset)
-		case "Disk":
-			diskAssets = append(diskAssets, asset)
-		case "VPC":
-			vpcAssets = append(vpcAssets, asset)
-		}
-	}
-
-	// Only call 2nd level APIs if there are assets of that type
-	if len(ecsAssets) > 0 || len(diskAssets) > 0 || len(vpcAssets) > 0 {
-		ecsClient, err := p.createEcsClient(provider)
-		if err != nil {
-			return err
-		}
-
-		if len(ecsAssets) > 0 {
-			if err := p.enrichEcsInstances(ecsClient, ecsAssets); err != nil {
-				return err
-			}
-		}
-
-		if len(diskAssets) > 0 {
-			if err := p.enrichDisks(ecsClient, diskAssets); err != nil {
-				return err
-			}
-		}
-
-		if len(vpcAssets) > 0 {
-			if err := p.enrichVpcs(ecsClient, vpcAssets); err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
-}
-
 // createEcsClient creates an Alibaba Cloud ECS client
 func (p *AlibabaCloudParser) createEcsClient(provider *Provider) (*ecs20140526.Client, error) {
 	config := &openapi.Config{
@@ -287,20 +276,61 @@ func (p *AlibabaCloudParser) createEcsClient(provider *Provider) (*ecs20140526.C
 	return ecs20140526.NewClient(config)
 }
 
-// enrichEcsInstances enriches ECS instances with detailed information
-func (p *AlibabaCloudParser) enrichEcsInstances(client *ecs20140526.Client, assets []*Asset) error {
-	// Build a list of instance IDs as a JSON array string
+// EcsInstanceDetail holds detailed information for an ECS instance
+type EcsInstanceDetail struct {
+	InstanceId          string
+	InstanceType        string
+	ImageId             string
+	OSName              string
+	Cpu                 int32
+	Memory              int32
+	PublicIp            string
+	PrivateIp           string
+	InstanceChargeType  string
+	Status              string
+}
+
+// DiskDetail holds detailed information for a disk
+type DiskDetail struct {
+	DiskId              string
+	Size                int32
+	Category            string
+	Type                string
+	Encrypted           bool
+	InstanceId          string
+	DiskChargeType      string
+	DeleteWithInstance  bool
+	Status              string
+}
+
+// VpcDetail holds detailed information for a VPC
+type VpcDetail struct {
+	VpcId       string
+	CidrBlock   string
+	VRouterId   string
+	IsDefault   bool
+	Status      string
+	Description string
+}
+
+// getEcsInstances retrieves detailed information for ECS instances
+func (p *AlibabaCloudParser) getEcsInstances(client *ecs20140526.Client, assets []*Asset) (map[string]*EcsInstanceDetail, error) {
+	// Build a list of instance IDs
 	instanceIds := []string{}
-	assetMap := make(map[string]*Asset)
 	for _, asset := range assets {
-		instanceIds = append(instanceIds, asset.ResourceId)
-		assetMap[asset.ResourceId] = asset
+		if asset.ResourceType == "ECS Instance" {
+			instanceIds = append(instanceIds, asset.ResourceId)
+		}
+	}
+
+	if len(instanceIds) == 0 {
+		return make(map[string]*EcsInstanceDetail), nil
 	}
 
 	// Convert to JSON array string
 	instanceIdsJson, err := json.Marshal(instanceIds)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Call DescribeInstances API to get detailed information
@@ -311,34 +341,15 @@ func (p *AlibabaCloudParser) enrichEcsInstances(client *ecs20140526.Client, asse
 
 	response, err := client.DescribeInstances(request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
+	// Build map of instance details
+	detailsMap := make(map[string]*EcsInstanceDetail)
 	if response.Body.Instances != nil && response.Body.Instances.Instance != nil {
 		for _, instance := range response.Body.Instances.Instance {
 			instanceId := tea.StringValue(instance.InstanceId)
-			asset, ok := assetMap[instanceId]
-			if !ok {
-				continue
-			}
-
-			// Parse existing properties
-			properties := make(map[string]interface{})
-			if asset.Properties != "" {
-				if err := json.Unmarshal([]byte(asset.Properties), &properties); err != nil {
-					// If existing properties are invalid, start with empty map
-					properties = make(map[string]interface{})
-				}
-			}
-
-			// Add detailed ECS information
-			properties["instanceType"] = tea.StringValue(instance.InstanceType)
-			properties["imageId"] = tea.StringValue(instance.ImageId)
-			properties["osName"] = tea.StringValue(instance.OSName)
-			properties["cpu"] = tea.Int32Value(instance.Cpu)
-			properties["memory"] = tea.Int32Value(instance.Memory)
-			properties["instanceChargeType"] = tea.StringValue(instance.InstanceChargeType)
-
+			
 			// Extract public IP
 			publicIp := ""
 			if instance.EipAddress != nil && tea.StringValue(instance.EipAddress.IpAddress) != "" {
@@ -346,49 +357,49 @@ func (p *AlibabaCloudParser) enrichEcsInstances(client *ecs20140526.Client, asse
 			} else if instance.PublicIpAddress != nil && len(instance.PublicIpAddress.IpAddress) > 0 {
 				publicIp = tea.StringValue(instance.PublicIpAddress.IpAddress[0])
 			}
-			if publicIp != "" {
-				properties["publicIp"] = publicIp
-			}
 
 			// Extract private IP
 			privateIp := ""
 			if instance.VpcAttributes != nil && instance.VpcAttributes.PrivateIpAddress != nil && len(instance.VpcAttributes.PrivateIpAddress.IpAddress) > 0 {
 				privateIp = tea.StringValue(instance.VpcAttributes.PrivateIpAddress.IpAddress[0])
 			}
-			if privateIp != "" {
-				properties["privateIp"] = privateIp
-			}
 
-			// Update asset state (more accurate from DescribeInstances)
-			asset.State = tea.StringValue(instance.Status)
-
-			// Marshal properties back to JSON
-			propertiesJson, err := json.Marshal(properties)
-			if err != nil {
-				// If marshaling fails, keep the existing properties
-				continue
+			detailsMap[instanceId] = &EcsInstanceDetail{
+				InstanceId:         instanceId,
+				InstanceType:       tea.StringValue(instance.InstanceType),
+				ImageId:            tea.StringValue(instance.ImageId),
+				OSName:             tea.StringValue(instance.OSName),
+				Cpu:                tea.Int32Value(instance.Cpu),
+				Memory:             tea.Int32Value(instance.Memory),
+				PublicIp:           publicIp,
+				PrivateIp:          privateIp,
+				InstanceChargeType: tea.StringValue(instance.InstanceChargeType),
+				Status:             tea.StringValue(instance.Status),
 			}
-			asset.Properties = string(propertiesJson)
 		}
 	}
 
-	return nil
+	return detailsMap, nil
 }
 
-// enrichDisks enriches disks with detailed information
-func (p *AlibabaCloudParser) enrichDisks(client *ecs20140526.Client, assets []*Asset) error {
-	// Build a list of disk IDs as a JSON array string
+// getDisks retrieves detailed information for disks
+func (p *AlibabaCloudParser) getDisks(client *ecs20140526.Client, assets []*Asset) (map[string]*DiskDetail, error) {
+	// Build a list of disk IDs
 	diskIds := []string{}
-	assetMap := make(map[string]*Asset)
 	for _, asset := range assets {
-		diskIds = append(diskIds, asset.ResourceId)
-		assetMap[asset.ResourceId] = asset
+		if asset.ResourceType == "Disk" {
+			diskIds = append(diskIds, asset.ResourceId)
+		}
+	}
+
+	if len(diskIds) == 0 {
+		return make(map[string]*DiskDetail), nil
 	}
 
 	// Convert to JSON array string
 	diskIdsJson, err := json.Marshal(diskIds)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Call DescribeDisks API to get detailed information
@@ -399,56 +410,41 @@ func (p *AlibabaCloudParser) enrichDisks(client *ecs20140526.Client, assets []*A
 
 	response, err := client.DescribeDisks(request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
+	// Build map of disk details
+	detailsMap := make(map[string]*DiskDetail)
 	if response.Body.Disks != nil && response.Body.Disks.Disk != nil {
 		for _, disk := range response.Body.Disks.Disk {
 			diskId := tea.StringValue(disk.DiskId)
-			asset, ok := assetMap[diskId]
-			if !ok {
-				continue
+			detailsMap[diskId] = &DiskDetail{
+				DiskId:             diskId,
+				Size:               tea.Int32Value(disk.Size),
+				Category:           tea.StringValue(disk.Category),
+				Type:               tea.StringValue(disk.Type),
+				Encrypted:          tea.BoolValue(disk.Encrypted),
+				InstanceId:         tea.StringValue(disk.InstanceId),
+				DiskChargeType:     tea.StringValue(disk.DiskChargeType),
+				DeleteWithInstance: tea.BoolValue(disk.DeleteWithInstance),
+				Status:             tea.StringValue(disk.Status),
 			}
-
-			// Parse existing properties
-			properties := make(map[string]interface{})
-			if asset.Properties != "" {
-				if err := json.Unmarshal([]byte(asset.Properties), &properties); err != nil {
-					// If existing properties are invalid, start with empty map
-					properties = make(map[string]interface{})
-				}
-			}
-
-			// Add detailed disk information
-			properties["size"] = tea.Int32Value(disk.Size)
-			properties["category"] = tea.StringValue(disk.Category)
-			properties["type"] = tea.StringValue(disk.Type)
-			properties["encrypted"] = tea.BoolValue(disk.Encrypted)
-			properties["instanceId"] = tea.StringValue(disk.InstanceId)
-			properties["diskChargeType"] = tea.StringValue(disk.DiskChargeType)
-			properties["deleteWithInstance"] = tea.BoolValue(disk.DeleteWithInstance)
-
-			// Update asset state (more accurate from DescribeDisks)
-			asset.State = tea.StringValue(disk.Status)
-
-			// Marshal properties back to JSON
-			propertiesJson, err := json.Marshal(properties)
-			if err != nil {
-				// If marshaling fails, keep the existing properties
-				continue
-			}
-			asset.Properties = string(propertiesJson)
 		}
 	}
 
-	return nil
+	return detailsMap, nil
 }
 
-// enrichVpcs enriches VPCs with detailed information
-func (p *AlibabaCloudParser) enrichVpcs(client *ecs20140526.Client, assets []*Asset) error {
-	// VPC enrichment needs to be done one by one or in batches
-	// since DescribeVpcs API only accepts a single VpcId parameter
+// getVpcs retrieves detailed information for VPCs
+func (p *AlibabaCloudParser) getVpcs(client *ecs20140526.Client, assets []*Asset) (map[string]*VpcDetail, error) {
+	detailsMap := make(map[string]*VpcDetail)
+
+	// VPC needs to be queried one by one
 	for _, asset := range assets {
+		if asset.ResourceType != "VPC" {
+			continue
+		}
+
 		request := &ecs20140526.DescribeVpcsRequest{
 			VpcId:    tea.String(asset.ResourceId),
 			RegionId: tea.String(asset.Region),
@@ -457,41 +453,155 @@ func (p *AlibabaCloudParser) enrichVpcs(client *ecs20140526.Client, assets []*As
 
 		response, err := client.DescribeVpcs(request)
 		if err != nil {
-			// Log error but continue with other VPCs
+			// Continue with other VPCs if one fails
 			continue
 		}
 
 		if response.Body.Vpcs != nil && response.Body.Vpcs.Vpc != nil && len(response.Body.Vpcs.Vpc) > 0 {
 			vpc := response.Body.Vpcs.Vpc[0]
-
-			// Parse existing properties
-			properties := make(map[string]interface{})
-			if asset.Properties != "" {
-				if err := json.Unmarshal([]byte(asset.Properties), &properties); err != nil {
-					// If existing properties are invalid, start with empty map
-					properties = make(map[string]interface{})
-				}
+			vpcId := tea.StringValue(vpc.VpcId)
+			detailsMap[vpcId] = &VpcDetail{
+				VpcId:       vpcId,
+				CidrBlock:   tea.StringValue(vpc.CidrBlock),
+				VRouterId:   tea.StringValue(vpc.VRouterId),
+				IsDefault:   tea.BoolValue(vpc.IsDefault),
+				Status:      tea.StringValue(vpc.Status),
+				Description: tea.StringValue(vpc.Description),
 			}
-
-			// Add detailed VPC information
-			properties["cidrBlock"] = tea.StringValue(vpc.CidrBlock)
-			properties["vRouterId"] = tea.StringValue(vpc.VRouterId)
-			properties["isDefault"] = tea.BoolValue(vpc.IsDefault)
-			properties["status"] = tea.StringValue(vpc.Status)
-			properties["description"] = tea.StringValue(vpc.Description)
-
-			// Update asset state (more accurate from DescribeVpcs)
-			asset.State = tea.StringValue(vpc.Status)
-
-			// Marshal properties back to JSON
-			propertiesJson, err := json.Marshal(properties)
-			if err != nil {
-				// If marshaling fails, keep the existing properties
-				continue
-			}
-			asset.Properties = string(propertiesJson)
 		}
 	}
 
-	return nil
+	return detailsMap, nil
+}
+
+// mergeEcsDetails merges ECS instance details into assets
+func (p *AlibabaCloudParser) mergeEcsDetails(assets []*Asset, details map[string]*EcsInstanceDetail) {
+	for _, asset := range assets {
+		if asset.ResourceType != "ECS Instance" {
+			continue
+		}
+
+		detail, ok := details[asset.ResourceId]
+		if !ok {
+			continue
+		}
+
+		// Parse existing properties
+		properties := make(map[string]interface{})
+		if asset.Properties != "" {
+			if err := json.Unmarshal([]byte(asset.Properties), &properties); err != nil {
+				// If existing properties are invalid, start with empty map
+				properties = make(map[string]interface{})
+			}
+		}
+
+		// Add detailed ECS information
+		properties["instanceType"] = detail.InstanceType
+		properties["imageId"] = detail.ImageId
+		properties["osName"] = detail.OSName
+		properties["cpu"] = detail.Cpu
+		properties["memory"] = detail.Memory
+		properties["instanceChargeType"] = detail.InstanceChargeType
+		if detail.PublicIp != "" {
+			properties["publicIp"] = detail.PublicIp
+		}
+		if detail.PrivateIp != "" {
+			properties["privateIp"] = detail.PrivateIp
+		}
+
+		// Update asset state
+		asset.State = detail.Status
+
+		// Marshal properties back to JSON
+		propertiesJson, err := json.Marshal(properties)
+		if err != nil {
+			// If marshaling fails, keep the existing properties
+			continue
+		}
+		asset.Properties = string(propertiesJson)
+	}
+}
+
+// mergeDiskDetails merges disk details into assets
+func (p *AlibabaCloudParser) mergeDiskDetails(assets []*Asset, details map[string]*DiskDetail) {
+	for _, asset := range assets {
+		if asset.ResourceType != "Disk" {
+			continue
+		}
+
+		detail, ok := details[asset.ResourceId]
+		if !ok {
+			continue
+		}
+
+		// Parse existing properties
+		properties := make(map[string]interface{})
+		if asset.Properties != "" {
+			if err := json.Unmarshal([]byte(asset.Properties), &properties); err != nil {
+				// If existing properties are invalid, start with empty map
+				properties = make(map[string]interface{})
+			}
+		}
+
+		// Add detailed disk information
+		properties["size"] = detail.Size
+		properties["category"] = detail.Category
+		properties["type"] = detail.Type
+		properties["encrypted"] = detail.Encrypted
+		properties["instanceId"] = detail.InstanceId
+		properties["diskChargeType"] = detail.DiskChargeType
+		properties["deleteWithInstance"] = detail.DeleteWithInstance
+
+		// Update asset state
+		asset.State = detail.Status
+
+		// Marshal properties back to JSON
+		propertiesJson, err := json.Marshal(properties)
+		if err != nil {
+			// If marshaling fails, keep the existing properties
+			continue
+		}
+		asset.Properties = string(propertiesJson)
+	}
+}
+
+// mergeVpcDetails merges VPC details into assets
+func (p *AlibabaCloudParser) mergeVpcDetails(assets []*Asset, details map[string]*VpcDetail) {
+	for _, asset := range assets {
+		if asset.ResourceType != "VPC" {
+			continue
+		}
+
+		detail, ok := details[asset.ResourceId]
+		if !ok {
+			continue
+		}
+
+		// Parse existing properties
+		properties := make(map[string]interface{})
+		if asset.Properties != "" {
+			if err := json.Unmarshal([]byte(asset.Properties), &properties); err != nil {
+				// If existing properties are invalid, start with empty map
+				properties = make(map[string]interface{})
+			}
+		}
+
+		// Add detailed VPC information
+		properties["cidrBlock"] = detail.CidrBlock
+		properties["vRouterId"] = detail.VRouterId
+		properties["isDefault"] = detail.IsDefault
+		properties["status"] = detail.Status
+		properties["description"] = detail.Description
+
+		// Update asset state
+		asset.State = detail.Status
+
+		// Marshal properties back to JSON
+		propertiesJson, err := json.Marshal(properties)
+		if err != nil {
+			// If marshaling fails, keep the existing properties
+			continue
+		}
+		asset.Properties = string(propertiesJson)
+	}
 }
