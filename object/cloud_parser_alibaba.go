@@ -35,23 +35,49 @@ func (p *AlibabaCloudParser) ScanAssets(owner string, provider *Provider) ([]*As
 		return nil, err
 	}
 
-	// Get all available resource types
-	resourceTypes, err := p.getResourceTypes(client)
-	if err != nil {
-		return nil, err
-	}
-
 	var assets []*Asset
+	var nextToken *string
 
-	// Scan each resource type
-	for _, resourceType := range resourceTypes {
-		typeAssets, err := p.scanResourcesByType(owner, provider, client, resourceType)
-		if err != nil {
-			// Skip this resource type if scanning fails (e.g., no permission or resource type not available)
-			// This allows the scan to continue with other resource types
-			continue
+	// Call SearchResources API without ResourceType filter to get all resources across all types
+	for {
+		var filter []*resourcecenter20221201.SearchResourcesRequestFilter
+
+		// Add region filter if specified
+		if provider.Region != "" {
+			filter = append(filter, &resourcecenter20221201.SearchResourcesRequestFilter{
+				Key:       tea.String("RegionId"),
+				MatchType: tea.String("Equals"),
+				Value:     []*string{tea.String(provider.Region)},
+			})
 		}
-		assets = append(assets, typeAssets...)
+
+		request := &resourcecenter20221201.SearchResourcesRequest{
+			MaxResults: tea.Int32(100),
+			NextToken:  nextToken,
+		}
+
+		// Only set Filter if we have region filter, otherwise leave it nil to get all resources
+		if len(filter) > 0 {
+			request.Filter = filter
+		}
+
+		response, err := client.SearchResourcesWithOptions(request, &util2.RuntimeOptions{})
+		if err != nil {
+			return nil, err
+		}
+
+		if response.Body.Resources != nil {
+			for _, resource := range response.Body.Resources {
+				asset := p.convertResourceToAsset(owner, provider, resource)
+				assets = append(assets, asset)
+			}
+		}
+
+		// Check if there are more pages
+		if response.Body.NextToken == nil || tea.StringValue(response.Body.NextToken) == "" {
+			break
+		}
+		nextToken = response.Body.NextToken
 	}
 
 	return assets, nil
@@ -67,182 +93,11 @@ func (p *AlibabaCloudParser) createClient(provider *Provider) (*resourcecenter20
 	return resourcecenter20221201.NewClient(config)
 }
 
-// getResourceTypes retrieves all available resource types from Alibaba Cloud
-func (p *AlibabaCloudParser) getResourceTypes(client *resourcecenter20221201.Client) ([]string, error) {
-	request := &resourcecenter20221201.GetResourceCountsRequest{}
-	response, err := client.GetResourceCountsWithOptions(request, &util2.RuntimeOptions{})
-
-	var resourceTypes []string
-
-	// If API call succeeds, try to extract resource types from response
-	if err == nil && response != nil && response.Body != nil && response.Body.Filters != nil {
-		for _, filter := range response.Body.Filters {
-			if tea.StringValue(filter.Key) == "ResourceType" && filter.Values != nil {
-				for _, value := range filter.Values {
-					resourceTypes = append(resourceTypes, tea.StringValue(value))
-				}
-				break
-			}
-		}
-	}
-
-	// If we couldn't get resource types from API (due to error or empty response),
-	// use a comprehensive default list
-	if len(resourceTypes) == 0 {
-		resourceTypes = p.getDefaultResourceTypes()
-	}
-
-	return resourceTypes, nil
-}
-
-// getDefaultResourceTypes returns a comprehensive list of common Alibaba Cloud resource types
-func (p *AlibabaCloudParser) getDefaultResourceTypes() []string {
-	return []string{
-		// Compute
-		"ACS::ECS::Instance",
-		"ACS::ECS::Disk",
-		"ACS::ECS::SecurityGroup",
-		"ACS::ECS::Snapshot",
-		"ACS::ECS::Image",
-		"ACS::ECS::NetworkInterface",
-		"ACS::ECS::KeyPair",
-		"ACS::ECS::LaunchTemplate",
-
-		// Networking
-		"ACS::VPC::VPC",
-		"ACS::VPC::VSwitch",
-		"ACS::VPC::RouteTable",
-		"ACS::VPC::EIP",
-		"ACS::VPC::NatGateway",
-		"ACS::VPC::VpnGateway",
-		"ACS::VPC::CustomerGateway",
-		"ACS::VPC::VpnConnection",
-		"ACS::VPC::CommonBandwidthPackage",
-
-		// Load Balancing
-		"ACS::SLB::LoadBalancer",
-		"ACS::ALB::LoadBalancer",
-		"ACS::NLB::LoadBalancer",
-
-		// Container
-		"ACS::CS::Cluster",
-		"ACS::ACK::Cluster",
-		"ACS::ASK::Cluster",
-
-		// Database
-		"ACS::RDS::DBInstance",
-		"ACS::Redis::DBInstance",
-		"ACS::MongoDB::DBInstance",
-		"ACS::PolarDB::DBCluster",
-		"ACS::DRDS::Instance",
-		"ACS::Memcache::Instance",
-		"ACS::HBase::Instance",
-		"ACS::ClickHouse::DBCluster",
-
-		// Storage
-		"ACS::OSS::Bucket",
-		"ACS::NAS::FileSystem",
-		"ACS::NAS::MountTarget",
-
-		// CDN
-		"ACS::CDN::Domain",
-		"ACS::DCDN::Domain",
-
-		// DNS
-		"ACS::PVTZ::Zone",
-		"ACS::DNS::Domain",
-
-		// Security
-		"ACS::RAM::User",
-		"ACS::RAM::Role",
-		"ACS::RAM::Policy",
-		"ACS::KMS::Key",
-		"ACS::KMS::Secret",
-
-		// Monitoring & Management
-		"ACS::CMS::EventRule",
-		"ACS::CMS::SiteMonitor",
-
-		// Serverless
-		"ACS::FC::Function",
-		"ACS::FC::Service",
-
-		// Message Queue
-		"ACS::MNS::Queue",
-		"ACS::MNS::Topic",
-		"ACS::ONS::Topic",
-		"ACS::ONS::Group",
-
-		// Big Data
-		"ACS::EMR::Cluster",
-		"ACS::Elasticsearch::Instance",
-
-		// API Gateway
-		"ACS::ApiGateway::Api",
-		"ACS::ApiGateway::App",
-
-		// Log Service
-		"ACS::SLS::Project",
-
-		// Auto Scaling
-		"ACS::ESS::ScalingGroup",
-		"ACS::ESS::ScalingConfiguration",
-	}
-}
-
-// scanResourcesByType scans resources of a specific type
-func (p *AlibabaCloudParser) scanResourcesByType(owner string, provider *Provider, client *resourcecenter20221201.Client, resourceType string) ([]*Asset, error) {
-	var assets []*Asset
-	var nextToken *string
-
-	for {
-		filter := []*resourcecenter20221201.SearchResourcesRequestFilter{
-			{
-				Key:       tea.String("ResourceType"),
-				MatchType: tea.String("Equals"),
-				Value:     []*string{tea.String(resourceType)},
-			},
-		}
-
-		// Add region filter if specified
-		if provider.Region != "" {
-			filter = append(filter, &resourcecenter20221201.SearchResourcesRequestFilter{
-				Key:       tea.String("RegionId"),
-				MatchType: tea.String("Equals"),
-				Value:     []*string{tea.String(provider.Region)},
-			})
-		}
-
-		request := &resourcecenter20221201.SearchResourcesRequest{
-			Filter:     filter,
-			MaxResults: tea.Int32(100),
-			NextToken:  nextToken,
-		}
-
-		response, err := client.SearchResourcesWithOptions(request, &util2.RuntimeOptions{})
-		if err != nil {
-			return nil, err
-		}
-
-		if response.Body.Resources != nil {
-			for _, resource := range response.Body.Resources {
-				asset := p.convertResourceToAsset(owner, provider, resource, resourceType)
-				assets = append(assets, asset)
-			}
-		}
-
-		// Check if there are more pages
-		if response.Body.NextToken == nil || tea.StringValue(response.Body.NextToken) == "" {
-			break
-		}
-		nextToken = response.Body.NextToken
-	}
-
-	return assets, nil
-}
-
 // convertResourceToAsset converts an Alibaba Cloud resource to an Asset
-func (p *AlibabaCloudParser) convertResourceToAsset(owner string, provider *Provider, resource *resourcecenter20221201.SearchResourcesResponseBodyResources, resourceType string) *Asset {
+func (p *AlibabaCloudParser) convertResourceToAsset(owner string, provider *Provider, resource *resourcecenter20221201.SearchResourcesResponseBodyResources) *Asset {
+	// Extract resource type from the resource object
+	resourceType := tea.StringValue(resource.ResourceType)
+
 	// Extract public and private IPs
 	publicIp := ""
 	privateIp := ""
