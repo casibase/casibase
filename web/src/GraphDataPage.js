@@ -142,12 +142,13 @@ class GraphDataPage extends React.Component {
         category: node.category,
         // Support for icon
         symbol: sanitizedIcon ? `image://${sanitizedIcon}` : "circle",
-        // Add selection indicator
+        // Add selection indicator - more prominent dark style
         itemStyle: isSelected ? {
-          borderColor: "#1890ff",
-          borderWidth: 4,
-          shadowBlur: 10,
-          shadowColor: "#1890ff",
+          color: "#d32f2f",
+          borderColor: "#b71c1c",
+          borderWidth: 6,
+          shadowBlur: 20,
+          shadowColor: "rgba(211, 47, 47, 0.8)",
         } : undefined,
         label: {
           show: true,
@@ -156,8 +157,10 @@ class GraphDataPage extends React.Component {
           rich: {
             name: {
               fontSize: 12,
-              color: "#333",
-              padding: [2, 0, 0, 0],
+              color: isSelected ? "#ffffff" : "#333",
+              backgroundColor: isSelected ? "#d32f2f" : "transparent",
+              padding: isSelected ? [4, 8, 4, 8] : [2, 0, 0, 0],
+              borderRadius: isSelected ? 4 : 0,
             },
           },
         },
@@ -194,6 +197,10 @@ class GraphDataPage extends React.Component {
           categories: categories,
           roam: true,
           draggable: true,
+          scaleLimit: {
+            min: 0.2,
+            max: 5,
+          },
           label: {
             show: true,
             position: "bottom",
@@ -239,14 +246,14 @@ class GraphDataPage extends React.Component {
   };
 
   onChartReady = (chartInstance) => {
-    // Set cursor to pointer on node hover using public containPixel API
+    // Set cursor to hand (move) on node hover using public containPixel API
     // This ensures compatibility with future ECharts versions
     chartInstance.getZr().on("mousemove", (params) => {
       const pointInPixel = [params.offsetX, params.offsetY];
       if (chartInstance.containPixel("series", pointInPixel)) {
-        chartInstance.getZr().setCursorStyle("pointer");
+        chartInstance.getZr().setCursorStyle("grab");
       } else {
-        chartInstance.getZr().setCursorStyle("default");
+        chartInstance.getZr().setCursorStyle("move");
       }
     });
   };
@@ -372,6 +379,7 @@ class GraphDataPage extends React.Component {
           width: "100%",
           height: "100%",
           position: "relative",
+          border: this.props.showBorder ? "1px solid #d9d9d9" : "none",
         }}
       >
         {(this.state.errorText || this.state.renderError) && (

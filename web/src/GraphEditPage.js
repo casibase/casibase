@@ -138,7 +138,7 @@ class GraphEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div key={this.state.graphCount} style={{height: "640px", width: "100%"}}>
-              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} layout={this.state.graph?.layout} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
+              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} layout={this.state.graph?.layout} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
             </div>
           </Col>
         </Row>
