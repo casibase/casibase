@@ -328,4 +328,20 @@ func initAPI() {
 	beego.Router("/api/bugfix/create-bug-fix", &controllers.ApiController{}, "POST:BugFixCreate")
 	beego.Router("/api/bugfix/get-current-bug-fix", &controllers.ApiController{}, "GET:BugFixGetCurrent")
 	beego.Router("/api/bugfix/stop-bug-fix", &controllers.ApiController{}, "POST:BugfixStop")
+
+
+	// 多中心科研部分
+	beego.Router("/api/multicenter/get-datasets", &controllers.ApiController{}, "GET:GetDatasets")
+	beego.Router("/api/multicenter/get-dataset-by-id", &controllers.ApiController{}, "GET:GetDatasetById")
+	beego.Router("/api/multicenter/add-dataset", &controllers.ApiController{}, "POST:AddDataset")
+	beego.Router("/api/multicenter/update-dataset", &controllers.ApiController{}, "POST:UpdateDataset")
+	beego.Router("/api/multicenter/search-dataset-market", &controllers.ApiController{}, "GET:SearchDatasetMarket")
+	beego.Router("/api/multicenter/add-access-request", &controllers.ApiController{}, "POST:AddAccessRequest")
+	beego.Router("/api/multicenter/get-access-request-by-reviewer-and-status", &controllers.ApiController{}, "GET:GetAccessRequestByReviewerAndStatus")
+	beego.Router("/api/multicenter/get-access-request-by-requester-and-status", &controllers.ApiController{}, "GET:GetAccessRequestByRequesterAndStatus")
+	beego.Router("/api/multicenter/cancel-access-request", &controllers.ApiController{}, "POST:CancelAccessRequest")
+	beego.Router("/api/multicenter/review-access-request", &controllers.ApiController{}, "POST:ReviewAccessRequest")
+	beego.Router("/api/multicenter/get-grants-by-grantedId/:grantedId", &controllers.ApiController{}, "GET:GetAssetGrantByIdAndUser")
+	beego.Router("/api/multicenter/get-granted-assets-by-owner", &controllers.ApiController{}, "GET:GetGrantedAssetsByOwner")
+	beego.Router("/api/multicenter/get-granted-assets-by-requester", &controllers.ApiController{}, "GET:GetGrantedAssetsByRequester")
 }

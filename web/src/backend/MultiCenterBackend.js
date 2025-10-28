@@ -159,3 +159,101 @@ export function generateSRPicture(image) {
     body: formData
   }).then();
 }
+
+// === DataUsage ===
+
+export function getDatasets() {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/get-datasets`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json())
+}
+
+export function getDatasetById(id) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/get-dataset-by-id?id=${id}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json())
+}
+
+export function addDataset(dataset) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/add-dataset`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(dataset),
+  }).then(res => res.json())
+}
+
+export function updateDataset(id, dataset) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/update-dataset?id=${id}`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(dataset),
+  }).then(res => res.json())
+}
+
+export function searchDatasetsMarket(keyword) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/search-dataset-market?query=${encodeURIComponent(keyword)}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json())
+}
+
+export function addAccessRequest(request) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/add-access-request`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(request),
+  }).then(res => res.json())
+}
+
+export function getAccessRequestsByReviewerAndStatus(status) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/get-access-request-by-reviewer-and-status?status=${encodeURIComponent(status)}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json())
+}
+
+export function getAccessRequestsByRequesterAndStatus(status) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/get-access-request-by-requester-and-status?status=${encodeURIComponent(status)}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json())
+}
+
+export function cancelAccessRequest(id) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/cancel-access-request?id=${id}`, {
+    method: "POST",
+    credentials: "include",
+  }).then(res => res.json())
+}
+
+export function reviewAccessRequest(id, approved, comment) {
+  const approvedStr = approved ? "true" : "false"
+  return fetch(`${Setting.ServerUrl}/api/multicenter/review-access-request?id=${id}&approved=${approvedStr}&comment=${encodeURIComponent(comment)}`, {
+    method: "POST",
+    credentials: "include",
+  }).then(res => res.json())
+}
+
+export function getAssetGrantByIdAndUser(grantedId) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/get-grants-by-grantedId?grantedId=${grantedId}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json())
+}
+
+export function getGrantedAssetsByOwner() {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/get-granted-assets-by-owner`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json())
+}
+
+export function getGrantedAssetsByRequester() {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/get-granted-assets-by-requester`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json())
+}
+

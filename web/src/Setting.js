@@ -151,6 +151,12 @@ export function showMessage(type, text) {
     message.success(text);
   } else if (type === "error") {
     message.error(text);
+  } else if (type === "info") {
+    message.info(text);
+  } else if (type === "warning") {
+    message.warning(text);
+  } else {
+    message.info(text);
   }
 }
 
@@ -2415,11 +2421,11 @@ export function getBuiltinTools() {
       name: "Time Tools",
       icon: "🕐",
       tools: [
-        {name: "current_time", description: "Get current time"},
-        {name: "localtime_to_timestamp", description: "Convert local time to timestamp"},
-        {name: "timestamp_to_localtime", description: "Convert timestamp to local time"},
-        {name: "timezone_conversion", description: "Convert timezone"},
-        {name: "weekday", description: "Calculate weekday"},
+        { name: "current_time", description: "Get current time" },
+        { name: "localtime_to_timestamp", description: "Convert local time to timestamp" },
+        { name: "timestamp_to_localtime", description: "Convert timestamp to local time" },
+        { name: "timezone_conversion", description: "Convert timezone" },
+        { name: "weekday", description: "Calculate weekday" },
       ],
     },
     {
@@ -2427,7 +2433,7 @@ export function getBuiltinTools() {
       name: "Code Tools",
       icon: "💻",
       tools: [
-        {name: "execute_code", description: "Execute code"},
+        { name: "execute_code", description: "Execute code" },
       ],
     },
     {
@@ -2435,14 +2441,14 @@ export function getBuiltinTools() {
       name: "JSON Tools",
       icon: "📋",
       tools: [
-        {name: "process_json", description: "Process JSON"},
+        { name: "process_json", description: "Process JSON" },
       ],
     },
   ];
 }
 
 export function getFormattedSize(bytes) {
-  if (bytes === 0) {return "0 Bytes";}
+  if (bytes === 0) { return "0 Bytes"; }
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
