@@ -19,6 +19,7 @@ import (
 	"fmt"
 
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
+	ecs20140526 "github.com/alibabacloud-go/ecs-20140526/v4/client"
 	resourcecenter20221201 "github.com/alibabacloud-go/resourcecenter-20221201/client"
 	util2 "github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"
@@ -78,6 +79,12 @@ func (p *AlibabaCloudParser) ScanAssets(owner string, provider *Provider) ([]*As
 			break
 		}
 		nextToken = response.Body.NextToken
+	}
+
+	// Enrich assets with detailed information from 2nd level APIs
+	err = p.enrichAssetsWithDetailedInfo(provider, assets)
+	if err != nil {
+		return nil, err
 	}
 
 	return assets, nil
@@ -220,4 +227,250 @@ func (p *AlibabaCloudParser) getDisplayResourceType(resourceType string) string 
 
 	// If no mapping found, return the resource type as-is
 	return resourceType
+}
+
+// enrichAssetsWithDetailedInfo calls 2nd level APIs to get detailed information for assets
+func (p *AlibabaCloudParser) enrichAssetsWithDetailedInfo(provider *Provider, assets []*Asset) error {
+	// Group assets by resource type
+	ecsAssets := []*Asset{}
+	diskAssets := []*Asset{}
+	vpcAssets := []*Asset{}
+
+	for _, asset := range assets {
+		switch asset.ResourceType {
+		case "ECS Instance":
+			ecsAssets = append(ecsAssets, asset)
+		case "Disk":
+			diskAssets = append(diskAssets, asset)
+		case "VPC":
+			vpcAssets = append(vpcAssets, asset)
+		}
+	}
+
+	// Only call 2nd level APIs if there are assets of that type
+	if len(ecsAssets) > 0 || len(diskAssets) > 0 || len(vpcAssets) > 0 {
+		ecsClient, err := p.createEcsClient(provider)
+		if err != nil {
+			return err
+		}
+
+		if len(ecsAssets) > 0 {
+			if err := p.enrichEcsInstances(ecsClient, ecsAssets); err != nil {
+				return err
+			}
+		}
+
+		if len(diskAssets) > 0 {
+			if err := p.enrichDisks(ecsClient, diskAssets); err != nil {
+				return err
+			}
+		}
+
+		if len(vpcAssets) > 0 {
+			if err := p.enrichVpcs(ecsClient, vpcAssets); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+// createEcsClient creates an Alibaba Cloud ECS client
+func (p *AlibabaCloudParser) createEcsClient(provider *Provider) (*ecs20140526.Client, error) {
+	config := &openapi.Config{
+		AccessKeyId:     tea.String(provider.ClientId),
+		AccessKeySecret: tea.String(provider.ClientSecret),
+		RegionId:        tea.String(provider.Region),
+		Endpoint:        tea.String("ecs." + provider.Region + ".aliyuncs.com"),
+	}
+	return ecs20140526.NewClient(config)
+}
+
+// enrichEcsInstances enriches ECS instances with detailed information
+func (p *AlibabaCloudParser) enrichEcsInstances(client *ecs20140526.Client, assets []*Asset) error {
+	// Build a list of instance IDs as a JSON array string
+	instanceIds := []string{}
+	assetMap := make(map[string]*Asset)
+	for _, asset := range assets {
+		instanceIds = append(instanceIds, asset.ResourceId)
+		assetMap[asset.ResourceId] = asset
+	}
+
+	// Convert to JSON array string
+	instanceIdsJson, err := json.Marshal(instanceIds)
+	if err != nil {
+		return err
+	}
+
+	// Call DescribeInstances API to get detailed information
+	request := &ecs20140526.DescribeInstancesRequest{
+		InstanceIds: tea.String(string(instanceIdsJson)),
+		PageSize:    tea.Int32(100),
+	}
+
+	response, err := client.DescribeInstances(request)
+	if err != nil {
+		return err
+	}
+
+	if response.Body.Instances != nil && response.Body.Instances.Instance != nil {
+		for _, instance := range response.Body.Instances.Instance {
+			instanceId := tea.StringValue(instance.InstanceId)
+			asset, ok := assetMap[instanceId]
+			if !ok {
+				continue
+			}
+
+			// Parse existing properties
+			properties := make(map[string]interface{})
+			if asset.Properties != "" {
+				json.Unmarshal([]byte(asset.Properties), &properties)
+			}
+
+			// Add detailed ECS information
+			properties["instanceType"] = tea.StringValue(instance.InstanceType)
+			properties["imageId"] = tea.StringValue(instance.ImageId)
+			properties["osName"] = tea.StringValue(instance.OSName)
+			properties["cpu"] = tea.Int32Value(instance.Cpu)
+			properties["memory"] = tea.Int32Value(instance.Memory)
+			properties["instanceChargeType"] = tea.StringValue(instance.InstanceChargeType)
+
+			// Extract public IP
+			publicIp := ""
+			if instance.EipAddress != nil && tea.StringValue(instance.EipAddress.IpAddress) != "" {
+				publicIp = tea.StringValue(instance.EipAddress.IpAddress)
+			} else if instance.PublicIpAddress != nil && len(instance.PublicIpAddress.IpAddress) > 0 {
+				publicIp = tea.StringValue(instance.PublicIpAddress.IpAddress[0])
+			}
+			if publicIp != "" {
+				properties["publicIp"] = publicIp
+			}
+
+			// Extract private IP
+			privateIp := ""
+			if instance.VpcAttributes != nil && instance.VpcAttributes.PrivateIpAddress != nil && len(instance.VpcAttributes.PrivateIpAddress.IpAddress) > 0 {
+				privateIp = tea.StringValue(instance.VpcAttributes.PrivateIpAddress.IpAddress[0])
+			}
+			if privateIp != "" {
+				properties["privateIp"] = privateIp
+			}
+
+			// Update asset state (more accurate from DescribeInstances)
+			asset.State = tea.StringValue(instance.Status)
+
+			// Marshal properties back to JSON
+			propertiesJson, _ := json.Marshal(properties)
+			asset.Properties = string(propertiesJson)
+		}
+	}
+
+	return nil
+}
+
+// enrichDisks enriches disks with detailed information
+func (p *AlibabaCloudParser) enrichDisks(client *ecs20140526.Client, assets []*Asset) error {
+	// Build a list of disk IDs as a JSON array string
+	diskIds := []string{}
+	assetMap := make(map[string]*Asset)
+	for _, asset := range assets {
+		diskIds = append(diskIds, asset.ResourceId)
+		assetMap[asset.ResourceId] = asset
+	}
+
+	// Convert to JSON array string
+	diskIdsJson, err := json.Marshal(diskIds)
+	if err != nil {
+		return err
+	}
+
+	// Call DescribeDisks API to get detailed information
+	request := &ecs20140526.DescribeDisksRequest{
+		DiskIds:  tea.String(string(diskIdsJson)),
+		PageSize: tea.Int32(100),
+	}
+
+	response, err := client.DescribeDisks(request)
+	if err != nil {
+		return err
+	}
+
+	if response.Body.Disks != nil && response.Body.Disks.Disk != nil {
+		for _, disk := range response.Body.Disks.Disk {
+			diskId := tea.StringValue(disk.DiskId)
+			asset, ok := assetMap[diskId]
+			if !ok {
+				continue
+			}
+
+			// Parse existing properties
+			properties := make(map[string]interface{})
+			if asset.Properties != "" {
+				json.Unmarshal([]byte(asset.Properties), &properties)
+			}
+
+			// Add detailed disk information
+			properties["size"] = tea.Int32Value(disk.Size)
+			properties["category"] = tea.StringValue(disk.Category)
+			properties["type"] = tea.StringValue(disk.Type)
+			properties["encrypted"] = tea.BoolValue(disk.Encrypted)
+			properties["instanceId"] = tea.StringValue(disk.InstanceId)
+			properties["diskChargeType"] = tea.StringValue(disk.DiskChargeType)
+			properties["deleteWithInstance"] = tea.BoolValue(disk.DeleteWithInstance)
+
+			// Update asset state (more accurate from DescribeDisks)
+			asset.State = tea.StringValue(disk.Status)
+
+			// Marshal properties back to JSON
+			propertiesJson, _ := json.Marshal(properties)
+			asset.Properties = string(propertiesJson)
+		}
+	}
+
+	return nil
+}
+
+// enrichVpcs enriches VPCs with detailed information
+func (p *AlibabaCloudParser) enrichVpcs(client *ecs20140526.Client, assets []*Asset) error {
+	// VPC enrichment needs to be done one by one or in batches
+	// since DescribeVpcs API only accepts a single VpcId parameter
+	for _, asset := range assets {
+		request := &ecs20140526.DescribeVpcsRequest{
+			VpcId:    tea.String(asset.ResourceId),
+			RegionId: tea.String(asset.Region),
+			PageSize: tea.Int32(50),
+		}
+
+		response, err := client.DescribeVpcs(request)
+		if err != nil {
+			// Log error but continue with other VPCs
+			continue
+		}
+
+		if response.Body.Vpcs != nil && response.Body.Vpcs.Vpc != nil && len(response.Body.Vpcs.Vpc) > 0 {
+			vpc := response.Body.Vpcs.Vpc[0]
+
+			// Parse existing properties
+			properties := make(map[string]interface{})
+			if asset.Properties != "" {
+				json.Unmarshal([]byte(asset.Properties), &properties)
+			}
+
+			// Add detailed VPC information
+			properties["cidrBlock"] = tea.StringValue(vpc.CidrBlock)
+			properties["vRouterId"] = tea.StringValue(vpc.VRouterId)
+			properties["isDefault"] = tea.BoolValue(vpc.IsDefault)
+			properties["status"] = tea.StringValue(vpc.Status)
+			properties["description"] = tea.StringValue(vpc.Description)
+
+			// Update asset state (more accurate from DescribeVpcs)
+			asset.State = tea.StringValue(vpc.Status)
+
+			// Marshal properties back to JSON
+			propertiesJson, _ := json.Marshal(properties)
+			asset.Properties = string(propertiesJson)
+		}
+	}
+
+	return nil
 }
