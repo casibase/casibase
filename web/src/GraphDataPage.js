@@ -146,19 +146,29 @@ class GraphDataPage extends React.Component {
 
     // Helper function to darken a color (for border)
     const darkenColor = (color, amount = 20) => {
+      // Validate hex color format
+      if (!color || typeof color !== "string" || !/^#[0-9A-Fa-f]{6}$/.test(color)) {
+        return "#000000"; // Fallback to black
+      }
       const hex = color.replace("#", "");
-      const r = Math.max(0, parseInt(hex.substr(0, 2), 16) - amount);
-      const g = Math.max(0, parseInt(hex.substr(2, 2), 16) - amount);
-      const b = Math.max(0, parseInt(hex.substr(4, 2), 16) - amount);
+      const r = Math.max(0, parseInt(hex.substring(0, 2), 16) - amount);
+      const g = Math.max(0, parseInt(hex.substring(2, 4), 16) - amount);
+      const b = Math.max(0, parseInt(hex.substring(4, 6), 16) - amount);
       return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
     };
 
     // Helper function to create rgba from hex
     const hexToRgba = (hex, alpha) => {
-      const r = parseInt(hex.substr(1, 2), 16);
-      const g = parseInt(hex.substr(3, 2), 16);
-      const b = parseInt(hex.substr(5, 2), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      // Validate hex color format
+      if (!hex || typeof hex !== "string" || !/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+        return "rgba(0, 0, 0, 1)"; // Fallback to black
+      }
+      // Validate alpha range
+      const validAlpha = Math.max(0, Math.min(1, alpha || 1));
+      const r = parseInt(hex.substring(1, 3), 16);
+      const g = parseInt(hex.substring(3, 5), 16);
+      const b = parseInt(hex.substring(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${validAlpha})`;
     };
 
     const borderColor = darkenColor(themeColor, 20);
