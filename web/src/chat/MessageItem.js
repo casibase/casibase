@@ -14,7 +14,7 @@
 
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
-import {Alert, Button, Col, Row} from "antd";
+import {Alert, Button, Col, Collapse, Row} from "antd";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -24,6 +24,8 @@ import MessageActions from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
 import MessageEdit from "./MessageEdit";
 import {MessageCarrier} from "./MessageCarrier";
+
+const {Panel} = Collapse;
 
 const MessageItem = ({
   message,
@@ -163,14 +165,14 @@ const MessageItem = ({
       return null;
     }
 
-    if (message.isReasoningPhase && message.author === "AI") {
+    if (message.isReasoningPhase && message.author === "AI" && !message.toolCalls && !message.text) {
       return null;
     }
 
-    if (!message.isReasoningPhase && message.reasonText && message.author === "AI") {
+    if ((message.reasonText || message.toolCalls) && message.author === "AI") {
       return (
         <div className="message-content">
-          {!hideThinking && (
+          {!hideThinking && message.reasonText && (
             <div className="message-reason" style={{
               marginBottom: "15px",
               padding: "10px",
@@ -187,6 +189,67 @@ const MessageItem = ({
               <div className="reason-content">
                 {renderText(message.reasonText)}
               </div>
+            </div>
+          )}
+          {message.toolCalls && message.toolCalls.length > 0 && (
+            <div className="message-tools" style={{marginBottom: "15px"}}>
+              <Collapse
+                ghost
+                style={{
+                  borderLeft: "3px solid #52c41a",
+                  borderRadius: "5px",
+                  padding: "10px",
+                }}
+              >
+                <Panel
+                  header={
+                    <span style={{fontWeight: "bold", color: "#1890ff"}}>
+                      {i18next.t("chat:Tool calls")} ({message.toolCalls.length})
+                    </span>
+                  }
+                  key="1"
+                  style={{padding: "0"}}
+                >
+                  <div style={{padding: "0 10px 10px 10px"}}>
+                    {message.toolCalls.map((toolCall, idx) => (
+                      <div key={idx} className="tool-call-item" style={{
+                        marginBottom: idx < message.toolCalls.length - 1 ? "10px" : "0",
+                        paddingBottom: "8px",
+                      }}>
+                        <div style={{
+                          fontWeight: "600",
+                          color: "#096dd9",
+                          marginBottom: "4px",
+                        }}>
+                          {toolCall.name}
+                        </div>
+                        {toolCall.arguments && (
+                          <div style={{
+                            fontSize: "12px",
+                            fontFamily: "monospace",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                            marginBottom: toolCall.content ? "8px" : "0",
+                          }}>
+                            <strong>Arguments:</strong> {toolCall.arguments}
+                          </div>
+                        )}
+                        {toolCall.content && (
+                          <div style={{
+                            fontSize: "12px",
+                            padding: "6px",
+                            borderRadius: "3px",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                          }}>
+                            <strong>Result:</strong> {toolCall.content}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </Panel>
+              </Collapse>
             </div>
           )}
 

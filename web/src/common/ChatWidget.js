@@ -416,6 +416,7 @@ class ChatWidget extends React.Component {
   handlePendingAIMessage(lastMessage, chat, messages) {
     let text = "";
     let reasonText = "";
+    const toolCalls = [];
     this.setState({
       messageLoading: true,
     });
@@ -452,6 +453,10 @@ class ChatWidget extends React.Component {
         if (messages[messages.length - 1].reasonText) {
           lastMessage2.reasonText = messages[messages.length - 1].reasonText;
           lastMessage2.reasonHtml = messages[messages.length - 1].reasonHtml;
+        }
+
+        if (messages[messages.length - 1].toolCalls) {
+          lastMessage2.toolCalls = messages[messages.length - 1].toolCalls;
         }
 
         const updatedMessages = [...messages];
@@ -496,6 +501,29 @@ class ChatWidget extends React.Component {
           messages: updatedMessages,
         });
       },
+      // onTool
+      (data) => {
+        if (!chat || (this.state.currentChat?.name !== chat.name)) {
+          return;
+        }
+        const jsonData = JSON.parse(data);
+
+        toolCalls.push({
+          name: jsonData.name,
+          arguments: jsonData.arguments,
+          content: jsonData.content,
+        });
+
+        const lastMessage2 = Setting.deepCopy(lastMessage);
+        lastMessage2.toolCalls = toolCalls;
+
+        const updatedMessages = [...messages];
+        updatedMessages[updatedMessages.length - 1] = lastMessage2;
+
+        this.setState({
+          messages: updatedMessages,
+        });
+      },
       // onError
       (error) => {
         Setting.showMessage("error", Setting.getRefinedErrorText(error));
@@ -528,6 +556,11 @@ class ChatWidget extends React.Component {
         if (messages[messages.length - 1].reasonText) {
           lastMessage2.reasonText = messages[messages.length - 1].reasonText;
           lastMessage2.reasonHtml = messages[messages.length - 1].reasonHtml;
+        }
+
+        // Keep the tool calls if they exist
+        if (messages[messages.length - 1].toolCalls) {
+          lastMessage2.toolCalls = messages[messages.length - 1].toolCalls;
         }
 
         lastMessage2.isReasoningPhase = false;

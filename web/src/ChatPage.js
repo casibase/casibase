@@ -358,7 +358,8 @@ class ChatPage extends BaseListPage {
               if (jsonData.text === "") {
                 jsonData.text = "\n";
               }
-              const lastMessage2 = Setting.deepCopy(lastMessage);
+              const currentMessage = res.data[res.data.length - 1];
+              const lastMessage2 = Setting.deepCopy(currentMessage);
               text += jsonData.text;
               const parsedResult = mssageCarrier.parseAnswerWithCarriers(text);
               this.updateChatDisplayName(parsedResult.title, chat);
@@ -367,11 +368,7 @@ class ChatPage extends BaseListPage {
               }
               lastMessage2.text = parsedResult.finalAnswer;
 
-              // Preserve reasoning if it exists
-              if (res.data[res.data.length - 1].reasonText) {
-                lastMessage2.reasonText = res.data[res.data.length - 1].reasonText;
-                lastMessage2.reasonHtml = res.data[res.data.length - 1].reasonHtml;
-              }
+              lastMessage2.isReasoningPhase = false;
 
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
@@ -397,11 +394,38 @@ class ChatPage extends BaseListPage {
 
               reasonText += jsonData.text;
 
-              const lastMessage2 = Setting.deepCopy(lastMessage);
+              const currentMessage = res.data[res.data.length - 1];
+              const lastMessage2 = Setting.deepCopy(currentMessage);
               lastMessage2.reasonText = reasonText;
-              lastMessage2.isReasoningPhase = true;
+              if (!lastMessage2.toolCalls || lastMessage2.toolCalls.length === 0) {
+                lastMessage2.isReasoningPhase = true;
+              }
 
-              lastMessage2.text = "";
+              if (text) {
+                lastMessage2.text = text;
+              }
+              res.data[res.data.length - 1] = lastMessage2;
+
+              this.setState({
+                messages: res.data,
+              });
+            }, (data) => {
+              // onTool callback
+              if (!chat || (this.state.chat.name !== chat.name)) {
+                return;
+              }
+              const jsonData = JSON.parse(data);
+
+              const currentMessage = res.data[res.data.length - 1];
+              const toolCalls = currentMessage.toolCalls || [];
+              toolCalls.push({
+                name: jsonData.name,
+                arguments: jsonData.arguments,
+                content: jsonData.content,
+              });
+
+              const lastMessage2 = Setting.deepCopy(currentMessage);
+              lastMessage2.toolCalls = toolCalls;
               res.data[res.data.length - 1] = lastMessage2;
 
               this.setState({
@@ -433,6 +457,11 @@ class ChatPage extends BaseListPage {
               if (res.data[res.data.length - 1].reasonText) {
                 lastMessage2.reasonText = res.data[res.data.length - 1].reasonText;
                 lastMessage2.reasonHtml = res.data[res.data.length - 1].reasonHtml;
+              }
+
+              // Preserve tool calls when finalizing the message
+              if (res.data[res.data.length - 1].toolCalls) {
+                lastMessage2.toolCalls = res.data[res.data.length - 1].toolCalls;
               }
 
               // We're no longer in reasoning phase
