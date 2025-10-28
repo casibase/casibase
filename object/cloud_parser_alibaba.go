@@ -47,8 +47,8 @@ func (p *AlibabaCloudParser) ScanAssets(owner string, provider *Provider) ([]*As
 	for _, resourceType := range resourceTypes {
 		typeAssets, err := p.scanResourcesByType(owner, provider, client, resourceType)
 		if err != nil {
-			// Log error but continue with other resource types
-			fmt.Printf("Error scanning resource type %s: %v\n", resourceType, err)
+			// Skip this resource type if scanning fails (e.g., no permission or resource type not available)
+			// This allows the scan to continue with other resource types
 			continue
 		}
 		assets = append(assets, typeAssets...)
@@ -71,12 +71,11 @@ func (p *AlibabaCloudParser) createClient(provider *Provider) (*resourcecenter20
 func (p *AlibabaCloudParser) getResourceTypes(client *resourcecenter20221201.Client) ([]string, error) {
 	request := &resourcecenter20221201.GetResourceCountsRequest{}
 	response, err := client.GetResourceCountsWithOptions(request, &util2.RuntimeOptions{})
-	if err != nil {
-		return nil, err
-	}
 
 	var resourceTypes []string
-	if response.Body.Filters != nil {
+
+	// If API call succeeds, try to extract resource types from response
+	if err == nil && response.Body.Filters != nil {
 		for _, filter := range response.Body.Filters {
 			if tea.StringValue(filter.Key) == "ResourceType" && filter.Values != nil {
 				for _, value := range filter.Values {
@@ -87,7 +86,8 @@ func (p *AlibabaCloudParser) getResourceTypes(client *resourcecenter20221201.Cli
 		}
 	}
 
-	// If we couldn't get resource types from GetResourceCounts, use a default comprehensive list
+	// If we couldn't get resource types from API (due to error or empty response),
+	// use a comprehensive default list
 	if len(resourceTypes) == 0 {
 		resourceTypes = p.getDefaultResourceTypes()
 	}
@@ -282,7 +282,9 @@ func (p *AlibabaCloudParser) convertResourceToAsset(owner string, provider *Prov
 
 	propertiesJson, err := json.Marshal(properties)
 	if err != nil {
-		// This should rarely happen for simple map types, but handle it anyway
+		// Fallback to empty JSON object if marshaling fails.
+		// This is unlikely to happen since properties contains only basic types (strings, slices)
+		// but we handle it gracefully to avoid breaking the entire scan.
 		propertiesJson = []byte("{}")
 	}
 
