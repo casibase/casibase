@@ -119,3 +119,11 @@ code {
 .builtin-tools-cascader .ant-cascader-menu-item-content {
   padding: 8px 12px !important;
 }
+
+.chat-message-collapse-panel .ant-collapse-content-box {
+  padding: 0 !important;
+}
+
+.chat-message-collapse-panel .ant-collapse-header {
+  padding: 0 0 5px 0 !important;
+}
