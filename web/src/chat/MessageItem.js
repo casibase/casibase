@@ -173,22 +173,29 @@ const MessageItem = ({
       return (
         <div className="message-content">
           {!hideThinking && message.reasonText && (
-            <div className="message-reason" style={{
-              marginBottom: "15px",
-              padding: "10px",
-              borderRadius: "5px",
-              borderLeft: "3px solid #1890ff",
-            }}>
-              <div className="reason-label" style={{
-                fontWeight: "bold",
-                marginBottom: "5px",
-                color: "#1890ff",
-              }}>
-                {i18next.t("chat:Reasoning process")}:
-              </div>
-              <div className="reason-content">
-                {renderText(message.reasonText)}
-              </div>
+            <div className="message-reason" style={{marginBottom: "15px"}}>
+              <Collapse
+                ghost
+                style={{
+                  borderLeft: "3px solid #1890ff",
+                  borderRadius: "5px",
+                  padding: "10px",
+                }}
+              >
+                <Panel
+                  header={
+                    <span style={{fontWeight: "bold", color: "#1890ff"}}>
+                      {i18next.t("chat:Reasoning process")}
+                    </span>
+                  }
+                  key="1"
+                  style={{padding: "0"}}
+                >
+                  <div className="reason-content" style={{padding: "0 10px 10px 10px"}}>
+                    {renderText(message.reasonText)}
+                  </div>
+                </Panel>
+              </Collapse>
             </div>
           )}
           {message.toolCalls && message.toolCalls.length > 0 && (
@@ -276,21 +283,29 @@ const MessageItem = ({
             placement="start"
             content={
               hideThinking ? renderThinkingAnimation() : (
-                <div className="message-reason" style={{
-                  padding: "10px",
-                  borderRadius: "5px",
-                  borderLeft: "3px solid #1890ff",
-                }}>
-                  <div className="reason-label" style={{
-                    fontWeight: "bold",
-                    marginBottom: "5px",
-                    color: "#1890ff",
-                  }}>
-                    {i18next.t("chat:Reasoning process")}:
-                  </div>
-                  <div className="reason-content">
-                    {renderText(message.reasonText)}
-                  </div>
+                <div className="message-reason">
+                  <Collapse
+                    ghost
+                    style={{
+                      borderLeft: "3px solid #1890ff",
+                      borderRadius: "5px",
+                      padding: "10px",
+                    }}
+                  >
+                    <Panel
+                      header={
+                        <span style={{fontWeight: "bold", color: "#1890ff"}}>
+                          {i18next.t("chat:Reasoning process")}
+                        </span>
+                      }
+                      key="1"
+                      style={{padding: "0"}}
+                    >
+                      <div className="reason-content" style={{padding: "0 10px 10px 10px"}}>
+                        {renderText(message.reasonText)}
+                      </div>
+                    </Panel>
+                  </Collapse>
                 </div>
               )
             }
