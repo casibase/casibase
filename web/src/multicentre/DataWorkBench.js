@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result, Spin, message, Modal } from "antd";
 import * as MultiCenterBackend from "../backend/MultiCenterBackend";
-import { DownOutlined } from '@ant-design/icons';
+import { SwapOutlined } from '@ant-design/icons';
 import { Clock, Database, ShieldCheck, Link2, Image } from 'lucide-react';
 
 const usageId = "use_test_001"
-const datasetId = "MCTest1"
 
 const columns = [
     { title: '患者ID', dataIndex: 'id', key: 'id' },
@@ -39,6 +38,12 @@ export default function DataWorkBench(props) {
     const [showTable, setShowLimitData] = useState(false);
     const [usageInfo, setUsageInfo] = useState(null);
     const [usageLoading, setUsageLoading] = useState(false);
+    // granted and managed datasets for menu
+    const [grantedList, setGrantedList] = useState([]);
+    const [managedList, setManagedList] = useState([]);
+    const [menuLoading, setMenuLoading] = useState(false);
+    const [selectedDatasetId, setSelectedDatasetId] = useState('MCTest1');
+    const [datasetSwitchVisible, setDatasetSwitchVisible] = useState(false);
     // 只存储 'structured' 或 'image'
     const [selectedData, setSelectedData] = useState('structured');
     const [checkingModal, setCheckingModal] = useState(false);
@@ -47,9 +52,47 @@ export default function DataWorkBench(props) {
     const [previewOpen, setPreviewOpen] = useState(false);
     // 影像卡片超分状态与超分图片
     const [srMap, setSrMap] = useState({}); // { [id]: { url, done } }
+    const handleMenuClick = ({ key }) => {
+        // key is dataset id
+        if (!key) return;
+        // set selected dataset and refetch usage info for it
+        setSelectedDatasetId(key);
+        // re-fetch usage info if already showing
+        if (showTable) {
+            fetchUsageInfo();
+        }
+    };
+
     const menu = (
-        <Menu onClick={() => { }}>
-            <Menu.Item key="cvd">心血管疾病数据</Menu.Item>
+        <Menu onClick={handleMenuClick}>
+            <Menu.ItemGroup title="我获得授权的数据集">
+                {menuLoading ? (
+                    <Menu.Item key="loading-granted">加载中...</Menu.Item>
+                ) : ((grantedList || []).length === 0 ? (
+                    <Menu.Item key="no-granted">无已授权数据集</Menu.Item>
+                ) : (
+                    grantedList.map((item, idx) => {
+                        const ds = item.dataset || item.dataSet || item || {};
+                        const id = String(ds.Id || ds.id || ds.DatasetId || ds.datasetId || (item.accessGrant && (item.accessGrant.AssetId || item.accessGrant.assetId)) || `gr-${idx}`);
+                        const name = ds.DatasetName || ds.datasetName || ds.name || (`数据集 ${id}`);
+                        return <Menu.Item key={id}>{name}</Menu.Item>;
+                    })
+                ))}
+            </Menu.ItemGroup>
+            <Menu.Divider />
+            <Menu.ItemGroup title="我管理的数据集">
+                {menuLoading ? (
+                    <Menu.Item key="loading-managed">加载中...</Menu.Item>
+                ) : ((managedList || []).length === 0 ? (
+                    <Menu.Item key="no-managed">无管理的数据集</Menu.Item>
+                ) : (
+                    managedList.map((ds, idx) => {
+                        const id = String(ds.Id || ds.id || ds.DatasetId || ds.datasetId || `m-${idx}`);
+                        const name = ds.DatasetName || ds.datasetName || ds.name || (`数据集 ${id}`);
+                        return <Menu.Item key={id}>{name}</Menu.Item>;
+                    })
+                ))}
+            </Menu.ItemGroup>
         </Menu>
     );
     // 你现在可以在组件内直接使用 accounts 变量
@@ -75,20 +118,55 @@ export default function DataWorkBench(props) {
         }
     };
 
+    // load granted assets and managed datasets to populate menu
+    const loadDatasetsForMenu = async () => {
+        setMenuLoading(true);
+        try {
+            const [grRes, mgRes] = await Promise.all([
+                MultiCenterBackend.getGrantedAssetsByRequester(),
+                MultiCenterBackend.getDatasets(),
+            ]);
+
+            // parse granted
+            let grants = [];
+            if (grRes && grRes.status === 'ok' && Array.isArray(grRes.data)) {
+                grants = grRes.data;
+            }
+            setGrantedList(grants);
+
+            // parse managed datasets
+            let managed = [];
+            if (mgRes && mgRes.status === 'ok' && Array.isArray(mgRes.data)) {
+                managed = mgRes.data;
+            }
+            setManagedList(managed);
+        } catch (e) {
+            console.error('loadDatasetsForMenu error', e);
+        } finally {
+            setMenuLoading(false);
+        }
+    };
+
     // 点击确认查看时调用useDataSet
     const handleShowLimitData = async () => {
+        // 如果当前选中的是我管理的数据集，则直接展示，不走受控访问流程
+        if (isManagedSelected) {
+            setShowLimitData(true);
+            return;
+        }
+
         setCheckingModal(true);
         try {
             // 等待1s
             await new Promise(resolve => setTimeout(resolve, 1000));
-            const resp = await MultiCenterBackend.useDataSet(usageId, datasetId);
+            const resp = await MultiCenterBackend.useDataSet(usageId, selectedDatasetId);
             const status = resp?.status?.toLowerCase?.() || resp?.data?.status?.toLowerCase?.();
             if (status === 'success' || status === 'ok') {
                 setShowLimitData(true);
                 fetchUsageInfo();
                 // 等待2s后异步发送
                 setTimeout(() => {
-                    MultiCenterBackend.addDataUsageAuditRecord(account, usageId, datasetId);
+                    MultiCenterBackend.addDataUsageAuditRecord(account, usageId, selectedDatasetId);
                 }, 2000);
             } else {
                 message.error(resp?.msg || '操作失败');
@@ -105,7 +183,47 @@ export default function DataWorkBench(props) {
     useEffect(() => {
         // 页面加载时只调用一次
         fetchUsageInfo();
+        loadDatasetsForMenu();
     }, []);
+
+    const selectedDatasetName = (() => {
+        const findInGranted = (grantedList || []).find(item => {
+            const ds = item.dataset || item.dataSet || item || {};
+            const id = String(ds.Id || ds.id || ds.DatasetId || ds.datasetId || (item.accessGrant && (item.accessGrant.AssetId || item.accessGrant.assetId)) || '');
+            return id === String(selectedDatasetId);
+        });
+        if (findInGranted) {
+            const ds = findInGranted.dataset || findInGranted.dataSet || findInGranted || {};
+            return ds.DatasetName || ds.datasetName || ds.name || String(selectedDatasetId);
+        }
+        const findInManaged = (managedList || []).find(ds => String(ds.Id || ds.id || ds.DatasetId || ds.datasetId) === String(selectedDatasetId));
+        if (findInManaged) return findInManaged.DatasetName || findInManaged.datasetName || findInManaged.name || String(selectedDatasetId);
+        return String(selectedDatasetId || '数据集');
+    })();
+
+    // determine whether selected dataset is managed by current user or granted
+    const selectedContext = (() => {
+        const findInGranted = (grantedList || []).find(item => {
+            const ds = item.dataset || item.dataSet || item || {};
+            const id = String(ds.Id || ds.id || ds.DatasetId || ds.datasetId || (item.grant && (item.grant.AssetId || item.grant.assetId)) || '');
+            return id === String(selectedDatasetId);
+        });
+        if (findInGranted) return { type: 'granted', item: findInGranted };
+        const findInManaged = (managedList || []).find(ds => String(ds.Id || ds.id || ds.DatasetId || ds.datasetId) === String(selectedDatasetId));
+        if (findInManaged) return { type: 'managed', dataset: findInManaged };
+        return { type: 'unknown' };
+    })();
+
+    const isManagedSelected = selectedContext.type === 'managed';
+    const selectedExpireTime = (() => {
+        if (isManagedSelected) {
+            const ds = selectedContext.dataset || {};
+            console.log(ds);
+            return ds.expiredAt || null;
+        }
+        return usageInfo ? usageInfo.ExpireTime : null;
+    })();
+    const selectedUseCountLeft = isManagedSelected ? '∞' : (usageInfo ? (usageInfo.UseCountLeft ?? '--') : '--');
 
     return (
         <div style={{ background: 'white', minHeight: '100vh', padding: 32 }}>
@@ -131,10 +249,10 @@ export default function DataWorkBench(props) {
                     <Clock size={32} color="#428be5" />
                     <div>
                         <div style={{ color: '#888', fontSize: 16 }}>访问时间截止至 </div>
-                        {usageLoading ? (
+                        {usageLoading && !isManagedSelected ? (
                             <Spin size="small" style={{ marginTop: 4 }} />
-                        ) : usageInfo ? (
-                            <div style={{ color: '#428be5', fontWeight: 700, fontSize: 22, marginTop: 4 }}>{usageInfo.ExpireTime}</div>
+                        ) : selectedExpireTime ? (
+                            <div style={{ color: '#428be5', fontWeight: 700, fontSize: 22, marginTop: 4 }}>{selectedExpireTime}</div>
                         ) : (
                             <div style={{ color: '#428be5', fontWeight: 700, fontSize: 22, marginTop: 4 }}>--</div>
                         )}
@@ -160,12 +278,10 @@ export default function DataWorkBench(props) {
                     <Database size={32} color="#428be5" />
                     <div style={{ flex: 1 }}>
                         <div style={{ color: '#888', fontSize: 16 }}>剩余数据查询次数 </div>
-                        {usageLoading ? (
+                        {usageLoading && !isManagedSelected ? (
                             <Spin size="small" style={{ marginTop: 4 }} />
-                        ) : usageInfo ? (
-                            <div style={{ color: '#23408e', fontWeight: 700, fontSize: 22, marginTop: 4 }}>{usageInfo.UseCountLeft}</div>
                         ) : (
-                            <div style={{ color: '#23408e', fontWeight: 700, fontSize: 22, marginTop: 4 }}>--</div>
+                            <div style={{ color: '#23408e', fontWeight: 700, fontSize: 22, marginTop: 4 }}>{selectedUseCountLeft}</div>
                         )}
                         {/* <Progress percent={15} showInfo={false} strokeColor="#428be5" style={{ marginTop: 6, width: 120 }} /> */}
                     </div>
@@ -229,6 +345,52 @@ export default function DataWorkBench(props) {
                     </div>
                 </div>
             </div>
+            {/* 切换数据集 Modal（替代 Dropdown） */}
+            <Modal
+                title="切换数据集"
+                open={datasetSwitchVisible}
+                onCancel={() => setDatasetSwitchVisible(false)}
+                footer={null}
+                width={720}
+                bodyStyle={{ maxHeight: '60vh', overflowY: 'auto', padding: 20 }}
+            >
+                <div style={{ display: 'flex', gap: 12, flexDirection: 'column', textAlign: 'left' }}>
+                    <div style={{ fontWeight: 700, marginBottom: 6, fontSize: 16 }}>我获得授权的数据集</div>
+                    {menuLoading ? <div>加载中...</div> : (grantedList && grantedList.length > 0 ? grantedList.map((item, idx) => {
+                        const ds = item.dataset || item.dataSet || item || {};
+                        const id = String(ds.Id || ds.id || ds.DatasetId || ds.datasetId || (item.accessGrant && (item.accessGrant.AssetId || item.accessGrant.assetId)) || `gr-${idx}`);
+                        const name = ds.DatasetName || ds.datasetName || ds.name || (`数据集 ${id}`);
+                        const desc = ds.Description || ds.description || ds.Desc || (item.accessGrant && (item.accessGrant.Description || item.accessGrant.description)) || '未提供描述';
+                        const grantId = String((item.accessGrant && (item.accessGrant.grantId || item.accessGrant.id || item.accessGrant.Id || item.accessGrant.GrantID || item.accessGrant.Grant)) || '—');
+                        return (
+                            <div key={id} style={{ padding: 10, borderRadius: 8, border: '1px solid #f0f0f0', background: 'white', cursor: 'pointer' }} onClick={() => { setSelectedDatasetId(id); setDatasetSwitchVisible(false); if (showTable) fetchUsageInfo(); }}>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                                    <div style={{ fontWeight: 700 }}>{name}</div>
+                                    <div style={{ color: '#888', fontSize: 12, background: '#f5f7fa', padding: '4px 8px', borderRadius: 12 }}>授权ID: {grantId} / 数据集ID: {id}</div>
+                                </div>
+                                <div style={{ color: '#666', marginTop: 8, lineHeight: 1.6 }}>{desc}</div>
+                            </div>
+                        );
+                    }) : <div style={{ color: '#888' }}>无已授权数据集</div>)}
+
+                    <div style={{ height: 8 }} />
+                    <div style={{ fontWeight: 700, marginBottom: 6, fontSize: 16 }}>我管理的数据集</div>
+                    {menuLoading ? <div>加载中...</div> : (managedList && managedList.length > 0 ? managedList.map((ds, idx) => {
+                        const id = String(ds.Id || ds.id || ds.DatasetId || ds.datasetId || `m-${idx}`);
+                        const name = ds.DatasetName || ds.datasetName || ds.name || (`数据集 ${id}`);
+                        const desc = ds.Description || ds.description || ds.Desc || '未提供描述';
+                        return (
+                            <div key={id} style={{ padding: 10, borderRadius: 8, border: '1px solid #f0f0f0', background: 'white', cursor: 'pointer' }} onClick={() => { setSelectedDatasetId(id); setDatasetSwitchVisible(false); if (showTable) fetchUsageInfo(); }}>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                                    <div style={{ fontWeight: 700 }}>{name}</div>
+                                    <div style={{ color: '#888', fontSize: 12, background: '#f5f7fa', padding: '4px 8px', borderRadius: 12 }}> 数据集ID: {id}</div>
+                                </div>
+                                <div style={{ color: '#666', marginTop: 8, lineHeight: 1.6 }}>{desc}</div>
+                            </div>
+                        );
+                    }) : <div style={{ color: '#888' }}>无管理的数据集</div>)}
+                </div>
+            </Modal>
 
             {/* 表格区块 */}
 
@@ -244,12 +406,10 @@ export default function DataWorkBench(props) {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                            <span style={{ fontSize: 22, fontWeight: 700 }}>心血管疾病数据</span>
-                            <Dropdown overlay={menu} trigger={["click"]}>
-                                <Button type="text" style={{ marginLeft: 4, boxShadow: 'none', border: 'none' }}>
-                                    <DownOutlined style={{ fontSize: 12, marginLeft: 0 }} />
-                                </Button>
-                            </Dropdown>
+                            <span style={{ fontSize: 22, fontWeight: 700 }}>{selectedDatasetName}</span>
+                            <Button type="text" onClick={() => setDatasetSwitchVisible(true)} style={{ marginLeft: 8, boxShadow: 'none', border: 'none', color: '#1890ff' }}>
+                                <SwapOutlined style={{ fontSize: 14, marginRight: 6 }} /> 切换数据集
+                            </Button>
                         </div>
                     </div>
                     <Tag color="#20c997" style={{ fontSize: 16, padding: '2px 14px', borderRadius: 16, fontWeight: 500, marginLeft: 16, verticalAlign: 'middle' }}>
@@ -459,7 +619,7 @@ export default function DataWorkBench(props) {
                 <div>
                     <div style={{ fontSize: 20, fontWeight: 700, color: '#d48806', marginBottom: 4 }}>安全提醒</div>
                     <div style={{ color: '#444', fontSize: 16, lineHeight: 1.7 }}>
-                        您的所有操作都在安全沙箱环境中进行，数据经过脱敏处理且不可导出。所有访问行为已记录在区块链上，确保全程可追溯。
+                        您的所有操作都在安全环境中进行，数据受控访问。所有访问行为已记录在区块链上，确保全程可追溯。
                     </div>
                 </div>
             </div>

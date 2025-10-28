@@ -4,6 +4,10 @@ import { Button, Input, Progress, Tag, Modal, Form, DatePicker, InputNumber, mes
 import { UserPlus, FilePlus, Lock, Link2, ShieldCheck, Hospital } from 'lucide-react';
 import * as MuiltiCenterBackend from "../backend/MultiCenterBackend";
 
+import * as DYCF_UTIL from "../utils/dynamicConfigUtil";
+
+import * as Setting from '../Setting';
+
 
 const dataSetsIds = ["MCTest1", "MCTest2", "MCTest3"];
 
@@ -34,6 +38,7 @@ const projectList = [
 const resourceListInit = dataSetsIds.map(id => ({ id, description: '', loading: true }));
 
 import { useHistory } from 'react-router-dom';
+import { is } from "bpmn-js/lib/util/ModelUtil";
 
 export default function MuiltiCenter() {
     const [search, setSearch] = useState("");
@@ -44,29 +49,22 @@ export default function MuiltiCenter() {
     const [form] = Form.useForm();
     const history = useHistory();
 
+    // 全局灰度开关（window.isHuidu 可由外部注入）
+    const routeTo = async (path) => {
+        const isHuiduStr = await DYCF_UTIL.GET("multiCenter.gray-block", "false");
+        const isHuidu = (isHuiduStr === "true");
+        if (isHuidu) {
+            for (let i = 0; i < 5; i++) {
+                Setting.showMessage("info", "当前功能正在按新需求重构，暂未完工或正在灰度测试。因涉及到区块链数据，为保证数据一致性，暂不可进入");
+            }
+            return;
+        }
+        history.push(path);
+    };
+
     useEffect(() => {
         const fetchAll = async () => {
-            setLoading(true);
-            const results = [];
-            for (let i = 0; i < dataSetsIds.length; i++) {
-                const id = dataSetsIds[i];
-                try {
-                    const resp = await MuiltiCenterBackend.queryDataSetsInfo(id);
-                    if (resp?.data?.resultDecoded) {
-                        const info = JSON.parse(resp.data.resultDecoded);
-                        results.push({ id, description: info.Description || '', loading: false });
-                    } else {
-                        results.push({ id, description: '', loading: false });
-                    }
-                } catch (e) {
-                    results.push({ id, description: '', loading: false });
-                }
-                if (i < dataSetsIds.length - 1) {
-                    await new Promise(res => setTimeout(res, 1500)); // 每秒只允许一个请求
-                }
-            }
-            setResourceList(results);
-            setLoading(false);
+
         };
         fetchAll();
     }, []);
@@ -126,44 +124,69 @@ export default function MuiltiCenter() {
                     ))}
                 </div>
 
-                {/* 可用数据资源 */}
-                <div style={{ fontSize: 22, fontWeight: 700, margin: '40px 0 18px 0' }}>可用数据资源</div>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 18 }}>
-                    {/* <Input.Search
-                        placeholder="搜索数据集..."
-                        value={search}
-                        onChange={e => setSearch(e.target.value)}
-                        style={{ width: 320, background: '#fff', borderRadius: 8 }}
-                        allowClear
-                    /> */}
+                {/* 可用数据集 */}
+                <div style={{ fontSize: 22, fontWeight: 700, margin: '40px 0 18px 0' }}>数据集申请与管理</div>
+                <div style={{ display: 'flex', gap: 20, marginTop: 12, flexWrap: 'wrap' }}>
+                    {/* 更炫酷的入口卡片 */}
+                    <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => routeTo('/multi-center/data-usage/my-data-set')}
+                        onKeyDown={(e) => { if (e.key === 'Enter') routeTo('/multi-center/data-usage/my-data-set'); }}
+                        style={{
+                            flex: 1,
+                            minWidth: 280,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 18,
+                            padding: '18px 20px',
+                            borderRadius: 14,
+                            color: '#0f1724',
+                            cursor: 'pointer',
+                            background: 'linear-gradient(90deg,#f0f7ff 0%, #ffffff 100%)',
+                            boxShadow: '0 8px 20px rgba(15,23,36,0.06)',
+                            transition: 'transform 160ms ease, box-shadow 160ms ease'
+                        }}
+                    >
+                        <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: 18, fontWeight: 800 }}>我管理的数据集</div>
+                            <div style={{ marginTop: 6, color: 'rgba(15,23,36,0.7)' }}>管理你发布的数据集，并审批他人的申请。</div>
+                        </div>
+                        <div>
+                            <Button type="default" onClick={(e) => { e.stopPropagation(); routeTo('/multi-center/data-usage/my-data-set'); }}>进入</Button>
+                        </div>
+                    </div>
+
+                    <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => routeTo('/multi-center/data-usage/my-data-application')}
+                        onKeyDown={(e) => { if (e.key === 'Enter') routeTo('/multi-center/data-usage/my-data-application'); }}
+                        style={{
+                            flex: 1,
+                            minWidth: 280,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 18,
+                            padding: '18px 20px',
+                            borderRadius: 14,
+                            color: '#0f1724',
+                            cursor: 'pointer',
+                            background: 'linear-gradient(90deg,#fff9f2 0%, #ffffff 100%)',
+                            boxShadow: '0 8px 20px rgba(17,24,39,0.04)',
+                            transition: 'transform 160ms ease, box-shadow 160ms ease'
+                        }}
+                    >
+                        <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: 18, fontWeight: 800, color: '#111827' }}>我的数据集申请</div>
+                            <div style={{ marginTop: 6, color: 'rgba(17,24,39,0.7)' }}>查看你发起的申请与已获授权，快速管理使用权限。</div>
+                        </div>
+                        <div>
+                            <Button onClick={(e) => { e.stopPropagation(); routeTo('/multi-center/data-usage/my-data-application'); }}>查看</Button>
+                        </div>
+                    </div>
                 </div>
-                {loading ? (
-                    <div style={{ textAlign: 'center', fontSize: 18, color: '#428be5', margin: '32px 0' }}>
-                        <Spin size="large" style={{ marginRight: 16 }} />
-                        数据加载中...
-                    </div>
-                ) : null}
-                {!loading && (
-                    <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
-                        {resourceList
-                            .filter(r => r.description && r.description.includes(search))
-                            .map((r, idx) => (
-                                <div key={r.id} style={{ background: '#fff', borderRadius: 16, boxShadow: '0 2px 10px #e6eaf1', padding: 28, minWidth: 320, flex: 1, marginBottom: 24, position: 'relative' }}>
-                                    <div style={{ fontSize: 19, fontWeight: 600, marginBottom: 8 }}>{r.loading ? '加载中...' : r.description || '无描述'}</div>
-                                    <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}>
-                                        <span style={{ marginRight: 10, display: 'flex', alignItems: 'center', gap: 4 }}><FilePlus size={15} /> {r.id}</span>
-                                    </div>
-                                    <div style={{ marginTop: 18 }}>
-                                        {idx === 0 ? (
-                                            <Button type="primary" disabled>已获使用权</Button>
-                                        ) : (
-                                            <Button type="default" onClick={() => { setModalResource(r); setModalOpen(true); }}>申请数据</Button>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                    </div>
-                )}
+
                 <Modal
                     title="申请数据集使用权"
                     open={modalOpen}
