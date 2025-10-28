@@ -210,7 +210,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 	var flushData interface{}
 
 	client = GetOpenAiClientFromToken(p.secretKey)
-	flushData = flushDataOpenai
+	flushData = flushDataThink
 
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
@@ -291,7 +291,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 
 		isLeadingReturn := true
 		for respStream.Next() {
-			flushStandard := flushData.(func(string, io.Writer, string) error)
+			flushThink := flushData.(func(string, string, io.Writer, string) error)
 			response := respStream.Current()
 			switch variant := response.AsAny().(type) {
 			case responses.ResponseTextDeltaEvent:
@@ -304,7 +304,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 					}
 				}
 
-				err = flushStandard(data, writer, lang)
+				err = flushThink(data, "message", writer, lang)
 				if err != nil {
 					return nil, err
 				}
@@ -322,11 +322,6 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 		}
 		if respStream.Err() != nil {
 			return nil, respStream.Err()
-		}
-
-		err = handleMcpToolCalls(toolCalls, flushData, writer, lang)
-		if err != nil {
-			return nil, err
 		}
 
 		if agentInfo != nil && agentInfo.AgentMessages != nil {
@@ -655,20 +650,4 @@ func reverseMcpToolsToOpenAi(tools []*protocol.Tool) ([]responses.ToolUnionParam
 		})
 	}
 	return openaiTools, nil
-}
-
-func handleMcpToolCalls(toolCalls []responses.ResponseFunctionToolCall, flushData interface{}, writer io.Writer, lang string) error {
-	if toolCalls == nil {
-		return nil
-	}
-
-	if flushThink, ok := flushData.(func(string, string, io.Writer, string) error); ok {
-		for _, toolCall := range toolCalls {
-			err := flushThink("\n"+"Call result from "+toolCall.Name+"\n", "reason", writer, lang)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
 }

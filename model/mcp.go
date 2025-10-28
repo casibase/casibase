@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
 	"github.com/casibase/casibase/agent"
@@ -44,6 +45,12 @@ type ToolCallResponse struct {
 	ToolName string      `json:"toolName"`
 }
 
+type ToolCall struct {
+	Name      string `json:"name"`
+	Arguments string `json:"arguments"`
+	Content   string `json:"content"`
+}
+
 func reverseToolsToOpenAi(tools []*protocol.Tool) ([]openai.Tool, error) {
 	var openaiTools []openai.Tool
 	for _, tool := range tools {
@@ -66,22 +73,6 @@ func reverseToolsToOpenAi(tools []*protocol.Tool) ([]openai.Tool, error) {
 		})
 	}
 	return openaiTools, nil
-}
-
-func handleToolCalls(toolCalls []openai.ToolCall, flushData interface{}, writer io.Writer, lang string) error {
-	if toolCalls == nil {
-		return nil
-	}
-
-	if flushThink, ok := flushData.(func(string, string, io.Writer, string) error); ok {
-		for _, toolCall := range toolCalls {
-			err := flushThink("\n"+"Call result from "+toolCall.Function.Name+"\n", "reason", writer, lang)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
 }
 
 func handleToolCallsParameters(toolCall openai.ToolCall, toolCalls []openai.ToolCall, toolCallsMap map[int]int) ([]openai.ToolCall, map[int]int) {
@@ -138,7 +129,7 @@ func QueryTextWithTools(p ModelProvider, question string, writer io.Writer, hist
 				ToolCall: toolCall,
 			})
 
-			messages, err = callTools(toolCall, serverName, toolName, agentInfo.AgentClients, messages, lang)
+			messages, err = callTools(toolCall, serverName, toolName, agentInfo.AgentClients, messages, writer, lang)
 			if err != nil {
 				return nil, err
 			}
@@ -176,7 +167,7 @@ func createToolMessage(toolCall openai.ToolCall, text string) *RawMessage {
 	}
 }
 
-func callTools(toolCall openai.ToolCall, serverName, toolName string, agentClients *agent.AgentClients, messages []*RawMessage, lang string) ([]*RawMessage, error) {
+func callTools(toolCall openai.ToolCall, serverName, toolName string, agentClients *agent.AgentClients, messages []*RawMessage, writer io.Writer, lang string) ([]*RawMessage, error) {
 	var arguments map[string]interface{}
 	ctx := context.Background()
 
@@ -215,10 +206,20 @@ func callTools(toolCall openai.ToolCall, serverName, toolName string, agentClien
 		response.Error = err.Error()
 	} else if result.IsError {
 		response.Success = false
-		response.Error = fmt.Sprintf("%v", result.Content)
+		contentBytes, err := json.Marshal(result.Content)
+		if err != nil {
+			response.Error = fmt.Sprintf(i18n.Translate(lang, "model:failed to marshal error content: %v"), err)
+		} else {
+			response.Error = string(contentBytes)
+		}
 	} else {
 		response.Success = true
-		response.Data = result.Content
+		contentBytes, err := json.Marshal(result.Content)
+		if err != nil {
+			response.Data = fmt.Sprintf(i18n.Translate(lang, "model:failed to marshal content: %v"), err)
+		} else {
+			response.Data = string(contentBytes)
+		}
 	}
 
 	responseJson, err := json.Marshal(response)
@@ -226,6 +227,42 @@ func callTools(toolCall openai.ToolCall, serverName, toolName string, agentClien
 		return nil, fmt.Errorf(i18n.Translate(lang, "model:failed to marshal tool response: %v"), err)
 	}
 
+	var contentStr string
+	if !response.Success {
+		contentStr = response.Error
+	} else {
+		contentStr = response.Data.(string)
+	}
+
+	toolData := ToolCall{
+		Name:      toolCall.Function.Name,
+		Arguments: toolCall.Function.Arguments,
+		Content:   contentStr,
+	}
+	toolJSON, err := json.Marshal(toolData)
+	if err == nil {
+		if err := flushDataThink(string(toolJSON), "tool", writer, lang); err == nil {
+		}
+	}
+
 	messages = append(messages, createToolMessage(toolCall, string(responseJson)))
 	return messages, nil
+}
+
+func GetToolCallsFromWriter(toolMessage string) []ToolCall {
+	if toolMessage == "" {
+		return nil
+	}
+	var toolCalls []ToolCall
+	toolCallLines := strings.Split(toolMessage, "\n")
+	for _, line := range toolCallLines {
+		if line == "" {
+			continue
+		}
+		var toolCall ToolCall
+		if err := json.Unmarshal([]byte(line), &toolCall); err == nil {
+			toolCalls = append(toolCalls, toolCall)
+		}
+	}
+	return toolCalls
 }

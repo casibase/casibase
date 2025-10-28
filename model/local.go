@@ -337,11 +337,6 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			}
 		}
 
-		err = handleToolCalls(toolCalls, flushData, writer, lang)
-		if err != nil {
-			return nil, err
-		}
-
 		if agentInfo != nil && agentInfo.AgentMessages != nil {
 			agentInfo.AgentMessages.ToolCalls = toolCalls
 		}
