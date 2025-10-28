@@ -325,7 +325,10 @@ func (p *AlibabaCloudParser) enrichEcsInstances(client *ecs20140526.Client, asse
 			// Parse existing properties
 			properties := make(map[string]interface{})
 			if asset.Properties != "" {
-				json.Unmarshal([]byte(asset.Properties), &properties)
+				if err := json.Unmarshal([]byte(asset.Properties), &properties); err != nil {
+					// If existing properties are invalid, start with empty map
+					properties = make(map[string]interface{})
+				}
 			}
 
 			// Add detailed ECS information
@@ -360,7 +363,11 @@ func (p *AlibabaCloudParser) enrichEcsInstances(client *ecs20140526.Client, asse
 			asset.State = tea.StringValue(instance.Status)
 
 			// Marshal properties back to JSON
-			propertiesJson, _ := json.Marshal(properties)
+			propertiesJson, err := json.Marshal(properties)
+			if err != nil {
+				// If marshaling fails, keep the existing properties
+				continue
+			}
 			asset.Properties = string(propertiesJson)
 		}
 	}
@@ -406,7 +413,10 @@ func (p *AlibabaCloudParser) enrichDisks(client *ecs20140526.Client, assets []*A
 			// Parse existing properties
 			properties := make(map[string]interface{})
 			if asset.Properties != "" {
-				json.Unmarshal([]byte(asset.Properties), &properties)
+				if err := json.Unmarshal([]byte(asset.Properties), &properties); err != nil {
+					// If existing properties are invalid, start with empty map
+					properties = make(map[string]interface{})
+				}
 			}
 
 			// Add detailed disk information
@@ -422,7 +432,11 @@ func (p *AlibabaCloudParser) enrichDisks(client *ecs20140526.Client, assets []*A
 			asset.State = tea.StringValue(disk.Status)
 
 			// Marshal properties back to JSON
-			propertiesJson, _ := json.Marshal(properties)
+			propertiesJson, err := json.Marshal(properties)
+			if err != nil {
+				// If marshaling fails, keep the existing properties
+				continue
+			}
 			asset.Properties = string(propertiesJson)
 		}
 	}
@@ -453,7 +467,10 @@ func (p *AlibabaCloudParser) enrichVpcs(client *ecs20140526.Client, assets []*As
 			// Parse existing properties
 			properties := make(map[string]interface{})
 			if asset.Properties != "" {
-				json.Unmarshal([]byte(asset.Properties), &properties)
+				if err := json.Unmarshal([]byte(asset.Properties), &properties); err != nil {
+					// If existing properties are invalid, start with empty map
+					properties = make(map[string]interface{})
+				}
 			}
 
 			// Add detailed VPC information
@@ -467,7 +484,11 @@ func (p *AlibabaCloudParser) enrichVpcs(client *ecs20140526.Client, assets []*As
 			asset.State = tea.StringValue(vpc.Status)
 
 			// Marshal properties back to JSON
-			propertiesJson, _ := json.Marshal(properties)
+			propertiesJson, err := json.Marshal(properties)
+			if err != nil {
+				// If marshaling fails, keep the existing properties
+				continue
+			}
 			asset.Properties = string(propertiesJson)
 		}
 	}
