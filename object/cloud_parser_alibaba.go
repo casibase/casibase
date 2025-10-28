@@ -75,7 +75,7 @@ func (p *AlibabaCloudParser) getResourceTypes(client *resourcecenter20221201.Cli
 	var resourceTypes []string
 
 	// If API call succeeds, try to extract resource types from response
-	if err == nil && response.Body.Filters != nil {
+	if err == nil && response != nil && response.Body != nil && response.Body.Filters != nil {
 		for _, filter := range response.Body.Filters {
 			if tea.StringValue(filter.Key) == "ResourceType" && filter.Values != nil {
 				for _, value := range filter.Values {
@@ -283,8 +283,9 @@ func (p *AlibabaCloudParser) convertResourceToAsset(owner string, provider *Prov
 	propertiesJson, err := json.Marshal(properties)
 	if err != nil {
 		// Fallback to empty JSON object if marshaling fails.
-		// This is unlikely to happen since properties contains only basic types (strings, slices)
-		// but we handle it gracefully to avoid breaking the entire scan.
+		// While unlikely, this could happen if the API returns unexpected data types
+		// in IpAddresses or other fields that don't serialize well to JSON.
+		// We handle it gracefully to avoid breaking the entire scan.
 		propertiesJson = []byte("{}")
 	}
 
