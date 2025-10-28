@@ -239,10 +239,10 @@ class GraphDataPage extends React.Component {
   };
 
   onChartReady = (chartInstance) => {
-    // Set cursor to pointer on node hover using containPixel API
+    // Set cursor to pointer on node hover using public containPixel API
+    // This ensures compatibility with future ECharts versions
     chartInstance.getZr().on("mousemove", (params) => {
       const pointInPixel = [params.offsetX, params.offsetY];
-      // Use containPixel which is part of the public API
       if (chartInstance.containPixel("series", pointInPixel)) {
         chartInstance.getZr().setCursorStyle("pointer");
       } else {
@@ -257,7 +257,8 @@ class GraphDataPage extends React.Component {
       return null;
     }
 
-    // Helper function to validate and sanitize icon URLs (reuse from getOption)
+    // Helper function to validate and sanitize icon URLs
+    // Same validation logic as used in getOption method
     const sanitizeIconUrl = (iconUrl) => {
       if (!iconUrl || typeof iconUrl !== "string") {
         return null;
@@ -271,6 +272,7 @@ class GraphDataPage extends React.Component {
     };
 
     // Safely render additional properties
+    const MAX_VALUE_LENGTH = 100;
     const renderValue = (value) => {
       if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
         return String(value);
@@ -278,7 +280,7 @@ class GraphDataPage extends React.Component {
       // For objects/arrays, stringify but truncate if too long
       try {
         const str = JSON.stringify(value);
-        return str.length > 100 ? str.substring(0, 100) + "..." : str;
+        return str.length > MAX_VALUE_LENGTH ? str.substring(0, MAX_VALUE_LENGTH) + "..." : str;
       } catch (e) {
         return "[Complex Object]";
       }
