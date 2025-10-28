@@ -41,32 +41,33 @@ type Message struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	Organization      string        `xorm:"varchar(100)" json:"organization"`
-	Store             string        `xorm:"varchar(100)" json:"store"`
-	User              string        `xorm:"varchar(100) index" json:"user"`
-	Chat              string        `xorm:"varchar(100) index" json:"chat"`
-	ReplyTo           string        `xorm:"varchar(100) index" json:"replyTo"`
-	Author            string        `xorm:"varchar(100)" json:"author"`
-	Text              string        `xorm:"mediumtext" json:"text"`
-	ReasonText        string        `xorm:"mediumtext" json:"reasonText"`
-	ErrorText         string        `xorm:"mediumtext" json:"errorText"`
-	FileName          string        `xorm:"varchar(100)" json:"fileName"`
-	Comment           string        `xorm:"mediumtext" json:"comment"`
-	TokenCount        int           `json:"tokenCount"`
-	TextTokenCount    int           `json:"textTokenCount"`
-	Price             float64       `json:"price"`
-	Currency          string        `xorm:"varchar(100)" json:"currency"`
-	IsHidden          bool          `json:"isHidden"`
-	IsDeleted         bool          `json:"isDeleted"`
-	NeedNotify        bool          `json:"needNotify"`
-	IsAlerted         bool          `json:"isAlerted"`
-	IsRegenerated     bool          `json:"isRegenerated"`
-	ModelProvider     string        `xorm:"varchar(100)" json:"modelProvider"`
-	EmbeddingProvider string        `xorm:"varchar(100)" json:"embeddingProvider"`
-	VectorScores      []VectorScore `xorm:"mediumtext" json:"vectorScores"`
-	LikeUsers         []string      `json:"likeUsers"`
-	DisLikeUsers      []string      `json:"dislikeUsers"`
-	Suggestions       []Suggestion  `json:"suggestions"`
+	Organization      string           `xorm:"varchar(100)" json:"organization"`
+	Store             string           `xorm:"varchar(100)" json:"store"`
+	User              string           `xorm:"varchar(100) index" json:"user"`
+	Chat              string           `xorm:"varchar(100) index" json:"chat"`
+	ReplyTo           string           `xorm:"varchar(100) index" json:"replyTo"`
+	Author            string           `xorm:"varchar(100)" json:"author"`
+	Text              string           `xorm:"mediumtext" json:"text"`
+	ReasonText        string           `xorm:"mediumtext" json:"reasonText"`
+	ErrorText         string           `xorm:"mediumtext" json:"errorText"`
+	FileName          string           `xorm:"varchar(100)" json:"fileName"`
+	Comment           string           `xorm:"mediumtext" json:"comment"`
+	TokenCount        int              `json:"tokenCount"`
+	TextTokenCount    int              `json:"textTokenCount"`
+	Price             float64          `json:"price"`
+	Currency          string           `xorm:"varchar(100)" json:"currency"`
+	IsHidden          bool             `json:"isHidden"`
+	IsDeleted         bool             `json:"isDeleted"`
+	NeedNotify        bool             `json:"needNotify"`
+	IsAlerted         bool             `json:"isAlerted"`
+	IsRegenerated     bool             `json:"isRegenerated"`
+	ModelProvider     string           `xorm:"varchar(100)" json:"modelProvider"`
+	EmbeddingProvider string           `xorm:"varchar(100)" json:"embeddingProvider"`
+	VectorScores      []VectorScore    `xorm:"mediumtext" json:"vectorScores"`
+	LikeUsers         []string         `json:"likeUsers"`
+	DisLikeUsers      []string         `json:"dislikeUsers"`
+	Suggestions       []Suggestion     `json:"suggestions"`
+	ToolCalls         []model.ToolCall `xorm:"mediumtext" json:"toolCalls"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {
