@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row} from "antd";
+import {Button, Card, Col, Input, Row, Table} from "antd";
 import * as AssetBackend from "./backend/AssetBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -51,6 +51,23 @@ class AssetEditPage extends React.Component {
 
   parseAssetField(key, value) {
     return value;
+  }
+
+  formatPropertiesForDisplay() {
+    if (!this.state.asset.properties) {
+      return [];
+    }
+
+    try {
+      const properties = JSON.parse(this.state.asset.properties);
+      return Object.entries(properties).map(([key, value]) => ({
+        key: key,
+        property: key,
+        value: typeof value === "object" ? JSON.stringify(value) : String(value),
+      }));
+    } catch (e) {
+      return [];
+    }
   }
 
   updateAssetField(key, value) {
@@ -199,6 +216,30 @@ class AssetEditPage extends React.Component {
             {Setting.getLabel(i18next.t("asset:Properties"), i18next.t("asset:Properties - Tooltip"))} :
           </Col>
           <Col span={22} >
+            {this.formatPropertiesForDisplay().length > 0 ? (
+              <div style={{marginBottom: "10px"}}>
+                <Table
+                  size="small"
+                  dataSource={this.formatPropertiesForDisplay()}
+                  columns={[
+                    {
+                      title: i18next.t("asset:Property"),
+                      dataIndex: "property",
+                      key: "property",
+                      width: "30%",
+                    },
+                    {
+                      title: i18next.t("asset:Value"),
+                      dataIndex: "value",
+                      key: "value",
+                      width: "70%",
+                    },
+                  ]}
+                  pagination={false}
+                  bordered
+                />
+              </div>
+            ) : null}
             <TextArea
               autoSize={{minRows: 5, maxRows: 20}}
               value={this.state.asset.properties}

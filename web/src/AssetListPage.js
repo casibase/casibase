@@ -14,8 +14,8 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Select, Table, Tooltip} from "antd";
-import {ReloadOutlined} from "@ant-design/icons";
+import {Button, Popover, Select, Table, Tooltip} from "antd";
+import {InfoCircleOutlined, ReloadOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as AssetBackend from "./backend/AssetBackend";
@@ -153,6 +153,40 @@ class AssetListPage extends BaseListPage {
     return logoMap[provider.type] || null;
   }
 
+  renderPropertiesPopover(properties) {
+    if (!properties) {
+      return null;
+    }
+
+    try {
+      const propertiesObj = JSON.parse(properties);
+      const content = (
+        <div style={{maxWidth: "400px"}}>
+          <table style={{width: "100%", borderCollapse: "collapse"}}>
+            <tbody>
+              {Object.entries(propertiesObj).map(([key, value]) => (
+                <tr key={key} style={{borderBottom: "1px solid #f0f0f0"}}>
+                  <td style={{padding: "4px 8px", fontWeight: "500", color: "#666"}}>{key}:</td>
+                  <td style={{padding: "4px 8px", wordBreak: "break-all"}}>
+                    {typeof value === "object" ? JSON.stringify(value) : String(value)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+
+      return (
+        <Popover content={content} title={i18next.t("asset:Properties")} placement="left">
+          <InfoCircleOutlined style={{cursor: "pointer", color: "#1890ff"}} />
+        </Popover>
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
   renderTable(assets) {
     const columns = [
       {
@@ -262,6 +296,16 @@ class AssetListPage extends BaseListPage {
         width: "120px",
         sorter: true,
         ...this.getColumnSearchProps("state"),
+      },
+      {
+        title: i18next.t("asset:Properties"),
+        dataIndex: "properties",
+        key: "properties",
+        width: "80px",
+        align: "center",
+        render: (text, record, index) => {
+          return this.renderPropertiesPopover(text);
+        },
       },
       {
         title: i18next.t("general:Action"),
