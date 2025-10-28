@@ -48,6 +48,7 @@ class GraphDataPage extends React.Component {
       data: {nodes: [], links: [], categories: []},
       errorText: "",
       renderError: "",
+      selectedNode: null,
     };
     this.chartRef = React.createRef();
     this.containerRef = React.createRef();
@@ -130,6 +131,7 @@ class GraphDataPage extends React.Component {
     // Transform nodes to ECharts format
     const echartNodes = nodes.map(node => {
       const sanitizedIcon = sanitizeIconUrl(node.icon);
+      const isSelected = this.state.selectedNode && this.state.selectedNode.id === node.id;
       return {
         id: node.id,
         name: node.name || node.id,
@@ -140,6 +142,14 @@ class GraphDataPage extends React.Component {
         category: node.category,
         // Support for icon
         symbol: sanitizedIcon ? `image://${sanitizedIcon}` : "circle",
+        // Add selection indicator - more prominent dark style
+        itemStyle: isSelected ? {
+          color: "#d32f2f",
+          borderColor: "#b71c1c",
+          borderWidth: 6,
+          shadowBlur: 20,
+          shadowColor: "rgba(211, 47, 47, 0.8)",
+        } : undefined,
         label: {
           show: true,
           position: "bottom",
@@ -147,8 +157,10 @@ class GraphDataPage extends React.Component {
           rich: {
             name: {
               fontSize: 12,
-              color: "#333",
-              padding: [2, 0, 0, 0],
+              color: isSelected ? "#ffffff" : "#333",
+              backgroundColor: isSelected ? "#d32f2f" : "transparent",
+              padding: isSelected ? [4, 8, 4, 8] : [2, 0, 0, 0],
+              borderRadius: isSelected ? 4 : 0,
             },
           },
         },
@@ -163,15 +175,7 @@ class GraphDataPage extends React.Component {
 
     const option = {
       tooltip: {
-        trigger: "item",
-        formatter: (params) => {
-          if (params.dataType === "node") {
-            return `${params.data.name}<br/>Value: ${params.data.value || "N/A"}`;
-          } else if (params.dataType === "edge") {
-            return `${params.data.source} → ${params.data.target}`;
-          }
-          return "";
-        },
+        show: false,
       },
       legend: this.props.showLegend !== false && categories.length > 0 ? [
         {
@@ -193,19 +197,22 @@ class GraphDataPage extends React.Component {
           categories: categories,
           roam: true,
           draggable: true,
+          scaleLimit: {
+            min: 0.2,
+            max: 5,
+          },
           label: {
             show: true,
             position: "bottom",
           },
+          edgeSymbol: ["none", "none"],
+          edgeSymbolSize: [0, 0],
           lineStyle: {
             color: "source",
             curveness: 0.3,
           },
           emphasis: {
-            focus: "adjacency",
-            lineStyle: {
-              width: 3,
-            },
+            disabled: true,
           },
           force: layout === "force" ? {
             repulsion: 500,
@@ -222,6 +229,148 @@ class GraphDataPage extends React.Component {
     return option;
   }
 
+  handleNodeClick = (params) => {
+    if (params.dataType === "node") {
+      // Find the full node data
+      const node = this.state.data.nodes.find(n => n.id === params.data.id);
+      this.setState({
+        selectedNode: node,
+      });
+    }
+  };
+
+  handleClosePanel = () => {
+    this.setState({
+      selectedNode: null,
+    });
+  };
+
+  onChartReady = (chartInstance) => {
+    // Set cursor to hand (move) on node hover using public containPixel API
+    // This ensures compatibility with future ECharts versions
+    chartInstance.getZr().on("mousemove", (params) => {
+      const pointInPixel = [params.offsetX, params.offsetY];
+      if (chartInstance.containPixel("series", pointInPixel)) {
+        chartInstance.getZr().setCursorStyle("grab");
+      } else {
+        chartInstance.getZr().setCursorStyle("move");
+      }
+    });
+  };
+
+  renderNodePanel() {
+    const {selectedNode} = this.state;
+    if (!selectedNode) {
+      return null;
+    }
+
+    // Helper function to validate and sanitize icon URLs
+    // Same validation logic as used in getOption method
+    const sanitizeIconUrl = (iconUrl) => {
+      if (!iconUrl || typeof iconUrl !== "string") {
+        return null;
+      }
+      // Only allow http, https, and data URLs
+      const urlPattern = /^(https?:\/\/|data:image\/)/i;
+      if (!urlPattern.test(iconUrl)) {
+        return null;
+      }
+      return iconUrl;
+    };
+
+    // Safely render additional properties
+    const MAX_VALUE_LENGTH = 100;
+    const renderValue = (value) => {
+      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+        return String(value);
+      }
+      // For objects/arrays, stringify but truncate if too long
+      try {
+        const str = JSON.stringify(value);
+        return str.length > MAX_VALUE_LENGTH ? str.substring(0, MAX_VALUE_LENGTH) + "..." : str;
+      } catch (e) {
+        return "[Complex Object]";
+      }
+    };
+
+    const sanitizedIcon = sanitizeIconUrl(selectedNode.icon);
+
+    return (
+      <div
+        style={{
+          position: "absolute",
+          top: "20px",
+          right: "20px",
+          width: "300px",
+          maxHeight: "80%",
+          background: "white",
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          padding: "16px",
+          zIndex: 1001,
+          overflow: "auto",
+        }}
+      >
+        <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px"}}>
+          <h3 style={{margin: 0, fontSize: "16px", fontWeight: 600}}>Node Details</h3>
+          <button
+            onClick={this.handleClosePanel}
+            style={{
+              background: "transparent",
+              border: "none",
+              fontSize: "18px",
+              cursor: "pointer",
+              padding: "0",
+              lineHeight: "1",
+              color: "#999",
+            }}
+          >
+            ×
+          </button>
+        </div>
+        <div style={{fontSize: "14px"}}>
+          <div style={{marginBottom: "8px"}}>
+            <strong>ID:</strong> <span style={{color: "#666"}}>{selectedNode.id}</span>
+          </div>
+          <div style={{marginBottom: "8px"}}>
+            <strong>Name:</strong> <span style={{color: "#666"}}>{selectedNode.name || selectedNode.id}</span>
+          </div>
+          {selectedNode.value !== undefined && (
+            <div style={{marginBottom: "8px"}}>
+              <strong>Value:</strong> <span style={{color: "#666"}}>{selectedNode.value}</span>
+            </div>
+          )}
+          {selectedNode.category !== undefined && (
+            <div style={{marginBottom: "8px"}}>
+              <strong>Category:</strong> <span style={{color: "#666"}}>{selectedNode.category}</span>
+            </div>
+          )}
+          {selectedNode.symbolSize !== undefined && (
+            <div style={{marginBottom: "8px"}}>
+              <strong>Symbol Size:</strong> <span style={{color: "#666"}}>{selectedNode.symbolSize}</span>
+            </div>
+          )}
+          {sanitizedIcon && (
+            <div style={{marginBottom: "8px"}}>
+              <strong>Icon:</strong>
+              <div style={{marginTop: "4px"}}>
+                <img src={sanitizedIcon} alt="Node icon" style={{maxWidth: "100%", maxHeight: "100px"}} />
+              </div>
+            </div>
+          )}
+          {Object.keys(selectedNode).filter(key =>
+            !["id", "name", "value", "category", "symbolSize", "icon", "x", "y"].includes(key)
+          ).map(key => (
+            <div key={key} style={{marginBottom: "8px"}}>
+              <strong>{key}:</strong> <span style={{color: "#666"}}>{renderValue(selectedNode[key])}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div
@@ -230,6 +379,7 @@ class GraphDataPage extends React.Component {
           width: "100%",
           height: "100%",
           position: "relative",
+          border: this.props.showBorder ? "1px solid #d9d9d9" : "none",
         }}
       >
         {(this.state.errorText || this.state.renderError) && (
@@ -259,12 +409,17 @@ class GraphDataPage extends React.Component {
             <ReactEcharts
               ref={this.chartRef}
               option={this.getOption()}
-              style={{height: "100%", width: "100%"}}
+              style={{height: "100%", width: "100%", cursor: "default"}}
               notMerge={true}
               lazyUpdate={true}
+              onEvents={{
+                click: this.handleNodeClick,
+              }}
+              onChartReady={this.onChartReady}
             />
           </GraphErrorBoundary>
         )}
+        {this.renderNodePanel()}
       </div>
     );
   }
