@@ -46,7 +46,7 @@ export function getChatMessages(owner, chat) {
 
 const eventSourceMap = new Map();
 
-export function getMessageAnswer(owner, name, onMessage, onReason, onError, onEnd) {
+export function getMessageAnswer(owner, name, onMessage, onReason, onTool, onError, onEnd) {
   if (eventSourceMap.has(`${owner}/${name}`)) {
     return;
   }
@@ -61,6 +61,10 @@ export function getMessageAnswer(owner, name, onMessage, onReason, onError, onEn
 
   eventSource.addEventListener("reason", (e) => {
     onReason(e.data);
+  });
+
+  eventSource.addEventListener("tool", (e) => {
+    onTool(e.data);
   });
 
   eventSource.addEventListener("myerror", (e) => {
