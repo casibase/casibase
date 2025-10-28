@@ -201,6 +201,10 @@ class GraphDataPage extends React.Component {
             min: 0.2,
             max: 5,
           },
+          left: 0,
+          right: 0,
+          top: categories.length > 0 ? 50 : 0,
+          bottom: 0,
           label: {
             show: true,
             position: "bottom",
