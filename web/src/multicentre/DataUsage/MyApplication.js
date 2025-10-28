@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Tabs, List, Table, Tag, Empty, Spin, Button, Modal, Typography, Row, Col, Input, Space, Avatar, Drawer, Form, InputNumber, DatePicker, Descriptions, Popover, Popconfirm } from 'antd';
+import { Card, Tabs, List, Table, Tag, Empty, Spin, Button, Modal, Typography, Row, Col, Input, Space, Avatar, Drawer, Form, InputNumber, DatePicker, Descriptions, Popover, Popconfirm, Timeline } from 'antd';
 import moment from 'moment';
 import * as MultiCenterBackend from '../../backend/MultiCenterBackend';
 import * as Setting from '../../Setting';
@@ -31,6 +31,13 @@ export default function MyApplication() {
     // dataset detail modal state
     const [datasetModalVisible, setDatasetModalVisible] = useState(false);
     const [datasetModalData, setDatasetModalData] = useState(null);
+    // approval flow modal state
+    const [approvalModalVisible, setApprovalModalVisible] = useState(false);
+    const [approvalLoading, setApprovalLoading] = useState(false);
+    const [approvalTimeline, setApprovalTimeline] = useState([]);
+    // granted assets (可用数据授权) state
+    const [granted, setGranted] = useState([]);
+    const [grantedLoading, setGrantedLoading] = useState(false);
     // request modal state for dataset detail + apply form
     const [requestModalVisible, setRequestModalVisible] = useState(false);
     const [selectedDataset, setSelectedDataset] = useState(null);
@@ -51,7 +58,12 @@ export default function MyApplication() {
     }, []);
 
     async function loadTab(status) {
+
         if (!status) return;
+        if (status === MULTICENTER_ACCESS_REQUEST_STATUS.APPROVED) {
+            loadGranted()
+            return;
+        }
         setLoading(prev => ({ ...prev, [status]: true }));
         try {
             const res = await MultiCenterBackend.getAccessRequestsByRequesterAndStatus(status);
@@ -64,6 +76,49 @@ export default function MyApplication() {
             Setting.showMessage('error', `无法连接服务器: ${e}`);
         } finally {
             setLoading(prev => ({ ...prev, [status]: false }));
+        }
+    }
+
+    // load granted assets (可用数据授权) for requester
+    async function loadGranted() {
+        setGrantedLoading(true);
+        try {
+            const res = await MultiCenterBackend.getGrantedAssetsByRequester();
+            if (res && res.status === 'ok') {
+                const payload = res.data;
+                let rows = [];
+
+                // handle a few possible shapes from backend defensively
+                if (Array.isArray(payload)) {
+                    // array of { accessGrant, dataset } or array of pairs
+                    rows = payload.map((item, idx) => {
+                        const grant = item.accessGrant || item.grant || item.access_grant || item;
+                        const dataset = item.dataset || item.dataSet || item;
+                        return { grant, dataset, key: (grant && (grant.GrantId || grant.grantId)) || (dataset && (dataset.Id || dataset.id)) || `g-${idx}` };
+                    });
+                } else if (payload) {
+                    // possible object with grants + datasets arrays
+                    const grants = payload.accessGrants || payload.grants || payload.grantList || payload.grant || [];
+                    const datasets = payload.datasets || payload.dataSets || payload.datasetList || [];
+                    const map = {};
+                    (datasets || []).forEach(ds => {
+                        const id = String(ds.Id || ds.id || ds.DatasetId || ds.datasetId || '');
+                        if (id) map[id] = ds;
+                    });
+                    rows = (grants || []).map((g) => {
+                        const assetId = String(g.AssetId || g.assetId || g.Assetid || g.assetID || '');
+                        return { grant: g, dataset: map[assetId] || null, key: (g.GrantId || g.grantId || assetId || Math.random()) };
+                    });
+                }
+
+                setGranted(rows);
+            } else {
+                Setting.showMessage('error', `获取已授权列表失败: ${res ? res.msg : '未知错误'}`);
+            }
+        } catch (e) {
+            Setting.showMessage('error', `无法连接服务器: ${e}`);
+        } finally {
+            setGrantedLoading(false);
         }
     }
 
@@ -175,7 +230,8 @@ export default function MyApplication() {
 
     const counts = {
         PENDING: (data.PENDING || []).length,
-        APPROVED: (data.APPROVED || []).length,
+        // APPROVED corresponds to granted assets now
+        APPROVED: (granted || []).length || (data.APPROVED || []).length,
         REJECTED: (data.REJECTED || []).length,
     };
 
@@ -454,7 +510,7 @@ export default function MyApplication() {
                     <Text type="secondary">集中展示你发起的申请：可用 / 待对方审核 / 审核被拒绝，快速查看详情与状态。</Text>
                 </Col>
                 <Col span={6} style={{ textAlign: 'right' }}>
-                    <Button type="primary" icon={<FileSearchOutlined />} onClick={() => loadTab(activeTab)}>
+                    <Button type="primary" icon={<FileSearchOutlined />} onClick={() => { if (activeTab === MULTICENTER_ACCESS_REQUEST_STATUS.APPROVED) { loadGranted(); } else { loadTab(activeTab); } }}>
                         刷新当前列表
                     </Button>
                 </Col>
@@ -465,17 +521,145 @@ export default function MyApplication() {
                     activeKey={activeTab}
                     onChange={(key) => {
                         setActiveTab(key);
-                        loadTab(key);
+                        if (key === MULTICENTER_ACCESS_REQUEST_STATUS.APPROVED) {
+                            loadGranted();
+                        } else {
+                            loadTab(key);
+                        }
                     }}
                 >
-                    <Tabs.TabPane tab={tabTitle(<CheckCircleOutlined style={{ fontSize: 18, color: '#13c2c2' }} />, '可用申请', counts.APPROVED)} key={MULTICENTER_ACCESS_REQUEST_STATUS.APPROVED}>
-                        {/* Table for approved requests */}
+                    <Tabs.TabPane tab={tabTitle(<CheckCircleOutlined style={{ fontSize: 18, color: '#13c2c2' }} />, '可用数据授权', counts.APPROVED)} key={MULTICENTER_ACCESS_REQUEST_STATUS.APPROVED}>
+                        {/* Table for granted (可用数据授权) */}
                         <Table
-                            columns={tableColumns}
-                            dataSource={data.APPROVED}
-                            loading={loading.APPROVED}
+                            columns={[
+                                { title: '授权ID', dataIndex: ['grant', 'GrantId'], render: (v, row) => (row.grant && (row.grant.GrantId || row.grant.grantId || '-')) },
+
+                                {
+                                    title: '数据集名称与ID', render: (v, row) => {
+                                        if (!row || !row.dataset) return '-';
+                                        const ds = row.dataset;
+                                        // try to find a numeric id from dataset or grant
+                                        const numericId = ds.Id || ds.id || ds.DatasetId || ds.datasetId || (row.grant && (row.grant.AssetId || row.grant.assetId)) || null;
+                                        const stableId = numericId ? String(numericId) : (ds.DatasetName || ds.datasetName || '-') + Math.random();
+
+                                        return (
+                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                <div>
+                                                    <div>{ds.datasetName || ds.name || '-'}
+                                                        &nbsp;
+                                                        <span style={{ fontSize: '10px', color: 'gray' }}>(ID: {numericId || ds.id || ds.DatasetId || '-'})</span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <Button type="link" icon={<SearchOutlined />} onClick={async (e) => {
+                                                        e.stopPropagation();
+                                                        // open dataset modal; try cache first
+                                                        setDatasetModalVisible(true);
+                                                        setDatasetModalData(null);
+                                                        if (datasetDetailMap[stableId]) {
+                                                            setDatasetModalData(datasetDetailMap[stableId]);
+                                                            return;
+                                                        }
+                                                        if (!numericId || isNaN(Number(numericId))) {
+                                                            // no numeric id, mark as no-data and show fallback
+                                                            setDatasetDetailMap(prev => ({ ...prev, [stableId]: null }));
+                                                            Setting.showMessage('error', '无法识别数据集ID');
+                                                            return;
+                                                        }
+                                                        setDatasetDetailLoading(true);
+                                                        try {
+                                                            const idNum = Number(numericId);
+                                                            const res = await MultiCenterBackend.getDatasetById(idNum);
+                                                            if (res && res.status === 'ok') {
+                                                                setDatasetDetailMap(prev => ({ ...prev, [stableId]: res.data }));
+                                                                setDatasetModalData(res.data);
+                                                            } else {
+                                                                Setting.showMessage('error', `获取数据集详情失败: ${res ? res.msg : '未知错误'}`);
+                                                            }
+                                                        } catch (err) {
+                                                            Setting.showMessage('error', `无法连接服务器: ${err}`);
+                                                        } finally {
+                                                            setDatasetDetailLoading(false);
+                                                        }
+                                                    }} />
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                },
+                                { title: '数据集归口单位', render: (v, row) => (row.dataset ? (row.dataset.Unit || row.dataset.unit || '-') : '-') },
+                                { title: '总申请访问次数', render: (v, row) => (row.grant ? (row.grant.AccessCount || row.grant.accessCount || '-') : '-') },
+                                { title: '授权截至时间', render: (v, row) => (row.grant ? (row.grant.Deadline || row.grant.deadline || '-') : '-') },
+                                {
+                                    title: '审批流程', render: (v, row) => {
+                                        // show a text button that opens approval timeline modal
+                                        // need to derive request id: prefer grant.RequestId or grant.requestId, fallback to null
+                                        const reqId = (row.grant && (row.grant.RequestId || row.grant.requestId || row.grant.request_id)) || null;
+                                        return (
+                                            <Button type="link" onClick={async (e) => {
+                                                e && e.stopPropagation();
+                                                if (!reqId) {
+                                                    Setting.showMessage('error', '无法识别申请ID');
+                                                    return;
+                                                }
+                                                // open modal and load timeline
+                                                setApprovalModalVisible(true);
+                                                setApprovalTimeline([]);
+                                                setApprovalLoading(true);
+                                                try {
+                                                    const res = await MultiCenterBackend.getAccessRequestByIdAndCurUser(reqId);
+                                                    if (res && res.status === 'ok') {
+                                                        const req = res.data;
+                                                        // build timeline items
+                                                        const items = [];
+                                                        // 发起申请
+                                                        items.push({
+                                                            title: '发起申请',
+                                                            time: req.requestedAt || req.RequestedAt || req.RequestedAt || '',
+                                                            content: `申请人：${req.requester || req.Requester || '-'}；申请次数：${req.requestedAccessCount || req.RequestedAccessCount || '-'}；截至：${req.requestedDeadline || req.RequestedDeadline || '-'}；理由：${req.requestReason || req.RequestReason || '-'}`
+                                                        });
+                                                        // 指派/审核人信息
+                                                        if (req.reviewer || req.Reviewer) {
+                                                            items.push({
+                                                                title: '指派审核',
+                                                                time: '',
+                                                                content: `审核人：${req.reviewer || req.Reviewer}`
+                                                            });
+                                                        }
+                                                        // 审批结果
+                                                        const status = (req.requestStatus || req.RequestStatus || '').toString().toUpperCase();
+                                                        if (status && status !== '') {
+                                                            items.push({
+                                                                title: status === 'APPROVED' ? '审批通过' : (status === 'REJECTED' ? '审批拒绝' : status),
+                                                                time: req.reviewedAt || req.ReviewedAt || req.reviewed_at || '',
+                                                                content: `审核意见：${req.reviewComment || req.review_comment || '-'}`
+                                                            });
+                                                        }
+                                                        setApprovalTimeline(items);
+                                                    } else {
+                                                        Setting.showMessage('error', `获取审批信息失败: ${res ? res.msg : '未知错误'}`);
+                                                    }
+                                                } catch (err) {
+                                                    Setting.showMessage('error', `无法连接服务器: ${err}`);
+                                                } finally {
+                                                    setApprovalLoading(false);
+                                                }
+                                            }}>查看流程</Button>
+                                        );
+                                    }
+                                },
+                                {
+                                    title: '操作', render: (v, row) => (
+                                        <div>
+                                            1
+                                        </div>
+                                    )
+                                }
+                            ]}
+                            dataSource={granted}
+                            loading={grantedLoading}
                             pagination={{ pageSize: 10 }}
-                            rowKey={(record) => record.RequestId || record.requestId || record.ID || record.id || record.AssetId || record.assetId || Math.random()}
+                            rowKey={(record) => record.key || (record.grant && (record.grant.GrantId || record.grant.grantId)) || Math.random()}
                         />
                     </Tabs.TabPane>
 
@@ -701,6 +885,29 @@ export default function MyApplication() {
                         </div>
                     </div>
                 ) : <Spin />}
+            </Modal>
+
+            {/* approval flow modal */}
+            <Modal
+                visible={approvalModalVisible}
+                title="审批流程"
+                onCancel={() => setApprovalModalVisible(false)}
+                footer={[<Button key="close" onClick={() => setApprovalModalVisible(false)}>关闭</Button>]}
+                width={600}
+            >
+                {approvalLoading ? <div style={{ textAlign: 'center', padding: 40 }}><Spin /></div> : (
+                    approvalTimeline && approvalTimeline.length > 0 ? (
+                        <Timeline>
+                            {approvalTimeline.map((it, idx) => (
+                                <Timeline.Item key={idx}>
+                                    <div style={{ fontWeight: 600 }}>{it.title}</div>
+                                    <div style={{ color: '#888', fontSize: 12 }}>{it.time || ''}</div>
+                                    <div style={{ marginTop: 6 }}>{it.content}</div>
+                                </Timeline.Item>
+                            ))}
+                        </Timeline>
+                    ) : <div>暂无审批信息</div>
+                )}
             </Modal>
 
             {/* dataset detail modal */}

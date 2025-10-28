@@ -27,8 +27,8 @@ CREATE TABLE multicenter_datasets_accessrequests (
 );
 
 
--- 创建 multicenter_datasets_assetgrants (数据资产授权表)
-CREATE TABLE multicenter_datasets_assetgrants (
+-- 创建 multicenter_datasets_asset_grants (数据资产授权表)
+CREATE TABLE multicenter_datasets_asset_grants (
     grant_id INT PRIMARY KEY AUTO_INCREMENT,
     request_id INT, -- -1代表主动授权
     asset_id INT NOT NULL,

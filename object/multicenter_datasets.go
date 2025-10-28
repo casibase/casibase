@@ -94,8 +94,8 @@ type MulticenterDatasetsAssetGrants struct {
 }
 
 type MulticenterDatasetsAndAssetGrants_TOGETHER struct {
-	accessGrant MulticenterDatasetsAssetGrants
-	dataset     MulticenterDatasets
+	AccessGrant MulticenterDatasetsAssetGrants `json:"accessGrant"`
+	Dataset     MulticenterDatasets                 `json:"dataset"`
 }
 
 // --- MulticenterDatasets CRUD ---
@@ -177,19 +177,16 @@ func UpdateDataset(id int, owner string, ds *MulticenterDatasets) (bool, error) 
 	if old.Owner != owner {
 		return false, errors.New("您不是数据所有者，无法修改数据")
 	}
-	// 不允许修改到期日期
-	if ds.ExpiredAt != old.ExpiredAt {
-		return false, errors.New("不允许修改到期日期")
-	}
 	// 检查VisibleStatus是否合法
 	if _, ok := datasetVisibleStatusMap[ds.VisibleStatus]; !ok {
 		return false, errors.New("可见性状态字段不合法")
 	}
-	// Id、创建时间、数据拥有者、数据名称不可修改
+	// Id、创建时间、数据拥有者、数据名称、到期日期不可修改
 	ds.Id = old.Id
 	ds.Owner = old.Owner
 	ds.CreatedAt = old.CreatedAt
 	ds.Unit = old.Unit
+	ds.ExpiredAt = old.ExpiredAt
 	ds.UpdatedAt = time.Now().Format("2006-01-02 15:04:05")
     // use primary key update
     affected, err := adapter.engine.ID(core.PK{old.Id}).AllCols().Update(ds)
@@ -567,8 +564,8 @@ func GetAssetGrantByIdAndUser(grant_id int, username string) (*MulticenterDatase
 		if err != nil {
 			return nil, err
 		}
-		grantAndDataset.dataset = *dataset
-		grantAndDataset.accessGrant = grant
+		grantAndDataset.Dataset = *dataset
+		grantAndDataset.AccessGrant = grant
 	
 		return &grantAndDataset, nil
 	}
@@ -606,10 +603,10 @@ func GetGrantsByAssetAndOwner(assetId int, owner string) ([]*MulticenterDatasets
 	}
 	for _, grant := range grants {
 		grantAndDataset := MulticenterDatasetsAndAssetGrants_TOGETHER{}
-	grantAndDataset.accessGrant = *grant
-	
+		grantAndDataset.AccessGrant = *grant
+
 		if dataset, ok := datasetMap[grant.AssetId]; ok {
-			grantAndDataset.dataset = *dataset
+			grantAndDataset.Dataset = *dataset
 		}
 		grantsAndDataset = append(grantsAndDataset, &grantAndDataset)
 	}
@@ -646,10 +643,10 @@ func GetGrantsByRequest(requestId int, username string) ([]*MulticenterDatasetsA
 	}
 	for _, grant := range filtered {
 		grantAndDataset := MulticenterDatasetsAndAssetGrants_TOGETHER{}
-	grantAndDataset.accessGrant = *grant
-	
+		grantAndDataset.AccessGrant = *grant
+
 		if dataset, ok := datasetMap[grant.AssetId]; ok {
-			grantAndDataset.dataset = *dataset
+			grantAndDataset.Dataset = *dataset
 		}
 		grantsAndDataset = append(grantsAndDataset, &grantAndDataset)
 	}
@@ -680,11 +677,11 @@ func GetGrantsByOwner(owner string) ([]*MulticenterDatasetsAndAssetGrants_TOGETH
     }
     for _, grant := range grants {
         grantAndDataset := MulticenterDatasetsAndAssetGrants_TOGETHER{}
-	grantAndDataset.accessGrant = *grant
-	
-        if dataset, ok := datasetMap[grant.AssetId]; ok {
-            grantAndDataset.dataset = *dataset
-        }
+		grantAndDataset.AccessGrant = *grant
+
+		if dataset, ok := datasetMap[grant.AssetId]; ok {
+			grantAndDataset.Dataset = *dataset
+		}
         grantsAndDataset = append(grantsAndDataset, &grantAndDataset)
     }
     return grantsAndDataset, nil
@@ -712,11 +709,11 @@ func GetGrantsByRequester(requester string) ([]*MulticenterDatasetsAndAssetGrant
     }
     for _, grant := range grants {
         grantAndDataset := MulticenterDatasetsAndAssetGrants_TOGETHER{}
-	grantAndDataset.accessGrant = *grant
-	
-        if dataset, ok := datasetMap[grant.AssetId]; ok {
-            grantAndDataset.dataset = *dataset
-        }
+		grantAndDataset.AccessGrant = *grant
+
+		if dataset, ok := datasetMap[grant.AssetId]; ok {
+			grantAndDataset.Dataset = *dataset
+		}
         grantsAndDataset = append(grantsAndDataset, &grantAndDataset)
     }
     return grantsAndDataset, nil
@@ -746,9 +743,9 @@ func GetGrantedAssetsByRequester(requester string) ([]*MulticenterDatasetsAndAss
 	}
 	for _, grant := range grants {
 		grantAndDataset := MulticenterDatasetsAndAssetGrants_TOGETHER{}
-	grantAndDataset.accessGrant = *grant
+		grantAndDataset.AccessGrant = *grant
 		if dataset, ok := datasetMap[grant.AssetId]; ok {
-			grantAndDataset.dataset = *dataset
+			grantAndDataset.Dataset = *dataset
 		}
 		grantsAndDataset = append(grantsAndDataset, &grantAndDataset)
 	}
@@ -782,9 +779,9 @@ func GetGrantedAssetsByOwner(owner string) ([]*MulticenterDatasetsAndAssetGrants
 	}
 	for _, grant := range grants {
 		grantAndDataset := MulticenterDatasetsAndAssetGrants_TOGETHER{}
-	grantAndDataset.accessGrant = *grant
+		grantAndDataset.AccessGrant = *grant
 		if dataset, ok := datasetMap[grant.AssetId]; ok {
-			grantAndDataset.dataset = *dataset
+			grantAndDataset.Dataset = *dataset
 		}
 		grantsAndDataset = append(grantsAndDataset, &grantAndDataset)
 	}

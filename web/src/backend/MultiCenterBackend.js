@@ -207,6 +207,12 @@ export function addAccessRequest(request) {
   }).then(res => res.json())
 }
 
+export function getAccessRequestByIdAndCurUser(id) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/get-access-request-by-id-and-cur-user?id=${encodeURIComponent(id)}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json())
+}
 export function getAccessRequestsByReviewerAndStatus(status) {
   return fetch(`${Setting.ServerUrl}/api/multicenter/get-access-request-by-reviewer-and-status?status=${encodeURIComponent(status)}`, {
     method: "GET",

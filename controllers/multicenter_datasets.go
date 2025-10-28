@@ -15,7 +15,7 @@
 package controllers
 
 import (
-    "encoding/json"
+	"encoding/json"
 	"strings"
 
     "github.com/casibase/casibase/object"
@@ -171,6 +171,23 @@ func (c *ApiController) AddAccessRequest() {
 		return
 	}
     c.ResponseOk(flag)
+}
+
+// /get-access-request-by-id-and-cur-user
+func (c *ApiController) GetAccessRequestByIdAndCurrentUser() { 
+	idStr := c.Input().Get("id")
+	idInt, err := util.ParseIntWithError(idStr)
+	username := c.GetSessionUsername()
+	if username == "" {
+		c.ResponseError("Please login first")
+		return
+	}
+	req, err := object.GetAccessRequestByIdAndUser(idInt, username)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(req)
 }
 
 

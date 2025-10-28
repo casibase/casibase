@@ -21,7 +21,7 @@ function DataCard({ ds, onView, onEdit, onQuery }) {
             actions={[
                 <Button type="link" key="view" onClick={(e) => { e.stopPropagation(); onView && onView(); }}>查看基础信息</Button>,
                 <Button type="link" key="edit" onClick={(e) => { e.stopPropagation(); onEdit && onEdit(); }}>编辑基础信息</Button>,
-                <Button type="link" key="query" onClick={(e) => { e.stopPropagation(); onQuery && onQuery(); }}>详细数据查询</Button>
+                // <Button type="link" key="query" onClick={(e) => { e.stopPropagation(); onQuery && onQuery(); }}>详细数据查询</Button>
             ]}
         >
             <Meta
@@ -478,6 +478,13 @@ export default function MyDataSetPage() {
         loadManaged();
     }, []);
 
+    // load assigned (指派给我的) pending requests on component mount so header count is available immediately
+    useEffect(() => {
+        loadRequests(MULTICENTER_ACCESS_REQUEST_STATUS.PENDING);
+        // we intentionally run this once on mount; loadRequests is stable enough here
+
+    }, []);
+
     return (
         <div style={{ padding: 24 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
@@ -541,7 +548,7 @@ export default function MyDataSetPage() {
 
 
                 <Modal
-                    title="新建数据集"
+                    title={editingDataset ? "编辑数据集" : "新建数据集"}
                     visible={createModalVisible}
                     onOk={handleCreate}
                     onCancel={closeCreateModal}
@@ -563,9 +570,8 @@ export default function MyDataSetPage() {
                         {editingDataset && (
                             <div style={{ color: '#888', marginBottom: 2, marginTop: "-22px", fontSize: '10px' }}>非公开仅限制用户搜索，若在数据集公开期间授权他人使用，那么数据集仍可使用，与状态无关</div>
                         )}
-                        <Form.Item name="expiry" label="数据集到期时间" rules={[{ required: true, message: '请选择到期时间' }]}>
+                        {!editingDataset && <Form.Item name="expiry" label="数据集到期时间" rules={[{ required: true, message: '请选择到期时间' }]}>
                             <DatePicker
-                                disabled={editingDataset}
                                 style={{ width: '100%' }}
                                 showTime={{ defaultValue: moment('23:59:59', 'HH:mm:ss') }}
                                 format="YYYY-MM-DD HH:mm:ss"
@@ -574,7 +580,9 @@ export default function MyDataSetPage() {
                                     return current && current.isBefore(moment().add(1, 'days').startOf('day'));
                                 }}
                             />
+                            <div style={{ fontSize: '10px', color: 'gray' }}>为了保证数据安全，请务必设置数据集到期时间，数据集到期后，将无法再被使用。一旦提交，到期时间将无法修改。</div>
                         </Form.Item>
+                        }
                     </Form>
                 </Modal>
 
@@ -693,6 +701,6 @@ export default function MyDataSetPage() {
                     )}
                 </Modal>
             </div>
-        </div>
+        </div >
     );
 }

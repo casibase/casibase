@@ -339,6 +339,7 @@ func initAPI() {
 	beego.Router("/api/multicenter/add-access-request", &controllers.ApiController{}, "POST:AddAccessRequest")
 	beego.Router("/api/multicenter/get-access-request-by-reviewer-and-status", &controllers.ApiController{}, "GET:GetAccessRequestByReviewerAndStatus")
 	beego.Router("/api/multicenter/get-access-request-by-requester-and-status", &controllers.ApiController{}, "GET:GetAccessRequestByRequesterAndStatus")
+	beego.Router("/api/multicenter/get-access-request-by-id-and-cur-user", &controllers.ApiController{}, "GET:GetAccessRequestByIdAndCurrentUser")
 	beego.Router("/api/multicenter/cancel-access-request", &controllers.ApiController{}, "POST:CancelAccessRequest")
 	beego.Router("/api/multicenter/review-access-request", &controllers.ApiController{}, "POST:ReviewAccessRequest")
 	beego.Router("/api/multicenter/get-grants-by-grantedId/:grantedId", &controllers.ApiController{}, "GET:GetAssetGrantByIdAndUser")
