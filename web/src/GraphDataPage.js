@@ -55,6 +55,7 @@ class GraphDataPage extends React.Component {
     this.containerRef = React.createRef();
     this.hiddenCategories = new Set();
     this.zrMousemoveHandler = null;
+    this.zrMouseoutHandler = null;
   }
 
   componentDidMount() {
@@ -84,13 +85,18 @@ class GraphDataPage extends React.Component {
   }
 
   componentWillUnmount() {
-    // Clean up event listener to prevent memory leaks
-    if (this.chartRef.current && this.zrMousemoveHandler) {
+    // Clean up event listeners to prevent memory leaks
+    if (this.chartRef.current) {
       const chartInstance = this.chartRef.current.getEchartsInstance();
       if (chartInstance) {
         const zr = chartInstance.getZr();
         if (zr) {
-          zr.off("mousemove", this.zrMousemoveHandler);
+          if (this.zrMousemoveHandler) {
+            zr.off("mousemove", this.zrMousemoveHandler);
+          }
+          if (this.zrMouseoutHandler) {
+            zr.off("mouseout", this.zrMouseoutHandler);
+          }
         }
       }
     }
@@ -241,8 +247,8 @@ class GraphDataPage extends React.Component {
           data: echartNodes,
           links: echartLinks,
           categories: categories,
-          roam: true,
-          draggable: true,
+          roam: true, // Enable pan and zoom
+          draggable: true, // Allow dragging nodes
           scaleLimit: {
             min: 0.2,
             max: 5,
@@ -258,8 +264,17 @@ class GraphDataPage extends React.Component {
             curveness: 0.3,
           },
           emphasis: {
-            focus: "none", // Prevent auto-centering when clicking
-            disabled: false,
+            focus: "none", // Prevent auto-focusing/centering when clicking
+            scale: false, // Prevent scaling on hover
+          },
+          blur: {
+            // Keep nodes visible when not focused
+            itemStyle: {
+              opacity: 1,
+            },
+            lineStyle: {
+              opacity: 1,
+            },
           },
           force: layout === "force" ? {
             repulsion: 500,
@@ -296,34 +311,50 @@ class GraphDataPage extends React.Component {
   };
 
   onChartReady = (chartInstance) => {
-    // Set cursor to pointer on node hover, default elsewhere
+    // Set cursor to pointer (hand) on node hover, default elsewhere
     const zr = chartInstance.getZr();
 
-    // Store original handler to prevent memory leaks
+    // Store original handlers to prevent memory leaks
     if (this.zrMousemoveHandler) {
       zr.off("mousemove", this.zrMousemoveHandler);
     }
+    if (this.zrMouseoutHandler) {
+      zr.off("mouseout", this.zrMouseoutHandler);
+    }
 
-    this.zrMousemoveHandler = (params) => {
-      try {
-        const pointInPixel = [params.offsetX, params.offsetY];
-        // Check if point is over a node using containPixel
-        const overNode = chartInstance.containPixel({seriesIndex: 0}, pointInPixel);
-
-        if (overNode) {
-          // Show pointer cursor on nodes
-          zr.setCursorStyle("pointer");
-        } else {
-          // Default cursor elsewhere (allows dragging canvas)
-          zr.setCursorStyle("default");
+    // Create a safe handler that catches all ECharts internal errors
+    const createSafeHandler = (handlerFn) => {
+      return (params) => {
+        try {
+          handlerFn(params);
+        } catch (e) {
+          // Silently handle any errors to prevent crashes
+          // This fixes the "Cannot read properties of undefined" errors
         }
-      } catch (e) {
-        // Silently handle any errors to prevent crashes
-        // This fixes the "Cannot read properties of undefined" error
-      }
+      };
     };
 
+    this.zrMousemoveHandler = createSafeHandler((params) => {
+      const pointInPixel = [params.offsetX, params.offsetY];
+      // Check if point is over a node
+      const overNode = chartInstance.containPixel({seriesIndex: 0}, pointInPixel);
+
+      if (overNode) {
+        // Show pointer (hand) cursor on nodes
+        zr.setCursorStyle("pointer");
+      } else {
+        // Default cursor elsewhere (allows dragging canvas)
+        zr.setCursorStyle("default");
+      }
+    });
+
+    this.zrMouseoutHandler = createSafeHandler((params) => {
+      // Reset cursor when mouse leaves the chart
+      zr.setCursorStyle("default");
+    });
+
     zr.on("mousemove", this.zrMousemoveHandler);
+    zr.on("mouseout", this.zrMouseoutHandler);
   };
 
   renderNodePanel() {
