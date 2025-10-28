@@ -25,7 +25,7 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-// AlibabaCloudParser implements CloudParser for Alibaba Cloud (Aliyun)
+// AlibabaCloudParser implements CloudParser for Alibaba Cloud
 type AlibabaCloudParser struct{}
 
 // ScanAssets scans all resources from Alibaba Cloud
