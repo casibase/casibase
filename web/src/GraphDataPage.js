@@ -163,8 +163,8 @@ class GraphDataPage extends React.Component {
       if (!hex || typeof hex !== "string" || !/^#[0-9A-Fa-f]{6}$/.test(hex)) {
         return "rgba(0, 0, 0, 1)"; // Fallback to black
       }
-      // Validate alpha range
-      const validAlpha = Math.max(0, Math.min(1, alpha || 1));
+      // Validate alpha range (handle 0 as valid)
+      const validAlpha = alpha !== undefined ? Math.max(0, Math.min(1, alpha)) : 1;
       const r = parseInt(hex.substring(1, 3), 16);
       const g = parseInt(hex.substring(3, 5), 16);
       const b = parseInt(hex.substring(5, 7), 16);
