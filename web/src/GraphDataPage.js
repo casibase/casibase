@@ -239,12 +239,11 @@ class GraphDataPage extends React.Component {
   };
 
   onChartReady = (chartInstance) => {
-    // Set cursor to pointer on node hover
+    // Set cursor to pointer on node hover using containPixel API
     chartInstance.getZr().on("mousemove", (params) => {
       const pointInPixel = [params.offsetX, params.offsetY];
-      const dataIndex = chartInstance.getZr().handler.findHover(pointInPixel.x, pointInPixel.y);
-      if (dataIndex && dataIndex.target && dataIndex.target.__ecComponentInfo &&
-          dataIndex.target.__ecComponentInfo.mainType === "series") {
+      // Use containPixel which is part of the public API
+      if (chartInstance.containPixel("series", pointInPixel)) {
         chartInstance.getZr().setCursorStyle("pointer");
       } else {
         chartInstance.getZr().setCursorStyle("default");
@@ -257,6 +256,35 @@ class GraphDataPage extends React.Component {
     if (!selectedNode) {
       return null;
     }
+
+    // Helper function to validate and sanitize icon URLs (reuse from getOption)
+    const sanitizeIconUrl = (iconUrl) => {
+      if (!iconUrl || typeof iconUrl !== "string") {
+        return null;
+      }
+      // Only allow http, https, and data URLs
+      const urlPattern = /^(https?:\/\/|data:image\/)/i;
+      if (!urlPattern.test(iconUrl)) {
+        return null;
+      }
+      return iconUrl;
+    };
+
+    // Safely render additional properties
+    const renderValue = (value) => {
+      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+        return String(value);
+      }
+      // For objects/arrays, stringify but truncate if too long
+      try {
+        const str = JSON.stringify(value);
+        return str.length > 100 ? str.substring(0, 100) + "..." : str;
+      } catch (e) {
+        return "[Complex Object]";
+      }
+    };
+
+    const sanitizedIcon = sanitizeIconUrl(selectedNode.icon);
 
     return (
       <div
@@ -314,11 +342,11 @@ class GraphDataPage extends React.Component {
               <strong>Symbol Size:</strong> <span style={{color: "#666"}}>{selectedNode.symbolSize}</span>
             </div>
           )}
-          {selectedNode.icon && (
+          {sanitizedIcon && (
             <div style={{marginBottom: "8px"}}>
               <strong>Icon:</strong>
               <div style={{marginTop: "4px"}}>
-                <img src={selectedNode.icon} alt="Node icon" style={{maxWidth: "100%", maxHeight: "100px"}} />
+                <img src={sanitizedIcon} alt="Node icon" style={{maxWidth: "100%", maxHeight: "100px"}} />
               </div>
             </div>
           )}
@@ -326,7 +354,7 @@ class GraphDataPage extends React.Component {
             !["id", "name", "value", "category", "symbolSize", "icon", "x", "y"].includes(key)
           ).map(key => (
             <div key={key} style={{marginBottom: "8px"}}>
-              <strong>{key}:</strong> <span style={{color: "#666"}}>{JSON.stringify(selectedNode[key])}</span>
+              <strong>{key}:</strong> <span style={{color: "#666"}}>{renderValue(selectedNode[key])}</span>
             </div>
           ))}
         </div>
