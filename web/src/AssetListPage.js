@@ -264,6 +264,30 @@ class AssetListPage extends BaseListPage {
         ...this.getColumnSearchProps("state"),
       },
       {
+        title: i18next.t("asset:Properties"),
+        dataIndex: "properties",
+        key: "properties",
+        width: "200px",
+        render: (text, record, index) => {
+          try {
+            const props = JSON.parse(text || "{}");
+            const keys = Object.keys(props);
+            if (keys.length === 0) {
+              return <span>-</span>;
+            }
+            const displayText = keys.slice(0, 3).map(key => `${key}: ${props[key]}`).join(", ");
+            const fullText = keys.map(key => `${key}: ${props[key]}`).join(", ");
+            return (
+              <Tooltip title={fullText}>
+                <span>{Setting.getShortText(displayText, 30)}</span>
+              </Tooltip>
+            );
+          } catch (e) {
+            return <span>-</span>;
+          }
+        },
+      },
+      {
         title: i18next.t("general:Action"),
         dataIndex: "",
         key: "op",

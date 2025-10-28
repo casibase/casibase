@@ -19,6 +19,7 @@ import (
 	"fmt"
 
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
+	ecs20140526 "github.com/alibabacloud-go/ecs-20140526/v4/client"
 	resourcecenter20221201 "github.com/alibabacloud-go/resourcecenter-20221201/client"
 	util2 "github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"
@@ -78,6 +79,48 @@ func (p *AlibabaCloudParser) ScanAssets(owner string, provider *Provider) ([]*As
 			break
 		}
 		nextToken = response.Body.NextToken
+	}
+
+	// Group assets by resource type to check what types exist
+	resourceTypes := make(map[string]bool)
+	for _, asset := range assets {
+		resourceTypes[asset.ResourceType] = true
+	}
+
+	// Create ECS client if needed
+	var ecsClient *ecs20140526.Client
+	if resourceTypes["ECS Instance"] || resourceTypes["Disk"] || resourceTypes["VPC"] {
+		ecsClient, err = p.createEcsClient(provider)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// Get and merge ECS instance details if ECS instances exist
+	if resourceTypes["ECS Instance"] {
+		ecsDetails, err := p.getEcsInstances(ecsClient, assets)
+		if err != nil {
+			return nil, err
+		}
+		p.mergeEcsDetails(assets, ecsDetails)
+	}
+
+	// Get and merge disk details if disks exist
+	if resourceTypes["Disk"] {
+		diskDetails, err := p.getDisks(ecsClient, assets)
+		if err != nil {
+			return nil, err
+		}
+		p.mergeDiskDetails(assets, diskDetails)
+	}
+
+	// Get and merge VPC details if VPCs exist
+	if resourceTypes["VPC"] {
+		vpcDetails, err := p.getVpcs(ecsClient, assets)
+		if err != nil {
+			return nil, err
+		}
+		p.mergeVpcDetails(assets, vpcDetails)
 	}
 
 	return assets, nil
