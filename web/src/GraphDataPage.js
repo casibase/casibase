@@ -54,8 +54,6 @@ class GraphDataPage extends React.Component {
     this.chartRef = React.createRef();
     this.containerRef = React.createRef();
     this.hiddenCategories = new Set();
-    this.zrMousemoveHandler = null;
-    this.zrMouseoutHandler = null;
   }
 
   componentDidMount() {
@@ -85,21 +83,7 @@ class GraphDataPage extends React.Component {
   }
 
   componentWillUnmount() {
-    // Clean up event listeners to prevent memory leaks
-    if (this.chartRef.current) {
-      const chartInstance = this.chartRef.current.getEchartsInstance();
-      if (chartInstance) {
-        const zr = chartInstance.getZr();
-        if (zr) {
-          if (this.zrMousemoveHandler) {
-            zr.off("mousemove", this.zrMousemoveHandler);
-          }
-          if (this.zrMouseoutHandler) {
-            zr.off("mouseout", this.zrMouseoutHandler);
-          }
-        }
-      }
-    }
+    // Component cleanup if needed
   }
 
   handleRenderError(error) {
@@ -304,6 +288,26 @@ class GraphDataPage extends React.Component {
     }
   };
 
+  handleMouseOver = (params) => {
+    // Set cursor to pointer (hand icon) when hovering over nodes
+    if (params.dataType === "node") {
+      const chartInstance = this.chartRef.current?.getEchartsInstance();
+      if (chartInstance) {
+        chartInstance.getZr().setCursorStyle("pointer");
+      }
+    }
+  };
+
+  handleMouseOut = (params) => {
+    // Reset cursor to default (arrow icon) when not over nodes
+    if (params.dataType === "node") {
+      const chartInstance = this.chartRef.current?.getEchartsInstance();
+      if (chartInstance) {
+        chartInstance.getZr().setCursorStyle("default");
+      }
+    }
+  };
+
   handleClosePanel = () => {
     this.setState({
       selectedNode: null,
@@ -311,50 +315,8 @@ class GraphDataPage extends React.Component {
   };
 
   onChartReady = (chartInstance) => {
-    // Set cursor to pointer (hand) on node hover, default elsewhere
-    const zr = chartInstance.getZr();
-
-    // Store original handlers to prevent memory leaks
-    if (this.zrMousemoveHandler) {
-      zr.off("mousemove", this.zrMousemoveHandler);
-    }
-    if (this.zrMouseoutHandler) {
-      zr.off("mouseout", this.zrMouseoutHandler);
-    }
-
-    // Create a safe handler that catches all ECharts internal errors
-    const createSafeHandler = (handlerFn) => {
-      return (params) => {
-        try {
-          handlerFn(params);
-        } catch (e) {
-          // Silently handle any errors to prevent crashes
-          // This fixes the "Cannot read properties of undefined" errors
-        }
-      };
-    };
-
-    this.zrMousemoveHandler = createSafeHandler((params) => {
-      const pointInPixel = [params.offsetX, params.offsetY];
-      // Check if point is over a node
-      const overNode = chartInstance.containPixel({seriesIndex: 0}, pointInPixel);
-
-      if (overNode) {
-        // Show pointer (hand) cursor on nodes
-        zr.setCursorStyle("pointer");
-      } else {
-        // Default cursor elsewhere (allows dragging canvas)
-        zr.setCursorStyle("default");
-      }
-    });
-
-    this.zrMouseoutHandler = createSafeHandler((params) => {
-      // Reset cursor when mouse leaves the chart
-      zr.setCursorStyle("default");
-    });
-
-    zr.on("mousemove", this.zrMousemoveHandler);
-    zr.on("mouseout", this.zrMouseoutHandler);
+    // Chart is ready, but cursor handling is done via mouseover/mouseout events
+    // Keep this method for potential future initialization needs
   };
 
   renderNodePanel() {
@@ -513,6 +475,8 @@ class GraphDataPage extends React.Component {
               lazyUpdate={true}
               onEvents={{
                 click: this.handleNodeClick,
+                mouseover: this.handleMouseOver,
+                mouseout: this.handleMouseOut,
               }}
               onChartReady={this.onChartReady}
             />
