@@ -14,6 +14,7 @@
 
 import React from "react";
 import ReactEcharts from "echarts-for-react";
+import * as Setting from "./Setting";
 
 class GraphErrorBoundary extends React.Component {
   constructor(props) {
@@ -81,6 +82,10 @@ class GraphDataPage extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    // Component cleanup if needed
+  }
+
   handleRenderError(error) {
     const errorText = error ? error.toString() : "";
     this.setState({renderError: errorText}, () => {
@@ -114,6 +119,7 @@ class GraphDataPage extends React.Component {
   getOption() {
     const {nodes, links, categories} = this.state.data;
     const layout = this.props.layout || "force";
+    const themeColor = Setting.getThemeColor();
 
     // Helper function to validate and sanitize icon URLs
     const sanitizeIconUrl = (iconUrl) => {
@@ -127,6 +133,36 @@ class GraphDataPage extends React.Component {
       }
       return iconUrl;
     };
+
+    // Helper function to darken a color (for border)
+    const darkenColor = (color, amount = 20) => {
+      // Validate hex color format
+      if (!color || typeof color !== "string" || !/^#[0-9A-Fa-f]{6}$/.test(color)) {
+        return "#000000"; // Fallback to black
+      }
+      const hex = color.replace("#", "");
+      const r = Math.max(0, parseInt(hex.substring(0, 2), 16) - amount);
+      const g = Math.max(0, parseInt(hex.substring(2, 4), 16) - amount);
+      const b = Math.max(0, parseInt(hex.substring(4, 6), 16) - amount);
+      return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+    };
+
+    // Helper function to create rgba from hex
+    const hexToRgba = (hex, alpha) => {
+      // Validate hex color format
+      if (!hex || typeof hex !== "string" || !/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+        return "rgba(0, 0, 0, 1)"; // Fallback to black
+      }
+      // Validate alpha range (handle 0 as valid)
+      const validAlpha = alpha !== undefined ? Math.max(0, Math.min(1, alpha)) : 1;
+      const r = parseInt(hex.substring(1, 3), 16);
+      const g = parseInt(hex.substring(3, 5), 16);
+      const b = parseInt(hex.substring(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${validAlpha})`;
+    };
+
+    const borderColor = darkenColor(themeColor, 20);
+    const shadowColor = hexToRgba(themeColor, 0.8);
 
     // Transform nodes to ECharts format
     const echartNodes = nodes.map(node => {
@@ -142,13 +178,13 @@ class GraphDataPage extends React.Component {
         category: node.category,
         // Support for icon
         symbol: sanitizedIcon ? `image://${sanitizedIcon}` : "circle",
-        // Add selection indicator - more prominent dark style
+        // Add selection indicator using theme color
         itemStyle: isSelected ? {
-          color: "#d32f2f",
-          borderColor: "#b71c1c",
+          color: themeColor,
+          borderColor: borderColor,
           borderWidth: 6,
           shadowBlur: 20,
-          shadowColor: "rgba(211, 47, 47, 0.8)",
+          shadowColor: shadowColor,
         } : undefined,
         label: {
           show: true,
@@ -158,7 +194,7 @@ class GraphDataPage extends React.Component {
             name: {
               fontSize: 12,
               color: isSelected ? "#ffffff" : "#333",
-              backgroundColor: isSelected ? "#d32f2f" : "transparent",
+              backgroundColor: isSelected ? themeColor : "transparent",
               padding: isSelected ? [4, 8, 4, 8] : [2, 0, 0, 0],
               borderRadius: isSelected ? 4 : 0,
             },
@@ -195,8 +231,8 @@ class GraphDataPage extends React.Component {
           data: echartNodes,
           links: echartLinks,
           categories: categories,
-          roam: true,
-          draggable: true,
+          roam: true, // Enable pan and zoom
+          draggable: true, // Allow dragging nodes
           scaleLimit: {
             min: 0.2,
             max: 5,
@@ -212,7 +248,17 @@ class GraphDataPage extends React.Component {
             curveness: 0.3,
           },
           emphasis: {
-            disabled: true,
+            focus: "none", // Prevent auto-focusing/centering when clicking
+            scale: false, // Prevent scaling on hover
+          },
+          blur: {
+            // Keep nodes visible when not focused
+            itemStyle: {
+              opacity: 1,
+            },
+            lineStyle: {
+              opacity: 1,
+            },
           },
           force: layout === "force" ? {
             repulsion: 500,
@@ -230,12 +276,35 @@ class GraphDataPage extends React.Component {
   }
 
   handleNodeClick = (params) => {
-    if (params.dataType === "node") {
+    // Only handle node clicks, ignore other data types
+    if (params.dataType === "node" && params.data) {
       // Find the full node data
       const node = this.state.data.nodes.find(n => n.id === params.data.id);
-      this.setState({
-        selectedNode: node,
-      });
+      if (node) {
+        this.setState({
+          selectedNode: node,
+        });
+      }
+    }
+  };
+
+  handleMouseOver = (params) => {
+    // Set cursor to pointer (hand icon) when hovering over nodes
+    if (params.dataType === "node") {
+      const chartInstance = this.chartRef.current?.getEchartsInstance();
+      if (chartInstance) {
+        chartInstance.getZr().setCursorStyle("pointer");
+      }
+    }
+  };
+
+  handleMouseOut = (params) => {
+    // Reset cursor to default (arrow icon) when not over nodes
+    if (params.dataType === "node") {
+      const chartInstance = this.chartRef.current?.getEchartsInstance();
+      if (chartInstance) {
+        chartInstance.getZr().setCursorStyle("default");
+      }
     }
   };
 
@@ -246,16 +315,8 @@ class GraphDataPage extends React.Component {
   };
 
   onChartReady = (chartInstance) => {
-    // Set cursor to hand (move) on node hover using public containPixel API
-    // This ensures compatibility with future ECharts versions
-    chartInstance.getZr().on("mousemove", (params) => {
-      const pointInPixel = [params.offsetX, params.offsetY];
-      if (chartInstance.containPixel("series", pointInPixel)) {
-        chartInstance.getZr().setCursorStyle("grab");
-      } else {
-        chartInstance.getZr().setCursorStyle("move");
-      }
-    });
+    // Chart is ready, but cursor handling is done via mouseover/mouseout events
+    // Keep this method for potential future initialization needs
   };
 
   renderNodePanel() {
@@ -414,6 +475,8 @@ class GraphDataPage extends React.Component {
               lazyUpdate={true}
               onEvents={{
                 click: this.handleNodeClick,
+                mouseover: this.handleMouseOver,
+                mouseout: this.handleMouseOut,
               }}
               onChartReady={this.onChartReady}
             />
