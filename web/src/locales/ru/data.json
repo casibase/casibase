@@ -78,6 +78,7 @@
   },
   "chat": {
     "AI": "ИИ",
+    "Add attachment": "Add attachment",
     "An error occurred during responding": "Во время ответа произошла ошибка",
     "CPrice": "Цена C",
     "Chats": "Чаты",
@@ -103,11 +104,13 @@
     "The response has been interrupted. Please do not refresh the page during responding.": "Ответ был прерван. Пожалуйста, не обновляйте страницу во время ответа.",
     "Thinking": "Мыслительный процесс",
     "Token count": "Количество токенов",
+    "Tool calls": "Tool calls",
     "Type message here": "Введите сообщение здесь",
     "User1": "Пользователь 1",
     "User1 - Tooltip": "Автор чата",
     "User2": "Пользователь 2",
     "User2 - Tooltip": "Получатель чата",
+    "Web search": "Web search",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Ваш чат содержит контент, который может быть чувствительным. Этот чат был принудительно завершен.",
     "click to stop...": "Нажмите, чтобы остановить..."
   },
@@ -231,6 +234,7 @@
     "Failed to decode audio data": "Декодирование аудиоданных не удалось",
     "Failed to delete": "Удаление не удалось",
     "Failed to deploy": "Failed to deploy",
+    "Failed to execute": "Failed to execute",
     "Failed to get": "Получение не удалось",
     "Failed to query": "Failed to query",
     "Failed to redirect": "Перенаправление не удалось",
@@ -377,6 +381,7 @@
     "Successfully deployed": "Successfully deployed",
     "Successfully disliked": "Успешно поставлен дизлайк",
     "Successfully downloaded": "Успешно скачано",
+    "Successfully executed": "Successfully executed",
     "Successfully liked": "Успешно поставлен лайк",
     "Successfully logged in": "Успешно вошли",
     "Successfully saved": "Успешно сохранено",
@@ -440,7 +445,12 @@
     "{total} in total": "{total} Итого"
   },
   "graph": {
-    "Edit Graph": "Edit Graph"
+    "Circular": "环形",
+    "Edit Graph": "Edit Graph",
+    "Force": "力导向",
+    "Layout": "布局",
+    "Layout - Tooltip": "图布局类型",
+    "None": "无"
   },
   "hospital": {
     "Edit Hospital": "Редактировать больницу",
@@ -499,6 +509,7 @@
     "Doctor": "Врач",
     "Doctor - Tooltip": "Лечащий врач",
     "Doctors": "Врачи",
+    "Doctors - Tooltip": "Doctors - Tooltip",
     "Email": "Эл. почта",
     "Email - Tooltip": "Эл. почта",
     "Expired time": "Время истечения",

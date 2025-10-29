@@ -78,6 +78,7 @@
   },
   "chat": {
     "AI": "AI",
+    "Add attachment": "Add attachment",
     "An error occurred during responding": "応答中にエラーが発生しました",
     "CPrice": "C価格",
     "Chats": "チャット",
@@ -103,11 +104,13 @@
     "The response has been interrupted. Please do not refresh the page during responding.": "応答が中断されました。応答中はページを更新しないでください。",
     "Thinking": "推論中",
     "Token count": "トークン数",
+    "Tool calls": "Tool calls",
     "Type message here": "ここにメッセージを入力してください",
     "User1": "ユーザー1",
     "User1 - Tooltip": "チャット発信者",
     "User2": "ユーザー2",
     "User2 - Tooltip": "チャット受信者",
+    "Web search": "Web search",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "あなたのチャットテキストに敏感な内容が含まれています。このチャットは強制的に終了されました。",
     "click to stop...": "停止するにはクリック..."
   },
@@ -231,6 +234,7 @@
     "Failed to decode audio data": "オーディオデータのデコードに失敗しました",
     "Failed to delete": "削除に失敗しました",
     "Failed to deploy": "デプロイに失敗しました",
+    "Failed to execute": "Failed to execute",
     "Failed to get": "取得に失敗しました",
     "Failed to query": "Failed to query",
     "Failed to redirect": "リダイレクトに失敗しました",
@@ -377,6 +381,7 @@
     "Successfully deployed": "正常にデプロイされました",
     "Successfully disliked": "不評価成功",
     "Successfully downloaded": "ダウンロード成功",
+    "Successfully executed": "Successfully executed",
     "Successfully liked": "評価成功",
     "Successfully logged in": "ログイン成功",
     "Successfully saved": "保存成功",
@@ -440,7 +445,12 @@
     "{total} in total": "{total} 合計"
   },
   "graph": {
-    "Edit Graph": "Edit Graph"
+    "Circular": "环形",
+    "Edit Graph": "Edit Graph",
+    "Force": "力导向",
+    "Layout": "布局",
+    "Layout - Tooltip": "图布局类型",
+    "None": "无"
   },
   "hospital": {
     "Edit Hospital": "病院を編集",
@@ -499,6 +509,7 @@
     "Doctor": "医師",
     "Doctor - Tooltip": "担当医師",
     "Doctors": "医師",
+    "Doctors - Tooltip": "Doctors - Tooltip",
     "Email": "メール",
     "Email - Tooltip": "メール",
     "Expired time": "有効期限",

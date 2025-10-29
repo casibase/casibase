@@ -78,6 +78,7 @@
   },
   "chat": {
     "AI": "IA",
+    "Add attachment": "Add attachment",
     "An error occurred during responding": "Se produjo un error durante la respuesta",
     "CPrice": "Precio C",
     "Chats": "Conversaciones",
@@ -103,11 +104,13 @@
     "The response has been interrupted. Please do not refresh the page during responding.": "La respuesta ha sido interrumpida. No actualices la página durante la respuesta.",
     "Thinking": "Proceso de razonamiento",
     "Token count": "Cantidad de tokens",
+    "Tool calls": "Tool calls",
     "Type message here": "Escribe tu mensaje aquí",
     "User1": "Usuario1",
     "User1 - Tooltip": "Iniciador del chat",
     "User2": "Usuario2",
     "User2 - Tooltip": "Receptor del chat",
+    "Web search": "Web search",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Tu texto de chat contiene contenido sensible. Esta conversación ha sido terminada por fuerza.",
     "click to stop...": "haz clic para detener..."
   },
@@ -231,6 +234,7 @@
     "Failed to decode audio data": "Error al decodificar datos de audio",
     "Failed to delete": "Error al eliminar",
     "Failed to deploy": "Error al desplegar",
+    "Failed to execute": "Failed to execute",
     "Failed to get": "Error al obtener",
     "Failed to query": "Failed to query",
     "Failed to redirect": "Error al redirigir",
@@ -377,6 +381,7 @@
     "Successfully deployed": "Desplegado correctamente",
     "Successfully disliked": "Dislike exitoso",
     "Successfully downloaded": "Descargado con éxito",
+    "Successfully executed": "Successfully executed",
     "Successfully liked": "Like exitoso",
     "Successfully logged in": "Inicio de sesión exitoso",
     "Successfully saved": "Guardado con éxito",
@@ -440,7 +445,12 @@
     "{total} in total": "{total} en total"
   },
   "graph": {
-    "Edit Graph": "Edit Graph"
+    "Circular": "环形",
+    "Edit Graph": "Edit Graph",
+    "Force": "力导向",
+    "Layout": "布局",
+    "Layout - Tooltip": "图布局类型",
+    "None": "无"
   },
   "hospital": {
     "Edit Hospital": "Editar hospital",
@@ -499,6 +509,7 @@
     "Doctor": "Doctor",
     "Doctor - Tooltip": "Médico tratante",
     "Doctors": "Doctores",
+    "Doctors - Tooltip": "Doctors - Tooltip",
     "Email": "Correo electrónico",
     "Email - Tooltip": "Correo electrónico",
     "Expired time": "Tiempo de expiración",
