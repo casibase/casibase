@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Input, Row, Select} from "antd";
+import {Button, Col, Input, Radio, Row} from "antd";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import * as ProviderBackend from "../backend/ProviderBackend";
@@ -21,8 +21,6 @@ import * as ProviderBackend from "../backend/ProviderBackend";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
-
-const {Option} = Select;
 
 class TestScanWidget extends React.Component {
   constructor(props) {
@@ -73,6 +71,7 @@ class TestScanWidget extends React.Component {
     this.setState({
       scanTarget: this.props.provider.network || "127.0.0.1",
       scanCommand: this.props.provider.text || defaultCommand,
+      scanResult: this.props.provider.configText || "",
     });
   }
 
@@ -98,6 +97,10 @@ class TestScanWidget extends React.Component {
           this.setState({
             scanResult: res.data,
           });
+          // Save scan result to ConfigText field
+          if (this.props.onUpdateProvider) {
+            this.props.onUpdateProvider("configText", res.data);
+          }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
           this.setState({
@@ -147,12 +150,11 @@ class TestScanWidget extends React.Component {
             {Setting.getLabel(i18next.t("general:Template"), i18next.t("general:Template - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select
-              virtual={false}
+            <Radio.Group
               disabled={isRemote}
-              style={{width: "100%"}}
               value={this.getCommandTemplates().find(t => t.command === this.state.scanCommand)?.id || "custom"}
-              onChange={(value) => {
+              onChange={(e) => {
+                const value = e.target.value;
                 const template = this.getCommandTemplates().find(t => t.id === value);
                 if (template && template.command !== "") {
                   this.setState({scanCommand: template.command});
@@ -164,10 +166,10 @@ class TestScanWidget extends React.Component {
             >
               {
                 this.getCommandTemplates().map((item) => (
-                  <Option key={item.id} value={item.id}>{item.name}</Option>
+                  <Radio key={item.id} value={item.id}>{item.name}</Radio>
                 ))
               }
-            </Select>
+            </Radio.Group>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -204,12 +206,12 @@ class TestScanWidget extends React.Component {
             </Button>
           </Col>
         </Row>
-        {this.state.scanResult && (
-          <Row style={{marginTop: "20px"}} >
-            <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-              {Setting.getLabel(i18next.t("general:Result"), i18next.t("general:Result - Tooltip"))} :
-            </Col>
-            <Col span={22} >
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Result"), i18next.t("general:Result - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <div style={{maxHeight: "calc(100vh - 400px)", overflow: "auto"}}>
               <CodeMirror
                 value={this.state.scanResult}
                 options={{
@@ -219,9 +221,9 @@ class TestScanWidget extends React.Component {
                   lineNumbers: true,
                 }}
               />
-            </Col>
-          </Row>
-        )}
+            </div>
+          </Col>
+        </Row>
       </div>
     );
   }
