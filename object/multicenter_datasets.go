@@ -1289,5 +1289,13 @@ func CheckAndGetDatasetSource(isGranted bool, id int, user string) ([]*Multicent
 
 
 }
-	
+
+
+func GetMultiCenterAuditRecords()([]*Record, error){
+	records ,err:= GetRecordsByAction("multicenter/check-and-get-dataset-source")
+	if err != nil {
+		return nil, err
+	}
+	return records, nil
+}
 	

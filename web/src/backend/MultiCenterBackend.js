@@ -273,7 +273,16 @@ export function checkUsage(grantedId) {
 }
 
 export function checkAndGetDatasetSource(isGranted, id) {
-  return fetch(`${Setting.ServerUrl}/api/multicenter/check-and-get-dataset-source?isGranted=${isGranted}&id=${id}`, {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/check-and-get-dataset-source`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify({ isGranted: isGranted.toString(), id }),
+  }).then(res => res.json());
+}
+
+
+export function getAuditUsage() {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/audit-usage`, {
     method: "GET",
     credentials: "include",
   }).then(res => res.json());

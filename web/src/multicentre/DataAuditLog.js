@@ -4,7 +4,7 @@ import * as MultiCenterBackend from "../backend/MultiCenterBackend";
 import { AlertCircle, Clock, Link2, ShieldCheck, CheckCircle2, Repeat2, Eye, User, Database } from 'lucide-react';
 import dayjs from "dayjs";
 
-
+const topRecordLen = 20;
 export default function DataAuditLog() {
     const history = typeof window !== 'undefined' && window.history && window.location ? require('react-router-dom').useHistory() : null;
     const [loading, setLoading] = useState(false);
@@ -15,12 +15,14 @@ export default function DataAuditLog() {
         setLoading(true);
         setError("");
         try {
-            const resp = await MultiCenterBackend.getDataSetUsageAuditRecord();
+            // use getAuditUsage which returns similar shape
+            const resp = await MultiCenterBackend.getAuditUsage();
             if (resp?.status === 'ok' && Array.isArray(resp.data)) {
                 const sorted = resp.data.slice().sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
-                // sorted只保留最近10条
-                if (sorted.length > 10) {
-                    sorted.splice(10);
+                // sorted只保留最近20条
+
+                if (sorted.length > topRecordLen) {
+                    sorted.splice(topRecordLen);
                 }
                 setAuditList(sorted);
             } else {
@@ -65,7 +67,7 @@ export default function DataAuditLog() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 22, fontWeight: 700, marginBottom: 2 }}>
                     <Clock size={22} color="#23408e" /> 操作时间线
                 </div>
-                <div style={{ color: '#888', fontSize: 16, marginBottom: 32 }}>按时间从新到旧展示操作历史，仅展示最近10条</div>
+                <div style={{ color: '#888', fontSize: 16, marginBottom: 32 }}>按时间从新到旧展示操作历史，仅展示最近{topRecordLen}条</div>
                 {loading ? (
                     <div style={{ textAlign: 'center', margin: '60px 0 40px 0' }}><Spin size="large" /></div>
                 ) : error ? (
@@ -100,7 +102,14 @@ export default function DataAuditLog() {
                                             操作人：{item.user || '--'} <span style={{ fontSize: 14, color: '#888', marginLeft: 0, fontWeight: 400 }}>@ {item.organization || '--'}</span>
                                         </div>
                                         <div style={{ color: '#23408e', fontSize: 14, fontWeight: 400, marginTop: 2 }}>
-                                            {timeStr}，查询了数据集（数据集ID：{obj.dataset_id || '--'}），本次授权工单id为：{obj.dataset_usage_id || '--'}，审计记录已经上链，区块号为 {item.block || '--'}。<Button
+                                            {timeStr}，
+                                            {/* 如果 object 中包含 isGranted 且为 false，则显示调用的数据集ID，且不显示“已上链”信息 */}
+                                            {((obj.isGranted === false) || (String(obj.isGranted || '').toLowerCase() === 'false')) ? (
+                                                <span>查询自己管理的的数据集，调用的数据集ID为：{obj.id || obj.dataset_id || '--'}</span>
+                                            ) : (
+                                                <span>查询了被授权的数据，本次相应的授权工单id为：{obj.id || '--'}。</span>
+                                            )}
+                                            <Button
                                                 type="link"
                                                 style={{ fontSize: 15, fontWeight: 500, marginLeft: 16, marginTop: 0, padding: 0 }}
                                                 onClick={() => history && history.push && history.push(`/records/${item.organization}/${item.id}`)}

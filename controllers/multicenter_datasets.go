@@ -332,18 +332,28 @@ func (c *ApiController) GetGrantedAssetsByRequester() {
 
 
 // CheckAndGetDatasetSource
-// /check-and-get-dataset-source
+// /check-and-get-dataset-source POST
 func (c *ApiController) CheckAndGetDatasetSource() {
-	idStr := c.Input().Get("id")
-	id := util.ParseInt(idStr)
+	type CheckAndGetDatasetSourceReq struct {
+		IsGranted string `json:"isGranted"`
+		Id        string  `json:"id"`
+	}
+	var rq CheckAndGetDatasetSourceReq
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &rq)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 
 	var isGranted bool
-	isGrantedString := c.Input().Get("isGranted")
+	isGrantedString := rq.IsGranted
 	if isGrantedString == "true" || isGrantedString == "1" {
 		isGranted = true
 	} else {
 		isGranted = false
 	}
+
+	id := util.ParseInt(rq.Id)
 	
 	username := c.GetSessionUsername()
 	if username == "" {
@@ -378,4 +388,14 @@ func (c *ApiController) CheckUsage() {
 		"expireTime": expireTime,
 		"leftCnt":    leftCnt,
 	})
+}
+
+// /get-multicenter-audit-records
+func (c *ApiController) GetMultiCenterAuditRecords() {
+	records, err := object.GetMultiCenterAuditRecords()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(records) 
 }

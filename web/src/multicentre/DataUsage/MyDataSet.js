@@ -561,8 +561,8 @@ export default function MyDataSetPage() {
                         <Form.Item name="description" label="数据集描述">
                             <Input.TextArea placeholder="可选：填写数据集描述" rows={4} />
                         </Form.Item>
-                        <Form.Item name="keywords" label="数据集关键词" rules={[{ required: true, message: '请输入数据集关键词（至少 1 个）' }]}>
-                            <Input placeholder="只能填写一个关键词" />
+                        <Form.Item name="keywords" label="数据集关键词" rules={[{ required: true, message: '请输入数据集关键词' }]}>
+                            <Input placeholder="请填写关键词" />
                         </Form.Item>
                         <Form.Item name="searchable" label="是否公开可搜索" valuePropName="checked">
                             <Switch checkedChildren="是" unCheckedChildren="否" />
@@ -570,7 +570,7 @@ export default function MyDataSetPage() {
                         {editingDataset && (
                             <div style={{ color: '#888', marginBottom: 2, marginTop: "-22px", fontSize: '10px' }}>非公开仅限制用户搜索，若在数据集公开期间授权他人使用，那么数据集仍可使用，与状态无关</div>
                         )}
-                        {!editingDataset && <Form.Item name="expiry" label="数据集到期时间" rules={[{ required: true, message: '请选择到期时间' }]}>
+                        {!editingDataset && <Form.Item name="expiry" label="数据集到期时间" rules={[{ type: 'object', required: true, message: '请选择到期时间' }]}>
                             <DatePicker
                                 style={{ width: '100%' }}
                                 showTime={{ defaultValue: moment('23:59:59', 'HH:mm:ss') }}
@@ -580,9 +580,11 @@ export default function MyDataSetPage() {
                                     return current && current.isBefore(moment().add(1, 'days').startOf('day'));
                                 }}
                             />
-                            <div style={{ fontSize: '10px', color: 'gray' }}>为了保证数据安全，请务必设置数据集到期时间，数据集到期后，将无法再被使用。一旦提交，到期时间将无法修改。</div>
+
                         </Form.Item>
+
                         }
+                        <div style={{ fontSize: '10px', color: 'gray' }}>为了保证数据安全，请务必设置数据集到期时间，数据集到期后，将无法再被使用。一旦提交，到期时间将无法修改。</div>
                     </Form>
                 </Modal>
 

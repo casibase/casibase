@@ -6,23 +6,15 @@ import { Clock, Database, ShieldCheck, Link2, Image } from 'lucide-react';
 
 const usageId = "use_test_001"
 
-const columns = [
-    { title: '患者ID', dataIndex: 'id', key: 'id' },
-    { title: '年龄', dataIndex: 'age', key: 'age' },
-    { title: '性别', dataIndex: 'gender', key: 'gender' },
-    { title: '主要诊断', dataIndex: 'diagnosis', key: 'diagnosis' },
-    { title: '入院日期', dataIndex: 'admitDate', key: 'admitDate' },
-    { title: '射血分数', dataIndex: 'ef', key: 'ef', render: v => v + '%' },
-    {
-        title: '状态', dataIndex: 'status', key: 'status',
-        render: v => {
-            if (v === '已出院') return <Tag color="#bfbfbf">已出院</Tag>;
-            if (v === '住院中') return <Tag color="#428be5" style={{ fontWeight: 600 }}>住院中</Tag>;
-            if (v === '随访中') return <Tag color="#52c41a">随访中</Tag>;
-            return v;
-        }
-    },
-];
+const columnsMap = {
+    "consultationTime": "就诊时间",
+    "correlationId": "关联ID",
+    "diagnosis": "诊断",
+    "localDBIndex": "本地数据库索引",
+    "patientName": "患者姓名",
+    "section": "就诊单位",
+    "unit": "就诊科室"
+};
 
 const data = [
 
@@ -255,7 +247,7 @@ export default function DataWorkBench(props) {
         if (!id) return null;
         setDatasetSourceLoading(true);
         try {
-            const resp = await MultiCenterBackend.checkAndGetDatasetSource(isGrantedFlag, 1);
+            const resp = await MultiCenterBackend.checkAndGetDatasetSource(isGrantedFlag, id);
             if (resp) {
                 setDatasetSourceResp(resp);
                 if (resp.status === 'ok') {
@@ -520,7 +512,7 @@ export default function DataWorkBench(props) {
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                             <span style={{ fontSize: 22, fontWeight: 700 }}>{selectedDatasetName}</span>
-                            <Button type="text" onClick={() => setDatasetSwitchVisible(true)} style={{ marginLeft: 8, boxShadow: 'none', border: 'none', color: '#1890ff' }}>
+                            <Button type="text" onClick={() => { setDatasetSwitchVisible(true); loadDatasetsForMenu(); }} style={{ marginLeft: 8, boxShadow: 'none', border: 'none', color: '#1890ff' }}>
                                 <SwapOutlined style={{ fontSize: 14, marginRight: 6 }} /> 切换数据集
                             </Button>
                         </div>
@@ -534,7 +526,7 @@ export default function DataWorkBench(props) {
                         <div style={{ textAlign: 'center', padding: 48 }}>
                             <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>请选择数据集</div>
                             <div style={{ color: '#666', marginBottom: 18 }}>请先选择要查看的数据集</div>
-                            <Button type="primary" onClick={() => { setDatasetSwitchVisible(true); setDatasetSwitchLocked(true); }}>切换数据集</Button>
+                            <Button type="primary" onClick={() => { setDatasetSwitchVisible(true); setDatasetSwitchLocked(true); loadDatasetsForMenu(); }}>切换数据集</Button>
                         </div>
                     ) : (
                         <div>
@@ -573,7 +565,7 @@ export default function DataWorkBench(props) {
                                     <Segmented
                                         options={segOptions}
                                         block
-                                        style={{ width: '100%', marginBottom: 18 }}
+                                        style={{ width: '100%', marginBottom: 18, display: datasetSourceResp?.status === 'ok' ? 'block' : 'none' }}
                                         value={selectedData}
                                         onChange={(v) => { if (v === 'image' && !selectedHasImage) return; setSelectedData(v); }}
                                     />
@@ -581,7 +573,8 @@ export default function DataWorkBench(props) {
                             })()
                         }
                         {selectedData === 'image' ? (
-                            <>
+                            <div >
+
                                 <div style={{
                                     display: 'flex',
                                     flexWrap: 'wrap',
@@ -712,7 +705,7 @@ export default function DataWorkBench(props) {
                                         <img src={previewImg} alt="预览" style={{ maxWidth: '100%', maxHeight: 480, margin: '32px auto', display: 'block', borderRadius: 12 }} />
                                     )}
                                 </Modal>
-                            </>
+                            </div>
                         ) : (
                             <>
                                 <div style={{ display: 'flex', gap: 32, alignItems: 'center', marginBottom: 18 }}>
@@ -756,20 +749,28 @@ export default function DataWorkBench(props) {
                                                 } catch (e) {
                                                     console.error('failed to parse dataset source data', e);
                                                 }
-                                                const dynamicCols = Array.from(colSet).map(k => ({ title: k, dataIndex: k, key: k, render: v => (v === null || typeof v === 'undefined') ? '' : String(v) }));
+                                                const dynamicCols = Array.from(colSet).map(k => ({ title: (columnsMap[k] || k), dataIndex: k, key: k, render: v => (v === null || typeof v === 'undefined') ? '' : String(v) }));
                                                 // ensure stable order: sort keys alphabetically
                                                 dynamicCols.sort((a, b) => a.title.localeCompare(b.title, 'zh-CN'));
                                                 return <Table columns={dynamicCols} dataSource={rows} pagination={false} bordered rowKey="_rowIndex" style={{ marginTop: 18 }} />;
                                             })()
                                         )
                                     ) : (
-                                        <div style={{ textAlign: 'center', padding: 24 }}>
-                                            <div style={{ color: '#ff4d4f', fontWeight: 600, marginBottom: 8 }}>错误：{datasetSourceResp.msg || '获取数据失败'}</div>
-                                        </div>
+                                        <Result
+                                            status="error"
+                                            title={datasetSourceResp.msg || '获取数据失败'}
+                                            subTitle="无法加载数据源，请检查权限或稍后重试。"
+                                            extra={[
+
+                                                <Button key="switch" onClick={() => { setDatasetSourceResp(null); setDatasetSwitchVisible(true); setDatasetSwitchLocked(false); loadDatasetsForMenu(); }}>切换数据集</Button>
+                                            ]}
+                                        />
                                     )
                                 ) : (
                                     // fallback: no datasetSourceResp yet — show placeholder table
-                                    <Table columns={columns} dataSource={data} pagination={false} bordered rowKey="id" style={{ marginTop: 18 }} />
+                                    <div>
+                                        数据获取异常，请切换数据集稍后再试
+                                    </div>
                                 )}
                             </>
                         )}

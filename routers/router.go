@@ -345,6 +345,7 @@ func initAPI() {
 	beego.Router("/api/multicenter/get-grants-by-grantedId/:grantedId", &controllers.ApiController{}, "GET:GetAssetGrantByIdAndUser")
 	beego.Router("/api/multicenter/get-granted-assets-by-owner", &controllers.ApiController{}, "GET:GetGrantedAssetsByOwner")
 	beego.Router("/api/multicenter/get-granted-assets-by-requester", &controllers.ApiController{}, "GET:GetGrantedAssetsByRequester")
-	beego.Router("/api/multicenter/check-and-get-dataset-source", &controllers.ApiController{}, "GET:CheckAndGetDatasetSource")
+	beego.Router("/api/multicenter/check-and-get-dataset-source", &controllers.ApiController{}, "POST:CheckAndGetDatasetSource")
 	beego.Router("/api/multicenter/check-usage", &controllers.ApiController{}, "GET:CheckUsage")
+	beego.Router("/api/multicenter/audit-usage", &controllers.ApiController{}, "GET:GetMultiCenterAuditRecords")
 }
