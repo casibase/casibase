@@ -48,54 +48,41 @@ class TestScanWidget extends React.Component {
     ];
   }
 
-  componentDidMount() {
-    if (this.props.provider && this.props.provider.category === "Scan") {
-      // Set default network if empty
-      if (this.props.provider.network === "") {
-        this.props.provider.network = "127.0.0.1";
-        // Call the update function if provided
-        if (this.props.onUpdateProvider) {
-          this.props.onUpdateProvider("network", "127.0.0.1");
-        }
-      }
-      // Set default command if empty
-      const defaultCommand = "-sn %s";
-      if (this.props.provider.text === "" || this.props.provider.text === undefined) {
-        this.props.provider.text = defaultCommand;
-        if (this.props.onUpdateProvider) {
-          this.props.onUpdateProvider("text", defaultCommand);
-        }
-      }
-      this.setState({
-        scanTarget: this.props.provider.network || "127.0.0.1",
-        scanCommand: this.props.provider.text || defaultCommand,
-      });
+  initializeDefaults() {
+    if (!this.props.provider || this.props.provider.category !== "Scan") {
+      return;
     }
+
+    // Set default network if empty
+    if (this.props.provider.network === "") {
+      this.props.provider.network = "127.0.0.1";
+      if (this.props.onUpdateProvider) {
+        this.props.onUpdateProvider("network", "127.0.0.1");
+      }
+    }
+
+    // Set default command if empty
+    const defaultCommand = "-sn %s";
+    if (this.props.provider.text === "" || this.props.provider.text === undefined) {
+      this.props.provider.text = defaultCommand;
+      if (this.props.onUpdateProvider) {
+        this.props.onUpdateProvider("text", defaultCommand);
+      }
+    }
+
+    this.setState({
+      scanTarget: this.props.provider.network || "127.0.0.1",
+      scanCommand: this.props.provider.text || defaultCommand,
+    });
+  }
+
+  componentDidMount() {
+    this.initializeDefaults();
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.provider?.name !== this.props.provider?.name &&
-        this.props.provider?.category === "Scan") {
-      // Set default network if empty
-      if (this.props.provider.network === "") {
-        this.props.provider.network = "127.0.0.1";
-        // Call the update function if provided
-        if (this.props.onUpdateProvider) {
-          this.props.onUpdateProvider("network", "127.0.0.1");
-        }
-      }
-      // Set default command if empty
-      const defaultCommand = "-sn %s";
-      if (this.props.provider.text === "" || this.props.provider.text === undefined) {
-        this.props.provider.text = defaultCommand;
-        if (this.props.onUpdateProvider) {
-          this.props.onUpdateProvider("text", defaultCommand);
-        }
-      }
-      this.setState({
-        scanTarget: this.props.provider.network || "127.0.0.1",
-        scanCommand: this.props.provider.text || defaultCommand,
-      });
+    if (prevProps.provider?.name !== this.props.provider?.name) {
+      this.initializeDefaults();
     }
   }
 
@@ -176,8 +163,8 @@ class TestScanWidget extends React.Component {
               }}
             >
               {
-                this.getCommandTemplates().map((item, index) => (
-                  <Option key={index} value={item.id}>{item.name}</Option>
+                this.getCommandTemplates().map((item) => (
+                  <Option key={item.id} value={item.id}>{item.name}</Option>
                 ))
               }
             </Select>

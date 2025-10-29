@@ -63,11 +63,17 @@ func (p *NmapScanProvider) ScanWithCommand(target string, command string) (strin
 		command = "-sn %s"
 	}
 
+	// Validate command to prevent command injection
+	command = strings.TrimSpace(command)
+	if strings.ContainsAny(command, ";&|`$") {
+		return "", fmt.Errorf("invalid characters in scan command")
+	}
+
 	// Replace %s with target, or append target if no %s placeholder
 	var args []string
 	if strings.Contains(command, "%s") {
-		// Split command and replace %s with target
-		cmdStr := fmt.Sprintf(command, target)
+		// Replace %s with target using strings.Replace for safety
+		cmdStr := strings.Replace(command, "%s", target, -1)
 		args = strings.Fields(cmdStr)
 	} else {
 		// No %s placeholder, append target at the end
