@@ -23,6 +23,7 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
+import {JsonCodeMirrorPopover} from "./common/JsonCodeMirrorWidget";
 
 const {Option} = Select;
 
@@ -266,23 +267,17 @@ class AssetListPage extends BaseListPage {
         dataIndex: "properties",
         key: "properties",
         width: "200px",
+        fixed: "right",
         render: (text, record, index) => {
-          try {
-            const props = JSON.parse(text || "{}");
-            const keys = Object.keys(props);
-            if (keys.length === 0) {
-              return <span>-</span>;
-            }
-            const displayText = keys.slice(0, 3).map(key => `${key}: ${props[key]}`).join(", ");
-            const fullText = keys.map(key => `${key}: ${props[key]}`).join(", ");
-            return (
-              <Tooltip title={fullText}>
-                <span>{Setting.getShortText(displayText, 30)}</span>
-              </Tooltip>
-            );
-          } catch (e) {
-            return <span>-</span>;
-          }
+          return (
+            <JsonCodeMirrorPopover
+              text={text}
+              placement="right"
+              maxDisplayLength={30}
+              width="600px"
+              height="400px"
+            />
+          );
         },
       },
       {

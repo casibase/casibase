@@ -17,8 +17,7 @@ import {Button, Card, Col, Input, Row} from "antd";
 import * as AssetBackend from "./backend/AssetBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-
-const {TextArea} = Input;
+import {JsonCodeMirrorEditor} from "./common/JsonCodeMirrorWidget";
 
 class AssetEditPage extends React.Component {
   constructor(props) {
@@ -40,8 +39,13 @@ class AssetEditPage extends React.Component {
     AssetBackend.getAsset("admin", this.state.assetName)
       .then((res) => {
         if (res.status === "ok") {
+          const asset = res.data;
+          // Format JSON properties with 2-space indentation
+          if (asset.properties) {
+            asset.properties = Setting.formatJsonString(asset.properties);
+          }
           this.setState({
-            asset: res.data,
+            asset: asset,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -199,12 +203,13 @@ class AssetEditPage extends React.Component {
             {Setting.getLabel(i18next.t("asset:Properties"), i18next.t("asset:Properties - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <TextArea
-              autoSize={{minRows: 5, maxRows: 20}}
-              value={this.state.asset.properties}
-              onChange={e => {
-                this.updateAssetField("properties", e.target.value);
+            <JsonCodeMirrorEditor
+              value={this.state.asset.properties || ""}
+              onChange={(editor, data, value) => {
+                this.updateAssetField("properties", value);
               }}
+              editable={true}
+              height="300px"
             />
           </Col>
         </Row>
