@@ -445,12 +445,12 @@
     "{total} in total": "{total} insgesamt"
   },
   "graph": {
-    "Circular": "环形",
+    "Circular": "Kreisförmig",
     "Edit Graph": "Diagramm bearbeiten",
-    "Force": "力导向",
-    "Layout": "布局",
-    "Layout - Tooltip": "图布局类型",
-    "None": "无"
+    "Force": "Kraftgerichtet",
+    "Layout": "Layout",
+    "Layout - Tooltip": "Grafik-Layout-Typ",
+    "None": "Keine"
   },
   "hospital": {
     "Edit Hospital": "Krankenhaus bearbeiten",

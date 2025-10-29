@@ -445,12 +445,12 @@
     "{total} in total": "{total} total"
   },
   "graph": {
-    "Circular": "环形",
+    "Circular": "Melingkar",
     "Edit Graph": "Edit Grafik",
-    "Force": "力导向",
-    "Layout": "布局",
-    "Layout - Tooltip": "图布局类型",
-    "None": "无"
+    "Force": "Gaya",
+    "Layout": "Tata letak",
+    "Layout - Tooltip": "Jenis tata letak grafik",
+    "None": "Tidak ada"
   },
   "hospital": {
     "Edit Hospital": "Edit rumah sakit",

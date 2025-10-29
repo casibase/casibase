@@ -445,12 +445,12 @@
     "{total} in total": "{total} 총계"
   },
   "graph": {
-    "Circular": "环形",
+    "Circular": "원형",
     "Edit Graph": "그래프 편집",
-    "Force": "力导向",
-    "Layout": "布局",
-    "Layout - Tooltip": "图布局类型",
-    "None": "无"
+    "Force": "힘 방향",
+    "Layout": "레이아웃",
+    "Layout - Tooltip": "그래프 레이아웃 유형",
+    "None": "없음"
   },
   "hospital": {
     "Edit Hospital": "병원 편집",
