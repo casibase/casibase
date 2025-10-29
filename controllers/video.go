@@ -147,7 +147,7 @@ func (c *ApiController) UpdateVideo() {
 
 	if user.Type == "video-normal-user" {
 		if len(video.Remarks) > 0 || len(video.Remarks2) > 0 || video.State != "Draft" {
-			c.ResponseError("The video can only be updated when there are no remarks and the state is \"Draft\"")
+			c.ResponseError(c.T("video:The video can only be updated when there are no remarks and the state is \"Draft\""))
 			return
 		}
 	}
@@ -373,7 +373,7 @@ func (c *ApiController) UploadVideo() {
 		return
 	}
 	if videoId == "" {
-		c.ResponseError("UploadVideo() error, videoId should not be empty")
+		c.ResponseError(c.T("video:UploadVideo() error, videoId should not be empty"))
 		return
 	}
 

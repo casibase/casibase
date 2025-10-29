@@ -61,7 +61,7 @@ func (c *ApiController) AddNodeTunnel() {
 
 	user := c.GetSessionUser()
 	if user == nil {
-		c.ResponseError("please sign in first")
+		c.ResponseError(c.T("auth:Please sign in first"))
 		return
 	}
 

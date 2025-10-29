@@ -69,7 +69,7 @@ func StaticFilter(ctx *context.Context) {
 		// Check if user is authenticated
 		user := GetSessionUser(ctx)
 		if user == nil {
-			responseError(ctx, "Unauthorized operation")
+			responseError(ctx, "auth:Unauthorized operation")
 			return
 		}
 

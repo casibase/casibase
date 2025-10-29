@@ -90,7 +90,7 @@ func (c *ApiController) GetChats() {
 	}
 
 	if !c.IsAdmin() && user != selectedUser && selectedUser != "" {
-		c.ResponseError("You can only view your own chats")
+		c.ResponseError(c.T("controllers:You can only view your own chats"))
 		return
 	}
 
@@ -211,7 +211,7 @@ func (c *ApiController) AddChat() {
 			return
 		}
 		if store == nil {
-			c.ResponseError("The default store is not found")
+			c.ResponseError(c.T("chat:The default store is not found"))
 			return
 		}
 

@@ -54,7 +54,7 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 		return
 	}
 	if audioData == nil {
-		c.ResponseError("The audio data is nil")
+		c.ResponseError(c.T("tts:The audio data is nil"))
 		return
 	}
 

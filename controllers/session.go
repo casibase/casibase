@@ -138,7 +138,7 @@ func (c *ApiController) DeleteSession() {
 	}
 
 	if len(session.SessionId) == 0 {
-		c.ResponseError("No sessions to delete")
+		c.ResponseError(c.T("controllers:No sessions to delete"))
 		return
 	}
 

@@ -89,7 +89,7 @@ func permissionFilter(ctx *context.Context) {
 
 	isAdmin := user != nil && (user.IsAdmin || user.Type == "chat-admin")
 	if !isAdmin {
-		responseError(ctx, "this operation requires admin privilege")
+		responseError(ctx, "auth:this operation requires admin privilege")
 		return
 	}
 }

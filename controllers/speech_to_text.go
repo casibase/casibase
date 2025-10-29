@@ -33,7 +33,7 @@ func (c *ApiController) ProcessSpeechToText() {
 	// Get parameters from form data
 	storeId := c.GetString("storeId")
 	if storeId == "" {
-		c.ResponseError("Missing required parameter: storeId")
+		c.ResponseError(c.T("stt:Missing required parameter: storeId"))
 		return
 	}
 
