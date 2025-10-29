@@ -369,7 +369,7 @@ func (p *Provider) GetSpeechToTextProvider(lang string) (stt.SpeechToTextProvide
 }
 
 func (p *Provider) GetScanProvider(lang string) (scan.ScanProvider, error) {
-	pProvider, err := scan.GetScanProvider(p.Type, p.ClientId, lang)
+	pProvider, err := scan.GetScanProvider(p.Type, p.ClientId, p.ClientSecret, lang)
 	if err != nil {
 		return nil, err
 	}
