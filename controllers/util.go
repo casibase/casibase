@@ -152,13 +152,13 @@ func responseError(ctx *context.Context, error string, data ...interface{}) {
 		language = language[0:2]
 	}
 	language = conf.GetLanguage(language)
-	
+
 	// Translate error message if it contains namespace prefix
 	translatedError := error
 	if strings.Contains(error, ":") {
 		translatedError = i18n.Translate(language, error)
 	}
-	
+
 	resp := Response{Status: "error", Msg: translatedError}
 	switch len(data) {
 	case 2:
