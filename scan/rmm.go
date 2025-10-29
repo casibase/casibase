@@ -74,15 +74,25 @@ func NewRmmScanProvider(clientId string, clientSecret string) (*RmmScanProvider,
 	return provider, nil
 }
 
+// validateInput validates and sanitizes input strings to prevent injection attacks
+func validateInput(input string) (string, error) {
+	input = strings.TrimSpace(input)
+	if strings.ContainsAny(input, ";&|`$") {
+		return "", fmt.Errorf("invalid characters in input")
+	}
+	return input, nil
+}
+
 func (p *RmmScanProvider) Scan(target string) (string, error) {
 	if target == "" {
 		return "", fmt.Errorf("scan target (agent ID) cannot be empty")
 	}
 
 	// Validate target to prevent injection
-	target = strings.TrimSpace(target)
-	if strings.ContainsAny(target, ";&|`$<>") {
-		return "", fmt.Errorf("invalid characters in scan target")
+	var err error
+	target, err = validateInput(target)
+	if err != nil {
+		return "", fmt.Errorf("invalid scan target: %v", err)
 	}
 
 	// Get OS updates from RMM agent
@@ -209,10 +219,14 @@ func (p *RmmScanProvider) InstallUpdate(agentID string, updateID string) error {
 	}
 
 	// Validate inputs to prevent injection
-	agentID = strings.TrimSpace(agentID)
-	updateID = strings.TrimSpace(updateID)
-	if strings.ContainsAny(agentID, ";&|`$<>") || strings.ContainsAny(updateID, ";&|`$<>") {
-		return fmt.Errorf("invalid characters in input")
+	var err error
+	agentID, err = validateInput(agentID)
+	if err != nil {
+		return fmt.Errorf("invalid agentID: %v", err)
+	}
+	updateID, err = validateInput(updateID)
+	if err != nil {
+		return fmt.Errorf("invalid updateID: %v", err)
 	}
 
 	// Build request URL
