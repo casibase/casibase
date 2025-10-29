@@ -135,8 +135,8 @@ func (p *RmmScanProvider) Scan(target string) (string, error) {
 }
 
 func (p *RmmScanProvider) getOSUpdates(agentID string) ([]RmmUpdateInfo, error) {
-	// Build request URL
-	requestURL := fmt.Sprintf("%s/api/v1/agents/%s/updates", p.apiUrl, agentID)
+	// Build request URL with proper URL encoding
+	requestURL := fmt.Sprintf("%s/api/v1/agents/%s/updates", p.apiUrl, url.PathEscape(agentID))
 
 	req, err := http.NewRequest("GET", requestURL, nil)
 	if err != nil {
@@ -156,8 +156,7 @@ func (p *RmmScanProvider) getOSUpdates(agentID string) ([]RmmUpdateInfo, error) 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("API returned error status %d: %s", resp.StatusCode, string(body))
+		return nil, fmt.Errorf("API returned error status %d", resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -174,8 +173,8 @@ func (p *RmmScanProvider) getOSUpdates(agentID string) ([]RmmUpdateInfo, error) 
 }
 
 func (p *RmmScanProvider) getSystemInfo(agentID string) (map[string]interface{}, error) {
-	// Build request URL
-	requestURL := fmt.Sprintf("%s/api/v1/agents/%s", p.apiUrl, agentID)
+	// Build request URL with proper URL encoding
+	requestURL := fmt.Sprintf("%s/api/v1/agents/%s", p.apiUrl, url.PathEscape(agentID))
 
 	req, err := http.NewRequest("GET", requestURL, nil)
 	if err != nil {
@@ -195,8 +194,7 @@ func (p *RmmScanProvider) getSystemInfo(agentID string) (map[string]interface{},
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("API returned error status %d: %s", resp.StatusCode, string(body))
+		return nil, fmt.Errorf("API returned error status %d", resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -229,8 +227,8 @@ func (p *RmmScanProvider) InstallUpdate(agentID string, updateID string) error {
 		return fmt.Errorf("invalid updateID: %v", err)
 	}
 
-	// Build request URL
-	requestURL := fmt.Sprintf("%s/api/v1/agents/%s/updates/%s/install", p.apiUrl, agentID, updateID)
+	// Build request URL with proper URL encoding
+	requestURL := fmt.Sprintf("%s/api/v1/agents/%s/updates/%s/install", p.apiUrl, url.PathEscape(agentID), url.PathEscape(updateID))
 
 	req, err := http.NewRequest("POST", requestURL, nil)
 	if err != nil {
@@ -250,8 +248,7 @@ func (p *RmmScanProvider) InstallUpdate(agentID string, updateID string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusAccepted {
-		body, _ := io.ReadAll(resp.Body)
-		return fmt.Errorf("API returned error status %d: %s", resp.StatusCode, string(body))
+		return fmt.Errorf("API returned error status %d", resp.StatusCode)
 	}
 
 	return nil
