@@ -43,6 +43,11 @@ func NewNmapScanProvider(clientId string) (*NmapScanProvider, error) {
 }
 
 func (p *NmapScanProvider) Scan(target string) (string, error) {
+	// Use default command for backward compatibility
+	return p.ScanWithCommand(target, "-sn %s")
+}
+
+func (p *NmapScanProvider) ScanWithCommand(target string, command string) (string, error) {
 	if target == "" {
 		return "", fmt.Errorf("scan target cannot be empty")
 	}
@@ -53,8 +58,25 @@ func (p *NmapScanProvider) Scan(target string) (string, error) {
 		return "", fmt.Errorf("invalid characters in scan target")
 	}
 
-	// Run nmap with basic scan options
-	cmd := exec.Command(p.nmapPath, "-sn", target)
+	// Use default command if empty
+	if command == "" {
+		command = "-sn %s"
+	}
+
+	// Replace %s with target, or append target if no %s placeholder
+	var args []string
+	if strings.Contains(command, "%s") {
+		// Split command and replace %s with target
+		cmdStr := fmt.Sprintf(command, target)
+		args = strings.Fields(cmdStr)
+	} else {
+		// No %s placeholder, append target at the end
+		args = strings.Fields(command)
+		args = append(args, target)
+	}
+
+	// Run nmap with custom command options
+	cmd := exec.Command(p.nmapPath, args...)
 
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout

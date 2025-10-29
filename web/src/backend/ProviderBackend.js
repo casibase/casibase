@@ -92,8 +92,12 @@ export function refreshMcpTools(provider) {
   }).then(res => res.json());
 }
 
-export function testScan(owner, name, target) {
-  return fetch(`${Setting.ServerUrl}/api/test-scan?id=${owner}/${encodeURIComponent(name)}&target=${encodeURIComponent(target)}`, {
+export function testScan(owner, name, target, command = "") {
+  let url = `${Setting.ServerUrl}/api/test-scan?id=${owner}/${encodeURIComponent(name)}&target=${encodeURIComponent(target)}`;
+  if (command) {
+    url += `&command=${encodeURIComponent(command)}`;
+  }
+  return fetch(url, {
     method: "POST",
     credentials: "include",
     headers: {

@@ -16,6 +16,7 @@ package scan
 
 type ScanProvider interface {
 	Scan(target string) (string, error)
+	ScanWithCommand(target string, command string) (string, error)
 }
 
 func GetScanProvider(typ string, clientId string, lang string) (ScanProvider, error) {

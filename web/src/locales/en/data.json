@@ -611,6 +611,8 @@
     "Client ID - Tooltip": "OAuth client ID",
     "Client secret": "Client secret",
     "Client secret - Tooltip": "OAuth client secret",
+    "Command template": "Command template",
+    "Command template - Tooltip": "Select a pre-configured scan command template",
     "Compatible provider": "Compatible provider",
     "Compatible provider - Tooltip": "Compatibility standard",
     "Config text": "Config text",

@@ -214,11 +214,13 @@ func (c *ApiController) RefreshMcpTools() {
 // @Description test scan provider
 // @Param id query string true "The id (owner/name) of the provider"
 // @Param target query string true "The scan target (IP or domain)"
+// @Param command query string false "The scan command with optional %s placeholder for target"
 // @Success 200 {object} controllers.Response The Response object
 // @router /test-scan [post]
 func (c *ApiController) TestScan() {
 	id := c.Input().Get("id")
 	target := c.Input().Get("target")
+	command := c.Input().Get("command")
 	lang := c.GetAcceptLanguage()
 
 	provider, err := object.GetProvider(id)
@@ -238,15 +240,12 @@ func (c *ApiController) TestScan() {
 		return
 	}
 
-	result, err := scanProvider.Scan(target)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
+	var result string
+	if command != "" {
+		result, err = scanProvider.ScanWithCommand(target, command)
+	} else {
+		result, err = scanProvider.Scan(target)
 	}
-
-	// Store the scan result in provider.Text field
-	provider.Text = result
-	_, err = object.UpdateProvider(id, provider)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
