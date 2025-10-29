@@ -17,11 +17,7 @@ import {Button, Card, Col, Input, Row} from "antd";
 import * as AssetBackend from "./backend/AssetBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
+import {JsonCodeMirrorEditor} from "./common/JsonCodeMirrorWidget";
 
 class AssetEditPage extends React.Component {
   constructor(props) {
@@ -207,16 +203,14 @@ class AssetEditPage extends React.Component {
             {Setting.getLabel(i18next.t("asset:Properties"), i18next.t("asset:Properties - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <div style={{height: "300px"}}>
-              <CodeMirror
-                editable={true}
-                value={this.state.asset.properties || ""}
-                options={{mode: "application/json", theme: "material-darker"}}
-                onBeforeChange={(editor, data, value) => {
-                  this.updateAssetField("properties", value);
-                }}
-              />
-            </div>
+            <JsonCodeMirrorEditor
+              value={this.state.asset.properties || ""}
+              onChange={(editor, data, value) => {
+                this.updateAssetField("properties", value);
+              }}
+              editable={true}
+              height="300px"
+            />
           </Col>
         </Row>
       </Card>

@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Alert, Button, Popover, Select, Table, Tooltip, Typography} from "antd";
+import {Button, Select, Table, Tooltip} from "antd";
 import {ReloadOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -23,11 +23,7 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
-
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
+import {JsonCodeMirrorPopover} from "./common/JsonCodeMirrorWidget";
 
 const {Option} = Select;
 
@@ -274,73 +270,14 @@ class AssetListPage extends BaseListPage {
         key: "properties",
         width: "200px",
         render: (text, record, index) => {
-          if (!text || text === "{}") {
-            return <span>-</span>;
-          }
-
-          let formattedText;
-          let isValidJson = false;
-          let errorMessage;
-
-          try {
-            // Try to parse and format JSON
-            const parsedJson = JSON.parse(text);
-            formattedText = JSON.stringify(parsedJson, null, 2);
-            isValidJson = true;
-          } catch (error) {
-            // If parsing fails, use original text
-            formattedText = text;
-            isValidJson = false;
-            errorMessage = error.message;
-          }
-
-          // Generate preview text
-          let displayText;
-          try {
-            const props = JSON.parse(text || "{}");
-            const keys = Object.keys(props);
-            if (keys.length === 0) {
-              return <span>-</span>;
-            }
-            displayText = keys.slice(0, 3).map(key => `${key}: ${props[key]}`).join(", ");
-          } catch (e) {
-            displayText = text;
-          }
-
           return (
-            <Popover
+            <JsonCodeMirrorPopover
+              text={text}
               placement="right"
-              content={
-                <div style={{width: "600px", height: "400px", display: "flex", flexDirection: "column", gap: "12px"}}>
-                  {!isValidJson && (
-                    <Alert type="error" showIcon message={
-                      <Typography.Paragraph ellipsis={{expandable: "collapsible"}} style={{margin: 0}}>{errorMessage}</Typography.Paragraph>}
-                    />)}
-                  <CodeMirror
-                    value={formattedText}
-                    options={{
-                      mode: isValidJson ? "application/json" : "text/plain",
-                      theme: "material-darker",
-                      readOnly: true,
-                      lineNumbers: true,
-                    }}
-                    editorDidMount={(editor) => {
-                      if (window.ResizeObserver) {
-                        const resizeObserver = new ResizeObserver(() => {
-                          editor.refresh();
-                        });
-                        resizeObserver.observe(editor.getWrapperElement().parentNode);
-                      }
-                    }}
-                  />
-                </div>
-              }
-              trigger="hover"
-            >
-              <div style={{maxWidth: "200px", cursor: "pointer"}}>
-                {Setting.getShortText(displayText, 30)}
-              </div>
-            </Popover>
+              maxDisplayLength={30}
+              width="600px"
+              height="400px"
+            />
           );
         },
       },
