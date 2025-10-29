@@ -7,9 +7,9 @@
     "the agent provider type: %s is not supported": "不支持代理提供商类型：%s"
   },
   "application": {
-    "Failed to update application": "Failed to update application",
-    "Missing required parameters": "Missing required parameters",
-    "The Template not found": "The Template not found"
+    "Failed to update application": "更新应用程序失败",
+    "Missing required parameters": "缺少必需参数",
+    "The Template not found": "未找到模板"
   },
   "audio": {
     "complete slice upload failed: %s": "分片上传完成失败：%s",
@@ -20,9 +20,9 @@
     "worker upload failed: %s": "工作节点上传失败：%s"
   },
   "auth": {
-    "Please sign in first": "Please sign in first",
-    "Unauthorized operation": "Unauthorized operation",
-    "this operation requires admin privilege": "this operation requires admin privilege"
+    "Please sign in first": "请先登录",
+    "Unauthorized operation": "未授权的操作",
+    "this operation requires admin privilege": "此操作需要管理员权限"
   },
   "blockchain": {
     "The default blockchain provider is not found": "The default blockchain provider is not found",
@@ -247,7 +247,7 @@
   },
   "resource": {
     "Invalid file data format": "Invalid file data format",
-    "Missing required parameters": "Missing required parameters"
+    "Missing required parameters": "缺少必需参数"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "存储提供商名称：[%s] 不存在"

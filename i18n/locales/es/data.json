@@ -1,15 +1,15 @@
 {
   "account": {
-    "The default store is not found": "The default store is not found",
-    "The store: %s is not found": "The store: %s is not found"
+    "The default store is not found": "No se encontró el almacén predeterminado",
+    "The store: %s is not found": "El almacén: %s no se encontró"
   },
   "agent": {
-    "the agent provider type: %s is not supported": "the agent provider type: %s is not supported"
+    "the agent provider type: %s is not supported": "El tipo de proveedor de agente: %s no es compatible"
   },
   "application": {
-    "Failed to update application": "Failed to update application",
-    "Missing required parameters": "Missing required parameters",
-    "The Template not found": "The Template not found"
+    "Failed to update application": "Error al actualizar la aplicación",
+    "Missing required parameters": "Faltan parámetros requeridos",
+    "The Template not found": "La plantilla no se encontró"
   },
   "audio": {
     "complete slice upload failed: %s": "complete slice upload failed: %s",
@@ -20,13 +20,13 @@
     "worker upload failed: %s": "worker upload failed: %s"
   },
   "auth": {
-    "Please sign in first": "Please sign in first",
-    "Unauthorized operation": "Unauthorized operation",
-    "this operation requires admin privilege": "this operation requires admin privilege"
+    "Please sign in first": "Por favor, inicie sesión primero",
+    "Unauthorized operation": "Operación no autorizada",
+    "this operation requires admin privilege": "Esta operación requiere privilegios de administrador"
   },
   "blockchain": {
-    "The default blockchain provider is not found": "The default blockchain provider is not found",
-    "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'"
+    "The default blockchain provider is not found": "No se encontró el proveedor de blockchain predeterminado",
+    "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "La URL del proveedor de blockchain predeterminado no puede estar vacía. El valor predeterminado es: 'http://localhost:13900'"
   },
   "bpmn": {
     "Error parsing BPMN file: %v": "Error parsing BPMN file: %v"
@@ -61,7 +61,7 @@
     "transaction failed with status: %d, reason: %s": "transaction failed with status: %d, reason: %s"
   },
   "chat": {
-    "The default store is not found": "The default store is not found"
+    "The default store is not found": "No se encontró el almacén predeterminado"
   },
   "controllers": {
     "No permission": "No permission",
@@ -141,7 +141,7 @@
     "The provider: %s does not exist": "The provider: %s does not exist",
     "The provider: %s is not found": "The provider: %s is not found",
     "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v": "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v",
-    "The store: %s is not found": "The store: %s is not found",
+    "The store: %s is not found": "El almacén: %s no se encontró",
     "The text-to-speech provider for store: %s is not found": "The text-to-speech provider for store: %s is not found",
     "deployment failed, and could not retrieve failure details: %v": "deployment failed, and could not retrieve failure details: %v",
     "deployment failed: %s": "deployment failed: %s",
@@ -204,7 +204,7 @@
     "server address not found": "server address not found",
     "the STT provider type: %s is not supported": "the STT provider type: %s is not supported",
     "the TTS provider type: %s is not supported": "the TTS provider type: %s is not supported",
-    "the agent provider type: %s is not supported": "the agent provider type: %s is not supported",
+    "the agent provider type: %s is not supported": "El tipo de proveedor de agente: %s no es compatible",
     "the blockchain provider: %s is not found": "the blockchain provider: %s is not found",
     "the embedding provider type: %s is not supported": "the embedding provider type: %s is not supported",
     "the form: %s is not found": "the form: %s is not found",
@@ -247,7 +247,7 @@
   },
   "resource": {
     "Invalid file data format": "Invalid file data format",
-    "Missing required parameters": "Missing required parameters"
+    "Missing required parameters": "Faltan parámetros requeridos"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] doesn't exist"

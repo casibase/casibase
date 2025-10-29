@@ -15,7 +15,7 @@
   },
   "application": {
     "Deploy": "Terapkan",
-    "Deployment manifest": "Deployment manifest",
+    "Deployment manifest": "Manifes deployment",
     "Deployment manifest - Tooltip": "Deployment manifest - Tooltip",
     "Edit Application": "Edit Aplikasi",
     "Failed": "Gagal",
@@ -27,7 +27,7 @@
     "Pending": "Tertunda",
     "Replicas": "Replika",
     "Running": "Berjalan",
-    "TLS secret name": "TLS secret name",
+    "TLS secret name": "Nama rahasia TLS",
     "Terminating": "Menghentikan",
     "Undeploy": "Batal Deploy",
     "Unknown": "Tidak diketahui"
@@ -78,7 +78,7 @@
   },
   "chat": {
     "AI": "AI",
-    "Add attachment": "Add attachment",
+    "Add attachment": "Tambah lampiran",
     "An error occurred during responding": "Terjadi kesalahan saat merespons",
     "CPrice": "Harga C",
     "Chats": "Percakapan",
@@ -104,13 +104,13 @@
     "The response has been interrupted. Please do not refresh the page during responding.": "Respons telah terganggu. Jangan perbarui halaman saat merespons.",
     "Thinking": "Proses penalaran",
     "Token count": "Jumlah token",
-    "Tool calls": "Tool calls",
+    "Tool calls": "Panggilan alat",
     "Type message here": "Tulis pesan Anda di sini",
     "User1": "Pengguna1",
     "User1 - Tooltip": "Pemulai percakapan",
     "User2": "Pengguna2",
     "User2 - Tooltip": "Penerima percakapan",
-    "Web search": "Web search",
+    "Web search": "Pencarian web",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Teks percakapan Anda mengandung konten sensitif. Percakapan ini telah ditangguhkan secara paksa.",
     "click to stop...": "klik untuk menghentikan..."
   },
