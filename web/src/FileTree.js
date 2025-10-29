@@ -418,7 +418,10 @@ class FileTree extends React.Component {
                 loading: true,
               });
 
-              fetch(url, {method: "GET"})
+              fetch(url, {
+                method: "GET",
+                credentials: "include",
+              })
                 .then(res => res.text())
                 .then(res => {
                   this.setState({
