@@ -1026,7 +1026,7 @@ export function getOtherProviderInfo() {
         url: "https://nmap.org/",
       },
       "RMM": {
-        logo: `${StaticBaseUrl}/img/social_rmm.png`,
+        logo: `${StaticBaseUrl}/img/casibase.png`,
         url: "https://github.com/amidaware/rmmagent",
       },
     },
