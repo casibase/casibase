@@ -143,14 +143,12 @@ class AssetListPage extends BaseListPage {
       return null;
     }
 
-    const logoMap = {
-      "Aliyun": "https://cdn.casbin.org/img/social_aliyun.png",
-      "AWS": "https://cdn.casbin.org/img/social_aws.png",
-      "Azure": "https://cdn.casbin.org/img/social_azure.png",
-      "GCP": "https://cdn.casbin.org/img/social_gcp.png",
-    };
+    const otherProviderInfo = Setting.getOtherProviderInfo();
+    if (!otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {
+      return null;
+    }
 
-    return logoMap[provider.type] || null;
+    return otherProviderInfo[provider.category][provider.type].logo;
   }
 
   renderTable(assets) {
