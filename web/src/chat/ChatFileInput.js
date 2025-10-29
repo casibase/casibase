@@ -31,21 +31,31 @@ const ChatFileInput = ({
     const isImage = uploadedFile.file.type.startsWith("image/");
     if (isImage) {
       return (
-        <Image
-          src={uploadedFile.content} width={50} height={50} style={{objectFit: "cover", borderRadius: 4}}
-        />
+        <div style={{display: "flex", flexDirection: "column", alignItems: "center", gap: "4px"}}>
+          <Image
+            src={uploadedFile.content} width={50} height={50} style={{objectFit: "cover", borderRadius: 4}}
+          />
+          <div
+            style={{fontSize: 10, textAlign: "center", maxWidth: "80px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
+            title={uploadedFile.file.name}
+          >
+            {uploadedFile.file.name}
+          </div>
+        </div>
       );
     } else {
       return (
-        <div
-          style={{width: 50, height: 50, borderRadius: 4, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 4, boxSizing: "border-box"}}
-        >
-          <FileTextOutlined style={{fontSize: 30, color: "#000", justifyContent: "center"}} />
+        <div style={{display: "flex", flexDirection: "column", alignItems: "center", gap: "4px"}}>
           <div
-            style={{fontSize: 10, textAlign: "center", wordBreak: "break-word", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "100%"}}
+            style={{width: 50, height: 50, borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f5f5"}}
+          >
+            <FileTextOutlined style={{fontSize: 30, color: "#666"}} />
+          </div>
+          <div
+            style={{fontSize: 10, textAlign: "center", maxWidth: "80px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
             title={uploadedFile.file.name}
           >
-            {uploadedFile.file.name.replace(/\s+/g, "")}
+            {uploadedFile.file.name}
           </div>
         </div>
       );
@@ -54,12 +64,12 @@ const ChatFileInput = ({
 
   return (
     <div
-      style={{display: "flex", gap: 10, marginBottom: 2, paddingTop: 8, overflowX: "auto"}}
+      style={{display: "flex", gap: 10, flexWrap: "wrap"}}
     >
       {files.map((uploadedFile) => (
         <div
           key={uploadedFile.uid}
-          style={{position: "relative", display: "inline-block"}}
+          style={{position: "relative"}}
         >
           {renderFilePreview(uploadedFile)}
           <CloseCircleOutlined

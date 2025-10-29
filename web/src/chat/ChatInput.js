@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from "react";
+import React, {useState} from "react";
 import {Button} from "antd";
 import {Sender} from "@ant-design/x";
-import {LinkOutlined} from "@ant-design/icons";
+import {CloseOutlined, GlobalOutlined} from "@ant-design/icons";
 import ChatFileInput from "./ChatFileInput";
 import UploadFileArea from "./UploadFileArea";
+import ChatInputMenu from "./ChatInputMenu";
+import * as Setting from "../Setting";
 import i18next from "i18next";
 
 const ChatInput = ({
@@ -35,6 +37,7 @@ const ChatInput = ({
   onVoiceInputEnd,
   isVoiceInput,
 }) => {
+  const [webSearchEnabled, setWebSearchEnabled] = useState(false);
 
   let storageThemeAlgorithm = [];
   try {
@@ -122,16 +125,60 @@ const ChatInput = ({
             />
           </div>
         )}
+        {webSearchEnabled && (
+          <div style={{marginBottom: "12px", marginLeft: "12px", marginRight: "12px"}}>
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              padding: "4px 12px",
+              background: storageThemeAlgorithm.includes("dark") ? "#1f1f1f" : "#f0f0f0",
+              borderRadius: "6px",
+              fontSize: "12px",
+              color: Setting.getThemeColor(),
+            }}>
+              <GlobalOutlined />
+              <span>{i18next.t("chat:Web search")}</span>
+              <Button
+                type="text"
+                size="small"
+                icon={<CloseOutlined style={{fontSize: "10px"}} />}
+                style={{
+                  minWidth: "auto",
+                  width: "20px",
+                  height: "20px",
+                  padding: 0,
+                  marginLeft: "2px",
+                  borderRadius: "50%",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  opacity: 0.6,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = "1";
+                  e.currentTarget.style.background = storageThemeAlgorithm.includes("dark") ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = "0.6";
+                  e.currentTarget.style.background = "transparent";
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setWebSearchEnabled(false);
+                }}
+              />
+            </div>
+          </div>
+        )}
         <Sender
           prefix={
-            <Button
-              type="text"
-              icon={<LinkOutlined />}
-              onClick={handleFileUploadClick}
-              disabled={disableInput || messageError || store?.disableFileUpload}
-              style={{
-                color: (disableInput || messageError) ? "#d9d9d9" : undefined,
-              }}
+            <ChatInputMenu
+              disabled={disableInput || messageError}
+              webSearchEnabled={webSearchEnabled}
+              onWebSearchChange={setWebSearchEnabled}
+              onFileUpload={handleFileUploadClick}
+              disableFileUpload={store?.disableFileUpload}
             />
           }
           loading={loading}
