@@ -446,9 +446,6 @@
     "Layout": "Layout",
     "Layout - Tooltip": "Graph layout type",
     "None": "None",
-    "Category": "Category",
-    "Category - Tooltip": "Graph category type",
-    "Default": "Default",
     "Asset Graph": "Asset Graph"
   },
   "hospital": {

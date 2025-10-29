@@ -115,7 +115,7 @@ class GraphListPage extends BaseListPage {
         ...this.getColumnSearchProps("displayName"),
       },
       {
-        title: i18next.t("graph:Category"),
+        title: i18next.t("provider:Category"),
         dataIndex: "category",
         key: "category",
         width: "140px",

@@ -446,9 +446,6 @@
     "Layout": "布局",
     "Layout - Tooltip": "图布局类型",
     "None": "无",
-    "Category": "类别",
-    "Category - Tooltip": "图表类别类型",
-    "Default": "默认",
     "Asset Graph": "资产图"
   },
   "hospital": {
