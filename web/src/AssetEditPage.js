@@ -46,12 +46,7 @@ class AssetEditPage extends React.Component {
           const asset = res.data;
           // Format JSON properties with 2-space indentation
           if (asset.properties) {
-            try {
-              const parsed = JSON.parse(asset.properties);
-              asset.properties = JSON.stringify(parsed, null, 2);
-            } catch (e) {
-              // If parsing fails, keep the original value
-            }
+            asset.properties = Setting.formatJsonString(asset.properties);
           }
           this.setState({
             asset: asset,
@@ -214,6 +209,7 @@ class AssetEditPage extends React.Component {
           <Col span={22} >
             <div style={{height: "300px"}}>
               <CodeMirror
+                editable={true}
                 value={this.state.asset.properties || ""}
                 options={{mode: "application/json", theme: "material-darker"}}
                 onBeforeChange={(editor, data, value) => {
