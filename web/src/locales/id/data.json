@@ -78,6 +78,7 @@
   },
   "chat": {
     "AI": "AI",
+    "Add attachment": "Add attachment",
     "An error occurred during responding": "Terjadi kesalahan saat merespons",
     "CPrice": "Harga C",
     "Chats": "Percakapan",
@@ -103,11 +104,13 @@
     "The response has been interrupted. Please do not refresh the page during responding.": "Respons telah terganggu. Jangan perbarui halaman saat merespons.",
     "Thinking": "Proses penalaran",
     "Token count": "Jumlah token",
+    "Tool calls": "Tool calls",
     "Type message here": "Tulis pesan Anda di sini",
     "User1": "Pengguna1",
     "User1 - Tooltip": "Pemulai percakapan",
     "User2": "Pengguna2",
     "User2 - Tooltip": "Penerima percakapan",
+    "Web search": "Web search",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Teks percakapan Anda mengandung konten sensitif. Percakapan ini telah ditangguhkan secara paksa.",
     "click to stop...": "klik untuk menghentikan..."
   },
@@ -231,6 +234,7 @@
     "Failed to decode audio data": "Gagal mendekode data audio",
     "Failed to delete": "Gagal dihapus",
     "Failed to deploy": "Gagal menerapkan",
+    "Failed to execute": "Failed to execute",
     "Failed to get": "Gagal mendapatkan",
     "Failed to query": "Failed to query",
     "Failed to redirect": "Gagal dialihkan",
@@ -377,6 +381,7 @@
     "Successfully deployed": "Berhasil diterapkan",
     "Successfully disliked": "Berhasil memberi dislike",
     "Successfully downloaded": "Berhasil diunduh",
+    "Successfully executed": "Successfully executed",
     "Successfully liked": "Berhasil memberi like",
     "Successfully logged in": "Berhasil masuk",
     "Successfully saved": "Berhasil disimpan",
@@ -440,7 +445,12 @@
     "{total} in total": "{total} total"
   },
   "graph": {
-    "Edit Graph": "Edit Graph"
+    "Circular": "环形",
+    "Edit Graph": "Edit Graph",
+    "Force": "力导向",
+    "Layout": "布局",
+    "Layout - Tooltip": "图布局类型",
+    "None": "无"
   },
   "hospital": {
     "Edit Hospital": "Edit rumah sakit",
@@ -499,6 +509,7 @@
     "Doctor": "Dokter",
     "Doctor - Tooltip": "Dokter yang merawat",
     "Doctors": "Dokter",
+    "Doctors - Tooltip": "Doctors - Tooltip",
     "Email": "Email",
     "Email - Tooltip": "Email",
     "Expired time": "Waktu kadaluarsa",

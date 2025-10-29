@@ -36,6 +36,7 @@ type Graph struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
+	Category    string `xorm:"varchar(100)" json:"category"`
 	Layout      string `xorm:"varchar(100)" json:"layout"`
 	Text        string `xorm:"mediumtext" json:"text"`
 	ErrorText   string `xorm:"mediumtext" json:"errorText"`

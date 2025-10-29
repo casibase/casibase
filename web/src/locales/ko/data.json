@@ -78,6 +78,7 @@
   },
   "chat": {
     "AI": "AI",
+    "Add attachment": "Add attachment",
     "An error occurred during responding": "응답 중 오류가 발생했습니다",
     "CPrice": "C가격",
     "Chats": "대화",
@@ -103,11 +104,13 @@
     "The response has been interrupted. Please do not refresh the page during responding.": "응답이 중단되었습니다. 응답하는 동안 페이지를 새로 고치지 마세요.",
     "Thinking": "추론 중",
     "Token count": "토큰 수",
+    "Tool calls": "Tool calls",
     "Type message here": "여기에 메시지를 입력하세요",
     "User1": "사용자1",
     "User1 - Tooltip": "채팅 발신자",
     "User2": "사용자2",
     "User2 - Tooltip": "채팅 수신자",
+    "Web search": "Web search",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "채팅 내용에 민감한 정보가 포함되어 있습니다. 이 대화가 강제 종료되었습니다.",
     "click to stop...": "클릭하여 중지..."
   },
@@ -231,6 +234,7 @@
     "Failed to decode audio data": "오디오 데이터 디코딩 실패",
     "Failed to delete": "삭제 실패",
     "Failed to deploy": "배포 실패",
+    "Failed to execute": "Failed to execute",
     "Failed to get": "가져오기 실패",
     "Failed to query": "Failed to query",
     "Failed to redirect": "재디렉션 실패",
@@ -377,6 +381,7 @@
     "Successfully deployed": "배포 성공",
     "Successfully disliked": "싫어요 성공",
     "Successfully downloaded": "다운로드 성공",
+    "Successfully executed": "Successfully executed",
     "Successfully liked": "좋아요 성공",
     "Successfully logged in": "로그인 성공",
     "Successfully saved": "저장 성공",
@@ -440,7 +445,12 @@
     "{total} in total": "{total} 총계"
   },
   "graph": {
-    "Edit Graph": "Edit Graph"
+    "Circular": "环形",
+    "Edit Graph": "Edit Graph",
+    "Force": "力导向",
+    "Layout": "布局",
+    "Layout - Tooltip": "图布局类型",
+    "None": "无"
   },
   "hospital": {
     "Edit Hospital": "병원 편집",
@@ -499,6 +509,7 @@
     "Doctor": "의사",
     "Doctor - Tooltip": "담당 의사",
     "Doctors": "의사",
+    "Doctors - Tooltip": "Doctors - Tooltip",
     "Email": "이메일",
     "Email - Tooltip": "이메일",
     "Expired time": "만료 시간",

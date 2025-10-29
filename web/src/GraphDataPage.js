@@ -15,6 +15,8 @@
 import React from "react";
 import ReactEcharts from "echarts-for-react";
 import * as Setting from "./Setting";
+import * as AssetBackend from "./backend/AssetBackend";
+import {transformAssetsToGraph} from "./utils/assetToGraph";
 
 class GraphErrorBoundary extends React.Component {
   constructor(props) {
@@ -57,19 +59,69 @@ class GraphDataPage extends React.Component {
   }
 
   componentDidMount() {
-    const result = this.parseData();
-    this.setState({
-      data: result.data,
-      errorText: result.errorText,
-      renderError: "",
-    });
-    if (this.props.onErrorChange) {
-      this.props.onErrorChange(result.errorText);
-    }
+    this.loadGraphData();
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.graphText !== prevProps.graphText || this.props.layout !== prevProps.layout) {
+    if (this.props.graphText !== prevProps.graphText ||
+        this.props.layout !== prevProps.layout ||
+        this.props.category !== prevProps.category) {
+      this.loadGraphData();
+    }
+  }
+
+  async loadGraphData() {
+    const category = this.props.category || "Default";
+
+    if (category === "Assets") {
+      // Fetch assets and transform to graph data
+      try {
+        const owner = this.props.owner || this.props.account?.name;
+        if (!owner) {
+          this.setState({
+            data: {nodes: [], links: [], categories: []},
+            errorText: "Owner is required for Asset Graph",
+            renderError: "",
+          });
+          if (this.props.onErrorChange) {
+            this.props.onErrorChange("Owner is required for Asset Graph");
+          }
+          return;
+        }
+
+        const res = await AssetBackend.getAssets(owner);
+        if (res.status === "ok" && res.data) {
+          const graphData = transformAssetsToGraph(res.data);
+          this.setState({
+            data: graphData,
+            errorText: "",
+            renderError: "",
+          });
+          if (this.props.onErrorChange) {
+            this.props.onErrorChange("");
+          }
+        } else {
+          this.setState({
+            data: {nodes: [], links: [], categories: []},
+            errorText: `Failed to fetch assets: ${res.msg || "Unknown error"}`,
+            renderError: "",
+          });
+          if (this.props.onErrorChange) {
+            this.props.onErrorChange(`Failed to fetch assets: ${res.msg || "Unknown error"}`);
+          }
+        }
+      } catch (error) {
+        this.setState({
+          data: {nodes: [], links: [], categories: []},
+          errorText: `Error fetching assets: ${error.message}`,
+          renderError: "",
+        });
+        if (this.props.onErrorChange) {
+          this.props.onErrorChange(`Error fetching assets: ${error.message}`);
+        }
+      }
+    } else {
+      // Default behavior: parse graph text
       const result = this.parseData();
       this.setState({
         data: result.data,
