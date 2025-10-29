@@ -20,8 +20,8 @@
     "worker upload failed: %s": "工作节点上传失败：%s"
   },
   "auth": {
-    "Unauthorized operation": "Unauthorized operation",
     "Please sign in first": "Please sign in first",
+    "Unauthorized operation": "Unauthorized operation",
     "this operation requires admin privilege": "this operation requires admin privilege"
   },
   "blockchain": {
@@ -65,10 +65,10 @@
   },
   "controllers": {
     "No permission": "No permission",
-    "You can only view your own chats": "You can only view your own chats",
-    "You can only view your own messages": "You can only view your own messages",
     "No records to add": "No records to add",
-    "No sessions to delete": "No sessions to delete"
+    "No sessions to delete": "No sessions to delete",
+    "You can only view your own chats": "You can only view your own chats",
+    "You can only view your own messages": "You can only view your own messages"
   },
   "embedding": {
     "calculatePrice() error: unknown model type: %s": "calculatePrice() 错误：未知模型类型：%s",
@@ -106,6 +106,8 @@
     "error getting chat completion: %v": "获取聊天补全（chat completion）错误：%v",
     "exceed max tokens": "超过最大标记（token）数量",
     "failed to calculate price: %v": "计算价格失败：%v",
+    "failed to marshal content: %v": "failed to marshal content: %v",
+    "failed to marshal error content: %v": "failed to marshal error content: %v",
     "failed to marshal tool response: %v": "序列化工具响应失败：%v",
     "failed to parse tool arguments: %v": "解析工具参数失败：%v",
     "failed to write response: %v": "写入响应失败：%v",
@@ -121,18 +123,18 @@
     "Please add a model provider first": "请先添加模型提供商",
     "Please add an embedding provider first": "请先添加嵌入提供商",
     "Question message: [%s] doesn't exist": "问题消息：[%s] 不存在",
-    "SendErrorEmail() error, the receiver user: ": "发送错误邮件失败，接收用户：",
-    "The agent provider: %s is expected to be ": "代理提供商：%s 应为 ",
+    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() error, the receiver user: ",
+    "The agent provider: %s is expected to be ": "The agent provider: %s is expected to be ",
     "The chat: %s is not found": "聊天：%s 未找到",
     "The default video provider should not be empty": "默认视频提供商不能为空",
     "The embedding provider for store: %s is not found": "存储 %s 的嵌入提供商未找到",
-    "The embedding provider: %s is expected to be ": "嵌入提供商：%s 应为 ",
+    "The embedding provider: %s is expected to be ": "The embedding provider: %s is expected to be ",
     "The embedding provider: %s is not found": "嵌入提供商：%s 未找到",
     "The embedding provider: %s's client secret should not be empty": "嵌入提供商：%s 的客户端密钥不能为空",
     "The image provider for store: %s should not be empty": "存储 %s 的图像提供商不能为空",
     "The message: %s is not found": "消息：%s 未找到",
     "The model provider for store: %s is not found": "存储 %s 的模型提供商未找到",
-    "The model provider: %s is expected to be ": "模型提供商：%s 应为 ",
+    "The model provider: %s is expected to be ": "The model provider: %s is expected to be ",
     "The model provider: %s is not found": "模型提供商：%s 未找到",
     "The model provider: %s's client secret should not be empty": "模型提供商：%s 的客户端密钥不能为空",
     "The provider is not found": "提供商未找到",
@@ -195,7 +197,6 @@
     "namespace cannot be empty": "命名空间不能为空",
     "no Kubernetes provider found": "未找到 Kubernetes 提供商",
     "no accessible URL found for application": "未找到应用的可访问 URL",
-    "no knowledge vectors found": "未找到知识向量",
     "no qVector found": "未找到 qVector",
     "parseBase64Image() error: invalid image format": "parseBase64Image() 错误：无效的图像格式",
     "provider kubeconfig content is empty": "提供商 kubeconfig 内容为空",
@@ -211,6 +212,7 @@
     "the record: %s does not exist": "记录：%s 不存在",
     "the record: %s has already been committed, blockId = %s": "记录：%s 已提交，blockId = %s",
     "the record: %s's block ID should not be empty": "记录：%s 的区块 ID 不能为空",
+    "the scan provider type: %s is not supported": "the scan provider type: %s is not supported",
     "the storage provider type: %s is not supported": "不支持的存储提供商类型：%s",
     "there is no active blockchain provider": "没有活跃的区块链提供商",
     "unable to extract host": "无法提取主机",
@@ -244,8 +246,8 @@
     "Provider not found": "Provider not found"
   },
   "resource": {
-    "Missing required parameters": "Missing required parameters",
-    "Invalid file data format": "Invalid file data format"
+    "Invalid file data format": "Invalid file data format",
+    "Missing required parameters": "Missing required parameters"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "存储提供商名称：[%s] 不存在"
@@ -255,19 +257,19 @@
   },
   "stt": {
     "API error: %s": "API 错误：%s",
+    "Missing required parameter: storeId": "Missing required parameter: storeId",
     "speech recognition API error: %v": "语音识别 API 错误：%v",
-    "speech recognition timed out after %v seconds": "语音识别在 %v 秒后超时",
-    "Missing required parameter: storeId": "Missing required parameter: storeId"
+    "speech recognition timed out after %v seconds": "语音识别在 %v 秒后超时"
   },
   "tts": {
+    "The audio data is nil": "The audio data is nil",
     "calculatePrice() error: unknown model type: %s": "calculatePrice() 错误：未知的模型类型：%s",
     "error creating synthesizer: %v": "创建合成器错误：%v",
     "error finishing task: %v": "完成任务错误：%v",
     "error running task: %v": "运行任务错误：%v",
     "error sending text: %v": "发送文本错误：%v",
     "output error: %v": "输出错误：%v",
-    "writer does not implement http.Flusher": "writer 未实现 http.Flusher 接口",
-    "The audio data is nil": "The audio data is nil"
+    "writer does not implement http.Flusher": "writer 未实现 http.Flusher 接口"
   },
   "txt": {
     ".docx file is empty": ".docx 文件为空",

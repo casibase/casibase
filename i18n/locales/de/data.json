@@ -20,8 +20,8 @@
     "worker upload failed: %s": "worker upload failed: %s"
   },
   "auth": {
-    "Unauthorized operation": "Unauthorized operation",
     "Please sign in first": "Please sign in first",
+    "Unauthorized operation": "Unauthorized operation",
     "this operation requires admin privilege": "this operation requires admin privilege"
   },
   "blockchain": {
@@ -65,10 +65,10 @@
   },
   "controllers": {
     "No permission": "No permission",
-    "You can only view your own chats": "You can only view your own chats",
-    "You can only view your own messages": "You can only view your own messages",
     "No records to add": "No records to add",
-    "No sessions to delete": "No sessions to delete"
+    "No sessions to delete": "No sessions to delete",
+    "You can only view your own chats": "You can only view your own chats",
+    "You can only view your own messages": "You can only view your own messages"
   },
   "embedding": {
     "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
@@ -106,6 +106,8 @@
     "error getting chat completion: %v": "error getting chat completion: %v",
     "exceed max tokens": "exceed max tokens",
     "failed to calculate price: %v": "failed to calculate price: %v",
+    "failed to marshal content: %v": "failed to marshal content: %v",
+    "failed to marshal error content: %v": "failed to marshal error content: %v",
     "failed to marshal tool response: %v": "failed to marshal tool response: %v",
     "failed to parse tool arguments: %v": "failed to parse tool arguments: %v",
     "failed to write response: %v": "failed to write response: %v",
@@ -195,7 +197,6 @@
     "namespace cannot be empty": "namespace cannot be empty",
     "no Kubernetes provider found": "no Kubernetes provider found",
     "no accessible URL found for application": "no accessible URL found for application",
-    "no knowledge vectors found": "no knowledge vectors found",
     "no qVector found": "no qVector found",
     "parseBase64Image() error: invalid image format": "parseBase64Image() error: invalid image format",
     "provider kubeconfig content is empty": "provider kubeconfig content is empty",
@@ -211,6 +212,7 @@
     "the record: %s does not exist": "the record: %s does not exist",
     "the record: %s has already been committed, blockId = %s": "the record: %s has already been committed, blockId = %s",
     "the record: %s's block ID should not be empty": "the record: %s's block ID should not be empty",
+    "the scan provider type: %s is not supported": "the scan provider type: %s is not supported",
     "the storage provider type: %s is not supported": "the storage provider type: %s is not supported",
     "there is no active blockchain provider": "there is no active blockchain provider",
     "unable to extract host": "unable to extract host",
@@ -244,8 +246,8 @@
     "Provider not found": "Provider not found"
   },
   "resource": {
-    "Missing required parameters": "Missing required parameters",
-    "Invalid file data format": "Invalid file data format"
+    "Invalid file data format": "Invalid file data format",
+    "Missing required parameters": "Missing required parameters"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] doesn't exist"
@@ -255,19 +257,19 @@
   },
   "stt": {
     "API error: %s": "API error: %s",
+    "Missing required parameter: storeId": "Missing required parameter: storeId",
     "speech recognition API error: %v": "speech recognition API error: %v",
-    "speech recognition timed out after %v seconds": "speech recognition timed out after %v seconds",
-    "Missing required parameter: storeId": "Missing required parameter: storeId"
+    "speech recognition timed out after %v seconds": "speech recognition timed out after %v seconds"
   },
   "tts": {
+    "The audio data is nil": "The audio data is nil",
     "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
     "error creating synthesizer: %v": "error creating synthesizer: %v",
     "error finishing task: %v": "error finishing task: %v",
     "error running task: %v": "error running task: %v",
     "error sending text: %v": "error sending text: %v",
     "output error: %v": "output error: %v",
-    "writer does not implement http.Flusher": "writer does not implement http.Flusher",
-    "The audio data is nil": "The audio data is nil"
+    "writer does not implement http.Flusher": "writer does not implement http.Flusher"
   },
   "txt": {
     ".docx file is empty": ".docx file is empty",
