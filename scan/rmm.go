@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -133,9 +134,15 @@ func (p *RmmScanProvider) getUpdateList() (string, error) {
 }
 
 func (p *RmmScanProvider) installUpdate(updateID string) (string, error) {
-	url := fmt.Sprintf("%s/api/v1/updates/%s/install", p.baseURL, updateID)
+	// Validate and encode update ID to prevent path traversal
+	updateID = strings.TrimSpace(updateID)
+	if strings.ContainsAny(updateID, "/\\") {
+		return "", fmt.Errorf("invalid update ID: contains path separators")
+	}
+	encodedID := url.PathEscape(updateID)
+	requestURL := fmt.Sprintf("%s/api/v1/updates/%s/install", p.baseURL, encodedID)
 
-	req, err := http.NewRequest("POST", url, nil)
+	req, err := http.NewRequest("POST", requestURL, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed to create request: %v", err)
 	}
@@ -159,17 +166,24 @@ func (p *RmmScanProvider) installUpdate(updateID string) (string, error) {
 }
 
 func (p *RmmScanProvider) customRequest(endpoint string, params string) (string, error) {
-	// Support custom API endpoints
+	// Support custom API endpoints with validation
+	endpoint = strings.TrimSpace(endpoint)
+
+	// Validate endpoint doesn't contain dangerous characters
+	if strings.ContainsAny(endpoint, ";&|`$") {
+		return "", fmt.Errorf("invalid characters in endpoint")
+	}
+
 	if !strings.HasPrefix(endpoint, "/") {
 		endpoint = "/" + endpoint
 	}
 
-	url := fmt.Sprintf("%s%s", p.baseURL, endpoint)
+	requestURL := fmt.Sprintf("%s%s", p.baseURL, endpoint)
 	if params != "" {
-		url = fmt.Sprintf("%s?%s", url, params)
+		requestURL = fmt.Sprintf("%s?%s", requestURL, params)
 	}
 
-	resp, err := p.client.Get(url)
+	resp, err := p.client.Get(requestURL)
 	if err != nil {
 		return "", fmt.Errorf("failed to make custom request: %v", err)
 	}

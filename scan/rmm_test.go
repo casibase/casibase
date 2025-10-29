@@ -240,6 +240,72 @@ func TestGetScanProvider_RMM(t *testing.T) {
 	}
 }
 
+func TestRmmScanProvider_SecurityValidation(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status": "ok"}`))
+	}))
+	defer server.Close()
+
+	provider, err := NewRmmScanProvider(server.URL)
+	if err != nil {
+		t.Fatalf("Failed to create provider: %v", err)
+	}
+
+	tests := []struct {
+		name      string
+		target    string
+		command   string
+		wantError bool
+		errorMsg  string
+	}{
+		{
+			name:      "invalid update ID with path separator",
+			target:    "../etc/passwd",
+			command:   "install",
+			wantError: true,
+			errorMsg:  "path separators",
+		},
+		{
+			name:      "invalid custom endpoint with shell characters",
+			target:    "",
+			command:   "/api/test; rm -rf /",
+			wantError: true,
+			errorMsg:  "invalid characters",
+		},
+		{
+			name:      "invalid custom endpoint with pipe",
+			target:    "",
+			command:   "/api/test|whoami",
+			wantError: true,
+			errorMsg:  "invalid characters",
+		},
+		{
+			name:      "valid update ID",
+			target:    "KB123456",
+			command:   "install",
+			wantError: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := provider.ScanWithCommand(tt.target, tt.command)
+			if tt.wantError {
+				if err == nil {
+					t.Errorf("ScanWithCommand() expected error but got none")
+				} else if !contains(err.Error(), tt.errorMsg) {
+					t.Errorf("ScanWithCommand() error = %v, want error containing %q", err, tt.errorMsg)
+				}
+			} else {
+				if err != nil {
+					t.Errorf("ScanWithCommand() unexpected error: %v", err)
+				}
+			}
+		})
+	}
+}
+
 // Helper function to check if a string contains a substring
 func contains(s, substr string) bool {
 	return len(s) >= len(substr) && (s == substr || len(s) > len(substr) && containsHelper(s, substr))
