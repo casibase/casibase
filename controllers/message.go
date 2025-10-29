@@ -86,7 +86,7 @@ func (c *ApiController) GetMessages() {
 	}
 
 	if !c.IsAdmin() && user != selectedUser && selectedUser != "" {
-		c.ResponseError("You can only view your own messages")
+		c.ResponseError(c.T("controllers:You can only view your own messages"))
 		return
 	}
 
@@ -390,7 +390,7 @@ func (c *ApiController) DeleteWelcomeMessage() {
 
 	user := c.GetSessionUsername()
 	if user != "" && user != message.User {
-		c.ResponseError("No permission")
+		c.ResponseError(c.T("controllers:No permission"))
 		return
 	}
 
@@ -400,13 +400,13 @@ func (c *ApiController) DeleteWelcomeMessage() {
 		hash := getContentHash(fmt.Sprintf("%s|%s", clientIp, userAgent))
 		username := fmt.Sprintf("u-%s", hash)
 		if username != message.User {
-			c.ResponseError("No permission")
+			c.ResponseError(c.T("controllers:No permission"))
 			return
 		}
 	}
 
 	if message.Author != "AI" || message.ReplyTo != "Welcome" {
-		c.ResponseError("No permission")
+		c.ResponseError(c.T("controllers:No permission"))
 		return
 	}
 

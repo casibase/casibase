@@ -36,7 +36,7 @@ func (c *ApiController) ChatCompletions() {
 	// Authenticate using API key
 	apiKey := c.Ctx.Request.Header.Get("Authorization")
 	if !strings.HasPrefix(apiKey, "Bearer ") {
-		c.ResponseError("Invalid API key format. Expected 'Bearer API_KEY'")
+		c.ResponseError(c.T("openai:Invalid API key format. Expected 'Bearer API_KEY'"))
 		return
 	}
 
@@ -71,7 +71,7 @@ func (c *ApiController) ChatCompletions() {
 	}
 
 	if question == "" {
-		c.ResponseError("No user message found in the request")
+		c.ResponseError(c.T("openai:No user message found in the request"))
 		return
 	}
 

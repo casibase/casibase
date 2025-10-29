@@ -23,6 +23,7 @@ import (
 	"github.com/beego/beego/context"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/conf"
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 )
 
@@ -56,7 +57,20 @@ func getUsername(ctx *context.Context) (username string) {
 func responseError(ctx *context.Context, error string, data ...interface{}) {
 	// ctx.ResponseWriter.WriteHeader(http.StatusForbidden)
 
-	resp := Response{Status: "error", Msg: error}
+	// Get language from Accept-Language header
+	language := ctx.Request.Header.Get("Accept-Language")
+	if len(language) > 2 {
+		language = language[0:2]
+	}
+	language = conf.GetLanguage(language)
+
+	// Translate error message if it contains namespace prefix
+	translatedError := error
+	if strings.Contains(error, ":") {
+		translatedError = i18n.Translate(language, error)
+	}
+
+	resp := Response{Status: "error", Msg: translatedError}
 	switch len(data) {
 	case 2:
 		resp.Data2 = data[1]

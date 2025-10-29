@@ -228,7 +228,7 @@ func (c *ApiController) TestScan() {
 	}
 
 	if provider == nil {
-		c.ResponseError("Provider not found")
+		c.ResponseError(c.T("provider:Provider not found"))
 		return
 	}
 

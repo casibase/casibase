@@ -6,6 +6,11 @@
   "agent": {
     "the agent provider type: %s is not supported": "不支持代理提供商类型：%s"
   },
+  "application": {
+    "Failed to update application": "Failed to update application",
+    "Missing required parameters": "Missing required parameters",
+    "The Template not found": "The Template not found"
+  },
   "audio": {
     "complete slice upload failed: %s": "分片上传完成失败：%s",
     "get progress failed: %s": "获取进度失败：%s",
@@ -13,6 +18,15 @@
     "init slice upload failed: %s": "初始化分片上传失败：%s",
     "perform slice upload failed: %s": "执行分片上传失败：%s",
     "worker upload failed: %s": "工作节点上传失败：%s"
+  },
+  "auth": {
+    "Unauthorized operation": "Unauthorized operation",
+    "Please sign in first": "Please sign in first",
+    "this operation requires admin privilege": "this operation requires admin privilege"
+  },
+  "blockchain": {
+    "The default blockchain provider is not found": "The default blockchain provider is not found",
+    "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'"
   },
   "bpmn": {
     "Error parsing BPMN file: %v": "解析BPMN文件错误：%v"
@@ -45,6 +59,16 @@
     "parse json data error: %v": "解析JSON数据错误：%v",
     "transaction failed to be mined: %v": "交易挖矿失败：%v",
     "transaction failed with status: %d, reason: %s": "交易失败，状态码：%d，原因：%s"
+  },
+  "chat": {
+    "The default store is not found": "The default store is not found"
+  },
+  "controllers": {
+    "No permission": "No permission",
+    "You can only view your own chats": "You can only view your own chats",
+    "You can only view your own messages": "You can only view your own messages",
+    "No records to add": "No records to add",
+    "No sessions to delete": "No sessions to delete"
   },
   "embedding": {
     "calculatePrice() error: unknown model type: %s": "calculatePrice() 错误：未知模型类型：%s",
@@ -192,6 +216,10 @@
     "unable to extract host": "无法提取主机",
     "undeployment timeout: application did not undeploy within 10 minutes": "取消部署超时：应用未在10分钟内完成取消部署"
   },
+  "openai": {
+    "Invalid API key format. Expected 'Bearer API_KEY'": "Invalid API key format. Expected 'Bearer API_KEY'",
+    "No user message found in the request": "No user message found in the request"
+  },
   "pkgdocker": {
     "Container %s not found": "容器 %s 未找到"
   },
@@ -212,13 +240,24 @@
     "VMware API error, code = %d, message = %s": "VMware API 错误，错误码 = %d，错误信息 = %s",
     "unsupported provider type: %s": "不支持的提供商类型：%s"
   },
+  "provider": {
+    "Provider not found": "Provider not found"
+  },
+  "resource": {
+    "Missing required parameters": "Missing required parameters",
+    "Invalid file data format": "Invalid file data format"
+  },
   "storage": {
     "storage provider name: [%s] doesn't exist": "存储提供商名称：[%s] 不存在"
+  },
+  "store": {
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
   },
   "stt": {
     "API error: %s": "API 错误：%s",
     "speech recognition API error: %v": "语音识别 API 错误：%v",
-    "speech recognition timed out after %v seconds": "语音识别在 %v 秒后超时"
+    "speech recognition timed out after %v seconds": "语音识别在 %v 秒后超时",
+    "Missing required parameter: storeId": "Missing required parameter: storeId"
   },
   "tts": {
     "calculatePrice() error: unknown model type: %s": "calculatePrice() 错误：未知的模型类型：%s",
@@ -227,7 +266,8 @@
     "error running task: %v": "运行任务错误：%v",
     "error sending text: %v": "发送文本错误：%v",
     "output error: %v": "输出错误：%v",
-    "writer does not implement http.Flusher": "writer 未实现 http.Flusher 接口"
+    "writer does not implement http.Flusher": "writer 未实现 http.Flusher 接口",
+    "The audio data is nil": "The audio data is nil"
   },
   "txt": {
     ".docx file is empty": ".docx 文件为空",
@@ -235,5 +275,9 @@
     "GetTextFromMarkitdown() error, markitdown does not exist": "GetTextFromMarkitdown() 错误，markitdown 不存在",
     "GetTextFromMarkitdown() error, markitdown failed to run: %v: %s": "GetTextFromMarkitdown() 错误，markitdown 运行失败：%v：%s",
     "unsupported file type: %s": "不支持的文件类型：%s"
+  },
+  "video": {
+    "The video can only be updated when there are no remarks and the state is \"Draft\"": "The video can only be updated when there are no remarks and the state is \"Draft\"",
+    "UploadVideo() error, videoId should not be empty": "UploadVideo() error, videoId should not be empty"
   }
 }

@@ -42,13 +42,13 @@ func (c *ApiController) UploadFile() {
 	fileName := c.Input().Get("name")
 
 	if fileBase64 == "" || fileType == "" || fileName == "" {
-		c.ResponseError("Missing required parameters")
+		c.ResponseError(c.T("resource:Missing required parameters"))
 		return
 	}
 
 	index := strings.Index(fileBase64, ",")
 	if index == -1 {
-		c.ResponseError("Invalid file data format")
+		c.ResponseError(c.T("resource:Invalid file data format"))
 		return
 	}
 
