@@ -81,10 +81,16 @@ func Translate(language string, errorText string) string {
 		return fmt.Sprintf("Translate error: the error text doesn't contain \":\", errorText = %s", errorText)
 	}
 
+	// Fall back to English if the requested language is not supported
 	if langMap[language] == nil {
 		file, err := f.ReadFile(fmt.Sprintf("locales/%s/data.json", language))
 		if err != nil {
-			return fmt.Sprintf("Translate error: the language \"%s\" is not supported, err = %s", language, err.Error())
+			// If language is not supported, fall back to English
+			if language != "en" {
+				return Translate("en", errorText)
+			}
+			// If even English is not available, return the original error text
+			return tokens[1]
 		}
 
 		data := I18nData{}
