@@ -24,13 +24,18 @@ func TestGenerateI18nFrontend(t *testing.T) {
 
 	applyToOtherLanguage("frontend", "en", data)
 	applyToOtherLanguage("frontend", "zh", data)
+	applyToOtherLanguage("frontend", "es", data)
 	applyToOtherLanguage("frontend", "fr", data)
 	applyToOtherLanguage("frontend", "de", data)
 	applyToOtherLanguage("frontend", "id", data)
 	applyToOtherLanguage("frontend", "ja", data)
 	applyToOtherLanguage("frontend", "ko", data)
 	applyToOtherLanguage("frontend", "ru", data)
-	applyToOtherLanguage("frontend", "es", data)
+	applyToOtherLanguage("frontend", "vi", data)
+	applyToOtherLanguage("frontend", "pt", data)
+	applyToOtherLanguage("frontend", "it", data)
+	applyToOtherLanguage("frontend", "ms", data)
+	applyToOtherLanguage("frontend", "tr", data)
 }
 
 // Backend I18n currently not implemented.
@@ -39,11 +44,16 @@ func TestGenerateI18nBackend(t *testing.T) {
 
 	applyToOtherLanguage("backend", "en", data)
 	applyToOtherLanguage("backend", "zh", data)
+	applyToOtherLanguage("backend", "es", data)
 	applyToOtherLanguage("backend", "fr", data)
 	applyToOtherLanguage("backend", "de", data)
 	applyToOtherLanguage("backend", "id", data)
 	applyToOtherLanguage("backend", "ja", data)
 	applyToOtherLanguage("backend", "ko", data)
 	applyToOtherLanguage("backend", "ru", data)
-	applyToOtherLanguage("backend", "es", data)
+	applyToOtherLanguage("backend", "vi", data)
+	applyToOtherLanguage("backend", "pt", data)
+	applyToOtherLanguage("backend", "it", data)
+	applyToOtherLanguage("backend", "ms", data)
+	applyToOtherLanguage("backend", "tr", data)
 }
