@@ -22,18 +22,18 @@ import (
 
 func AutoSigninFilter(ctx *context.Context) {
 	urlPath := ctx.Request.URL.Path
-	
+
 	// Only run for API requests and /storage paths
 	// Skip for /chat/completions, static files, and other non-API paths
 	if strings.HasSuffix(urlPath, "/chat/completions") {
 		return
 	}
-	
+
 	// Run for API paths and /storage paths only
 	if !strings.HasPrefix(urlPath, "/api/") && !strings.HasPrefix(urlPath, "/storage") {
 		return
 	}
-	
+
 	// HTTP Bearer token like "Authorization: Bearer 123"
 	accessToken := ctx.Input.Query("accessToken")
 	if accessToken == "" {
