@@ -66,6 +66,53 @@ func StaticFilter(ctx *context.Context) {
 	}
 
 	if strings.HasPrefix(urlPath, "/storage") {
+		// Perform authentication for storage files
+		// Try to authenticate via access token or basic auth first
+		user := GetSessionUser(ctx)
+		if user == nil {
+			// Try access token authentication
+			accessToken := ctx.Input.Query("accessToken")
+			if accessToken == "" {
+				accessToken = ctx.Input.Query("access_token")
+			}
+			if accessToken == "" {
+				accessToken = parseBearerToken(ctx)
+			}
+			if accessToken != "" {
+				userId, err := getUsernameByAccessToken(accessToken)
+				if err != nil {
+					ctx.ResponseWriter.WriteHeader(http.StatusUnauthorized)
+					responseError(ctx, err.Error())
+					return
+				}
+				if userId != "" {
+					setSessionUser(ctx, userId)
+					user = GetSessionUser(ctx)
+				}
+			}
+
+			// Try Basic authentication if access token didn't work
+			if user == nil {
+				userId, err := getUsernameByClientIdSecret(ctx)
+				if err != nil {
+					ctx.ResponseWriter.WriteHeader(http.StatusUnauthorized)
+					responseError(ctx, err.Error())
+					return
+				}
+				if userId != "" {
+					setSessionUser(ctx, userId)
+					user = GetSessionUser(ctx)
+				}
+			}
+		}
+
+		// Check if user is authenticated
+		if user == nil {
+			ctx.ResponseWriter.WriteHeader(http.StatusUnauthorized)
+			responseError(ctx, "Authentication required to access storage files")
+			return
+		}
+
 		ctx.Output.Header("Access-Control-Allow-Origin", "*")
 		ctx.Output.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE")
 		ctx.Output.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
