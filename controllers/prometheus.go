@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"github.com/casibase/casibase/object"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // GetPrometheusInfo
@@ -25,6 +26,10 @@ import (
 // @Success 200 {object} object.PrometheusInfo The Response object
 // @router /get-prometheus-info [get]
 func (c *ApiController) GetPrometheusInfo() {
+	if !c.RequireAdmin() {
+		return
+	}
+
 	prometheusInfo, err := object.GetPrometheusInfo()
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -32,4 +37,18 @@ func (c *ApiController) GetPrometheusInfo() {
 	}
 
 	c.ResponseOk(prometheusInfo)
+}
+
+// GetMetrics
+// @Title GetMetrics
+// @Tag System API
+// @Description get Prometheus metrics
+// @Success 200 {string} string The Response metrics in Prometheus format
+// @router /metrics [get]
+func (c *ApiController) GetMetrics() {
+	if !c.RequireAdmin() {
+		return
+	}
+
+	promhttp.Handler().ServeHTTP(c.Ctx.ResponseWriter, c.Ctx.Request)
 }
