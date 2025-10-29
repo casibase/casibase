@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from "react";
+import React, {useState} from "react";
 import {Tooltip} from "antd";
 import * as Setting from "./Setting";
 
@@ -50,8 +50,8 @@ function getDefaultLogoURL(provider) {
 }
 
 function ProviderLogo({provider, width = 36, height = 36}) {
-  const [imgSrc, setImgSrc] = React.useState(Setting.getProviderLogoURL(provider));
-  const [hasError, setHasError] = React.useState(false);
+  const [imgSrc, setImgSrc] = useState(Setting.getProviderLogoURL(provider));
+  const [hasError, setHasError] = useState(false);
 
   const handleError = () => {
     if (!hasError) {
