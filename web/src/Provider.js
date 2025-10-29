@@ -29,6 +29,51 @@ export function getProviderUrl(provider) {
   return "";
 }
 
+function getDefaultLogoURL(provider) {
+  const otherProviderInfo = Setting.getOtherProviderInfo();
+  if (!provider || !otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {
+    return "";
+  }
+
+  const logoPath = otherProviderInfo[provider.category][provider.type].logo;
+  if (!logoPath) {
+    return "";
+  }
+
+  // Extract the path after StaticBaseUrl and prepend the default CDN URL
+  const defaultCdnUrl = "https://cdn.casibase.org";
+  const pathMatch = logoPath.match(/\/img\/.+$/);
+  if (pathMatch) {
+    return `${defaultCdnUrl}${pathMatch[0]}`;
+  }
+  return "";
+}
+
+function ProviderLogo({provider, width = 36, height = 36}) {
+  const [imgSrc, setImgSrc] = React.useState(Setting.getProviderLogoURL(provider));
+  const [hasError, setHasError] = React.useState(false);
+
+  const handleError = () => {
+    if (!hasError) {
+      const fallbackUrl = getDefaultLogoURL(provider);
+      if (fallbackUrl && fallbackUrl !== imgSrc) {
+        setImgSrc(fallbackUrl);
+        setHasError(true);
+      }
+    }
+  };
+
+  return (
+    <img
+      width={width}
+      height={height}
+      src={imgSrc}
+      alt={provider.type}
+      onError={handleError}
+    />
+  );
+}
+
 export function getProviderLogoWidget(provider) {
   if (provider === undefined) {
     return null;
@@ -39,14 +84,14 @@ export function getProviderLogoWidget(provider) {
     return (
       <Tooltip title={provider.type}>
         <a target="_blank" rel="noreferrer" href={getProviderUrl(provider)}>
-          <img width={36} height={36} src={Setting.getProviderLogoURL(provider)} alt={provider.type} />
+          <ProviderLogo provider={provider} />
         </a>
       </Tooltip>
     );
   } else {
     return (
       <Tooltip title={provider.type}>
-        <img width={36} height={36} src={Setting.getProviderLogoURL(provider)} alt={provider.type} />
+        <ProviderLogo provider={provider} />
       </Tooltip>
     );
   }
