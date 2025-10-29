@@ -85,11 +85,11 @@ func Translate(language string, errorText string) string {
 	if langMap[language] == nil {
 		file, err := f.ReadFile(fmt.Sprintf("locales/%s/data.json", language))
 		if err != nil {
-			// If language is not supported, fall back to English
+			// If language is not supported, fall back to English (prevents infinite recursion by checking language != "en")
 			if language != "en" {
 				return Translate("en", errorText)
 			}
-			// If even English is not available, return the original error text
+			// If even English is not available, return the original error text without "Translate error" prefix
 			return tokens[1]
 		}
 
