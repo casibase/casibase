@@ -36,6 +36,7 @@ class GraphListPage extends BaseListPage {
       name: `graph_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Graph - ${randomName}`,
+      category: "Default",
       layout: "force",
       text: "",
     };
@@ -114,6 +115,16 @@ class GraphListPage extends BaseListPage {
         ...this.getColumnSearchProps("displayName"),
       },
       {
+        title: i18next.t("graph:Category"),
+        dataIndex: "category",
+        key: "category",
+        width: "140px",
+        sorter: (a, b) => (a.category || "Default").localeCompare(b.category || "Default"),
+        render: (text, record, index) => {
+          return text || "Default";
+        },
+      },
+      {
         title: i18next.t("graph:Layout"),
         dataIndex: "layout",
         key: "layout",
@@ -182,6 +193,7 @@ class GraphListPage extends BaseListPage {
                 owner={record.owner}
                 graphName={record.name}
                 graphText={text}
+                category={record.category}
                 layout={record.layout}
                 showLegend={false}
               />

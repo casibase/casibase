@@ -100,6 +100,23 @@ class GraphEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("graph:Category"), i18next.t("graph:Category - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Select
+              style={{width: "100%"}}
+              value={this.state.graph.category || "Default"}
+              onChange={value => {
+                this.updateGraphField("category", value);
+              }}
+            >
+              <Select.Option value="Default">{i18next.t("graph:Default")}</Select.Option>
+              <Select.Option value="Asset Graph">{i18next.t("graph:Asset Graph")}</Select.Option>
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("graph:Layout"), i18next.t("graph:Layout - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -138,7 +155,7 @@ class GraphEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div key={this.state.graphCount} style={{height: "640px", width: "100%"}}>
-              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} layout={this.state.graph?.layout} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
+              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} category={this.state.graph?.category} layout={this.state.graph?.layout} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
             </div>
           </Col>
         </Row>
