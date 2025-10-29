@@ -22,6 +22,9 @@ import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
 
+// Max height for the scan result CodeMirror editor to prevent UI overflow
+const RESULT_MAX_HEIGHT = "calc(100vh - 400px)";
+
 class TestScanWidget extends React.Component {
   constructor(props) {
     super(props);
@@ -211,7 +214,7 @@ class TestScanWidget extends React.Component {
             {Setting.getLabel(i18next.t("general:Result"), i18next.t("general:Result - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <div style={{maxHeight: "calc(100vh - 400px)", overflow: "auto"}}>
+            <div style={{maxHeight: RESULT_MAX_HEIGHT, overflow: "auto"}}>
               <CodeMirror
                 value={this.state.scanResult}
                 options={{
