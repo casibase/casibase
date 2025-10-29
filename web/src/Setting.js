@@ -1015,6 +1015,12 @@ export function getOtherProviderInfo() {
         url: "https://cloud.tencent.com/",
       },
     },
+    "Scan": {
+      "Nmap": {
+        logo: `${StaticBaseUrl}/img/social_nmap.png`,
+        url: "https://nmap.org/",
+      },
+    },
   };
 
   return res;
