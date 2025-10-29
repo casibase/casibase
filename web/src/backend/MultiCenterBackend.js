@@ -263,3 +263,18 @@ export function getGrantedAssetsByRequester() {
   }).then(res => res.json())
 }
 
+// -- check-and-get-dataset-source
+
+export function checkUsage(grantedId) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/check-usage?grantedId=${grantedId}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
+export function checkAndGetDatasetSource(isGranted, id) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/check-and-get-dataset-source?isGranted=${isGranted}&id=${id}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}

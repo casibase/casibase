@@ -25,11 +25,7 @@ const columns = [
 ];
 
 const data = [
-    { id: 'P001', age: 65, gender: '男', diagnosis: '急性心肌梗死', admitDate: '2024-01-10', ef: 45, status: '已出院' },
-    { id: 'P002', age: 58, gender: '女', diagnosis: '不稳定性心绞痛', admitDate: '2024-01-08', ef: 52, status: '住院中' },
-    { id: 'P003', age: 72, gender: '男', diagnosis: '心房颤动', admitDate: '2024-01-05', ef: 38, status: '已出院' },
-    { id: 'P004', age: 61, gender: '女', diagnosis: '心力衰竭', admitDate: '2024-01-03', ef: 35, status: '已出院' },
-    { id: 'P005', age: 69, gender: '男', diagnosis: '冠心病', admitDate: '2024-01-01', ef: 48, status: '随访中' },
+
 ];
 
 export default function DataWorkBench(props) {
@@ -57,6 +53,9 @@ export default function DataWorkBench(props) {
     // 只存储 'structured' 或 'image'
     const [selectedData, setSelectedData] = useState('structured');
     const [checkingModal, setCheckingModal] = useState(false);
+    const [datasetSourceLoading, setDatasetSourceLoading] = useState(false);
+    // store the full response from check-and-get-dataset-source: { status, msg, data, data2 }
+    const [datasetSourceResp, setDatasetSourceResp] = useState(null);
     // 图片预览相关
     const [previewImg, setPreviewImg] = useState(null);
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -195,27 +194,85 @@ export default function DataWorkBench(props) {
             setShowLimitData(true);
             return;
         }
-
-        setCheckingModal(true);
+        // 对于授权数据集，先调用 check-and-get-dataset-source
         try {
-            // 等待1s
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            const resp = await MultiCenterBackend.useDataSet(usageId, selectedDatasetId);
-            const status = resp?.status?.toLowerCase?.() || resp?.data?.status?.toLowerCase?.();
-            if (status === 'success' || status === 'ok') {
-                setShowLimitData(true);
-                fetchUsageInfo();
-                // 等待2s后异步发送
-                setTimeout(() => {
-                    MultiCenterBackend.addDataUsageAuditRecord(account, usageId, selectedDatasetId);
-                }, 2000);
-            } else {
-                message.error(resp?.msg || '操作失败');
+            // try to get grantId from selectedContext
+            let grantId = null;
+            if (selectedContext && selectedContext.type === 'granted' && selectedContext.item) {
+                const ag = selectedContext.item.accessGrant || selectedContext.item.grant || selectedContext.item.accessGrant || {};
+                grantId = String(ag.grantId || ag.id || ag.Id || ag.GrantID || ag.Grant || ag.grantedId || ag.GrantId || '');
+                if (!grantId) grantId = null;
+            }
+            // fallback: use selectedDatasetId if grantId not found
+            const idToCheck = grantId || selectedDatasetId;
+            if (!idToCheck) {
+                message.error('无法解析授权ID');
+                return;
+            }
+            setDatasetSourceLoading(true);
+            const chk = await MultiCenterBackend.checkAndGetDatasetSource(true, idToCheck);
+            setDatasetSourceLoading(false);
+            if (!chk || (chk.status && chk.status !== 'ok')) {
+                message.error(chk?.msg || '受控数据源检查失败');
+                return;
+            }
+            // 如果返回了data，则尝试更新usageInfo以显示到期/次数等
+            if (chk) {
+                setDatasetSourceResp(chk);
+                if (chk.data) setUsageInfo(chk.data);
+            }
+
+            // proceed to useDataSet flow
+            setCheckingModal(true);
+            try {
+                // 等待1s
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                const resp = await MultiCenterBackend.useDataSet(usageId, selectedDatasetId);
+                const status = resp?.status?.toLowerCase?.() || resp?.data?.status?.toLowerCase?.();
+                if (status === 'success' || status === 'ok') {
+                    setShowLimitData(true);
+                    fetchUsageInfo();
+                    // 等待2s后异步发送
+                    setTimeout(() => {
+                        MultiCenterBackend.addDataUsageAuditRecord(account, usageId, selectedDatasetId);
+                    }, 2000);
+                } else {
+                    message.error(resp?.msg || '操作失败');
+                }
+            } catch (e) {
+                message.error(e?.message || '操作异常');
+            } finally {
+                setCheckingModal(false);
             }
         } catch (e) {
-            message.error(e?.message || '操作异常');
+            setDatasetSourceLoading(false);
+            message.error(e?.message || '受控数据源检查异常');
+        }
+    };
+
+    // fetch dataset source (check-and-get-dataset-source)
+    const fetchDatasetSource = async (isGrantedFlag, id) => {
+        if (!id) return null;
+        setDatasetSourceLoading(true);
+        try {
+            const resp = await MultiCenterBackend.checkAndGetDatasetSource(isGrantedFlag, 1);
+            if (resp) {
+                setDatasetSourceResp(resp);
+                if (resp.status === 'ok') {
+                    // populate usageInfo if provided
+                    if (resp.data) setUsageInfo(resp.data);
+                    return resp.data || null;
+                }
+                return null;
+            } else {
+                message.error(resp?.msg || '获取数据源信息失败');
+                return null;
+            }
+        } catch (e) {
+            message.error(e?.message || '获取数据源信息异常');
+            return null;
         } finally {
-            setCheckingModal(false);
+            setDatasetSourceLoading(false);
         }
     };
 
@@ -436,7 +493,7 @@ export default function DataWorkBench(props) {
                         const name = ds.DatasetName || ds.datasetName || ds.name || (`数据集 ${id}`);
                         const desc = ds.Description || ds.description || ds.Desc || '未提供描述';
                         return (
-                            <div key={id} style={{ padding: 10, borderRadius: 8, border: '1px solid #f0f0f0', background: 'white', cursor: 'pointer' }} onClick={() => { setSelectedDatasetId(id); setSelectedData('structured'); setDatasetSwitchVisible(false); setDatasetSwitchLocked(false); if (showTable) fetchUsageInfo(); }}>
+                            <div key={id} style={{ padding: 10, borderRadius: 8, border: '1px solid #f0f0f0', background: 'white', cursor: 'pointer' }} onClick={() => { setSelectedDatasetId(id); setSelectedData('structured'); setDatasetSwitchVisible(false); setDatasetSwitchLocked(false); if (showTable) fetchUsageInfo(); fetchDatasetSource(false, id); }}>
                                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                                     <div style={{ fontWeight: 700 }}>{name}</div>
                                     <div style={{ color: '#888', fontSize: 12, background: '#f5f7fa', padding: '4px 8px', borderRadius: 12 }}> 数据集ID: {id}</div>
@@ -663,16 +720,57 @@ export default function DataWorkBench(props) {
                                         <div ></div>
                                     ) : usageInfo ? (
                                         <div>
-                                            {/* <div style={{ fontSize: 16, color: '#23408e', fontWeight: 600 }}>
-                                                剩余可用次数：{usageInfo.UseCountLeft}
-                                            </div>
-                                            <div style={{ fontSize: 16, color: '#23408e', fontWeight: 600 }}>
-                                                到期时间：{usageInfo.ExpireTime}
-                                            </div> */}
+                                            {/* usageInfo may show expire/usecount if available */}
                                         </div>
                                     ) : null}
                                 </div>
-                                <Table columns={columns} dataSource={data} pagination={false} bordered rowKey="id" style={{ marginTop: 18 }} />
+
+                                {/* Render dataset source table when available */}
+                                {datasetSourceLoading ? (
+                                    <div style={{ textAlign: 'center', padding: 40 }}><Spin size="large" /></div>
+                                ) : datasetSourceResp ? (
+                                    datasetSourceResp.status === 'ok' ? (
+                                        datasetSourceResp.data == null ? (
+                                            <div style={{ textAlign: 'center', padding: 40, color: '#888' }}>当前数据集无数据</div>
+                                        ) : (
+                                            (() => {
+                                                // datasetSourceResp.data is an array of records, each has an 'object' field which is a JSON string
+                                                const rows = [];
+                                                const colSet = new Set();
+                                                try {
+                                                    (datasetSourceResp.data || []).forEach((rec, idx) => {
+                                                        let obj = {};
+                                                        if (rec.object) {
+                                                            try {
+                                                                obj = JSON.parse(rec.object);
+                                                            } catch (e) {
+                                                                // if object is already an object
+                                                                obj = rec.object;
+                                                            }
+                                                        }
+                                                        // record-level fields (optional) can be merged
+                                                        // use parsed object as the row
+                                                        rows.push({ ...obj, _rowIndex: idx });
+                                                        Object.keys(obj || {}).forEach(k => colSet.add(k));
+                                                    });
+                                                } catch (e) {
+                                                    console.error('failed to parse dataset source data', e);
+                                                }
+                                                const dynamicCols = Array.from(colSet).map(k => ({ title: k, dataIndex: k, key: k, render: v => (v === null || typeof v === 'undefined') ? '' : String(v) }));
+                                                // ensure stable order: sort keys alphabetically
+                                                dynamicCols.sort((a, b) => a.title.localeCompare(b.title, 'zh-CN'));
+                                                return <Table columns={dynamicCols} dataSource={rows} pagination={false} bordered rowKey="_rowIndex" style={{ marginTop: 18 }} />;
+                                            })()
+                                        )
+                                    ) : (
+                                        <div style={{ textAlign: 'center', padding: 24 }}>
+                                            <div style={{ color: '#ff4d4f', fontWeight: 600, marginBottom: 8 }}>错误：{datasetSourceResp.msg || '获取数据失败'}</div>
+                                        </div>
+                                    )
+                                ) : (
+                                    // fallback: no datasetSourceResp yet — show placeholder table
+                                    <Table columns={columns} dataSource={data} pagination={false} bordered rowKey="id" style={{ marginTop: 18 }} />
+                                )}
                             </>
                         )}
                     </div>

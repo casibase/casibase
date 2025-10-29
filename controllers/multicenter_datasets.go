@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/json"
 	"strings"
+	"fmt"
 
     "github.com/casibase/casibase/object"
     "github.com/casibase/casibase/util"
@@ -327,4 +328,54 @@ func (c *ApiController) GetGrantedAssetsByRequester() {
 		return
 	}
 	c.ResponseOk(grants)
+}
+
+
+// CheckAndGetDatasetSource
+// /check-and-get-dataset-source
+func (c *ApiController) CheckAndGetDatasetSource() {
+	idStr := c.Input().Get("id")
+	id := util.ParseInt(idStr)
+
+	var isGranted bool
+	isGrantedString := c.Input().Get("isGranted")
+	if isGrantedString == "true" || isGrantedString == "1" {
+		isGranted = true
+	} else {
+		isGranted = false
+	}
+	
+	username := c.GetSessionUsername()
+	if username == "" {
+		c.ResponseError("Please login first")
+		return
+	}
+	recordsMulti, err := object.CheckAndGetDatasetSource(isGranted, id, username)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	fmt.Printf("CheckAndGetDatasetSource 返回的 recordsMulti 长度为: %d\n", len(recordsMulti))
+	c.ResponseOk(recordsMulti)
+}
+
+// /check-usage
+func (c *ApiController) CheckUsage() {
+	grantedIdStr := c.Input().Get("grantedId")
+	grantedId := util.ParseInt(grantedIdStr)
+	
+	username := c.GetSessionUsername()
+	if username == "" {
+		c.ResponseError("Please login first")
+		return
+	}
+	expireTime, leftCnt, err := object.CheckUsage(grantedId)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(map[string]interface{}{
+		"expireTime": expireTime,
+		"leftCnt":    leftCnt,
+	})
 }

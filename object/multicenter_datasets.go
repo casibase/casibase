@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// 警告：这里的object的Unit和record的Section等同
+
 package object
 
 import (
@@ -907,7 +909,7 @@ func CheckUsage(grantID int) (string,int, error) {
 
 }
 
-func CheckAndUse(grantID int,user string) (bool, error) {
+func checkAndUse(grantID int,user string) (bool, error) {
 	// 先去数据库找一下存不存在
 	grant, err := GetAssetGrantById(grantID)
 	if err != nil {
@@ -1156,16 +1158,23 @@ func AddMultiCenterDatasetRecordByIds(recordIds []int) (int, error) {
 func AddMultiCenterDatasetRecord(records []*Record) (int, error) {
 	var multiCenterRecords []MulticenterDatasetsRecords
 	for _, record := range records {
+
 		if record == nil {
 			continue
 		}
-		var diagnosis string
-		if err := json.Unmarshal([]byte(record.Object), &diagnosis); err != nil {
+		var ObjMap map[string]interface{}
+		if err := json.Unmarshal([]byte(record.Object), &ObjMap); err != nil {
 			// 跳过该条记录，继续处理下一个
+			fmt.Printf("[AddMultiCenterDatasetRecord] failed to unmarshal object for record %d: %v", record.Id, err)
+			continue
+		}
+		diagnosis, ok := ObjMap["diagnosis"].(string)
+		if !ok {
+			fmt.Printf("[AddMultiCenterDatasetRecord] diagnosis field not found for record %d", record.Id)
 			continue
 		}
 		// 如果record的Id、Unit、Object任意为空，则跳过该条记录
-		if record.Unit == "" || record.Object == "" {
+		if record.Section == "" || record.Object == "" {
 			continue
 		}
 		keywords := strings.Split(diagnosis, ";")
@@ -1183,7 +1192,7 @@ func AddMultiCenterDatasetRecord(records []*Record) (int, error) {
 				Keyword:  keyword,
 				Object:   record.Object,
 				RecordId: record.Id,
-				Unit:     record.Unit,
+				Unit:     record.Section,
 			}
 			multiCenterRecords = append(multiCenterRecords, multiCenterRecord)
 		}
@@ -1196,11 +1205,89 @@ func AddMultiCenterDatasetRecord(records []*Record) (int, error) {
 	return int(affected), nil
 }
 
-func GetMultiCenterDatasetsRecordsByKeywordAndUnit(keyword string, unit string) ([]MulticenterDatasetsRecords, error) {
-	var records []MulticenterDatasetsRecords
-	err := adapter.engine.Where("unit = ? AND keyword like ?", unit, "%"+keyword+"%").Find(&records).Error
+func getMultiCenterDatasetsRecordsByKeywordAndUnit(keyword string, unit string) ([]*MulticenterDatasetsRecords, error) {
+	var records []*MulticenterDatasetsRecords
+	err := adapter.engine.Where("unit = ? AND keyword like ?", unit, "%"+keyword+"%").Find(&records)
 	if err != nil {
 		return nil, fmt.Errorf("查询数据库失败: %v", err)
 	}
 	return records, nil
 }
+
+func CheckAndGetDatasetSource(isGranted bool, id int, user string) ([]*MulticenterDatasetsRecords, error) {
+	// 检查是isGranted?
+	var datasetId int
+	if !isGranted {
+		// 那就是自己的数据集
+		datasetId = id
+		
+
+
+	}else{
+		// 先去数据库找一下存不存在
+		grant, err := GetAssetGrantById(id)
+		if err != nil {
+			return nil, err
+		}
+		if grant == nil {
+			return nil, fmt.Errorf("授权不存在")
+		}
+		if grant.Requester != user {
+			return nil, fmt.Errorf("没有权限使用该授权")
+		}
+		if grant.GrantStatus != accessGrantStatusMap["GRANTED"] {
+			return nil, fmt.Errorf("授权状态不合法，无法使用该授权")
+		}
+		// 返回dataset的source字段
+		datasetId = grant.AssetId
+	}
+
+	
+	
+	dataset, err := GetDatasetById(datasetId)
+		// 如果是自己的，检查用户是否匹配
+	if !isGranted && dataset.Owner != user {
+		return nil, fmt.Errorf("您不是数据集的所有者，请求授权后使用")
+	} 
+	if err != nil {
+		return nil, err
+	}
+	if dataset == nil {
+		return nil, fmt.Errorf("数据集不存在")
+	}
+	// 检查是否过期
+	if dataset.ExpiredAt != "" && dataset.ExpiredAt < time.Now().Format(time.RFC3339) {
+		return nil, fmt.Errorf("数据集已过期")
+	}
+
+	keyword := dataset.Keyword
+	unit := dataset.Unit
+
+
+
+	recordsMulti, err := getMultiCenterDatasetsRecordsByKeywordAndUnit(keyword, unit)
+
+	
+
+	if err != nil {
+		return nil, err
+	}
+
+	if isGranted {
+		// 2. 授权
+		// canUse, err := checkAndUse(grantId, user)
+		// if err != nil {
+		// 	return nil, fmt.Errorf("数据授权错误: %v", err)
+		// }
+		// if !canUse {
+		// 	return nil, fmt.Errorf("数据授权错误: %v", err)
+		// }
+	}
+	
+
+	return recordsMulti, nil
+
+
+}
+	
+	
