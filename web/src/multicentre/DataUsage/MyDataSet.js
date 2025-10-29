@@ -606,7 +606,7 @@ export default function MyDataSetPage() {
                         </Form.Item>
 
                         }
-                        <div style={{ fontSize: '10px', color: 'gray' }}>为了保证数据安全，请务必设置数据集到期时间，数据集到期后，将无法再被使用。一旦提交，到期时间将无法修改。</div>
+                        {!editingDataset && <div style={{ fontSize: '10px', color: 'gray' }}>为了保证数据安全，请务必设置数据集到期时间，数据集到期后，将无法再被使用。一旦提交，到期时间将无法修改。</div>}
                     </Form>
                 </Modal>
 
@@ -700,7 +700,7 @@ export default function MyDataSetPage() {
                             <Descriptions.Item label="数据集所有者">{(viewDataset.raw && (viewDataset.raw.Owner || viewDataset.raw.owner)) || '-'}</Descriptions.Item>
                             <Descriptions.Item label="数据集名称">{(viewDataset.raw && (viewDataset.raw.DatasetName || viewDataset.raw.datasetName)) || viewDataset.name}</Descriptions.Item>
                             <Descriptions.Item label="数据集描述">{(viewDataset.raw && (viewDataset.raw.Description || viewDataset.raw.description)) || viewDataset.description}</Descriptions.Item>
-                            <Descriptions.Item label="归口单位">{(viewDataset.raw && viewDataset.raw.Unit) || '-'}</Descriptions.Item>
+                            <Descriptions.Item label="归口单位">{(viewDataset.raw && viewDataset.raw.unit) || '-'}</Descriptions.Item>
                             <Descriptions.Item label="可见性">
                                 {(() => {
                                     const raw = viewDataset.raw || {};
