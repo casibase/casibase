@@ -26,7 +26,6 @@ package routers
 import (
 	"github.com/beego/beego"
 	"github.com/casibase/casibase/controllers"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func init() {
@@ -284,7 +283,7 @@ func initAPI() {
 	beego.Router("/api/get-version-info", &controllers.ApiController{}, "GET:GetVersionInfo")
 	beego.Router("/api/health", &controllers.ApiController{}, "GET:Health")
 	beego.Router("/api/get-prometheus-info", &controllers.ApiController{}, "GET:GetPrometheusInfo")
-	beego.Handler("/api/metrics", promhttp.Handler())
+	beego.Router("/api/metrics", &controllers.ApiController{}, "GET:GetMetrics")
 
 	beego.Router("/api/chat/completions", &controllers.ApiController{}, "POST:ChatCompletions")
 
