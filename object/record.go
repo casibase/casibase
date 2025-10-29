@@ -191,6 +191,15 @@ func GetRecordsByAction( action string) ([]*Record, error) {
 	return records, nil
 }
 
+func GetRecordsByIds(ids []int) ([]*Record, error) {
+	records := []*Record{}
+	err := adapter.engine.In("id", ids).Find(&records)
+	if err != nil {
+		return records, err
+	}
+	return records, nil
+}
+
 func prepareRecord(record *Record, providerFirst, providerSecond *Provider) (bool, error) {
 	if logPostOnly && record.Method == "GET" {
 		return false, nil
@@ -370,6 +379,8 @@ func AddRecord(record *Record, lang string) (bool, interface{}, error) {
 
 	// 异步执行
 	go UploadObjectToIPFS(record)
+
+	
 
 	return affected != 0, data, nil
 }

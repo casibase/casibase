@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result, Spin, message, Modal } from "antd";
+import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result, Spin, message, Modal, Tooltip } from "antd";
 import * as MultiCenterBackend from "../backend/MultiCenterBackend";
 import { SwapOutlined } from '@ant-design/icons';
 import { Clock, Database, ShieldCheck, Link2, Image } from 'lucide-react';
@@ -35,6 +35,14 @@ const data = [
 export default function DataWorkBench(props) {
     const { account } = props;
     const history = typeof window !== 'undefined' && window.history && window.location ? require('react-router-dom').useHistory() : null;
+    // try read dataset id from route query params: ?datasetId=xxx or ?id=xxx
+    const routeRequestedDatasetId = (() => {
+        try {
+            if (typeof window === 'undefined') return -1;
+            const sp = new URLSearchParams(window.location.search || '');
+            return sp.get('datasetId') || -1;
+        } catch (e) { return -1; }
+    })();
     const [showTable, setShowLimitData] = useState(false);
     const [usageInfo, setUsageInfo] = useState(null);
     const [usageLoading, setUsageLoading] = useState(false);
@@ -42,8 +50,10 @@ export default function DataWorkBench(props) {
     const [grantedList, setGrantedList] = useState([]);
     const [managedList, setManagedList] = useState([]);
     const [menuLoading, setMenuLoading] = useState(false);
-    const [selectedDatasetId, setSelectedDatasetId] = useState('MCTest1');
+    const [selectedDatasetId, setSelectedDatasetId] = useState('请选择数据集');
     const [datasetSwitchVisible, setDatasetSwitchVisible] = useState(false);
+    // when true modal cannot be closed until user selects a dataset
+    const [datasetSwitchLocked, setDatasetSwitchLocked] = useState(false);
     // 只存储 'structured' 或 'image'
     const [selectedData, setSelectedData] = useState('structured');
     const [checkingModal, setCheckingModal] = useState(false);
@@ -57,6 +67,7 @@ export default function DataWorkBench(props) {
         if (!key) return;
         // set selected dataset and refetch usage info for it
         setSelectedDatasetId(key);
+        setSelectedData('structured');
         // re-fetch usage info if already showing
         if (showTable) {
             fetchUsageInfo();
@@ -140,6 +151,36 @@ export default function DataWorkBench(props) {
                 managed = mgRes.data;
             }
             setManagedList(managed);
+
+            // after both lists are loaded, if routeRequestedDatasetId exists, try auto-select
+            if (routeRequestedDatasetId) {
+                const foundInGranted = (grants || []).find(item => {
+                    const ds = item.dataset || item.dataSet || item || {};
+                    const id = String(ds.Id || ds.id || ds.DatasetId || ds.datasetId || (item.accessGrant && (item.accessGrant.AssetId || item.accessGrant.assetId)) || '');
+                    return id === String(routeRequestedDatasetId);
+                });
+                if (foundInGranted) {
+                    setSelectedDatasetId(String(routeRequestedDatasetId));
+                    setSelectedData('structured');
+                    return;
+                }
+                const foundInManaged = (managed || []).find(ds => String(ds.Id || ds.id || ds.DatasetId || ds.datasetId) === String(routeRequestedDatasetId));
+                if (foundInManaged) {
+                    setSelectedDatasetId(String(routeRequestedDatasetId));
+                    setSelectedData('structured');
+                    return;
+                }
+                // if routeRequestedDatasetId provided but not found, force open modal and lock it
+                setDatasetSwitchVisible(true);
+                setDatasetSwitchLocked(true);
+                return;
+            }
+
+            // if no route param and no selection yet, open modal and lock it
+            if (!selectedDatasetId || selectedDatasetId === '') {
+                setDatasetSwitchVisible(true);
+                setDatasetSwitchLocked(true);
+            }
         } catch (e) {
             console.error('loadDatasetsForMenu error', e);
         } finally {
@@ -201,6 +242,14 @@ export default function DataWorkBench(props) {
         return String(selectedDatasetId || '数据集');
     })();
 
+    // whether the currently selected dataset contains image data (title contains '影像')
+    const selectedHasImage = (() => {
+        try {
+            if (!selectedDatasetName) return false;
+            return String(selectedDatasetName).includes('影像');
+        } catch (e) { return false; }
+    })();
+
     // determine whether selected dataset is managed by current user or granted
     const selectedContext = (() => {
         const findInGranted = (grantedList || []).find(item => {
@@ -224,6 +273,7 @@ export default function DataWorkBench(props) {
         return usageInfo ? usageInfo.ExpireTime : null;
     })();
     const selectedUseCountLeft = isManagedSelected ? '∞' : (usageInfo ? (usageInfo.UseCountLeft ?? '--') : '--');
+    const shouldShowTable = showTable || isManagedSelected;
 
     return (
         <div style={{ background: 'white', minHeight: '100vh', padding: 32 }}>
@@ -349,10 +399,13 @@ export default function DataWorkBench(props) {
             <Modal
                 title="切换数据集"
                 open={datasetSwitchVisible}
-                onCancel={() => setDatasetSwitchVisible(false)}
+                onCancel={() => { if (!datasetSwitchLocked) setDatasetSwitchVisible(false); }}
                 footer={null}
                 width={720}
                 bodyStyle={{ maxHeight: '60vh', overflowY: 'auto', padding: 20 }}
+                maskClosable={!datasetSwitchLocked}
+                keyboard={!datasetSwitchLocked}
+                closable={!datasetSwitchLocked}
             >
                 <div style={{ display: 'flex', gap: 12, flexDirection: 'column', textAlign: 'left' }}>
                     <div style={{ fontWeight: 700, marginBottom: 6, fontSize: 16 }}>我获得授权的数据集</div>
@@ -363,10 +416,13 @@ export default function DataWorkBench(props) {
                         const desc = ds.Description || ds.description || ds.Desc || (item.accessGrant && (item.accessGrant.Description || item.accessGrant.description)) || '未提供描述';
                         const grantId = String((item.accessGrant && (item.accessGrant.grantId || item.accessGrant.id || item.accessGrant.Id || item.accessGrant.GrantID || item.accessGrant.Grant)) || '—');
                         return (
-                            <div key={id} style={{ padding: 10, borderRadius: 8, border: '1px solid #f0f0f0', background: 'white', cursor: 'pointer' }} onClick={() => { setSelectedDatasetId(id); setDatasetSwitchVisible(false); if (showTable) fetchUsageInfo(); }}>
+                            <div key={id} style={{ padding: 10, borderRadius: 8, border: '1px solid #f0f0f0', background: 'white', cursor: 'pointer' }} onClick={() => { setSelectedDatasetId(id); setSelectedData('structured'); setDatasetSwitchVisible(false); setDatasetSwitchLocked(false); if (showTable) fetchUsageInfo(); }}>
                                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                                     <div style={{ fontWeight: 700 }}>{name}</div>
-                                    <div style={{ color: '#888', fontSize: 12, background: '#f5f7fa', padding: '4px 8px', borderRadius: 12 }}>授权ID: {grantId} / 数据集ID: {id}</div>
+                                    <div style={{ display: 'flex', gap: 8 }}>
+                                        <div style={{ color: '#888', fontSize: 12, background: '#f5f7fa', padding: '4px 8px', borderRadius: 12 }}>授权ID: {grantId}</div>
+                                        <div style={{ color: '#888', fontSize: 12, background: '#f5f7fa', padding: '4px 8px', borderRadius: 12 }}>数据集ID: {id}</div>
+                                    </div>
                                 </div>
                                 <div style={{ color: '#666', marginTop: 8, lineHeight: 1.6 }}>{desc}</div>
                             </div>
@@ -380,7 +436,7 @@ export default function DataWorkBench(props) {
                         const name = ds.DatasetName || ds.datasetName || ds.name || (`数据集 ${id}`);
                         const desc = ds.Description || ds.description || ds.Desc || '未提供描述';
                         return (
-                            <div key={id} style={{ padding: 10, borderRadius: 8, border: '1px solid #f0f0f0', background: 'white', cursor: 'pointer' }} onClick={() => { setSelectedDatasetId(id); setDatasetSwitchVisible(false); if (showTable) fetchUsageInfo(); }}>
+                            <div key={id} style={{ padding: 10, borderRadius: 8, border: '1px solid #f0f0f0', background: 'white', cursor: 'pointer' }} onClick={() => { setSelectedDatasetId(id); setSelectedData('structured'); setDatasetSwitchVisible(false); setDatasetSwitchLocked(false); if (showTable) fetchUsageInfo(); }}>
                                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                                     <div style={{ fontWeight: 700 }}>{name}</div>
                                     <div style={{ color: '#888', fontSize: 12, background: '#f5f7fa', padding: '4px 8px', borderRadius: 12 }}> 数据集ID: {id}</div>
@@ -416,47 +472,57 @@ export default function DataWorkBench(props) {
                         <ShieldCheck size={16} style={{ marginRight: 4, verticalAlign: -2 }} /> 安全访问中
                     </Tag>
                 </div>
-                {!showTable && (
+                {!shouldShowTable ? (
+                    (selectedDatasetId === '请选择数据集' || !selectedDatasetId) ? (
+                        <div style={{ textAlign: 'center', padding: 48 }}>
+                            <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>请选择数据集</div>
+                            <div style={{ color: '#666', marginBottom: 18 }}>请先选择要查看的数据集</div>
+                            <Button type="primary" onClick={() => { setDatasetSwitchVisible(true); setDatasetSwitchLocked(true); }}>切换数据集</Button>
+                        </div>
+                    ) : (
+                        <div>
+                            <Result
+                                status="warning"
+                                title="本数据为受控数据，将会记录一次访问"
+                                extra={
+                                    <Button type="primary" onClick={handleShowLimitData} style={{ marginTop: 24 }}>确认查看</Button>
+                                }
+                            />
+                            <Modal
+                                open={checkingModal}
+                                footer={null}
+                                closable={false}
+                                centered
+                                maskClosable={false}
+                                keyboard={false}
+                                bodyStyle={{ textAlign: 'center', padding: 32 }}
+                            >
+                                <Spin size="large" style={{ marginBottom: 16 }} />
+                                <div style={{ fontSize: 18, fontWeight: 600, marginTop: 12 }}>正在进行受控数据权限检查及记录…</div>
+                            </Modal>
+                        </div>
+                    )
+                ) : (
                     <div>
-                        <Result
-                            status="warning"
-                            title="本数据为受控数据，将会记录一次访问"
-                            extra={
-                                <Button type="primary" onClick={handleShowLimitData} style={{ marginTop: 24 }}>确认查看</Button>
-                            }
-                        />
-                        <Modal
-                            open={checkingModal}
-                            footer={null}
-                            closable={false}
-                            centered
-                            maskClosable={false}
-                            keyboard={false}
-                            bodyStyle={{ textAlign: 'center', padding: 32 }}
-                        >
-                            <Spin size="large" style={{ marginBottom: 16 }} />
-                            <div style={{ fontSize: 18, fontWeight: 600, marginTop: 12 }}>正在进行受控数据权限检查及记录…</div>
-                        </Modal>
-                    </div>
-                )}
-                {showTable && (
-                    <div>
-                        <Segmented
-                            options={[
-                                {
-                                    label: <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Database size={20} />结构化数据</span>,
-                                    value: 'structured',
-                                },
-                                {
-                                    label: <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Image size={20} />医疗影像</span>,
-                                    value: 'image',
-                                },
-                            ]}
-                            block
-                            style={{ width: '100%', marginBottom: 18 }}
-                            value={selectedData}
-                            onChange={setSelectedData}
-                        />
+                        {
+                            (() => {
+                                const imageLabel = <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Image size={20} />医疗影像</span>;
+                                const imageLabelNode = selectedHasImage ? imageLabel : <Tooltip title="本数据集无影像数据">{imageLabel}</Tooltip>;
+                                const segOptions = [
+                                    { label: <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Database size={20} />结构化数据</span>, value: 'structured' },
+                                    { label: imageLabelNode, value: 'image', disabled: !selectedHasImage }
+                                ];
+                                return (
+                                    <Segmented
+                                        options={segOptions}
+                                        block
+                                        style={{ width: '100%', marginBottom: 18 }}
+                                        value={selectedData}
+                                        onChange={(v) => { if (v === 'image' && !selectedHasImage) return; setSelectedData(v); }}
+                                    />
+                                );
+                            })()
+                        }
                         {selectedData === 'image' ? (
                             <>
                                 <div style={{

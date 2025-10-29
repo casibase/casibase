@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Tabs, List, Table, Tag, Empty, Spin, Button, Modal, Typography, Row, Col, Input, Space, Avatar, Drawer, Form, InputNumber, DatePicker, Descriptions, Popover, Popconfirm, Timeline } from 'antd';
+import { Card, Tabs, List, Table, Tag, Empty, Spin, Button, Modal, Typography, Row, Col, Input, Space, Avatar, Drawer, Form, InputNumber, DatePicker, Descriptions, Popover, Popconfirm, Timeline, Alert } from 'antd';
 import moment from 'moment';
 import * as MultiCenterBackend from '../../backend/MultiCenterBackend';
 import * as Setting from '../../Setting';
@@ -530,6 +530,7 @@ export default function MyApplication() {
                 >
                     <Tabs.TabPane tab={tabTitle(<CheckCircleOutlined style={{ fontSize: 18, color: '#13c2c2' }} />, '可用数据授权', counts.APPROVED)} key={MULTICENTER_ACCESS_REQUEST_STATUS.APPROVED}>
                         {/* Table for granted (可用数据授权) */}
+                        <Alert showIcon={false} message="本页面展示的是您被授权访问的数据集授权工单信息，当审批通过后，系统自动流转审批工单至授权工单，为您开通授权。" type="success" banner />
                         <Table
                             columns={[
                                 { title: '授权ID', dataIndex: ['grant', 'GrantId'], render: (v, row) => (row.grant && (row.grant.GrantId || row.grant.grantId || '-')) },
@@ -833,6 +834,7 @@ export default function MyApplication() {
 
                                 </Descriptions>
                             </div>
+                            <Alert message="如果您已经获得本数据集的授权，当本次申请通过时，此前的授权将被本次覆盖" type="info" banner />
                         </div>
                         <div style={{ width: 380 }}>
                             <Card bordered={true} style={{ padding: 12 }}>

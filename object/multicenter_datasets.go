@@ -19,7 +19,12 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"mime/multipart"
 	"strconv"
+	"encoding/json"
+	"io/ioutil"
+    "net/http"
+	"bytes"
 
 	"xorm.io/core"
 )
@@ -91,6 +96,21 @@ type MulticenterDatasetsAssetGrants struct {
     AccessCount int   `xorm:"int" json:"accessCount"`
     Deadline   string `xorm:"varchar(100)" json:"deadline"`
     GrantStatus string `xorm:"varchar(20)" json:"grantStatus"`
+}
+
+type MulticenterDatasetsRecords struct {
+    /**
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    record_id INT NOT NULL,
+    keyword VARCHAR(255) NOT NULL,
+    unit VARCHAR(255) NOT NULL,
+    object VARCHAR(4096) NOT NULL
+	*/
+	Id       int    `xorm:"int notnull pk autoincr" json:"id"`
+	RecordId int    `xorm:"int index" json:"recordId"`
+	Keyword  string `xorm:"varchar(255)" json:"keyword"`
+	Unit     string `xorm:"varchar(255)" json:"unit"`
+	Object   string `xorm:"text" json:"object"`
 }
 
 type MulticenterDatasetsAndAssetGrants_TOGETHER struct {
@@ -806,4 +826,381 @@ func duplicatedGrantCheckAndRevoke(asset_id int, requester string,revoke bool) (
 		}
 	}
 	return existed, nil
+}
+
+
+func CheckUsage(grantID int) (string,int, error) {
+	// 先去数据库找一下存不存在
+	grant, err := GetAssetGrantById(grantID)
+	if err != nil {
+		return "", 0, err
+	}
+	if grant == nil {
+		return "", 0, fmt.Errorf("授权不存在")
+	}
+
+
+
+	// curl -X GET "http://10.129.2.46:13900/api/check-usage?usageID="
+	usageIDStr := fmt.Sprintf("%d", grantID)
+	urlPrefix,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.url", "http://10.129.2.46:13900/api")
+	usageIDPrefixStr,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.prefix", "med-casibase")
+	url := fmt.Sprintf("%s/check-usage?usageID=%s", urlPrefix, (usageIDPrefixStr+usageIDStr))
+	// 发起HTTP请求，使用http框架，get
+	resp, err := http.Get(url)
+	if err != nil {
+		return "",0, fmt.Errorf("数据受控服务出现异常：failed to call usage service: %v", err)		
+	}
+	defer resp.Body.Close()
+	// 读取返回结果
+	respBody, err := ioutil.ReadAll(resp.Body)
+
+	
+	// 解析返回结果
+	resultMap := map[string]interface{}{}
+	err = json.Unmarshal(respBody, &resultMap)
+		/**
+		{
+	"status": "ok",
+	"msg": "",
+	"data": {
+		"UsageID": "usage-api-001",
+		"DatasetID": "my-new-dataset-001",
+		"User": "43794e0cc70099bc95d8af672d24eb35d14ddcd9",
+		"ExpireTime": "2026-11-30 23:59:59",
+		"UseCountLeft": 95
+	},
+	"data2": null
+	}*/
+	if err != nil {
+		return "", 0, err
+	}
+
+	if status, ok := resultMap["status"].(string); ok {
+		if status != "ok" {
+			msg := ""
+			if m, ok := resultMap["msg"].(string); ok {
+				msg = m
+			}
+			return "", 0, fmt.Errorf("数据受控服务出现异常：usage service returned error: %s", msg)
+		}
+	} else {
+		return "", 0, fmt.Errorf("数据受控服务出现异常：invalid response from usage service")
+	}
+
+	data, ok := resultMap["data"].(map[string]interface{})
+	if !ok {
+		return "", 0, fmt.Errorf("数据受控服务出现异常：invalid data format from usage service")
+	}
+
+	expireTime, ok := data["ExpireTime"].(string)
+	if !ok {
+		return "", 0, fmt.Errorf("数据受控服务出现异常：	invalid ExpireTime format from usage service")
+	}
+
+	useCountLeft, ok := data["UseCountLeft"].(int)
+	if !ok {
+		return "", 0, fmt.Errorf("数据受控服务出现异常：invalid UseCountLeft format from usage service")
+	}
+
+	return expireTime, useCountLeft, nil
+
+}
+
+func CheckAndUse(grantID int,user string) (bool, error) {
+	// 先去数据库找一下存不存在
+	grant, err := GetAssetGrantById(grantID)
+	if err != nil {
+		return false, err
+	}
+	if grant == nil {
+		return false, fmt.Errorf("授权不存在")
+	}
+	if grant.Requester != user {
+		return false, fmt.Errorf("没有权限使用该授权")
+	}
+	
+	urlPrefix,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.url", "http://10.129.2.46:13900/api")
+	usageIDPrefixStr,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.prefix", "med-casibase")
+	usageIDStr := fmt.Sprintf("%d", grantID)
+	url := fmt.Sprintf("%s/check-and-use", urlPrefix)
+	// 1. 创建缓冲区存储multipart/form-data内容
+	var requestBody bytes.Buffer
+	// 2. 创建multipart writer绑定缓冲区
+	writer := multipart.NewWriter(&requestBody)
+	
+	// 3. 向表单添加字段（所有值均为字符串，直接写入）
+	// UsageID字段（拼接前缀）
+	usageID := usageIDPrefixStr + usageIDStr
+	if err := writer.WriteField("usageID", usageID); err != nil {
+		return false, fmt.Errorf("添加UsageID字段失败: %v", err)
+	}
+	// datasetID字段
+	datasetID := fmt.Sprintf("%s_DATASET_%d", usageIDPrefixStr, grant.AssetId)
+	if err := writer.WriteField("datasetID", datasetID); err != nil {
+		return false, fmt.Errorf("添加DatasetID字段失败: %v", err)
+	}
+
+	// userCert字段
+	if err := writer.WriteField("userCert", grant.Requester); err != nil {
+		return false, fmt.Errorf("添加UserCert字段失败: %v", err)
+	}
+	// 4. 关闭writer，生成multipart格式的结束边界
+	if err := writer.Close(); err != nil {
+		return false, fmt.Errorf("关闭multipart writer失败: %v", err)
+	}
+
+	// 5. 创建POST请求
+	req, err := http.NewRequest("POST", url, &requestBody)
+	if err != nil {
+		return false, fmt.Errorf("创建请求失败: %v", err)
+	}
+
+	// 6. 设置Content-Type（包含multipart的边界标识，由writer生成）
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	// 7. 发送请求
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return false, fmt.Errorf("发送请求失败: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// 8. 解析响应（和原逻辑一致）
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return false, fmt.Errorf("解析响应失败: %v", err)
+	}
+
+	/**
+	{
+  "status": "ok",
+  "msg": "",
+  "data": "数据集使用成功",
+  "data2": null
+  }
+  */
+	// 检查响应状态
+	return data["status"] == "ok", nil
+}
+
+
+func createUsageInChain(usageId string, datasetId string, expireTime string, user string, useCountLeft int) (bool, error) {
+	// 向/new-strategy接口发送POST请求
+	urlPrefix,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.url", "http://10.129.2.46:13900/api")
+	usageIDPrefixStr,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.prefix", "med-casibase")
+
+
+		url := fmt.Sprintf("%s/new-strategy", urlPrefix)
+
+	// 1. 创建缓冲区存储multipart/form-data内容
+	var requestBody bytes.Buffer
+	// 2. 创建multipart writer，绑定缓冲区
+	writer := multipart.NewWriter(&requestBody)
+
+	// 3. 向表单中添加字段（注意：所有值需转换为字符串）
+	// OperationType字段
+	if err := writer.WriteField("operationType", "createDatasetUsage"); err != nil {
+		return false, fmt.Errorf("添加OperationType字段失败: %v", err)
+	}
+	// UsageID字段（拼接前缀）
+	usageID := usageIDPrefixStr + usageId
+	if err := writer.WriteField("usageID", usageID); err != nil {
+		return false, fmt.Errorf("添加UsageID字段失败: %v", err)
+	}
+	// DatasetID字段
+	if err := writer.WriteField("datasetID", datasetId); err != nil {
+		return false, fmt.Errorf("添加DatasetID字段失败: %v", err)
+	}
+	// ExpireTime字段
+	if err := writer.WriteField("expireTime", expireTime); err != nil {
+		return false, fmt.Errorf("添加ExpireTime字段失败: %v", err)
+	}
+	// User字段
+	if err := writer.WriteField("user", user); err != nil {
+		return false, fmt.Errorf("添加User字段失败: %v", err)
+	}
+	// UseCountLeft字段（int转string）
+	if err := writer.WriteField("useCountLeft", strconv.Itoa(useCountLeft)); err != nil {
+		return false, fmt.Errorf("添加UseCountLeft字段失败: %v", err)
+	}
+
+	// 4. 关闭writer，生成multipart/form-data的结束边界
+	if err := writer.Close(); err != nil {
+		return false, fmt.Errorf("关闭multipart writer失败: %v", err)
+	}
+
+	// 5. 创建POST请求
+	req, err := http.NewRequest("POST", url, &requestBody)
+	if err != nil {
+		return false, fmt.Errorf("创建请求失败: %v", err)
+	}
+
+	// 6. 设置Content-Type（包含multipart的边界标识，由writer生成）
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	// 7. 发送请求
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return false, fmt.Errorf("发送请求失败: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// 8. 解析响应（和原逻辑一致）
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return false, fmt.Errorf("解析响应失败: %v", err)
+	}
+
+	// 检查响应状态
+	return data["status"] == "ok", nil
+}
+
+
+func createDatasetInChain(datasetId string, owner string, description string, expiredAt string) (bool, error) {
+	urlPrefix,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.url", "http://10.129.2.46:13900/api")
+	usageIDPrefixStr,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.prefix", "med-casibase")
+
+	url := fmt.Sprintf("%s/new-strategy", urlPrefix)
+
+	// 1. 创建缓冲区存储multipart/form-data内容
+	var requestBody bytes.Buffer
+	// 2. 创建multipart writer绑定缓冲区
+	writer := multipart.NewWriter(&requestBody)
+
+	// 3. 向表单添加字段（所有值均为字符串，直接写入）
+	// OperationType字段
+	if err := writer.WriteField("operationType", "createDataset"); err != nil {
+		return false, fmt.Errorf("添加OperationType字段失败: %v", err)
+	}
+	// DatasetID字段（拼接前缀）
+	fullDatasetID := usageIDPrefixStr + "_DATASET_" + datasetId
+	if err := writer.WriteField("datasetID", fullDatasetID); err != nil {
+		return false, fmt.Errorf("添加DatasetID字段失败: %v", err)
+	}
+	// Owner字段
+	if err := writer.WriteField("owner", owner); err != nil {
+		return false, fmt.Errorf("添加Owner字段失败: %v", err)
+	}
+	// Description字段
+	if err := writer.WriteField("description", description); err != nil {
+		return false, fmt.Errorf("添加Description字段失败: %v", err)
+	}
+	// ExpireTime字段（对应参数expiredAt）
+	if err := writer.WriteField("expireTime", expiredAt); err != nil {
+		return false, fmt.Errorf("添加ExpireTime字段失败: %v", err)
+	}
+
+	// 文件字段，从本地读取一个空文件作为占位符
+	fileWriter, err := writer.CreateFormFile("dataFile", "placeholder.txt")
+	if err != nil {
+		return false, fmt.Errorf("创建文件字段失败: %v", err)
+	}
+	placeholderContent := []byte("This is a placeholder file.")
+	if _, err := fileWriter.Write(placeholderContent); err != nil {
+		return false, fmt.Errorf("写入文件内容失败: %v", err)
+	}
+	if err := writer.Close(); err != nil {
+		return false, fmt.Errorf("关闭writer失败: %v", err)
+	}
+
+
+
+	// 4. 关闭writer，生成multipart格式的结束边界
+	if err := writer.Close(); err != nil {
+		return false, fmt.Errorf("关闭multipart writer失败: %v", err)
+	}
+
+	// 5. 创建POST请求
+	req, err := http.NewRequest("POST", url, &requestBody)
+	if err != nil {
+		return false, fmt.Errorf("创建请求失败: %v", err)
+	}
+
+	// 6. 设置Content-Type（包含自动生成的边界标识）
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	// 7. 发送请求
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return false, fmt.Errorf("发送请求失败: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// 8. 解析响应（与原逻辑一致）
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return false, fmt.Errorf("解析响应失败: %v", err)
+	}
+
+	return data["status"] == "ok", nil
+}
+
+// --- records ---
+func AddMultiCenterDatasetRecordByIds(recordIds []int) (int, error) {
+	records := []*Record{}
+	// Object是一个json字符串，需要转换，提取其中的diagnosis字段，以;分隔（有几个;就添加几个keyword字段）
+
+	// 查询数据库，获取recordIds对应的Record对象
+	records, err := GetRecordsByIds(recordIds)
+	if err != nil {
+		return 0, err
+	}
+	return AddMultiCenterDatasetRecord(records)
+
+}
+
+func AddMultiCenterDatasetRecord(records []*Record) (int, error) {
+	var multiCenterRecords []MulticenterDatasetsRecords
+	for _, record := range records {
+		if record == nil {
+			continue
+		}
+		var diagnosis string
+		if err := json.Unmarshal([]byte(record.Object), &diagnosis); err != nil {
+			// 跳过该条记录，继续处理下一个
+			continue
+		}
+		// 如果record的Id、Unit、Object任意为空，则跳过该条记录
+		if record.Unit == "" || record.Object == "" {
+			continue
+		}
+		keywords := strings.Split(diagnosis, ";")
+		// 去除空字符串
+		filteredKeywords := []string{}
+		for _, kw := range keywords {
+			trimmed := strings.TrimSpace(kw)
+			if trimmed != "" {
+				filteredKeywords = append(filteredKeywords, trimmed)
+			}
+		}
+		keywords = filteredKeywords	
+		for _, keyword := range keywords {
+			multiCenterRecord := MulticenterDatasetsRecords{
+				Keyword:  keyword,
+				Object:   record.Object,
+				RecordId: record.Id,
+				Unit:     record.Unit,
+			}
+			multiCenterRecords = append(multiCenterRecords, multiCenterRecord)
+		}
+	}
+	// multiCenterRecords存入数据库
+	affected, err := adapter.engine.Insert(&multiCenterRecords)
+	if err != nil {
+		return 0, fmt.Errorf("存入数据库失败: %v", err)
+	}
+	return int(affected), nil
+}
+
+func GetMultiCenterDatasetsRecordsByKeywordAndUnit(keyword string, unit string) ([]MulticenterDatasetsRecords, error) {
+	var records []MulticenterDatasetsRecords
+	err := adapter.engine.Where("unit = ? AND keyword like ?", unit, "%"+keyword+"%").Find(&records).Error
+	if err != nil {
+		return nil, fmt.Errorf("查询数据库失败: %v", err)
+	}
+	return records, nil
 }

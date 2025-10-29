@@ -38,3 +38,15 @@ CREATE TABLE multicenter_datasets_asset_grants (
     deadline DATETIME, -- 申请的截止时间
     grant_status ENUM('GRANTED', 'REVOKED') DEFAULT 'GRANTED'
 );
+
+CREATE TABLE multicenter_datasets_records (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    record_id INT NOT NULL,
+    keyword VARCHAR(255) NOT NULL,
+    unit VARCHAR(255) NOT NULL,
+    object VARCHAR(4096) NOT NULL
+);
+-- 为keyword字段创建索引以提高查询性能
+CREATE INDEX idx_keyword ON multicenter_datasets_records(keyword);
+-- 为unit字段创建索引以提高查询性能
+CREATE INDEX idx_unit ON multicenter_datasets_records(unit);

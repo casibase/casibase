@@ -281,6 +281,9 @@ func AddRecordToArchiveQueueFromRecordAdd(record *Record, lang string) {
 
     // 异步调用
     go AddRecordToArchiveQueue(recordFromDb, dataType)
+
+	// 多中心科研
+	go AddMultiCenterDatasetRecord([]*Record{recordFromDb})
 }
 
 
