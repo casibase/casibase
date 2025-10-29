@@ -25,8 +25,8 @@
     "this operation requires admin privilege": "此操作需要管理员权限"
   },
   "blockchain": {
-    "The default blockchain provider is not found": "The default blockchain provider is not found",
-    "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'"
+    "The default blockchain provider is not found": "未找到默认区块链提供商",
+    "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "默认区块链提供商的Provider URL不能为空。默认值为：'http://localhost:13900'"
   },
   "bpmn": {
     "Error parsing BPMN file: %v": "解析BPMN文件错误：%v"
@@ -64,11 +64,11 @@
     "The default store is not found": "The default store is not found"
   },
   "controllers": {
-    "No permission": "No permission",
-    "No records to add": "No records to add",
-    "No sessions to delete": "No sessions to delete",
-    "You can only view your own chats": "You can only view your own chats",
-    "You can only view your own messages": "You can only view your own messages"
+    "No permission": "无权限",
+    "No records to add": "没有要添加的记录",
+    "No sessions to delete": "没有要删除的会话",
+    "You can only view your own chats": "您只能查看自己的聊天",
+    "You can only view your own messages": "您只能查看自己的消息"
   },
   "embedding": {
     "calculatePrice() error: unknown model type: %s": "calculatePrice() 错误：未知模型类型：%s",

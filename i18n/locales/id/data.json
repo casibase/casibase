@@ -29,7 +29,7 @@
     "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'"
   },
   "bpmn": {
-    "Error parsing BPMN file: %v": "Error parsing BPMN file: %v"
+    "Error parsing BPMN file: %v": "Kesalahan mengurai file BPMN: %v"
   },
   "chain": {
     "ChainTencentChainmakerClient.Client.Invoke() error: %v": "ChainTencentChainmakerClient.Client.Invoke() error: %v",
@@ -64,11 +64,11 @@
     "The default store is not found": "Penyimpanan default tidak ditemukan"
   },
   "controllers": {
-    "No permission": "No permission",
-    "No records to add": "No records to add",
-    "No sessions to delete": "No sessions to delete",
-    "You can only view your own chats": "You can only view your own chats",
-    "You can only view your own messages": "You can only view your own messages"
+    "No permission": "Tidak ada izin",
+    "No records to add": "Tidak ada catatan untuk ditambahkan",
+    "No sessions to delete": "Tidak ada sesi untuk dihapus",
+    "You can only view your own chats": "Anda hanya dapat melihat obrolan Anda sendiri",
+    "You can only view your own messages": "Anda hanya dapat melihat pesan Anda sendiri"
   },
   "embedding": {
     "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
@@ -85,14 +85,14 @@
     "failed to read vector: %v": "failed to read vector: %v",
     "failed to read word: %v": "failed to read word: %v",
     "failed to unmarshal response: %v": "failed to unmarshal response: %v",
-    "input text is empty": "input text is empty",
+    "input text is empty": "teks input kosong",
     "no embedding provider specified": "no embedding provider specified",
     "no embedding vector found in response": "no embedding vector found in response",
     "no embeddings found in the response": "no embeddings found in the response",
     "none of the tokens were found in the vocabulary": "none of the tokens were found in the vocabulary",
     "request failed with status code %d: %s": "request failed with status code %d: %s",
-    "text can not be empty.": "text can not be empty.",
-    "text cannot be empty": "text cannot be empty"
+    "text can not be empty.": "teks tidak boleh kosong.",
+    "text cannot be empty": "teks tidak boleh kosong"
   },
   "message_answer": {
     "object.GetNearestKnowledge() error, %s": "object.GetNearestKnowledge() error, %s"

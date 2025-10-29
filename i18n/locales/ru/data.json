@@ -29,16 +29,16 @@
     "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'"
   },
   "bpmn": {
-    "Error parsing BPMN file: %v": "Error parsing BPMN file: %v"
+    "Error parsing BPMN file: %v": "Ошибка при разборе файла BPMN: %v"
   },
   "chain": {
-    "ChainTencentChainmakerClient.Client.Invoke() error: %v": "ChainTencentChainmakerClient.Client.Invoke() error: %v",
+    "ChainTencentChainmakerClient.Client.Invoke() error: %v": "Ошибка ChainTencentChainmakerClient.Client.Invoke(): %v",
     "ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v": "ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v",
-    "TencentCloudSDKError, code = %d, message = %s": "TencentCloudSDKError, code = %d, message = %s",
+    "TencentCloudSDKError, code = %d, message = %s": "TencentCloudSDKError, код = %d, сообщение = %s",
     "TencentCloudSDKError: %v": "TencentCloudSDKError: %v",
-    "chainmakerEndpoint is not configured": "chainmakerEndpoint is not configured",
+    "chainmakerEndpoint is not configured": "chainmakerEndpoint не настроен",
     "event log value is not string: %v": "event log value is not string: %v",
-    "failed to connect to Ethereum RPC: %v": "failed to connect to Ethereum RPC: %v",
+    "failed to connect to Ethereum RPC: %v": "Не удалось подключиться к Ethereum RPC: %v",
     "failed to create string type: %v": "failed to create string type: %v",
     "failed to create tuple type: %v": "failed to create tuple type: %v",
     "failed to estimate gas: %v": "failed to estimate gas: %v",
@@ -64,17 +64,17 @@
     "The default store is not found": "Хранилище по умолчанию не найдено"
   },
   "controllers": {
-    "No permission": "No permission",
-    "No records to add": "No records to add",
-    "No sessions to delete": "No sessions to delete",
-    "You can only view your own chats": "You can only view your own chats",
-    "You can only view your own messages": "You can only view your own messages"
+    "No permission": "Нет разрешения",
+    "No records to add": "Нет записей для добавления",
+    "No sessions to delete": "Нет сеансов для удаления",
+    "You can only view your own chats": "Вы можете просматривать только свои чаты",
+    "You can only view your own messages": "Вы можете просматривать только свои сообщения"
   },
   "embedding": {
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
-    "error unmarshaling response JSON: %v": "error unmarshaling response JSON: %v",
+    "calculatePrice() error: unknown model type: %s": "Ошибка calculatePrice(): неизвестный тип модели: %s",
+    "error unmarshaling response JSON: %v": "Ошибка при десериализации ответа JSON: %v",
     "failed to calculate price: %v": "failed to calculate price: %v",
-    "failed to create client: %v": "failed to create client: %v",
+    "failed to create client: %v": "Не удалось создать клиент: %v",
     "failed to create request: %v": "failed to create request: %v",
     "failed to get valid response, status code: %d": "failed to get valid response, status code: %d",
     "failed to load word2vec model: %v": "failed to load word2vec model: %v",
@@ -85,14 +85,14 @@
     "failed to read vector: %v": "failed to read vector: %v",
     "failed to read word: %v": "failed to read word: %v",
     "failed to unmarshal response: %v": "failed to unmarshal response: %v",
-    "input text is empty": "input text is empty",
-    "no embedding provider specified": "no embedding provider specified",
+    "input text is empty": "входной текст пуст",
+    "no embedding provider specified": "не указан поставщик встраивания",
     "no embedding vector found in response": "no embedding vector found in response",
     "no embeddings found in the response": "no embeddings found in the response",
     "none of the tokens were found in the vocabulary": "none of the tokens were found in the vocabulary",
     "request failed with status code %d: %s": "request failed with status code %d: %s",
-    "text can not be empty.": "text can not be empty.",
-    "text cannot be empty": "text cannot be empty"
+    "text can not be empty.": "текст не может быть пустым.",
+    "text cannot be empty": "текст не может быть пустым"
   },
   "message_answer": {
     "object.GetNearestKnowledge() error, %s": "object.GetNearestKnowledge() error, %s"
@@ -100,7 +100,7 @@
   "model": {
     "QueryText() error: unknown model type: %s": "QueryText() error: unknown model type: %s",
     "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]",
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
+    "calculatePrice() error: unknown model type: %s": "Ошибка calculatePrice(): неизвестный тип модели: %s",
     "calculatePrice() error: video generation pricing requires duration information": "calculatePrice() error: video generation pricing requires duration information",
     "cannot calculate tokens": "cannot calculate tokens",
     "error getting chat completion: %v": "error getting chat completion: %v",
@@ -263,7 +263,7 @@
   },
   "tts": {
     "The audio data is nil": "The audio data is nil",
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
+    "calculatePrice() error: unknown model type: %s": "Ошибка calculatePrice(): неизвестный тип модели: %s",
     "error creating synthesizer: %v": "error creating synthesizer: %v",
     "error finishing task: %v": "error finishing task: %v",
     "error running task: %v": "error running task: %v",
