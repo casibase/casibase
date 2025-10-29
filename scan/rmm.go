@@ -24,6 +24,16 @@ import (
 	"time"
 )
 
+// RmmScanProvider provides integration with Tactical RMM agents for remote system management.
+// It supports getting OS updates, system information, and installing updates.
+//
+// Example usage:
+//   provider, err := NewRmmScanProvider("http://rmm-server:8000", "your-api-key")
+//   if err != nil {
+//       // handle error
+//   }
+//   result, err := provider.Scan("agent-123")
+//   // result will contain JSON with updates list and system info
 type RmmScanProvider struct {
 	apiUrl string
 	apiKey string
