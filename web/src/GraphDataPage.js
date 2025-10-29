@@ -63,8 +63,8 @@ class GraphDataPage extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.graphText !== prevProps.graphText || 
-        this.props.layout !== prevProps.layout || 
+    if (this.props.graphText !== prevProps.graphText ||
+        this.props.layout !== prevProps.layout ||
         this.props.category !== prevProps.category) {
       this.loadGraphData();
     }
@@ -72,7 +72,7 @@ class GraphDataPage extends React.Component {
 
   async loadGraphData() {
     const category = this.props.category || "Default";
-    
+
     if (category === "Asset Graph") {
       // Fetch assets and transform to graph data
       try {

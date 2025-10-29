@@ -212,7 +212,6 @@ export function transformAssetsToGraph(assets) {
 
     // Link Snapshots to Disks (by properties or resourceGroupId)
     if (resourceType === "Snapshot") {
-      const snapshotName = asset.displayName || "";
       assets.forEach((otherAsset) => {
         if (otherAsset.resourceType === "Disk") {
           // Check if snapshot name contains disk reference or they share resourceGroupId
