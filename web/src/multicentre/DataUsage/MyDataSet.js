@@ -13,6 +13,12 @@ const { Title, Text } = Typography;
 
 
 function DataCard({ ds, onView, onEdit, onQuery }) {
+    const history = typeof window !== 'undefined' && window.history && window.location ? require('react-router-dom').useHistory() : null;
+    const resolveDatasetId = (d) => {
+        if (!d) return '';
+        const raw = d.raw || d;
+        return String(d.id || d.Id || d.ID || d.DatasetId || d.datasetId || raw.Id || raw.id || raw.DatasetId || raw.datasetId || '');
+    };
     return (
         <Card
             hoverable
@@ -21,7 +27,24 @@ function DataCard({ ds, onView, onEdit, onQuery }) {
             actions={[
                 <Button type="link" key="view" onClick={(e) => { e.stopPropagation(); onView && onView(); }}>查看基础信息</Button>,
                 <Button type="link" key="edit" onClick={(e) => { e.stopPropagation(); onEdit && onEdit(); }}>编辑基础信息</Button>,
-                // <Button type="link" key="query" onClick={(e) => { e.stopPropagation(); onQuery && onQuery(); }}>详细数据查询</Button>
+                <Button type="link" key="query" onClick={(e) => {
+                    e.stopPropagation();
+                    try {
+                        const id = resolveDatasetId(ds);
+                        const target = `/multi-center/data-workbench?datasetId=${encodeURIComponent(id)}`;
+                        if (onQuery) {
+                            // if parent passed a handler, call it as well
+                            onQuery && onQuery();
+                        }
+                        if (history && typeof history.push === 'function') {
+                            history.push(target);
+                        } else {
+                            window.location.href = target;
+                        }
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }}>详细数据查询</Button>
             ]}
         >
             <Meta
@@ -135,8 +158,7 @@ export default function MyDataSetPage() {
 
     const handleDetailQuery = (ds) => {
         // Placeholder for detailed data query behavior. Replace with navigation or real implementation.
-        console.log('Detailed data query for:', ds);
-        Setting.showMessage('error', '详细数据查询功能尚未实现');
+
     };
 
     const openViewModal = (ds) => {

@@ -152,12 +152,15 @@ export default function DataWorkBench(props) {
                 });
                 if (foundInGranted) {
                     setSelectedDatasetId(String(routeRequestedDatasetId));
+
                     setSelectedData('structured');
                     return;
                 }
                 const foundInManaged = (managed || []).find(ds => String(ds.Id || ds.id || ds.DatasetId || ds.datasetId) === String(routeRequestedDatasetId));
                 if (foundInManaged) {
                     setSelectedDatasetId(String(routeRequestedDatasetId));
+                    // 获取数据
+                    fetchDatasetSource(false, String(routeRequestedDatasetId));
                     setSelectedData('structured');
                     return;
                 }
@@ -494,6 +497,25 @@ export default function DataWorkBench(props) {
                             </div>
                         );
                     }) : <div style={{ color: '#888' }}>无管理的数据集</div>)}
+                </div>
+                {/* Modal 底部退出按钮 */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
+                    <Button onClick={() => {
+                        // 关闭 modal 并返回上一页（优先使用 history.goBack）
+                        setDatasetSwitchVisible(false);
+                        setDatasetSwitchLocked(false);
+                        try {
+                            if (history && typeof history.goBack === 'function') {
+                                history.goBack();
+                            } else if (history && typeof history.push === 'function') {
+                                history.push('/multi-center');
+                            } else {
+                                window.history.back();
+                            }
+                        } catch (e) {
+                            window.history.back();
+                        }
+                    }}>退出</Button>
                 </div>
             </Modal>
 

@@ -11,6 +11,7 @@ const { Title, Text } = Typography;
 const defaultNoneDay = '1970-01-01 00:00:00'
 export default function MyApplication() {
     const [activeTab, setActiveTab] = useState(MULTICENTER_ACCESS_REQUEST_STATUS.APPROVED);
+    const history = typeof window !== 'undefined' && window.history && window.location ? require('react-router-dom').useHistory() : null;
     const [data, setData] = useState({
         PENDING: [],
         APPROVED: [],
@@ -652,7 +653,31 @@ export default function MyApplication() {
                                 {
                                     title: '操作', render: (v, row) => (
                                         <div>
-                                            1
+                                            <Button type="link" key="query" onClick={(e) => {
+                                                e.stopPropagation();
+                                                try {
+                                                    const id = row.dataset && (row.dataset.id);
+                                                    if (!id) {
+                                                        return;
+                                                    }
+                                                    const target = `/multi-center/data-workbench?datasetId=${encodeURIComponent(String(id))}`;
+                                                    // navigate using react-router history when available, otherwise fallback to full page load
+                                                    try {
+                                                        if (history && typeof history.push === 'function') {
+                                                            history.push(target);
+                                                        } else if (typeof window !== 'undefined') {
+                                                            window.location.href = target;
+                                                        }
+                                                    } catch (err) {
+                                                        console.error('navigation error', err);
+                                                        if (typeof window !== 'undefined') window.location.href = target;
+                                                    }
+
+
+                                                } catch (err) {
+                                                    console.error(err);
+                                                }
+                                            }}>详细数据查询</Button>
                                         </div>
                                     )
                                 }
