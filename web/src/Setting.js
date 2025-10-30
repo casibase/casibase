@@ -1025,6 +1025,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_nmap.png`,
         url: "https://nmap.org/",
       },
+      "RMM": {
+        logo: `${StaticBaseUrl}/img/social_rmm.png`,
+        url: "https://github.com/amidaware/rmmagent",
+      },
     },
   };
 
@@ -1224,6 +1228,7 @@ export function getProviderTypeOptions(category) {
   } else if (category === "Scan") {
     return [
       {id: "Nmap", name: "Nmap"},
+      {id: "RMM", name: "RMM"},
     ];
   } else {
     return [];
