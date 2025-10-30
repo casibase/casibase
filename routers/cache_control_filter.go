@@ -28,9 +28,9 @@ func CacheControlFilter(ctx *context.Context) {
 
 	// List of sensitive endpoints that should not be cached
 	sensitiveEndpoints := []string{
-		"/api/get-node-tunnel",  // Contains password parameters
-		"/api/get-chats",        // Contains user sensitive data
-		"/api/get-Messages",     // Contains user chat messages
+		"/api/get-node-tunnel", // Contains password parameters
+		"/api/get-chats",       // Contains user sensitive data
+		"/api/get-Messages",    // Contains user chat messages
 	}
 
 	// Check if current path matches any sensitive endpoint
