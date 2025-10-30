@@ -25,10 +25,10 @@ import (
 func SecureCookieFilter(ctx *context.Context) {
 	// This filter runs after the response is written
 	// It modifies the Set-Cookie header to add the Secure flag
-	
+
 	// Get all Set-Cookie headers
 	cookies := ctx.ResponseWriter.Header()["Set-Cookie"]
-	
+
 	// Process each cookie
 	for i, cookie := range cookies {
 		// Only modify session cookies
@@ -41,7 +41,7 @@ func SecureCookieFilter(ctx *context.Context) {
 			}
 		}
 	}
-	
+
 	// Update the headers
 	if len(cookies) > 0 {
 		ctx.ResponseWriter.Header()["Set-Cookie"] = cookies
