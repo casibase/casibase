@@ -369,7 +369,13 @@ func (p *Provider) GetSpeechToTextProvider(lang string) (stt.SpeechToTextProvide
 }
 
 func (p *Provider) GetScanProvider(lang string) (scan.ScanProvider, error) {
-	pProvider, err := scan.GetScanProvider(p.Type, p.ClientId, lang)
+	// For RMM, use Network field (RMM agent URL); for Nmap, use ClientId field (nmap binary path)
+	providerConfig := p.ClientId
+	if p.Type == "RMM" {
+		providerConfig = p.Network
+	}
+
+	pProvider, err := scan.GetScanProvider(p.Type, providerConfig, lang)
 	if err != nil {
 		return nil, err
 	}
