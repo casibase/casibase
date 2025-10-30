@@ -450,7 +450,12 @@
     "Force": "Force",
     "Layout": "Layout",
     "Layout - Tooltip": "Graph layout type",
-    "None": "None"
+    "None": "None",
+    "Radial": "Radial",
+    "Grid": "Grid",
+    "Tree": "Tree",
+    "Node Density": "Node Density",
+    "Node Density - Tooltip": "Controls the spacing between nodes (1=sparse, 10=dense)"
   },
   "hospital": {
     "Edit Hospital": "Edit Hospital",
