@@ -49,7 +49,7 @@ func main() {
 		// Default to wildcard for backward compatibility, but this should be configured in production
 		corsOrigins = []string{"*"}
 	}
-	
+
 	// When using wildcard origins, credentials should not be allowed for security
 	allowCredentials := true
 	if len(corsOrigins) == 1 && corsOrigins[0] == "*" {
