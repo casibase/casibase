@@ -26,7 +26,7 @@ import (
 func GetAllowedOrigins() ([]string, error) {
 	casdoorEndpoint := conf.GetConfigString("casdoorEndpoint")
 	casdoorApplication := conf.GetConfigString("casdoorApplication")
-	
+
 	// If Casdoor is not configured, allow all origins (backwards compatibility)
 	if casdoorEndpoint == "" || casdoorApplication == "" {
 		return []string{"*"}, nil
