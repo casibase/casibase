@@ -68,15 +68,24 @@ class TestScanWidget extends React.Component {
 
     const providerType = this.props.provider.type;
 
-    // Set default network/target based on provider type
-    let defaultNetwork = "";
+    // Set default path based on provider type
+    let defaultPath = "";
     if (providerType === "RMM") {
-      defaultNetwork = "http://localhost:8080"; // RMM agent base URL
+      defaultPath = "http://localhost:8080"; // RMM agent URL
     } else {
-      defaultNetwork = "127.0.0.1"; // Nmap IP target
+      defaultPath = "/usr/bin/nmap"; // Nmap binary path
     }
 
-    if (this.props.provider.network === "") {
+    if (this.props.provider.path === "" || this.props.provider.path === undefined) {
+      this.props.provider.path = defaultPath;
+      if (this.props.onUpdateProvider) {
+        this.props.onUpdateProvider("path", defaultPath);
+      }
+    }
+
+    // Set default network/target for scan
+    const defaultNetwork = "127.0.0.1";
+    if (this.props.provider.network === "" || this.props.provider.network === undefined) {
       this.props.provider.network = defaultNetwork;
       if (this.props.onUpdateProvider) {
         this.props.onUpdateProvider("network", defaultNetwork);
@@ -152,11 +161,29 @@ class TestScanWidget extends React.Component {
     const providerType = this.props.provider.type;
 
     // Dynamic labels and placeholders based on provider type
-    const networkPlaceholder = providerType === "RMM" ? "http://localhost:8080" : "127.0.0.1";
+    const pathLabel = providerType === "RMM" ? "URL" : "Path";
+    const pathPlaceholder = providerType === "RMM" ? "http://localhost:8080" : "/usr/bin/nmap";
     const commandPlaceholder = providerType === "RMM" ? "list" : "-sn %s";
 
     return (
       <div>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
+            {Setting.getLabel(pathLabel, pathLabel)} :
+          </Col>
+          <Col span={22} >
+            <Input
+              disabled={isRemote}
+              value={this.props.provider.path || ""}
+              placeholder={pathPlaceholder}
+              onChange={e => {
+                if (this.props.onUpdateProvider) {
+                  this.props.onUpdateProvider("path", e.target.value);
+                }
+              }}
+            />
+          </Col>
+        </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Network"), i18next.t("general:Network - Tooltip"))} :
@@ -165,7 +192,7 @@ class TestScanWidget extends React.Component {
             <Input
               disabled={isRemote}
               value={this.state.scanTarget}
-              placeholder={networkPlaceholder}
+              placeholder="127.0.0.1"
               onChange={e => {
                 this.setState({scanTarget: e.target.value});
                 if (this.props.onUpdateProvider) {
