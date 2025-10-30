@@ -371,7 +371,7 @@ func (p *Provider) GetSpeechToTextProvider(lang string) (stt.SpeechToTextProvide
 func (p *Provider) GetScanProvider(lang string) (scan.ScanProvider, error) {
 	// For RMM, use Network field (RMM agent URL); for Nmap, use ClientId field (nmap binary path)
 	providerConfig := p.ClientId
-	if p.Type == "RMM" {
+	if p.Type == scan.ProviderTypeRMM {
 		providerConfig = p.Network
 	}
 
