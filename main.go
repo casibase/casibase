@@ -17,6 +17,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/beego/beego"
 	"github.com/beego/beego/logs"
@@ -60,6 +61,7 @@ func main() {
 	beego.InsertFilter("*", beego.BeforeRouter, routers.PrometheusFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.RecordMessage)
 	beego.InsertFilter("*", beego.AfterExec, routers.AfterRecordMessage, false)
+	beego.InsertFilter("*", beego.AfterExec, routers.SecureCookieFilter, false)
 
 	beego.BConfig.WebConfig.Session.SessionOn = true
 	beego.BConfig.WebConfig.Session.SessionName = "casibase_session_id"
@@ -71,6 +73,10 @@ func main() {
 		beego.BConfig.WebConfig.Session.SessionProviderConfig = conf.GetConfigString("redisEndpoint")
 	}
 	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
+
+	// Set session cookie security attributes
+	// SameSite=Lax provides CSRF protection while maintaining compatibility
+	beego.BConfig.WebConfig.Session.SessionCookieSameSite = http.SameSiteLaxMode
 
 	var logAdapter string
 	logConfigMap := make(map[string]interface{})
