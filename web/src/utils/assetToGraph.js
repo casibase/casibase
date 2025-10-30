@@ -43,15 +43,15 @@ export function transformAssetsToGraph(assets) {
 
   // Define icons for different resource types
   const resourceTypeIcons = {
-    "VPC": "https://cdn-icons-png.flaticon.com/512/684/684908.png",
-    "VSwitch": "https://cdn-icons-png.flaticon.com/512/684/684908.png",
-    "Network Interface": "https://cdn-icons-png.flaticon.com/512/3094/3094837.png",
-    "Security Group": "https://cdn-icons-png.flaticon.com/512/2913/2913133.png",
-    "ECS Instance": "https://cdn-icons-png.flaticon.com/512/1261/1261173.png",
-    "Disk": "https://cdn-icons-png.flaticon.com/512/2920/2920349.png",
-    "Snapshot": "https://cdn-icons-png.flaticon.com/512/1006/1006771.png",
-    "Image": "https://cdn-icons-png.flaticon.com/512/1006/1006771.png",
-    "ACS::ECS::AutoSnapshotPolicy": "https://cdn-icons-png.flaticon.com/512/2920/2920349.png",
+    "VPC": "https://img.icons8.com/fluency/96/cloud.png",
+    "VSwitch": "https://img.icons8.com/fluency/96/network.png",
+    "Network Interface": "https://img.icons8.com/fluency/96/ethernet-on.png",
+    "Security Group": "https://img.icons8.com/fluency/96/firewall.png",
+    "ECS Instance": "https://img.icons8.com/fluency/96/server.png",
+    "Disk": "https://img.icons8.com/fluency/96/ssd.png",
+    "Snapshot": "https://img.icons8.com/fluency/96/camera.png",
+    "Image": "https://img.icons8.com/fluency/96/virtual-machine.png",
+    "ACS::ECS::AutoSnapshotPolicy": "https://img.icons8.com/fluency/96/clock.png",
   };
 
   // Helper function to get or create a category
@@ -106,7 +106,7 @@ export function transformAssetsToGraph(assets) {
       y: Math.floor(index / 5) * 150 - 300,
       value: 50 + (index % 5) * 10,
       category: categoryIndex,
-      icon: resourceTypeIcons[resourceType] || "https://cdn-icons-png.flaticon.com/512/1006/1006771.png",
+      icon: resourceTypeIcons[resourceType] || "https://img.icons8.com/fluency/96/database.png",
     };
 
     nodes.push(node);
