@@ -24,15 +24,17 @@ import (
 
 // GetAllowedOrigins retrieves the allowed origins from Casdoor application's RedirectUris
 func GetAllowedOrigins() ([]string, error) {
+	casdoorEndpoint := conf.GetConfigString("casdoorEndpoint")
 	casdoorApplication := conf.GetConfigString("casdoorApplication")
-	if casdoorApplication == "" {
-		// If Casdoor is not configured, allow all origins (backwards compatibility)
+	
+	// If Casdoor is not configured, allow all origins (backwards compatibility)
+	if casdoorEndpoint == "" || casdoorApplication == "" {
 		return []string{"*"}, nil
 	}
 
 	application, err := casdoorsdk.GetApplication(casdoorApplication)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get Casdoor application: %w", err)
+		return nil, fmt.Errorf("failed to get Casdoor application (ensure Casdoor SDK is initialized): %w", err)
 	}
 	if application == nil {
 		return nil, fmt.Errorf("Casdoor application not found: %s", casdoorApplication)

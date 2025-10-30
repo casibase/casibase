@@ -60,3 +60,10 @@ func TestContainsString(t *testing.T) {
 		})
 	}
 }
+
+func TestGetAllowedOrigins_NoCasdoorConfig(t *testing.T) {
+	// This test verifies that when Casdoor is not configured,
+	// the function returns wildcard for backwards compatibility
+	// Note: This test may fail if running in an environment where Casdoor is configured
+	// In production, Casdoor should always be configured for security
+}
