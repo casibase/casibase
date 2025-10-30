@@ -42,16 +42,17 @@ export function transformAssetsToGraph(assets) {
   };
 
   // Define icons for different resource types
+  // Using Microsoft Visio-style professional diagramming icons
   const resourceTypeIcons = {
-    "VPC": "https://img.icons8.com/3d-fluency/94/cloud.png",
-    "VSwitch": "https://img.icons8.com/3d-fluency/94/switch.png",
-    "Network Interface": "https://img.icons8.com/3d-fluency/94/ethernet.png",
-    "Security Group": "https://img.icons8.com/3d-fluency/94/security-checked.png",
-    "ECS Instance": "https://img.icons8.com/3d-fluency/94/server.png",
-    "Disk": "https://img.icons8.com/3d-fluency/94/ssd.png",
-    "Snapshot": "https://img.icons8.com/3d-fluency/94/camera.png",
-    "Image": "https://img.icons8.com/3d-fluency/94/virtual-machine.png",
-    "ACS::ECS::AutoSnapshotPolicy": "https://img.icons8.com/3d-fluency/94/clock--v1.png",
+    "VPC": "https://img.icons8.com/office/80/cloud.png",
+    "VSwitch": "https://img.icons8.com/office/80/switch.png",
+    "Network Interface": "https://img.icons8.com/office/80/network-card.png",
+    "Security Group": "https://img.icons8.com/office/80/security-checked.png",
+    "ECS Instance": "https://img.icons8.com/office/80/server.png",
+    "Disk": "https://img.icons8.com/office/80/ssd.png",
+    "Snapshot": "https://img.icons8.com/office/80/camera.png",
+    "Image": "https://img.icons8.com/office/80/virtual-machine.png",
+    "ACS::ECS::AutoSnapshotPolicy": "https://img.icons8.com/office/80/clock.png",
   };
 
   // Helper function to get or create a category
@@ -106,7 +107,7 @@ export function transformAssetsToGraph(assets) {
       y: Math.floor(index / 5) * 150 - 300,
       value: 50 + (index % 5) * 10,
       category: categoryIndex,
-      icon: resourceTypeIcons[resourceType] || "https://img.icons8.com/3d-fluency/94/database.png",
+      icon: resourceTypeIcons[resourceType] || "https://img.icons8.com/office/80/database.png",
     };
 
     nodes.push(node);
