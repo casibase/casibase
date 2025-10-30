@@ -52,6 +52,7 @@ func main() {
 	}))
 
 	beego.SetStaticPath("/swagger", "swagger")
+	beego.InsertFilter("*", beego.BeforeRouter, routers.HstsFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.AutoSigninFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.StaticFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.AuthzFilter)
