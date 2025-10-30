@@ -43,12 +43,25 @@ func main() {
 	object.InitStoreCount()
 	object.InitCommitRecordsTask()
 
+	// Configure CORS with specific allowed origins or fallback to wildcard
+	corsOrigins := conf.GetStringArray("corsAllowOrigins")
+	if len(corsOrigins) == 0 {
+		// Default to wildcard for backward compatibility, but this should be configured in production
+		corsOrigins = []string{"*"}
+	}
+	
+	// When using wildcard origins, credentials should not be allowed for security
+	allowCredentials := true
+	if len(corsOrigins) == 1 && corsOrigins[0] == "*" {
+		allowCredentials = false
+	}
+
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
-		AllowOrigins:     []string{"*"},
+		AllowOrigins:     corsOrigins,
 		AllowMethods:     []string{"GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "X-Requested-With", "Content-Type", "Accept"},
+		AllowHeaders:     []string{"Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
+		AllowCredentials: allowCredentials,
 	}))
 
 	beego.SetStaticPath("/swagger", "swagger")

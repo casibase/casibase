@@ -188,7 +188,12 @@ func GetStringArray(key string) []string {
 		return strArray
 	}
 
-	return strings.Split(strValue, ",")
+	// Split by comma and trim whitespace
+	parts := strings.Split(strValue, ",")
+	for i, part := range parts {
+		parts[i] = strings.TrimSpace(part)
+	}
+	return parts
 }
 
 func GetWebConfig() *WebConfig {

@@ -73,9 +73,8 @@ func StaticFilter(ctx *context.Context) {
 			return
 		}
 
-		ctx.Output.Header("Access-Control-Allow-Origin", "*")
-		ctx.Output.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE")
-		ctx.Output.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		// CORS headers are now handled by the global CORS filter in main.go
+		// Removed wildcard CORS headers here for security reasons
 
 		urlPath = strings.TrimPrefix(urlPath, "/storage/")
 		urlPath = strings.Replace(urlPath, "|", ":", 1)
