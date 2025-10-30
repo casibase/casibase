@@ -37,6 +37,18 @@ class TestScanWidget extends React.Component {
   }
 
   getCommandTemplates() {
+    const providerType = this.props.provider?.type;
+
+    if (providerType === "RMM") {
+      return [
+        {id: "custom", name: "Custom", command: ""},
+        {id: "list", name: "List Updates", command: "list"},
+        {id: "get-updates", name: "Get Updates", command: "get-updates"},
+        {id: "install", name: "Install Update", command: "install"},
+      ];
+    }
+
+    // Default Nmap templates
     return [
       {id: "custom", name: "Custom", command: ""},
       {id: "ping", name: "Ping Scan", command: "-sn %s"},
@@ -54,16 +66,25 @@ class TestScanWidget extends React.Component {
       return;
     }
 
-    // Set default network if empty
+    const providerType = this.props.provider.type;
+
+    // Set default network/target based on provider type
+    let defaultNetwork = "";
+    if (providerType === "RMM") {
+      defaultNetwork = "http://localhost:8080"; // RMM agent base URL
+    } else {
+      defaultNetwork = "127.0.0.1"; // Nmap IP target
+    }
+
     if (this.props.provider.network === "") {
-      this.props.provider.network = "127.0.0.1";
+      this.props.provider.network = defaultNetwork;
       if (this.props.onUpdateProvider) {
-        this.props.onUpdateProvider("network", "127.0.0.1");
+        this.props.onUpdateProvider("network", defaultNetwork);
       }
     }
 
-    // Set default command if empty
-    const defaultCommand = "-sn %s";
+    // Set default command if empty based on provider type
+    const defaultCommand = providerType === "RMM" ? "list" : "-sn %s";
     if (this.props.provider.text === "" || this.props.provider.text === undefined) {
       this.props.provider.text = defaultCommand;
       if (this.props.onUpdateProvider) {
@@ -72,7 +93,7 @@ class TestScanWidget extends React.Component {
     }
 
     this.setState({
-      scanTarget: this.props.provider.network || "127.0.0.1",
+      scanTarget: this.props.provider.network || defaultNetwork,
       scanCommand: this.props.provider.text || defaultCommand,
       scanResult: this.props.provider.configText || "",
     });
@@ -128,6 +149,11 @@ class TestScanWidget extends React.Component {
     }
 
     const isRemote = this.props.provider.isRemote;
+    const providerType = this.props.provider.type;
+
+    // Dynamic labels and placeholders based on provider type
+    const networkPlaceholder = providerType === "RMM" ? "http://localhost:8080" : "127.0.0.1";
+    const commandPlaceholder = providerType === "RMM" ? "list" : "-sn %s";
 
     return (
       <div>
@@ -139,6 +165,7 @@ class TestScanWidget extends React.Component {
             <Input
               disabled={isRemote}
               value={this.state.scanTarget}
+              placeholder={networkPlaceholder}
               onChange={e => {
                 this.setState({scanTarget: e.target.value});
                 if (this.props.onUpdateProvider) {
@@ -183,7 +210,7 @@ class TestScanWidget extends React.Component {
             <Input
               disabled={isRemote}
               value={this.state.scanCommand}
-              placeholder="-sn %s"
+              placeholder={commandPlaceholder}
               onChange={e => {
                 this.setState({scanCommand: e.target.value});
                 if (this.props.onUpdateProvider) {
