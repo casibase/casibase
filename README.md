@@ -120,6 +120,10 @@ Casibase contains 2 parts:
 
 <https://casibase.org/docs/basic/server-installation>
 
+## Security
+
+For production deployments, please configure CORS properly to secure your API endpoints. See [SECURITY.md](SECURITY.md) for detailed configuration guidelines.
+
 ## How to contact?
 
 Discord: <https://discord.gg/5rPsrAzK7S>
