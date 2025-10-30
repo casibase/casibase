@@ -43,8 +43,21 @@ func main() {
 	object.InitStoreCount()
 	object.InitCommitRecordsTask()
 
+	// Get allowed origins from Casdoor application's RedirectUris
+	allowedOrigins, errCors := routers.GetAllowedOrigins()
+	if errCors != nil {
+		// Log the error but continue with restrictive CORS (no origins allowed)
+		// This ensures the application doesn't fall back to insecure "*" on error
+		logs.Warning("Failed to get allowed origins from Casdoor: %v. CORS will be restrictive.", errCors)
+		allowedOrigins = []string{} // No origins allowed on error
+	} else if len(allowedOrigins) == 1 && allowedOrigins[0] == "*" {
+		logs.Warning("Casdoor not configured. Using wildcard CORS origin '*'. This is not recommended for production.")
+	} else {
+		logs.Info("CORS configured with allowed origins from Casdoor: %v", allowedOrigins)
+	}
+
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
-		AllowOrigins:     []string{"*"},
+		AllowOrigins:     allowedOrigins,
 		AllowMethods:     []string{"GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "X-Requested-With", "Content-Type", "Accept"},
 		ExposeHeaders:    []string{"Content-Length"},
