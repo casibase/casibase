@@ -15,60 +15,92 @@
 package routers
 
 import (
-	"fmt"
+	"net/http"
 	"net/url"
+	"strings"
 
+	"github.com/beego/beego/context"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/conf"
 )
 
-// GetAllowedOrigins retrieves the allowed origins from Casdoor application's RedirectUris
-func GetAllowedOrigins() ([]string, error) {
+const (
+	headerOrigin           = "Origin"
+	headerAllowOrigin      = "Access-Control-Allow-Origin"
+	headerAllowMethods     = "Access-Control-Allow-Methods"
+	headerAllowHeaders     = "Access-Control-Allow-Headers"
+	headerAllowCredentials = "Access-Control-Allow-Credentials"
+	headerExposeHeaders    = "Access-Control-Expose-Headers"
+)
+
+func setCorsHeaders(ctx *context.Context, origin string) {
+	ctx.Output.Header(headerAllowOrigin, origin)
+	ctx.Output.Header(headerAllowMethods, "GET, POST, DELETE, PUT, PATCH, OPTIONS")
+	ctx.Output.Header(headerAllowHeaders, "Origin, X-Requested-With, Content-Type, Accept")
+	ctx.Output.Header(headerExposeHeaders, "Content-Length")
+	ctx.Output.Header(headerAllowCredentials, "true")
+
+	if ctx.Input.Method() == "OPTIONS" {
+		ctx.ResponseWriter.WriteHeader(http.StatusOK)
+	}
+}
+
+func CorsFilter(ctx *context.Context) {
+	origin := ctx.Input.Header(headerOrigin)
+
+	if origin == "" || origin == "null" {
+		return
+	}
+
+	// Check if origin is allowed based on Casdoor application's RedirectUris
+	ok, err := isOriginAllowed(origin)
+	if err != nil {
+		// If Casdoor is not configured, allow the origin for backwards compatibility
+		casdoorEndpoint := conf.GetConfigString("casdoorEndpoint")
+		if casdoorEndpoint == "" {
+			setCorsHeaders(ctx, origin)
+			return
+		}
+		// Otherwise, reject the request
+		ctx.ResponseWriter.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	if ok {
+		setCorsHeaders(ctx, origin)
+	} else {
+		ctx.ResponseWriter.WriteHeader(http.StatusForbidden)
+	}
+}
+
+func isOriginAllowed(origin string) (bool, error) {
 	casdoorEndpoint := conf.GetConfigString("casdoorEndpoint")
 	casdoorApplication := conf.GetConfigString("casdoorApplication")
 
-	// If Casdoor is not configured, allow all origins (backwards compatibility)
+	// If Casdoor is not configured, return error to trigger backwards compatibility
 	if casdoorEndpoint == "" || casdoorApplication == "" {
-		return []string{"*"}, nil
+		return false, nil
 	}
 
 	application, err := casdoorsdk.GetApplication(casdoorApplication)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get Casdoor application (ensure Casdoor SDK is initialized): %w", err)
+		return false, err
 	}
 	if application == nil {
-		return nil, fmt.Errorf("Casdoor application not found: %s", casdoorApplication)
+		return false, nil
 	}
 
-	// Extract origins from RedirectUris
-	origins := make([]string, 0, len(application.RedirectUris))
+	// Check if origin matches any RedirectUri
 	for _, redirectUri := range application.RedirectUris {
 		parsedUrl, err := url.Parse(redirectUri)
 		if err != nil {
-			// Skip invalid URLs
 			continue
 		}
-		origin := fmt.Sprintf("%s://%s", parsedUrl.Scheme, parsedUrl.Host)
-		// Avoid duplicates
-		if !containsString(origins, origin) {
-			origins = append(origins, origin)
+		allowedOrigin := parsedUrl.Scheme + "://" + parsedUrl.Host
+		if origin == allowedOrigin || strings.Contains(origin, allowedOrigin) {
+			return true, nil
 		}
 	}
 
-	if len(origins) == 0 {
-		// If no valid origins found, return an error to ensure security
-		return nil, fmt.Errorf("no valid origins found in Casdoor application RedirectUris")
-	}
-
-	return origins, nil
-}
-
-// containsString checks if a string slice contains a specific string
-func containsString(slice []string, str string) bool {
-	for _, item := range slice {
-		if item == str {
-			return true
-		}
-	}
-	return false
+	return false, nil
 }
