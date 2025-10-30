@@ -60,6 +60,7 @@ func main() {
 	beego.InsertFilter("*", beego.BeforeRouter, routers.PrometheusFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.RecordMessage)
 	beego.InsertFilter("*", beego.AfterExec, routers.AfterRecordMessage, false)
+	beego.InsertFilter("*", beego.AfterExec, routers.SecureCookieFilter, false)
 
 	beego.BConfig.WebConfig.Session.SessionOn = true
 	beego.BConfig.WebConfig.Session.SessionName = "casibase_session_id"
@@ -75,10 +76,6 @@ func main() {
 	// Set session cookie security attributes
 	// SameSite=Lax provides CSRF protection while maintaining compatibility
 	beego.BConfig.WebConfig.Session.SessionCookieSameSite = http.SameSiteLaxMode
-	// Enable Secure flag for HTTPS requests (conditional based on request protocol)
-	// This won't start an HTTPS server but will set Secure flag when requests come over HTTPS
-	beego.BConfig.Listen.EnableHTTPS = true
-	beego.BConfig.Listen.HTTPSPort = 0 // Disable HTTPS server from starting
 
 	var logAdapter string
 	logConfigMap := make(map[string]interface{})
