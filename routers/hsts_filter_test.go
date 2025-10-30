@@ -23,8 +23,8 @@ import (
 )
 
 func TestHstsFilter(t *testing.T) {
-	// Create a mock HTTP request
-	req := httptest.NewRequest(http.MethodGet, "/api/health", nil)
+	// Create a mock HTTPS request
+	req := httptest.NewRequest(http.MethodGet, "https://example.com/api/health", nil)
 	resp := httptest.NewRecorder()
 
 	// Create a Beego context
@@ -55,7 +55,7 @@ func TestHstsFilterOnMultipleRoutes(t *testing.T) {
 
 	for _, route := range routes {
 		t.Run(route, func(t *testing.T) {
-			req := httptest.NewRequest(http.MethodGet, route, nil)
+			req := httptest.NewRequest(http.MethodGet, "https://example.com"+route, nil)
 			resp := httptest.NewRecorder()
 
 			ctx := context.NewContext()
@@ -73,5 +73,46 @@ func TestHstsFilterOnMultipleRoutes(t *testing.T) {
 				t.Errorf("Route %s: Expected HSTS header '%s', got '%s'", route, expectedHeader, hstsHeader)
 			}
 		})
+	}
+}
+
+func TestHstsFilterNotSetOnHTTP(t *testing.T) {
+	// Create a mock HTTP (non-HTTPS) request
+	req := httptest.NewRequest(http.MethodGet, "http://example.com/api/health", nil)
+	resp := httptest.NewRecorder()
+
+	// Create a Beego context
+	ctx := context.NewContext()
+	ctx.Reset(resp, req)
+
+	// Apply the HSTS filter
+	HstsFilter(ctx)
+
+	// Check that HSTS header is NOT set on HTTP requests
+	hstsHeader := resp.Header().Get("Strict-Transport-Security")
+	if hstsHeader != "" {
+		t.Errorf("HSTS header should not be set on HTTP requests, got '%s'", hstsHeader)
+	}
+}
+
+func TestHstsFilterWithXForwardedProto(t *testing.T) {
+	// Create a mock HTTP request with X-Forwarded-Proto header (common behind reverse proxies)
+	req := httptest.NewRequest(http.MethodGet, "http://example.com/api/health", nil)
+	req.Header.Set("X-Forwarded-Proto", "https")
+	resp := httptest.NewRecorder()
+
+	// Create a Beego context
+	ctx := context.NewContext()
+	ctx.Reset(resp, req)
+
+	// Apply the HSTS filter
+	HstsFilter(ctx)
+
+	// Check if the HSTS header is set correctly when behind a reverse proxy
+	hstsHeader := resp.Header().Get("Strict-Transport-Security")
+	expectedHeader := "max-age=31536000; includeSubDomains; preload"
+
+	if hstsHeader != expectedHeader {
+		t.Errorf("Expected HSTS header '%s', got '%s'", expectedHeader, hstsHeader)
 	}
 }

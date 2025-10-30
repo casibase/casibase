@@ -18,12 +18,16 @@ import (
 	"github.com/beego/beego/context"
 )
 
-// HstsFilter adds HTTP Strict Transport Security header to all responses
+// HstsFilter adds HTTP Strict Transport Security header to HTTPS responses
 // This ensures browsers only access the website using HTTPS
 func HstsFilter(ctx *context.Context) {
-	// Set HSTS header with:
-	// - max-age=31536000 (1 year in seconds)
-	// - includeSubDomains (apply to all subdomains)
-	// - preload (allow inclusion in browser preload lists)
-	ctx.Output.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload")
+	// Only set HSTS header on HTTPS requests
+	// Check both the direct TLS connection and X-Forwarded-Proto header (for reverse proxies)
+	if ctx.Input.Scheme() == "https" || ctx.Request.Header.Get("X-Forwarded-Proto") == "https" {
+		// Set HSTS header with:
+		// - max-age=31536000 (1 year in seconds)
+		// - includeSubDomains (apply to all subdomains)
+		// - preload (allow inclusion in browser preload lists)
+		ctx.Output.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload")
+	}
 }
