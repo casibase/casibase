@@ -20,6 +20,8 @@ Or using environment variables:
 
 ```bash
 export corsAllowOrigins='["https://your-domain.com", "https://admin.your-domain.com"]'
+# Or with double quotes (escape inner quotes):
+export corsAllowOrigins="[\"https://your-domain.com\", \"https://admin.your-domain.com\"]"
 ```
 
 When specific origins are configured, credentials (cookies, authorization headers) are automatically enabled for those origins.
@@ -33,10 +35,11 @@ The `corsAllowOrigins` setting supports multiple formats:
    corsAllowOrigins = ["https://domain1.com", "https://domain2.com"]
    ```
 
-2. **Comma-separated values**:
+2. **Comma-separated values** (without quotes):
    ```ini
-   corsAllowOrigins = https://domain1.com, https://domain2.com
+   corsAllowOrigins = https://domain1.com,https://domain2.com
    ```
+   Note: When using comma-separated format, avoid extra spaces between values for best compatibility.
 
 3. **Empty or not set** (falls back to wildcard with credentials disabled):
    ```ini
