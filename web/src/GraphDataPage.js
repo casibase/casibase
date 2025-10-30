@@ -65,7 +65,8 @@ class GraphDataPage extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.graphText !== prevProps.graphText ||
         this.props.layout !== prevProps.layout ||
-        this.props.category !== prevProps.category) {
+        this.props.category !== prevProps.category ||
+        this.props.density !== prevProps.density) {
       this.loadGraphData();
     }
   }
@@ -171,6 +172,7 @@ class GraphDataPage extends React.Component {
   getOption() {
     const {nodes, links, categories} = this.state.data;
     const layout = this.props.layout || "force";
+    const density = this.props.density || 5; // Default density is 5 (medium)
     const themeColor = Setting.getThemeColor();
 
     // Helper function to validate and sanitize icon URLs
@@ -216,8 +218,206 @@ class GraphDataPage extends React.Component {
     const borderColor = darkenColor(themeColor, 20);
     const shadowColor = hexToRgba(themeColor, 0.8);
 
+    // Calculate layout-specific spacing based on density
+    // Density: 1 (sparse) to 10 (dense)
+    // Lower density = more spacing
+    const densityFactor = 11 - density; // Invert: higher density number = closer nodes
+    const repulsion = 200 + (densityFactor * 100); // Range: 300 to 1200
+    const edgeLength = 50 + (densityFactor * 30); // Range: 80 to 350
+
+    // Helper function to calculate positions for "none" layout
+    const calculateNoneLayoutPositions = (nodes, links) => {
+      // Build adjacency list to understand connections
+      const adjacency = new Map();
+      nodes.forEach(node => adjacency.set(node.id, new Set()));
+      
+      links.forEach(link => {
+        if (adjacency.has(link.source)) {
+          adjacency.get(link.source).add(link.target);
+        }
+        if (adjacency.has(link.target)) {
+          adjacency.get(link.target).add(link.source);
+        }
+      });
+
+      // Group nodes by their connections (simple clustering)
+      const visited = new Set();
+      const clusters = [];
+      
+      const dfs = (nodeId, cluster) => {
+        if (visited.has(nodeId)) {return;}
+        visited.add(nodeId);
+        cluster.push(nodeId);
+        
+        const neighbors = adjacency.get(nodeId);
+        if (neighbors) {
+          neighbors.forEach(neighbor => {
+            if (!visited.has(neighbor)) {
+              dfs(neighbor, cluster);
+            }
+          });
+        }
+      };
+
+      // Find all clusters
+      nodes.forEach(node => {
+        if (!visited.has(node.id)) {
+          const cluster = [];
+          dfs(node.id, cluster);
+          clusters.push(cluster);
+        }
+      });
+
+      // Position nodes based on clusters and density
+      const spacing = 150 * densityFactor / 5; // Adjust spacing based on density
+      const clusterSpacing = 200 * densityFactor / 5;
+      const nodesPerRow = Math.ceil(Math.sqrt(nodes.length * 1.5));
+      
+      let currentX = 0;
+      let currentY = 0;
+      let maxHeightInRow = 0;
+      
+      clusters.forEach((cluster, clusterIndex) => {
+        const clusterSize = cluster.length;
+        const clusterCols = Math.ceil(Math.sqrt(clusterSize));
+        
+        cluster.forEach((nodeId, index) => {
+          const node = nodes.find(n => n.id === nodeId);
+          if (node) {
+            const col = index % clusterCols;
+            const row = Math.floor(index / clusterCols);
+            
+            node.x = currentX + col * spacing;
+            node.y = currentY + row * spacing;
+            
+            maxHeightInRow = Math.max(maxHeightInRow, (row + 1) * spacing);
+          }
+        });
+        
+        // Move to next cluster position
+        currentX += clusterCols * spacing + clusterSpacing;
+        if (currentX > nodesPerRow * spacing) {
+          currentX = 0;
+          currentY += maxHeightInRow + clusterSpacing;
+          maxHeightInRow = 0;
+        }
+      });
+      
+      return nodes;
+    };
+
+    // Helper function to calculate grid layout positions
+    const calculateGridLayoutPositions = (nodes) => {
+      const cols = Math.ceil(Math.sqrt(nodes.length));
+      const spacing = 150 * densityFactor / 5;
+      
+      nodes.forEach((node, index) => {
+        const col = index % cols;
+        const row = Math.floor(index / cols);
+        node.x = col * spacing - (cols * spacing) / 2;
+        node.y = row * spacing - (Math.ceil(nodes.length / cols) * spacing) / 2;
+      });
+      
+      return nodes;
+    };
+
+    // Helper function to calculate tree layout positions
+    const calculateTreeLayoutPositions = (nodes, links) => {
+      // Build adjacency list
+      const adjacency = new Map();
+      const inDegree = new Map();
+      
+      nodes.forEach(node => {
+        adjacency.set(node.id, []);
+        inDegree.set(node.id, 0);
+      });
+      
+      links.forEach(link => {
+        if (adjacency.has(link.source)) {
+          adjacency.get(link.source).push(link.target);
+        }
+        if (inDegree.has(link.target)) {
+          inDegree.set(link.target, inDegree.get(link.target) + 1);
+        }
+      });
+      
+      // Find root nodes (nodes with no incoming edges)
+      const roots = [];
+      nodes.forEach(node => {
+        if (inDegree.get(node.id) === 0) {
+          roots.push(node.id);
+        }
+      });
+      
+      // If no roots found, use first node
+      if (roots.length === 0 && nodes.length > 0) {
+        roots.push(nodes[0].id);
+      }
+      
+      // Calculate positions using BFS from roots
+      const positioned = new Set();
+      const levelSpacing = 200 * densityFactor / 5;
+      const nodeSpacing = 150 * densityFactor / 5;
+      
+      let currentLevel = 0;
+      let queue = roots.map(id => ({id, level: 0, parent: null}));
+      const levels = new Map();
+      
+      while (queue.length > 0) {
+        const {id, level} = queue.shift();
+        if (positioned.has(id)) {continue;}
+        
+        positioned.add(id);
+        if (!levels.has(level)) {
+          levels.set(level, []);
+        }
+        levels.get(level).push(id);
+        
+        const children = adjacency.get(id) || [];
+        children.forEach(childId => {
+          if (!positioned.has(childId)) {
+            queue.push({id: childId, level: level + 1, parent: id});
+          }
+        });
+      }
+      
+      // Position nodes by level
+      levels.forEach((nodeIds, level) => {
+        const levelWidth = (nodeIds.length - 1) * nodeSpacing;
+        nodeIds.forEach((nodeId, index) => {
+          const node = nodes.find(n => n.id === nodeId);
+          if (node) {
+            node.x = index * nodeSpacing - levelWidth / 2;
+            node.y = level * levelSpacing;
+          }
+        });
+      });
+      
+      // Position any unconnected nodes
+      let unpositionedCount = 0;
+      nodes.forEach(node => {
+        if (!positioned.has(node.id)) {
+          node.x = unpositionedCount * nodeSpacing;
+          node.y = (levels.size) * levelSpacing;
+          unpositionedCount++;
+        }
+      });
+      
+      return nodes;
+    };
+
+    // Apply custom positioning for certain layouts
+    let processedNodes = [...nodes];
+    if (layout === "none") {
+      processedNodes = calculateNoneLayoutPositions(processedNodes, links);
+    } else if (layout === "grid") {
+      processedNodes = calculateGridLayoutPositions(processedNodes);
+    } else if (layout === "tree") {
+      processedNodes = calculateTreeLayoutPositions(processedNodes, links);
+    }
+
     // Transform nodes to ECharts format
-    const echartNodes = nodes.map(node => {
+    const echartNodes = processedNodes.map(node => {
       const sanitizedIcon = sanitizeIconUrl(node.icon);
       const isSelected = this.state.selectedNode && this.state.selectedNode.id === node.id;
       return {
@@ -313,13 +513,22 @@ class GraphDataPage extends React.Component {
             },
           },
           force: layout === "force" ? {
-            repulsion: 500,
-            edgeLength: 100,
-            layoutAnimation: false,
+            repulsion: repulsion,
+            edgeLength: edgeLength,
+            layoutAnimation: true, // Enable animation for force layout
+            friction: 0.6,
+            gravity: 0.1,
           } : undefined,
           circular: layout === "circular" ? {
             rotateLabel: true,
           } : undefined,
+          // For radial layout
+          ...(layout === "radial" ? {
+            layout: "circular",
+            circular: {
+              rotateLabel: false,
+            },
+          } : {}),
         },
       ],
     };

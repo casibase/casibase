@@ -49,7 +49,7 @@ class GraphEditPage extends React.Component {
   }
 
   parseGraphField(key, value) {
-    if ([""].includes(key)) {
+    if (["density"].includes(key)) {
       value = Setting.myParseInt(value);
     }
     return value;
@@ -129,8 +129,27 @@ class GraphEditPage extends React.Component {
             >
               <Select.Option value="force">{i18next.t("graph:Force")}</Select.Option>
               <Select.Option value="circular">{i18next.t("graph:Circular")}</Select.Option>
+              <Select.Option value="radial">{i18next.t("graph:Radial")}</Select.Option>
+              <Select.Option value="grid">{i18next.t("graph:Grid")}</Select.Option>
+              <Select.Option value="tree">{i18next.t("graph:Tree")}</Select.Option>
               <Select.Option value="none">{i18next.t("graph:None")}</Select.Option>
             </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("graph:Node Density"), i18next.t("graph:Node Density - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input 
+              type="number" 
+              min={1} 
+              max={10} 
+              value={this.state.graph.density || 5} 
+              onChange={e => {
+                this.updateGraphField("density", e.target.value);
+              }} 
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -155,7 +174,7 @@ class GraphEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div key={this.state.graphCount} style={{height: "640px", width: "100%"}}>
-              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} category={this.state.graph?.category} layout={this.state.graph?.layout} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
+              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} category={this.state.graph?.category} layout={this.state.graph?.layout} density={this.state.graph?.density} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
             </div>
           </Col>
         </Row>

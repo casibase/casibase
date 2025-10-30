@@ -38,6 +38,7 @@ type Graph struct {
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 	Category    string `xorm:"varchar(100)" json:"category"`
 	Layout      string `xorm:"varchar(100)" json:"layout"`
+	Density     int    `xorm:"int" json:"density"`
 	Text        string `xorm:"mediumtext" json:"text"`
 	ErrorText   string `xorm:"mediumtext" json:"errorText"`
 }
