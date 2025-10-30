@@ -230,7 +230,7 @@ class GraphDataPage extends React.Component {
       // Build adjacency list to understand connections
       const adjacency = new Map();
       nodes.forEach(node => adjacency.set(node.id, new Set()));
-      
+
       links.forEach(link => {
         if (adjacency.has(link.source)) {
           adjacency.get(link.source).add(link.target);
@@ -243,12 +243,12 @@ class GraphDataPage extends React.Component {
       // Group nodes by their connections (simple clustering)
       const visited = new Set();
       const clusters = [];
-      
+
       const dfs = (nodeId, cluster) => {
         if (visited.has(nodeId)) {return;}
         visited.add(nodeId);
         cluster.push(nodeId);
-        
+
         const neighbors = adjacency.get(nodeId);
         if (neighbors) {
           neighbors.forEach(neighbor => {
@@ -272,28 +272,28 @@ class GraphDataPage extends React.Component {
       const spacing = 150 * densityFactor / 5; // Adjust spacing based on density
       const clusterSpacing = 200 * densityFactor / 5;
       const nodesPerRow = Math.ceil(Math.sqrt(nodes.length * 1.5));
-      
+
       let currentX = 0;
       let currentY = 0;
       let maxHeightInRow = 0;
-      
+
       clusters.forEach((cluster, clusterIndex) => {
         const clusterSize = cluster.length;
         const clusterCols = Math.ceil(Math.sqrt(clusterSize));
-        
+
         cluster.forEach((nodeId, index) => {
           const node = nodes.find(n => n.id === nodeId);
           if (node) {
             const col = index % clusterCols;
             const row = Math.floor(index / clusterCols);
-            
+
             node.x = currentX + col * spacing;
             node.y = currentY + row * spacing;
-            
+
             maxHeightInRow = Math.max(maxHeightInRow, (row + 1) * spacing);
           }
         });
-        
+
         // Move to next cluster position
         currentX += clusterCols * spacing + clusterSpacing;
         if (currentX > nodesPerRow * spacing) {
@@ -302,7 +302,7 @@ class GraphDataPage extends React.Component {
           maxHeightInRow = 0;
         }
       });
-      
+
       return nodes;
     };
 
@@ -310,14 +310,14 @@ class GraphDataPage extends React.Component {
     const calculateGridLayoutPositions = (nodes) => {
       const cols = Math.ceil(Math.sqrt(nodes.length));
       const spacing = 150 * densityFactor / 5;
-      
+
       nodes.forEach((node, index) => {
         const col = index % cols;
         const row = Math.floor(index / cols);
         node.x = col * spacing - (cols * spacing) / 2;
         node.y = row * spacing - (Math.ceil(nodes.length / cols) * spacing) / 2;
       });
-      
+
       return nodes;
     };
 
@@ -326,12 +326,12 @@ class GraphDataPage extends React.Component {
       // Build adjacency list
       const adjacency = new Map();
       const inDegree = new Map();
-      
+
       nodes.forEach(node => {
         adjacency.set(node.id, []);
         inDegree.set(node.id, 0);
       });
-      
+
       links.forEach(link => {
         if (adjacency.has(link.source)) {
           adjacency.get(link.source).push(link.target);
@@ -340,7 +340,7 @@ class GraphDataPage extends React.Component {
           inDegree.set(link.target, inDegree.get(link.target) + 1);
         }
       });
-      
+
       // Find root nodes (nodes with no incoming edges)
       const roots = [];
       nodes.forEach(node => {
@@ -348,31 +348,30 @@ class GraphDataPage extends React.Component {
           roots.push(node.id);
         }
       });
-      
+
       // If no roots found, use first node
       if (roots.length === 0 && nodes.length > 0) {
         roots.push(nodes[0].id);
       }
-      
+
       // Calculate positions using BFS from roots
       const positioned = new Set();
       const levelSpacing = 200 * densityFactor / 5;
       const nodeSpacing = 150 * densityFactor / 5;
-      
-      let currentLevel = 0;
-      let queue = roots.map(id => ({id, level: 0, parent: null}));
+
+      const queue = roots.map(id => ({id, level: 0, parent: null}));
       const levels = new Map();
-      
+
       while (queue.length > 0) {
         const {id, level} = queue.shift();
         if (positioned.has(id)) {continue;}
-        
+
         positioned.add(id);
         if (!levels.has(level)) {
           levels.set(level, []);
         }
         levels.get(level).push(id);
-        
+
         const children = adjacency.get(id) || [];
         children.forEach(childId => {
           if (!positioned.has(childId)) {
@@ -380,7 +379,7 @@ class GraphDataPage extends React.Component {
           }
         });
       }
-      
+
       // Position nodes by level
       levels.forEach((nodeIds, level) => {
         const levelWidth = (nodeIds.length - 1) * nodeSpacing;
@@ -392,7 +391,7 @@ class GraphDataPage extends React.Component {
           }
         });
       });
-      
+
       // Position any unconnected nodes
       let unpositionedCount = 0;
       nodes.forEach(node => {
@@ -402,7 +401,7 @@ class GraphDataPage extends React.Component {
           unpositionedCount++;
         }
       });
-      
+
       return nodes;
     };
 

@@ -141,14 +141,14 @@ class GraphEditPage extends React.Component {
             {Setting.getLabel(i18next.t("graph:Node Density"), i18next.t("graph:Node Density - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input 
-              type="number" 
-              min={1} 
-              max={10} 
-              value={this.state.graph.density || 5} 
+            <Input
+              type="number"
+              min={1}
+              max={10}
+              value={this.state.graph.density || 5}
               onChange={e => {
                 this.updateGraphField("density", e.target.value);
-              }} 
+              }}
             />
           </Col>
         </Row>
