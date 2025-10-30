@@ -17,6 +17,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/beego/beego"
 	"github.com/beego/beego/logs"
@@ -70,6 +71,14 @@ func main() {
 		beego.BConfig.WebConfig.Session.SessionProviderConfig = conf.GetConfigString("redisEndpoint")
 	}
 	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
+
+	// Set session cookie security attributes
+	// SameSite=Lax provides CSRF protection while maintaining compatibility
+	beego.BConfig.WebConfig.Session.SessionCookieSameSite = http.SameSiteLaxMode
+	// Enable Secure flag for HTTPS requests (conditional based on request protocol)
+	// This won't start an HTTPS server but will set Secure flag when requests come over HTTPS
+	beego.BConfig.Listen.EnableHTTPS = true
+	beego.BConfig.Listen.HTTPSPort = 0 // Disable HTTPS server from starting
 
 	var logAdapter string
 	logConfigMap := make(map[string]interface{})
