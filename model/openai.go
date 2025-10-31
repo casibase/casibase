@@ -276,11 +276,15 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 			TopP:         param.NewOpt[float64](float64(topP)),
 		}
 		if agentInfo != nil && agentInfo.AgentClients != nil {
-			tools, err := reverseMcpToolsToOpenAi(agentInfo.AgentClients.Tools)
+			agentTools, err := reverseMcpToolsToOpenAi(agentInfo.AgentClients.Tools)
 			if err != nil {
 				return nil, err
 			}
-			req.Tools = tools
+			if agentInfo.AgentClients.WebSearchEnabled {
+				agentTools = append(agentTools, responses.ToolParamOfWebSearchPreview(responses.WebSearchToolTypeWebSearchPreview))
+			}
+
+			req.Tools = agentTools
 			req.ToolChoice = responses.ResponseNewParamsToolChoiceUnion{
 				OfToolChoiceMode: param.NewOpt(responses.ToolChoiceOptionsAuto),
 			}
@@ -312,6 +316,16 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 				switch v := variant.Item.AsAny().(type) {
 				case responses.ResponseFunctionToolCall:
 					toolCalls = append(toolCalls, v)
+				case responses.ResponseFunctionWebSearch:
+					if v.Action.Type != "" {
+						switch v.Action.Type {
+						case "open_page":
+							//err = flushThink(v.Action.URL, "tool_call", writer, lang)
+							//if err != nil {
+							//	return nil, err
+							//}
+						}
+					}
 				}
 			case responses.ResponseCompletedEvent:
 				modelResult.ResponseTokenCount = int(variant.Response.Usage.OutputTokens)

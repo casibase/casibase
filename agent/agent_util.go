@@ -26,7 +26,14 @@ func GetIdFromServerNameAndToolName(ServerName, toolName string) string {
 	return ServerName + "__" + toolName
 }
 
-func MergeBuiltinTools(agentClients *AgentClients, selectedTools []string) *AgentClients {
+func MergeBuiltinAndWebSearchTools(agentClients *AgentClients, selectedTools []string, webSearchEnabled bool) *AgentClients {
+	if webSearchEnabled {
+		if agentClients == nil {
+			agentClients = &AgentClients{}
+		}
+		agentClients.WebSearchEnabled = true
+	}
+
 	if len(selectedTools) == 0 {
 		return agentClients
 	}

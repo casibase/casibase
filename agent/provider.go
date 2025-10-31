@@ -28,9 +28,10 @@ type AgentProvider interface {
 }
 
 type AgentClients struct {
-	Clients        map[string]*client.Client
-	Tools          []*protocol.Tool
-	BuiltinToolReg *builtin_tool.ToolRegistry
+	Clients          map[string]*client.Client
+	Tools            []*protocol.Tool
+	BuiltinToolReg   *builtin_tool.ToolRegistry
+	WebSearchEnabled bool
 }
 
 func GetAgentProvider(typ string, subType string, text string, mcpTools []*McpTools, lang string) (AgentProvider, error) {
