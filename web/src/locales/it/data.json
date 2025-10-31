@@ -445,12 +445,24 @@
     "{total} in total": "{total} in totale"
   },
   "graph": {
-    "Circular": "Circular",
+    "Category Compute": "Calcolo",
+    "Category Network": "Rete",
+    "Category Other": "Altro",
+    "Category Policy": "Politica",
+    "Category Security": "Sicurezza",
+    "Category Storage": "Archiviazione",
+    "Circular": "Circolare",
     "Edit Graph": "Modifica grafico",
-    "Force": "Force",
+    "Force": "Forza",
+    "Grid": "Griglia",
     "Layout": "Layout",
-    "Layout - Tooltip": "Graph layout type",
-    "None": "Nessuno"
+    "Layout - Tooltip": "Tipo di layout del grafico",
+    "Node Density": "Densità dei nodi",
+    "Node Density - Tooltip": "Controlla la spaziatura tra i nodi (1=sparso, 10=denso)",
+    "Node Details": "Dettagli del nodo",
+    "None": "Nessuno",
+    "Radial": "Radiale",
+    "Tree": "Albero"
   },
   "hospital": {
     "Edit Hospital": "Edit Hospital",

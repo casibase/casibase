@@ -445,12 +445,24 @@
     "{total} in total": "{total} 총계"
   },
   "graph": {
+    "Category Compute": "컴퓨팅",
+    "Category Network": "네트워크",
+    "Category Other": "기타",
+    "Category Policy": "정책",
+    "Category Security": "보안",
+    "Category Storage": "스토리지",
     "Circular": "원형",
     "Edit Graph": "그래프 편집",
     "Force": "힘 방향",
+    "Grid": "그리드",
     "Layout": "레이아웃",
     "Layout - Tooltip": "그래프 레이아웃 유형",
-    "None": "없음"
+    "Node Density": "노드 밀도",
+    "Node Density - Tooltip": "노드 간 간격 제어 (1=희박, 10=밀집)",
+    "Node Details": "노드 세부정보",
+    "None": "없음",
+    "Radial": "방사형",
+    "Tree": "트리"
   },
   "hospital": {
     "Edit Hospital": "병원 편집",

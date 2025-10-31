@@ -445,17 +445,24 @@
     "{total} in total": "{total} in total"
   },
   "graph": {
+    "Category Compute": "Compute",
+    "Category Network": "Network",
+    "Category Other": "Other",
+    "Category Policy": "Policy",
+    "Category Security": "Security",
+    "Category Storage": "Storage",
     "Circular": "Circular",
     "Edit Graph": "Edit Graph",
     "Force": "Force",
+    "Grid": "Grid",
     "Layout": "Layout",
     "Layout - Tooltip": "Graph layout type",
+    "Node Density": "Node Density",
+    "Node Density - Tooltip": "Controls the spacing between nodes (1=sparse, 10=dense)",
+    "Node Details": "Node Details",
     "None": "None",
     "Radial": "Radial",
-    "Grid": "Grid",
-    "Tree": "Tree",
-    "Node Density": "Node Density",
-    "Node Density - Tooltip": "Controls the spacing between nodes (1=sparse, 10=dense)"
+    "Tree": "Tree"
   },
   "hospital": {
     "Edit Hospital": "Edit Hospital",

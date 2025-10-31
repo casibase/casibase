@@ -445,12 +445,24 @@
     "{total} in total": "{total} total"
   },
   "graph": {
+    "Category Compute": "Komputasi",
+    "Category Network": "Jaringan",
+    "Category Other": "Lainnya",
+    "Category Policy": "Kebijakan",
+    "Category Security": "Keamanan",
+    "Category Storage": "Penyimpanan",
     "Circular": "Melingkar",
     "Edit Graph": "Edit Grafik",
     "Force": "Gaya",
+    "Grid": "Kisi",
     "Layout": "Tata letak",
     "Layout - Tooltip": "Jenis tata letak grafik",
-    "None": "Tidak ada"
+    "Node Density": "Kepadatan Node",
+    "Node Density - Tooltip": "Mengontrol jarak antar node (1=jarang, 10=padat)",
+    "Node Details": "Detail Node",
+    "None": "Tidak ada",
+    "Radial": "Radial",
+    "Tree": "Pohon"
   },
   "hospital": {
     "Edit Hospital": "Edit rumah sakit",

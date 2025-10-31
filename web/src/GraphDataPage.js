@@ -14,6 +14,7 @@
 
 import React from "react";
 import ReactEcharts from "echarts-for-react";
+import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as AssetBackend from "./backend/AssetBackend";
 import {transformAssetsToGraph} from "./utils/assetToGraph";
@@ -467,7 +468,7 @@ class GraphDataPage extends React.Component {
       legend: this.props.showLegend !== false && categories.length > 0 ? [
         {
           data: categories.map(cat => ({
-            name: cat.name,
+            name: i18next.t(`graph:Category ${cat.name}`),
             icon: "circle",
           })),
           orient: "horizontal",
@@ -599,19 +600,14 @@ class GraphDataPage extends React.Component {
       return iconUrl;
     };
 
-    // Safely render additional properties
-    const MAX_VALUE_LENGTH = 100;
-    const renderValue = (value) => {
-      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
-        return String(value);
+    // Get category name with i18n support
+    const getCategoryName = (categoryIndex) => {
+      if (this.state.data.categories && categoryIndex !== undefined && categoryIndex < this.state.data.categories.length) {
+        const categoryName = this.state.data.categories[categoryIndex].name;
+        // Translate category names
+        return i18next.t(`graph:Category ${categoryName}`);
       }
-      // For objects/arrays, stringify but truncate if too long
-      try {
-        const str = JSON.stringify(value);
-        return str.length > MAX_VALUE_LENGTH ? str.substring(0, MAX_VALUE_LENGTH) + "..." : str;
-      } catch (e) {
-        return "[Complex Object]";
-      }
+      return categoryIndex;
     };
 
     const sanitizedIcon = sanitizeIconUrl(selectedNode.icon);
@@ -622,7 +618,7 @@ class GraphDataPage extends React.Component {
           position: "absolute",
           top: "20px",
           right: "20px",
-          width: "300px",
+          width: "320px",
           maxHeight: "80%",
           background: "white",
           border: "1px solid #d9d9d9",
@@ -634,7 +630,7 @@ class GraphDataPage extends React.Component {
         }}
       >
         <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px"}}>
-          <h3 style={{margin: 0, fontSize: "16px", fontWeight: 600}}>Node Details</h3>
+          <h3 style={{margin: 0, fontSize: "16px", fontWeight: 600}}>{i18next.t("graph:Node Details")}</h3>
           <button
             onClick={this.handleClosePanel}
             style={{
@@ -651,42 +647,78 @@ class GraphDataPage extends React.Component {
           </button>
         </div>
         <div style={{fontSize: "14px"}}>
-          <div style={{marginBottom: "8px"}}>
-            <strong>ID:</strong> <span style={{color: "#666"}}>{selectedNode.id}</span>
-          </div>
-          <div style={{marginBottom: "8px"}}>
-            <strong>Name:</strong> <span style={{color: "#666"}}>{selectedNode.name || selectedNode.id}</span>
-          </div>
-          {selectedNode.value !== undefined && (
+          {selectedNode.displayName && (
             <div style={{marginBottom: "8px"}}>
-              <strong>Value:</strong> <span style={{color: "#666"}}>{selectedNode.value}</span>
+              <strong>{i18next.t("general:Display name")}:</strong> <span style={{color: "#666"}}>{selectedNode.displayName}</span>
+            </div>
+          )}
+          {selectedNode.resourceType && (
+            <div style={{marginBottom: "8px"}}>
+              <strong>{i18next.t("asset:Resource type")}:</strong> <span style={{color: "#666"}}>{selectedNode.resourceType}</span>
+            </div>
+          )}
+          {selectedNode.resourceId && (
+            <div style={{marginBottom: "8px"}}>
+              <strong>{i18next.t("asset:Resource ID")}:</strong> <span style={{color: "#666", wordBreak: "break-all"}}>{selectedNode.resourceId}</span>
             </div>
           )}
           {selectedNode.category !== undefined && (
             <div style={{marginBottom: "8px"}}>
-              <strong>Category:</strong> <span style={{color: "#666"}}>{selectedNode.category}</span>
+              <strong>{i18next.t("general:Category")}:</strong> <span style={{color: "#666"}}>{getCategoryName(selectedNode.category)}</span>
             </div>
           )}
-          {selectedNode.symbolSize !== undefined && (
+          {selectedNode.provider && (
             <div style={{marginBottom: "8px"}}>
-              <strong>Symbol Size:</strong> <span style={{color: "#666"}}>{selectedNode.symbolSize}</span>
+              <strong>{i18next.t("asset:Provider")}:</strong> <span style={{color: "#666"}}>{selectedNode.provider}</span>
             </div>
           )}
-          {sanitizedIcon && (
+          {selectedNode.region && (
             <div style={{marginBottom: "8px"}}>
-              <strong>Icon:</strong>
-              <div style={{marginTop: "4px"}}>
-                <img src={sanitizedIcon} alt="Node icon" style={{maxWidth: "100%", maxHeight: "100px"}} />
+              <strong>{i18next.t("general:Region")}:</strong> <span style={{color: "#666"}}>{selectedNode.region}</span>
+            </div>
+          )}
+          {selectedNode.zone && (
+            <div style={{marginBottom: "8px"}}>
+              <strong>{i18next.t("general:Zone")}:</strong> <span style={{color: "#666"}}>{selectedNode.zone}</span>
+            </div>
+          )}
+          {selectedNode.owner && (
+            <div style={{marginBottom: "8px"}}>
+              <strong>{i18next.t("general:Owner")}:</strong> <span style={{color: "#666"}}>{selectedNode.owner}</span>
+            </div>
+          )}
+          {selectedNode.createdTime && (
+            <div style={{marginBottom: "8px"}}>
+              <strong>{i18next.t("general:Created time")}:</strong> <span style={{color: "#666"}}>{Setting.getFormattedDate(selectedNode.createdTime)}</span>
+            </div>
+          )}
+          {selectedNode.properties && Object.keys(selectedNode.properties).length > 0 && (
+            <div style={{marginBottom: "8px"}}>
+              <strong>{i18next.t("asset:Properties")}:</strong>
+              <div style={{marginTop: "4px", fontSize: "12px", background: "#f5f5f5", padding: "8px", borderRadius: "4px", maxHeight: "150px", overflow: "auto"}}>
+                {selectedNode.properties.ipAddresses && selectedNode.properties.ipAddresses.length > 0 && (
+                  <div style={{marginBottom: "4px"}}>
+                    <strong>IP Addresses:</strong> {selectedNode.properties.ipAddresses.join(", ")}
+                  </div>
+                )}
+                {selectedNode.properties.resourceGroupId && (
+                  <div style={{marginBottom: "4px"}}>
+                    <strong>Resource Group:</strong> {selectedNode.properties.resourceGroupId}
+                  </div>
+                )}
+                {selectedNode.properties.createTime && (
+                  <div style={{marginBottom: "4px"}}>
+                    <strong>Create Time:</strong> {selectedNode.properties.createTime}
+                  </div>
+                )}
+                {selectedNode.properties.expireTime && (
+                  <div style={{marginBottom: "4px"}}>
+                    <strong>Expire Time:</strong> {selectedNode.properties.expireTime}
+                  </div>
+                )}
               </div>
             </div>
           )}
-          {Object.keys(selectedNode).filter(key =>
-            !["id", "name", "value", "category", "symbolSize", "icon", "x", "y"].includes(key)
-          ).map(key => (
-            <div key={key} style={{marginBottom: "8px"}}>
-              <strong>{key}:</strong> <span style={{color: "#666"}}>{renderValue(selectedNode[key])}</span>
-            </div>
-          ))}
         </div>
       </div>
     );

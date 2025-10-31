@@ -445,12 +445,24 @@
     "{total} in total": "{total} Итого"
   },
   "graph": {
+    "Category Compute": "Вычисления",
+    "Category Network": "Сеть",
+    "Category Other": "Другое",
+    "Category Policy": "Политика",
+    "Category Security": "Безопасность",
+    "Category Storage": "Хранилище",
     "Circular": "Круговой",
     "Edit Graph": "Редактировать граф",
     "Force": "Силовой",
+    "Grid": "Сетка",
     "Layout": "Макет",
     "Layout - Tooltip": "Тип макета графа",
-    "None": "Нет"
+    "Node Density": "Плотность узлов",
+    "Node Density - Tooltip": "Контролирует расстояние между узлами (1=разреженный, 10=плотный)",
+    "Node Details": "Детали узла",
+    "None": "Нет",
+    "Radial": "Радиальный",
+    "Tree": "Дерево"
   },
   "hospital": {
     "Edit Hospital": "Редактировать больницу",

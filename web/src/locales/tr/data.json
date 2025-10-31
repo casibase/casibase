@@ -445,12 +445,24 @@
     "{total} in total": "{total} in total"
   },
   "graph": {
-    "Circular": "Circular",
+    "Category Compute": "Hesaplama",
+    "Category Network": "Ağ",
+    "Category Other": "Diğer",
+    "Category Policy": "Politika",
+    "Category Security": "Güvenlik",
+    "Category Storage": "Depolama",
+    "Circular": "Dairesel",
     "Edit Graph": "Grafiği Düzenle",
-    "Force": "Force",
-    "Layout": "Layout",
-    "Layout - Tooltip": "Graph layout type",
-    "None": "None"
+    "Force": "Kuvvet",
+    "Grid": "Izgara",
+    "Layout": "Düzen",
+    "Layout - Tooltip": "Grafik düzen türü",
+    "Node Density": "Düğüm Yoğunluğu",
+    "Node Density - Tooltip": "Düğümler arası mesafeyi kontrol eder (1=seyrek, 10=yoğun)",
+    "Node Details": "Düğüm Detayları",
+    "None": "Yok",
+    "Radial": "Radyal",
+    "Tree": "Ağaç"
   },
   "hospital": {
     "Edit Hospital": "Edit Hospital",

@@ -445,12 +445,24 @@
     "{total} in total": "{total} insgesamt"
   },
   "graph": {
+    "Category Compute": "Berechnung",
+    "Category Network": "Netzwerk",
+    "Category Other": "Andere",
+    "Category Policy": "Richtlinie",
+    "Category Security": "Sicherheit",
+    "Category Storage": "Speicher",
     "Circular": "Kreisförmig",
     "Edit Graph": "Diagramm bearbeiten",
     "Force": "Kraftgerichtet",
+    "Grid": "Raster",
     "Layout": "Layout",
     "Layout - Tooltip": "Grafik-Layout-Typ",
-    "None": "Keine"
+    "Node Density": "Knotendichte",
+    "Node Density - Tooltip": "Steuert den Abstand zwischen Knoten (1=spärlich, 10=dicht)",
+    "Node Details": "Knotendetails",
+    "None": "Keine",
+    "Radial": "Radial",
+    "Tree": "Baum"
   },
   "hospital": {
     "Edit Hospital": "Krankenhaus bearbeiten",

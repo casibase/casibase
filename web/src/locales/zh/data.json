@@ -445,17 +445,24 @@
     "{total} in total": "{total} 总计"
   },
   "graph": {
+    "Category Compute": "计算",
+    "Category Network": "网络",
+    "Category Other": "其他",
+    "Category Policy": "策略",
+    "Category Security": "安全",
+    "Category Storage": "存储",
     "Circular": "环形",
     "Edit Graph": "编辑图",
     "Force": "力导向",
+    "Grid": "网格",
     "Layout": "布局",
     "Layout - Tooltip": "图布局类型",
+    "Node Density": "节点密度",
+    "Node Density - Tooltip": "控制节点之间的间距（1=稀疏，10=密集）",
+    "Node Details": "节点详情",
     "None": "无",
     "Radial": "径向",
-    "Grid": "网格",
-    "Tree": "树形",
-    "Node Density": "节点密度",
-    "Node Density - Tooltip": "控制节点之间的间距（1=稀疏，10=密集）"
+    "Tree": "树形"
   },
   "hospital": {
     "Edit Hospital": "编辑医院",
