@@ -468,7 +468,7 @@ class GraphDataPage extends React.Component {
       legend: this.props.showLegend !== false && categories.length > 0 ? [
         {
           data: categories.map(cat => ({
-            name: i18next.t(`graph:Category ${cat.name}`),
+            name: i18next.t(`graph:${cat.name}`),
             icon: "circle",
           })),
           orient: "horizontal",
@@ -591,7 +591,7 @@ class GraphDataPage extends React.Component {
       if (this.state.data.categories && categoryIndex !== undefined && categoryIndex < this.state.data.categories.length) {
         const categoryName = this.state.data.categories[categoryIndex].name;
         // Translate category names
-        return i18next.t(`graph:Category ${categoryName}`);
+        return i18next.t(`graph:${categoryName}`);
       }
       return categoryIndex;
     };
