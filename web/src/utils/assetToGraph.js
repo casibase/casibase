@@ -43,15 +43,15 @@ export function transformAssetsToGraph(assets) {
 
   // Define icons for different resource types
   const resourceTypeIcons = {
-    "VPC": "https://cdn-icons-png.flaticon.com/512/684/684908.png",
-    "VSwitch": "https://cdn-icons-png.flaticon.com/512/684/684908.png",
-    "Network Interface": "https://cdn-icons-png.flaticon.com/512/3094/3094837.png",
-    "Security Group": "https://cdn-icons-png.flaticon.com/512/2913/2913133.png",
-    "ECS Instance": "https://cdn-icons-png.flaticon.com/512/1261/1261173.png",
-    "Disk": "https://cdn-icons-png.flaticon.com/512/2920/2920349.png",
-    "Snapshot": "https://cdn-icons-png.flaticon.com/512/1006/1006771.png",
-    "Image": "https://cdn-icons-png.flaticon.com/512/1006/1006771.png",
-    "ACS::ECS::AutoSnapshotPolicy": "https://cdn-icons-png.flaticon.com/512/2920/2920349.png",
+    "VPC": "https://img.icons8.com/fluent/94/cloud-development.png",
+    "VSwitch": "https://img.icons8.com/fluent/94/network-gateway.png",
+    "Network Interface": "https://img.icons8.com/fluent/94/network-card.png",
+    "Security Group": "https://img.icons8.com/fluent/94/user-group-woman-woman.png",
+    "ECS Instance": "https://img.icons8.com/fluent/94/database-server.png",
+    "Disk": "https://img.icons8.com/fluent/94/ssd.png",
+    "Snapshot": "https://img.icons8.com/fluent/94/picture.png",
+    "Image": "https://img.icons8.com/fluent/94/big-parcel.png",
+    "ACS::ECS::AutoSnapshotPolicy": "https://img.icons8.com/fluent/94/privacy-policy.png",
   };
 
   // Helper function to get or create a category
