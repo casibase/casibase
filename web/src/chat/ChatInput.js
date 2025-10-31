@@ -190,7 +190,7 @@ const ChatInput = ({
           onChange={onChange}
           onSubmit={() => {
             if (!sendButtonDisabled) {
-              onSend(value);
+              onSend(value, webSearchEnabled);
               onChange("");
             }
           }}

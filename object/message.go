@@ -61,6 +61,7 @@ type Message struct {
 	NeedNotify        bool             `json:"needNotify"`
 	IsAlerted         bool             `json:"isAlerted"`
 	IsRegenerated     bool             `json:"isRegenerated"`
+	WebSearchEnabled  bool             `json:"webSearchEnabled"`
 	ModelProvider     string           `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider string           `xorm:"varchar(100)" json:"embeddingProvider"`
 	VectorScores      []VectorScore    `xorm:"mediumtext" json:"vectorScores"`
