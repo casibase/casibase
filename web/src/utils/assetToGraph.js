@@ -107,6 +107,16 @@ export function transformAssetsToGraph(assets) {
       value: 50 + (index % 5) * 10,
       category: categoryIndex,
       icon: resourceTypeIcons[resourceType] || "https://cdn-icons-png.flaticon.com/512/1006/1006771.png",
+      // Additional asset metadata
+      displayName: asset.displayName,
+      resourceId: asset.resourceId,
+      resourceType: asset.resourceType,
+      region: asset.region,
+      zone: asset.zone,
+      provider: asset.provider,
+      owner: asset.owner,
+      createdTime: asset.createdTime,
+      properties: properties,
     };
 
     nodes.push(node);

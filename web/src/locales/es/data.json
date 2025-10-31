@@ -446,11 +446,23 @@
   },
   "graph": {
     "Circular": "Circular",
+    "Compute": "Cómputo",
     "Edit Graph": "Editar gráfico",
     "Force": "Fuerza",
+    "Grid": "Cuadrícula",
     "Layout": "Diseño",
     "Layout - Tooltip": "Tipo de diseño de gráfico",
-    "None": "Ninguno"
+    "Network": "Red",
+    "Node Density": "Densidad de nodos",
+    "Node Density - Tooltip": "Controla el espaciado entre nodos (1=disperso, 10=denso)",
+    "Node Details": "Detalles del nodo",
+    "None": "Ninguno",
+    "Other": "Otro",
+    "Policy": "Política",
+    "Radial": "Radial",
+    "Security": "Seguridad",
+    "Storage": "Almacenamiento",
+    "Tree": "Árbol"
   },
   "hospital": {
     "Edit Hospital": "Editar hospital",

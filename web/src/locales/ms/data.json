@@ -445,12 +445,24 @@
     "{total} in total": "{total} in total"
   },
   "graph": {
-    "Circular": "Circular",
+    "Circular": "Bulat",
+    "Compute": "Pengkomputeran",
     "Edit Graph": "Edit Grafik",
-    "Force": "Force",
-    "Layout": "Layout",
-    "Layout - Tooltip": "Graph layout type",
-    "None": "None"
+    "Force": "Daya",
+    "Grid": "Grid",
+    "Layout": "Susun atur",
+    "Layout - Tooltip": "Jenis susun atur graf",
+    "Network": "Rangkaian",
+    "Node Density": "Ketumpatan Nod",
+    "Node Density - Tooltip": "Mengawal jarak antara nod (1=jarang, 10=padat)",
+    "Node Details": "Butiran Nod",
+    "None": "Tiada",
+    "Other": "Lain-lain",
+    "Policy": "Dasar",
+    "Radial": "Jejari",
+    "Security": "Keselamatan",
+    "Storage": "Penyimpanan",
+    "Tree": "Pokok"
   },
   "hospital": {
     "Edit Hospital": "Edit Hospital",

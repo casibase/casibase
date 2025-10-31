@@ -446,11 +446,23 @@
   },
   "graph": {
     "Circular": "Kreisförmig",
+    "Compute": "Berechnung",
     "Edit Graph": "Diagramm bearbeiten",
     "Force": "Kraftgerichtet",
+    "Grid": "Raster",
     "Layout": "Layout",
     "Layout - Tooltip": "Grafik-Layout-Typ",
-    "None": "Keine"
+    "Network": "Netzwerk",
+    "Node Density": "Knotendichte",
+    "Node Density - Tooltip": "Steuert den Abstand zwischen Knoten (1=spärlich, 10=dicht)",
+    "Node Details": "Knotendetails",
+    "None": "Keine",
+    "Other": "Andere",
+    "Policy": "Richtlinie",
+    "Radial": "Radial",
+    "Security": "Sicherheit",
+    "Storage": "Speicher",
+    "Tree": "Baum"
   },
   "hospital": {
     "Edit Hospital": "Krankenhaus bearbeiten",

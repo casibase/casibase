@@ -446,11 +446,23 @@
   },
   "graph": {
     "Circular": "원형",
+    "Compute": "컴퓨팅",
     "Edit Graph": "그래프 편집",
     "Force": "힘 방향",
+    "Grid": "그리드",
     "Layout": "레이아웃",
     "Layout - Tooltip": "그래프 레이아웃 유형",
-    "None": "없음"
+    "Network": "네트워크",
+    "Node Density": "노드 밀도",
+    "Node Density - Tooltip": "노드 간 간격 제어 (1=희박, 10=밀집)",
+    "Node Details": "노드 세부정보",
+    "None": "없음",
+    "Other": "기타",
+    "Policy": "정책",
+    "Radial": "방사형",
+    "Security": "보안",
+    "Storage": "스토리지",
+    "Tree": "트리"
   },
   "hospital": {
     "Edit Hospital": "병원 편집",

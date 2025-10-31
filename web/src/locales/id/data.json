@@ -446,11 +446,23 @@
   },
   "graph": {
     "Circular": "Melingkar",
+    "Compute": "Komputasi",
     "Edit Graph": "Edit Grafik",
     "Force": "Gaya",
+    "Grid": "Kisi",
     "Layout": "Tata letak",
     "Layout - Tooltip": "Jenis tata letak grafik",
-    "None": "Tidak ada"
+    "Network": "Jaringan",
+    "Node Density": "Kepadatan Node",
+    "Node Density - Tooltip": "Mengontrol jarak antar node (1=jarang, 10=padat)",
+    "Node Details": "Detail Node",
+    "None": "Tidak ada",
+    "Other": "Lainnya",
+    "Policy": "Kebijakan",
+    "Radial": "Radial",
+    "Security": "Keamanan",
+    "Storage": "Penyimpanan",
+    "Tree": "Pohon"
   },
   "hospital": {
     "Edit Hospital": "Edit rumah sakit",

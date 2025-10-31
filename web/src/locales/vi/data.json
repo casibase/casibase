@@ -445,12 +445,24 @@
     "{total} in total": "{total} in total"
   },
   "graph": {
-    "Circular": "Circular",
+    "Circular": "Vòng tròn",
+    "Compute": "Tính toán",
     "Edit Graph": "Chỉnh sửa đồ thị",
-    "Force": "Force",
-    "Layout": "Layout",
-    "Layout - Tooltip": "Graph layout type",
-    "None": "None"
+    "Force": "Lực",
+    "Grid": "Lưới",
+    "Layout": "Bố cục",
+    "Layout - Tooltip": "Loại bố cục đồ thị",
+    "Network": "Mạng",
+    "Node Density": "Mật độ nút",
+    "Node Density - Tooltip": "Kiểm soát khoảng cách giữa các nút (1=thưa, 10=dày đặc)",
+    "Node Details": "Chi tiết nút",
+    "None": "Không có",
+    "Other": "Khác",
+    "Policy": "Chính sách",
+    "Radial": "Xuyên tâm",
+    "Security": "Bảo mật",
+    "Storage": "Lưu trữ",
+    "Tree": "Cây"
   },
   "hospital": {
     "Edit Hospital": "Edit Hospital",

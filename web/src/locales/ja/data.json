@@ -445,12 +445,24 @@
     "{total} in total": "{total} 合計"
   },
   "graph": {
-    "Circular": "环形",
+    "Circular": "円形",
+    "Compute": "コンピューティング",
     "Edit Graph": "グラフを編集",
-    "Force": "力导向",
-    "Layout": "布局",
-    "Layout - Tooltip": "图布局类型",
-    "None": "无"
+    "Force": "力指向",
+    "Grid": "グリッド",
+    "Layout": "レイアウト",
+    "Layout - Tooltip": "グラフレイアウトタイプ",
+    "Network": "ネットワーク",
+    "Node Density": "ノード密度",
+    "Node Density - Tooltip": "ノード間の間隔を制御（1=疎、10=密）",
+    "Node Details": "ノード詳細",
+    "None": "なし",
+    "Other": "その他",
+    "Policy": "ポリシー",
+    "Radial": "放射状",
+    "Security": "セキュリティ",
+    "Storage": "ストレージ",
+    "Tree": "ツリー"
   },
   "hospital": {
     "Edit Hospital": "病院を編集",
