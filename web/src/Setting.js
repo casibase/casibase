@@ -1131,6 +1131,14 @@ export function getProviderLogoURL(provider) {
   return otherProviderInfo[provider.category][provider.type].logo;
 }
 
+export function isProviderSupportWebSearch(provider) {
+  if (!provider || provider.category !== "Model") {
+    return false;
+  }
+
+  return ["OpenAI"].includes(provider.type);
+}
+
 export function getProviderTypeOptions(category) {
   if (category === "Storage") {
     return (
