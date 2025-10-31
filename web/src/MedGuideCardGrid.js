@@ -39,6 +39,7 @@ const GROUPS = [
             { title: "数据操作上链", icon: "🔗", desc: "各类数据操作全流程上链，提升数据可信度。", route: "/records" },
             { title: "区块链浏览器", icon: "🌐", desc: "可视化浏览链上数据，支持多条件筛选与溯源。", route: "http://192.168.0.228:9996/chain1/home" },
             // { title: "区块链浏览器", icon: "🌐", desc: "可视化浏览链上数据，支持多条件筛选与溯源。", route: "/forms/区块链浏览器/data" },
+            { title: "病例数据", icon: "🗒", desc: "可视化病例数据上传，支持批量导入", route: "/med-records" },
             { title: "查询与审计", icon: "🔍", desc: "查看每位患者的上链数据明细，支持多维度检索与追溯。", route: "/ipfs-search", introRoute: "/introduce/patient-chain-data" },
         ],
     },

@@ -120,6 +120,7 @@ import MyDataSet from "./multicentre/DataUsage/MyDataSet";
 import MyApplication from "./multicentre/DataUsage/MyApplication";
 
 import DynamicConfigPage from "./DynamicConfigPage";
+import MedRecordCenterPage from "./component/record/MedRecordCenterPage";
 
 // 功能介绍页面组
 import PatientChainDataIntro from "./introduce/PatientChainDataIntro"
@@ -806,6 +807,8 @@ class App extends Component {
       const chainServicesItems = [
         Setting.getItem(<Link to="/ipfs-archive">{i18next.t("leftSideMedMenu:IpfsArchives")}</Link>, "/ipfs-archive"),
         Setting.getItem(<Link to="/records">{i18next.t("leftSideMedMenu:Records")}</Link>, "/records"),
+        // 病例数据中心（录入/导入/列表）
+        Setting.getItem(<Link to="/med-records">病例数据</Link>, "/med-records"),
         // 区块链浏览器 - 仅管理员可见，隐藏 user 和 doctor 标签用户
         ...(canViewBlockchainExplorer ? [Setting.getItem(
           <a target="_blank" rel="noreferrer" href="http://192.168.0.228:9996/chain1/home">
@@ -1109,6 +1112,7 @@ class App extends Component {
         <Route exact path="/applications/:applicationName/view" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationDetailsPage account={this.state.account} {...props} />)} />
         <Route exact path="/application-store" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationStorePage account={this.state.account} {...props} />)} />
         <Route exact path="/application-store" render={(props) => this.renderSigninIfNotSignedIn(<ApplicationStorePage account={this.state.account} {...props} />)} />
+        <Route exact path="/med-records" render={(props) => this.renderSigninIfNotSignedIn(<MedRecordCenterPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes" render={(props) => this.renderSigninIfNotSignedIn(<NodeListPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes/:nodeName" render={(props) => this.renderSigninIfNotSignedIn(<NodeEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/sessions" render={(props) => this.renderSigninIfNotSignedIn(<SessionListPage account={this.state.account} {...props} />)} />

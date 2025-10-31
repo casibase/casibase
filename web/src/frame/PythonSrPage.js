@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import { Card, Button, Checkbox, Select, Input, Progress, Tabs, Avatar, Space, Row, Col, Statistic, message, Form, DatePicker, InputNumber, Modal, Tag, Descriptions, Divider } from "antd";
-import { UserOutlined, HistoryOutlined, KeyOutlined, FileTextOutlined, CheckCircleOutlined, ClockCircleOutlined, LockOutlined, DownloadOutlined, MedicineBoxOutlined, ExperimentOutlined, SearchOutlined, SendOutlined, CheckOutlined, CloseOutlined, EyeOutlined } from "@ant-design/icons";
+import { Card, Button, Checkbox, Select, Input, Progress, Tabs, Avatar, Space, Row, Col, Statistic, message, Form, DatePicker, InputNumber, Modal, Tag, Descriptions, Divider, Table } from "antd";
+import { UserOutlined, HistoryOutlined, FileTextOutlined, MedicineBoxOutlined, SearchOutlined, SendOutlined, CheckOutlined, CloseOutlined, EyeOutlined, EditOutlined } from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
 import * as Setting from "../Setting";
 import moment from 'moment';
@@ -32,27 +32,38 @@ class PythonSrPage extends React.Component {
       patientRecords: [],
       hospitalOptions: [],
       isLoading: false,
-      authorizationForm: {
+
+      // 协同诊疗相关状态
+      collaborationForm: {
         selectedHospitals: [],
-        validityPeriod: 30,
-        dataTimeRange: null,
-        applicationNote: ''
+        description: ''
       },
-      isSubmittingRequest: false,
-      // 患者授权请求相关状态
-      patientAuthorizationRequests: [],
-      isLoadingRequests: false,
+      isSubmittingCollaboration: false,
+
+      // 医生发起的协同诊疗请求
+      myCollaborationRequests: [],
+      isLoadingMyRequests: false,
+
+      // 针对本医院的协同诊疗请求
+      hospitalCollaborationRequests: [],
+      isLoadingHospitalRequests: false,
+
+      // 诊疗意见相关
       selectedRequest: null,
       showRequestModal: false,
-      rejectReason: '',
-      // 历史记录相关状态
-      doctorHistoryRequests: [],
-      patientHistoryRequests: [],
-      isLoadingDoctorHistory: false,
-      isLoadingPatientHistory: false,
-      // 已授权患者记录
-      authorizedPatientRecords: [],
-      isLoadingAuthorizedRecords: false,
+      showOpinionModal: false,
+      diagnosisOpinion: {
+        opinion: '',
+        diagnosis: '',
+        treatmentSuggestion: ''
+      },
+      isSubmittingOpinion: false,
+
+      // 查看诊疗意见
+      selectedRequestForOpinions: null,
+      showOpinionsModal: false,
+      diagnosisOpinions: [],
+      isLoadingOpinions: false,
     };
     this.chartRef = React.createRef();
     this.formRef = React.createRef();
@@ -72,8 +83,7 @@ class PythonSrPage extends React.Component {
     } else {
       chartData = [
         { value: 4, name: '广东省人民医院', itemStyle: { color: '#165DFF' } },
-        { value: 3, name: '江苏省人民医院', itemStyle: { color: '#36BFFA' } },
-        { value: 1, name: '医大一院', itemStyle: { color: '#0FC6C2' } }
+        { value: 3, name: '中国医科大学第一附属医院', itemStyle: { color: '#36BFFA' } }
       ];
     }
 
@@ -132,15 +142,12 @@ class PythonSrPage extends React.Component {
     const userTag = account?.tag || '';
 
     // 根据tag确定卡片标题
-    let cardTitle = "患者信息";
-    let buttonText = "编辑患者信息";
+    let cardTitle = "医生信息";
+    let buttonText = "编辑医生信息";
 
     if (userTag === 'admin') {
       cardTitle = "管理员信息";
       buttonText = "编辑管理员信息";
-    } else if (userTag === 'doctor') {
-      cardTitle = "医生信息";
-      buttonText = "编辑医生信息";
     }
 
     return (
@@ -169,18 +176,16 @@ class PythonSrPage extends React.Component {
         {/* 详细信息 */}
         <Space direction="vertical" style={{ width: '100%' }}>
           {userTag === 'admin' ? (
-            // 管理员只显示编辑按钮
             null
           ) : (
-            // 医生和用户显示详细信息
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #f0f0f0' }}>
                 <span style={{ color: '#86909C' }}>性别</span>
                 <span>{account?.gender || '未设置'}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #f0f0f0' }}>
-                <span style={{ color: '#86909C' }}>年龄</span>
-                <span>{account?.birthday ? this.calculateAge(account.birthday) : '未设置'}</span>
+                <span style={{ color: '#86909C' }}>工作单位</span>
+                <span>{account?.affiliation || '未设置'}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                 <span style={{ color: '#86909C' }}>联系方式</span>
@@ -202,18 +207,6 @@ class PythonSrPage extends React.Component {
     );
   }
 
-  calculateAge = (birthday) => {
-    if (!birthday) return '未设置';
-    const today = new Date();
-    const birthDate = new Date(birthday);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return `${age}岁`;
-  }
-
   // 搜索患者记录
   searchPatientRecords = async () => {
     const { searchHashId } = this.state;
@@ -222,7 +215,6 @@ class PythonSrPage extends React.Component {
       return;
     }
 
-    // 查询前清空数据
     this.setState({
       isLoading: true,
       patientRecords: [],
@@ -230,7 +222,7 @@ class PythonSrPage extends React.Component {
     });
 
     try {
-      console.log('开始搜索患者就诊记录，HashID:', searchHashId, '过滤条件: requestUri=/api/add-outpatient');
+      console.log('开始搜索患者就诊记录，HashID:', searchHashId);
 
       const response = await fetch(`${Setting.ServerUrl}/api/get-patient-by-hash-id?hashId=${encodeURIComponent(searchHashId)}`, {
         method: 'GET',
@@ -256,7 +248,6 @@ class PythonSrPage extends React.Component {
           return;
         }
 
-        // 解析记录中的医院信息
         const hospitals = this.extractHospitalsFromRecords(records);
         console.log('解析出的医院信息:', hospitals);
 
@@ -272,13 +263,6 @@ class PythonSrPage extends React.Component {
         });
 
         message.success(`找到 ${records.length} 条就诊记录，涉及 ${hospitals.length} 家医院`);
-
-        // 搜索成功后，更新医生的历史申请记录（只显示该患者的申请）
-        const { account } = this.props;
-        const userTag = account?.tag || '';
-        if (userTag === 'doctor') {
-          this.fetchDoctorHistoryRequests(searchHashId);
-        }
       } else {
         console.error('API返回错误:', res);
         const errorMsg = res.msg || '查询失败';
@@ -287,17 +271,7 @@ class PythonSrPage extends React.Component {
       }
     } catch (error) {
       console.error('搜索患者记录时发生错误:', error);
-
-      let errorMessage = '查询失败，请稍后重试';
-      if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        errorMessage = '网络连接失败，请检查网络连接';
-      } else if (error.message.includes('HTTP错误')) {
-        errorMessage = `服务器错误: ${error.message}`;
-      } else if (error.message.includes('JSON')) {
-        errorMessage = '服务器响应格式错误';
-      }
-
-      message.error(errorMessage);
+      message.error('查询失败，请稍后重试');
       this.setState({ patientRecords: [], hospitalOptions: [] });
     } finally {
       this.setState({ isLoading: false });
@@ -319,61 +293,26 @@ class PythonSrPage extends React.Component {
           return;
         }
 
-        console.log(`记录 ${index} 的原始object内容:`, record.object);
-        console.log(`记录 ${index} 的object类型:`, typeof record.object);
-        console.log(`记录 ${index} 的object长度:`, record.object.length);
-
-        // 尝试清理可能的转义字符
         let cleanObject = record.object;
         if (typeof cleanObject === 'string') {
-          // 移除可能的双重转义
           cleanObject = cleanObject.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
         }
 
-        console.log(`记录 ${index} 清理后的object内容:`, cleanObject);
-
         const objectData = JSON.parse(cleanObject);
         validRecordCount++;
-        console.log(`记录 ${index} 解析后的数据:`, objectData);
 
-        // 检查所有可能的医院名称字段（根据实际数据结构调整）
         const hospitalName = objectData.admHosName || objectData.section || objectData.hospitalName || objectData.hosName || objectData.admHos;
 
         if (hospitalName) {
-          console.log(`记录 ${index} 找到医院: ${hospitalName}`);
-
           if (hospitalMap.has(hospitalName)) {
             hospitalMap.set(hospitalName, hospitalMap.get(hospitalName) + 1);
           } else {
             hospitalMap.set(hospitalName, 1);
           }
-        } else {
-          console.warn(`记录 ${index} 没有找到医院名称字段，可用字段:`, Object.keys(objectData));
-          console.warn(`记录 ${index} 完整数据:`, objectData);
         }
       } catch (error) {
         parseErrorCount++;
         console.error(`解析记录 ${index} 时发生错误:`, error);
-        console.error('问题记录内容:', record);
-        console.error('问题记录的object字段:', record.object);
-
-        // 尝试手动解析（如果JSON.parse失败）
-        try {
-          const manualParse = this.manualParseObject(record.object);
-          if (manualParse && manualParse.admHosName) {
-            console.log(`记录 ${index} 手动解析成功，医院: ${manualParse.admHosName}`);
-            const hospitalName = manualParse.admHosName;
-            if (hospitalMap.has(hospitalName)) {
-              hospitalMap.set(hospitalName, hospitalMap.get(hospitalName) + 1);
-            } else {
-              hospitalMap.set(hospitalName, 1);
-            }
-            validRecordCount++;
-            parseErrorCount--;
-          }
-        } catch (manualError) {
-          console.error(`记录 ${index} 手动解析也失败:`, manualError);
-        }
       }
     });
 
@@ -384,33 +323,8 @@ class PythonSrPage extends React.Component {
       count
     }));
 
-    console.log('最终医院统计结果:', result);
     return result;
   }
-
-  // 手动解析object字段（备用方法）
-  manualParseObject = (objectString) => {
-    try {
-      // 尝试提取医院名称字段（优先section，然后是admHosName）
-      const sectionMatch = objectString.match(/"section"\s*:\s*"([^"]+)"/);
-      const admHosNameMatch = objectString.match(/"admHosName"\s*:\s*"([^"]+)"/);
-
-      if (sectionMatch) {
-        return {
-          admHosName: sectionMatch[1] // 使用section作为医院名称
-        };
-      } else if (admHosNameMatch) {
-        return {
-          admHosName: admHosNameMatch[1]
-        };
-      }
-      return null;
-    } catch (error) {
-      console.error('手动解析失败:', error);
-      return null;
-    }
-  }
-
 
   // 获取医院颜色
   getHospitalColor = (hospitalName) => {
@@ -419,44 +333,36 @@ class PythonSrPage extends React.Component {
     return colors[index];
   }
 
-  // 发送授权请求
-  submitAuthorizationRequest = async () => {
+  // 发起协同诊疗请求
+  submitCollaborationRequest = async () => {
     const { account } = this.props;
-    const { searchHashId, authorizationForm } = this.state;
+    const { searchHashId, collaborationForm } = this.state;
 
     if (!searchHashId.trim()) {
       message.warning('请先搜索患者HashID');
       return;
     }
 
-    if (authorizationForm.selectedHospitals.length === 0) {
+    if (collaborationForm.selectedHospitals.length === 0) {
       message.warning('请选择至少一家医院');
       return;
     }
 
-    if (authorizationForm.validityPeriod <= 0) {
-      message.warning('授权有效期必须大于0天');
-      return;
-    }
-
-    this.setState({ isSubmittingRequest: true });
+    this.setState({ isSubmittingCollaboration: true });
 
     try {
       const requestData = {
-        doctorName: account?.displayName || account?.name || '未知医生',
-        doctorId: account?.id || account?.name || '',
-        doctorContact: account?.phone || account?.email || '',
+        initiatorDoctorId: account?.id || account?.name || '',
+        initiatorDoctorName: account?.displayName || account?.name || '未知医生',
+        initiatorHospital: account?.affiliation || '未知医院',
         patientHashId: searchHashId,
-        hospitals: JSON.stringify(authorizationForm.selectedHospitals),
-        validityPeriod: authorizationForm.validityPeriod,
-        dataTimeRangeStart: authorizationForm.dataTimeRange ? authorizationForm.dataTimeRange[0]?.format('YYYY-MM-DD HH:mm:ss') : null,
-        dataTimeRangeEnd: authorizationForm.dataTimeRange ? authorizationForm.dataTimeRange[1]?.format('YYYY-MM-DD HH:mm:ss') : null,
-        applicationNote: authorizationForm.applicationNote || ''
+        targetHospitals: JSON.stringify(collaborationForm.selectedHospitals),
+        description: collaborationForm.description || ''
       };
 
-      console.log('发送授权请求:', requestData);
+      console.log('发送协同诊疗请求:', requestData);
 
-      const response = await fetch(`${Setting.ServerUrl}/api/create-authorization-request`, {
+      const response = await fetch(`${Setting.ServerUrl}/api/create-collaboration-request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -468,42 +374,40 @@ class PythonSrPage extends React.Component {
       const res = await response.json();
 
       if (res.status === 'ok') {
-        message.success('授权请求已发送成功！');
-        // 重置表单
+        message.success('协同诊疗请求已发送成功！');
         this.setState({
-          authorizationForm: {
+          collaborationForm: {
             selectedHospitals: [],
-            validityPeriod: 30,
-            dataTimeRange: null,
-            applicationNote: ''
+            description: ''
           }
         });
         if (this.formRef.current) {
           this.formRef.current.resetFields();
         }
+        // 刷新我的请求列表
+        this.fetchMyCollaborationRequests();
       } else {
-        message.error(res.msg || '发送授权请求失败');
+        message.error(res.msg || '发送协同诊疗请求失败');
       }
     } catch (error) {
-      console.error('发送授权请求时发生错误:', error);
+      console.error('发送协同诊疗请求时发生错误:', error);
       message.error('发送失败，请稍后重试');
     } finally {
-      this.setState({ isSubmittingRequest: false });
+      this.setState({ isSubmittingCollaboration: false });
     }
   }
 
-  // 获取患者授权请求
-  fetchPatientAuthorizationRequests = async () => {
+  // 获取医生发起的协同诊疗请求
+  fetchMyCollaborationRequests = async () => {
     const { account } = this.props;
-    if (!account?.idCard) {
-      message.warning('无法获取患者身份信息');
+    if (!account?.id) {
       return;
     }
 
-    this.setState({ isLoadingRequests: true });
+    this.setState({ isLoadingMyRequests: true });
 
     try {
-      const response = await fetch(`${Setting.ServerUrl}/api/get-patient-authorization-requests?patientId=${encodeURIComponent(account.idCard)}`, {
+      const response = await fetch(`${Setting.ServerUrl}/api/get-collaboration-requests-by-doctor?doctorId=${encodeURIComponent(account.id)}`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -512,51 +416,52 @@ class PythonSrPage extends React.Component {
 
       if (res.status === 'ok') {
         const requests = res.data || [];
-        this.setState({ patientAuthorizationRequests: requests });
-        console.log('获取到授权请求:', requests);
+        this.setState({ myCollaborationRequests: requests });
+        console.log('获取到我的协同诊疗请求:', requests);
       } else {
-        message.error(res.msg || '获取授权请求失败');
-        this.setState({ patientAuthorizationRequests: [] });
+        message.error(res.msg || '获取协同诊疗请求失败');
+        this.setState({ myCollaborationRequests: [] });
       }
     } catch (error) {
-      console.error('获取授权请求时发生错误:', error);
-      message.error('获取失败，请稍后重试');
-      this.setState({ patientAuthorizationRequests: [] });
+      console.error('获取协同诊疗请求时发生错误:', error);
+      this.setState({ myCollaborationRequests: [] });
     } finally {
-      this.setState({ isLoadingRequests: false });
+      this.setState({ isLoadingMyRequests: false });
     }
   }
 
-  // 处理授权请求（同意或拒绝）
-  processAuthorizationRequest = async (requestId, action, reason = '') => {
+  // 获取针对本医院的协同诊疗请求
+  fetchHospitalCollaborationRequests = async () => {
+    const { account } = this.props;
+    const hospitalName = account?.affiliation;
+
+    if (!hospitalName) {
+      return;
+    }
+
+    this.setState({ isLoadingHospitalRequests: true });
+
     try {
-      const response = await fetch(`${Setting.ServerUrl}/api/process-authorization-request`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await fetch(`${Setting.ServerUrl}/api/get-collaboration-requests-by-hospital?hospitalName=${encodeURIComponent(hospitalName)}`, {
+        method: 'GET',
         credentials: 'include',
-        body: JSON.stringify({
-          requestId,
-          action,
-          reason
-        })
       });
 
       const res = await response.json();
 
       if (res.status === 'ok') {
-        message.success(action === 'approve' ? '已同意授权请求' : '已拒绝授权请求');
-        // 重新获取请求列表
-        this.fetchPatientAuthorizationRequests();
-        // 关闭模态框
-        this.setState({ showRequestModal: false, selectedRequest: null });
+        const requests = res.data || [];
+        this.setState({ hospitalCollaborationRequests: requests });
+        console.log('获取到针对本医院的协同诊疗请求:', requests);
       } else {
-        message.error(res.msg || '处理失败');
+        message.error(res.msg || '获取协同诊疗请求失败');
+        this.setState({ hospitalCollaborationRequests: [] });
       }
     } catch (error) {
-      console.error('处理授权请求时发生错误:', error);
-      message.error('处理失败，请稍后重试');
+      console.error('获取协同诊疗请求时发生错误:', error);
+      this.setState({ hospitalCollaborationRequests: [] });
+    } finally {
+      this.setState({ isLoadingHospitalRequests: false });
     }
   }
 
@@ -564,59 +469,95 @@ class PythonSrPage extends React.Component {
   showRequestDetails = (request) => {
     this.setState({
       selectedRequest: request,
-      showRequestModal: true,
-      rejectReason: ''
+      showRequestModal: true
     });
   }
 
-  // 同意请求
-  approveRequest = () => {
-    const { selectedRequest } = this.state;
-    if (selectedRequest) {
-      this.processAuthorizationRequest(selectedRequest.requestId, 'approve');
-    }
+  // 显示诊疗意见填写界面
+  showOpinionForm = (request) => {
+    // 每次打开都是新的意见表单（允许医生提交多条意见）
+    this.setState({
+      selectedRequest: request,
+      showOpinionModal: true,
+      showRequestModal: false,
+      diagnosisOpinion: {
+        opinion: '',
+        diagnosis: '',
+        treatmentSuggestion: ''
+      }
+    });
   }
 
-  // 获取进度百分比
-  getProgressPercent = (status) => {
-    switch (status) {
-      case 'pending':
-        return 33; // 已发起
-      case 'approved':
-        return 100; // 已完成
-      case 'rejected':
-        return 66; // 患者确认但被拒绝
-      default:
-        return 0;
-    }
-  }
-
-  // 获取进度条颜色
-  getProgressColor = (status) => {
-    switch (status) {
-      case 'pending':
-        return '#ff7d00'; // 橙色
-      case 'approved':
-        return '#00B42A'; // 绿色
-      case 'rejected':
-        return '#ff4d4f'; // 红色
-      default:
-        return '#86909C'; // 灰色
-    }
-  }
-
-  // 获取已授权患者的就诊记录
-  fetchAuthorizedPatientRecords = async () => {
+  // 提交诊疗意见
+  submitDiagnosisOpinion = async () => {
     const { account } = this.props;
-    if (!account?.id) {
-      message.warning('无法获取医生身份信息');
+    const { selectedRequest, diagnosisOpinion } = this.state;
+
+    if (!diagnosisOpinion.opinion.trim()) {
+      message.warning('请填写诊疗意见');
       return;
     }
 
-    this.setState({ isLoadingAuthorizedRecords: true });
+    this.setState({ isSubmittingOpinion: true });
 
     try {
-      const response = await fetch(`${Setting.ServerUrl}/api/get-authorized-patient-records?doctorId=${encodeURIComponent(account.id)}`, {
+      const opinionData = {
+        collaborationReqId: selectedRequest.requestId,
+        doctorId: account?.id || account?.name || '',
+        doctorName: account?.displayName || account?.name || '未知医生',
+        hospitalName: account?.affiliation || '未知医院',
+        department: account?.department || '',
+        opinion: diagnosisOpinion.opinion,
+        diagnosis: diagnosisOpinion.diagnosis,
+        treatmentSuggestion: diagnosisOpinion.treatmentSuggestion
+      };
+
+      console.log('提交诊疗意见:', opinionData);
+
+      const response = await fetch(`${Setting.ServerUrl}/api/submit-diagnosis-opinion`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(opinionData)
+      });
+
+      const res = await response.json();
+
+      if (res.status === 'ok') {
+        message.success('诊疗意见已提交成功！');
+        this.setState({
+          showOpinionModal: false,
+          diagnosisOpinion: {
+            opinion: '',
+            diagnosis: '',
+            treatmentSuggestion: ''
+          }
+        });
+        // 刷新列表
+        this.fetchHospitalCollaborationRequests();
+      } else {
+        message.error(res.msg || '提交诊疗意见失败');
+      }
+    } catch (error) {
+      console.error('提交诊疗意见时发生错误:', error);
+      message.error('提交失败，请稍后重试');
+    } finally {
+      this.setState({ isSubmittingOpinion: false });
+    }
+  }
+
+  // 查看诊疗意见
+  showOpinions = async (request) => {
+    this.setState({
+      selectedRequestForOpinions: request,
+      showOpinionsModal: true,
+      isLoadingOpinions: true
+    });
+
+    try {
+      const response = await fetch(`${Setting.ServerUrl}/api/get-diagnosis-opinions-by-request?requestId=${encodeURIComponent(request.requestId)}`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -624,99 +565,17 @@ class PythonSrPage extends React.Component {
       const res = await response.json();
 
       if (res.status === 'ok') {
-        const records = res.data || [];
-        this.setState({ authorizedPatientRecords: records });
-        console.log('获取到已授权患者的就诊记录:', records);
+        const opinions = res.data || [];
+        this.setState({ diagnosisOpinions: opinions });
       } else {
-        message.error(res.msg || '获取已授权患者记录失败');
-        this.setState({ authorizedPatientRecords: [] });
+        message.error(res.msg || '获取诊疗意见失败');
+        this.setState({ diagnosisOpinions: [] });
       }
     } catch (error) {
-      console.error('获取已授权患者记录时发生错误:', error);
-      message.error('获取失败，请稍后重试');
-      this.setState({ authorizedPatientRecords: [] });
+      console.error('获取诊疗意见时发生错误:', error);
+      this.setState({ diagnosisOpinions: [] });
     } finally {
-      this.setState({ isLoadingAuthorizedRecords: false });
-    }
-  }
-
-  // 获取医生历史申请记录（基于搜索的患者HashID）
-  fetchDoctorHistoryRequests = async (patientHashId = null) => {
-    const { account } = this.props;
-    if (!account?.id) {
-      message.warning('无法获取医生身份信息');
-      return;
-    }
-
-    this.setState({ isLoadingDoctorHistory: true });
-
-    try {
-      let url = `${Setting.ServerUrl}/api/get-doctor-authorization-requests?doctorId=${encodeURIComponent(account.id)}`;
-      if (patientHashId) {
-        url += `&patientHashId=${encodeURIComponent(patientHashId)}`;
-      }
-
-      const response = await fetch(url, {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      const res = await response.json();
-
-      if (res.status === 'ok') {
-        const requests = res.data || [];
-        this.setState({ doctorHistoryRequests: requests });
-        console.log('获取到医生历史申请记录:', requests);
-      } else {
-        message.error(res.msg || '获取历史申请记录失败');
-        this.setState({ doctorHistoryRequests: [] });
-      }
-    } catch (error) {
-      console.error('获取医生历史申请记录时发生错误:', error);
-      message.error('获取失败，请稍后重试');
-      this.setState({ doctorHistoryRequests: [] });
-    } finally {
-      this.setState({ isLoadingDoctorHistory: false });
-    }
-  }
-
-  // 获取患者历史授权记录
-  fetchPatientHistoryRequests = async () => {
-    const { account } = this.props;
-    console.log('获取患者历史授权记录，account:', account);
-
-    if (!account?.idCard) {
-      message.warning('无法获取患者身份信息');
-      return;
-    }
-
-    console.log('使用患者IDCard作为patientId:', account.idCard);
-    this.setState({ isLoadingPatientHistory: true });
-
-    try {
-      const response = await fetch(`${Setting.ServerUrl}/api/get-patient-authorization-history?patientId=${encodeURIComponent(account.idCard)}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      console.log('API响应状态:', response.status, response.statusText);
-      const res = await response.json();
-      console.log('API响应数据:', res);
-
-      if (res.status === 'ok') {
-        const requests = res.data || [];
-        console.log('获取到患者历史授权记录:', requests);
-        this.setState({ patientHistoryRequests: requests });
-      } else {
-        message.error(res.msg || '获取历史授权记录失败');
-        this.setState({ patientHistoryRequests: [] });
-      }
-    } catch (error) {
-      console.error('获取患者历史授权记录时发生错误:', error);
-      message.error('获取失败，请稍后重试');
-      this.setState({ patientHistoryRequests: [] });
-    } finally {
-      this.setState({ isLoadingPatientHistory: false });
+      this.setState({ isLoadingOpinions: false });
     }
   }
 
@@ -724,47 +583,9 @@ class PythonSrPage extends React.Component {
   componentDidMount() {
     const { account } = this.props;
     const userTag = account?.tag || '';
-    if (userTag === 'user') {
-      this.fetchPatientAuthorizationRequests();
-      this.fetchPatientOwnRecords();
-      this.fetchPatientHistoryRequests();
-    } else if (userTag === 'doctor') {
-      this.fetchDoctorHistoryRequests();
-      this.fetchAuthorizedPatientRecords();
-    }
-  }
-
-  // 获取患者自己的就诊记录
-  fetchPatientOwnRecords = async () => {
-    const { account } = this.props;
-    if (!account?.idCard) {
-      return;
-    }
-
-    try {
-      const response = await fetch(`${Setting.ServerUrl}/api/get-patient-by-hash-id?hashId=${encodeURIComponent(account.idCard)}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      const res = await response.json();
-
-      if (res.status === 'ok') {
-        const records = res.data || [];
-        console.log('获取到患者自己的就诊记录:', records);
-
-        // 解析记录中的医院信息
-        const hospitals = this.extractHospitalsFromRecords(records);
-
-        this.setState({
-          patientRecords: records,
-          hospitalOptions: hospitals
-        });
-      } else {
-        console.log('获取患者就诊记录失败:', res.msg);
-      }
-    } catch (error) {
-      console.error('获取患者就诊记录时发生错误:', error);
+    if (userTag === 'doctor') {
+      this.fetchMyCollaborationRequests();
+      this.fetchHospitalCollaborationRequests();
     }
   }
 
@@ -772,14 +593,16 @@ class PythonSrPage extends React.Component {
     const { account } = this.props;
     const userTag = account?.tag || '';
     const isDoctor = userTag === 'doctor';
-    const isPatient = userTag === 'user';
+
+    // 定义可选医院列表
+    const availableHospitals = ['广东省人民医院', '中国医科大学第一附属医院'];
 
     return (
       <div style={{ padding: '24px', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
         {/* 页面标题 */}
         <div style={{ marginBottom: '24px' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 'bold', margin: 0 }}>协同诊疗</h2>
-          <p style={{ color: '#86909C', margin: '4px 0 0 0' }}>跨院就诊记录授权与查看平台</p>
+          <p style={{ color: '#86909C', margin: '4px 0 0 0' }}>跨院协同诊疗平台 - 医生协作查看患者信息并提供诊疗意见</p>
         </div>
 
         <Row gutter={24}>
@@ -788,288 +611,65 @@ class PythonSrPage extends React.Component {
             {this.renderUserInfoCard()}
 
             {/* 就诊历史统计 */}
-            <Card
-              title={
-                <Space>
-                  <HistoryOutlined style={{ color: '#165DFF' }} />
-                  我的就诊历史统计
-                </Space>
-              }
-            >
-              {isPatient ? (
-                this.state.hospitalOptions.length === 0 ? (
-                  <div style={{ textAlign: 'center', padding: '40px 0', color: '#86909C' }}>
-                    <div style={{ fontSize: '14px', marginBottom: '8px' }}>暂无就诊记录</div>
-                    <div style={{ fontSize: '12px' }}>您的就诊记录将在这里显示</div>
-                  </div>
-                ) : (
-                  <>
-                    <div style={{ marginBottom: '16px' }}>
-                      <ReactECharts
-                        ref={this.chartRef}
-                        option={this.getChartOption()}
-                        style={{ height: '200px' }}
-                        notMerge={true}
-                      />
-                    </div>
-
-                    <Row gutter={12}>
-                      <Col span={12}>
-                        <Card size="small" style={{ textAlign: 'center', backgroundColor: '#f2f3f5' }}>
-                          <Statistic
-                            title="就诊医院"
-                            value={this.state.hospitalOptions.length}
-                            suffix="家"
-                            valueStyle={{ fontSize: '20px', fontWeight: 600 }}
-                          />
-                        </Card>
-                      </Col>
-                      <Col span={12}>
-                        <Card size="small" style={{ textAlign: 'center', backgroundColor: '#f2f3f5' }}>
-                          <Statistic
-                            title="就诊次数"
-                            value={this.state.hospitalOptions.reduce((sum, hospital) => sum + hospital.count, 0)}
-                            suffix="次"
-                            valueStyle={{ fontSize: '20px', fontWeight: 600 }}
-                          />
-                        </Card>
-                      </Col>
-                    </Row>
-                  </>
-                )
-              ) : isDoctor && this.state.hospitalOptions.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px 0', color: '#86909C' }}>
-                  <div style={{ fontSize: '14px', marginBottom: '8px' }}>暂无就诊记录</div>
-                  <div style={{ fontSize: '12px' }}>请先搜索患者HashID获取就诊记录</div>
+            {this.state.patientRecords.length > 0 && (
+              <Card
+                title={
+                  <Space>
+                    <HistoryOutlined style={{ color: '#165DFF' }} />
+                    患者就诊历史统计
+                  </Space>
+                }
+              >
+                <div style={{ marginBottom: '16px' }}>
+                  <ReactECharts
+                    ref={this.chartRef}
+                    option={this.getChartOption()}
+                    style={{ height: '200px' }}
+                    notMerge={true}
+                  />
                 </div>
-              ) : (
-                <>
-                  <div style={{ marginBottom: '16px' }}>
-                    <ReactECharts
-                      ref={this.chartRef}
-                      option={this.getChartOption()}
-                      style={{ height: '200px' }}
-                      notMerge={true}
-                    />
-                  </div>
 
-                  <Row gutter={12}>
-                    <Col span={12}>
-                      <Card size="small" style={{ textAlign: 'center', backgroundColor: '#f2f3f5' }}>
-                        <Statistic
-                          title="就诊医院"
-                          value={this.state.hospitalOptions.length > 0 ? this.state.hospitalOptions.length : (isDoctor ? 0 : 3)}
-                          suffix="家"
-                          valueStyle={{ fontSize: '20px', fontWeight: 600 }}
-                        />
-                      </Card>
-                    </Col>
-                    <Col span={12}>
-                      <Card size="small" style={{ textAlign: 'center', backgroundColor: '#f2f3f5' }}>
-                        <Statistic
-                          title="就诊次数"
-                          value={this.state.hospitalOptions.length > 0 ? this.state.hospitalOptions.reduce((sum, hospital) => sum + hospital.count, 0) : (isDoctor ? 0 : 8)}
-                          suffix="次"
-                          valueStyle={{ fontSize: '20px', fontWeight: 600 }}
-                        />
-                      </Card>
-                    </Col>
-                  </Row>
-                </>
-              )}
-            </Card>
+                <Row gutter={12}>
+                  <Col span={12}>
+                    <Card size="small" style={{ textAlign: 'center', backgroundColor: '#f2f3f5' }}>
+                      <Statistic
+                        title="就诊医院"
+                        value={this.state.hospitalOptions.length}
+                        suffix="家"
+                        valueStyle={{ fontSize: '20px', fontWeight: 600 }}
+                      />
+                    </Card>
+                  </Col>
+                  <Col span={12}>
+                    <Card size="small" style={{ textAlign: 'center', backgroundColor: '#f2f3f5' }}>
+                      <Statistic
+                        title="就诊次数"
+                        value={this.state.hospitalOptions.reduce((sum, hospital) => sum + hospital.count, 0)}
+                        suffix="次"
+                        valueStyle={{ fontSize: '20px', fontWeight: 600 }}
+                      />
+                    </Card>
+                  </Col>
+                </Row>
+              </Card>
+            )}
           </Col>
 
           {/* 右侧：功能区 */}
           <Col xs={24} lg={16}>
             <Space direction="vertical" style={{ width: '100%' }} size="large">
-              {/* 患者界面：授权请求审批 */}
-              {isPatient ? (
-                <Space direction="vertical" style={{ width: '100%' }} size="large">
-                  {/* 待审批授权请求 */}
+              {/* 医生界面：搜索患者和发起协同诊疗 */}
+              {isDoctor && (
+                <>
                   <Card
                     title={
                       <Space>
-                        <KeyOutlined style={{ color: '#165DFF' }} />
-                        待审批授权请求
+                        <SearchOutlined style={{ color: '#165DFF' }} />
+                        患者信息查询与协同诊疗
                       </Space>
                     }
-                    extra={
-                      <Button
-                        onClick={this.fetchPatientAuthorizationRequests}
-                        loading={this.state.isLoadingRequests}
-                      >
-                        刷新
-                      </Button>
-                    }
                   >
-                    {this.state.isLoadingRequests ? (
-                      <div style={{ textAlign: 'center', padding: '40px' }}>
-                        <Progress type="circle" />
-                      </div>
-                    ) : this.state.patientAuthorizationRequests.length === 0 ? (
-                      <div style={{ textAlign: 'center', padding: '60px', color: '#86909C' }}>
-                        <div style={{ fontSize: '16px', marginBottom: '8px' }}>暂无待审批的授权请求</div>
-                        <div style={{ fontSize: '14px' }}>当有医生申请查看您的就诊记录时，请求将显示在这里</div>
-                      </div>
-                    ) : (
-                      <Row gutter={[16, 16]}>
-                        {this.state.patientAuthorizationRequests.map((request, index) => (
-                          <Col xs={24} md={12} key={request.requestId}>
-                            <Card
-                              hoverable
-                              style={{ height: '100%' }}
-                              actions={[
-                                <Button
-                                  type="link"
-                                  icon={<EyeOutlined />}
-                                  onClick={() => this.showRequestDetails(request)}
-                                >
-                                  查看详情
-                                </Button>
-                              ]}
-                            >
-                              <div style={{ marginBottom: '12px' }}>
-                                <Tag color="blue" style={{ fontSize: '14px', padding: '4px 8px' }}>
-                                  {request.doctorName}
-                                </Tag>
-                                <Tag color="orange" style={{ fontSize: '14px', padding: '4px 8px' }}>
-                                  {request.status === 'pending' ? '待审批' : request.status}
-                                </Tag>
-                              </div>
-                              <div style={{ marginBottom: '8px' }}>
-                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>申请时间</div>
-                                <div style={{ fontSize: '14px' }}>{moment(request.createdTime).format('YYYY-MM-DD HH:mm')}</div>
-                              </div>
-                              <div style={{ marginBottom: '8px' }}>
-                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>授权有效期</div>
-                                <div style={{ fontSize: '14px' }}>{request.validityPeriod}天</div>
-                              </div>
-                              <div>
-                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>申请医院</div>
-                                <div style={{ fontSize: '12px' }}>
-                                  {JSON.parse(request.hospitals || '[]').slice(0, 2).map((hospital, idx) => (
-                                    <Tag key={idx} size="small" color="green" style={{ marginBottom: '2px' }}>
-                                      {hospital}
-                                    </Tag>
-                                  ))}
-                                  {JSON.parse(request.hospitals || '[]').length > 2 && (
-                                    <Tag size="small" color="default">
-                                      +{JSON.parse(request.hospitals || '[]').length - 2}家
-                                    </Tag>
-                                  )}
-                                </div>
-                              </div>
-                            </Card>
-                          </Col>
-                        ))}
-                      </Row>
-                    )}
-                  </Card>
-
-                  {/* 患者历史授权记录 */}
-                  <Card
-                    title={
-                      <Space>
-                        <HistoryOutlined style={{ color: '#165DFF' }} />
-                        历史授权记录
-                      </Space>
-                    }
-                    extra={
-                      <Button
-                        onClick={this.fetchPatientHistoryRequests}
-                        loading={this.state.isLoadingPatientHistory}
-                      >
-                        刷新
-                      </Button>
-                    }
-                  >
-                    {this.state.isLoadingPatientHistory ? (
-                      <div style={{ textAlign: 'center', padding: '40px' }}>
-                        <Progress type="circle" />
-                      </div>
-                    ) : this.state.patientHistoryRequests.length === 0 ? (
-                      <div style={{ textAlign: 'center', padding: '40px', color: '#86909C' }}>
-                        <div style={{ fontSize: '14px' }}>暂无历史授权记录</div>
-                      </div>
-                    ) : (
-                      <Row gutter={[16, 16]}>
-                        {this.state.patientHistoryRequests.map((request, index) => (
-                          <Col xs={24} md={12} key={request.requestId}>
-                            <Card
-                              hoverable
-                              style={{ height: '100%' }}
-                              actions={[
-                                <Button
-                                  type="link"
-                                  icon={<EyeOutlined />}
-                                  onClick={() => this.showRequestDetails(request)}
-                                >
-                                  查看详情
-                                </Button>
-                              ]}
-                            >
-                              <div style={{ marginBottom: '12px' }}>
-                                <Tag color="blue" style={{ fontSize: '14px', padding: '4px 8px' }}>
-                                  {request.doctorName}
-                                </Tag>
-                                <Tag
-                                  color={request.status === 'approved' ? 'green' : 'red'}
-                                  style={{ fontSize: '14px', padding: '4px 8px' }}
-                                >
-                                  {request.status === 'approved' ? '已授权' : '已拒绝'}
-                                </Tag>
-                              </div>
-                              <div style={{ marginBottom: '8px' }}>
-                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>申请时间</div>
-                                <div style={{ fontSize: '14px' }}>{moment(request.createdTime).format('YYYY-MM-DD HH:mm')}</div>
-                              </div>
-                              <div style={{ marginBottom: '8px' }}>
-                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>处理时间</div>
-                                <div style={{ fontSize: '14px' }}>
-                                  {request.processedTime ? moment(request.processedTime).format('YYYY-MM-DD HH:mm') : '未处理'}
-                                </div>
-                              </div>
-                              <div>
-                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>申请医院</div>
-                                <div style={{ fontSize: '12px' }}>
-                                  {JSON.parse(request.hospitals || '[]').slice(0, 2).map((hospital, idx) => (
-                                    <Tag key={idx} size="small" color="green" style={{ marginBottom: '2px' }}>
-                                      {hospital}
-                                    </Tag>
-                                  ))}
-                                  {JSON.parse(request.hospitals || '[]').length > 2 && (
-                                    <Tag size="small" color="default">
-                                      +{JSON.parse(request.hospitals || '[]').length - 2}家
-                                    </Tag>
-                                  )}
-                                </div>
-                              </div>
-                              {request.status === 'rejected' && request.rejectReason && (
-                                <div style={{ marginTop: '8px', padding: '8px', backgroundColor: '#fff2f0', borderRadius: '4px' }}>
-                                  <div style={{ fontSize: '12px', color: '#ff4d4f', marginBottom: '4px' }}>拒绝原因</div>
-                                  <div style={{ fontSize: '12px', color: '#666' }}>{request.rejectReason}</div>
-                                </div>
-                              )}
-                            </Card>
-                          </Col>
-                        ))}
-                      </Row>
-                    )}
-                  </Card>
-                </Space>
-              ) : (
-                // 医生界面：发起授权请求
-                <Card
-                  title={
-                    <Space>
-                      <KeyOutlined style={{ color: '#165DFF' }} />
-                      发起授权请求
-                    </Space>
-                  }
-                >
-                  {/* 医生界面添加搜索栏 */}
-                  {isDoctor && (
+                    {/* 搜索栏 */}
                     <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
                       <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#86909C', marginBottom: '8px' }}>
                         根据患者HashID查询就诊记录
@@ -1091,493 +691,440 @@ class PythonSrPage extends React.Component {
                         </Button>
                       </Space.Compact>
                     </div>
-                  )}
 
-                  <Row gutter={16}>
-                    <Col xs={24} md={12}>
-                      <div style={{ marginBottom: '16px' }}>
-                        <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#86909C', marginBottom: '8px' }}>选择既往就诊医院</label>
-                        <Space direction="vertical">
-                          {this.state.hospitalOptions.length > 0 ? (
-                            this.state.hospitalOptions.map((hospital, index) => (
+                    {/* 显示患者记录 */}
+                    {this.state.patientRecords.length > 0 && (
+                      <div style={{ marginBottom: '24px' }}>
+                        <Divider orientation="left">患者就诊记录（{this.state.patientRecords.length}条）</Divider>
+                        <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                          <Space direction="vertical" style={{ width: '100%' }} size="middle">
+                            {this.state.patientRecords.slice(0, 5).map((record, index) => {
+                              try {
+                                const recordData = JSON.parse(record.object || '{}');
+                                return (
+                                  <Card key={record.id} size="small" hoverable>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                      <Space>
+                                        <MedicineBoxOutlined style={{ color: '#165DFF' }} />
+                                        <span style={{ fontWeight: 500 }}>
+                                          {recordData.section || recordData.admHosName || '未知医院'}
+                                        </span>
+                                        <span style={{ color: '#86909C', fontSize: '12px' }}>
+                                          {recordData.consultationTime ? moment(recordData.consultationTime).format('YYYY-MM-DD') : '未知时间'}
+                                        </span>
+                                      </Space>
+                                      <Tag color="blue">{recordData.unit || '未知科室'}</Tag>
+                                    </div>
+                                  </Card>
+                                );
+                              } catch (error) {
+                                return null;
+                              }
+                            })}
+                          </Space>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 发起协同诊疗请求 */}
+                    {this.state.patientRecords.length > 0 && (
+                      <>
+                        <Divider orientation="left">发起协同诊疗请求</Divider>
+                        <div style={{ marginBottom: '16px' }}>
+                          <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#86909C', marginBottom: '8px' }}>
+                            选择协作医院（可选择多家）
+                          </label>
+                          <Space direction="vertical">
+                            {availableHospitals.map((hospital, index) => (
                               <Checkbox
                                 key={index}
-                                checked={this.state.authorizationForm.selectedHospitals.includes(hospital.name)}
+                                checked={this.state.collaborationForm.selectedHospitals.includes(hospital)}
                                 onChange={(e) => {
-                                  const selectedHospitals = [...this.state.authorizationForm.selectedHospitals];
+                                  const selectedHospitals = [...this.state.collaborationForm.selectedHospitals];
                                   if (e.target.checked) {
-                                    selectedHospitals.push(hospital.name);
+                                    selectedHospitals.push(hospital);
                                   } else {
-                                    const index = selectedHospitals.indexOf(hospital.name);
+                                    const index = selectedHospitals.indexOf(hospital);
                                     if (index > -1) {
                                       selectedHospitals.splice(index, 1);
                                     }
                                   }
                                   this.setState({
-                                    authorizationForm: {
-                                      ...this.state.authorizationForm,
+                                    collaborationForm: {
+                                      ...this.state.collaborationForm,
                                       selectedHospitals
                                     }
                                   });
                                 }}
                               >
-                                {hospital.name} ({hospital.count}次)
+                                {hospital}
                               </Checkbox>
-                            ))
-                          ) : (
-                            isDoctor ? (
-                              <div style={{ color: '#86909C', fontSize: '12px', padding: '8px 0' }}>
-                                请先搜索患者HashID获取就诊记录
-                              </div>
-                            ) : (
-                              <>
-                                <Checkbox defaultChecked>广东省人民医院</Checkbox>
-                                <Checkbox defaultChecked>江苏省人民医院</Checkbox>
-                                <Checkbox>医大一院</Checkbox>
-                              </>
-                            )
-                          )}
-                        </Space>
-                      </div>
-                    </Col>
+                            ))}
+                          </Space>
+                        </div>
 
-                    <Col xs={24} md={12}>
-                      <div style={{ marginBottom: '16px' }}>
-                        <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#86909C', marginBottom: '8px' }}>可查看的数据范围</label>
-                        <Space direction="vertical">
-                          <Checkbox defaultChecked>门诊病历</Checkbox>
-                          <Checkbox defaultChecked>检查报告</Checkbox>
-                          <Checkbox defaultChecked>用药记录</Checkbox>
-                          <Checkbox>住院记录</Checkbox>
-                        </Space>
-                      </div>
-                    </Col>
-                  </Row>
-
-                  <Row gutter={16}>
-                    <Col xs={24} md={12}>
-                      <div style={{ marginBottom: '20px' }}>
-                        <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#86909C', marginBottom: '8px' }}>授权有效期</label>
-                        <InputNumber
-                          min={1}
-                          max={365}
-                          value={this.state.authorizationForm.validityPeriod}
-                          onChange={(value) => {
-                            this.setState({
-                              authorizationForm: {
-                                ...this.state.authorizationForm,
-                                validityPeriod: value || 30
-                              }
-                            });
-                          }}
-                          addonAfter="天"
-                          style={{ width: '100%' }}
-                        />
-                      </div>
-                    </Col>
-
-                    <Col xs={24} md={12}>
-                      <div style={{ marginBottom: '20px' }}>
-                        <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#86909C', marginBottom: '8px' }}>数据时间范围</label>
-                        <DatePicker.RangePicker
-                          value={this.state.authorizationForm.dataTimeRange}
-                          onChange={(dates) => {
-                            this.setState({
-                              authorizationForm: {
-                                ...this.state.authorizationForm,
-                                dataTimeRange: dates
-                              }
-                            });
-                          }}
-                          style={{ width: '100%' }}
-                          placeholder={['开始时间', '结束时间']}
-                          showTime
-                          format="YYYY-MM-DD HH:mm:ss"
-                        />
-                      </div>
-                    </Col>
-                  </Row>
-
-                  <div style={{ marginBottom: '20px' }}>
-                    <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#86909C', marginBottom: '8px' }}>申请说明（可选）</label>
-                    <TextArea
-                      rows={3}
-                      placeholder="请说明申请授权的目的和用途..."
-                      value={this.state.authorizationForm.applicationNote}
-                      onChange={(e) => {
-                        this.setState({
-                          authorizationForm: {
-                            ...this.state.authorizationForm,
-                            applicationNote: e.target.value
-                          }
-                        });
-                      }}
-                    />
-                  </div>
-
-                  <div style={{ textAlign: 'center', marginTop: '24px' }}>
-                    <Button
-                      type="primary"
-                      size="large"
-                      icon={<SendOutlined />}
-                      loading={this.state.isSubmittingRequest}
-                      onClick={this.submitAuthorizationRequest}
-                      disabled={this.state.hospitalOptions.length === 0}
-                    >
-                      发送授权请求
-                    </Button>
-                  </div>
-                </Card>
-              )}
-
-              {/* 医生历史申请记录 */}
-              {isDoctor && (
-                <Card
-                  title={
-                    <Space>
-                      <FileTextOutlined style={{ color: '#165DFF' }} />
-                      历史申请记录
-                    </Space>
-                  }
-                  extra={
-                    <Button
-                      onClick={this.fetchDoctorHistoryRequests}
-                      loading={this.state.isLoadingDoctorHistory}
-                    >
-                      刷新
-                    </Button>
-                  }
-                >
-                  {this.state.isLoadingDoctorHistory ? (
-                    <div style={{ textAlign: 'center', padding: '40px' }}>
-                      <Progress type="circle" />
-                    </div>
-                  ) : this.state.doctorHistoryRequests.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '40px', color: '#86909C' }}>
-                      <div style={{ fontSize: '14px' }}>暂无历史申请记录</div>
-                    </div>
-                  ) : (
-                    <Row gutter={[16, 16]}>
-                      {this.state.doctorHistoryRequests.map((request, index) => (
-                        <Col xs={24} md={12} key={request.requestId}>
-                          <Card
-                            hoverable
-                            style={{ height: '100%' }}
-                            actions={[
-                              <Button
-                                type="link"
-                                icon={<EyeOutlined />}
-                                onClick={() => this.showRequestDetails(request)}
-                              >
-                                查看详情
-                              </Button>
-                            ]}
-                          >
-                            <div style={{ marginBottom: '12px' }}>
-                              <Tag
-                                color={
-                                  request.status === 'approved' ? 'green' :
-                                    request.status === 'rejected' ? 'red' :
-                                      'orange'
+                        <div style={{ marginBottom: '20px' }}>
+                          <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#86909C', marginBottom: '8px' }}>
+                            协同诊疗说明（可选）
+                          </label>
+                          <TextArea
+                            rows={3}
+                            placeholder="请说明需要协同诊疗的原因和关注点..."
+                            value={this.state.collaborationForm.description}
+                            onChange={(e) => {
+                              this.setState({
+                                collaborationForm: {
+                                  ...this.state.collaborationForm,
+                                  description: e.target.value
                                 }
-                                style={{ fontSize: '14px', padding: '4px 8px' }}
-                              >
-                                {request.status === 'approved' ? '已同意' :
-                                  request.status === 'rejected' ? '已拒绝' :
-                                    '待审批'}
-                              </Tag>
-                            </div>
-                            <div style={{ marginBottom: '8px' }}>
-                              <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>申请时间</div>
-                              <div style={{ fontSize: '14px' }}>{moment(request.createdTime).format('YYYY-MM-DD HH:mm')}</div>
-                            </div>
-                            <div style={{ marginBottom: '8px' }}>
-                              <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>患者HashID</div>
-                              <div style={{ fontSize: '12px', fontFamily: 'monospace' }}>
-                                {request.patientHashId.substring(0, 16)}...
-                              </div>
-                            </div>
-                            <div>
-                              <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>申请医院</div>
-                              <div style={{ fontSize: '12px' }}>
-                                {JSON.parse(request.hospitals || '[]').slice(0, 2).map((hospital, idx) => (
-                                  <Tag key={idx} size="small" color="blue" style={{ marginBottom: '2px' }}>
-                                    {hospital}
-                                  </Tag>
-                                ))}
-                                {JSON.parse(request.hospitals || '[]').length > 2 && (
-                                  <Tag size="small" color="default">
-                                    +{JSON.parse(request.hospitals || '[]').length - 2}家
-                                  </Tag>
-                                )}
-                              </div>
-                            </div>
-                            {request.status === 'rejected' && request.rejectReason && (
-                              <div style={{ marginTop: '8px', padding: '8px', backgroundColor: '#fff2f0', borderRadius: '4px' }}>
-                                <div style={{ fontSize: '12px', color: '#ff4d4f', marginBottom: '4px' }}>拒绝原因</div>
-                                <div style={{ fontSize: '12px', color: '#666' }}>{request.rejectReason}</div>
-                              </div>
-                            )}
-                          </Card>
-                        </Col>
-                      ))}
-                    </Row>
-                  )}
-                </Card>
-              )}
-
-              {/* 授权进度跟踪 */}
-              <Card
-                title={
-                  <Space>
-                    <FileTextOutlined style={{ color: '#165DFF' }} />
-                    授权进度跟踪
-                  </Space>
-                }
-              >
-                {this.state.doctorHistoryRequests.length === 0 ? (
-                  <div style={{ textAlign: 'center', padding: '40px', color: '#86909C' }}>
-                    <div style={{ fontSize: '14px' }}>暂无授权请求</div>
-                    <div style={{ fontSize: '12px' }}>发送授权请求后，进度将在这里显示</div>
-                  </div>
-                ) : (
-                  <Space direction="vertical" style={{ width: '100%' }} size="large">
-                    {this.state.doctorHistoryRequests.slice(0, 3).map((request, index) => (
-                      <div key={request.requestId}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                          <Space>
-                            <span style={{ fontWeight: 500 }}>
-                              {JSON.parse(request.hospitals || '[]').slice(0, 2).join('、')}
-                              {JSON.parse(request.hospitals || '[]').length > 2 && `等${JSON.parse(request.hospitals || '[]').length}家医院`}
-                            </span>
-                            <span style={{
-                              padding: '2px 8px',
-                              backgroundColor: request.status === 'approved' ? '#f6ffed' : request.status === 'rejected' ? '#fff2f0' : '#fff7e6',
-                              color: request.status === 'approved' ? '#52c41a' : request.status === 'rejected' ? '#ff4d4f' : '#ff7d00',
-                              fontSize: '12px',
-                              borderRadius: '12px'
-                            }}>
-                              {request.status === 'approved' ? '已授权' : request.status === 'rejected' ? '已拒绝' : '待审批'}
-                            </span>
-                          </Space>
-                          <span style={{ fontSize: '12px', color: '#86909C' }}>
-                            发起于 {moment(request.createdTime).format('MM-DD HH:mm')}
-                          </span>
+                              });
+                            }}
+                          />
                         </div>
 
-                        <Progress
-                          percent={this.getProgressPercent(request.status)}
-                          strokeColor={this.getProgressColor(request.status)}
-                          showInfo={false}
-                        />
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
-                          <Space direction="vertical" align="center" size="small">
-                            <CheckCircleOutlined style={{ color: '#00B42A' }} />
-                            <span style={{ fontSize: '12px' }}>已发起</span>
-                          </Space>
-                          <Space direction="vertical" align="center" size="small">
-                            {request.status === 'pending' ? (
-                              <ClockCircleOutlined style={{ color: '#ff7d00' }} />
-                            ) : (
-                              <CheckCircleOutlined style={{ color: '#00B42A' }} />
-                            )}
-                            <span style={{ fontSize: '12px' }}>患者确认</span>
-                          </Space>
-                          <Space direction="vertical" align="center" size="small">
-                            {request.status === 'approved' ? (
-                              <CheckCircleOutlined style={{ color: '#00B42A' }} />
-                            ) : request.status === 'rejected' ? (
-                              <CloseOutlined style={{ color: '#ff4d4f' }} />
-                            ) : (
-                              <LockOutlined style={{ color: '#86909C' }} />
-                            )}
-                            <span style={{ fontSize: '12px' }}>可查看</span>
-                          </Space>
+                        <div style={{ textAlign: 'center' }}>
+                          <Button
+                            type="primary"
+                            size="large"
+                            icon={<SendOutlined />}
+                            loading={this.state.isSubmittingCollaboration}
+                            onClick={this.submitCollaborationRequest}
+                            disabled={this.state.collaborationForm.selectedHospitals.length === 0}
+                          >
+                            发起协同诊疗请求并上链
+                          </Button>
                         </div>
-                        {request.status === 'rejected' && request.rejectReason && (
-                          <div style={{ marginTop: '8px', padding: '8px', backgroundColor: '#fff2f0', borderRadius: '4px' }}>
-                            <div style={{ fontSize: '12px', color: '#ff4d4f', marginBottom: '4px' }}>拒绝原因</div>
-                            <div style={{ fontSize: '12px', color: '#666' }}>{request.rejectReason}</div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </Space>
-                )}
-              </Card>
+                      </>
+                    )}
+                  </Card>
 
-              {/* 授权后记录查看 */}
-              <Card
-                title={
-                  <Space>
-                    <FileTextOutlined style={{ color: '#165DFF' }} />
-                    授权通过的历史记录
-                  </Space>
-                }
-                extra={
-                  <Button
-                    onClick={this.fetchAuthorizedPatientRecords}
-                    loading={this.state.isLoadingAuthorizedRecords}
+                  {/* 我发起的协同诊疗请求 */}
+                  <Card
+                    title={
+                      <Space>
+                        <FileTextOutlined style={{ color: '#165DFF' }} />
+                        我发起的协同诊疗请求
+                      </Space>
+                    }
+                    extra={
+                      <Button
+                        onClick={this.fetchMyCollaborationRequests}
+                        loading={this.state.isLoadingMyRequests}
+                      >
+                        刷新
+                      </Button>
+                    }
                   >
-                    刷新
-                  </Button>
-                }
-              >
-                {this.state.isLoadingAuthorizedRecords ? (
-                  <div style={{ textAlign: 'center', padding: '40px' }}>
-                    <Progress type="circle" />
-                  </div>
-                ) : this.state.authorizedPatientRecords.length === 0 ? (
-                  <div style={{ textAlign: 'center', padding: '40px', color: '#86909C' }}>
-                    <div style={{ fontSize: '14px' }}>暂无已授权的患者记录</div>
-                    <div style={{ fontSize: '12px' }}>当患者同意您的授权请求后，记录将在这里显示</div>
-                  </div>
-                ) : (
-                  <Space direction="vertical" style={{ width: '100%' }} size="middle">
-                    {this.state.authorizedPatientRecords.map((record, index) => {
-                      try {
-                        const recordData = JSON.parse(record.object || '{}');
-                        return (
-                          <Card key={record.id} size="small" hoverable>
-                            <div style={{ backgroundColor: '#f2f3f5', padding: '12px 16px', margin: '-12px -16px 12px -16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <Space>
-                                <MedicineBoxOutlined style={{ color: '#165DFF' }} />
-                                <span style={{ fontWeight: 500 }}>
-                                  {recordData.consultationTime ? moment(recordData.consultationTime).format('YYYY年MM月DD日') : '未知时间'} - {recordData.unit || '未知科室'}
-                                </span>
-                              </Space>
-                              <Button type="text" icon={<DownloadOutlined />} />
-                            </div>
-                            <Row gutter={16}>
-                              <Col xs={24} md={12}>
-                                <div style={{ marginBottom: '8px' }}>
-                                  <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>患者姓名</p>
-                                  <p style={{ margin: 0 }}>{recordData.patientName || recordData.name || '未知'}</p>
+                    {this.state.isLoadingMyRequests ? (
+                      <div style={{ textAlign: 'center', padding: '40px' }}>
+                        <Progress type="circle" />
+                      </div>
+                    ) : this.state.myCollaborationRequests.length === 0 ? (
+                      <div style={{ textAlign: 'center', padding: '40px', color: '#86909C' }}>
+                        <div style={{ fontSize: '14px' }}>暂无协同诊疗请求</div>
+                      </div>
+                    ) : (
+                      <Row gutter={[16, 16]}>
+                        {this.state.myCollaborationRequests.map((request, index) => (
+                          <Col xs={24} md={12} key={request.requestId}>
+                            <Card
+                              hoverable
+                              style={{ height: '100%' }}
+                              actions={[
+                                <Button
+                                  type="link"
+                                  icon={<EyeOutlined />}
+                                  onClick={() => this.showRequestDetails(request)}
+                                >
+                                  查看详情
+                                </Button>,
+                                <Button
+                                  type="link"
+                                  icon={<FileTextOutlined />}
+                                  onClick={() => this.showOpinions(request)}
+                                >
+                                  查看意见
+                                </Button>
+                              ]}
+                            >
+                              <div style={{ marginBottom: '12px' }}>
+                                <Tag color={request.status === 'active' ? 'green' : 'default'} style={{ fontSize: '14px', padding: '4px 8px' }}>
+                                  {request.status === 'active' ? '进行中' : request.status === 'completed' ? '已完成' : '已取消'}
+                                </Tag>
+                              </div>
+                              <div style={{ marginBottom: '8px' }}>
+                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>发起时间</div>
+                                <div style={{ fontSize: '14px' }}>{moment(request.createdTime).format('YYYY-MM-DD HH:mm')}</div>
+                              </div>
+                              <div style={{ marginBottom: '8px' }}>
+                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>患者HashID</div>
+                                <div style={{ fontSize: '12px', fontFamily: 'monospace' }}>
+                                  {request.patientHashId.substring(0, 16)}...
                                 </div>
-                                <div style={{ marginBottom: '8px' }}>
-                                  <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>身份证号</p>
-                                  <p style={{ margin: 0, fontFamily: 'monospace', fontSize: '11px' }}>
-                                    {recordData.idCardNo ? recordData.idCardNo.substring(0, 16) + '...' : '未知'}
-                                  </p>
+                              </div>
+                              <div>
+                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>协作医院</div>
+                                <div style={{ fontSize: '12px' }}>
+                                  {JSON.parse(request.targetHospitals || '[]').map((hospital, idx) => (
+                                    <Tag key={idx} size="small" color="blue" style={{ marginBottom: '2px' }}>
+                                      {hospital}
+                                    </Tag>
+                                  ))}
                                 </div>
-                                <div style={{ marginBottom: '8px' }}>
-                                  <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>就诊类型</p>
-                                  <p style={{ margin: 0 }}>{recordData.admType || '门诊'}</p>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+                      </Row>
+                    )}
+                  </Card>
+
+                  {/* 待我处理的协同诊疗请求 */}
+                  <Card
+                    title={
+                      <Space>
+                        <FileTextOutlined style={{ color: '#165DFF' }} />
+                        待我处理的协同诊疗请求
+                      </Space>
+                    }
+                    extra={
+                      <Button
+                        onClick={this.fetchHospitalCollaborationRequests}
+                        loading={this.state.isLoadingHospitalRequests}
+                      >
+                        刷新
+                      </Button>
+                    }
+                  >
+                    {this.state.isLoadingHospitalRequests ? (
+                      <div style={{ textAlign: 'center', padding: '40px' }}>
+                        <Progress type="circle" />
+                      </div>
+                    ) : this.state.hospitalCollaborationRequests.length === 0 ? (
+                      <div style={{ textAlign: 'center', padding: '40px', color: '#86909C' }}>
+                        <div style={{ fontSize: '14px' }}>暂无待处理的协同诊疗请求</div>
+                      </div>
+                    ) : (
+                      <Row gutter={[16, 16]}>
+                        {this.state.hospitalCollaborationRequests.map((request, index) => (
+                          <Col xs={24} md={12} key={request.requestId}>
+                            <Card
+                              hoverable
+                              style={{ height: '100%' }}
+                              actions={[
+                                <Button
+                                  type="link"
+                                  icon={<EyeOutlined />}
+                                  onClick={() => this.showRequestDetails(request)}
+                                >
+                                  查看详情
+                                </Button>,
+                                <Button
+                                  type="link"
+                                  icon={<EditOutlined />}
+                                  onClick={() => this.showOpinionForm(request)}
+                                >
+                                  填写意见
+                                </Button>
+                              ]}
+                            >
+                              <div style={{ marginBottom: '12px' }}>
+                                <Tag color="blue" style={{ fontSize: '14px', padding: '4px 8px' }}>
+                                  {request.initiatorDoctorName}
+                                </Tag>
+                                <Tag color="orange" style={{ fontSize: '14px', padding: '4px 8px' }}>
+                                  {request.initiatorHospital}
+                                </Tag>
+                              </div>
+                              <div style={{ marginBottom: '8px' }}>
+                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>发起时间</div>
+                                <div style={{ fontSize: '14px' }}>{moment(request.createdTime).format('YYYY-MM-DD HH:mm')}</div>
+                              </div>
+                              <div style={{ marginBottom: '8px' }}>
+                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>患者HashID</div>
+                                <div style={{ fontSize: '12px', fontFamily: 'monospace' }}>
+                                  {request.patientHashId.substring(0, 16)}...
                                 </div>
-                              </Col>
-                              <Col xs={24} md={12}>
-                                <div style={{ marginBottom: '8px' }}>
-                                  <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>医院名称</p>
-                                  <p style={{ margin: 0 }}>{recordData.section || recordData.admHosName || '未知医院'}</p>
+                              </div>
+                              {request.description && (
+                                <div>
+                                  <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>说明</div>
+                                  <div style={{ fontSize: '12px' }}>{request.description}</div>
                                 </div>
-                                <div style={{ marginBottom: '8px' }}>
-                                  <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>就诊科室</p>
-                                  <p style={{ margin: 0 }}>{recordData.unit || recordData.admDepartment || '未知科室'}</p>
-                                </div>
-                                <div style={{ marginBottom: '8px' }}>
-                                  <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>就诊ID</p>
-                                  <p style={{ margin: 0, fontFamily: 'monospace' }}>{recordData.localDBIndex || recordData.admId || '未知'}</p>
-                                </div>
-                              </Col>
-                            </Row>
-                            <div style={{ marginTop: '12px' }}>
-                              <p style={{ fontSize: '12px', color: '#86909C', margin: '0 0 4px 0' }}>就诊时间</p>
-                              <p style={{ fontSize: '12px', margin: 0 }}>
-                                {recordData.consultationTime ? moment(recordData.consultationTime).format('YYYY-MM-DD HH:mm:ss') : '未知时间'}
-                              </p>
-                            </div>
-                            <Button type="link" style={{ padding: 0, marginTop: '12px' }}>
-                              查看完整记录 →
-                            </Button>
-                          </Card>
-                        );
-                      } catch (error) {
-                        console.error('解析记录数据失败:', error, record);
-                        return (
-                          <Card key={record.id} size="small" hoverable>
-                            <div style={{ padding: '20px', textAlign: 'center', color: '#86909C' }}>
-                              <div style={{ fontSize: '14px' }}>记录数据解析失败</div>
-                              <div style={{ fontSize: '12px' }}>记录ID: {record.id}</div>
-                            </div>
-                          </Card>
-                        );
-                      }
-                    })}
-                  </Space>
-                )}
-              </Card>
+                              )}
+                            </Card>
+                          </Col>
+                        ))}
+                      </Row>
+                    )}
+                  </Card>
+                </>
+              )}
             </Space>
           </Col>
         </Row>
 
-        {/* 授权请求详情模态框 */}
+        {/* 请求详情模态框 */}
         <Modal
-          title="授权请求详情"
+          title="协同诊疗请求详情"
           open={this.state.showRequestModal}
           onCancel={() => this.setState({ showRequestModal: false, selectedRequest: null })}
-          footer={null}
+          footer={[
+            <Button key="close" onClick={() => this.setState({ showRequestModal: false, selectedRequest: null })}>
+              关闭
+            </Button>
+          ]}
           width={600}
         >
           {this.state.selectedRequest && (
-            <div>
-              <Descriptions column={1} size="small">
-                <Descriptions.Item label="医生姓名">{this.state.selectedRequest.doctorName}</Descriptions.Item>
-                <Descriptions.Item label="医生ID">{this.state.selectedRequest.doctorId}</Descriptions.Item>
-                <Descriptions.Item label="联系方式">{this.state.selectedRequest.doctorContact || '未提供'}</Descriptions.Item>
-                <Descriptions.Item label="申请时间">{moment(this.state.selectedRequest.createdTime).format('YYYY-MM-DD HH:mm:ss')}</Descriptions.Item>
-                <Descriptions.Item label="授权有效期">{this.state.selectedRequest.validityPeriod}天</Descriptions.Item>
-                <Descriptions.Item label="数据时间范围">
-                  {this.state.selectedRequest.dataTimeRangeStart && this.state.selectedRequest.dataTimeRangeEnd
-                    ? `${moment(this.state.selectedRequest.dataTimeRangeStart).format('YYYY-MM-DD')} 至 ${moment(this.state.selectedRequest.dataTimeRangeEnd).format('YYYY-MM-DD')}`
-                    : '全部时间'
-                  }
-                </Descriptions.Item>
-                <Descriptions.Item label="申请医院">
-                  {JSON.parse(this.state.selectedRequest.hospitals || '[]').map((hospital, index) => (
-                    <Tag key={index} color="blue" style={{ marginBottom: '4px' }}>{hospital}</Tag>
-                  ))}
-                </Descriptions.Item>
-                <Descriptions.Item label="申请说明">
-                  {this.state.selectedRequest.applicationNote || '无'}
-                </Descriptions.Item>
-              </Descriptions>
+            <Descriptions column={1} size="small">
+              <Descriptions.Item label="发起医生">{this.state.selectedRequest.initiatorDoctorName}</Descriptions.Item>
+              <Descriptions.Item label="发起医院">{this.state.selectedRequest.initiatorHospital}</Descriptions.Item>
+              <Descriptions.Item label="患者HashID">{this.state.selectedRequest.patientHashId}</Descriptions.Item>
+              <Descriptions.Item label="发起时间">{moment(this.state.selectedRequest.createdTime).format('YYYY-MM-DD HH:mm:ss')}</Descriptions.Item>
+              <Descriptions.Item label="协作医院">
+                {JSON.parse(this.state.selectedRequest.targetHospitals || '[]').map((hospital, index) => (
+                  <Tag key={index} color="blue" style={{ marginBottom: '4px' }}>{hospital}</Tag>
+                ))}
+              </Descriptions.Item>
+              <Descriptions.Item label="说明">
+                {this.state.selectedRequest.description || '无'}
+              </Descriptions.Item>
+            </Descriptions>
+          )}
+        </Modal>
 
-              <Divider />
-
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#86909C', marginBottom: '8px' }}>
-                  拒绝原因（如拒绝请填写）
-                </label>
-                <TextArea
-                  rows={3}
-                  placeholder="请说明拒绝的原因..."
-                  value={this.state.rejectReason}
-                  onChange={(e) => this.setState({ rejectReason: e.target.value })}
-                />
-              </div>
-
-              <div style={{ textAlign: 'right' }}>
-                <Space>
-                  <Button onClick={() => this.setState({ showRequestModal: false, selectedRequest: null })}>
-                    取消
-                  </Button>
-                  <Button
-                    danger
-                    icon={<CloseOutlined />}
-                    onClick={this.rejectRequest}
-                  >
-                    拒绝
-                  </Button>
-                  <Button
-                    type="primary"
-                    icon={<CheckOutlined />}
-                    onClick={this.approveRequest}
-                  >
-                    同意
-                  </Button>
-                </Space>
-              </div>
+        {/* 诊疗意见填写模态框 */}
+        <Modal
+          title="提交新的诊疗意见"
+          open={this.state.showOpinionModal}
+          onCancel={() => this.setState({ showOpinionModal: false, selectedRequest: null, diagnosisOpinion: { opinion: '', diagnosis: '', treatmentSuggestion: '' } })}
+          footer={[
+            <Button key="cancel" onClick={() => this.setState({ showOpinionModal: false, selectedRequest: null, diagnosisOpinion: { opinion: '', diagnosis: '', treatmentSuggestion: '' } })}>
+              取消
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              icon={<CheckOutlined />}
+              loading={this.state.isSubmittingOpinion}
+              onClick={this.submitDiagnosisOpinion}
+            >
+              提交并上链
+            </Button>
+          ]}
+          width={700}
+        >
+          <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#e6f7ff', borderLeft: '4px solid #1890ff', borderRadius: '4px' }}>
+            <div style={{ fontSize: '14px', color: '#0050b3' }}>
+              提示：您可以对同一个协同诊疗请求提交多条意见，每条意见都会记录在区块链上。
             </div>
+          </div>
+          <Space direction="vertical" style={{ width: '100%' }} size="middle">
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>
+                诊疗意见 <span style={{ color: 'red' }}>*</span>
+              </label>
+              <TextArea
+                rows={4}
+                placeholder="请输入您的诊疗意见..."
+                value={this.state.diagnosisOpinion.opinion}
+                onChange={(e) => this.setState({
+                  diagnosisOpinion: {
+                    ...this.state.diagnosisOpinion,
+                    opinion: e.target.value
+                  }
+                })}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>
+                诊断结果（可选）
+              </label>
+              <TextArea
+                rows={3}
+                placeholder="请输入诊断结果..."
+                value={this.state.diagnosisOpinion.diagnosis}
+                onChange={(e) => this.setState({
+                  diagnosisOpinion: {
+                    ...this.state.diagnosisOpinion,
+                    diagnosis: e.target.value
+                  }
+                })}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>
+                治疗建议（可选）
+              </label>
+              <TextArea
+                rows={3}
+                placeholder="请输入治疗建议..."
+                value={this.state.diagnosisOpinion.treatmentSuggestion}
+                onChange={(e) => this.setState({
+                  diagnosisOpinion: {
+                    ...this.state.diagnosisOpinion,
+                    treatmentSuggestion: e.target.value
+                  }
+                })}
+              />
+            </div>
+          </Space>
+        </Modal>
+
+        {/* 查看诊疗意见模态框 */}
+        <Modal
+          title="诊疗意见汇总"
+          open={this.state.showOpinionsModal}
+          onCancel={() => this.setState({ showOpinionsModal: false, selectedRequestForOpinions: null, diagnosisOpinions: [] })}
+          footer={[
+            <Button key="close" onClick={() => this.setState({ showOpinionsModal: false, selectedRequestForOpinions: null, diagnosisOpinions: [] })}>
+              关闭
+            </Button>
+          ]}
+          width={900}
+        >
+          {this.state.isLoadingOpinions ? (
+            <div style={{ textAlign: 'center', padding: '40px' }}>
+              <Progress type="circle" />
+            </div>
+          ) : this.state.diagnosisOpinions.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#86909C' }}>
+              <div style={{ fontSize: '14px' }}>暂无诊疗意见</div>
+            </div>
+          ) : (
+            <Space direction="vertical" style={{ width: '100%' }} size="middle">
+              {this.state.diagnosisOpinions.map((opinion, index) => (
+                <Card key={opinion.opinionId} size="small">
+                  <div style={{ marginBottom: '12px' }}>
+                    <Space>
+                      <Tag color="blue">{opinion.doctorName}</Tag>
+                      <Tag color="green">{opinion.hospitalName}</Tag>
+                      {opinion.department && <Tag>{opinion.department}</Tag>}
+                      <span style={{ fontSize: '12px', color: '#86909C' }}>
+                        {moment(opinion.createdTime).format('YYYY-MM-DD HH:mm')}
+                      </span>
+                    </Space>
+                  </div>
+                  <div style={{ marginBottom: '8px' }}>
+                    <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>诊疗意见</div>
+                    <div style={{ fontSize: '14px' }}>{opinion.opinion}</div>
+                  </div>
+                  {opinion.diagnosis && (
+                    <div style={{ marginBottom: '8px' }}>
+                      <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>诊断结果</div>
+                      <div style={{ fontSize: '14px' }}>{opinion.diagnosis}</div>
+                    </div>
+                  )}
+                  {opinion.treatmentSuggestion && (
+                    <div>
+                      <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>治疗建议</div>
+                      <div style={{ fontSize: '14px' }}>{opinion.treatmentSuggestion}</div>
+                    </div>
+                  )}
+                </Card>
+              ))}
+            </Space>
           )}
         </Modal>
       </div>
@@ -1586,3 +1133,5 @@ class PythonSrPage extends React.Component {
 }
 
 export default PythonSrPage;
+
+

@@ -305,6 +305,16 @@ func initAPI() {
 	beego.Router("/api/add-consultation", &controllers.ApiController{}, "POST:AddConsultation")
 	beego.Router("/api/delete-consultation", &controllers.ApiController{}, "POST:DeleteConsultation")
 
+	// Collaboration APIs
+	beego.Router("/api/create-collaboration-request", &controllers.ApiController{}, "POST:CreateCollaborationRequest")
+	beego.Router("/api/get-collaboration-requests-by-doctor", &controllers.ApiController{}, "GET:GetCollaborationRequestsByDoctor")
+	beego.Router("/api/get-collaboration-requests-by-hospital", &controllers.ApiController{}, "GET:GetCollaborationRequestsByHospital")
+	beego.Router("/api/get-collaboration-request", &controllers.ApiController{}, "GET:GetCollaborationRequest")
+	beego.Router("/api/update-collaboration-request-status", &controllers.ApiController{}, "POST:UpdateCollaborationRequestStatus")
+	beego.Router("/api/submit-diagnosis-opinion", &controllers.ApiController{}, "POST:SubmitDiagnosisOpinion")
+	beego.Router("/api/get-diagnosis-opinions-by-request", &controllers.ApiController{}, "GET:GetDiagnosisOpinionsByCollaborationReq")
+	beego.Router("/api/get-diagnosis-opinions-by-doctor", &controllers.ApiController{}, "GET:GetDiagnosisOpinionsByDoctor")
+	
 	beego.Router("/api/get-system-info", &controllers.ApiController{}, "GET:GetSystemInfo")
 	beego.Router("/api/get-version-info", &controllers.ApiController{}, "GET:GetVersionInfo")
 	beego.Router("/api/health", &controllers.ApiController{}, "GET:Health")

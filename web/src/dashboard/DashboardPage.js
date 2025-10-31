@@ -1114,6 +1114,38 @@ class DashboardPage extends Component {
         </div>
 
         <Row gutter={[24, 24]}>
+          {/* 功能入口卡片 */}
+          <Col span={24}>
+            <Card
+              title="卫生健康数据可信共享链平台"
+              bordered={false}
+              style={{
+                borderRadius: '16px',
+                boxShadow: themeStyles.cardShadow,
+                border: 'none',
+                background: themeStyles.cardBackground,
+              }}
+              headStyle={{
+                fontSize: '18px',
+                fontWeight: 'bold',
+                color: themeStyles.textColor,
+                borderBottom: '2px solid #f0f0f0',
+                background: 'linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%)',
+                padding: '16px 20px'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                <div style={{ color: themeStyles.subTextColor, fontSize: 16 }}>
+                  卫生健康数据可信共享链平台，请点击卡片进入各子功能。
+                </div>
+                <Space>
+                  <Button type="primary" size="large" onClick={() => this.props.history.push('/med-records')}>
+                    病例数据录入
+                  </Button>
+                </Space>
+              </div>
+            </Card>
+          </Col>
           {/* 总览卡片 */}
           <Col span={24}>
             <Card
