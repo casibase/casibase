@@ -586,20 +586,6 @@ class GraphDataPage extends React.Component {
       return null;
     }
 
-    // Helper function to validate and sanitize icon URLs
-    // Same validation logic as used in getOption method
-    const sanitizeIconUrl = (iconUrl) => {
-      if (!iconUrl || typeof iconUrl !== "string") {
-        return null;
-      }
-      // Only allow http, https, and data URLs
-      const urlPattern = /^(https?:\/\/|data:image\/)/i;
-      if (!urlPattern.test(iconUrl)) {
-        return null;
-      }
-      return iconUrl;
-    };
-
     // Get category name with i18n support
     const getCategoryName = (categoryIndex) => {
       if (this.state.data.categories && categoryIndex !== undefined && categoryIndex < this.state.data.categories.length) {
@@ -609,8 +595,6 @@ class GraphDataPage extends React.Component {
       }
       return categoryIndex;
     };
-
-    const sanitizedIcon = sanitizeIconUrl(selectedNode.icon);
 
     return (
       <div
