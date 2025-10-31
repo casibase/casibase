@@ -27,6 +27,7 @@ import (
 	"io/ioutil"
     "net/http"
 	"bytes"
+	"math/rand"
 
 	"xorm.io/core"
 )
@@ -96,6 +97,7 @@ type MulticenterDatasetsAssetGrants struct {
     Requester  string `xorm:"varchar(255)" json:"requester"`
     Owner      string `xorm:"varchar(255)" json:"owner"`
     AccessCount int   `xorm:"int" json:"accessCount"`
+	LeftCount int   `xorm:"int" json:"leftCount"`
     Deadline   string `xorm:"varchar(100)" json:"deadline"`
     GrantStatus string `xorm:"varchar(20)" json:"grantStatus"`
 }
@@ -183,6 +185,11 @@ func AddDataset(ds *MulticenterDatasets) (bool, error) {
     if err != nil {
         return false, err
     }
+
+	go createDatasetInChain(strconv.Itoa(ds.Id), ds.Owner, ds.Description, ds.ExpiredAt)
+
+	// 随机休眠2-4s
+	time.Sleep(time.Duration(rand.Intn(3)+2) * time.Second)
     return affected != 0, nil
 }
 
@@ -456,6 +463,7 @@ func PassOrRejectAccessRequest(id int, reviewer, comment string, approved bool) 
 			Requester:  req.Requester,
 			Deadline:   req.RequestedDeadline,
 			AccessCount: req.RequestedAccessCount,
+			LeftCount:  req.RequestedAccessCount,
 			
 		}
     	_, _ = AddAssetGrant(&grantObj)
@@ -511,6 +519,9 @@ func AddAssetGrant(g *MulticenterDatasetsAssetGrants) (bool, error) {
     if err != nil {
         return false, err
     }
+	go createUsageInChain(strconv.Itoa(g.GrantId),strconv.Itoa(g.AssetId),g.Deadline,g.Requester,g.AccessCount)
+	// 随机休眠2-4s
+	time.Sleep(time.Duration(rand.Intn(3)+2) * time.Second)
     return affected != 0, nil
 }
 
@@ -555,6 +566,16 @@ func revokeGrantAuto(grant_id int)(bool, error){
 		return false, err
 	}
 	return affected != 0, nil
+}
+
+func revokeGrantAtLeftCountIsZero(grant_id int)(bool,error){
+	var grant *MulticenterDatasetsAssetGrants
+	// 1. 先确定资产授权是否存在
+	grant, err := GetAssetGrantById(grant_id)
+	if grant.LeftCount == 0 {
+		return revokeGrantAuto(grant_id)
+	}
+	return false, err
 }
 
 func GetAssetGrantById(grant_id int) (*MulticenterDatasetsAssetGrants, error) {
@@ -843,9 +864,36 @@ func CheckUsage(grantID int) (string,int, error) {
 
 
 
-	// curl -X GET "http://10.129.2.46:13900/api/check-usage?usageID="
+	
+
+	useCountLeftFromDB := grant.LeftCount
+	expireTimeFromDB := grant.Deadline
+	// if useCountLeft != useCountLeftFromDB || expireTime != expireTimeFromDB {
+	// 	// 回写数据库
+	// 	updateGrant := &MulticenterDatasetsAssetGrants{
+	// 		GrantId: grant.GrantId,
+	// 		LeftCount: useCountLeft,
+	// 		Deadline: expireTime,
+	// 	}
+	// 	adapter.engine.ID(grant.GrantId).AllCols().Update(updateGrant)
+	// 	fmt.Println("【受控使用】checkUsage检测到区块链与数据库数据不一致，已回写数据库。链上相关数据为：UseCountLeft:", useCountLeft, "ExpireTime:", expireTime,"GrantId:", grant.GrantId)
+	// }
+	go checkUsageInChain(grantID)
+
+	// 随机休眠2-4s
+	time.Sleep(time.Duration(rand.Intn(3)+2) * time.Second)
+
+
+
+	return expireTimeFromDB, useCountLeftFromDB, nil
+
+}
+
+
+func checkUsageInChain(grantID int) (string,int, error) {
+	// curl -X GET "http://192.168.0.228:13901/api/check-usage?usageID="
 	usageIDStr := fmt.Sprintf("%d", grantID)
-	urlPrefix,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.url", "http://10.129.2.46:13900/api")
+	urlPrefix,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.url", "http://192.168.0.228:13901/api")
 	usageIDPrefixStr,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.prefix", "med-casibase")
 	url := fmt.Sprintf("%s/check-usage?usageID=%s", urlPrefix, (usageIDPrefixStr+usageIDStr))
 	// 发起HTTP请求，使用http框架，get
@@ -904,13 +952,12 @@ func CheckUsage(grantID int) (string,int, error) {
 	if !ok {
 		return "", 0, fmt.Errorf("数据受控服务出现异常：invalid UseCountLeft format from usage service")
 	}
-
 	return expireTime, useCountLeft, nil
-
 }
 
 func checkAndUse(grantID int,user string) (bool, error) {
 	// 先去数据库找一下存不存在
+	
 	grant, err := GetAssetGrantById(grantID)
 	if err != nil {
 		return false, err
@@ -922,7 +969,45 @@ func checkAndUse(grantID int,user string) (bool, error) {
 		return false, fmt.Errorf("没有权限使用该授权")
 	}
 	
-	urlPrefix,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.url", "http://10.129.2.46:13900/api")
+	// 检查leftCount是否大于0
+	if grant.LeftCount <= 0 {
+		revokeGrantAuto(grantID)
+		return false, fmt.Errorf("授权使用次数已用完")
+	}
+	if grant.Deadline <= time.Now().Format("2006-01-02 15:04:05"){
+		revokeGrantAuto(grantID)
+		return false, fmt.Errorf("授权已过期")
+	}
+	session := adapter.engine.NewSession()
+	defer session.Close()
+	if err := session.Begin(); err != nil {
+		return false, err
+	}
+	if _, err := session.Table(&MulticenterDatasetsAssetGrants{}).Where("grant_id = ?", grantID).Update(map[string]interface{}{"left_count": grant.LeftCount - 1}); err != nil {
+		session.Rollback()
+		return false, err
+	}
+	
+
+	
+	
+	// 检查响应状态
+	go checkAndUseInChain(grantID,user, grant.AssetId)
+
+	// 随机休眠2-4s
+	time.Sleep(time.Duration(rand.Intn(3)+2) * time.Second)
+	if err := session.Commit(); err != nil {
+		return false, err
+	}
+	if grant.LeftCount == 1{
+		go revokeGrantAtLeftCountIsZero(grantID)
+	}
+	return true, nil
+}
+
+func checkAndUseInChain(grantID int,user string,datasetId int) (bool, error) {
+	userCert,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.userCert", "43794e0cc70099bc95d8af672d24eb35d14ddcd9")
+	urlPrefix,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.url", "http://192.168.0.228:13901/api")
 	usageIDPrefixStr,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.prefix", "med-casibase")
 	usageIDStr := fmt.Sprintf("%d", grantID)
 	url := fmt.Sprintf("%s/check-and-use", urlPrefix)
@@ -938,13 +1023,13 @@ func checkAndUse(grantID int,user string) (bool, error) {
 		return false, fmt.Errorf("添加UsageID字段失败: %v", err)
 	}
 	// datasetID字段
-	datasetID := fmt.Sprintf("%s_DATASET_%d", usageIDPrefixStr, grant.AssetId)
+	datasetID := fmt.Sprintf("%s_DATASET_%d", usageIDPrefixStr, datasetId)
 	if err := writer.WriteField("datasetID", datasetID); err != nil {
 		return false, fmt.Errorf("添加DatasetID字段失败: %v", err)
 	}
 
 	// userCert字段
-	if err := writer.WriteField("userCert", grant.Requester); err != nil {
+	if err := writer.WriteField("userCert", userCert); err != nil {
 		return false, fmt.Errorf("添加UserCert字段失败: %v", err)
 	}
 	// 4. 关闭writer，生成multipart格式的结束边界
@@ -974,24 +1059,18 @@ func checkAndUse(grantID int,user string) (bool, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return false, fmt.Errorf("解析响应失败: %v", err)
 	}
+	return data["status"] == "ok",nil
 
-	/**
-	{
-  "status": "ok",
-  "msg": "",
-  "data": "数据集使用成功",
-  "data2": null
-  }
-  */
-	// 检查响应状态
-	return data["status"] == "ok", nil
+
 }
 
 
 func createUsageInChain(usageId string, datasetId string, expireTime string, user string, useCountLeft int) (bool, error) {
 	// 向/new-strategy接口发送POST请求
-	urlPrefix,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.url", "http://10.129.2.46:13900/api")
+	urlPrefix,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.url", "http://192.168.0.228:13901/api")
+	
 	usageIDPrefixStr,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.prefix", "med-casibase")
+	userCert,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.userCert", "43794e0cc70099bc95d8af672d24eb35d14ddcd9")
 
 
 		url := fmt.Sprintf("%s/new-strategy", urlPrefix)
@@ -1020,7 +1099,7 @@ func createUsageInChain(usageId string, datasetId string, expireTime string, use
 		return false, fmt.Errorf("添加ExpireTime字段失败: %v", err)
 	}
 	// User字段
-	if err := writer.WriteField("user", user); err != nil {
+	if err := writer.WriteField("user", userCert); err != nil {
 		return false, fmt.Errorf("添加User字段失败: %v", err)
 	}
 	// UseCountLeft字段（int转string）
@@ -1062,7 +1141,8 @@ func createUsageInChain(usageId string, datasetId string, expireTime string, use
 
 
 func createDatasetInChain(datasetId string, owner string, description string, expiredAt string) (bool, error) {
-	urlPrefix,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.url", "http://10.129.2.46:13900/api")
+	urlPrefix,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.url", "http://192.168.0.228:13901/api")
+	userCert,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.userCert", "43794e0cc70099bc95d8af672d24eb35d14ddcd9")
 	usageIDPrefixStr,_ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multiCenter.data-usage.prefix", "med-casibase")
 
 	url := fmt.Sprintf("%s/new-strategy", urlPrefix)
@@ -1083,7 +1163,7 @@ func createDatasetInChain(datasetId string, owner string, description string, ex
 		return false, fmt.Errorf("添加DatasetID字段失败: %v", err)
 	}
 	// Owner字段
-	if err := writer.WriteField("owner", owner); err != nil {
+	if err := writer.WriteField("owner", userCert); err != nil {
 		return false, fmt.Errorf("添加Owner字段失败: %v", err)
 	}
 	// Description字段
@@ -1236,7 +1316,7 @@ func CheckAndGetDatasetSource(isGranted bool, id int, user string) ([]*Multicent
 			return nil, fmt.Errorf("没有权限使用该授权")
 		}
 		if grant.GrantStatus != accessGrantStatusMap["GRANTED"] {
-			return nil, fmt.Errorf("授权状态不合法，无法使用该授权")
+			return nil, fmt.Errorf("授权状态不合法，权限已被回收，无法使用该数据集。")
 		}
 		// 返回dataset的source字段
 		datasetId = grant.AssetId
@@ -1256,7 +1336,7 @@ func CheckAndGetDatasetSource(isGranted bool, id int, user string) ([]*Multicent
 		return nil, fmt.Errorf("数据集不存在")
 	}
 	// 检查是否过期
-	if dataset.ExpiredAt != "" && dataset.ExpiredAt < time.Now().Format(time.RFC3339) {
+	if dataset.ExpiredAt != "" && dataset.ExpiredAt < time.Now().Format("2006-01-02 15:04:05") {
 		return nil, fmt.Errorf("数据集已过期")
 	}
 
@@ -1275,13 +1355,13 @@ func CheckAndGetDatasetSource(isGranted bool, id int, user string) ([]*Multicent
 
 	if isGranted {
 		// 2. 授权
-		// canUse, err := checkAndUse(grantId, user)
-		// if err != nil {
-		// 	return nil, fmt.Errorf("数据授权错误: %v", err)
-		// }
-		// if !canUse {
-		// 	return nil, fmt.Errorf("数据授权错误: %v", err)
-		// }
+		canUse, err := checkAndUse(id, user)
+		if err != nil {
+			return nil, fmt.Errorf("数据授权错误: %v", err)
+		}
+		if !canUse {
+			return nil, fmt.Errorf("数据授权错误: %v", err)
+		}
 	}
 	
 

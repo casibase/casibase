@@ -28,6 +28,8 @@ export default function DataWorkBench(props) {
         try {
             if (typeof window === 'undefined') return -1;
             const sp = new URLSearchParams(window.location.search || '');
+
+
             return sp.get('datasetId') || -1;
         } catch (e) { return -1; }
     })();
@@ -63,6 +65,17 @@ export default function DataWorkBench(props) {
         if (showTable) {
             fetchUsageInfo();
         }
+    };
+
+    // normalize various backend usage shapes to a stable UI shape
+    const normalizeUsage = (d) => {
+        if (!d) return null;
+        return {
+            UseCountLeft: (d.leftCnt ?? d.UseCountLeft ?? d.useCountLeft ?? d.LeftCnt ?? null),
+            ExpireTime: (d.expireTime ?? d.ExpireTime ?? d.expire_time ?? d.ExpiredAt ?? null),
+            // keep original data for debugging if needed
+            _raw: d,
+        };
     };
 
     const menu = (
@@ -102,19 +115,44 @@ export default function DataWorkBench(props) {
 
 
     // 抽离数据用量信息请求逻辑
-    const fetchUsageInfo = async () => {
+    // 改为调用后端 checkUsage 接口：仅当当前选中的是“授权的数据集”时，提取 grantId 并传入；否则清空 usageInfo（显示 --）
+    const fetchUsageInfo = async (grantIDPass) => {
         setUsageLoading(true);
         try {
-            // 等待1s
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            const resp = await MultiCenterBackend.queryDataSetsUsage(usageId);
-            let info = null;
-            if (resp?.data?.resultDecoded) {
-                try {
-                    info = JSON.parse(resp.data.resultDecoded);
-                } catch (e) { }
+            // try to derive grantId from selectedContext (must be 'granted')
+            // small debounce to avoid UI flicker
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            let grantId = null;
+
+            try {
+                if (selectedContext && selectedContext.type === 'granted' && selectedContext.item) {
+                    const ag = selectedContext.item.accessGrant || selectedContext.item.grant || selectedContext.item.grant || {};
+                    grantId = String(ag.grantId || ag.id || ag.Id || ag.GrantID || ag.Grant || ag.grantedId || ag.GrantId || ag.GrantId || '');
+                    if (!grantId) grantId = null;
+                }
+            } catch (e) {
+                grantId = null;
             }
-            setUsageInfo(info);
+            if (!grantId && grantIDPass) {
+                grantId = grantIDPass;
+            }
+
+            if (!grantId) {
+                // not an authorized/granted dataset selection -> show dashes
+                setUsageInfo(null);
+                return;
+            }
+
+
+            const resp = await MultiCenterBackend.checkUsage(grantId);
+            if (resp && resp.status === 'ok' && resp.data) {
+                setUsageInfo(normalizeUsage(resp.data));
+            } else {
+                setUsageInfo(null);
+            }
+        } catch (e) {
+            console.error('fetchUsageInfo error', e);
+            setUsageInfo(null);
         } finally {
             setUsageLoading(false);
         }
@@ -153,6 +191,8 @@ export default function DataWorkBench(props) {
                 if (foundInGranted) {
                     setSelectedDatasetId(String(routeRequestedDatasetId));
 
+                    const grantId = String(foundInGranted.accessGrant && (foundInGranted.accessGrant.GrantId || foundInGranted.accessGrant.grantId));
+                    fetchUsageInfo(grantId);
                     setSelectedData('structured');
                     return;
                 }
@@ -167,6 +207,7 @@ export default function DataWorkBench(props) {
                 // if routeRequestedDatasetId provided but not found, force open modal and lock it
                 setDatasetSwitchVisible(true);
                 setDatasetSwitchLocked(true);
+
                 return;
             }
 
@@ -204,6 +245,8 @@ export default function DataWorkBench(props) {
                 message.error('无法解析授权ID');
                 return;
             }
+            // proceed to useDataSet flow
+            setCheckingModal(true);
             setDatasetSourceLoading(true);
             const chk = await MultiCenterBackend.checkAndGetDatasetSource(true, idToCheck);
             setDatasetSourceLoading(false);
@@ -216,32 +259,15 @@ export default function DataWorkBench(props) {
                 setDatasetSourceResp(chk);
                 if (chk.data) setUsageInfo(chk.data);
             }
+            setShowLimitData(true);
+            fetchUsageInfo();
 
-            // proceed to useDataSet flow
-            setCheckingModal(true);
-            try {
-                // 等待1s
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                const resp = await MultiCenterBackend.useDataSet(usageId, selectedDatasetId);
-                const status = resp?.status?.toLowerCase?.() || resp?.data?.status?.toLowerCase?.();
-                if (status === 'success' || status === 'ok') {
-                    setShowLimitData(true);
-                    fetchUsageInfo();
-                    // 等待2s后异步发送
-                    setTimeout(() => {
-                        MultiCenterBackend.addDataUsageAuditRecord(account, usageId, selectedDatasetId);
-                    }, 2000);
-                } else {
-                    message.error(resp?.msg || '操作失败');
-                }
-            } catch (e) {
-                message.error(e?.message || '操作异常');
-            } finally {
-                setCheckingModal(false);
-            }
+
         } catch (e) {
             setDatasetSourceLoading(false);
             message.error(e?.message || '受控数据源检查异常');
+        } finally {
+            setCheckingModal(false);
         }
     };
 
@@ -275,7 +301,7 @@ export default function DataWorkBench(props) {
 
     useEffect(() => {
         // 页面加载时只调用一次
-        fetchUsageInfo();
+        // fetchUsageInfo();
         loadDatasetsForMenu();
     }, []);
 
@@ -304,11 +330,16 @@ export default function DataWorkBench(props) {
 
     // determine whether selected dataset is managed by current user or granted
     const selectedContext = (() => {
+
+
         const findInGranted = (grantedList || []).find(item => {
             const ds = item.dataset || item.dataSet || item || {};
             const id = String(ds.Id || ds.id || ds.DatasetId || ds.datasetId || (item.grant && (item.grant.AssetId || item.grant.assetId)) || '');
             return id === String(selectedDatasetId);
         });
+
+
+
         if (findInGranted) return { type: 'granted', item: findInGranted };
         const findInManaged = (managedList || []).find(ds => String(ds.Id || ds.id || ds.DatasetId || ds.datasetId) === String(selectedDatasetId));
         if (findInManaged) return { type: 'managed', dataset: findInManaged };
@@ -451,13 +482,14 @@ export default function DataWorkBench(props) {
             <Modal
                 title="切换数据集"
                 open={datasetSwitchVisible}
-                onCancel={() => { if (!datasetSwitchLocked) setDatasetSwitchVisible(false); }}
+                // onCancel={() => { if (!datasetSwitchLocked) setDatasetSwitchVisible(false); }}
+                onCancel={() => { setDatasetSwitchVisible(false); }}
                 footer={null}
                 width={720}
                 bodyStyle={{ maxHeight: '60vh', overflowY: 'auto', padding: 20 }}
-                maskClosable={!datasetSwitchLocked}
+                // maskClosable={!datasetSwitchLocked}
                 keyboard={!datasetSwitchLocked}
-                closable={!datasetSwitchLocked}
+            // closable={!datasetSwitchLocked}
             >
                 <div style={{ display: 'flex', gap: 12, flexDirection: 'column', textAlign: 'left' }}>
                     <div style={{ fontWeight: 700, marginBottom: 6, fontSize: 16 }}>我获得授权的数据集</div>
@@ -468,7 +500,10 @@ export default function DataWorkBench(props) {
                         const desc = ds.Description || ds.description || ds.Desc || (item.accessGrant && (item.accessGrant.Description || item.accessGrant.description)) || '未提供描述';
                         const grantId = String((item.accessGrant && (item.accessGrant.grantId || item.accessGrant.id || item.accessGrant.Id || item.accessGrant.GrantID || item.accessGrant.Grant)) || '—');
                         return (
-                            <div key={id} style={{ padding: 10, borderRadius: 8, border: '1px solid #f0f0f0', background: 'white', cursor: 'pointer' }} onClick={() => { setSelectedDatasetId(id); setSelectedData('structured'); setDatasetSwitchVisible(false); setDatasetSwitchLocked(false); if (showTable) fetchUsageInfo(); }}>
+                            <div key={id} style={{ padding: 10, borderRadius: 8, border: '1px solid #f0f0f0', background: 'white', cursor: 'pointer' }} onClick={() => {
+                                setShowLimitData(false);
+                                setSelectedDatasetId(id); setSelectedData('structured'); setDatasetSwitchVisible(false); setDatasetSwitchLocked(false); fetchUsageInfo(grantId)
+                            }}>
                                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                                     <div style={{ fontWeight: 700 }}>{name}</div>
                                     <div style={{ display: 'flex', gap: 8 }}>
@@ -501,20 +536,21 @@ export default function DataWorkBench(props) {
                 {/* Modal 底部退出按钮 */}
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
                     <Button onClick={() => {
-                        // 关闭 modal 并返回上一页（优先使用 history.goBack）
-                        setDatasetSwitchVisible(false);
-                        setDatasetSwitchLocked(false);
-                        try {
-                            if (history && typeof history.goBack === 'function') {
-                                history.goBack();
-                            } else if (history && typeof history.push === 'function') {
-                                history.push('/multi-center');
-                            } else {
-                                window.history.back();
-                            }
-                        } catch (e) {
-                            window.history.back();
-                        }
+                        // // 关闭 modal 并返回上一页（优先使用 history.goBack）
+                        // setDatasetSwitchVisible(false);
+                        // setDatasetSwitchLocked(false);
+                        // try {
+                        //     if (history && typeof history.goBack === 'function') {
+                        //         history.goBack();
+                        //     } else if (history && typeof history.push === 'function') {
+                        //         history.push('/multi-center');
+                        //     } else {
+                        //         window.history.back();
+                        //     }
+                        // } catch (e) {
+                        //     window.history.back();
+                        // }
+                        setDatasetSwitchVisible(false)
                     }}>退出</Button>
                 </div>
             </Modal>
