@@ -747,7 +747,7 @@ class GraphDataPage extends React.Component {
               ref={this.chartRef}
               option={this.getOption()}
               style={{height: "100%", width: "100%", cursor: "default"}}
-              notMerge={true}
+              notMerge={false}
               lazyUpdate={true}
               onEvents={{
                 click: this.handleNodeClick,
