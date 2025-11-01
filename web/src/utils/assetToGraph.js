@@ -47,13 +47,13 @@ export function transformAssetsToGraph(assets) {
   const resourceTypeIcons = {
     "VPC": `${StaticBaseUrl}/img/cloud/vpc.png`,
     "VSwitch": `${StaticBaseUrl}/img/cloud/vswitch.png`,
-    "Network Interface": `${StaticBaseUrl}/img/cloud/network-interface.png`,
-    "Security Group": `${StaticBaseUrl}/img/cloud/security-group.png`,
-    "ECS Instance": `${StaticBaseUrl}/img/cloud/ecs-instance.png`,
+    "Network Interface": `${StaticBaseUrl}/img/cloud/network.png`,
+    "Security Group": `${StaticBaseUrl}/img/cloud/securitygroup.png`,
+    "ECS Instance": `${StaticBaseUrl}/img/cloud/vm.png`,
     "Disk": `${StaticBaseUrl}/img/cloud/disk.png`,
     "Snapshot": `${StaticBaseUrl}/img/cloud/snapshot.png`,
     "Image": `${StaticBaseUrl}/img/cloud/image.png`,
-    "ACS::ECS::AutoSnapshotPolicy": `${StaticBaseUrl}/img/cloud/auto-snapshot-policy.png`,
+    "ACS::ECS::AutoSnapshotPolicy": `${StaticBaseUrl}/img/cloud/policy.png`,
   };
 
   // Helper function to get or create a category
