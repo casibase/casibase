@@ -75,9 +75,9 @@ func (p *AlibabaCloudParser) getEcsInstances(client *ecs20140526.Client, assets 
 	// Group instance IDs by region
 	regionInstanceIds := make(map[string][]string)
 	for _, asset := range assets {
-		if asset.ResourceType == "ECS Instance" && asset.Region != "" {
+		if asset.Type == "Virtual Machine" && asset.Region != "" {
 			region := asset.Region
-			regionInstanceIds[region] = append(regionInstanceIds[region], asset.ResourceId)
+			regionInstanceIds[region] = append(regionInstanceIds[region], asset.Id)
 		}
 	}
 
@@ -150,9 +150,9 @@ func (p *AlibabaCloudParser) getDisks(client *ecs20140526.Client, assets []*Asse
 	// Group disk IDs by region
 	regionDiskIds := make(map[string][]string)
 	for _, asset := range assets {
-		if asset.ResourceType == "Disk" && asset.Region != "" {
+		if asset.Type == "Disk" && asset.Region != "" {
 			region := asset.Region
-			regionDiskIds[region] = append(regionDiskIds[region], asset.ResourceId)
+			regionDiskIds[region] = append(regionDiskIds[region], asset.Id)
 		}
 	}
 
@@ -210,12 +210,12 @@ func (p *AlibabaCloudParser) getVpcs(client *ecs20140526.Client, assets []*Asset
 
 	// VPC needs to be queried one by one
 	for _, asset := range assets {
-		if asset.ResourceType != "VPC" {
+		if asset.Type != "VPC" {
 			continue
 		}
 
 		request := &ecs20140526.DescribeVpcsRequest{
-			VpcId:    tea.String(asset.ResourceId),
+			VpcId:    tea.String(asset.Id),
 			RegionId: tea.String(asset.Region),
 			PageSize: tea.Int32(50),
 		}
@@ -246,11 +246,11 @@ func (p *AlibabaCloudParser) getVpcs(client *ecs20140526.Client, assets []*Asset
 // mergeEcsDetails merges ECS instance details into assets
 func (p *AlibabaCloudParser) mergeEcsDetails(assets []*Asset, details map[string]*EcsInstanceDetail) {
 	for _, asset := range assets {
-		if asset.ResourceType != "ECS Instance" {
+		if asset.Type != "Virtual Machine" {
 			continue
 		}
 
-		detail, ok := details[asset.ResourceId]
+		detail, ok := details[asset.Id]
 		if !ok {
 			continue
 		}
@@ -294,11 +294,11 @@ func (p *AlibabaCloudParser) mergeEcsDetails(assets []*Asset, details map[string
 // mergeDiskDetails merges disk details into assets
 func (p *AlibabaCloudParser) mergeDiskDetails(assets []*Asset, details map[string]*DiskDetail) {
 	for _, asset := range assets {
-		if asset.ResourceType != "Disk" {
+		if asset.Type != "Disk" {
 			continue
 		}
 
-		detail, ok := details[asset.ResourceId]
+		detail, ok := details[asset.Id]
 		if !ok {
 			continue
 		}
@@ -337,11 +337,11 @@ func (p *AlibabaCloudParser) mergeDiskDetails(assets []*Asset, details map[strin
 // mergeVpcDetails merges VPC details into assets
 func (p *AlibabaCloudParser) mergeVpcDetails(assets []*Asset, details map[string]*VpcDetail) {
 	for _, asset := range assets {
-		if asset.ResourceType != "VPC" {
+		if asset.Type != "VPC" {
 			continue
 		}
 
-		detail, ok := details[asset.ResourceId]
+		detail, ok := details[asset.Id]
 		if !ok {
 			continue
 		}

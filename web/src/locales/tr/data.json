@@ -55,10 +55,6 @@
     "Properties - Tooltip": "Resource properties in JSON format",
     "Provider": "Provider",
     "Provider - Tooltip": "Cloud provider name",
-    "Resource ID": "Resource ID",
-    "Resource ID - Tooltip": "Unique identifier of the cloud resource",
-    "Resource type": "Resource type",
-    "Resource type - Tooltip": "Type of cloud resource (ECS Instance, Disk, VPC, etc.)",
     "Scan": "Scan",
     "Successfully scanned assets": "Successfully scanned assets"
   },

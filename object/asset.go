@@ -28,14 +28,14 @@ type Asset struct {
 	UpdatedTime string `xorm:"varchar(100)" json:"updatedTime"`
 	DisplayName string `xorm:"varchar(200)" json:"displayName"`
 
-	Provider     string `xorm:"varchar(100)" json:"provider"`
-	ResourceId   string `xorm:"varchar(200)" json:"resourceId"`
-	ResourceType string `xorm:"varchar(100)" json:"resourceType"`
-	Region       string `xorm:"varchar(100)" json:"region"`
-	Zone         string `xorm:"varchar(100)" json:"zone"`
-	State        string `xorm:"varchar(100)" json:"state"`
-	Tag          string `xorm:"varchar(500)" json:"tag"`
-	Properties   string `xorm:"mediumtext" json:"properties"`
+	Provider   string `xorm:"varchar(100)" json:"provider"`
+	Id         string `xorm:"varchar(200)" json:"id"`
+	Type       string `xorm:"varchar(100)" json:"type"`
+	Region     string `xorm:"varchar(100)" json:"region"`
+	Zone       string `xorm:"varchar(100)" json:"zone"`
+	State      string `xorm:"varchar(100)" json:"state"`
+	Tag        string `xorm:"varchar(500)" json:"tag"`
+	Properties string `xorm:"mediumtext" json:"properties"`
 }
 
 func GetAssetCount(owner, field, value string) (int64, error) {
