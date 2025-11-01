@@ -28,7 +28,6 @@ class ScanEditPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      scanOwner: props.match.params.organizationName,
       scanName: props.match.params.scanName,
       scan: null,
       assets: [],
@@ -44,7 +43,7 @@ class ScanEditPage extends React.Component {
   }
 
   getScan() {
-    ScanBackend.getScan("admin", this.state.scanName)
+    ScanBackend.getScan(this.props.account.name, this.state.scanName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -57,7 +56,7 @@ class ScanEditPage extends React.Component {
   }
 
   getAssets() {
-    AssetBackend.getAssets("admin")
+    AssetBackend.getAssets(this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
           // Filter to only show Virtual Machine assets
@@ -72,7 +71,7 @@ class ScanEditPage extends React.Component {
   }
 
   getProviders() {
-    ProviderBackend.getProviders("admin")
+    ProviderBackend.getProviders(this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
           const scanProviders = res.data.filter(provider =>
@@ -113,7 +112,7 @@ class ScanEditPage extends React.Component {
           if (exitAfterSave) {
             this.props.history.push("/scans");
           } else {
-            this.props.history.push(`/scans/${this.state.scan.owner}/${this.state.scan.name}`);
+            this.props.history.push(`/scans/${this.state.scan.name}`);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
