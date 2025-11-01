@@ -75,7 +75,7 @@ func (p *AlibabaCloudParser) getEcsInstances(client *ecs20140526.Client, assets 
 	// Group instance IDs by region
 	regionInstanceIds := make(map[string][]string)
 	for _, asset := range assets {
-		if asset.ResourceType == "ECS Instance" {
+		if asset.ResourceType == "ECS Instance" && asset.Region != "" {
 			region := asset.Region
 			regionInstanceIds[region] = append(regionInstanceIds[region], asset.ResourceId)
 		}
@@ -150,7 +150,7 @@ func (p *AlibabaCloudParser) getDisks(client *ecs20140526.Client, assets []*Asse
 	// Group disk IDs by region
 	regionDiskIds := make(map[string][]string)
 	for _, asset := range assets {
-		if asset.ResourceType == "Disk" {
+		if asset.ResourceType == "Disk" && asset.Region != "" {
 			region := asset.Region
 			regionDiskIds[region] = append(regionDiskIds[region], asset.ResourceId)
 		}
