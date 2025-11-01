@@ -41,6 +41,8 @@ type Graph struct {
 	Density     int    `xorm:"int" json:"density"`
 	Text        string `xorm:"mediumtext" json:"text"`
 	ErrorText   string `xorm:"mediumtext" json:"errorText"`
+	LayoutData  string `xorm:"mediumtext" json:"layoutData"`
+	SaveLayout  bool   `xorm:"bool" json:"saveLayout"`
 }
 
 func GetMaskedGraph(graph *Graph, isMaskEnabled bool) *Graph {

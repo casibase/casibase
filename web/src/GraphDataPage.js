@@ -57,6 +57,7 @@ class GraphDataPage extends React.Component {
     this.chartRef = React.createRef();
     this.containerRef = React.createRef();
     this.hiddenCategories = new Set();
+    this.layoutCaptureTimeout = null;
   }
 
   componentDidMount() {
@@ -67,7 +68,9 @@ class GraphDataPage extends React.Component {
     if (this.props.graphText !== prevProps.graphText ||
         this.props.layout !== prevProps.layout ||
         this.props.category !== prevProps.category ||
-        this.props.density !== prevProps.density) {
+        this.props.density !== prevProps.density ||
+        this.props.layoutData !== prevProps.layoutData ||
+        this.props.saveLayout !== prevProps.saveLayout) {
       this.loadGraphData();
     }
   }
@@ -137,7 +140,10 @@ class GraphDataPage extends React.Component {
   }
 
   componentWillUnmount() {
-    // Component cleanup if needed
+    // Clean up debounce timeout
+    if (this.layoutCaptureTimeout) {
+      clearTimeout(this.layoutCaptureTimeout);
+    }
   }
 
   handleRenderError(error) {
@@ -416,6 +422,24 @@ class GraphDataPage extends React.Component {
       processedNodes = calculateTreeLayoutPositions(processedNodes, links);
     }
 
+    // Restore saved layout positions if available and saveLayout is enabled
+    if (this.props.saveLayout && this.props.layoutData) {
+      try {
+        const savedPositions = JSON.parse(this.props.layoutData);
+        if (savedPositions && typeof savedPositions === "object") {
+          processedNodes.forEach(node => {
+            const savedPos = savedPositions[node.id];
+            if (savedPos && typeof savedPos.x === "number" && typeof savedPos.y === "number") {
+              node.x = savedPos.x;
+              node.y = savedPos.y;
+            }
+          });
+        }
+      } catch (e) {
+        // Ignore parse errors for layoutData
+      }
+    }
+
     // Transform nodes to ECharts format
     const echartNodes = processedNodes.map(node => {
       const sanitizedIcon = sanitizeIconUrl(node.icon);
@@ -575,6 +599,48 @@ class GraphDataPage extends React.Component {
     this.setState({
       selectedNode: null,
     });
+  };
+
+  captureLayoutPositions = () => {
+    // Debounce layout capture to avoid excessive updates
+    if (this.layoutCaptureTimeout) {
+      clearTimeout(this.layoutCaptureTimeout);
+    }
+
+    this.layoutCaptureTimeout = setTimeout(() => {
+      this.doCaptureLayoutPositions();
+    }, 500); // Wait 500ms after last interaction before saving
+  };
+
+  doCaptureLayoutPositions = () => {
+    // Capture current node positions and save them if saveLayout is enabled
+    if (!this.props.saveLayout) {
+      return;
+    }
+
+    const chartInstance = this.chartRef.current?.getEchartsInstance();
+    if (!chartInstance) {
+      return;
+    }
+
+    try {
+      const option = chartInstance.getOption();
+      if (option && option.series && option.series[0] && option.series[0].data) {
+        const positions = {};
+        option.series[0].data.forEach(node => {
+          if (node.id && node.x !== undefined && node.y !== undefined) {
+            positions[node.id] = {x: node.x, y: node.y};
+          }
+        });
+
+        const layoutData = JSON.stringify(positions);
+        if (this.props.onLayoutChange) {
+          this.props.onLayoutChange(layoutData);
+        }
+      }
+    } catch (e) {
+      // Ignore errors when capturing layout
+    }
   };
 
   onChartReady = (chartInstance) => {
@@ -755,6 +821,7 @@ class GraphDataPage extends React.Component {
                 click: this.handleNodeClick,
                 mouseover: this.handleMouseOver,
                 mouseout: this.handleMouseOut,
+                graphRoam: this.captureLayoutPositions,
               }}
               onChartReady={this.onChartReady}
             />
