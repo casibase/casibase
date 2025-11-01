@@ -50,11 +50,13 @@ func GetMaskedAsset(asset *Asset, isMaskEnabled bool, user *casdoorsdk.User) *As
 		return nil
 	}
 
-	if asset.Password != "" {
-		asset.Password = "***"
+	// Create a copy to avoid modifying the original
+	maskedAsset := *asset
+	if maskedAsset.Password != "" {
+		maskedAsset.Password = "***"
 	}
 
-	return asset
+	return &maskedAsset
 }
 
 func GetMaskedAssets(assets []*Asset, isMaskEnabled bool, user *casdoorsdk.User) []*Asset {
@@ -62,8 +64,8 @@ func GetMaskedAssets(assets []*Asset, isMaskEnabled bool, user *casdoorsdk.User)
 		return assets
 	}
 
-	for _, asset := range assets {
-		asset = GetMaskedAsset(asset, isMaskEnabled, user)
+	for i := range assets {
+		assets[i] = GetMaskedAsset(assets[i], isMaskEnabled, user)
 	}
 	return assets
 }
