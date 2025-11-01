@@ -108,22 +108,26 @@ func (u *Updater) ListPatches() ([]*WindowsPatch, error) {
 		$ProgressPreference = 'Continue';
 		Import-Module PSWindowsUpdate -Force;
 		$updates = Get-WindowsUpdate -MicrosoftUpdate;
-		$updates | Select-Object @{Name='Title';Expression={$_.Title}},
-			@{Name='KB';Expression={$_.KBArticleIDs -join ','}},
-			@{Name='Size';Expression={[math]::Round($_.MaxDownloadSize/1MB, 2).ToString() + ' MB'}},
-			@{Name='Status';Expression={
-				if ($_.IsDownloaded) { 'Downloaded' }
-				elseif ($_.IsInstalled) { 'Installed' }
-				else { 'Available' }
-			}},
-			@{Name='Description';Expression={$_.Description}},
-			@{Name='RebootRequired';Expression={$_.RebootRequired}},
-			@{Name='Categories';Expression={($_.Categories | ForEach-Object { $_.Name }) -join ','}},
-			@{Name='IsInstalled';Expression={$_.IsInstalled}},
-			@{Name='IsDownloaded';Expression={$_.IsDownloaded}},
-			@{Name='IsMandatory';Expression={$_.IsMandatory}},
-			@{Name='AutoSelectOnWebSites';Expression={$_.AutoSelectOnWebSites}} | 
-		ConvertTo-Json
+		if ($null -eq $updates) {
+			Write-Output '[]'
+		} else {
+			$updates | Select-Object @{Name='Title';Expression={$_.Title}},
+				@{Name='KB';Expression={$_.KBArticleIDs -join ','}},
+				@{Name='Size';Expression={[math]::Round($_.MaxDownloadSize/1MB, 2).ToString() + ' MB'}},
+				@{Name='Status';Expression={
+					if ($_.IsDownloaded) { 'Downloaded' }
+					elseif ($_.IsInstalled) { 'Installed' }
+					else { 'Available' }
+				}},
+				@{Name='Description';Expression={$_.Description}},
+				@{Name='RebootRequired';Expression={$_.RebootRequired}},
+				@{Name='Categories';Expression={($_.Categories | ForEach-Object { $_.Name }) -join ','}},
+				@{Name='IsInstalled';Expression={$_.IsInstalled}},
+				@{Name='IsDownloaded';Expression={$_.IsDownloaded}},
+				@{Name='IsMandatory';Expression={$_.IsMandatory}},
+				@{Name='AutoSelectOnWebSites';Expression={$_.AutoSelectOnWebSites}} | 
+			ConvertTo-Json
+		}
 	`
 
 	output, err := u.runPowerShell(psCommand)
@@ -168,24 +172,28 @@ func (u *Updater) ListInstalledPatches() ([]*WindowsPatch, error) {
 		$rebootPending = $null;
 		try { $rebootPending = Get-WURebootStatus -ErrorAction Stop } catch { $rebootPending = $null };
 		$isRebootRequired = if ($null -ne $rebootPending) { $rebootPending.IsRebootRequired } else { $false };
-		$history | Select-Object @{Name='Title';Expression={$_.Title}},
-			@{Name='KB';Expression={
-				if ($_.Title -match 'KB[0-9]+') { $matches[0] }
-				else { '' }
-			}},
-			@{Name='Size';Expression={'N/A'}},
-			@{Name='Status';Expression={
-				if ($isRebootRequired) { 'Pending Restart' }
-				else { $_.Result }
-			}},
-			@{Name='Description';Expression={$_.Description}},
-			@{Name='RebootRequired';Expression={$isRebootRequired}},
-			@{Name='InstalledOn';Expression={$_.Date.ToString('o')}},
-			@{Name='IsInstalled';Expression={$true}},
-			@{Name='IsDownloaded';Expression={$true}},
-			@{Name='IsMandatory';Expression={$false}},
-			@{Name='AutoSelectOnWebSites';Expression={$false}} | 
-		ConvertTo-Json
+		if ($null -eq $history) {
+			Write-Output '[]'
+		} else {
+			$history | Select-Object @{Name='Title';Expression={$_.Title}},
+				@{Name='KB';Expression={
+					if ($_.Title -match 'KB[0-9]+') { $matches[0] }
+					else { '' }
+				}},
+				@{Name='Size';Expression={'N/A'}},
+				@{Name='Status';Expression={
+					if ($isRebootRequired) { 'Pending Restart' }
+					else { $_.Result }
+				}},
+				@{Name='Description';Expression={$_.Description}},
+				@{Name='RebootRequired';Expression={$isRebootRequired}},
+				@{Name='InstalledOn';Expression={$_.Date.ToString('o')}},
+				@{Name='IsInstalled';Expression={$true}},
+				@{Name='IsDownloaded';Expression={$true}},
+				@{Name='IsMandatory';Expression={$false}},
+				@{Name='AutoSelectOnWebSites';Expression={$false}} | 
+			ConvertTo-Json
+		}
 	`
 
 	output, err := u.runPowerShell(psCommand)
