@@ -223,8 +223,8 @@ class GraphDataPage extends React.Component {
     // Density: 0.1 (very sparse) to 10 (dense)
     // Lower density = more spacing
     const densityFactor = 10.1 - density; // Invert: higher density number = closer nodes
-    const repulsion = 200 + (densityFactor * 150); // Range: 215 to 1715
-    const edgeLength = 50 + (densityFactor * 50); // Range: 55 to 555
+    const repulsion = 200 + (densityFactor * 150); // Range: 215 to 1700
+    const edgeLength = 50 + (densityFactor * 50); // Range: 55 to 550
 
     // Helper function to calculate positions for "none" layout
     const calculateNoneLayoutPositions = (nodes, links) => {
@@ -270,8 +270,8 @@ class GraphDataPage extends React.Component {
       });
 
       // Position nodes based on clusters and density
-      const spacing = 150 * densityFactor / 5; // Adjust spacing based on density, range: 30 to 303
-      const clusterSpacing = 200 * densityFactor / 5; // Range: 40 to 404
+      const spacing = 150 * densityFactor / 5; // Adjust spacing based on density, range: 3 to 300
+      const clusterSpacing = 200 * densityFactor / 5; // Range: 4 to 400
       const nodesPerRow = Math.ceil(Math.sqrt(nodes.length * 1.5));
 
       let currentX = 0;
@@ -310,7 +310,7 @@ class GraphDataPage extends React.Component {
     // Helper function to calculate grid layout positions
     const calculateGridLayoutPositions = (nodes) => {
       const cols = Math.ceil(Math.sqrt(nodes.length));
-      const spacing = 150 * densityFactor / 5; // Range: 30 to 303
+      const spacing = 150 * densityFactor / 5; // Range: 3 to 300
 
       nodes.forEach((node, index) => {
         const col = index % cols;
@@ -357,8 +357,8 @@ class GraphDataPage extends React.Component {
 
       // Calculate positions using BFS from roots
       const positioned = new Set();
-      const levelSpacing = 200 * densityFactor / 5; // Range: 40 to 404
-      const nodeSpacing = 150 * densityFactor / 5; // Range: 30 to 303
+      const levelSpacing = 200 * densityFactor / 5; // Range: 4 to 400
+      const nodeSpacing = 150 * densityFactor / 5; // Range: 3 to 300
 
       const queue = roots.map(id => ({id, level: 0, parent: null}));
       const levels = new Map();
