@@ -26,19 +26,19 @@ import (
 
 // WindowsPatch represents a Windows update patch
 type WindowsPatch struct {
-	Title                string   `json:"title"`
-	KB                   string   `json:"kb"`
-	Size                 string   `json:"size"`
-	Status               string   `json:"status"`
-	Description          string   `json:"description"`
-	RebootRequired       bool     `json:"rebootRequired"`
-	InstalledOn          string   `json:"installedOn,omitempty"`
-	LastSearchTime       string   `json:"lastSearchTime,omitempty"`
-	Categories           string   `json:"categories,omitempty"`
-	IsInstalled          bool     `json:"isInstalled"`
-	IsDownloaded         bool     `json:"isDownloaded"`
-	IsMandatory          bool     `json:"isMandatory"`
-	AutoSelectOnWebSites bool     `json:"autoSelectOnWebSites"`
+	Title                string `json:"title"`
+	KB                   string `json:"kb"`
+	Size                 string `json:"size"`
+	Status               string `json:"status"`
+	Description          string `json:"description"`
+	RebootRequired       bool   `json:"rebootRequired"`
+	InstalledOn          string `json:"installedOn,omitempty"`
+	LastSearchTime       string `json:"lastSearchTime,omitempty"`
+	Categories           string `json:"categories,omitempty"`
+	IsInstalled          bool   `json:"isInstalled"`
+	IsDownloaded         bool   `json:"isDownloaded"`
+	IsMandatory          bool   `json:"isMandatory"`
+	AutoSelectOnWebSites bool   `json:"autoSelectOnWebSites"`
 }
 
 // InstallProgress represents the installation progress of a patch
@@ -87,7 +87,7 @@ func validateKB(kb string) (string, error) {
 
 // runPowerShell executes a PowerShell command and returns the output
 func (u *Updater) runPowerShell(command string) (string, error) {
-	cmd := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-Command", command)
+	cmd := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", command)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
@@ -104,7 +104,9 @@ func (u *Updater) runPowerShell(command string) (string, error) {
 func (u *Updater) ListPatches() ([]*WindowsPatch, error) {
 	// Use PSWindowsUpdate to get available updates
 	psCommand := `
-		Import-Module PSWindowsUpdate -ErrorAction Stop;
+		$ErrorActionPreference = 'Stop';
+		$ProgressPreference = 'Continue';
+		Import-Module PSWindowsUpdate -Force;
 		$updates = Get-WindowsUpdate -MicrosoftUpdate;
 		$updates | Select-Object @{Name='Title';Expression={$_.Title}},
 			@{Name='KB';Expression={$_.KBArticleIDs -join ','}},
@@ -157,10 +159,15 @@ func (u *Updater) ListPatches() ([]*WindowsPatch, error) {
 // ListInstalledPatches returns all recently installed patches, including those with "Pending restart" status
 func (u *Updater) ListInstalledPatches() ([]*WindowsPatch, error) {
 	// Use PSWindowsUpdate to get update history
+	// Based on reference implementation that uses proper error handling
 	psCommand := `
-		Import-Module PSWindowsUpdate -ErrorAction Stop;
-		$history = Get-WUHistory | Select-Object -First 50;
-		$rebootPending = Get-WURebootStatus -Silent;
+		$ErrorActionPreference = 'Stop';
+		$ProgressPreference = 'Continue';
+		Import-Module PSWindowsUpdate -Force;
+		$history = Get-WUHistory -Last 50 -ErrorAction SilentlyContinue;
+		$rebootPending = $null;
+		try { $rebootPending = Get-WURebootStatus -ErrorAction Stop } catch { $rebootPending = $null };
+		$isRebootRequired = if ($null -ne $rebootPending) { $rebootPending.IsRebootRequired } else { $false };
 		$history | Select-Object @{Name='Title';Expression={$_.Title}},
 			@{Name='KB';Expression={
 				if ($_.Title -match 'KB[0-9]+') { $matches[0] }
@@ -168,11 +175,11 @@ func (u *Updater) ListInstalledPatches() ([]*WindowsPatch, error) {
 			}},
 			@{Name='Size';Expression={'N/A'}},
 			@{Name='Status';Expression={
-				if ($rebootPending) { 'Pending Restart' }
+				if ($isRebootRequired) { 'Pending Restart' }
 				else { $_.Result }
 			}},
 			@{Name='Description';Expression={$_.Description}},
-			@{Name='RebootRequired';Expression={$rebootPending}},
+			@{Name='RebootRequired';Expression={$isRebootRequired}},
 			@{Name='InstalledOn';Expression={$_.Date.ToString('o')}},
 			@{Name='IsInstalled';Expression={$true}},
 			@{Name='IsDownloaded';Expression={$true}},
@@ -231,7 +238,9 @@ func (u *Updater) InstallPatch(kb string) (*InstallProgress, error) {
 	// Install the patch using PSWindowsUpdate
 	// Note: KB number has been validated to contain only digits, preventing command injection
 	psCommand := fmt.Sprintf(`
-		Import-Module PSWindowsUpdate -ErrorAction Stop;
+		$ErrorActionPreference = 'Stop';
+		$ProgressPreference = 'Continue';
+		Import-Module PSWindowsUpdate -Force;
 		$result = Install-WindowsUpdate -KBArticleID '%s' -AcceptAll -IgnoreReboot -Confirm:$false -Verbose;
 		if ($result) {
 			$result | Select-Object @{Name='Status';Expression={$_.Result}},
@@ -315,8 +324,10 @@ func (u *Updater) MonitorInstallProgress(kb string, intervalSeconds int) (<-chan
 			// Check if the update is still installing
 			// Note: KB number has been validated to contain only digits, preventing command injection
 			psCommand := fmt.Sprintf(`
-				Import-Module PSWindowsUpdate -ErrorAction Stop;
-				$history = Get-WUHistory | Where-Object { $_.Title -match 'KB%s' } | Select-Object -First 1;
+				$ErrorActionPreference = 'Stop';
+				$ProgressPreference = 'Continue';
+				Import-Module PSWindowsUpdate -Force;
+				$history = Get-WUHistory -ErrorAction SilentlyContinue | Where-Object { $_.Title -match 'KB%s' } | Select-Object -First 1;
 				$installing = Get-WindowsUpdate -KBArticleID '%s' -MicrosoftUpdate;
 				
 				if ($history -and $history.Result -eq 'Succeeded') {
