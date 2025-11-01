@@ -416,6 +416,23 @@ class GraphDataPage extends React.Component {
       processedNodes = calculateTreeLayoutPositions(processedNodes, links);
     }
 
+    // Restore saved layout positions if available and saveLayout is enabled
+    if (this.props.saveLayout && this.props.layoutData) {
+      try {
+        const savedPositions = JSON.parse(this.props.layoutData);
+        if (savedPositions && typeof savedPositions === "object") {
+          processedNodes.forEach(node => {
+            if (savedPositions[node.id]) {
+              node.x = savedPositions[node.id].x;
+              node.y = savedPositions[node.id].y;
+            }
+          });
+        }
+      } catch (e) {
+        // Ignore parse errors for layoutData
+      }
+    }
+
     // Transform nodes to ECharts format
     const echartNodes = processedNodes.map(node => {
       const sanitizedIcon = sanitizeIconUrl(node.icon);
@@ -575,6 +592,37 @@ class GraphDataPage extends React.Component {
     this.setState({
       selectedNode: null,
     });
+  };
+
+  captureLayoutPositions = () => {
+    // Capture current node positions and save them if saveLayout is enabled
+    if (!this.props.saveLayout) {
+      return;
+    }
+
+    const chartInstance = this.chartRef.current?.getEchartsInstance();
+    if (!chartInstance) {
+      return;
+    }
+
+    try {
+      const option = chartInstance.getOption();
+      if (option && option.series && option.series[0] && option.series[0].data) {
+        const positions = {};
+        option.series[0].data.forEach(node => {
+          if (node.id && node.x !== undefined && node.y !== undefined) {
+            positions[node.id] = {x: node.x, y: node.y};
+          }
+        });
+
+        const layoutData = JSON.stringify(positions);
+        if (this.props.onLayoutChange) {
+          this.props.onLayoutChange(layoutData);
+        }
+      }
+    } catch (e) {
+      // Ignore errors when capturing layout
+    }
   };
 
   onChartReady = (chartInstance) => {
@@ -755,6 +803,8 @@ class GraphDataPage extends React.Component {
                 click: this.handleNodeClick,
                 mouseover: this.handleMouseOver,
                 mouseout: this.handleMouseOut,
+                graphRoam: this.captureLayoutPositions,
+                finished: this.captureLayoutPositions,
               }}
               onChartReady={this.onChartReady}
             />

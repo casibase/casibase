@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row, Select} from "antd";
+import {Button, Card, Checkbox, Col, Input, Row, Select} from "antd";
 import * as GraphBackend from "./backend/GraphBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -67,6 +67,12 @@ class GraphEditPage extends React.Component {
 
   handleErrorChange(errorText) {
     this.updateGraphField("errorText", errorText);
+  }
+
+  handleLayoutChange(layoutData) {
+    if (this.state.graph?.saveLayout) {
+      this.updateGraphField("layoutData", layoutData);
+    }
   }
 
   renderGraph() {
@@ -138,6 +144,21 @@ class GraphEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("graph:Save Layout"), i18next.t("graph:Save Layout - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Checkbox
+              checked={this.state.graph.saveLayout}
+              onChange={e => {
+                this.updateGraphField("saveLayout", e.target.checked);
+              }}
+            >
+              {i18next.t("graph:Enable saving node positions")}
+            </Checkbox>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("graph:Node Density"), i18next.t("graph:Node Density - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -175,7 +196,7 @@ class GraphEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div key={this.state.graphCount} style={{height: "1000px", width: "100%"}}>
-              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} category={this.state.graph?.category} layout={this.state.graph?.layout} density={this.state.graph?.density} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
+              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} category={this.state.graph?.category} layout={this.state.graph?.layout} density={this.state.graph?.density} layoutData={this.state.graph?.layoutData} saveLayout={this.state.graph?.saveLayout} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} onLayoutChange={(layoutData) => this.handleLayoutChange(layoutData)} />
             </div>
           </Col>
         </Row>
