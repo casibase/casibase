@@ -14,11 +14,6 @@
 
 package scan
 
-const (
-	ProviderTypeNmap = "Nmap"
-	ProviderTypeRMM  = "RMM"
-)
-
 type ScanProvider interface {
 	Scan(target string) (string, error)
 	ScanWithCommand(target string, command string) (string, error)
@@ -28,10 +23,8 @@ func GetScanProvider(typ string, clientId string, lang string) (ScanProvider, er
 	var p ScanProvider
 	var err error
 
-	if typ == ProviderTypeNmap {
+	if typ == "Nmap" {
 		p, err = NewNmapScanProvider(clientId)
-	} else if typ == ProviderTypeRMM {
-		p, err = NewRmmScanProvider(clientId)
 	} else {
 		return nil, nil
 	}

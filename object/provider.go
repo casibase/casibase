@@ -72,7 +72,6 @@ type Provider struct {
 	ContractMethod string `xorm:"varchar(100)" json:"contractMethod"`
 	Network        string `xorm:"varchar(100)" json:"network"`
 	Chain          string `xorm:"varchar(100)" json:"chain"`
-	Path           string `xorm:"varchar(200)" json:"path"`
 	TestContent    string `xorm:"varchar(100)" json:"testContent"`
 
 	IsDefault  bool   `json:"isDefault"`
@@ -370,8 +369,7 @@ func (p *Provider) GetSpeechToTextProvider(lang string) (stt.SpeechToTextProvide
 }
 
 func (p *Provider) GetScanProvider(lang string) (scan.ScanProvider, error) {
-	// Use Path field for both Nmap (binary path) and RMM (agent URL)
-	pProvider, err := scan.GetScanProvider(p.Type, p.Path, lang)
+	pProvider, err := scan.GetScanProvider(p.Type, p.ClientId, lang)
 	if err != nil {
 		return nil, err
 	}
