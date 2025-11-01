@@ -511,6 +511,7 @@ class GraphDataPage extends React.Component {
             },
             lineStyle: {
               opacity: 1,
+              width: 2,
             },
           },
           force: layout === "force" ? {
