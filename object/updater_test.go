@@ -51,8 +51,8 @@ func TestListPatches(t *testing.T) {
 		t.Logf("  IsDownloaded: %v", patch.IsDownloaded)
 		t.Logf("  IsMandatory: %v", patch.IsMandatory)
 		t.Logf("  RebootRequired: %v", patch.RebootRequired)
-		if len(patch.Categories) > 0 {
-			t.Logf("  Categories: %v", patch.Categories)
+		if patch.Categories != "" {
+			t.Logf("  Categories: %s", patch.Categories)
 		}
 	}
 
