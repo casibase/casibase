@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import {StaticBaseUrl} from "../Conf";
+import * as Setting from "../Setting";
 
 /**
  * Transform asset list data to graph data structure
@@ -43,18 +44,8 @@ export function transformAssetsToGraph(assets) {
     "Snapshot Policy": "Policy",
   };
 
-  // Define icons for different asset types
-  const typeIcons = {
-    "VPC": `${StaticBaseUrl}/img/cloud/vpc.png`,
-    "VSwitch": `${StaticBaseUrl}/img/cloud/vswitch.png`,
-    "Network Interface": `${StaticBaseUrl}/img/cloud/network.png`,
-    "Security Group": `${StaticBaseUrl}/img/cloud/securitygroup.png`,
-    "Virtual Machine": `${StaticBaseUrl}/img/cloud/vm.png`,
-    "Disk": `${StaticBaseUrl}/img/cloud/disk.png`,
-    "Snapshot": `${StaticBaseUrl}/img/cloud/snapshot.png`,
-    "Image": `${StaticBaseUrl}/img/cloud/image.png`,
-    "Snapshot Policy": `${StaticBaseUrl}/img/cloud/policy.png`,
-  };
+  // Get icons for different asset types from shared Setting
+  const typeIcons = Setting.getAssetTypeIcons();
 
   // Helper function to get or create a category
   const getCategoryIndex = (categoryName) => {

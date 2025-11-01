@@ -154,6 +154,11 @@ class AssetListPage extends BaseListPage {
     return otherProviderInfo[provider.category][provider.type].logo;
   }
 
+  getTypeIcon(typeName) {
+    const typeIcons = Setting.getAssetTypeIcons();
+    return typeIcons[typeName] || null;
+  }
+
   renderTable(assets) {
     const columns = [
       {
@@ -224,6 +229,15 @@ class AssetListPage extends BaseListPage {
         width: "150px",
         sorter: true,
         ...this.getColumnSearchProps("type"),
+        render: (text, record, index) => {
+          const icon = this.getTypeIcon(text);
+          return (
+            <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+              {icon && <img src={icon} alt={text} style={{width: "20px", height: "20px"}} />}
+              <span>{text}</span>
+            </div>
+          );
+        },
       },
       {
         title: i18next.t("general:ID"),

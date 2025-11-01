@@ -15,6 +15,7 @@
 import React from "react";
 import {Button, Card, Col, Input, Row} from "antd";
 import * as AssetBackend from "./backend/AssetBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import {JsonCodeMirrorEditor} from "./common/JsonCodeMirrorWidget";
@@ -27,12 +28,30 @@ class AssetEditPage extends React.Component {
       assetOwner: props.match.params.organizationName,
       assetName: props.match.params.assetName,
       asset: null,
+      providers: [],
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getAsset();
+    this.getProviders();
+  }
+
+  getProviders() {
+    ProviderBackend.getProviders(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          const cloudProviders = res.data.filter(provider =>
+            provider.category === "Public Cloud"
+          );
+          this.setState({
+            providers: cloudProviders,
+          });
+        } else {
+          Setting.showMessage("error", res.msg);
+        }
+      });
   }
 
   getAsset() {
@@ -104,7 +123,29 @@ class AssetEditPage extends React.Component {
       });
   }
 
+  getProviderLogo(providerName) {
+    const provider = this.state.providers.find(p => p.name === providerName);
+    if (!provider) {
+      return null;
+    }
+
+    const otherProviderInfo = Setting.getOtherProviderInfo();
+    if (!otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {
+      return null;
+    }
+
+    return otherProviderInfo[provider.category][provider.type].logo;
+  }
+
+  getTypeIcon(typeName) {
+    const typeIcons = Setting.getAssetTypeIcons();
+    return typeIcons[typeName] || null;
+  }
+
   renderAsset() {
+    const providerLogo = this.getProviderLogo(this.state.asset.provider);
+    const typeIcon = this.getTypeIcon(this.state.asset.type);
+
     return (
       <Card size="small" title={
         <div>
@@ -145,7 +186,15 @@ class AssetEditPage extends React.Component {
             {Setting.getLabel(i18next.t("asset:Provider"), i18next.t("asset:Provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.asset.provider} disabled />
+            <Input
+              value={this.state.asset.provider}
+              disabled
+              prefix={
+                providerLogo ?
+                  <img src={providerLogo} alt={this.state.asset.provider} style={{width: "16px", height: "16px"}} /> :
+                  null
+              }
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -161,7 +210,15 @@ class AssetEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Type"), i18next.t("general:Type - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.asset.type} disabled />
+            <Input
+              value={this.state.asset.type}
+              disabled
+              prefix={
+                typeIcon ?
+                  <img src={typeIcon} alt={this.state.asset.type} style={{width: "16px", height: "16px"}} /> :
+                  null
+              }
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

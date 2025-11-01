@@ -1031,6 +1031,20 @@ export function getOtherProviderInfo() {
   return res;
 }
 
+export function getAssetTypeIcons() {
+  return {
+    "VPC": `${StaticBaseUrl}/img/cloud/vpc.png`,
+    "VSwitch": `${StaticBaseUrl}/img/cloud/vswitch.png`,
+    "Network Interface": `${StaticBaseUrl}/img/cloud/network.png`,
+    "Security Group": `${StaticBaseUrl}/img/cloud/securitygroup.png`,
+    "Virtual Machine": `${StaticBaseUrl}/img/cloud/vm.png`,
+    "Disk": `${StaticBaseUrl}/img/cloud/disk.png`,
+    "Snapshot": `${StaticBaseUrl}/img/cloud/snapshot.png`,
+    "Image": `${StaticBaseUrl}/img/cloud/image.png`,
+    "Snapshot Policy": `${StaticBaseUrl}/img/cloud/policy.png`,
+  };
+}
+
 export function getItem(label, key, icon, children, type) {
   return {
     key,
