@@ -33,11 +33,21 @@ export const TourObj = {
       title: "Store List",
       description: "Stores are knowledge bases in Casibase. Each store contains documents, vectors, and chat conversations. You can configure different AI providers for each store.",
     },
+    {
+      title: "Add Store",
+      description: "Click here to add a new store. Each store can have its own configuration, AI providers, and knowledge base.",
+      id: "add-button",
+    },
   ],
   providers: [
     {
       title: "Provider List",
       description: "Providers are external services that Casibase uses for storage, AI models, embeddings, text-to-speech, speech-to-text, and more. Configure providers to enable different features in your stores.",
+    },
+    {
+      title: "Add Provider",
+      description: "Click here to add a new provider. You can configure OAuth, SMS, Email, Storage, AI Model, and other types of providers.",
+      id: "add-button",
     },
   ],
   vectors: [
