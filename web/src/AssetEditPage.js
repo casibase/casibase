@@ -198,6 +198,30 @@ class AssetEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        {this.state.asset.type === "Virtual Machine" ? (
+          <>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Username"), i18next.t("general:Username - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.asset.username} onChange={e => {
+                  this.updateAssetField("username", e.target.value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Password"), i18next.t("general:Password - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input.Password value={this.state.asset.password} onChange={e => {
+                  this.updateAssetField("password", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          </>
+        ) : null}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("asset:Properties"), i18next.t("asset:Properties - Tooltip"))} :

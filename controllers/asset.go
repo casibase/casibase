@@ -38,6 +38,7 @@ func (c *ApiController) GetAssets() {
 	value := c.Input().Get("value")
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
+	user := c.GetSessionUser()
 
 	if limit == "" || page == "" {
 		assets, err := object.GetAssets(owner)
@@ -46,6 +47,7 @@ func (c *ApiController) GetAssets() {
 			return
 		}
 
+		assets = object.GetMaskedAssets(assets, true, user)
 		c.ResponseOk(assets)
 	} else {
 		limit := util.ParseInt(limit)
@@ -62,6 +64,7 @@ func (c *ApiController) GetAssets() {
 			return
 		}
 
+		assets = object.GetMaskedAssets(assets, true, user)
 		c.ResponseOk(assets, paginator.Nums())
 	}
 }
@@ -75,6 +78,7 @@ func (c *ApiController) GetAssets() {
 // @router /get-asset [get]
 func (c *ApiController) GetAsset() {
 	id := c.Input().Get("id")
+	user := c.GetSessionUser()
 
 	asset, err := object.GetAsset(id)
 	if err != nil {
@@ -82,7 +86,7 @@ func (c *ApiController) GetAsset() {
 		return
 	}
 
-	c.ResponseOk(asset)
+	c.ResponseOk(object.GetMaskedAsset(asset, true, user))
 }
 
 // UpdateAsset
