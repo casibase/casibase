@@ -454,7 +454,7 @@
     "Edit Graph": "Diagramm bearbeiten",
     "Force": "Kraftgerichtet",
     "Grid": "Raster",
-    "Layout": "Layout",
+    "Layout": "布局",
     "Layout - Tooltip": "Grafik-Layout-Typ",
     "Network": "Netzwerk",
     "Node Density": "Knotendichte",
@@ -956,7 +956,7 @@
     "Unreviewed": "Ungeprüft",
     "Upload Video": "Aufzeichnung hochladen",
     "Video": "Aufzeichnung",
-    "Video - Tooltip": "Video",
+    "Video - Tooltip": "Video - Tooltip",
     "Video ID": "Aufzeichnungs-ID",
     "Video ID - Tooltip": "Video-ID (eindeutiger Bezeichner)"
   },
