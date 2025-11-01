@@ -462,6 +462,7 @@ class StoreListPage extends BaseListPage {
                   </>
                 )
               }
+              {this.renderTourButton()}
             </div>
           )}
           loading={this.state.loading}

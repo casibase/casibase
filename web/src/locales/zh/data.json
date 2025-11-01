@@ -956,6 +956,17 @@
     "Video ID": "录像ID",
     "Video ID - Tooltip": "视频ID（唯一标识符）"
   },
+  "tour": {
+    "Back": "上一步",
+    "Close": "关闭",
+    "Last": "完成",
+    "Next": "下一步",
+    "Skip": "跳过",
+    "Start Tour": "开始引导",
+    "This is the list page title, you can add, delete or perform other operations here": "这是列表页面标题，您可以在这里添加、删除或执行其他操作",
+    "This is the pagination control, you can navigate through pages here": "这是分页控件，您可以在此处浏览不同页面",
+    "This is the table header, you can sort and filter columns here": "这是表格标题，您可以在此处对列进行排序和筛选"
+  },
   "workflow": {
     "Edit Workflow": "编辑工作流"
   }

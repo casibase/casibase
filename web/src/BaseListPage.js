@@ -13,12 +13,13 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Input, Modal, Result, Space} from "antd";
-import {ExclamationCircleOutlined, SearchOutlined} from "@ant-design/icons";
+import {Button, Input, Modal, Result, Space, Tooltip} from "antd";
+import {ExclamationCircleOutlined, QuestionCircleOutlined, SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as FormBackend from "./backend/FormBackend";
+import Tour from "./common/Tour";
 
 const {confirm} = Modal;
 
@@ -65,6 +66,37 @@ class BaseListPage extends React.Component {
       clearInterval(this.state.intervalId);
     }
     window.removeEventListener("storeChanged", this.handleStoreChange);
+  }
+
+  getTourSteps() {
+    return [
+      {
+        target: ".ant-table-title",
+        content: i18next.t("tour:This is the list page title, you can add, delete or perform other operations here"),
+        disableBeacon: true,
+      },
+      {
+        target: ".ant-table-thead",
+        content: i18next.t("tour:This is the table header, you can sort and filter columns here"),
+      },
+      {
+        target: ".ant-table-pagination",
+        content: i18next.t("tour:This is the pagination control, you can navigate through pages here"),
+      },
+    ];
+  }
+
+  renderTourButton() {
+    return (
+      <Tooltip title={i18next.t("tour:Start Tour")}>
+        <Button
+          icon={<QuestionCircleOutlined />}
+          size="small"
+          onClick={() => Setting.startTour()}
+          style={{marginLeft: 8}}
+        />
+      </Tooltip>
+    );
   }
 
   UNSAFE_componentWillMount() {
@@ -303,6 +335,7 @@ class BaseListPage extends React.Component {
 
     return (
       <div>
+        <Tour name={this.props.match?.path || "list"} steps={this.getTourSteps()} />
         {this.renderTable(this.state.data)}
       </div>
     );

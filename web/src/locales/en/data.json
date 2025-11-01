@@ -956,6 +956,17 @@
     "Video ID": "Video ID",
     "Video ID - Tooltip": "Platform-specific video ID"
   },
+  "tour": {
+    "Back": "Back",
+    "Close": "Close",
+    "Last": "Last",
+    "Next": "Next",
+    "Skip": "Skip",
+    "Start Tour": "Start Tour",
+    "This is the list page title, you can add, delete or perform other operations here": "This is the list page title, you can add, delete or perform other operations here",
+    "This is the pagination control, you can navigate through pages here": "This is the pagination control, you can navigate through pages here",
+    "This is the table header, you can sort and filter columns here": "This is the table header, you can sort and filter columns here"
+  },
   "workflow": {
     "Edit Workflow": "Edit Workflow"
   }

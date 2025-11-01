@@ -97,6 +97,10 @@ class SystemInfo extends React.Component {
     window.addEventListener("storageTourChanged", this.handleTourChange);
   }
 
+  handleTourChange = () => {
+    this.forceUpdate();
+  };
+
   stopTimer() {
     if (this.state.intervalId !== null) {
       clearInterval(this.state.intervalId);

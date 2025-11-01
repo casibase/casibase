@@ -2426,3 +2426,16 @@ export function getFormattedSize(bytes) {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
 }
+
+export function isTourShown(name) {
+  return localStorage.getItem(`isTourShown_${name}`) === "true";
+}
+
+export function setTourShown(name, value) {
+  localStorage.setItem(`isTourShown_${name}`, value);
+  window.dispatchEvent(new Event("storageTourChanged"));
+}
+
+export function startTour() {
+  window.dispatchEvent(new Event("startTour"));
+}
