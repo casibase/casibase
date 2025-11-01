@@ -640,12 +640,12 @@ class GraphDataPage extends React.Component {
           )}
           {selectedNode.resourceType && (
             <div style={{marginBottom: "8px"}}>
-              <strong>{i18next.t("asset:Resource type")}:</strong> <span style={{color: "#666"}}>{selectedNode.resourceType}</span>
+              <strong>{i18next.t("general:Type")}:</strong> <span style={{color: "#666"}}>{selectedNode.resourceType}</span>
             </div>
           )}
           {selectedNode.resourceId && (
             <div style={{marginBottom: "8px"}}>
-              <strong>{i18next.t("asset:Resource ID")}:</strong> <span style={{color: "#666", wordBreak: "break-all"}}>{selectedNode.resourceId}</span>
+              <strong>{i18next.t("general:ID")}:</strong> <span style={{color: "#666", wordBreak: "break-all"}}>{selectedNode.resourceId}</span>
             </div>
           )}
           {selectedNode.category !== undefined && (

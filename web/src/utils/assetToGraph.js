@@ -36,11 +36,11 @@ export function transformAssetsToGraph(assets) {
     "VSwitch": "Network",
     "Network Interface": "Network",
     "Security Group": "Security",
-    "ECS Instance": "Compute",
+    "Virtual Machine": "Compute",
     "Disk": "Storage",
     "Snapshot": "Storage",
     "Image": "Storage",
-    "ACS::ECS::AutoSnapshotPolicy": "Policy",
+    "Snapshot Policy": "Policy",
   };
 
   // Define icons for different resource types
@@ -49,11 +49,11 @@ export function transformAssetsToGraph(assets) {
     "VSwitch": `${StaticBaseUrl}/img/cloud/vswitch.png`,
     "Network Interface": `${StaticBaseUrl}/img/cloud/network.png`,
     "Security Group": `${StaticBaseUrl}/img/cloud/securitygroup.png`,
-    "ECS Instance": `${StaticBaseUrl}/img/cloud/vm.png`,
+    "Virtual Machine": `${StaticBaseUrl}/img/cloud/vm.png`,
     "Disk": `${StaticBaseUrl}/img/cloud/disk.png`,
     "Snapshot": `${StaticBaseUrl}/img/cloud/snapshot.png`,
     "Image": `${StaticBaseUrl}/img/cloud/image.png`,
-    "ACS::ECS::AutoSnapshotPolicy": `${StaticBaseUrl}/img/cloud/policy.png`,
+    "Snapshot Policy": `${StaticBaseUrl}/img/cloud/policy.png`,
   };
 
   // Helper function to get or create a category
@@ -86,13 +86,13 @@ export function transformAssetsToGraph(assets) {
   // First pass: Create nodes for all assets
   assets.forEach((asset, index) => {
     const properties = parseProperties(asset.properties);
-    const resourceType = asset.resourceType;
+    const resourceType = asset.type;
     const categoryName = resourceTypeCategories[resourceType] || "Other";
     const categoryIndex = getCategoryIndex(categoryName);
 
     // Store resource info for link creation
-    resourceTypeMap.set(asset.resourceId, {
-      id: asset.resourceId,
+    resourceTypeMap.set(asset.id, {
+      id: asset.id,
       resourceType: resourceType,
       properties: properties,
       region: asset.region,
@@ -101,8 +101,8 @@ export function transformAssetsToGraph(assets) {
     });
 
     const node = {
-      id: asset.resourceId,
-      name: asset.displayName || asset.resourceId,
+      id: asset.id,
+      name: asset.displayName || asset.id,
       symbolSize: 50 + (index % 3) * 10,
       x: (index % 5) * 200 - 400,
       y: Math.floor(index / 5) * 150 - 300,
@@ -111,8 +111,8 @@ export function transformAssetsToGraph(assets) {
       icon: resourceTypeIcons[resourceType] || `${StaticBaseUrl}/img/cloud/default.png`,
       // Additional asset metadata
       displayName: asset.displayName,
-      resourceId: asset.resourceId,
-      resourceType: asset.resourceType,
+      resourceId: asset.id,
+      resourceType: asset.type,
       region: asset.region,
       zone: asset.zone,
       provider: asset.provider,
@@ -128,29 +128,29 @@ export function transformAssetsToGraph(assets) {
   const linkSet = new Set();
 
   assets.forEach((asset) => {
-    const sourceInfo = resourceTypeMap.get(asset.resourceId);
+    const sourceInfo = resourceTypeMap.get(asset.id);
     if (!sourceInfo) {return;}
 
     const properties = sourceInfo.properties;
-    const resourceType = asset.resourceType;
+    const resourceType = asset.type;
 
-    // Link ECS Instances to their Network Interfaces (by matching IP addresses)
-    if (resourceType === "ECS Instance") {
+    // Link Virtual Machines to their Network Interfaces (by matching IP addresses)
+    if (resourceType === "Virtual Machine") {
       const instanceIPs = sourceInfo.ipAddresses;
       assets.forEach((otherAsset) => {
-        if (otherAsset.resourceType === "Network Interface") {
-          const targetInfo = resourceTypeMap.get(otherAsset.resourceId);
+        if (otherAsset.type === "Network Interface") {
+          const targetInfo = resourceTypeMap.get(otherAsset.id);
           const niIPs = targetInfo?.ipAddresses || [];
 
           // Check if they share any IP addresses
           const hasCommonIP = instanceIPs.some(ip => niIPs.includes(ip));
           if (hasCommonIP) {
-            const linkKey = `${asset.resourceId}->${otherAsset.resourceId}`;
+            const linkKey = `${asset.id}->${otherAsset.id}`;
             if (!linkSet.has(linkKey)) {
               linkSet.add(linkKey);
               links.push({
-                source: asset.resourceId,
-                target: otherAsset.resourceId,
+                source: asset.id,
+                target: otherAsset.id,
               });
             }
           }
@@ -161,13 +161,13 @@ export function transformAssetsToGraph(assets) {
     // Link Network Interfaces to VSwitch (by matching zone)
     if (resourceType === "Network Interface" && asset.zone) {
       assets.forEach((otherAsset) => {
-        if (otherAsset.resourceType === "VSwitch" && otherAsset.zone === asset.zone) {
-          const linkKey = `${asset.resourceId}->${otherAsset.resourceId}`;
+        if (otherAsset.type === "VSwitch" && otherAsset.zone === asset.zone) {
+          const linkKey = `${asset.id}->${otherAsset.id}`;
           if (!linkSet.has(linkKey)) {
             linkSet.add(linkKey);
             links.push({
-              source: asset.resourceId,
-              target: otherAsset.resourceId,
+              source: asset.id,
+              target: otherAsset.id,
             });
           }
         }
@@ -177,28 +177,28 @@ export function transformAssetsToGraph(assets) {
     // Link VSwitch to VPC (by region)
     if (resourceType === "VSwitch" && asset.region) {
       assets.forEach((otherAsset) => {
-        if (otherAsset.resourceType === "VPC" && otherAsset.region === asset.region) {
-          const linkKey = `${asset.resourceId}->${otherAsset.resourceId}`;
+        if (otherAsset.type === "VPC" && otherAsset.region === asset.region) {
+          const linkKey = `${asset.id}->${otherAsset.id}`;
           if (!linkSet.has(linkKey)) {
             linkSet.add(linkKey);
             links.push({
-              source: asset.resourceId,
-              target: otherAsset.resourceId,
+              source: asset.id,
+              target: otherAsset.id,
             });
           }
         }
       });
     }
 
-    // Link Disks to ECS Instances (by instanceId from disk properties)
+    // Link Disks to Virtual Machines (by instanceId from disk properties)
     if (resourceType === "Disk" && properties.instanceId) {
       // Only create link if the target instance exists
       if (resourceTypeMap.has(properties.instanceId)) {
-        const linkKey = `${asset.resourceId}->${properties.instanceId}`;
+        const linkKey = `${asset.id}->${properties.instanceId}`;
         if (!linkSet.has(linkKey)) {
           linkSet.add(linkKey);
           links.push({
-            source: asset.resourceId,
+            source: asset.id,
             target: properties.instanceId,
           });
         }
@@ -208,13 +208,13 @@ export function transformAssetsToGraph(assets) {
     // Link Security Groups to VPC (by region)
     if (resourceType === "Security Group" && asset.region) {
       assets.forEach((otherAsset) => {
-        if (otherAsset.resourceType === "VPC" && otherAsset.region === asset.region) {
-          const linkKey = `${asset.resourceId}->${otherAsset.resourceId}`;
+        if (otherAsset.type === "VPC" && otherAsset.region === asset.region) {
+          const linkKey = `${asset.id}->${otherAsset.id}`;
           if (!linkSet.has(linkKey)) {
             linkSet.add(linkKey);
             links.push({
-              source: asset.resourceId,
-              target: otherAsset.resourceId,
+              source: asset.id,
+              target: otherAsset.id,
             });
           }
         }
@@ -225,27 +225,27 @@ export function transformAssetsToGraph(assets) {
     if (resourceType === "Snapshot" && properties.diskId) {
       // Only create link if the source disk exists
       if (resourceTypeMap.has(properties.diskId)) {
-        const linkKey = `${properties.diskId}->${asset.resourceId}`;
+        const linkKey = `${properties.diskId}->${asset.id}`;
         if (!linkSet.has(linkKey)) {
           linkSet.add(linkKey);
           links.push({
             source: properties.diskId,
-            target: asset.resourceId,
+            target: asset.id,
           });
         }
       }
     }
 
-    // Link Images to ECS Instances that use them (by imageId from instance properties)
-    if (resourceType === "ECS Instance" && properties.imageId) {
+    // Link Images to Virtual Machines that use them (by imageId from instance properties)
+    if (resourceType === "Virtual Machine" && properties.imageId) {
       // Only create link if the source image exists
       if (resourceTypeMap.has(properties.imageId)) {
-        const linkKey = `${properties.imageId}->${asset.resourceId}`;
+        const linkKey = `${properties.imageId}->${asset.id}`;
         if (!linkSet.has(linkKey)) {
           linkSet.add(linkKey);
           links.push({
             source: properties.imageId,
-            target: asset.resourceId,
+            target: asset.id,
           });
         }
       }

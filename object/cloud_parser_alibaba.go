@@ -84,12 +84,12 @@ func (p *AlibabaCloudParser) ScanAssets(owner string, provider *Provider) ([]*As
 	// Group assets by resource type to check what types exist
 	resourceTypes := make(map[string]bool)
 	for _, asset := range assets {
-		resourceTypes[asset.ResourceType] = true
+		resourceTypes[asset.Type] = true
 	}
 
 	// Create ECS client if needed
 	var ecsClient *ecs20140526.Client
-	if resourceTypes["ECS Instance"] || resourceTypes["Disk"] || resourceTypes["VPC"] {
+	if resourceTypes["Virtual Machine"] || resourceTypes["Disk"] || resourceTypes["VPC"] {
 		ecsClient, err = p.createEcsClient(provider)
 		if err != nil {
 			return nil, err
@@ -97,7 +97,7 @@ func (p *AlibabaCloudParser) ScanAssets(owner string, provider *Provider) ([]*As
 	}
 
 	// Get and merge ECS instance details if ECS instances exist
-	if resourceTypes["ECS Instance"] {
+	if resourceTypes["Virtual Machine"] {
 		ecsDetails, err := p.getEcsInstances(ecsClient, assets)
 		if err != nil {
 			return nil, err
@@ -199,29 +199,29 @@ func (p *AlibabaCloudParser) convertResourceToAsset(owner string, provider *Prov
 	displayResourceType := p.getDisplayResourceType(resourceType)
 
 	asset := &Asset{
-		Owner:        owner,
-		Name:         util.GenerateId(),
-		CreatedTime:  util.GetCurrentTime(),
-		UpdatedTime:  util.GetCurrentTime(),
-		DisplayName:  tea.StringValue(resource.ResourceName),
-		Provider:     provider.Name,
-		ResourceId:   tea.StringValue(resource.ResourceId),
-		ResourceType: displayResourceType,
-		Region:       tea.StringValue(resource.RegionId),
-		Zone:         tea.StringValue(resource.ZoneId),
-		State:        "", // State is not available in SearchResources API
-		Tag:          tag,
-		Properties:   string(propertiesJson),
+		Owner:       owner,
+		Name:        util.GenerateId(),
+		CreatedTime: util.GetCurrentTime(),
+		UpdatedTime: util.GetCurrentTime(),
+		DisplayName: tea.StringValue(resource.ResourceName),
+		Provider:    provider.Name,
+		Id:          tea.StringValue(resource.ResourceId),
+		Type:        displayResourceType,
+		Region:      tea.StringValue(resource.RegionId),
+		Zone:        tea.StringValue(resource.ZoneId),
+		State:       "", // State is not available in SearchResources API
+		Tag:         tag,
+		Properties:  string(propertiesJson),
 	}
 
 	return asset
 }
 
-// getDisplayResourceType converts an ACS resource type to a user-friendly display name
+// getDisplayResourceType converts an ACS resource type to a cloud-neutral display name
 func (p *AlibabaCloudParser) getDisplayResourceType(resourceType string) string {
-	// Map of known resource types to display names
+	// Map of known resource types to cloud-neutral display names
 	displayNames := map[string]string{
-		"ACS::ECS::Instance":               "ECS Instance",
+		"ACS::ECS::Instance":               "Virtual Machine",
 		"ACS::ECS::Disk":                   "Disk",
 		"ACS::ECS::SecurityGroup":          "Security Group",
 		"ACS::ECS::Snapshot":               "Snapshot",
@@ -229,6 +229,7 @@ func (p *AlibabaCloudParser) getDisplayResourceType(resourceType string) string 
 		"ACS::ECS::NetworkInterface":       "Network Interface",
 		"ACS::ECS::KeyPair":                "Key Pair",
 		"ACS::ECS::LaunchTemplate":         "Launch Template",
+		"ACS::ECS::AutoSnapshotPolicy":     "Snapshot Policy",
 		"ACS::VPC::VPC":                    "VPC",
 		"ACS::VPC::VSwitch":                "VSwitch",
 		"ACS::VPC::RouteTable":             "Route Table",

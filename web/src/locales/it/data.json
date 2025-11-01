@@ -55,10 +55,6 @@
     "Properties - Tooltip": "Proprietà risorsa in formato JSON",
     "Provider": "Fornitore",
     "Provider - Tooltip": "Nome fornitore cloud",
-    "Resource ID": "ID risorsa",
-    "Resource ID - Tooltip": "Identificatore univoco della risorsa cloud",
-    "Resource type": "Tipo risorsa",
-    "Resource type - Tooltip": "Tipo di risorsa cloud (Istanza ECS, Disco, VPC, ecc.)",
     "Scan": "Scansiona",
     "Successfully scanned assets": "Risorse scansionate con successo"
   },

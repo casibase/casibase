@@ -55,10 +55,6 @@
     "Properties - Tooltip": "JSON格式的资源属性",
     "Provider": "提供商",
     "Provider - Tooltip": "云提供商名称",
-    "Resource ID": "资源ID",
-    "Resource ID - Tooltip": "云资源的唯一标识符",
-    "Resource type": "资源类型",
-    "Resource type - Tooltip": "云资源类型（ECS实例、磁盘、VPC等）",
     "Scan": "扫描",
     "Successfully scanned assets": "成功扫描资产"
   },
