@@ -143,6 +143,9 @@ class AssetEditPage extends React.Component {
   }
 
   renderAsset() {
+    const providerLogo = this.getProviderLogo(this.state.asset.provider);
+    const typeIcon = this.getTypeIcon(this.state.asset.type);
+
     return (
       <Card size="small" title={
         <div>
@@ -187,8 +190,8 @@ class AssetEditPage extends React.Component {
               value={this.state.asset.provider}
               disabled
               prefix={
-                this.getProviderLogo(this.state.asset.provider) ?
-                  <img src={this.getProviderLogo(this.state.asset.provider)} alt={this.state.asset.provider} style={{width: "16px", height: "16px"}} /> :
+                providerLogo ?
+                  <img src={providerLogo} alt={this.state.asset.provider} style={{width: "16px", height: "16px"}} /> :
                   null
               }
             />
@@ -211,8 +214,8 @@ class AssetEditPage extends React.Component {
               value={this.state.asset.type}
               disabled
               prefix={
-                this.getTypeIcon(this.state.asset.type) ?
-                  <img src={this.getTypeIcon(this.state.asset.type)} alt={this.state.asset.type} style={{width: "16px", height: "16px"}} /> :
+                typeIcon ?
+                  <img src={typeIcon} alt={this.state.asset.type} style={{width: "16px", height: "16px"}} /> :
                   null
               }
             />
