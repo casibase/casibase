@@ -24,6 +24,11 @@ import (
 	"time"
 )
 
+const (
+	// testInstallTimeout is the maximum time to wait for patch installation in tests
+	testInstallTimeout = 5 * time.Minute
+)
+
 // TestListPatches tests listing available Windows updates
 func TestListPatches(t *testing.T) {
 	// Skip test if not running on Windows
@@ -136,7 +141,7 @@ func TestInstallPatchAndMonitor(t *testing.T) {
 	}()
 
 	// Monitor progress
-	timeout := time.After(5 * time.Minute)
+	timeout := time.After(testInstallTimeout)
 	for {
 		select {
 		case progress, ok := <-progressChan:
@@ -212,6 +217,45 @@ func TestNewUpdater(t *testing.T) {
 	updater := NewUpdater()
 	if updater == nil {
 		t.Error("NewUpdater returned nil")
+	}
+}
+
+// TestValidateKB tests KB number validation and sanitization
+func TestValidateKB(t *testing.T) {
+	tests := []struct {
+		name        string
+		input       string
+		expected    string
+		expectError bool
+	}{
+		{"Valid KB number", "1234567", "1234567", false},
+		{"Valid with KB prefix", "KB1234567", "1234567", false},
+		{"Valid with lowercase kb", "kb1234567", "1234567", false},
+		{"Empty string", "", "", true},
+		{"Invalid characters - letters", "KB123abc", "", true},
+		{"Invalid characters - special chars", "123;456", "", true},
+		{"Invalid characters - quotes", "123'456", "", true},
+		{"Invalid characters - spaces", "123 456", "", true},
+		{"Command injection attempt", "123; rm -rf /", "", true},
+		{"Command injection with quotes", "123'; DROP TABLE", "", true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := validateKB(tt.input)
+			if tt.expectError {
+				if err == nil {
+					t.Errorf("Expected error for input %q, but got none", tt.input)
+				}
+			} else {
+				if err != nil {
+					t.Errorf("Unexpected error for input %q: %v", tt.input, err)
+				}
+				if result != tt.expected {
+					t.Errorf("Expected %q, got %q", tt.expected, result)
+				}
+			}
+		})
 	}
 }
 

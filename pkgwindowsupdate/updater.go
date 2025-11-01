@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -60,6 +61,28 @@ type Updater struct {
 // NewUpdater creates a new Updater instance
 func NewUpdater() *Updater {
 	return &Updater{}
+}
+
+// validateKB validates and sanitizes a KB number to prevent command injection
+// Returns the sanitized KB number (without "KB" prefix) or an error
+func validateKB(kb string) (string, error) {
+	if kb == "" {
+		return "", fmt.Errorf("KB number is required")
+	}
+
+	// Remove "KB" prefix if present
+	kb = strings.TrimPrefix(strings.ToUpper(kb), "KB")
+
+	// KB numbers should only contain digits
+	matched, err := regexp.MatchString("^[0-9]+$", kb)
+	if err != nil {
+		return "", fmt.Errorf("failed to validate KB number: %v", err)
+	}
+	if !matched {
+		return "", fmt.Errorf("invalid KB number format: must contain only digits")
+	}
+
+	return kb, nil
 }
 
 // runPowerShell executes a PowerShell command and returns the output
@@ -190,12 +213,12 @@ func (u *Updater) ListInstalledPatches() ([]*Patch, error) {
 
 // InstallPatch installs a specific patch by KB number
 func (u *Updater) InstallPatch(kb string) (*InstallProgress, error) {
-	if kb == "" {
-		return nil, fmt.Errorf("KB number is required")
+	// Validate and sanitize KB number to prevent command injection
+	sanitizedKB, err := validateKB(kb)
+	if err != nil {
+		return nil, err
 	}
-
-	// Clean KB number (remove "KB" prefix if present)
-	kb = strings.TrimPrefix(strings.ToUpper(kb), "KB")
+	kb = sanitizedKB
 
 	progress := &InstallProgress{
 		KB:              kb,
@@ -259,16 +282,16 @@ func (u *Updater) InstallPatch(kb string) (*InstallProgress, error) {
 // MonitorInstallProgress monitors the installation progress of a patch
 // This function polls the Windows Update service to check installation status
 func (u *Updater) MonitorInstallProgress(kb string, intervalSeconds int) (<-chan *InstallProgress, error) {
-	if kb == "" {
-		return nil, fmt.Errorf("KB number is required")
+	// Validate and sanitize KB number to prevent command injection
+	sanitizedKB, err := validateKB(kb)
+	if err != nil {
+		return nil, err
 	}
+	kb = sanitizedKB
 
 	if intervalSeconds <= 0 {
 		intervalSeconds = 5
 	}
-
-	// Clean KB number (remove "KB" prefix if present)
-	kb = strings.TrimPrefix(strings.ToUpper(kb), "KB")
 
 	progressChan := make(chan *InstallProgress, 10)
 
