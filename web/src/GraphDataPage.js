@@ -493,11 +493,11 @@ class GraphDataPage extends React.Component {
             show: true,
             position: "bottom",
           },
-          edgeSymbol: ["none", "none"],
-          edgeSymbolSize: [0, 0],
+          edgeSymbol: ["none", "arrow"],
+          edgeSymbolSize: [0, 10],
           lineStyle: {
             color: "source",
-            curveness: 0,
+            curveness: 0.3,
             width: 2,
           },
           emphasis: {
@@ -520,6 +520,7 @@ class GraphDataPage extends React.Component {
             layoutAnimation: true, // Enable animation for force layout
             friction: 0.6,
             gravity: 0.1,
+            initLayout: "circular", // Start with circular to avoid initial overlap
           } : undefined,
           circular: layout === "circular" ? {
             rotateLabel: true,
