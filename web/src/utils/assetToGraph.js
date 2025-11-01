@@ -190,20 +190,16 @@ export function transformAssetsToGraph(assets) {
       });
     }
 
-    // Link Disks to ECS Instances (by zone proximity)
-    if (resourceType === "Disk" && asset.zone) {
-      assets.forEach((otherAsset) => {
-        if (otherAsset.resourceType === "ECS Instance" && otherAsset.zone === asset.zone) {
-          const linkKey = `${asset.resourceId}->${otherAsset.resourceId}`;
-          if (!linkSet.has(linkKey)) {
-            linkSet.add(linkKey);
-            links.push({
-              source: asset.resourceId,
-              target: otherAsset.resourceId,
-            });
-          }
-        }
-      });
+    // Link Disks to ECS Instances (by instanceId from disk properties)
+    if (resourceType === "Disk" && properties.instanceId) {
+      const linkKey = `${asset.resourceId}->${properties.instanceId}`;
+      if (!linkSet.has(linkKey)) {
+        linkSet.add(linkKey);
+        links.push({
+          source: asset.resourceId,
+          target: properties.instanceId,
+        });
+      }
     }
 
     // Link Security Groups to VPC (by region)
@@ -222,43 +218,28 @@ export function transformAssetsToGraph(assets) {
       });
     }
 
-    // Link Snapshots to Disks (by properties or resourceGroupId)
-    if (resourceType === "Snapshot") {
-      assets.forEach((otherAsset) => {
-        if (otherAsset.resourceType === "Disk") {
-          // Check if snapshot name contains disk reference or they share resourceGroupId
-          const targetProperties = parseProperties(otherAsset.properties);
-          if (properties.resourceGroupId && properties.resourceGroupId === targetProperties.resourceGroupId) {
-            const linkKey = `${otherAsset.resourceId}->${asset.resourceId}`;
-            if (!linkSet.has(linkKey)) {
-              linkSet.add(linkKey);
-              links.push({
-                source: otherAsset.resourceId,
-                target: asset.resourceId,
-              });
-            }
-          }
-        }
-      });
+    // Link Snapshots to Disks (by diskId from snapshot properties)
+    if (resourceType === "Snapshot" && properties.diskId) {
+      const linkKey = `${properties.diskId}->${asset.resourceId}`;
+      if (!linkSet.has(linkKey)) {
+        linkSet.add(linkKey);
+        links.push({
+          source: properties.diskId,
+          target: asset.resourceId,
+        });
+      }
     }
 
-    // Link Images to ECS Instances (by resourceGroupId)
-    if (resourceType === "Image") {
-      assets.forEach((otherAsset) => {
-        if (otherAsset.resourceType === "ECS Instance") {
-          const targetProperties = parseProperties(otherAsset.properties);
-          if (properties.resourceGroupId && properties.resourceGroupId === targetProperties.resourceGroupId) {
-            const linkKey = `${asset.resourceId}->${otherAsset.resourceId}`;
-            if (!linkSet.has(linkKey)) {
-              linkSet.add(linkKey);
-              links.push({
-                source: asset.resourceId,
-                target: otherAsset.resourceId,
-              });
-            }
-          }
-        }
-      });
+    // Link Images to ECS Instances that use them (by imageId from instance properties)
+    if (resourceType === "ECS Instance" && properties.imageId) {
+      const linkKey = `${properties.imageId}->${asset.resourceId}`;
+      if (!linkSet.has(linkKey)) {
+        linkSet.add(linkKey);
+        links.push({
+          source: properties.imageId,
+          target: asset.resourceId,
+        });
+      }
     }
   });
 
