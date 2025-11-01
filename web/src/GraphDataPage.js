@@ -493,11 +493,11 @@ class GraphDataPage extends React.Component {
             show: true,
             position: "bottom",
           },
-          edgeSymbol: ["none", "arrow"],
-          edgeSymbolSize: [0, 10],
+          edgeSymbol: layout === "force" ? ["none", "arrow"] : ["none", "none"],
+          edgeSymbolSize: layout === "force" ? [0, 10] : [0, 0],
           lineStyle: {
             color: "source",
-            curveness: 0.3,
+            curveness: layout === "force" ? 0.3 : 0,
             width: 2,
           },
           emphasis: {
