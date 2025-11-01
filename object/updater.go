@@ -116,7 +116,7 @@ func (u *Updater) ListPatches() ([]*WindowsPatch, error) {
 			}},
 			@{Name='Description';Expression={$_.Description}},
 			@{Name='RebootRequired';Expression={$_.RebootRequired}},
-			@{Name='Categories';Expression={($_.Categories | ForEach-Object { $_.Name }) -join ','}},
+			@{Name='Categories';Expression={@($_.Categories | ForEach-Object { $_.Name })}},
 			@{Name='IsInstalled';Expression={$_.IsInstalled}},
 			@{Name='IsDownloaded';Expression={$_.IsDownloaded}},
 			@{Name='IsMandatory';Expression={$_.IsMandatory}},
