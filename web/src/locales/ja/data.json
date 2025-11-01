@@ -58,6 +58,14 @@
     "Scan": "Pindai",
     "Successfully scanned assets": "Berhasil memindai aset"
   },
+  "scan": {
+    "Asset - Tooltip": "スキャンするアセット",
+    "Command - Tooltip": "スキャンコマンドオプション（ターゲットのプレースホルダーとして%sを使用）",
+    "Edit Scan": "スキャンの編集",
+    "New Scan": "新しいスキャン",
+    "Provider - Tooltip": "使用するスキャンプロバイダー",
+    "Result - Tooltip": "スキャン結果の出力"
+  },
   "caase": {
     "Edit Caase": "症例を編集",
     "New Caase": "新しい症例"

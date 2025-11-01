@@ -58,6 +58,14 @@
     "Scan": "Pindai",
     "Successfully scanned assets": "Berhasil memindai aset"
   },
+  "scan": {
+    "Asset - Tooltip": "Aset yang akan dipindai",
+    "Command - Tooltip": "Opsi perintah pemindaian (gunakan %s sebagai placeholder untuk target)",
+    "Edit Scan": "Edit Pemindaian",
+    "New Scan": "Pemindaian Baru",
+    "Provider - Tooltip": "Penyedia pemindaian yang akan digunakan",
+    "Result - Tooltip": "Output hasil pemindaian"
+  },
   "caase": {
     "Edit Caase": "Edit kasus",
     "New Caase": "Kasus baru"

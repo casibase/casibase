@@ -58,6 +58,14 @@
     "Scan": "Scan",
     "Successfully scanned assets": "Successfully scanned assets"
   },
+  "scan": {
+    "Asset - Tooltip": "Taranacak varlık",
+    "Command - Tooltip": "Tarama komutu seçenekleri (hedef yer tutucusu için %s kullanın)",
+    "Edit Scan": "Taramayı Düzenle",
+    "New Scan": "Yeni Tarama",
+    "Provider - Tooltip": "Kullanılacak tarama sağlayıcısı",
+    "Result - Tooltip": "Tarama sonucu çıktısı"
+  },
   "caase": {
     "Edit Caase": "Edit Case",
     "New Caase": "New Case"

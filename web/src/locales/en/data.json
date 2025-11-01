@@ -58,6 +58,14 @@
     "Scan": "Scan",
     "Successfully scanned assets": "Successfully scanned assets"
   },
+  "scan": {
+    "Asset - Tooltip": "The asset to scan",
+    "Command - Tooltip": "Scan command options (use %s for target placeholder)",
+    "Edit Scan": "Edit Scan",
+    "New Scan": "New Scan",
+    "Provider - Tooltip": "Scan provider to use",
+    "Result - Tooltip": "Scan result output"
+  },
   "caase": {
     "Edit Caase": "Edit Case",
     "New Caase": "New Case"

@@ -58,6 +58,14 @@
     "Scan": "Escanear",
     "Successfully scanned assets": "Activos escaneados exitosamente"
   },
+  "scan": {
+    "Asset - Tooltip": "El activo a escanear",
+    "Command - Tooltip": "Opciones de comando de escaneo (use %s como marcador de posición para el objetivo)",
+    "Edit Scan": "Editar escaneo",
+    "New Scan": "Nuevo escaneo",
+    "Provider - Tooltip": "Proveedor de escaneo a utilizar",
+    "Result - Tooltip": "Salida del resultado del escaneo"
+  },
   "caase": {
     "Edit Caase": "Editar caso",
     "New Caase": "Nuevo caso"

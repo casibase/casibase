@@ -58,6 +58,14 @@
     "Scan": "Scan",
     "Successfully scanned assets": "Successfully scanned assets"
   },
+  "scan": {
+    "Asset - Tooltip": "Tài sản cần quét",
+    "Command - Tooltip": "Tùy chọn lệnh quét (sử dụng %s làm trình giữ chỗ cho mục tiêu)",
+    "Edit Scan": "Chỉnh sửa Quét",
+    "New Scan": "Quét Mới",
+    "Provider - Tooltip": "Nhà cung cấp quét để sử dụng",
+    "Result - Tooltip": "Đầu ra kết quả quét"
+  },
   "caase": {
     "Edit Caase": "Edit Case",
     "New Caase": "New Case"

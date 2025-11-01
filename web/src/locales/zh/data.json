@@ -58,6 +58,14 @@
     "Scan": "扫描",
     "Successfully scanned assets": "成功扫描资产"
   },
+  "scan": {
+    "Asset - Tooltip": "要扫描的资产",
+    "Command - Tooltip": "扫描命令选项（使用 %s 作为目标占位符）",
+    "Edit Scan": "编辑扫描",
+    "New Scan": "新建扫描",
+    "Provider - Tooltip": "要使用的扫描提供商",
+    "Result - Tooltip": "扫描结果输出"
+  },
   "caase": {
     "Edit Caase": "编辑病例",
     "New Caase": "新建病例"

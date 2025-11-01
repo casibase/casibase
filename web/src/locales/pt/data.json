@@ -58,6 +58,14 @@
     "Scan": "Scan",
     "Successfully scanned assets": "Successfully scanned assets"
   },
+  "scan": {
+    "Asset - Tooltip": "O ativo a ser verificado",
+    "Command - Tooltip": "Opções de comando de varredura (use %s como espaço reservado para o alvo)",
+    "Edit Scan": "Editar Varredura",
+    "New Scan": "Nova Varredura",
+    "Provider - Tooltip": "Provedor de varredura a ser usado",
+    "Result - Tooltip": "Saída do resultado da varredura"
+  },
   "caase": {
     "Edit Caase": "Edit Case",
     "New Caase": "New Case"

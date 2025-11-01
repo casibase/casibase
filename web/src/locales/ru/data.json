@@ -58,6 +58,14 @@
     "Scan": "Pindai",
     "Successfully scanned assets": "Berhasil memindai aset"
   },
+  "scan": {
+    "Asset - Tooltip": "Актив для сканирования",
+    "Command - Tooltip": "Параметры команды сканирования (используйте %s в качестве заполнителя для цели)",
+    "Edit Scan": "Редактировать сканирование",
+    "New Scan": "Новое сканирование",
+    "Provider - Tooltip": "Провайдер сканирования для использования",
+    "Result - Tooltip": "Вывод результата сканирования"
+  },
   "caase": {
     "Edit Caase": "Редактировать случай",
     "New Caase": "Новый случай"

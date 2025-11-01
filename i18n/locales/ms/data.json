@@ -255,6 +255,13 @@
   "store": {
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "memandangkan mesti ada satu stor lalai dalam Casibase, anda tidak boleh menetapkan stor ini kepada bukan lalai. Anda boleh terus menetapkan stor lain sebagai lalai"
   },
+  "scan": {
+    "Scan not found": "Imbasan tidak ditemui",
+    "Asset not found": "Aset tidak ditemui",
+    "Provider not found": "Pembekal tidak ditemui",
+    "Scan provider not supported": "Pembekal imbasan tidak disokong",
+    "Failed to start scan": "Gagal memulakan imbasan"
+  },
   "stt": {
     "API error: %s": "Ralat API: %s",
     "Missing required parameter: storeId": "Parameter yang diperlukan hilang: storeId",

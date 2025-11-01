@@ -58,6 +58,14 @@
     "Scan": "Scan",
     "Successfully scanned assets": "Successfully scanned assets"
   },
+  "scan": {
+    "Asset - Tooltip": "Aset yang akan diimbas",
+    "Command - Tooltip": "Pilihan arahan imbasan (gunakan %s sebagai pemegang tempat untuk sasaran)",
+    "Edit Scan": "Edit Imbasan",
+    "New Scan": "Imbasan Baru",
+    "Provider - Tooltip": "Pembekal imbasan untuk digunakan",
+    "Result - Tooltip": "Output hasil imbasan"
+  },
   "caase": {
     "Edit Caase": "Edit Case",
     "New Caase": "New Case"

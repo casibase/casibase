@@ -58,6 +58,14 @@
     "Scan": "Pindai",
     "Successfully scanned assets": "Berhasil memindai aset"
   },
+  "scan": {
+    "Asset - Tooltip": "스캔할 자산",
+    "Command - Tooltip": "스캔 명령 옵션(대상 자리 표시자로 %s 사용)",
+    "Edit Scan": "스캔 편집",
+    "New Scan": "새 스캔",
+    "Provider - Tooltip": "사용할 스캔 공급자",
+    "Result - Tooltip": "스캔 결과 출력"
+  },
   "caase": {
     "Edit Caase": "사례 편집",
     "New Caase": "새 사례"

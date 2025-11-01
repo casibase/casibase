@@ -58,6 +58,14 @@
     "Scan": "Scanner",
     "Successfully scanned assets": "Actifs scannés avec succès"
   },
+  "scan": {
+    "Asset - Tooltip": "L'actif à analyser",
+    "Command - Tooltip": "Options de commande de scan (utilisez %s comme espace réservé pour la cible)",
+    "Edit Scan": "Modifier l'analyse",
+    "New Scan": "Nouvelle analyse",
+    "Provider - Tooltip": "Fournisseur de scan à utiliser",
+    "Result - Tooltip": "Sortie du résultat de l'analyse"
+  },
   "caase": {
     "Edit Caase": "Modifier le cas",
     "New Caase": "Nouveau cas"

@@ -58,6 +58,14 @@
     "Scan": "Scansiona",
     "Successfully scanned assets": "Risorse scansionate con successo"
   },
+  "scan": {
+    "Asset - Tooltip": "La risorsa da scansionare",
+    "Command - Tooltip": "Opzioni del comando di scansione (utilizzare %s come segnaposto per il target)",
+    "Edit Scan": "Modifica scansione",
+    "New Scan": "Nuova scansione",
+    "Provider - Tooltip": "Fornitore di scansione da utilizzare",
+    "Result - Tooltip": "Output del risultato della scansione"
+  },
   "caase": {
     "Edit Caase": "Edit Case",
     "New Caase": "New Case"
