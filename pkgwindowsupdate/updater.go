@@ -229,6 +229,7 @@ func (u *Updater) InstallPatch(kb string) (*InstallProgress, error) {
 	}
 
 	// Install the patch using PSWindowsUpdate
+	// Note: KB number has been validated to contain only digits, preventing command injection
 	psCommand := fmt.Sprintf(`
 		Import-Module PSWindowsUpdate -ErrorAction Stop;
 		$result = Install-WindowsUpdate -KBArticleID '%s' -AcceptAll -IgnoreReboot -Confirm:$false -Verbose;
@@ -312,6 +313,7 @@ func (u *Updater) MonitorInstallProgress(kb string, intervalSeconds int) (<-chan
 			}
 
 			// Check if the update is still installing
+			// Note: KB number has been validated to contain only digits, preventing command injection
 			psCommand := fmt.Sprintf(`
 				Import-Module PSWindowsUpdate -ErrorAction Stop;
 				$history = Get-WUHistory | Where-Object { $_.Title -match 'KB%s' } | Select-Object -First 1;
