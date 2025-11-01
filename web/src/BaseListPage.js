@@ -305,7 +305,7 @@ class BaseListPage extends React.Component {
   getSteps = () => {
     const nextPathName = TourConfig.getNextUrl();
     const steps = TourConfig.getSteps();
-    steps.map((item, index) => {
+    steps.forEach((item, index) => {
       if (!index) {
         item.target = () => document.querySelector(".ant-table");
       } else {

@@ -22,7 +22,7 @@ class OpenTour extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isTourVisible: props.isTourVisible ?? TourConfig.getTourVisible(),
+      isTourVisible: props.isTourVisible !== undefined ? props.isTourVisible : TourConfig.getTourVisible(),
     };
   }
 
