@@ -1237,7 +1237,9 @@ class App extends Component {
     }
 
     // 判断是否首页
-    const isHome = window.location.pathname === "/" || window.location.pathname === "/home";
+    const isHideLeft = false;
+    const isHome = window.location.pathname === "/" || window.location.pathname === "/home";;
+
     const isIntroduce = window.location.pathname.startsWith("/introduce");
     const isMultiCenter = window.location.pathname.startsWith("/multi-center");
 
@@ -1246,7 +1248,7 @@ class App extends Component {
         {this.renderHeader()}
         <Layout>
           {/* 只有非首页才显示 Sider */}
-          {!isHome && (
+          {!isHideLeft && (
             <Sider width={200} style={{ background: "#fff", minHeight: "calc(100vh - 64px)", boxShadow: "2px 8px 8px rgba(0,0,0,0.08)" }}>
               <Menu
                 mode="inline"

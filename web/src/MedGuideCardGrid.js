@@ -12,10 +12,10 @@ const GROUPS = [
         bg: "#f6f8fb",
         buttons: [
 
-            { title: "资源状态", icon: "📊", desc: "实时监控服务器、存储、网络等各类资源的运行状态，保障平台稳定。", route: "/sysinfo" },
-            { title: "系统设置", icon: "⚙️", desc: "配置平台基础参数（如提供商等），定制系统行为，支持多种业务场景。", route: "/stores" },
-            { title: "用户管理", icon: "👤", desc: "集中管理所有用户账号、分配角色权限，支持批量导入与导出。" },
-            { title: "权限管理", icon: "🔑", desc: "灵活配置访问控制策略，细粒度分配各类操作与数据权限。" },
+            { title: "资源状态", icon: "📊", desc: "实时监控服务器运行状态，保障平台稳定。", route: "/sysinfo" },
+            { title: "系统设置", icon: "⚙️", desc: "配置平台基础参数（如提供商等），定制系统行为。", route: "/stores" },
+            { title: "用户管理", icon: "👤", desc: "集中管理所有用户账号、分配角色权限" },
+            { title: "权限管理", icon: "🔑", desc: "灵活配置访问控制策略，细粒度分配操作与权限。" },
         ],
     },
     {
@@ -24,9 +24,9 @@ const GROUPS = [
         color: "#217867", // 稳重墨绿
         bg: "#f6fbf8",
         buttons: [
-            { title: "数据总览", icon: "📊", desc: "全局展示平台内各类数据分布、增长趋势与共享情况。", route: "/dashboard" },
+            { title: "数据总览", icon: "📊", desc: "全局展示平台内数据分布、趋势与共享情况。", route: "/dashboard" },
 
-            { title: "专病知识图谱", icon: "🧠", desc: "构建专病领域知识结构，助力智能诊疗与科研分析。", route: "https://rws.neusoft.com:10100/medkb/#/login" },
+            { title: "专病知识图谱", icon: "🧠", desc: "构建专病知识结构，助力智能诊疗与科研分析。", route: "https://rws.neusoft.com:10100/medkb/#/login" },
         ],
     },
     {
@@ -35,12 +35,12 @@ const GROUPS = [
         color: "#b97a2a", // 稳重棕金
         bg: "#f9f7f3",
         buttons: [
-            { title: "医疗记录上链", icon: "📄", desc: "将医疗文档高效上链，保障数据不可篡改与可追溯。", route: "/ipfs-archive", introRoute: "/introduce/medical-record-chain" },
-            { title: "数据操作上链", icon: "🔗", desc: "各类数据操作全流程上链，提升数据可信度。", route: "/records" },
+            { title: "医疗记录上链", icon: "📄", desc: "将医疗数据高效上链，数据不可篡改可追溯。", route: "/ipfs-archive", introRoute: "/introduce/medical-record-chain" },
+            { title: "数据操作上链", icon: "🔗", desc: "各类数据操作全流程长脸，提升数据可信。", route: "/records" },
             { title: "区块链浏览器", icon: "🌐", desc: "可视化浏览链上数据，支持多条件筛选与溯源。", route: "http://192.168.0.228:9996/chain1/home" },
             // { title: "区块链浏览器", icon: "🌐", desc: "可视化浏览链上数据，支持多条件筛选与溯源。", route: "/forms/区块链浏览器/data" },
             { title: "病例数据", icon: "🗒", desc: "可视化病例数据上传，支持批量导入", route: "/med-records" },
-            { title: "查询与审计", icon: "🔍", desc: "查看每位患者的上链数据明细，支持多维度检索与追溯。", route: "/ipfs-search", introRoute: "/introduce/patient-chain-data" },
+            { title: "查询与审计", icon: "🔍", desc: "查看患者的上链数据明细，支持检索与追溯。", route: "/ipfs-search", introRoute: "/introduce/patient-chain-data" },
         ],
     },
     {
@@ -75,7 +75,6 @@ const GROUPS = [
 
 const MedGuideCardGrid = (props) => {
     const history = useHistory();
-    const [activeIdx, setActiveIdx] = useState(0); // 默认分组1
     const account = props.account;
 
     // 根据用户标签过滤按钮，隐藏特定按钮给不同标签用户
@@ -119,33 +118,38 @@ const MedGuideCardGrid = (props) => {
         });
     };
 
-    // 创建过滤后的分组数据
+    // 创建过滤后的分组数据并扁平化为一个按钮列表（不再按小分组展示）
     const filteredGroups = GROUPS.map(group => ({
         ...group,
         buttons: filterButtonsByUserTag(group.buttons)
     }));
+    const flatButtons = filteredGroups.reduce((acc, g) => acc.concat(g.buttons || []), []);
 
     useEffect(() => {
         const style = document.createElement("style");
         style.innerHTML = `
-                .mg-main-wrap { display: flex; width: 80%; height: 520px; background: #f7f8fa; border-radius: 18px; box-shadow: 0 4px 18px rgba(0,0,0,0.08); margin: 0 auto; }
-                .mg-group-list { width: 180px; background: #fff; border-radius: 18px 0 0 18px; box-shadow: 2px 0 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
-                .mg-group-item { padding: 28px 0 28px 0; text-align: center; font-size: 18px; font-weight: 500; color: #888; cursor: pointer; border-left: 4px solid transparent; transition: all 0.2s; }
-                .mg-group-item.active { font-weight: 700; }
-                .mg-btn-list { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 40px 0 40px 60px; border-radius: 0 18px 18px 0; min-height: 480px; }
-                .mg-btn-title { font-size: 22px; font-weight: bold; margin-bottom: 24px; }
-                .mg-btns { display: flex; flex-wrap: wrap; gap: 18px 32px; }
-                .mg-btn { min-width: 120px; height: 48px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(45,90,241,0.06); border: 1px solid #e3e7f1; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; cursor: pointer; transition: all 0.18s; padding: 0 18px; }
-                .mg-btn:hover { color: #fff; box-shadow: 0 4px 16px rgba(45,90,241,0.13); }
-                @media (max-width: 900px) { .mg-main-wrap { flex-direction: column; } .mg-group-list { flex-direction: row; width: 100%; border-radius: 18px 18px 0 0; box-shadow: 0 2px 8px rgba(0,0,0,0.03); } .mg-group-item { border-left: none; border-top: 4px solid transparent; } .mg-group-item.active { border-left: none; border-top: 4px solid #2d5af1; } .mg-btn-list { padding: 24px 0 24px 0; align-items: center; } }
+                /* 主容器：自适应宽度，高度随内容扩展，设置最大宽度并居中 */
+                .mg-main-wrap { display: flex; width: calc(100% - 80px); max-width: 1240px; min-width: 320px; background: #f7f8fa; border-radius: 18px; box-shadow: 0 4px 18px rgba(0,0,0,0.08); margin: 24px auto; box-sizing: border-box; padding: 20px; }
+                /* 隐藏旧的分组列样式（保持兼容） */
+                .mg-group-list { display: none; }
+                .mg-group-item { display: none; }
+                /* 按钮容器：允许内部滚动并使用响应式网格 */
+                .mg-btn-list { flex: 1; display: block; padding: 12px 20px; border-radius: 12px; min-height: 240px; box-sizing: border-box; overflow: visible; }
+                .mg-btn-title { font-size: 22px; font-weight: bold; margin-bottom: 12px; }
+                .mg-btns { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+                .mg-btn { background: #fff; border-radius: 16px; box-shadow: 0 6px 18px rgba(18,35,85,0.06); border: 1px solid #f0f2f7; display: flex; flex-direction: column; padding: 18px; box-sizing: border-box; cursor: pointer; transition: transform 0.16s, box-shadow 0.16s; }
+                .mg-btn:hover { transform: translateY(-6px); }
+                /* 卡片内部布局限制，避免超高 */
+                .mg-btn .mg-card-arrow { transition: all 0.32s cubic-bezier(.4,2,.6,1); }
+                @media (max-width: 900px) { .mg-main-wrap { width: calc(100% - 32px); padding: 12px; flex-direction: column; } .mg-btn-list { padding: 12px; } .mg-btns { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; } }
             `;
         document.head.appendChild(style);
         return () => { document.head.removeChild(style); };
     }, []);
 
 
-    // 动态处理分组按钮：设置路由和根据用户标签过滤按钮
-    const groups = GROUPS.map((g, idx) => {
+    // 动态处理分组按钮：设置路由和根据用户标签过滤按钮（平铺）
+    const groups = GROUPS.map((g) => {
         let processedGroup = { ...g };
 
         // 处理系统管理分组的路由
@@ -173,7 +177,6 @@ const MedGuideCardGrid = (props) => {
         return processedGroup;
     });
 
-    const handleGroupClick = idx => setActiveIdx(idx);
     const handleBtnClick = btnObj => {
         if (btnObj.route) {
             // 外链用window.open，内链用history
@@ -187,42 +190,28 @@ const MedGuideCardGrid = (props) => {
         }
     };
 
-    // 当前分组色彩
-    const activeGroup = groups[activeIdx];
+    // 取首个分组作为默认主题色（用于按钮样式）
+    const primaryGroup = groups[0] || { color: '#23408e', bg: '#f6f8fb' };
 
     return (
         <div className="mg-main-wrap">
-            <div className="mg-group-list">
-                {groups.map((g, idx) => (
-                    <div
-                        key={g.name}
-                        className={"mg-group-item" + (activeIdx === idx ? " active" : "")}
-                        style={activeIdx === idx ? { color: g.color, background: g.bg, borderLeft: `4px solid ${g.color}` } : {}}
-                        onMouseEnter={() => handleGroupClick(idx)}
-                    >
-                        {g.name}
-                    </div>
-                ))}
-            </div>
             <div
                 className="mg-btn-list"
                 style={{
-                    background: `linear-gradient(120deg, ${activeGroup.bg} 100%, #fff 100%)`,
+                    background: `linear-gradient(120deg, ${primaryGroup.bg} 100%, #fff 100%)`,
+                    width: '100%'
                 }}
             >
-                <div className="mg-btn-title" style={{ color: activeGroup.color }}>{activeGroup.name}</div>
-                {activeGroup.subtitle && (
-                    <div style={{ fontSize: 15, color: '#bbb', fontWeight: 400, margin: '-16px 0 18px 0', lineHeight: 1.4 }}>{activeGroup.subtitle}</div>
-                )}
+                <div className="mg-btn-title" style={{ color: primaryGroup.color }}>{/* 去掉分组标题，保持留白 */}</div>
                 <div className="mg-btns" style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: '20px 20px',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                    gap: '20px',
                     width: '100%',
                     justifyItems: 'center',
                     paddingRight: '32px',
                 }}>
-                    {activeGroup.buttons.map(btnObj => (
+                    {flatButtons.map(btnObj => (
                         <div
                             key={btnObj.title}
                             className="mg-btn mg-btn-card"
@@ -248,8 +237,8 @@ const MedGuideCardGrid = (props) => {
                             }}
                             onClick={() => handleBtnClick(btnObj)}
                             onMouseOver={e => {
-                                e.currentTarget.style.boxShadow = `0 10px 24px 0 ${activeGroup.color}33`;
-                                e.currentTarget.style.border = `2px solid ${activeGroup.color}`;
+                                e.currentTarget.style.boxShadow = `0 10px 24px 0 ${primaryGroup.color}33`;
+                                e.currentTarget.style.border = `2px solid ${primaryGroup.color}`;
                                 e.currentTarget.style.transform = 'translateY(-4px)';
                                 const arrow = e.currentTarget.querySelector('.mg-card-arrow');
                                 if (arrow) {
@@ -269,8 +258,8 @@ const MedGuideCardGrid = (props) => {
                             }}
                         >
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', marginBottom: 6 }}>
-                                <div style={{ flex: '0 0 48px', width: 48, aspectRatio: '1/1', borderRadius: 12, background: activeGroup.color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14, overflow: 'hidden' }}>
-                                    <span style={{ fontSize: 32, color: activeGroup.color, width: '70%', height: '70%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', lineHeight: 1 }}>{btnObj.icon}</span>
+                                <div style={{ flex: '0 0 48px', width: 48, aspectRatio: '1/1', borderRadius: 12, background: primaryGroup.color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14, overflow: 'hidden' }}>
+                                    <span style={{ fontSize: 32, color: primaryGroup.color, width: '70%', height: '70%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', lineHeight: 1 }}>{btnObj.icon}</span>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                                     <div style={{ fontWeight: 700, fontSize: 20, color: '#222', marginBottom: 2 }}>{btnObj.title}</div>
@@ -334,7 +323,7 @@ const MedGuideCardGrid = (props) => {
                                         padding: '12px 0',
                                         border: 'none',
                                         background: '#fff',
-                                        color: activeGroup.color,
+                                        color: primaryGroup.color,
                                         fontWeight: 600,
                                         fontSize: 15,
                                         cursor: 'pointer',
