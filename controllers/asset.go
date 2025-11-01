@@ -46,6 +46,7 @@ func (c *ApiController) GetAssets() {
 			return
 		}
 
+		assets = object.GetMaskedAssets(assets, true)
 		c.ResponseOk(assets)
 	} else {
 		limit := util.ParseInt(limit)
@@ -62,6 +63,7 @@ func (c *ApiController) GetAssets() {
 			return
 		}
 
+		assets = object.GetMaskedAssets(assets, true)
 		c.ResponseOk(assets, paginator.Nums())
 	}
 }
@@ -82,7 +84,7 @@ func (c *ApiController) GetAsset() {
 		return
 	}
 
-	c.ResponseOk(asset)
+	c.ResponseOk(object.GetMaskedAsset(asset, true))
 }
 
 // UpdateAsset

@@ -73,6 +73,8 @@ class AssetListPage extends BaseListPage {
       zone: "",
       state: "Active",
       tag: "",
+      username: "",
+      password: "",
       properties: "{}",
     };
   }

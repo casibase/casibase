@@ -35,7 +35,38 @@ type Asset struct {
 	Zone       string `xorm:"varchar(100)" json:"zone"`
 	State      string `xorm:"varchar(100)" json:"state"`
 	Tag        string `xorm:"varchar(500)" json:"tag"`
+	Username   string `xorm:"varchar(100)" json:"username"`
+	Password   string `xorm:"varchar(200)" json:"password"`
 	Properties string `xorm:"mediumtext" json:"properties"`
+}
+
+func GetMaskedAsset(asset *Asset, isMaskEnabled bool) *Asset {
+	if !isMaskEnabled {
+		return asset
+	}
+
+	if asset == nil {
+		return nil
+	}
+
+	// Create a copy to avoid modifying the original
+	maskedAsset := *asset
+	if maskedAsset.Password != "" {
+		maskedAsset.Password = "***"
+	}
+
+	return &maskedAsset
+}
+
+func GetMaskedAssets(assets []*Asset, isMaskEnabled bool) []*Asset {
+	if !isMaskEnabled {
+		return assets
+	}
+
+	for i := range assets {
+		assets[i] = GetMaskedAsset(assets[i], isMaskEnabled)
+	}
+	return assets
 }
 
 func GetAssetCount(owner, field, value string) (int64, error) {
@@ -88,9 +119,15 @@ func GetAsset(id string) (*Asset, error) {
 
 func UpdateAsset(id string, asset *Asset) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	if _, err := getAsset(owner, name); err != nil {
+	assetDb, err := getAsset(owner, name)
+	if err != nil {
 		return false, err
 	}
+	if assetDb == nil {
+		return false, nil
+	}
+
+	asset.processAssetParams(assetDb)
 
 	affected, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(asset)
 	if err != nil {
@@ -134,6 +171,12 @@ func deleteAssets(owner string) (bool, error) {
 	}
 
 	return affected != 0, nil
+}
+
+func (a *Asset) processAssetParams(assetDb *Asset) {
+	if a.Password == "***" {
+		a.Password = assetDb.Password
+	}
 }
 
 func (asset *Asset) GetId() string {
