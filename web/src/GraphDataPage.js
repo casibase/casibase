@@ -223,8 +223,8 @@ class GraphDataPage extends React.Component {
     // Density: 0.1 (very sparse) to 10 (dense)
     // Lower density = more spacing
     const densityFactor = 10.1 - density; // Invert: higher density number = closer nodes
-    const repulsion = 200 + (densityFactor * 150); // Range: 215 to 1700
-    const edgeLength = 50 + (densityFactor * 50); // Range: 55 to 550
+    const repulsion = 500 + (densityFactor * 200); // Range: 520 to 2520 (increased for better spacing)
+    const edgeLength = 100 + (densityFactor * 80); // Range: 108 to 908 (increased for better spacing)
 
     // Helper function to calculate positions for "none" layout
     const calculateNoneLayoutPositions = (nodes, links) => {
@@ -493,11 +493,11 @@ class GraphDataPage extends React.Component {
             show: true,
             position: "bottom",
           },
-          edgeSymbol: layout === "force" ? ["none", "arrow"] : ["none", "none"],
-          edgeSymbolSize: layout === "force" ? [0, 10] : [0, 0],
+          edgeSymbol: ["none", "none"],
+          edgeSymbolSize: [0, 0],
           lineStyle: {
             color: "source",
-            curveness: layout === "force" ? 0.3 : 0,
+            curveness: 0,
             width: 2,
           },
           emphasis: {
@@ -519,7 +519,7 @@ class GraphDataPage extends React.Component {
             edgeLength: edgeLength,
             layoutAnimation: true, // Enable animation for force layout
             friction: 0.6,
-            gravity: 0.1,
+            gravity: 0.05, // Reduced gravity to prevent nodes from clumping in center
             initLayout: "circular", // Start with circular to avoid initial overlap
           } : undefined,
           circular: layout === "circular" ? {
