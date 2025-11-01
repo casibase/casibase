@@ -192,13 +192,16 @@ export function transformAssetsToGraph(assets) {
 
     // Link Disks to ECS Instances (by instanceId from disk properties)
     if (resourceType === "Disk" && properties.instanceId) {
-      const linkKey = `${asset.resourceId}->${properties.instanceId}`;
-      if (!linkSet.has(linkKey)) {
-        linkSet.add(linkKey);
-        links.push({
-          source: asset.resourceId,
-          target: properties.instanceId,
-        });
+      // Only create link if the target instance exists
+      if (resourceTypeMap.has(properties.instanceId)) {
+        const linkKey = `${asset.resourceId}->${properties.instanceId}`;
+        if (!linkSet.has(linkKey)) {
+          linkSet.add(linkKey);
+          links.push({
+            source: asset.resourceId,
+            target: properties.instanceId,
+          });
+        }
       }
     }
 
@@ -220,25 +223,31 @@ export function transformAssetsToGraph(assets) {
 
     // Link Snapshots to Disks (by diskId from snapshot properties)
     if (resourceType === "Snapshot" && properties.diskId) {
-      const linkKey = `${properties.diskId}->${asset.resourceId}`;
-      if (!linkSet.has(linkKey)) {
-        linkSet.add(linkKey);
-        links.push({
-          source: properties.diskId,
-          target: asset.resourceId,
-        });
+      // Only create link if the source disk exists
+      if (resourceTypeMap.has(properties.diskId)) {
+        const linkKey = `${properties.diskId}->${asset.resourceId}`;
+        if (!linkSet.has(linkKey)) {
+          linkSet.add(linkKey);
+          links.push({
+            source: properties.diskId,
+            target: asset.resourceId,
+          });
+        }
       }
     }
 
     // Link Images to ECS Instances that use them (by imageId from instance properties)
     if (resourceType === "ECS Instance" && properties.imageId) {
-      const linkKey = `${properties.imageId}->${asset.resourceId}`;
-      if (!linkSet.has(linkKey)) {
-        linkSet.add(linkKey);
-        links.push({
-          source: properties.imageId,
-          target: asset.resourceId,
-        });
+      // Only create link if the source image exists
+      if (resourceTypeMap.has(properties.imageId)) {
+        const linkKey = `${properties.imageId}->${asset.resourceId}`;
+        if (!linkSet.has(linkKey)) {
+          linkSet.add(linkKey);
+          links.push({
+            source: properties.imageId,
+            target: asset.resourceId,
+          });
+        }
       }
     }
   });
