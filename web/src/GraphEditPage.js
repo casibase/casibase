@@ -50,7 +50,7 @@ class GraphEditPage extends React.Component {
 
   parseGraphField(key, value) {
     if (["density"].includes(key)) {
-      value = Setting.myParseInt(value);
+      value = parseFloat(value);
     }
     return value;
   }
@@ -143,8 +143,9 @@ class GraphEditPage extends React.Component {
           <Col span={22} >
             <Input
               type="number"
-              min={1}
+              min={0.1}
               max={10}
+              step={0.1}
               value={this.state.graph.density || 5}
               onChange={e => {
                 this.updateGraphField("density", e.target.value);
