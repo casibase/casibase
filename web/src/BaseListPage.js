@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Input, Modal, Result, Space} from "antd";
+import {Button, Input, Modal, Result, Space, Tour} from "antd";
 import {ExclamationCircleOutlined, SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import i18next from "i18next";
 import * as Setting from "./Setting";
+import * as TourConfig from "./TourConfig";
 import * as FormBackend from "./backend/FormBackend";
 
 const {confirm} = Modal;
@@ -40,6 +41,7 @@ class BaseListPage extends React.Component {
       selectedRowKeys: [],
       selectedRows: [],
       formItems: [],
+      isTourVisible: TourConfig.getTourVisible(),
     };
   }
 
@@ -53,8 +55,13 @@ class BaseListPage extends React.Component {
     });
   };
 
+  handleTourChange = () => {
+    this.setState({isTourVisible: TourConfig.getTourVisible()});
+  };
+
   componentDidMount() {
     window.addEventListener("storeChanged", this.handleStoreChange);
+    window.addEventListener("storageTourChanged", this.handleTourChange);
     // if (!Setting.isLocalAdminUser(this.props.account)) {
     //   Setting.setStore("All");
     // }
@@ -65,6 +72,7 @@ class BaseListPage extends React.Component {
       clearInterval(this.state.intervalId);
     }
     window.removeEventListener("storeChanged", this.handleStoreChange);
+    window.removeEventListener("storageTourChanged", this.handleTourChange);
   }
 
   UNSAFE_componentWillMount() {
@@ -289,6 +297,37 @@ class BaseListPage extends React.Component {
     });
   };
 
+  setIsTourVisible = () => {
+    TourConfig.setIsTourVisible(false);
+    this.setState({isTourVisible: false});
+  };
+
+  getSteps = () => {
+    const nextPathName = TourConfig.getNextUrl();
+    const steps = TourConfig.getSteps();
+    steps.forEach((item, index) => {
+      if (!index) {
+        item.target = () => document.querySelector(".ant-table");
+      } else {
+        item.target = () => document.getElementById(item.id) || null;
+      }
+      if (index === steps.length - 1) {
+        item.nextButtonProps = {
+          children: TourConfig.getNextButtonChild(nextPathName),
+        };
+      }
+    });
+    return steps;
+  };
+
+  handleTourComplete = () => {
+    const nextPathName = TourConfig.getNextUrl();
+    if (nextPathName !== "") {
+      this.props.history.push("/" + nextPathName);
+      TourConfig.setIsTourVisible(true);
+    }
+  };
+
   render() {
     if (!this.state.isAuthorized) {
       return (
@@ -304,6 +343,17 @@ class BaseListPage extends React.Component {
     return (
       <div>
         {this.renderTable(this.state.data)}
+        <Tour
+          open={Setting.isMobile() ? false : this.state.isTourVisible}
+          onClose={this.setIsTourVisible}
+          steps={this.getSteps()}
+          indicatorsRender={(current, total) => (
+            <span>
+              {current + 1} / {total}
+            </span>
+          )}
+          onFinish={this.handleTourComplete}
+        />
       </div>
     );
   }
