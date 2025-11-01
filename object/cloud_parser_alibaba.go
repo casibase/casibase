@@ -53,7 +53,7 @@ func (p *AlibabaCloudParser) ScanAssets(owner string, provider *Provider) ([]*As
 		}
 
 		request := &resourcecenter20221201.SearchResourcesRequest{
-			MaxResults: tea.Int32(100),
+			MaxResults: tea.Int32(500),
 			NextToken:  nextToken,
 		}
 
