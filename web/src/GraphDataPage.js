@@ -497,7 +497,8 @@ class GraphDataPage extends React.Component {
           edgeSymbolSize: [0, 0],
           lineStyle: {
             color: "source",
-            curveness: 0.3,
+            curveness: 0,
+            width: 2,
           },
           emphasis: {
             focus: "none", // Prevent auto-focusing/centering when clicking
