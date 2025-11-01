@@ -28,10 +28,10 @@ export function transformAssetsToGraph(assets) {
   const links = [];
   const categories = [];
   const categoryMap = new Map();
-  const resourceTypeMap = new Map();
+  const assetMap = new Map();
 
-  // Define category mapping for different resource types
-  const resourceTypeCategories = {
+  // Define category mapping for different asset types
+  const typeCategories = {
     "VPC": "Network",
     "VSwitch": "Network",
     "Network Interface": "Network",
@@ -43,8 +43,8 @@ export function transformAssetsToGraph(assets) {
     "Snapshot Policy": "Policy",
   };
 
-  // Define icons for different resource types
-  const resourceTypeIcons = {
+  // Define icons for different asset types
+  const typeIcons = {
     "VPC": `${StaticBaseUrl}/img/cloud/vpc.png`,
     "VSwitch": `${StaticBaseUrl}/img/cloud/vswitch.png`,
     "Network Interface": `${StaticBaseUrl}/img/cloud/network.png`,
@@ -86,14 +86,14 @@ export function transformAssetsToGraph(assets) {
   // First pass: Create nodes for all assets
   assets.forEach((asset, index) => {
     const properties = parseProperties(asset.properties);
-    const resourceType = asset.type;
-    const categoryName = resourceTypeCategories[resourceType] || "Other";
+    const assetType = asset.type;
+    const categoryName = typeCategories[assetType] || "Other";
     const categoryIndex = getCategoryIndex(categoryName);
 
-    // Store resource info for link creation
-    resourceTypeMap.set(asset.id, {
+    // Store asset info for link creation
+    assetMap.set(asset.id, {
       id: asset.id,
-      resourceType: resourceType,
+      assetType: assetType,
       properties: properties,
       region: asset.region,
       zone: asset.zone,
@@ -108,11 +108,11 @@ export function transformAssetsToGraph(assets) {
       y: Math.floor(index / 5) * 150 - 300,
       value: 50 + (index % 5) * 10,
       category: categoryIndex,
-      icon: resourceTypeIcons[resourceType] || `${StaticBaseUrl}/img/cloud/default.png`,
+      icon: typeIcons[assetType] || `${StaticBaseUrl}/img/cloud/default.png`,
       // Additional asset metadata
       displayName: asset.displayName,
-      resourceId: asset.id,
-      resourceType: asset.type,
+      assetId: asset.id,
+      assetType: asset.type,
       region: asset.region,
       zone: asset.zone,
       provider: asset.provider,
@@ -128,18 +128,18 @@ export function transformAssetsToGraph(assets) {
   const linkSet = new Set();
 
   assets.forEach((asset) => {
-    const sourceInfo = resourceTypeMap.get(asset.id);
+    const sourceInfo = assetMap.get(asset.id);
     if (!sourceInfo) {return;}
 
     const properties = sourceInfo.properties;
-    const resourceType = asset.type;
+    const assetType = asset.type;
 
     // Link Virtual Machines to their Network Interfaces (by matching IP addresses)
-    if (resourceType === "Virtual Machine") {
+    if (assetType === "Virtual Machine") {
       const instanceIPs = sourceInfo.ipAddresses;
       assets.forEach((otherAsset) => {
         if (otherAsset.type === "Network Interface") {
-          const targetInfo = resourceTypeMap.get(otherAsset.id);
+          const targetInfo = assetMap.get(otherAsset.id);
           const niIPs = targetInfo?.ipAddresses || [];
 
           // Check if they share any IP addresses
@@ -159,7 +159,7 @@ export function transformAssetsToGraph(assets) {
     }
 
     // Link Network Interfaces to VSwitch (by matching zone)
-    if (resourceType === "Network Interface" && asset.zone) {
+    if (assetType === "Network Interface" && asset.zone) {
       assets.forEach((otherAsset) => {
         if (otherAsset.type === "VSwitch" && otherAsset.zone === asset.zone) {
           const linkKey = `${asset.id}->${otherAsset.id}`;
@@ -175,7 +175,7 @@ export function transformAssetsToGraph(assets) {
     }
 
     // Link VSwitch to VPC (by region)
-    if (resourceType === "VSwitch" && asset.region) {
+    if (assetType === "VSwitch" && asset.region) {
       assets.forEach((otherAsset) => {
         if (otherAsset.type === "VPC" && otherAsset.region === asset.region) {
           const linkKey = `${asset.id}->${otherAsset.id}`;
@@ -191,9 +191,9 @@ export function transformAssetsToGraph(assets) {
     }
 
     // Link Disks to Virtual Machines (by instanceId from disk properties)
-    if (resourceType === "Disk" && properties.instanceId) {
+    if (assetType === "Disk" && properties.instanceId) {
       // Only create link if the target instance exists
-      if (resourceTypeMap.has(properties.instanceId)) {
+      if (assetMap.has(properties.instanceId)) {
         const linkKey = `${asset.id}->${properties.instanceId}`;
         if (!linkSet.has(linkKey)) {
           linkSet.add(linkKey);
@@ -206,7 +206,7 @@ export function transformAssetsToGraph(assets) {
     }
 
     // Link Security Groups to VPC (by region)
-    if (resourceType === "Security Group" && asset.region) {
+    if (assetType === "Security Group" && asset.region) {
       assets.forEach((otherAsset) => {
         if (otherAsset.type === "VPC" && otherAsset.region === asset.region) {
           const linkKey = `${asset.id}->${otherAsset.id}`;
@@ -222,9 +222,9 @@ export function transformAssetsToGraph(assets) {
     }
 
     // Link Snapshots to Disks (by diskId from snapshot properties)
-    if (resourceType === "Snapshot" && properties.diskId) {
+    if (assetType === "Snapshot" && properties.diskId) {
       // Only create link if the source disk exists
-      if (resourceTypeMap.has(properties.diskId)) {
+      if (assetMap.has(properties.diskId)) {
         const linkKey = `${properties.diskId}->${asset.id}`;
         if (!linkSet.has(linkKey)) {
           linkSet.add(linkKey);
@@ -237,9 +237,9 @@ export function transformAssetsToGraph(assets) {
     }
 
     // Link Images to Virtual Machines that use them (by imageId from instance properties)
-    if (resourceType === "Virtual Machine" && properties.imageId) {
+    if (assetType === "Virtual Machine" && properties.imageId) {
       // Only create link if the source image exists
-      if (resourceTypeMap.has(properties.imageId)) {
+      if (assetMap.has(properties.imageId)) {
         const linkKey = `${properties.imageId}->${asset.id}`;
         if (!linkSet.has(linkKey)) {
           linkSet.add(linkKey);
