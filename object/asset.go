@@ -17,7 +17,6 @@ package object
 import (
 	"fmt"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -41,7 +40,7 @@ type Asset struct {
 	Properties string `xorm:"mediumtext" json:"properties"`
 }
 
-func GetMaskedAsset(asset *Asset, isMaskEnabled bool, user *casdoorsdk.User) *Asset {
+func GetMaskedAsset(asset *Asset, isMaskEnabled bool) *Asset {
 	if !isMaskEnabled {
 		return asset
 	}
@@ -59,13 +58,13 @@ func GetMaskedAsset(asset *Asset, isMaskEnabled bool, user *casdoorsdk.User) *As
 	return &maskedAsset
 }
 
-func GetMaskedAssets(assets []*Asset, isMaskEnabled bool, user *casdoorsdk.User) []*Asset {
+func GetMaskedAssets(assets []*Asset, isMaskEnabled bool) []*Asset {
 	if !isMaskEnabled {
 		return assets
 	}
 
 	for i := range assets {
-		assets[i] = GetMaskedAsset(assets[i], isMaskEnabled, user)
+		assets[i] = GetMaskedAsset(assets[i], isMaskEnabled)
 	}
 	return assets
 }
