@@ -520,6 +520,7 @@ class ChatListPage extends BaseListPage {
                   </React.Fragment>
                 )
               }
+              {this.renderTourButton()}
             </div>
           )}
           loading={this.state.loading}

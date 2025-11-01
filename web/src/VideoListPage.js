@@ -551,6 +551,7 @@ class VideoListPage extends BaseListPage {
                   </Button>
                 </Popconfirm>
               )}
+              {this.renderTourButton()}
             </div>
           )}
           loading={this.state.loading}
