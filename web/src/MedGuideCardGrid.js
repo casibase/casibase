@@ -12,7 +12,7 @@ const GROUPS = [
         bg: "#f6f8fb",
         buttons: [
 
-            { title: "资源状态", icon: "📊", desc: "实时监控服务器运行状态，保障平台稳定。", route: "/sysinfo" },
+            { title: "资源状态", icon: "💻", desc: "实时监控服务器运行状态，保障平台稳定。", route: "/sysinfo" },
             { title: "系统设置", icon: "⚙️", desc: "配置平台基础参数（如提供商等），定制系统行为。", route: "/stores" },
             { title: "用户管理", icon: "👤", desc: "集中管理所有用户账号、分配角色权限" },
             { title: "权限管理", icon: "🔑", desc: "灵活配置访问控制策略，细粒度分配操作与权限。" },
@@ -49,7 +49,7 @@ const GROUPS = [
         color: "#5a4697", // 稳重紫
         bg: "#f7f6fa",
         buttons: [
-            { title: "医疗影像分析", icon: "🔎", desc: "AI驱动医学影像检测、分割与辅助诊断。", route: "/yolov8mi" },
+            { title: "医疗影像分析", icon: "📸", desc: "AI驱动医学影像检测、分割与辅助诊断。", route: "/yolov8mi" },
             { title: "受控使用", icon: "🛡️", desc: "实现数据分级授权与受控访问，保障数据安全。", route: "/share/usage" },
             { title: "密文计算", icon: "🧮", desc: "支持隐私保护计算，数据加密流转与分析。", route: "/forms/密文计算/data" },
             { title: "SM9-IPFE", icon: "🔐", desc: "支持SM9-IPFE，保障数据安全与合规。", route: "/forms/SM9-IPFE/data" },
