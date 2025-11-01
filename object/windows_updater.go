@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package pkgwindowsupdate
+package object
 
 import (
 	"bytes"
@@ -24,33 +24,33 @@ import (
 	"time"
 )
 
-// Patch represents a Windows update patch
-type Patch struct {
-	Title                string    `json:"title"`
-	KB                   string    `json:"kb"`
-	Size                 string    `json:"size"`
-	Status               string    `json:"status"`
-	Description          string    `json:"description"`
-	RebootRequired       bool      `json:"rebootRequired"`
-	InstalledOn          time.Time `json:"installedOn,omitempty"`
-	LastSearchTime       time.Time `json:"lastSearchTime,omitempty"`
-	Categories           []string  `json:"categories,omitempty"`
-	IsInstalled          bool      `json:"isInstalled"`
-	IsDownloaded         bool      `json:"isDownloaded"`
-	IsMandatory          bool      `json:"isMandatory"`
-	AutoSelectOnWebSites bool      `json:"autoSelectOnWebSites"`
+// WindowsPatch represents a Windows update patch
+type WindowsPatch struct {
+	Title                string   `json:"title"`
+	KB                   string   `json:"kb"`
+	Size                 string   `json:"size"`
+	Status               string   `json:"status"`
+	Description          string   `json:"description"`
+	RebootRequired       bool     `json:"rebootRequired"`
+	InstalledOn          string   `json:"installedOn,omitempty"`
+	LastSearchTime       string   `json:"lastSearchTime,omitempty"`
+	Categories           []string `json:"categories,omitempty"`
+	IsInstalled          bool     `json:"isInstalled"`
+	IsDownloaded         bool     `json:"isDownloaded"`
+	IsMandatory          bool     `json:"isMandatory"`
+	AutoSelectOnWebSites bool     `json:"autoSelectOnWebSites"`
 }
 
 // InstallProgress represents the installation progress of a patch
 type InstallProgress struct {
-	KB              string    `json:"kb"`
-	Status          string    `json:"status"`
-	PercentComplete int       `json:"percentComplete"`
-	IsComplete      bool      `json:"isComplete"`
-	RebootRequired  bool      `json:"rebootRequired"`
-	Error           string    `json:"error,omitempty"`
-	StartTime       time.Time `json:"startTime"`
-	EndTime         time.Time `json:"endTime,omitempty"`
+	KB              string `json:"kb"`
+	Status          string `json:"status"`
+	PercentComplete int    `json:"percentComplete"`
+	IsComplete      bool   `json:"isComplete"`
+	RebootRequired  bool   `json:"rebootRequired"`
+	Error           string `json:"error,omitempty"`
+	StartTime       string `json:"startTime"`
+	EndTime         string `json:"endTime,omitempty"`
 }
 
 // Updater provides Windows Update functionality using PSWindowsUpdate
@@ -101,7 +101,7 @@ func (u *Updater) runPowerShell(command string) (string, error) {
 }
 
 // ListPatches returns all Windows OS patches that need to be updated
-func (u *Updater) ListPatches() ([]*Patch, error) {
+func (u *Updater) ListPatches() ([]*WindowsPatch, error) {
 	// Use PSWindowsUpdate to get available updates
 	psCommand := `
 		Import-Module PSWindowsUpdate -ErrorAction Stop;
@@ -130,20 +130,20 @@ func (u *Updater) ListPatches() ([]*Patch, error) {
 	}
 
 	// Parse JSON output
-	var patches []*Patch
+	var patches []*WindowsPatch
 	output = strings.TrimSpace(output)
 	if output == "" || output == "null" {
-		return []*Patch{}, nil
+		return []*WindowsPatch{}, nil
 	}
 
 	// Handle both single object and array of objects
 	if strings.HasPrefix(output, "[") {
 		err = json.Unmarshal([]byte(output), &patches)
 	} else {
-		var patch Patch
+		var patch WindowsPatch
 		err = json.Unmarshal([]byte(output), &patch)
 		if err == nil {
-			patches = []*Patch{&patch}
+			patches = []*WindowsPatch{&patch}
 		}
 	}
 
@@ -155,7 +155,7 @@ func (u *Updater) ListPatches() ([]*Patch, error) {
 }
 
 // ListInstalledPatches returns all recently installed patches, including those with "Pending restart" status
-func (u *Updater) ListInstalledPatches() ([]*Patch, error) {
+func (u *Updater) ListInstalledPatches() ([]*WindowsPatch, error) {
 	// Use PSWindowsUpdate to get update history
 	psCommand := `
 		Import-Module PSWindowsUpdate -ErrorAction Stop;
@@ -173,7 +173,7 @@ func (u *Updater) ListInstalledPatches() ([]*Patch, error) {
 			}},
 			@{Name='Description';Expression={$_.Description}},
 			@{Name='RebootRequired';Expression={$rebootPending}},
-			@{Name='InstalledOn';Expression={$_.Date}},
+			@{Name='InstalledOn';Expression={$_.Date.ToString('o')}},
 			@{Name='IsInstalled';Expression={$true}},
 			@{Name='IsDownloaded';Expression={$true}},
 			@{Name='IsMandatory';Expression={$false}},
@@ -187,20 +187,20 @@ func (u *Updater) ListInstalledPatches() ([]*Patch, error) {
 	}
 
 	// Parse JSON output
-	var patches []*Patch
+	var patches []*WindowsPatch
 	output = strings.TrimSpace(output)
 	if output == "" || output == "null" {
-		return []*Patch{}, nil
+		return []*WindowsPatch{}, nil
 	}
 
 	// Handle both single object and array of objects
 	if strings.HasPrefix(output, "[") {
 		err = json.Unmarshal([]byte(output), &patches)
 	} else {
-		var patch Patch
+		var patch WindowsPatch
 		err = json.Unmarshal([]byte(output), &patch)
 		if err == nil {
-			patches = []*Patch{&patch}
+			patches = []*WindowsPatch{&patch}
 		}
 	}
 
@@ -225,7 +225,7 @@ func (u *Updater) InstallPatch(kb string) (*InstallProgress, error) {
 		Status:          "Starting",
 		PercentComplete: 0,
 		IsComplete:      false,
-		StartTime:       time.Now(),
+		StartTime:       time.Now().Format(time.RFC3339),
 	}
 
 	// Install the patch using PSWindowsUpdate
@@ -248,7 +248,7 @@ func (u *Updater) InstallPatch(kb string) (*InstallProgress, error) {
 		progress.Status = "Failed"
 		progress.Error = err.Error()
 		progress.IsComplete = true
-		progress.EndTime = time.Now()
+		progress.EndTime = time.Now().Format(time.RFC3339)
 		return progress, fmt.Errorf("failed to install patch: %v", err)
 	}
 
@@ -261,7 +261,7 @@ func (u *Updater) InstallPatch(kb string) (*InstallProgress, error) {
 			progress.Status = "Failed"
 			progress.Error = fmt.Sprintf("failed to parse result: %v", err)
 			progress.IsComplete = true
-			progress.EndTime = time.Now()
+			progress.EndTime = time.Now().Format(time.RFC3339)
 			return progress, fmt.Errorf("failed to parse install result: %v", err)
 		}
 
@@ -275,7 +275,7 @@ func (u *Updater) InstallPatch(kb string) (*InstallProgress, error) {
 
 	progress.PercentComplete = 100
 	progress.IsComplete = true
-	progress.EndTime = time.Now()
+	progress.EndTime = time.Now().Format(time.RFC3339)
 
 	return progress, nil
 }
@@ -299,7 +299,7 @@ func (u *Updater) MonitorInstallProgress(kb string, intervalSeconds int) (<-chan
 	go func() {
 		defer close(progressChan)
 
-		startTime := time.Now()
+		startTime := time.Now().Format(time.RFC3339)
 		ticker := time.NewTicker(time.Duration(intervalSeconds) * time.Second)
 		defer ticker.Stop()
 
@@ -335,7 +335,7 @@ func (u *Updater) MonitorInstallProgress(kb string, intervalSeconds int) (<-chan
 				progress.Status = "Error"
 				progress.Error = err.Error()
 				progress.IsComplete = true
-				progress.EndTime = time.Now()
+				progress.EndTime = time.Now().Format(time.RFC3339)
 				progressChan <- progress
 				return
 			}
@@ -365,7 +365,7 @@ func (u *Updater) MonitorInstallProgress(kb string, intervalSeconds int) (<-chan
 			}
 
 			if progress.IsComplete {
-				progress.EndTime = time.Now()
+				progress.EndTime = time.Now().Format(time.RFC3339)
 			}
 
 			progressChan <- progress
