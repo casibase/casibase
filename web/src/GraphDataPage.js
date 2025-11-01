@@ -57,6 +57,7 @@ class GraphDataPage extends React.Component {
     this.chartRef = React.createRef();
     this.containerRef = React.createRef();
     this.hiddenCategories = new Set();
+    this.layoutCaptureTimeout = null;
   }
 
   componentDidMount() {
@@ -137,7 +138,10 @@ class GraphDataPage extends React.Component {
   }
 
   componentWillUnmount() {
-    // Component cleanup if needed
+    // Clean up debounce timeout
+    if (this.layoutCaptureTimeout) {
+      clearTimeout(this.layoutCaptureTimeout);
+    }
   }
 
   handleRenderError(error) {
@@ -595,6 +599,17 @@ class GraphDataPage extends React.Component {
   };
 
   captureLayoutPositions = () => {
+    // Debounce layout capture to avoid excessive updates
+    if (this.layoutCaptureTimeout) {
+      clearTimeout(this.layoutCaptureTimeout);
+    }
+
+    this.layoutCaptureTimeout = setTimeout(() => {
+      this.doCaptureLayoutPositions();
+    }, 500); // Wait 500ms after last interaction before saving
+  };
+
+  doCaptureLayoutPositions = () => {
     // Capture current node positions and save them if saveLayout is enabled
     if (!this.props.saveLayout) {
       return;
