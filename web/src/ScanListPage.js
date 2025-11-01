@@ -25,7 +25,7 @@ import PopconfirmModal from "./modal/PopconfirmModal";
 class ScanListPage extends BaseListPage {
   newScan() {
     return {
-      owner: this.props.account.owner,
+      owner: this.props.account.name,
       name: `scan_${Setting.getRandomName()}`,
       createdTime: moment().format(),
       updatedTime: moment().format(),
@@ -43,7 +43,7 @@ class ScanListPage extends BaseListPage {
     ScanBackend.addScan(newScan)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/scans/${newScan.owner}/${newScan.name}`, mode: "add"});
+          this.props.history.push({pathname: `/scans/${newScan.name}`, mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
@@ -87,7 +87,7 @@ class ScanListPage extends BaseListPage {
         ...this.getColumnSearchProps("owner"),
         render: (text, record, index) => {
           return (
-            <Link to={`/scans/${text}/${record.name}`}>{text}</Link>
+            <Link to={`/scans/${record.name}`}>{text}</Link>
           );
         },
       },
@@ -100,7 +100,7 @@ class ScanListPage extends BaseListPage {
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
-            <Link to={`/scans/${record.owner}/${text}`}>{text}</Link>
+            <Link to={`/scans/${text}`}>{text}</Link>
           );
         },
       },
@@ -178,7 +178,7 @@ class ScanListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/scans/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/scans/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <PopconfirmModal
                 title={i18next.t("general:Sure to delete") + `: ${record.name} ?`}
                 onConfirm={() => this.deleteItem(index).then(() => {
@@ -201,7 +201,7 @@ class ScanListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={scans} rowKey={(record) => `${record.owner}/${record.name}`} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={scans} rowKey={(record) => `${record.name}`} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Scans")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -219,7 +219,7 @@ class ScanListPage extends BaseListPage {
     const field = params.searchedColumn, value = params.searchText;
     const sortField = params.sortField, sortOrder = params.sortOrder;
     this.setState({loading: true});
-    ScanBackend.getScans(this.props.account.owner, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    ScanBackend.getScans(this.props.account.name, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,

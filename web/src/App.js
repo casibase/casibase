@@ -218,6 +218,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/messages"});
     } else if (uri.includes("/graphs")) {
       this.setState({selectedMenuKey: "/graphs"});
+    } else if (uri.includes("/scans")) {
+      this.setState({selectedMenuKey: "/scans"});
     } else if (uri.includes("/usages")) {
       this.setState({selectedMenuKey: "/usages"});
     } else if (uri.includes("/activities")) {
@@ -716,6 +718,7 @@ class App extends Component {
         Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"),
         Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"),
         Setting.getItem(<Link to="/graphs">{i18next.t("general:Graphs")}</Link>, "/graphs"),
+        Setting.getItem(<Link to="/scans">{i18next.t("general:Scans")}</Link>, "/scans"),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
@@ -841,7 +844,7 @@ class App extends Component {
         <Route exact path="/assets" render={(props) => this.renderSigninIfNotSignedIn(<AssetListPage account={this.state.account} {...props} />)} />
         <Route exact path="/assets/:organizationName/:assetName" render={(props) => this.renderSigninIfNotSignedIn(<AssetEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/scans" render={(props) => this.renderSigninIfNotSignedIn(<ScanListPage account={this.state.account} {...props} />)} />
-        <Route exact path="/scans/:organizationName/:scanName" render={(props) => this.renderSigninIfNotSignedIn(<ScanEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/scans/:scanName" render={(props) => this.renderSigninIfNotSignedIn(<ScanEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/images" render={(props) => this.renderSigninIfNotSignedIn(<ImageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/images/:organizationName/:imageName" render={(props) => this.renderSigninIfNotSignedIn(<ImageEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/containers" render={(props) => this.renderSigninIfNotSignedIn(<ContainerListPage account={this.state.account} {...props} />)} />
