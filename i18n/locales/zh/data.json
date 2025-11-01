@@ -255,6 +255,13 @@
   "store": {
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
   },
+  "scan": {
+    "Scan not found": "未找到扫描",
+    "Asset not found": "未找到资产",
+    "Provider not found": "未找到提供商",
+    "Scan provider not supported": "不支持扫描提供商",
+    "Failed to start scan": "启动扫描失败"
+  },
   "stt": {
     "API error: %s": "API 错误：%s",
     "Missing required parameter: storeId": "Missing required parameter: storeId",

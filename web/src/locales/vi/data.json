@@ -58,6 +58,21 @@
     "Scan": "Scan",
     "Successfully scanned assets": "Successfully scanned assets"
   },
+  "scan": {
+    "Asset": "Tài sản",
+    "Asset - Tooltip": "Tài sản cần quét",
+    "Command": "Lệnh",
+    "Command - Tooltip": "Tùy chọn lệnh quét (sử dụng %s làm trình giữ chỗ cho mục tiêu)",
+    "Edit Scan": "Chỉnh sửa Quét",
+    "Failed to start scan": "Không thể bắt đầu quét",
+    "New Scan": "Quét Mới",
+    "Provider": "Nhà cung cấp",
+    "Provider - Tooltip": "Nhà cung cấp quét để sử dụng",
+    "Result": "Kết quả",
+    "Result - Tooltip": "Đầu ra kết quả quét",
+    "Scan started successfully": "Quét đã bắt đầu thành công",
+    "Start Scan": "Bắt đầu Quét"
+  },
   "caase": {
     "Edit Caase": "Edit Case",
     "New Caase": "New Case"

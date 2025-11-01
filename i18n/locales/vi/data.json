@@ -255,6 +255,13 @@
   "store": {
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "do phải có một kho lưu trữ mặc định trong Casibase, bạn không thể đặt kho lưu trữ này thành không mặc định. Bạn có thể trực tiếp đặt kho lưu trữ khác làm mặc định"
   },
+  "scan": {
+    "Scan not found": "Không tìm thấy quét",
+    "Asset not found": "Không tìm thấy tài sản",
+    "Provider not found": "Không tìm thấy nhà cung cấp",
+    "Scan provider not supported": "Nhà cung cấp quét không được hỗ trợ",
+    "Failed to start scan": "Không thể bắt đầu quét"
+  },
   "stt": {
     "API error: %s": "Lỗi API: %s",
     "Missing required parameter: storeId": "Thiếu tham số bắt buộc: storeId",

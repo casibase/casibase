@@ -58,6 +58,21 @@
     "Scan": "Scan",
     "Successfully scanned assets": "Successfully scanned assets"
   },
+  "scan": {
+    "Asset": "Varlık",
+    "Asset - Tooltip": "Taranacak varlık",
+    "Command": "Komut",
+    "Command - Tooltip": "Tarama komutu seçenekleri (hedef yer tutucusu için %s kullanın)",
+    "Edit Scan": "Taramayı Düzenle",
+    "Failed to start scan": "Tarama başlatılamadı",
+    "New Scan": "Yeni Tarama",
+    "Provider": "Sağlayıcı",
+    "Provider - Tooltip": "Kullanılacak tarama sağlayıcısı",
+    "Result": "Sonuç",
+    "Result - Tooltip": "Tarama sonucu çıktısı",
+    "Scan started successfully": "Tarama başarıyla başlatıldı",
+    "Start Scan": "Taramayı Başlat"
+  },
   "caase": {
     "Edit Caase": "Edit Case",
     "New Caase": "New Case"

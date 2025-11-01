@@ -58,6 +58,21 @@
     "Scan": "Scannen",
     "Successfully scanned assets": "Vermögenswerte erfolgreich gescannt"
   },
+  "scan": {
+    "Asset": "Asset",
+    "Asset - Tooltip": "Das zu scannende Asset",
+    "Command": "Befehl",
+    "Command - Tooltip": "Scan-Befehlsoptionen (%s als Platzhalter für das Ziel verwenden)",
+    "Edit Scan": "Scan bearbeiten",
+    "Failed to start scan": "Scan konnte nicht gestartet werden",
+    "New Scan": "Neuer Scan",
+    "Provider": "Anbieter",
+    "Provider - Tooltip": "Zu verwendender Scan-Anbieter",
+    "Result": "Ergebnis",
+    "Result - Tooltip": "Scan-Ergebnisausgabe",
+    "Scan started successfully": "Scan erfolgreich gestartet",
+    "Start Scan": "Scan starten"
+  },
   "caase": {
     "Edit Caase": "Fall bearbeiten",
     "New Caase": "Neuer Fall"

@@ -255,6 +255,13 @@
   "store": {
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "dado que deve haver um armazenamento padrão no Casibase, você não pode definir este armazenamento como não padrão. Você pode definir diretamente outro armazenamento como padrão"
   },
+  "scan": {
+    "Scan not found": "Varredura não encontrada",
+    "Asset not found": "Ativo não encontrado",
+    "Provider not found": "Provedor não encontrado",
+    "Scan provider not supported": "Provedor de varredura não suportado",
+    "Failed to start scan": "Falha ao iniciar a varredura"
+  },
   "stt": {
     "API error: %s": "Erro de API: %s",
     "Missing required parameter: storeId": "Parâmetro obrigatório ausente: storeId",

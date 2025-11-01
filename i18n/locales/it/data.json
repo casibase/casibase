@@ -255,6 +255,13 @@
   "store": {
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "dato che ci deve essere un archivio predefinito in Casibase, non puoi impostare questo archivio come non predefinito. Puoi impostare direttamente un altro archivio come predefinito"
   },
+  "scan": {
+    "Scan not found": "Scansione non trovata",
+    "Asset not found": "Risorsa non trovata",
+    "Provider not found": "Fornitore non trovato",
+    "Scan provider not supported": "Fornitore di scansione non supportato",
+    "Failed to start scan": "Impossibile avviare la scansione"
+  },
   "stt": {
     "API error: %s": "Errore API: %s",
     "Missing required parameter: storeId": "Parametro obbligatorio mancante: storeId",

@@ -54,6 +54,8 @@ import MachineListPage from "./MachineListPage";
 import MachineEditPage from "./MachineEditPage";
 import AssetListPage from "./AssetListPage";
 import AssetEditPage from "./AssetEditPage";
+import ScanListPage from "./ScanListPage";
+import ScanEditPage from "./ScanEditPage";
 import ImageListPage from "./ImageListPage";
 import ImageEditPage from "./ImageEditPage";
 import ContainerListPage from "./ContainerListPage";
@@ -838,6 +840,8 @@ class App extends Component {
         <Route exact path="/machines/:organizationName/:machineName" render={(props) => this.renderSigninIfNotSignedIn(<MachineEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/assets" render={(props) => this.renderSigninIfNotSignedIn(<AssetListPage account={this.state.account} {...props} />)} />
         <Route exact path="/assets/:organizationName/:assetName" render={(props) => this.renderSigninIfNotSignedIn(<AssetEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/scans" render={(props) => this.renderSigninIfNotSignedIn(<ScanListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/scans/:organizationName/:scanName" render={(props) => this.renderSigninIfNotSignedIn(<ScanEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/images" render={(props) => this.renderSigninIfNotSignedIn(<ImageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/images/:organizationName/:imageName" render={(props) => this.renderSigninIfNotSignedIn(<ImageEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/containers" render={(props) => this.renderSigninIfNotSignedIn(<ContainerListPage account={this.state.account} {...props} />)} />

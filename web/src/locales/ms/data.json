@@ -58,6 +58,21 @@
     "Scan": "Scan",
     "Successfully scanned assets": "Successfully scanned assets"
   },
+  "scan": {
+    "Asset": "Aset",
+    "Asset - Tooltip": "Aset yang akan diimbas",
+    "Command": "Arahan",
+    "Command - Tooltip": "Pilihan arahan imbasan (gunakan %s sebagai pemegang tempat untuk sasaran)",
+    "Edit Scan": "Edit Imbasan",
+    "Failed to start scan": "Gagal memulakan imbasan",
+    "New Scan": "Imbasan Baru",
+    "Provider": "Pembekal",
+    "Provider - Tooltip": "Pembekal imbasan untuk digunakan",
+    "Result": "Hasil",
+    "Result - Tooltip": "Output hasil imbasan",
+    "Scan started successfully": "Imbasan berjaya dimulakan",
+    "Start Scan": "Mulakan Imbasan"
+  },
   "caase": {
     "Edit Caase": "Edit Case",
     "New Caase": "New Case"

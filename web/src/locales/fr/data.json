@@ -58,6 +58,21 @@
     "Scan": "Scanner",
     "Successfully scanned assets": "Actifs scannés avec succès"
   },
+  "scan": {
+    "Asset": "Actif",
+    "Asset - Tooltip": "L'actif à analyser",
+    "Command": "Commande",
+    "Command - Tooltip": "Options de commande de scan (utilisez %s comme espace réservé pour la cible)",
+    "Edit Scan": "Modifier l'analyse",
+    "Failed to start scan": "Échec du démarrage de l'analyse",
+    "New Scan": "Nouvelle analyse",
+    "Provider": "Fournisseur",
+    "Provider - Tooltip": "Fournisseur de scan à utiliser",
+    "Result": "Résultat",
+    "Result - Tooltip": "Sortie du résultat de l'analyse",
+    "Scan started successfully": "Analyse démarrée avec succès",
+    "Start Scan": "Démarrer l'analyse"
+  },
   "caase": {
     "Edit Caase": "Modifier le cas",
     "New Caase": "Nouveau cas"

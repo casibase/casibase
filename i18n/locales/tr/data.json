@@ -255,6 +255,13 @@
   "store": {
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "Casibase'de bir varsayılan depo olması gerektiğinden, bu depoyu varsayılan olmayan olarak ayarlayamazsınız. Doğrudan başka bir depoyu varsayılan olarak ayarlayabilirsiniz"
   },
+  "scan": {
+    "Scan not found": "Tarama bulunamadı",
+    "Asset not found": "Varlık bulunamadı",
+    "Provider not found": "Sağlayıcı bulunamadı",
+    "Scan provider not supported": "Tarama sağlayıcısı desteklenmiyor",
+    "Failed to start scan": "Tarama başlatılamadı"
+  },
   "stt": {
     "API error: %s": "API hatası: %s",
     "Missing required parameter: storeId": "Gerekli parametre eksik: storeId",

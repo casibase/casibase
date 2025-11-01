@@ -271,6 +271,13 @@
     "output error: %v": "output error: %v",
     "writer does not implement http.Flusher": "writer does not implement http.Flusher"
   },
+  "scan": {
+    "Scan not found": "Scan not found",
+    "Asset not found": "Asset not found",
+    "Provider not found": "Provider not found",
+    "Scan provider not supported": "Scan provider not supported",
+    "Failed to start scan": "Failed to start scan"
+  },
   "txt": {
     ".docx file is empty": ".docx file is empty",
     "GetTextFromMarkitdown() error, failed to open file: %v": "GetTextFromMarkitdown() error, failed to open file: %v",
