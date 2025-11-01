@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {StaticBaseUrl} from "../Conf";
+
 /**
  * Transform asset list data to graph data structure
  * @param {Array} assets - Array of asset objects from API
@@ -43,15 +45,15 @@ export function transformAssetsToGraph(assets) {
 
   // Define icons for different resource types
   const resourceTypeIcons = {
-    "VPC": "https://img.icons8.com/fluent/94/cloud-development.png",
-    "VSwitch": "https://img.icons8.com/fluent/94/network-gateway.png",
-    "Network Interface": "https://img.icons8.com/fluent/94/network-card.png",
-    "Security Group": "https://img.icons8.com/fluent/94/user-group-woman-woman.png",
-    "ECS Instance": "https://img.icons8.com/fluent/94/database-server.png",
-    "Disk": "https://img.icons8.com/fluent/94/ssd.png",
-    "Snapshot": "https://img.icons8.com/fluent/94/picture.png",
-    "Image": "https://img.icons8.com/fluent/94/big-parcel.png",
-    "ACS::ECS::AutoSnapshotPolicy": "https://img.icons8.com/fluent/94/privacy-policy.png",
+    "VPC": `${StaticBaseUrl}/img/cloud/vpc.png`,
+    "VSwitch": `${StaticBaseUrl}/img/cloud/vswitch.png`,
+    "Network Interface": `${StaticBaseUrl}/img/cloud/network.png`,
+    "Security Group": `${StaticBaseUrl}/img/cloud/securitygroup.png`,
+    "ECS Instance": `${StaticBaseUrl}/img/cloud/vm.png`,
+    "Disk": `${StaticBaseUrl}/img/cloud/disk.png`,
+    "Snapshot": `${StaticBaseUrl}/img/cloud/snapshot.png`,
+    "Image": `${StaticBaseUrl}/img/cloud/image.png`,
+    "ACS::ECS::AutoSnapshotPolicy": `${StaticBaseUrl}/img/cloud/policy.png`,
   };
 
   // Helper function to get or create a category
@@ -106,7 +108,7 @@ export function transformAssetsToGraph(assets) {
       y: Math.floor(index / 5) * 150 - 300,
       value: 50 + (index % 5) * 10,
       category: categoryIndex,
-      icon: resourceTypeIcons[resourceType] || "https://cdn-icons-png.flaticon.com/512/1006/1006771.png",
+      icon: resourceTypeIcons[resourceType] || `${StaticBaseUrl}/img/cloud/default.png`,
       // Additional asset metadata
       displayName: asset.displayName,
       resourceId: asset.resourceId,
