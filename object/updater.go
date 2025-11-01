@@ -34,7 +34,7 @@ type WindowsPatch struct {
 	RebootRequired       bool     `json:"rebootRequired"`
 	InstalledOn          string   `json:"installedOn,omitempty"`
 	LastSearchTime       string   `json:"lastSearchTime,omitempty"`
-	Categories           []string `json:"categories,omitempty"`
+	Categories           string   `json:"categories,omitempty"`
 	IsInstalled          bool     `json:"isInstalled"`
 	IsDownloaded         bool     `json:"isDownloaded"`
 	IsMandatory          bool     `json:"isMandatory"`
