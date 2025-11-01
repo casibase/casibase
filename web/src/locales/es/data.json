@@ -59,19 +59,12 @@
     "Successfully scanned assets": "Activos escaneados exitosamente"
   },
   "scan": {
-    "Asset": "Activo",
     "Asset - Tooltip": "El activo a escanear",
-    "Command": "Comando",
     "Command - Tooltip": "Opciones de comando de escaneo (use %s como marcador de posición para el objetivo)",
     "Edit Scan": "Editar escaneo",
-    "Failed to start scan": "Error al iniciar el escaneo",
     "New Scan": "Nuevo escaneo",
-    "Provider": "Proveedor",
     "Provider - Tooltip": "Proveedor de escaneo a utilizar",
-    "Result": "Resultado",
-    "Result - Tooltip": "Salida del resultado del escaneo",
-    "Scan started successfully": "Escaneo iniciado correctamente",
-    "Start Scan": "Iniciar escaneo"
+    "Result - Tooltip": "Salida del resultado del escaneo"
   },
   "caase": {
     "Edit Caase": "Editar caso",

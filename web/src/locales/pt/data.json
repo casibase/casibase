@@ -59,19 +59,12 @@
     "Successfully scanned assets": "Successfully scanned assets"
   },
   "scan": {
-    "Asset": "Ativo",
     "Asset - Tooltip": "O ativo a ser verificado",
-    "Command": "Comando",
     "Command - Tooltip": "Opções de comando de varredura (use %s como espaço reservado para o alvo)",
     "Edit Scan": "Editar Varredura",
-    "Failed to start scan": "Falha ao iniciar a varredura",
     "New Scan": "Nova Varredura",
-    "Provider": "Provedor",
     "Provider - Tooltip": "Provedor de varredura a ser usado",
-    "Result": "Resultado",
-    "Result - Tooltip": "Saída do resultado da varredura",
-    "Scan started successfully": "Varredura iniciada com sucesso",
-    "Start Scan": "Iniciar Varredura"
+    "Result - Tooltip": "Saída do resultado da varredura"
   },
   "caase": {
     "Edit Caase": "Edit Case",

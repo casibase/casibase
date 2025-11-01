@@ -59,19 +59,12 @@
     "Successfully scanned assets": "Berhasil memindai aset"
   },
   "scan": {
-    "Asset": "アセット",
     "Asset - Tooltip": "スキャンするアセット",
-    "Command": "コマンド",
     "Command - Tooltip": "スキャンコマンドオプション（ターゲットのプレースホルダーとして%sを使用）",
     "Edit Scan": "スキャンの編集",
-    "Failed to start scan": "スキャンの開始に失敗しました",
     "New Scan": "新しいスキャン",
-    "Provider": "プロバイダー",
     "Provider - Tooltip": "使用するスキャンプロバイダー",
-    "Result": "結果",
-    "Result - Tooltip": "スキャン結果の出力",
-    "Scan started successfully": "スキャンが正常に開始されました",
-    "Start Scan": "スキャンを開始"
+    "Result - Tooltip": "スキャン結果の出力"
   },
   "caase": {
     "Edit Caase": "症例を編集",

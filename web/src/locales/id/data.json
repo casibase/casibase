@@ -59,19 +59,12 @@
     "Successfully scanned assets": "Berhasil memindai aset"
   },
   "scan": {
-    "Asset": "Aset",
     "Asset - Tooltip": "Aset yang akan dipindai",
-    "Command": "Perintah",
     "Command - Tooltip": "Opsi perintah pemindaian (gunakan %s sebagai placeholder untuk target)",
     "Edit Scan": "Edit Pemindaian",
-    "Failed to start scan": "Gagal memulai pemindaian",
     "New Scan": "Pemindaian Baru",
-    "Provider": "Penyedia",
     "Provider - Tooltip": "Penyedia pemindaian yang akan digunakan",
-    "Result": "Hasil",
-    "Result - Tooltip": "Output hasil pemindaian",
-    "Scan started successfully": "Pemindaian berhasil dimulai",
-    "Start Scan": "Mulai Pemindaian"
+    "Result - Tooltip": "Output hasil pemindaian"
   },
   "caase": {
     "Edit Caase": "Edit kasus",

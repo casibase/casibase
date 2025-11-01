@@ -60,8 +60,10 @@ class ScanEditPage extends React.Component {
     AssetBackend.getAssets("admin")
       .then((res) => {
         if (res.status === "ok") {
+          // Filter to only show Virtual Machine assets
+          const vmAssets = res.data.filter(asset => asset.type === "Virtual Machine");
           this.setState({
-            assets: res.data,
+            assets: vmAssets,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -140,10 +142,10 @@ class ScanEditPage extends React.Component {
     ScanBackend.startScan(this.state.scan.owner, this.state.scan.name)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("scan:Scan started successfully"));
+          Setting.showMessage("success", i18next.t("general:Successfully executed"));
           this.getScan();
         } else {
-          Setting.showMessage("error", `${i18next.t("scan:Failed to start scan")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
         }
       })
       .catch(error => {
@@ -189,7 +191,7 @@ class ScanEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("scan:Asset"), i18next.t("scan:Asset - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Asset"), i18next.t("scan:Asset - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.scan.asset}
@@ -204,7 +206,7 @@ class ScanEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("scan:Provider"), i18next.t("scan:Provider - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Provider"), i18next.t("scan:Provider - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.scan.provider}
@@ -219,7 +221,7 @@ class ScanEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("scan:Command"), i18next.t("scan:Command - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Command"), i18next.t("scan:Command - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.scan.command} onChange={e => {
@@ -237,7 +239,7 @@ class ScanEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("scan:Result"), i18next.t("scan:Result - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Result"), i18next.t("scan:Result - Tooltip"))} :
           </Col>
           <Col span={22} >
             <TextArea value={this.state.scan.resultText} disabled rows={10} />
@@ -246,7 +248,7 @@ class ScanEditPage extends React.Component {
         <Row style={{marginTop: "20px"}} >
           <Col span={22} offset={2}>
             <Button type="primary" onClick={() => this.startScan()} disabled={this.state.scan.state === "Running"}>
-              {i18next.t("scan:Start Scan")}
+              {i18next.t("asset:Scan")}
             </Button>
           </Col>
         </Row>

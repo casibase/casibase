@@ -59,19 +59,12 @@
     "Successfully scanned assets": "Berhasil memindai aset"
   },
   "scan": {
-    "Asset": "Актив",
     "Asset - Tooltip": "Актив для сканирования",
-    "Command": "Команда",
     "Command - Tooltip": "Параметры команды сканирования (используйте %s в качестве заполнителя для цели)",
     "Edit Scan": "Редактировать сканирование",
-    "Failed to start scan": "Не удалось запустить сканирование",
     "New Scan": "Новое сканирование",
-    "Provider": "Провайдер",
     "Provider - Tooltip": "Провайдер сканирования для использования",
-    "Result": "Результат",
-    "Result - Tooltip": "Вывод результата сканирования",
-    "Scan started successfully": "Сканирование успешно запущено",
-    "Start Scan": "Начать сканирование"
+    "Result - Tooltip": "Вывод результата сканирования"
   },
   "caase": {
     "Edit Caase": "Редактировать случай",

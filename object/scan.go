@@ -29,11 +29,11 @@ type Scan struct {
 	UpdatedTime string `xorm:"varchar(100)" json:"updatedTime"`
 	DisplayName string `xorm:"varchar(200)" json:"displayName"`
 
-	Asset        string `xorm:"varchar(200)" json:"asset"`
-	Provider     string `xorm:"varchar(100)" json:"provider"`
-	State        string `xorm:"varchar(100)" json:"state"`
-	Command      string `xorm:"varchar(500)" json:"command"`
-	ResultText   string `xorm:"mediumtext" json:"resultText"`
+	Asset      string `xorm:"varchar(200)" json:"asset"`
+	Provider   string `xorm:"varchar(100)" json:"provider"`
+	State      string `xorm:"varchar(100)" json:"state"`
+	Command    string `xorm:"varchar(500)" json:"command"`
+	ResultText string `xorm:"mediumtext" json:"resultText"`
 }
 
 func GetScanCount(owner, field, value string) (int64, error) {

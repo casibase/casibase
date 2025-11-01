@@ -59,19 +59,12 @@
     "Successfully scanned assets": "成功扫描资产"
   },
   "scan": {
-    "Asset": "资产",
     "Asset - Tooltip": "要扫描的资产",
-    "Command": "命令",
     "Command - Tooltip": "扫描命令选项（使用 %s 作为目标占位符）",
     "Edit Scan": "编辑扫描",
-    "Failed to start scan": "启动扫描失败",
     "New Scan": "新建扫描",
-    "Provider": "提供商",
     "Provider - Tooltip": "要使用的扫描提供商",
-    "Result": "结果",
-    "Result - Tooltip": "扫描结果输出",
-    "Scan started successfully": "扫描成功启动",
-    "Start Scan": "开始扫描"
+    "Result - Tooltip": "扫描结果输出"
   },
   "caase": {
     "Edit Caase": "编辑病例",

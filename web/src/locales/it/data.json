@@ -59,19 +59,12 @@
     "Successfully scanned assets": "Risorse scansionate con successo"
   },
   "scan": {
-    "Asset": "Risorsa",
     "Asset - Tooltip": "La risorsa da scansionare",
-    "Command": "Comando",
     "Command - Tooltip": "Opzioni del comando di scansione (utilizzare %s come segnaposto per il target)",
     "Edit Scan": "Modifica scansione",
-    "Failed to start scan": "Impossibile avviare la scansione",
     "New Scan": "Nuova scansione",
-    "Provider": "Fornitore",
     "Provider - Tooltip": "Fornitore di scansione da utilizzare",
-    "Result": "Risultato",
-    "Result - Tooltip": "Output del risultato della scansione",
-    "Scan started successfully": "Scansione avviata con successo",
-    "Start Scan": "Avvia scansione"
+    "Result - Tooltip": "Output del risultato della scansione"
   },
   "caase": {
     "Edit Caase": "Edit Case",

@@ -59,19 +59,12 @@
     "Successfully scanned assets": "Berhasil memindai aset"
   },
   "scan": {
-    "Asset": "자산",
     "Asset - Tooltip": "스캔할 자산",
-    "Command": "명령",
     "Command - Tooltip": "스캔 명령 옵션(대상 자리 표시자로 %s 사용)",
     "Edit Scan": "스캔 편집",
-    "Failed to start scan": "스캔을 시작하지 못했습니다",
     "New Scan": "새 스캔",
-    "Provider": "공급자",
     "Provider - Tooltip": "사용할 스캔 공급자",
-    "Result": "결과",
-    "Result - Tooltip": "스캔 결과 출력",
-    "Scan started successfully": "스캔이 성공적으로 시작되었습니다",
-    "Start Scan": "스캔 시작"
+    "Result - Tooltip": "스캔 결과 출력"
   },
   "caase": {
     "Edit Caase": "사례 편집",

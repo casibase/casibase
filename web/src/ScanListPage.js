@@ -123,20 +123,30 @@ class ScanListPage extends BaseListPage {
         ...this.getColumnSearchProps("displayName"),
       },
       {
-        title: i18next.t("scan:Asset"),
+        title: i18next.t("general:Asset"),
         dataIndex: "asset",
         key: "asset",
         width: "150px",
         sorter: true,
         ...this.getColumnSearchProps("asset"),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/assets/${text}`}>{text}</Link>
+          );
+        },
       },
       {
-        title: i18next.t("scan:Provider"),
+        title: i18next.t("general:Provider"),
         dataIndex: "provider",
         key: "provider",
         width: "150px",
         sorter: true,
         ...this.getColumnSearchProps("provider"),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/providers/admin/${text}`}>{text}</Link>
+          );
+        },
       },
       {
         title: i18next.t("general:State"),
