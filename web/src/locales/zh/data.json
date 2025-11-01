@@ -458,7 +458,10 @@
     "Radial": "径向",
     "Security": "安全",
     "Storage": "存储",
-    "Tree": "树形"
+    "Tree": "树形",
+    "Save Layout": "保存布局",
+    "Save Layout - Tooltip": "启用保存节点位置以便下次使用",
+    "Enable saving node positions": "启用保存节点位置"
   },
   "hospital": {
     "Edit Hospital": "编辑医院",

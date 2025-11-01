@@ -458,7 +458,10 @@
     "Radial": "Radial",
     "Security": "Security",
     "Storage": "Storage",
-    "Tree": "Tree"
+    "Tree": "Tree",
+    "Save Layout": "Save Layout",
+    "Save Layout - Tooltip": "Enable saving node positions for next time",
+    "Enable saving node positions": "Enable saving node positions"
   },
   "hospital": {
     "Edit Hospital": "Edit Hospital",
