@@ -100,6 +100,33 @@ func (u *Updater) runPowerShell(command string) (string, error) {
 	return stdout.String(), nil
 }
 
+// extractJSON extracts JSON content from PowerShell output by removing non-JSON lines
+// This handles cases where PowerShell commands output interactive prompts or other text before JSON
+func extractJSON(output string) string {
+	output = strings.TrimSpace(output)
+	if output == "" {
+		return ""
+	}
+
+	lines := strings.Split(output, "\n")
+	var jsonLines []string
+	inJSON := false
+
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		// Start of JSON array or object
+		if !inJSON && (strings.HasPrefix(line, "[") || strings.HasPrefix(line, "{")) {
+			inJSON = true
+		}
+		// Collect JSON lines
+		if inJSON {
+			jsonLines = append(jsonLines, line)
+		}
+	}
+
+	return strings.Join(jsonLines, "\n")
+}
+
 // ListPatches returns all Windows OS patches that need to be updated
 func (u *Updater) ListPatches() ([]*WindowsPatch, error) {
 	// Use PSWindowsUpdate to get available updates
@@ -134,6 +161,9 @@ func (u *Updater) ListPatches() ([]*WindowsPatch, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to list patches: %v", err)
 	}
+
+	// Extract JSON from output, removing any non-JSON lines (e.g., interactive prompts)
+	output = extractJSON(output)
 
 	// Parse JSON output
 	var patches []*WindowsPatch
@@ -200,6 +230,9 @@ func (u *Updater) ListInstalledPatches() ([]*WindowsPatch, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to list installed patches: %v", err)
 	}
+
+	// Extract JSON from output, removing any non-JSON lines (e.g., interactive prompts)
+	output = extractJSON(output)
 
 	// Parse JSON output
 	var patches []*WindowsPatch
