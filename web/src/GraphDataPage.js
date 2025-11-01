@@ -68,7 +68,9 @@ class GraphDataPage extends React.Component {
     if (this.props.graphText !== prevProps.graphText ||
         this.props.layout !== prevProps.layout ||
         this.props.category !== prevProps.category ||
-        this.props.density !== prevProps.density) {
+        this.props.density !== prevProps.density ||
+        this.props.layoutData !== prevProps.layoutData ||
+        this.props.saveLayout !== prevProps.saveLayout) {
       this.loadGraphData();
     }
   }
@@ -426,9 +428,10 @@ class GraphDataPage extends React.Component {
         const savedPositions = JSON.parse(this.props.layoutData);
         if (savedPositions && typeof savedPositions === "object") {
           processedNodes.forEach(node => {
-            if (savedPositions[node.id]) {
-              node.x = savedPositions[node.id].x;
-              node.y = savedPositions[node.id].y;
+            const savedPos = savedPositions[node.id];
+            if (savedPos && typeof savedPos.x === "number" && typeof savedPos.y === "number") {
+              node.x = savedPos.x;
+              node.y = savedPos.y;
             }
           });
         }
@@ -819,7 +822,6 @@ class GraphDataPage extends React.Component {
                 mouseover: this.handleMouseOver,
                 mouseout: this.handleMouseOut,
                 graphRoam: this.captureLayoutPositions,
-                finished: this.captureLayoutPositions,
               }}
               onChartReady={this.onChartReady}
             />
