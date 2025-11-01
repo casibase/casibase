@@ -26,19 +26,19 @@ import (
 
 // WindowsPatch represents a Windows update patch
 type WindowsPatch struct {
-	Title                string   `json:"title"`
-	KB                   string   `json:"kb"`
-	Size                 string   `json:"size"`
-	Status               string   `json:"status"`
-	Description          string   `json:"description"`
-	RebootRequired       bool     `json:"rebootRequired"`
-	InstalledOn          string   `json:"installedOn,omitempty"`
-	LastSearchTime       string   `json:"lastSearchTime,omitempty"`
-	Categories           string   `json:"categories,omitempty"`
-	IsInstalled          bool     `json:"isInstalled"`
-	IsDownloaded         bool     `json:"isDownloaded"`
-	IsMandatory          bool     `json:"isMandatory"`
-	AutoSelectOnWebSites bool     `json:"autoSelectOnWebSites"`
+	Title                string `json:"title"`
+	KB                   string `json:"kb"`
+	Size                 string `json:"size"`
+	Status               string `json:"status"`
+	Description          string `json:"description"`
+	RebootRequired       bool   `json:"rebootRequired"`
+	InstalledOn          string `json:"installedOn,omitempty"`
+	LastSearchTime       string `json:"lastSearchTime,omitempty"`
+	Categories           string `json:"categories,omitempty"`
+	IsInstalled          bool   `json:"isInstalled"`
+	IsDownloaded         bool   `json:"isDownloaded"`
+	IsMandatory          bool   `json:"isMandatory"`
+	AutoSelectOnWebSites bool   `json:"autoSelectOnWebSites"`
 }
 
 // InstallProgress represents the installation progress of a patch
