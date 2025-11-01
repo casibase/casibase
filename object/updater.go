@@ -87,7 +87,7 @@ func validateKB(kb string) (string, error) {
 
 // runPowerShell executes a PowerShell command and returns the output
 func (u *Updater) runPowerShell(command string) (string, error) {
-	cmd := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-Command", command)
+	cmd := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", command)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
@@ -100,34 +100,70 @@ func (u *Updater) runPowerShell(command string) (string, error) {
 	return stdout.String(), nil
 }
 
+// extractJSON extracts JSON content from PowerShell output by removing non-JSON lines
+// This handles cases where PowerShell commands output interactive prompts or other text before JSON
+func extractJSON(output string) string {
+	output = strings.TrimSpace(output)
+	if output == "" {
+		return ""
+	}
+
+	lines := strings.Split(output, "\n")
+	var jsonLines []string
+	inJSON := false
+
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		// Start of JSON array or object
+		if !inJSON && (strings.HasPrefix(line, "[") || strings.HasPrefix(line, "{")) {
+			inJSON = true
+		}
+		// Collect JSON lines
+		if inJSON {
+			jsonLines = append(jsonLines, line)
+		}
+	}
+
+	return strings.Join(jsonLines, "\n")
+}
+
 // ListPatches returns all Windows OS patches that need to be updated
 func (u *Updater) ListPatches() ([]*WindowsPatch, error) {
 	// Use PSWindowsUpdate to get available updates
 	psCommand := `
-		Import-Module PSWindowsUpdate -ErrorAction Stop;
+		$ErrorActionPreference = 'Stop';
+		$ProgressPreference = 'Continue';
+		Import-Module PSWindowsUpdate -Force;
 		$updates = Get-WindowsUpdate -MicrosoftUpdate;
-		$updates | Select-Object @{Name='Title';Expression={$_.Title}},
-			@{Name='KB';Expression={$_.KBArticleIDs -join ','}},
-			@{Name='Size';Expression={[math]::Round($_.MaxDownloadSize/1MB, 2).ToString() + ' MB'}},
-			@{Name='Status';Expression={
-				if ($_.IsDownloaded) { 'Downloaded' }
-				elseif ($_.IsInstalled) { 'Installed' }
-				else { 'Available' }
-			}},
-			@{Name='Description';Expression={$_.Description}},
-			@{Name='RebootRequired';Expression={$_.RebootRequired}},
-			@{Name='Categories';Expression={($_.Categories | ForEach-Object { $_.Name }) -join ','}},
-			@{Name='IsInstalled';Expression={$_.IsInstalled}},
-			@{Name='IsDownloaded';Expression={$_.IsDownloaded}},
-			@{Name='IsMandatory';Expression={$_.IsMandatory}},
-			@{Name='AutoSelectOnWebSites';Expression={$_.AutoSelectOnWebSites}} | 
-		ConvertTo-Json
+		if ($null -eq $updates) {
+			Write-Output '[]'
+		} else {
+			$updates | Select-Object @{Name='Title';Expression={$_.Title}},
+				@{Name='KB';Expression={$_.KBArticleIDs -join ','}},
+				@{Name='Size';Expression={[math]::Round($_.MaxDownloadSize/1MB, 2).ToString() + ' MB'}},
+				@{Name='Status';Expression={
+					if ($_.IsDownloaded) { 'Downloaded' }
+					elseif ($_.IsInstalled) { 'Installed' }
+					else { 'Available' }
+				}},
+				@{Name='Description';Expression={$_.Description}},
+				@{Name='RebootRequired';Expression={$_.RebootRequired}},
+				@{Name='Categories';Expression={($_.Categories | ForEach-Object { $_.Name }) -join ','}},
+				@{Name='IsInstalled';Expression={$_.IsInstalled}},
+				@{Name='IsDownloaded';Expression={$_.IsDownloaded}},
+				@{Name='IsMandatory';Expression={$_.IsMandatory}},
+				@{Name='AutoSelectOnWebSites';Expression={$_.AutoSelectOnWebSites}} | 
+			ConvertTo-Json
+		}
 	`
 
 	output, err := u.runPowerShell(psCommand)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list patches: %v", err)
 	}
+
+	// Extract JSON from output, removing any non-JSON lines (e.g., interactive prompts)
+	output = extractJSON(output)
 
 	// Parse JSON output
 	var patches []*WindowsPatch
@@ -157,34 +193,46 @@ func (u *Updater) ListPatches() ([]*WindowsPatch, error) {
 // ListInstalledPatches returns all recently installed patches, including those with "Pending restart" status
 func (u *Updater) ListInstalledPatches() ([]*WindowsPatch, error) {
 	// Use PSWindowsUpdate to get update history
+	// Based on reference implementation that uses proper error handling
 	psCommand := `
-		Import-Module PSWindowsUpdate -ErrorAction Stop;
-		$history = Get-WUHistory | Select-Object -First 50;
-		$rebootPending = Get-WURebootStatus -Silent;
-		$history | Select-Object @{Name='Title';Expression={$_.Title}},
-			@{Name='KB';Expression={
-				if ($_.Title -match 'KB[0-9]+') { $matches[0] }
-				else { '' }
-			}},
-			@{Name='Size';Expression={'N/A'}},
-			@{Name='Status';Expression={
-				if ($rebootPending) { 'Pending Restart' }
-				else { $_.Result }
-			}},
-			@{Name='Description';Expression={$_.Description}},
-			@{Name='RebootRequired';Expression={$rebootPending}},
-			@{Name='InstalledOn';Expression={$_.Date.ToString('o')}},
-			@{Name='IsInstalled';Expression={$true}},
-			@{Name='IsDownloaded';Expression={$true}},
-			@{Name='IsMandatory';Expression={$false}},
-			@{Name='AutoSelectOnWebSites';Expression={$false}} | 
-		ConvertTo-Json
+		$ErrorActionPreference = 'Stop';
+		$ProgressPreference = 'Continue';
+		Import-Module PSWindowsUpdate -Force;
+		$history = Get-WUHistory -Last 50 -ErrorAction SilentlyContinue;
+		$rebootPending = $null;
+		try { $rebootPending = Get-WURebootStatus -ErrorAction Stop } catch { $rebootPending = $null };
+		$isRebootRequired = if ($null -ne $rebootPending) { $rebootPending.IsRebootRequired } else { $false };
+		if ($null -eq $history) {
+			Write-Output '[]'
+		} else {
+			$history | Select-Object @{Name='Title';Expression={$_.Title}},
+				@{Name='KB';Expression={
+					if ($_.Title -match 'KB[0-9]+') { $matches[0] }
+					else { '' }
+				}},
+				@{Name='Size';Expression={'N/A'}},
+				@{Name='Status';Expression={
+					if ($isRebootRequired) { 'Pending Restart' }
+					else { $_.Result }
+				}},
+				@{Name='Description';Expression={$_.Description}},
+				@{Name='RebootRequired';Expression={$isRebootRequired}},
+				@{Name='InstalledOn';Expression={$_.Date.ToString('o')}},
+				@{Name='IsInstalled';Expression={$true}},
+				@{Name='IsDownloaded';Expression={$true}},
+				@{Name='IsMandatory';Expression={$false}},
+				@{Name='AutoSelectOnWebSites';Expression={$false}} | 
+			ConvertTo-Json
+		}
 	`
 
 	output, err := u.runPowerShell(psCommand)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list installed patches: %v", err)
 	}
+
+	// Extract JSON from output, removing any non-JSON lines (e.g., interactive prompts)
+	output = extractJSON(output)
 
 	// Parse JSON output
 	var patches []*WindowsPatch
@@ -231,7 +279,9 @@ func (u *Updater) InstallPatch(kb string) (*InstallProgress, error) {
 	// Install the patch using PSWindowsUpdate
 	// Note: KB number has been validated to contain only digits, preventing command injection
 	psCommand := fmt.Sprintf(`
-		Import-Module PSWindowsUpdate -ErrorAction Stop;
+		$ErrorActionPreference = 'Stop';
+		$ProgressPreference = 'Continue';
+		Import-Module PSWindowsUpdate -Force;
 		$result = Install-WindowsUpdate -KBArticleID '%s' -AcceptAll -IgnoreReboot -Confirm:$false -Verbose;
 		if ($result) {
 			$result | Select-Object @{Name='Status';Expression={$_.Result}},
@@ -315,8 +365,10 @@ func (u *Updater) MonitorInstallProgress(kb string, intervalSeconds int) (<-chan
 			// Check if the update is still installing
 			// Note: KB number has been validated to contain only digits, preventing command injection
 			psCommand := fmt.Sprintf(`
-				Import-Module PSWindowsUpdate -ErrorAction Stop;
-				$history = Get-WUHistory | Where-Object { $_.Title -match 'KB%s' } | Select-Object -First 1;
+				$ErrorActionPreference = 'Stop';
+				$ProgressPreference = 'Continue';
+				Import-Module PSWindowsUpdate -Force;
+				$history = Get-WUHistory -ErrorAction SilentlyContinue | Where-Object { $_.Title -match 'KB%s' } | Select-Object -First 1;
 				$installing = Get-WindowsUpdate -KBArticleID '%s' -MicrosoftUpdate;
 				
 				if ($history -and $history.Result -eq 'Succeeded') {
