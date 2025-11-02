@@ -19,6 +19,7 @@ import (
 
 	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/scan"
 	"github.com/casibase/casibase/util"
 )
 
@@ -140,4 +141,109 @@ func (c *ApiController) DeleteScan() {
 	}
 
 	c.ResponseOk(object.DeleteScan(&scan))
+}
+
+// InstallPatch
+// @Title InstallPatch
+// @Tag Scan API
+// @Description install an OS patch by KB number
+// @Param   provider query string true "The provider ID (owner/name)"
+// @Param   kb query string true "The KB number of the patch to install"
+// @Success 200 {object} controllers.Response The Response object with InstallProgress
+// @router /install-patch [post]
+func (c *ApiController) InstallPatch() {
+	providerID := c.Input().Get("provider")
+	kb := c.Input().Get("kb")
+
+	if providerID == "" {
+		c.ResponseError("Provider ID is required")
+		return
+	}
+
+	if kb == "" {
+		c.ResponseError("KB number is required")
+		return
+	}
+
+	// Get the provider to check if it's an OS Patch provider
+	provider, err := object.GetProvider(providerID)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	if provider.Type != "OS Patch" {
+		c.ResponseError("Provider must be of type 'OS Patch'")
+		return
+	}
+
+	// Create an OsPatchScanProvider instance
+	osPatchProvider, err := scan.NewOsPatchScanProvider(provider.ClientId)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	// Install the patch
+	progress, err := osPatchProvider.InstallPatch(kb)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(progress)
+}
+
+// MonitorPatchProgress
+// @Title MonitorPatchProgress
+// @Tag Scan API
+// @Description monitor the installation progress of an OS patch
+// @Param   provider query string true "The provider ID (owner/name)"
+// @Param   kb query string true "The KB number of the patch being installed"
+// @Success 200 {object} controllers.Response The Response object with InstallProgress
+// @router /monitor-patch-progress [get]
+func (c *ApiController) MonitorPatchProgress() {
+	providerID := c.Input().Get("provider")
+	kb := c.Input().Get("kb")
+
+	if providerID == "" {
+		c.ResponseError("Provider ID is required")
+		return
+	}
+
+	if kb == "" {
+		c.ResponseError("KB number is required")
+		return
+	}
+
+	// Get the provider to check if it's an OS Patch provider
+	provider, err := object.GetProvider(providerID)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	if provider.Type != "OS Patch" {
+		c.ResponseError("Provider must be of type 'OS Patch'")
+		return
+	}
+
+	// Create an OsPatchScanProvider instance
+	osPatchProvider, err := scan.NewOsPatchScanProvider(provider.ClientId)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	// Start monitoring (with 5 second intervals)
+	progressChan, err := osPatchProvider.MonitorInstallProgress(kb, 5)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	// Get the first progress update
+	progress := <-progressChan
+
+	c.ResponseOk(progress)
 }

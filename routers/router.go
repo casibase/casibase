@@ -206,6 +206,8 @@ func initAPI() {
 	beego.Router("/api/update-scan", &controllers.ApiController{}, "POST:UpdateScan")
 	beego.Router("/api/add-scan", &controllers.ApiController{}, "POST:AddScan")
 	beego.Router("/api/delete-scan", &controllers.ApiController{}, "POST:DeleteScan")
+	beego.Router("/api/install-patch", &controllers.ApiController{}, "POST:InstallPatch")
+	beego.Router("/api/monitor-patch-progress", &controllers.ApiController{}, "GET:MonitorPatchProgress")
 
 	beego.Router("/api/get-images", &controllers.ApiController{}, "GET:GetImages")
 	beego.Router("/api/get-image", &controllers.ApiController{}, "GET:GetImage")
