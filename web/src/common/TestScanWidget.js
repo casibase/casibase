@@ -107,13 +107,12 @@ class TestScanWidget extends React.Component {
   getCommandTemplates() {
     // Get provider type to determine available templates
     let providerType = "Nmap"; // Default to Nmap
-    
+
     // For ProviderEditPage, get type from props.provider
     if (this.props.provider && this.props.provider.category === "Scan") {
       providerType = this.props.provider.type;
-    }
-    // For ScanEditPage, get type from selected provider
-    else if (this.props.scan && this.state.selectedProvider) {
+    } else if (this.props.scan && this.state.selectedProvider) {
+      // For ScanEditPage, get type from selected provider
       const selectedProviderObj = this.state.providers.find(p => p.name === this.state.selectedProvider);
       if (selectedProviderObj) {
         providerType = selectedProviderObj.type;
