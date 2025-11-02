@@ -28,10 +28,47 @@ class ScanEditPage extends React.Component {
       scan: null,
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
+    this.refreshTimer = null;
   }
 
   UNSAFE_componentWillMount() {
     this.getScan();
+  }
+
+  componentDidMount() {
+    // Start auto-refresh when component mounts
+    this.startAutoRefresh();
+  }
+
+  componentWillUnmount() {
+    // Clean up timer when component unmounts
+    this.stopAutoRefresh();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Restart auto-refresh if scan state changes
+    if (prevState.scan?.state !== this.state.scan?.state) {
+      this.startAutoRefresh();
+    }
+  }
+
+  startAutoRefresh() {
+    // Stop any existing timer
+    this.stopAutoRefresh();
+
+    // Only auto-refresh if scan is in Running state
+    if (this.state.scan?.state === "Running") {
+      this.refreshTimer = setInterval(() => {
+        this.getScan();
+      }, 5000); // Refresh every 5 seconds
+    }
+  }
+
+  stopAutoRefresh() {
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = null;
+    }
   }
 
   getScan() {
