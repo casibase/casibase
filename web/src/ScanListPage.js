@@ -82,7 +82,7 @@ class ScanListPage extends BaseListPage {
         title: i18next.t("general:Organization"),
         dataIndex: "owner",
         key: "owner",
-        width: "110px",
+        width: "150px",
         sorter: true,
         ...this.getColumnSearchProps("owner"),
         render: (text, record, index) => {
@@ -95,7 +95,7 @@ class ScanListPage extends BaseListPage {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "150px",
+        width: "180px",
         sorter: true,
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
@@ -126,7 +126,7 @@ class ScanListPage extends BaseListPage {
         title: i18next.t("general:Asset"),
         dataIndex: "asset",
         key: "asset",
-        width: "150px",
+        // width: "150px",
         sorter: true,
         ...this.getColumnSearchProps("asset"),
         render: (text, record, index) => {
@@ -139,12 +139,12 @@ class ScanListPage extends BaseListPage {
         title: i18next.t("general:Provider"),
         dataIndex: "provider",
         key: "provider",
-        width: "150px",
+        width: "220px",
         sorter: true,
         ...this.getColumnSearchProps("provider"),
         render: (text, record, index) => {
           return (
-            <Link to={`/providers/admin/${text}`}>{text}</Link>
+            <Link to={`/providers/${text}`}>{text}</Link>
           );
         },
       },
@@ -152,7 +152,7 @@ class ScanListPage extends BaseListPage {
         title: i18next.t("general:State"),
         dataIndex: "state",
         key: "state",
-        width: "120px",
+        width: "150px",
         sorter: true,
         ...this.getColumnSearchProps("state"),
         render: (text, record, index) => {
@@ -173,7 +173,7 @@ class ScanListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "",
         key: "op",
-        width: "170px",
+        width: "200px",
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, record, index) => {
           return (

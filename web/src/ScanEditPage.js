@@ -175,7 +175,9 @@ class ScanEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.scan.name} disabled />
+            <Input value={this.state.scan.name} onChange={e => {
+              this.updateScanField("name", e.target.value);
+            }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -233,7 +235,7 @@ class ScanEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.scan.state} disabled />
+            <Input value={this.state.scan.state} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -241,7 +243,7 @@ class ScanEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Result"), i18next.t("scan:Result - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <TextArea value={this.state.scan.resultText} disabled rows={10} />
+            <TextArea value={this.state.scan.resultText} rows={10} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
