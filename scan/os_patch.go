@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package object
+package scan
 
 import (
 	"bytes"
@@ -53,14 +53,59 @@ type InstallProgress struct {
 	EndTime         string `json:"endTime,omitempty"`
 }
 
-// Updater provides Windows Update functionality using PSWindowsUpdate
-type Updater struct {
+// OsPatchScanProvider provides Windows Update functionality using PSWindowsUpdate
+type OsPatchScanProvider struct {
 	// Optional configuration can be added here in the future
 }
 
-// NewUpdater creates a new Updater instance
-func NewUpdater() *Updater {
-	return &Updater{}
+// NewOsPatchScanProvider creates a new OsPatchScanProvider instance
+func NewOsPatchScanProvider(clientId string) (*OsPatchScanProvider, error) {
+	return &OsPatchScanProvider{}, nil
+}
+
+// Scan implements the ScanProvider interface for OS patch scanning
+// It returns a list of available patches as a string
+func (p *OsPatchScanProvider) Scan(target string) (string, error) {
+	patches, err := p.ListPatches()
+	if err != nil {
+		return "", err
+	}
+
+	// Convert patches to JSON string for consistency with ScanProvider interface
+	result, err := json.Marshal(patches)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal patches: %v", err)
+	}
+
+	return string(result), nil
+}
+
+// ScanWithCommand implements the ScanProvider interface for OS patch scanning with custom command
+// For OS patches, the command parameter specifies the scan type: "available" or "installed"
+func (p *OsPatchScanProvider) ScanWithCommand(target string, command string) (string, error) {
+	command = strings.TrimSpace(strings.ToLower(command))
+
+	var patches []*WindowsPatch
+	var err error
+
+	if command == "installed" {
+		patches, err = p.ListInstalledPatches()
+	} else {
+		// Default to available patches
+		patches, err = p.ListPatches()
+	}
+
+	if err != nil {
+		return "", err
+	}
+
+	// Convert patches to JSON string
+	result, err := json.Marshal(patches)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal patches: %v", err)
+	}
+
+	return string(result), nil
 }
 
 // validateKB validates and sanitizes a KB number to prevent command injection
@@ -86,7 +131,7 @@ func validateKB(kb string) (string, error) {
 }
 
 // runPowerShell executes a PowerShell command and returns the output
-func (u *Updater) runPowerShell(command string) (string, error) {
+func (p *OsPatchScanProvider) runPowerShell(command string) (string, error) {
 	cmd := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", command)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
@@ -128,7 +173,7 @@ func extractJSON(output string) string {
 }
 
 // ListPatches returns all Windows OS patches that need to be updated
-func (u *Updater) ListPatches() ([]*WindowsPatch, error) {
+func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
 	// Use PSWindowsUpdate to get available updates
 	psCommand := `
 		$ErrorActionPreference = 'Stop';
@@ -157,7 +202,7 @@ func (u *Updater) ListPatches() ([]*WindowsPatch, error) {
 		}
 	`
 
-	output, err := u.runPowerShell(psCommand)
+	output, err := p.runPowerShell(psCommand)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list patches: %v", err)
 	}
@@ -191,7 +236,7 @@ func (u *Updater) ListPatches() ([]*WindowsPatch, error) {
 }
 
 // ListInstalledPatches returns all recently installed patches, including those with "Pending restart" status
-func (u *Updater) ListInstalledPatches() ([]*WindowsPatch, error) {
+func (p *OsPatchScanProvider) ListInstalledPatches() ([]*WindowsPatch, error) {
 	// Use PSWindowsUpdate to get update history
 	// Based on reference implementation that uses proper error handling
 	psCommand := `
@@ -226,7 +271,7 @@ func (u *Updater) ListInstalledPatches() ([]*WindowsPatch, error) {
 		}
 	`
 
-	output, err := u.runPowerShell(psCommand)
+	output, err := p.runPowerShell(psCommand)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list installed patches: %v", err)
 	}
@@ -260,7 +305,7 @@ func (u *Updater) ListInstalledPatches() ([]*WindowsPatch, error) {
 }
 
 // InstallPatch installs a specific patch by KB number
-func (u *Updater) InstallPatch(kb string) (*InstallProgress, error) {
+func (p *OsPatchScanProvider) InstallPatch(kb string) (*InstallProgress, error) {
 	// Validate and sanitize KB number to prevent command injection
 	sanitizedKB, err := validateKB(kb)
 	if err != nil {
@@ -293,7 +338,7 @@ func (u *Updater) InstallPatch(kb string) (*InstallProgress, error) {
 		}
 	`, kb, kb)
 
-	output, err := u.runPowerShell(psCommand)
+	output, err := p.runPowerShell(psCommand)
 	if err != nil {
 		progress.Status = "Failed"
 		progress.Error = err.Error()
@@ -332,7 +377,7 @@ func (u *Updater) InstallPatch(kb string) (*InstallProgress, error) {
 
 // MonitorInstallProgress monitors the installation progress of a patch
 // This function polls the Windows Update service to check installation status
-func (u *Updater) MonitorInstallProgress(kb string, intervalSeconds int) (<-chan *InstallProgress, error) {
+func (p *OsPatchScanProvider) MonitorInstallProgress(kb string, intervalSeconds int) (<-chan *InstallProgress, error) {
 	// Validate and sanitize KB number to prevent command injection
 	sanitizedKB, err := validateKB(kb)
 	if err != nil {
@@ -382,7 +427,7 @@ func (u *Updater) MonitorInstallProgress(kb string, intervalSeconds int) (<-chan
 				}
 			`, kb, kb)
 
-			output, err := u.runPowerShell(psCommand)
+			output, err := p.runPowerShell(psCommand)
 			if err != nil {
 				progress.Status = "Error"
 				progress.Error = err.Error()
