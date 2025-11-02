@@ -24,6 +24,11 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
+const (
+	// patchProgressTimeout is the maximum time to wait for patch installation progress updates
+	patchProgressTimeout = 30 * time.Second
+)
+
 // GetScans
 // @Title GetScans
 // @Tag Scan API
@@ -247,7 +252,7 @@ func (c *ApiController) MonitorPatchProgress() {
 	select {
 	case progress := <-progressChan:
 		c.ResponseOk(progress)
-	case <-time.After(30 * time.Second):
+	case <-time.After(patchProgressTimeout):
 		c.ResponseError("Timeout waiting for progress update")
 	}
 }

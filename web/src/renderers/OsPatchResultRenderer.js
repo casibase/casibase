@@ -166,7 +166,12 @@ class OsPatchResultRenderer extends React.Component {
   }
 
   startMonitoring(provider, kb) {
-    const interval = setInterval(() => {
+    // Clear any existing interval before starting a new one
+    if (this.monitorInterval) {
+      clearInterval(this.monitorInterval);
+    }
+
+    this.monitorInterval = setInterval(() => {
       ScanBackend.monitorPatchProgress(provider, kb)
         .then((res) => {
           if (res.status === "ok") {
@@ -176,8 +181,10 @@ class OsPatchResultRenderer extends React.Component {
 
             // If installation is complete, stop monitoring
             if (res.data.isComplete) {
-              clearInterval(this.monitorInterval);
-              this.monitorInterval = null;
+              if (this.monitorInterval) {
+                clearInterval(this.monitorInterval);
+                this.monitorInterval = null;
+              }
 
               if (res.data.status === "Succeeded" || res.data.status === "Completed") {
                 Setting.showMessage("success", i18next.t("scan:Patch installed successfully"));
@@ -193,8 +200,10 @@ class OsPatchResultRenderer extends React.Component {
         })
         .catch((error) => {
           // Failed to monitor progress, stop monitoring
-          clearInterval(this.monitorInterval);
-          this.monitorInterval = null;
+          if (this.monitorInterval) {
+            clearInterval(this.monitorInterval);
+            this.monitorInterval = null;
+          }
           this.setState({
             installProgress: {
               ...this.state.installProgress,
@@ -205,8 +214,6 @@ class OsPatchResultRenderer extends React.Component {
           });
         });
     }, 5000); // Poll every 5 seconds
-
-    this.monitorInterval = interval;
   }
 
   handleCloseModal() {
