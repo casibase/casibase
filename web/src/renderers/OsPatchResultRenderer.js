@@ -30,8 +30,8 @@ class OsPatchResultRenderer extends React.Component {
       installingKB: null,
       installModalVisible: false,
       installProgress: null,
-      monitorInterval: null,
     };
+    this.monitorInterval = null;
   }
 
   componentDidMount() {
@@ -46,8 +46,8 @@ class OsPatchResultRenderer extends React.Component {
 
   componentWillUnmount() {
     // Clean up monitoring interval when component unmounts
-    if (this.state.monitorInterval) {
-      clearInterval(this.state.monitorInterval);
+    if (this.monitorInterval) {
+      clearInterval(this.monitorInterval);
     }
   }
 
@@ -176,8 +176,8 @@ class OsPatchResultRenderer extends React.Component {
 
             // If installation is complete, stop monitoring
             if (res.data.isComplete) {
-              clearInterval(this.state.monitorInterval);
-              this.setState({monitorInterval: null});
+              clearInterval(this.monitorInterval);
+              this.monitorInterval = null;
 
               if (res.data.status === "Succeeded" || res.data.status === "Completed") {
                 Setting.showMessage("success", i18next.t("scan:Patch installed successfully"));
@@ -193,9 +193,9 @@ class OsPatchResultRenderer extends React.Component {
         })
         .catch((error) => {
           // Failed to monitor progress, stop monitoring
-          clearInterval(this.state.monitorInterval);
+          clearInterval(this.monitorInterval);
+          this.monitorInterval = null;
           this.setState({
-            monitorInterval: null,
             installProgress: {
               ...this.state.installProgress,
               status: "Error",
@@ -206,20 +206,20 @@ class OsPatchResultRenderer extends React.Component {
         });
     }, 5000); // Poll every 5 seconds
 
-    this.setState({monitorInterval: interval});
+    this.monitorInterval = interval;
   }
 
   handleCloseModal() {
     // Clean up monitoring interval when modal is closed
-    if (this.state.monitorInterval) {
-      clearInterval(this.state.monitorInterval);
+    if (this.monitorInterval) {
+      clearInterval(this.monitorInterval);
+      this.monitorInterval = null;
     }
 
     this.setState({
       installingKB: null,
       installModalVisible: false,
       installProgress: null,
-      monitorInterval: null,
     });
   }
 
@@ -237,7 +237,7 @@ class OsPatchResultRenderer extends React.Component {
     return (
       <Modal
         title={i18next.t("scan:Installing Patch")}
-        visible={this.state.installModalVisible}
+        open={this.state.installModalVisible}
         onCancel={() => this.handleCloseModal()}
         footer={
           isComplete ? [

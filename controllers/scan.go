@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
@@ -242,8 +243,11 @@ func (c *ApiController) MonitorPatchProgress() {
 		return
 	}
 
-	// Get the first progress update
-	progress := <-progressChan
-
-	c.ResponseOk(progress)
+	// Get the first progress update with a timeout
+	select {
+	case progress := <-progressChan:
+		c.ResponseOk(progress)
+	case <-time.After(30 * time.Second):
+		c.ResponseError("Timeout waiting for progress update")
+	}
 }
