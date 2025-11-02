@@ -43,6 +43,9 @@ type WindowsPatch struct {
 type OSPatchScanProvider struct {
 }
 
+// NewOSPatchScanProvider creates a new OS Patch scan provider
+// clientId parameter is kept for interface compatibility with other scan providers,
+// but is not used since OS Patch scanning doesn't require external configuration
 func NewOSPatchScanProvider(clientId string) (*OSPatchScanProvider, error) {
 	provider := &OSPatchScanProvider{}
 	return provider, nil
@@ -92,10 +95,17 @@ func (p *OSPatchScanProvider) extractJSON(output string) string {
 // ListPatches returns all Windows OS patches that need to be updated
 func (p *OSPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
 	// Use PSWindowsUpdate to get available updates
+	// Note: -Force flag is used to ensure the module is loaded even if it was previously imported
+	// This matches the pattern used in the object package's updater
 	psCommand := `
 		$ErrorActionPreference = 'Stop';
 		$ProgressPreference = 'Continue';
-		Import-Module PSWindowsUpdate -Force;
+		try {
+			Import-Module PSWindowsUpdate -Force -ErrorAction Stop;
+		} catch {
+			Write-Error "PSWindowsUpdate module not found. Please install it using: Install-Module -Name PSWindowsUpdate -Force"
+			exit 1
+		}
 		$updates = Get-WindowsUpdate -MicrosoftUpdate;
 		if ($null -eq $updates) {
 			Write-Output '[]'
@@ -153,8 +163,8 @@ func (p *OSPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
 }
 
 func (p *OSPatchScanProvider) Scan(target string) (string, error) {
-	// For OS Patch scanning, the target parameter is not used since we can only scan the local machine
-	// We use the hostname as a reference
+	// For OS Patch scanning, the target parameter is used as a reference only
+	// since we can only scan the local machine. We use the hostname to identify the machine.
 	hostname, err := os.Hostname()
 	if err != nil {
 		return "", fmt.Errorf("failed to get hostname: %v", err)
@@ -168,12 +178,11 @@ func (p *OSPatchScanProvider) Scan(target string) (string, error) {
 
 	// Format the result as JSON for better readability
 	result := map[string]interface{}{
-		"hostname":     hostname,
-		"patchCount":   len(patches),
-		"patches":      patches,
-		"scanType":     "OS Patch",
-		"scanTarget":   target,
-		"localMachine": hostname,
+		"hostname":   hostname,
+		"patchCount": len(patches),
+		"patches":    patches,
+		"scanType":   "OS Patch",
+		"scanTarget": target,
 	}
 
 	jsonResult, err := json.MarshalIndent(result, "", "  ")
