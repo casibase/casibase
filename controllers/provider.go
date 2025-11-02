@@ -240,12 +240,13 @@ func (c *ApiController) TestScan() {
 		return
 	}
 
-	var result string
-	if command != "" {
-		result, err = scanProvider.ScanWithCommand(target, command)
-	} else {
-		result, err = scanProvider.Scan(target)
+	rawResult, err := scanProvider.Scan(target, command)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
 	}
+
+	result, err := scanProvider.ParseResult(rawResult)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
