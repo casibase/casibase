@@ -104,20 +104,24 @@ class TestScanWidget extends React.Component {
       });
   }
 
-  getCommandTemplates() {
-    // Get provider type to determine available templates
-    let providerType = "Nmap"; // Default to Nmap
-
+  getProviderType() {
     // For ProviderEditPage, get type from props.provider
     if (this.props.provider && this.props.provider.category === "Scan") {
-      providerType = this.props.provider.type;
-    } else if (this.props.scan && this.state.selectedProvider) {
-      // For ScanEditPage, get type from selected provider
+      return this.props.provider.type;
+    }
+    // For ScanEditPage, get type from selected provider
+    if (this.props.scan && this.state.selectedProvider) {
       const selectedProviderObj = this.state.providers.find(p => p.name === this.state.selectedProvider);
       if (selectedProviderObj) {
-        providerType = selectedProviderObj.type;
+        return selectedProviderObj.type;
       }
     }
+    // Default to Nmap if provider type cannot be determined
+    return "Nmap";
+  }
+
+  getCommandTemplates() {
+    const providerType = this.getProviderType();
 
     // Return templates based on provider type
     if (providerType === "OS Patch") {
@@ -152,13 +156,8 @@ class TestScanWidget extends React.Component {
     // Initialize from scan object (for ScanEditPage)
     if (this.props.scan) {
       // Determine the provider type to use appropriate default command
-      let providerTypeDefault = DEFAULT_SCAN_COMMAND;
-      if (this.props.scan.provider && this.state.providers.length > 0) {
-        const providerObj = this.state.providers.find(p => p.name === this.props.scan.provider);
-        if (providerObj) {
-          providerTypeDefault = this.getDefaultCommand(providerObj.type);
-        }
-      }
+      const providerType = this.getProviderType();
+      const providerTypeDefault = this.getDefaultCommand(providerType);
 
       const defaultCommand = this.props.scan.command || providerTypeDefault;
       const targetMode = this.props.scan.targetMode || (this.props.scan.asset ? "Asset" : "Manual Input");
