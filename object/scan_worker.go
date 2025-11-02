@@ -20,7 +20,6 @@ import (
 	"sync"
 
 	"github.com/beego/beego/logs"
-	"github.com/casibase/casibase/scan"
 	"github.com/casibase/casibase/util"
 	"github.com/robfig/cron/v3"
 )
@@ -130,177 +129,42 @@ func executeScan(s *Scan) {
 	// Update scan state to "Running"
 	s.State = "Running"
 	s.UpdatedTime = util.GetCurrentTime()
-	s.ResultText = ""
+	s.ResultText = "Scan started..."
 	_, err := UpdateScan(scanId, s)
 	if err != nil {
 		logs.Error("executeScan() failed to update scan state to Running: %v", err)
 		return
 	}
 
-	// Get the provider
-	providerObj, err := GetProvider(s.Provider)
-	if err != nil {
-		updateScanError(scanId, fmt.Sprintf("Failed to get provider: %v", err))
-		return
-	}
-	if providerObj == nil {
-		updateScanError(scanId, "Provider not found")
-		return
-	}
+	// Use the existing ScanAsset function to execute the scan
+	provider := s.Provider
+	target := s.Target
+	asset := s.Asset
+	targetMode := s.TargetMode
+	command := s.Command
 
-	// Create scan provider
-	scanProvider, err := scan.GetScanProvider(providerObj.Type, providerObj.ClientId, "en")
+	// Execute the scan using ScanAsset
+	result, err := ScanAsset(provider, scanId, targetMode, target, asset, command, true, "en")
+	
 	if err != nil {
-		updateScanError(scanId, fmt.Sprintf("Failed to create scan provider: %v", err))
-		return
-	}
-	if scanProvider == nil {
-		updateScanError(scanId, "Scan provider not supported")
-		return
-	}
-
-	// Get the asset
-	assetObj, err := GetAsset(s.Asset)
-	if err != nil {
-		updateScanError(scanId, fmt.Sprintf("Failed to get asset: %v", err))
-		return
-	}
-	if assetObj == nil {
-		updateScanError(scanId, "Asset not found")
-		return
-	}
-
-	// Determine the scan target
-	var scanTarget string
-	if s.TargetMode == "Asset" {
-		scanTarget, err = assetObj.GetScanTarget()
-		if err != nil {
-			updateScanError(scanId, fmt.Sprintf("Error getting scan target: %v", err))
+		// Update scan with error
+		scanObj, getErr := GetScan(scanId)
+		if getErr != nil {
+			logs.Error("executeScan() failed to get scan after error: %v", getErr)
 			return
 		}
-	} else {
-		scanTarget = s.Target
-	}
-
-	// For OS Patch scans, we need to handle progressive updates
-	if providerObj.Type == "OS Patch" {
-		executeOsPatchScan(scanId, scanProvider, scanTarget, s.Command)
-	} else {
-		// For other scan types, execute normally
-		executeRegularScan(scanId, scanProvider, scanTarget, s.Command)
-	}
-}
-
-// executeOsPatchScan executes an OS patch scan with progress reporting
-func executeOsPatchScan(scanId string, scanProvider scan.ScanProvider, scanTarget string, command string) {
-	// Update status to indicate scan is in progress
-	updateScanProgress(scanId, "Scanning for OS patches...")
-
-	// Execute the scan
-	var result string
-	var err error
-	if command != "" {
-		result, err = scanProvider.ScanWithCommand(scanTarget, command)
-	} else {
-		result, err = scanProvider.Scan(scanTarget)
-	}
-
-	if err != nil {
-		updateScanError(scanId, fmt.Sprintf("Scan failed: %v", err))
-		return
-	}
-
-	// Update with final result
-	scanObj, err := GetScan(scanId)
-	if err != nil {
-		logs.Error("executeOsPatchScan() failed to get scan: %v", err)
-		return
-	}
-	if scanObj != nil {
-		scanObj.State = "Completed"
-		scanObj.ResultText = result
-		scanObj.UpdatedTime = util.GetCurrentTime()
-		_, err = UpdateScan(scanId, scanObj)
-		if err != nil {
-			logs.Error("executeOsPatchScan() failed to update scan with final result: %v", err)
-		} else {
-			logs.Info("Scan completed successfully: %s", scanId)
+		if scanObj != nil {
+			scanObj.State = "Failed"
+			scanObj.ResultText = fmt.Sprintf("Scan failed: %v", err)
+			scanObj.UpdatedTime = util.GetCurrentTime()
+			_, updateErr := UpdateScan(scanId, scanObj)
+			if updateErr != nil {
+				logs.Error("executeScan() failed to update scan error: %v", updateErr)
+			}
 		}
-	}
-}
-
-// executeRegularScan executes a regular scan (non-OS Patch)
-func executeRegularScan(scanId string, scanProvider scan.ScanProvider, scanTarget string, command string) {
-	// Execute the scan
-	var result string
-	var err error
-	if command != "" {
-		result, err = scanProvider.ScanWithCommand(scanTarget, command)
-	} else {
-		result, err = scanProvider.Scan(scanTarget)
-	}
-
-	if err != nil {
-		updateScanError(scanId, fmt.Sprintf("Scan failed: %v", err))
+		logs.Error("Scan failed: %s - %v", scanId, err)
 		return
 	}
 
-	// Update with final result
-	scanObj, err := GetScan(scanId)
-	if err != nil {
-		logs.Error("executeRegularScan() failed to get scan: %v", err)
-		return
-	}
-	if scanObj != nil {
-		scanObj.State = "Completed"
-		scanObj.ResultText = result
-		scanObj.UpdatedTime = util.GetCurrentTime()
-		_, err = UpdateScan(scanId, scanObj)
-		if err != nil {
-			logs.Error("executeRegularScan() failed to update scan with final result: %v", err)
-		} else {
-			logs.Info("Scan completed successfully: %s", scanId)
-		}
-	}
-}
-
-// updateScanProgress updates the scan with progress information
-func updateScanProgress(scanId string, progressText string) {
-	scanObj, err := GetScan(scanId)
-	if err != nil {
-		logs.Error("updateScanProgress() failed to get scan: %v", err)
-		return
-	}
-	if scanObj != nil {
-		scanObj.ResultText = progressText
-		scanObj.UpdatedTime = util.GetCurrentTime()
-		_, err = UpdateScan(scanId, scanObj)
-		if err != nil {
-			logs.Error("updateScanProgress() failed to update scan progress: %v", err)
-		}
-	}
-}
-
-// updateScanError updates the scan with error information
-func updateScanError(scanId string, errorText string) {
-	logs.Error("Scan failed: %s - %s", scanId, errorText)
-	scanObj, err := GetScan(scanId)
-	if err != nil {
-		logs.Error("updateScanError() failed to get scan: %v", err)
-		return
-	}
-	if scanObj != nil {
-		scanObj.State = "Failed"
-		scanObj.ResultText = errorText
-		scanObj.UpdatedTime = util.GetCurrentTime()
-		_, err = UpdateScan(scanId, scanObj)
-		if err != nil {
-			logs.Error("updateScanError() failed to update scan error: %v", err)
-		}
-	}
-}
-
-// GetCurrentHostname returns the current machine's hostname
-func GetCurrentHostname() string {
-	return currentHostname
+	logs.Info("Scan completed successfully: %s", scanId)
 }
