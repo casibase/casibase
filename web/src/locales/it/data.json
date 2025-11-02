@@ -67,9 +67,9 @@
     "Result - Tooltip": "Output del risultato della scansione",
     "Manual Input": "Inserimento Manuale",
     "Target": "Obiettivo",
-    "Target - Tooltip": "L obiettivo da scansionare (indirizzo IP o intervallo di rete)",
+    "Target - Tooltip": "L'obiettivo da scansionare (indirizzo IP o intervallo di rete)",
     "Target mode": "Modalità obiettivo",
-    "Target mode - Tooltip": "Seleziona come specificare l obiettivo della scansione"
+    "Target mode - Tooltip": "Seleziona come specificare l'obiettivo della scansione"
   },
   "caase": {
     "Edit Caase": "Edit Case",
