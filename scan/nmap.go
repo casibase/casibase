@@ -25,14 +25,14 @@ import (
 
 // NmapHost represents a scanned host
 type NmapHost struct {
-	IP       string      `json:"ip"`
-	Hostname string      `json:"hostname,omitempty"`
-	Status   string      `json:"status"`
-	Ports    []NmapPort  `json:"ports,omitempty"`
-	OS       string      `json:"os,omitempty"`
-	MACAddr  string      `json:"macAddr,omitempty"`
-	Vendor   string      `json:"vendor,omitempty"`
-	Latency  string      `json:"latency,omitempty"`
+	IP       string     `json:"ip"`
+	Hostname string     `json:"hostname,omitempty"`
+	Status   string     `json:"status"`
+	Ports    []NmapPort `json:"ports,omitempty"`
+	OS       string     `json:"os,omitempty"`
+	MACAddr  string     `json:"macAddr,omitempty"`
+	Vendor   string     `json:"vendor,omitempty"`
+	Latency  string     `json:"latency,omitempty"`
 }
 
 // NmapPort represents a scanned port
@@ -45,11 +45,11 @@ type NmapPort struct {
 
 // NmapScanResult represents the complete scan result
 type NmapScanResult struct {
-	Command   string      `json:"command"`
-	StartTime string      `json:"startTime,omitempty"`
-	EndTime   string      `json:"endTime,omitempty"`
-	Hosts     []NmapHost  `json:"hosts"`
-	Summary   string      `json:"summary"`
+	Command   string     `json:"command"`
+	StartTime string     `json:"startTime,omitempty"`
+	EndTime   string     `json:"endTime,omitempty"`
+	Hosts     []NmapHost `json:"hosts"`
+	Summary   string     `json:"summary"`
 }
 
 type NmapScanProvider struct {
@@ -145,7 +145,7 @@ func (p *NmapScanProvider) ScanWithCommandStructured(target string, command stri
 
 	// Parse the raw output into structured data
 	parsedResult := p.parseNmapOutput(rawResult, command)
-	
+
 	// Convert to JSON
 	jsonBytes, err := json.Marshal(parsedResult)
 	if err != nil {
@@ -167,7 +167,7 @@ func (p *NmapScanProvider) parseNmapOutput(output string, command string) *NmapS
 
 	lines := strings.Split(output, "\n")
 	var currentHost *NmapHost
-	
+
 	// Regex patterns for parsing
 	ipPattern := regexp.MustCompile(`Nmap scan report for (?:([^\s]+) \()?(\d+\.\d+\.\d+\.\d+)\)?`)
 	hostUpPattern := regexp.MustCompile(`Host is (up|down)`)
@@ -201,7 +201,7 @@ func (p *NmapScanProvider) parseNmapOutput(output string, command string) *NmapS
 			if currentHost != nil {
 				result.Hosts = append(result.Hosts, *currentHost)
 			}
-			
+
 			currentHost = &NmapHost{
 				IP:    matches[2],
 				Ports: []NmapPort{},
