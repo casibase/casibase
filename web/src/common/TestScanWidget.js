@@ -158,6 +158,7 @@ class TestScanWidget extends React.Component {
     // Determine the target and provider based on mode
     let target = "";
     let provider = "";
+    let owner = "";
 
     if (this.state.targetMode === "Asset") {
       target = this.state.selectedAsset;
@@ -169,8 +170,12 @@ class TestScanWidget extends React.Component {
     // For ScanEditPage, use the selected provider from state
     if (this.props.provider && this.props.provider.category === "Scan") {
       provider = this.props.provider.name;
+      owner = this.props.provider.owner;
     } else if (this.state.selectedProvider) {
       provider = this.state.selectedProvider;
+      // Find the provider to get its owner
+      const providerObj = this.state.providers.find(p => p.name === this.state.selectedProvider);
+      owner = providerObj ? providerObj.owner : this.props.account.name;
     }
 
     if (!provider) {
@@ -185,7 +190,7 @@ class TestScanWidget extends React.Component {
       return;
     }
 
-    ProviderBackend.testScan(this.props.account.name, provider, target, this.state.scanCommand)
+    ProviderBackend.testScan(owner, provider, target, this.state.scanCommand)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully executed"));
