@@ -26,29 +26,19 @@ import (
 
 var (
 	scanWorkerMutex    sync.Mutex
-	currentHostname    string
 	activeScanTasks    = make(map[string]bool) // Track active scan tasks by scan ID
 	activeScanTasksMux sync.Mutex
 )
 
 // InitScanWorker initializes the background scan worker
 func InitScanWorker() {
-	// Get the hostname once at startup
-	hostname, err := os.Hostname()
-	if err != nil {
-		logs.Error("Failed to get hostname: %v, scan worker will not start", err)
-		return
-	}
-	currentHostname = hostname
-	logs.Info("Scan worker initialized for hostname: %s", currentHostname)
-
 	// Run once immediately on startup
-	go scanPendingScans()
+	go scanPendingScansWrapper()
 
 	// Create cron job to check for pending scans every minute
 	cronJob := cron.New()
 	schedule := "@every 1m"
-	_, err = cronJob.AddFunc(schedule, scanPendingScans)
+	_, err := cronJob.AddFunc(schedule, scanPendingScansWrapper)
 	if err != nil {
 		panic(fmt.Sprintf("Failed to add cron job with schedule %s: %v", schedule, err))
 	}
@@ -56,21 +46,34 @@ func InitScanWorker() {
 	cronJob.Start()
 }
 
+// scanPendingScansWrapper wraps scanPendingScans for use in goroutine and cron
+func scanPendingScansWrapper() {
+	err := scanPendingScans()
+	if err != nil {
+		logs.Error("scanPendingScans() error: %v", err)
+	}
+}
+
 // scanPendingScans checks for scans that need to be executed on this machine
-func scanPendingScans() {
+func scanPendingScans() error {
 	scanWorkerMutex.Lock()
 	defer scanWorkerMutex.Unlock()
 
+	// Get the hostname
+	hostname, err := os.Hostname()
+	if err != nil {
+		return fmt.Errorf("failed to get hostname: %v", err)
+	}
+
 	// Find scans where state is "Pending" and asset.displayName matches our hostname
 	scans := []*Scan{}
-	err := adapter.engine.Where("state = ?", "Pending").Find(&scans)
+	err = adapter.engine.Where("state = ?", "Pending").Find(&scans)
 	if err != nil {
-		logs.Error("scanPendingScans() failed to query pending scans: %v", err)
-		return
+		return fmt.Errorf("failed to query pending scans: %v", err)
 	}
 
 	if len(scans) == 0 {
-		return
+		return nil
 	}
 
 	for _, s := range scans {
@@ -91,7 +94,7 @@ func scanPendingScans() {
 		}
 
 		// Check if this scan is for our machine
-		if assetObj.DisplayName != currentHostname {
+		if assetObj.DisplayName != hostname {
 			continue
 		}
 
@@ -99,6 +102,8 @@ func scanPendingScans() {
 		markTaskActive(s.GetId(), true)
 		go executeScan(s)
 	}
+
+	return nil
 }
 
 // isTaskActive checks if a scan task is currently active

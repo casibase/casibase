@@ -263,6 +263,11 @@ class TestScanWidget extends React.Component {
     // Save widget state to DB before executing scan
     this.saveWidgetState();
 
+    // If this is a scan edit page, set the state to "Pending" before executing
+    if (this.props.onUpdateScan) {
+      this.props.onUpdateScan("state", "Pending");
+    }
+
     // Call unified scan-asset API
     AssetBackend.scanAsset(provider, scan, targetMode, target, asset, command, saveToScan)
       .then((res) => {
