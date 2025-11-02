@@ -303,6 +303,27 @@ class TestScanWidget extends React.Component {
       });
   }
 
+  clearFieldsByTargetMode(newMode) {
+    // Clear asset when switching to Manual Input, clear target when switching to Asset
+    if (newMode === "Manual Input") {
+      this.setState({selectedAsset: ""});
+      if (this.props.onUpdateProvider) {
+        this.props.onUpdateProvider("asset", "");
+      }
+      if (this.props.onUpdateScan) {
+        this.props.onUpdateScan("asset", "");
+      }
+    } else if (newMode === "Asset") {
+      this.setState({scanTarget: ""});
+      if (this.props.onUpdateProvider) {
+        this.props.onUpdateProvider("target", "");
+      }
+      if (this.props.onUpdateScan) {
+        this.props.onUpdateScan("target", "");
+      }
+    }
+  }
+
   saveWidgetState() {
     // Save all widget field values to DB
     if (this.props.onUpdateProvider) {
@@ -503,29 +524,12 @@ class TestScanWidget extends React.Component {
               onChange={(e) => {
                 const newMode = e.target.value;
                 this.setState({targetMode: newMode});
-
-                // Clear asset when switching to Manual Input, clear target when switching to Asset
-                if (newMode === "Manual Input") {
-                  this.setState({selectedAsset: ""});
-                } else if (newMode === "Asset") {
-                  this.setState({scanTarget: ""});
-                }
-
+                this.clearFieldsByTargetMode(newMode);
                 if (this.props.onUpdateProvider) {
                   this.props.onUpdateProvider("targetMode", newMode);
-                  if (newMode === "Manual Input") {
-                    this.props.onUpdateProvider("asset", "");
-                  } else if (newMode === "Asset") {
-                    this.props.onUpdateProvider("target", "");
-                  }
                 }
                 if (this.props.onUpdateScan) {
                   this.props.onUpdateScan("targetMode", newMode);
-                  if (newMode === "Manual Input") {
-                    this.props.onUpdateScan("asset", "");
-                  } else if (newMode === "Asset") {
-                    this.props.onUpdateScan("target", "");
-                  }
                 }
               }}
             >
