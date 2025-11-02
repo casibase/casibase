@@ -13,14 +13,17 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Input, Radio, Row} from "antd";
+import {Button, Col, Input, Radio, Row, Select} from "antd";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import * as ProviderBackend from "../backend/ProviderBackend";
+import * as AssetBackend from "../backend/AssetBackend";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
+
+const {Option} = Select;
 
 // Max height for the scan result CodeMirror editor to prevent UI overflow
 const RESULT_MAX_HEIGHT = "calc(100vh - 400px)";
@@ -29,10 +32,15 @@ class TestScanWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      targetMode: "manual", // "asset" or "manual"
+      selectedAsset: "",
       scanTarget: "",
       scanCommand: "",
       scanResult: "",
       scanButtonLoading: false,
+      assets: [],
+      providers: [],
+      selectedProvider: "",
     };
   }
 
@@ -78,8 +86,47 @@ class TestScanWidget extends React.Component {
     });
   }
 
+  getAssets() {
+    if (!this.props.account) {
+      return;
+    }
+    AssetBackend.getAssets(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          // Filter to only show Virtual Machine assets
+          const vmAssets = res.data.filter(asset => asset.type === "Virtual Machine");
+          this.setState({
+            assets: vmAssets,
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getProviders() {
+    if (!this.props.account || !this.props.showProviderSelection) {
+      return;
+    }
+    ProviderBackend.getProviders(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          const scanProviders = res.data.filter(provider =>
+            provider.category === "Scan"
+          );
+          this.setState({
+            providers: scanProviders,
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
   componentDidMount() {
     this.initializeDefaults();
+    this.getAssets();
+    this.getProviders();
   }
 
   componentDidUpdate(prevProps) {
@@ -93,7 +140,32 @@ class TestScanWidget extends React.Component {
       scanButtonLoading: true,
     });
 
-    ProviderBackend.testScan(this.props.provider.owner, this.props.provider.name, this.state.scanTarget, this.state.scanCommand)
+    // Determine the target based on mode
+    let target = this.state.scanTarget;
+    if (this.state.targetMode === "asset" && this.state.selectedAsset) {
+      // Extract the asset and get its network address
+      const asset = this.state.assets.find(a => `${a.owner}/${a.name}` === this.state.selectedAsset);
+      if (asset && asset.network) {
+        target = asset.network;
+      }
+    }
+
+    // Determine the provider
+    let providerOwner = this.props.provider.owner;
+    let providerName = this.props.provider.name;
+
+    // If provider selection is enabled and a provider is selected, use it
+    if (this.props.showProviderSelection && this.state.selectedProvider) {
+      const providerParts = this.state.selectedProvider.split("/");
+      if (providerParts.length === 2) {
+        providerOwner = providerParts[0];
+        providerName = providerParts[1];
+      } else {
+        providerName = this.state.selectedProvider;
+      }
+    }
+
+    ProviderBackend.testScan(providerOwner, providerName, target, this.state.scanCommand)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully executed"));
@@ -131,23 +203,93 @@ class TestScanWidget extends React.Component {
 
     return (
       <div>
+        {this.props.showProviderSelection && (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
+              {Setting.getLabel(i18next.t("general:Provider"), i18next.t("scan:Provider - Tooltip"))} :
+            </Col>
+            <Col span={22} >
+              <Select
+                virtual={false}
+                style={{width: "100%"}}
+                value={this.state.selectedProvider}
+                onChange={(value) => {
+                  this.setState({selectedProvider: value});
+                }}
+              >
+                {
+                  this.state.providers?.map((provider, index) =>
+                    <Option key={index} value={`${provider.owner}/${provider.name}`}>
+                      {`${provider.owner}/${provider.name}`}
+                    </Option>
+                  )
+                }
+              </Select>
+            </Col>
+          </Row>
+        )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Network"), i18next.t("general:Network - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Target mode"), i18next.t("general:Target mode - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input
+            <Radio.Group
               disabled={isRemote}
-              value={this.state.scanTarget}
-              onChange={e => {
-                this.setState({scanTarget: e.target.value});
-                if (this.props.onUpdateProvider) {
-                  this.props.onUpdateProvider("network", e.target.value);
-                }
+              value={this.state.targetMode}
+              onChange={(e) => {
+                this.setState({targetMode: e.target.value});
               }}
-            />
+            >
+              <Radio value="manual">{i18next.t("general:Manual input")}</Radio>
+              <Radio value="asset">{i18next.t("general:Asset")}</Radio>
+            </Radio.Group>
           </Col>
         </Row>
+        {this.state.targetMode === "asset" && (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
+              {Setting.getLabel(i18next.t("general:Asset"), i18next.t("scan:Asset - Tooltip"))} :
+            </Col>
+            <Col span={22} >
+              <Select
+                virtual={false}
+                style={{width: "100%"}}
+                value={this.state.selectedAsset}
+                disabled={isRemote}
+                onChange={(value) => {
+                  this.setState({selectedAsset: value});
+                }}
+              >
+                {
+                  this.state.assets?.map((asset, index) =>
+                    <Option key={index} value={`${asset.owner}/${asset.name}`}>
+                      {`${asset.owner}/${asset.name} (${asset.displayName})`}
+                    </Option>
+                  )
+                }
+              </Select>
+            </Col>
+          </Row>
+        )}
+        {this.state.targetMode === "manual" && (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
+              {Setting.getLabel(i18next.t("general:Network"), i18next.t("general:Network - Tooltip"))} :
+            </Col>
+            <Col span={22} >
+              <Input
+                disabled={isRemote}
+                value={this.state.scanTarget}
+                onChange={e => {
+                  this.setState({scanTarget: e.target.value});
+                  if (this.props.onUpdateProvider) {
+                    this.props.onUpdateProvider("network", e.target.value);
+                  }
+                }}
+              />
+            </Col>
+          </Row>
+        )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Template"), i18next.t("general:Template - Tooltip"))} :

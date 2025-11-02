@@ -19,6 +19,7 @@ import * as AssetBackend from "./backend/AssetBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import TestScanWidget from "./common/TestScanWidget";
 
 const {Option} = Select;
 const {TextArea} = Input;
@@ -253,6 +254,16 @@ class ScanEditPage extends React.Component {
             </Button>
           </Col>
         </Row>
+        <TestScanWidget
+          provider={{
+            owner: this.state.scan.owner,
+            name: this.state.scan.provider,
+            category: "Scan",
+            isRemote: false,
+          }}
+          account={this.props.account}
+          showProviderSelection={true}
+        />
       </Card>
     );
   }
