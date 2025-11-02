@@ -122,104 +122,26 @@ func (scan *Scan) GetId() string {
 	return fmt.Sprintf("%s/%s", scan.Owner, scan.Name)
 }
 
-func StartScan(id string, lang string) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	scanObj, err := getScan(owner, name)
-	if err != nil {
-		return false, err
-	}
-	if scanObj == nil {
-		return false, fmt.Errorf("scan not found")
-	}
-
-	// Get the asset
-	asset, err := GetAsset(scanObj.Asset)
-	if err != nil {
-		return false, err
-	}
-	if asset == nil {
-		return false, fmt.Errorf("asset not found")
-	}
-
-	// Get the provider
-	provider, err := GetProvider(util.GetId(owner, scanObj.Provider))
-	if err != nil {
-		return false, err
-	}
-	if provider == nil {
-		return false, fmt.Errorf("provider not found")
-	}
-
-	// Create scan provider
-	scanProvider, err := scan.GetScanProvider(provider.Type, provider.ClientId, lang)
-	if err != nil {
-		return false, err
-	}
-	if scanProvider == nil {
-		return false, fmt.Errorf("scan provider not supported")
-	}
-
-	// Perform scan
-	scanObj.State = "Running"
-	_, err = UpdateScan(id, scanObj)
-	if err != nil {
-		return false, err
-	}
-
-	// Get the scan target based on asset type
-	scanTarget, err := asset.GetScanTarget()
-	if err != nil {
-		scanObj.State = "Failed"
-		scanObj.ResultText = fmt.Sprintf("Error getting scan target: %v", err)
-		scanObj.UpdatedTime = util.GetCurrentTime()
-		_, _ = UpdateScan(id, scanObj)
-		return false, err
-	}
-
-	var result string
-	if scanObj.Command != "" {
-		result, err = scanProvider.ScanWithCommand(scanTarget, scanObj.Command)
-	} else {
-		result, err = scanProvider.Scan(scanTarget)
-	}
-
-	if err != nil {
-		scanObj.State = "Failed"
-		scanObj.ResultText = fmt.Sprintf("Error: %v", err)
-	} else {
-		scanObj.State = "Completed"
-		scanObj.ResultText = result
-	}
-
-	scanObj.UpdatedTime = util.GetCurrentTime()
-	_, err = UpdateScan(id, scanObj)
-	if err != nil {
-		return false, err
-	}
-
-	return true, nil
-}
-
 // ScanAsset performs a scan on an asset - unified API that combines test-scan and start-scan functionality
-// @param providerId: The provider ID (owner/name) for scan provider
-// @param scanId: Optional scan ID (owner/name) for saving results to existing scan
+// @param provider: The provider ID (owner/name) for scan provider
+// @param scan: Optional scan ID (owner/name) for saving results to existing scan
 // @param targetMode: "Manual Input" or "Asset"
 // @param target: IP address or network range (for Manual Input mode)
 // @param asset: Asset ID (owner/name) for Asset mode
 // @param command: Scan command with optional %s placeholder for target
 // @param saveToScan: Whether to save results to scan object (true for scan edit page, false for provider edit page)
-func ScanAsset(providerId, scanId, targetMode, target, asset, command string, saveToScan bool, lang string) (string, error) {
+func ScanAsset(provider, scanParam, targetMode, target, asset, command string, saveToScan bool, lang string) (string, error) {
 	// Get the provider
-	provider, err := GetProvider(providerId)
+	providerObj, err := GetProvider(provider)
 	if err != nil {
 		return "", err
 	}
-	if provider == nil {
+	if providerObj == nil {
 		return "", fmt.Errorf("provider not found")
 	}
 
 	// Create scan provider
-	scanProvider, err := scan.GetScanProvider(provider.Type, provider.ClientId, lang)
+	scanProvider, err := scan.GetScanProvider(providerObj.Type, providerObj.ClientId, lang)
 	if err != nil {
 		return "", err
 	}
@@ -261,9 +183,9 @@ func ScanAsset(providerId, scanId, targetMode, target, asset, command string, sa
 		return "", err
 	}
 
-	// If saveToScan is true and scanId is provided, update the scan object with results
-	if saveToScan && scanId != "" {
-		scanObj, err := GetScan(scanId)
+	// If saveToScan is true and scanParam is provided, update the scan object with results
+	if saveToScan && scanParam != "" {
+		scanObj, err := GetScan(scanParam)
 		if err != nil {
 			return result, err // Return result even if save fails
 		}
@@ -271,7 +193,7 @@ func ScanAsset(providerId, scanId, targetMode, target, asset, command string, sa
 			scanObj.State = "Completed"
 			scanObj.ResultText = result
 			scanObj.UpdatedTime = util.GetCurrentTime()
-			_, _ = UpdateScan(scanId, scanObj) // Ignore save errors, still return result
+			_, _ = UpdateScan(scanParam, scanObj) // Ignore save errors, still return result
 		}
 	}
 

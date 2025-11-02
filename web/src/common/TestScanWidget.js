@@ -16,9 +16,8 @@ import React from "react";
 import {Button, Col, Input, Radio, Row, Select} from "antd";
 import * as Setting from "../Setting";
 import i18next from "i18next";
-import * as ScanBackend from "../backend/ScanBackend";
-import * as ProviderBackend from "../backend/ProviderBackend";
 import * as AssetBackend from "../backend/AssetBackend";
+import * as ProviderBackend from "../backend/ProviderBackend";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -180,8 +179,8 @@ class TestScanWidget extends React.Component {
     });
 
     // Determine parameters based on context
-    let providerId = "";
-    let scanId = "";
+    let provider = "";
+    let scan = "";
     const targetMode = this.state.targetMode;
     const target = this.state.scanTarget;
     const asset = this.state.selectedAsset;
@@ -190,18 +189,18 @@ class TestScanWidget extends React.Component {
 
     // For ProviderEditPage, use the provider passed via props
     if (this.props.provider && this.props.provider.category === "Scan") {
-      providerId = `${this.props.provider.owner}/${this.props.provider.name}`;
+      provider = `${this.props.provider.owner}/${this.props.provider.name}`;
       saveToScan = false;
     } else if (this.props.scan) {
       const providerObj = this.state.providers.find(p => p.name === this.state.selectedProvider);
       if (providerObj) {
-        providerId = `${providerObj.owner}/${providerObj.name}`;
+        provider = `${providerObj.owner}/${providerObj.name}`;
       }
-      scanId = `${this.props.scan.owner}/${this.props.scan.name}`;
+      scan = `${this.props.scan.owner}/${this.props.scan.name}`;
       saveToScan = true; // Scan edit page saves results to scan object
     }
 
-    if (!providerId) {
+    if (!provider) {
       Setting.showMessage("error", i18next.t("general:Please select a provider"));
       this.setState({scanButtonLoading: false});
       return;
@@ -223,7 +222,7 @@ class TestScanWidget extends React.Component {
     this.saveWidgetState();
 
     // Call unified scan-asset API
-    ScanBackend.scanAsset(providerId, scanId, targetMode, target, asset, command, saveToScan)
+    AssetBackend.scanAsset(provider, scan, targetMode, target, asset, command, saveToScan)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully executed"));

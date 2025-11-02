@@ -521,6 +521,7 @@ class ProviderEditPage extends React.Component {
         }
         {
           !(this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") &&
+          this.state.provider.category !== "Scan" &&
           (
             ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") ||
               (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") ||
@@ -663,6 +664,7 @@ class ProviderEditPage extends React.Component {
             (this.state.provider.category === "Storage" && this.state.provider.type !== "OpenAI File System") ||
             (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") ||
             (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker") ||
+            this.state.provider.category === "Scan" ||
             this.state.provider.type === "Dummy"
           ) ? null : (
               <Row style={{marginTop: "20px"}} >
@@ -752,7 +754,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) || (this.state.provider.category === "Blockchain" && this.state.provider.type === "Ethereum") || (this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") ? null : (
+          ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text", "Scan"].includes(this.state.provider.category) || (this.state.provider.category === "Blockchain" && this.state.provider.type === "Ethereum") || (this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {this.getRegionLabel(this.state.provider)} :
