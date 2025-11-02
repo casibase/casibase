@@ -151,7 +151,16 @@ class TestScanWidget extends React.Component {
   initializeDefaults() {
     // Initialize from scan object (for ScanEditPage)
     if (this.props.scan) {
-      const defaultCommand = this.props.scan.command || DEFAULT_SCAN_COMMAND;
+      // Determine the provider type to use appropriate default command
+      let providerTypeDefault = DEFAULT_SCAN_COMMAND;
+      if (this.props.scan.provider && this.state.providers.length > 0) {
+        const providerObj = this.state.providers.find(p => p.name === this.props.scan.provider);
+        if (providerObj) {
+          providerTypeDefault = this.getDefaultCommand(providerObj.type);
+        }
+      }
+
+      const defaultCommand = this.props.scan.command || providerTypeDefault;
       const targetMode = this.props.scan.targetMode || (this.props.scan.asset ? "Asset" : "Manual Input");
       const scanTarget = this.props.scan.target || DEFAULT_SCAN_TARGET;
 
