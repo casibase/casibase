@@ -30,7 +30,7 @@ const {TabPane} = Tabs;
 
 const DEFAULT_SCAN_TARGET = "127.0.0.1";
 const DEFAULT_SCAN_COMMAND = "-sn %s";
-const DEFAULT_OS_PATCH_COMMAND = "available";
+const DEFAULT_OS_PATCH_COMMAND = "all";
 const DEFAULT_PROVIDER_TYPE = "Nmap";
 
 class TestScanWidget extends React.Component {
@@ -131,6 +131,7 @@ class TestScanWidget extends React.Component {
     if (providerType === "OS Patch") {
       return [
         {id: "custom", name: "Custom", command: ""},
+        {id: "all", name: "All Patches", command: "all"},
         {id: "available", name: "Available Patches", command: "available"},
         {id: "installed", name: "Installed Patches", command: "installed"},
       ];

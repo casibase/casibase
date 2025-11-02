@@ -64,7 +64,7 @@ func NewOsPatchScanProvider(clientId string) (*OsPatchScanProvider, error) {
 }
 
 // Scan implements the ScanProvider interface for OS patch scanning
-// The command parameter specifies the scan type: "available" or "installed"
+// The command parameter specifies the scan type: "available", "installed", or "all"
 // The target parameter is not used for OS patch scanning as it scans the local system
 func (p *OsPatchScanProvider) Scan(target string, command string) (string, error) {
 	command = strings.TrimSpace(strings.ToLower(command))
@@ -74,6 +74,20 @@ func (p *OsPatchScanProvider) Scan(target string, command string) (string, error
 
 	if command == "installed" {
 		patches, err = p.ListInstalledPatches()
+	} else if command == "all" {
+		// Get both available and installed patches
+		availablePatches, err1 := p.ListPatches()
+		installedPatches, err2 := p.ListInstalledPatches()
+		
+		if err1 != nil {
+			return "", fmt.Errorf("failed to list available patches: %v", err1)
+		}
+		if err2 != nil {
+			return "", fmt.Errorf("failed to list installed patches: %v", err2)
+		}
+		
+		// Combine patches: available first, then installed
+		patches = append(availablePatches, installedPatches...)
 	} else {
 		// Default to available patches
 		patches, err = p.ListPatches()
