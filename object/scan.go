@@ -34,7 +34,7 @@ type Scan struct {
 	State      string `xorm:"varchar(100)" json:"state"`
 	Command    string `xorm:"varchar(500)" json:"command"`
 	ResultText string `xorm:"mediumtext" json:"resultText"`
-	
+
 	// New fields for unified scan widget
 	TargetMode string `xorm:"varchar(100)" json:"targetMode"` // "Manual Input" or "Asset"
 	Target     string `xorm:"varchar(500)" json:"target"`     // Manual input target (IP address or network range)
