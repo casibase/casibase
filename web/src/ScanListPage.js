@@ -66,7 +66,7 @@ class ScanListPage extends BaseListPage {
     if (!assetName) {
       return null;
     }
-    return this.state.assets.find(asset => `${asset.owner}/${asset.name}` === assetName);
+    return this.state.assets.find(asset => asset.name === assetName);
   }
 
   getProviderInfo(providerName) {
@@ -208,7 +208,7 @@ class ScanListPage extends BaseListPage {
         render: (text, record, index) => {
           const icon = this.getAssetTypeIcon(text);
           return (
-            <Link to={`/assets/${text}`}>
+            <Link to={`/assets/admin/${text}`}>
               <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
                 {icon && <img src={icon} alt={text} style={{width: "20px", height: "20px"}} />}
                 <span>{text}</span>

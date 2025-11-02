@@ -326,7 +326,7 @@ class TestScanWidget extends React.Component {
     if (!assetName) {
       return null;
     }
-    const asset = this.state.assets.find(asset => `${asset.owner}/${asset.name}` === assetName);
+    const asset = this.state.assets.find(asset => asset.name === assetName);
     if (!asset) {
       return null;
     }
@@ -564,7 +564,7 @@ class TestScanWidget extends React.Component {
                     const typeIcons = Setting.getAssetTypeIcons();
                     const icon = typeIcons[asset.type];
                     return (
-                      <Option key={index} value={`${asset.owner}/${asset.name}`}>
+                      <Option key={index} value={asset.name}>
                         <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
                           {icon && <img src={icon} alt={asset.type} style={{width: "16px", height: "16px"}} />}
                           <span>{`${asset.owner}/${asset.name} (${asset.displayName})`}</span>

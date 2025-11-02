@@ -128,7 +128,7 @@ func (scan *Scan) GetId() string {
 // @param scan: Optional scan ID (owner/name) for saving results to existing scan
 // @param targetMode: "Manual Input" or "Asset"
 // @param target: IP address or network range (for Manual Input mode)
-// @param asset: Asset ID (owner/name) for Asset mode
+// @param asset: Asset name for Asset mode
 // @param command: Scan command with optional %s placeholder for target
 // @param saveToScan: Whether to save results to scan object (true for scan edit page, false for provider edit page)
 func ScanAsset(provider, scanParam, targetMode, target, asset, command string, saveToScan bool, lang string) (string, error) {
@@ -153,8 +153,10 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	// Determine the scan target
 	var scanTarget string
 	if targetMode == "Asset" {
+		assetId := util.GetIdFromOwnerAndName("admin", asset)
+
 		// Get the asset
-		assetObj, err := GetAsset(asset)
+		assetObj, err := GetAsset(assetId)
 		if err != nil {
 			return "", err
 		}
