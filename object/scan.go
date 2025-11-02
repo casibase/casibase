@@ -153,20 +153,10 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	// Determine the scan target
 	var scanTarget string
 	if targetMode == "Asset" {
-		// Construct full asset ID from owner and asset name
-		var owner string
-		if scanParam != "" {
-			owner, _ = util.GetOwnerAndNameFromId(scanParam)
-		} else {
-			owner, _ = util.GetOwnerAndNameFromId(provider)
-		}
-		if owner == "" {
-			return "", fmt.Errorf("unable to determine asset owner from scan or provider")
-		}
-		fullAssetId := fmt.Sprintf("%s/%s", owner, asset)
+		assetId := util.GetIdFromOwnerAndName("admin", asset)
 
 		// Get the asset
-		assetObj, err := GetAsset(fullAssetId)
+		assetObj, err := GetAsset(assetId)
 		if err != nil {
 			return "", err
 		}
