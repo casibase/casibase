@@ -69,23 +69,3 @@ export function deleteScan(scan) {
     },
   }).then(res => res.json());
 }
-
-export function installPatch(provider, kb) {
-  return fetch(`${Setting.ServerUrl}/api/install-patch?provider=${encodeURIComponent(provider)}&kb=${encodeURIComponent(kb)}`, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Accept-Language": Setting.getAcceptLanguage(),
-    },
-  }).then(res => res.json());
-}
-
-export function monitorPatchProgress(provider, kb) {
-  return fetch(`${Setting.ServerUrl}/api/monitor-patch-progress?provider=${encodeURIComponent(provider)}&kb=${encodeURIComponent(kb)}`, {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Accept-Language": Setting.getAcceptLanguage(),
-    },
-  }).then(res => res.json());
-}

@@ -15,7 +15,7 @@
 import React from "react";
 import {Alert, Button, Modal, Progress, Space, Table, Tag, Typography} from "antd";
 import i18next from "i18next";
-import * as ScanBackend from "../backend/ScanBackend";
+import * as PatchBackend from "../backend/PatchBackend";
 import * as Setting from "../Setting";
 
 const {Text} = Typography;
@@ -118,7 +118,7 @@ class OsPatchResultRenderer extends React.Component {
     });
 
     // Call install API
-    ScanBackend.installPatch(provider, kb)
+    PatchBackend.installPatch(provider, kb)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -172,7 +172,7 @@ class OsPatchResultRenderer extends React.Component {
     }
 
     this.monitorInterval = setInterval(() => {
-      ScanBackend.monitorPatchProgress(provider, kb)
+      PatchBackend.monitorPatchProgress(provider, kb)
         .then((res) => {
           if (res.status === "ok") {
             this.setState({
@@ -261,10 +261,10 @@ class OsPatchResultRenderer extends React.Component {
             <Text strong>{i18next.t("scan:KB")}:</Text> <Text code>{installProgress.kb}</Text>
           </div>
           <div>
-            <Text strong>{i18next.t("scan:Status")}:</Text> {this.renderStatus(installProgress.status)}
+            <Text strong>{i18next.t("general:Status")}:</Text> {this.renderStatus(installProgress.status)}
           </div>
           <div>
-            <Text strong>{i18next.t("scan:Progress")}:</Text>
+            <Text strong>{i18next.t("general:Progress")}:</Text>
             <Progress
               percent={installProgress.percentComplete}
               status={isFailed ? "exception" : isSuccess ? "success" : "active"}
@@ -318,7 +318,7 @@ class OsPatchResultRenderer extends React.Component {
         render: (kb) => kb ? <Text code>{kb}</Text> : null,
       },
       {
-        title: i18next.t("scan:Status"),
+        title: i18next.t("general:Status"),
         dataIndex: "status",
         key: "status",
         width: "10%",
