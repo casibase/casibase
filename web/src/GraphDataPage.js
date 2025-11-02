@@ -541,7 +541,8 @@ class GraphDataPage extends React.Component {
           force: layout === "force" ? {
             repulsion: repulsion,
             edgeLength: edgeLength,
-            layoutAnimation: true, // Enable animation for force layout
+            // Disable animation when SaveLayout is enabled to keep saved positions static
+            layoutAnimation: !this.props.saveLayout,
             friction: 0.6,
             gravity: 0.1,
           } : undefined,
