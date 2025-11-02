@@ -122,14 +122,14 @@ func TestInstallPatch(t *testing.T) {
 	t.Logf("Testing installation of patch: %s (KB%s)", testPatch.Title, testPatch.KB)
 
 	// Start monitoring in a goroutine
-	progressChan, err := provider.MonitorInstallProgress(testPatch.KB, 2)
+	progressChan, err := provider.MonitorInstallProgress(testPatch.KB, testPatch.Title, 2)
 	if err != nil {
 		t.Fatalf("Failed to start monitoring: %v", err)
 	}
 
 	// Start installation
 	go func() {
-		progress, err := provider.InstallPatch(testPatch.KB)
+		progress, err := provider.InstallPatch(testPatch.KB, testPatch.Title)
 		if err != nil {
 			t.Logf("Installation error: %v", err)
 		} else {
@@ -193,7 +193,7 @@ func ExampleOsPatchScanProvider_InstallPatch() {
 	}
 
 	// Install a patch
-	progress, err := provider.InstallPatch("KB1234567")
+	progress, err := provider.InstallPatch("KB1234567", "")
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		return

@@ -14,8 +14,15 @@
 
 import * as Setting from "../Setting";
 
-export function installPatch(provider, kb) {
-  return fetch(`${Setting.ServerUrl}/api/install-patch?provider=${encodeURIComponent(provider)}&kb=${encodeURIComponent(kb)}`, {
+export function installPatch(provider, kb, title) {
+  let url = `${Setting.ServerUrl}/api/install-patch?provider=${encodeURIComponent(provider)}`;
+  if (kb) {
+    url += `&kb=${encodeURIComponent(kb)}`;
+  }
+  if (title) {
+    url += `&title=${encodeURIComponent(title)}`;
+  }
+  return fetch(url, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -24,8 +31,15 @@ export function installPatch(provider, kb) {
   }).then(res => res.json());
 }
 
-export function monitorPatchProgress(provider, kb) {
-  return fetch(`${Setting.ServerUrl}/api/monitor-patch-progress?provider=${encodeURIComponent(provider)}&kb=${encodeURIComponent(kb)}`, {
+export function monitorPatchProgress(provider, kb, title) {
+  let url = `${Setting.ServerUrl}/api/monitor-patch-progress?provider=${encodeURIComponent(provider)}`;
+  if (kb) {
+    url += `&kb=${encodeURIComponent(kb)}`;
+  }
+  if (title) {
+    url += `&title=${encodeURIComponent(title)}`;
+  }
+  return fetch(url, {
     method: "GET",
     credentials: "include",
     headers: {

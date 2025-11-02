@@ -31,25 +31,27 @@ const (
 // InstallPatch
 // @Title InstallPatch
 // @Tag Patch API
-// @Description install an OS patch by KB number
+// @Description install an OS patch by KB number or Title
 // @Param   provider query string true "The provider ID (owner/name)"
-// @Param   kb query string true "The KB number of the patch to install"
+// @Param   kb query string false "The KB number of the patch to install"
+// @Param   title query string false "The title of the patch to install (required if kb is not provided)"
 // @Success 200 {object} controllers.Response The Response object with InstallProgress
 // @router /install-patch [post]
 func (c *ApiController) InstallPatch() {
 	providerID := c.Input().Get("provider")
 	kb := c.Input().Get("kb")
+	title := c.Input().Get("title")
 
 	if providerID == "" {
 		c.ResponseError("Provider ID is required")
 		return
 	}
 
-	if kb == "" {
-		c.ResponseError("KB number is required")
+	if kb == "" && title == "" {
+		c.ResponseError("Either KB number or Title is required")
 		return
 	}
-	// Note: KB parameter validation is performed by OsPatchScanProvider.InstallPatch()
+	// Note: KB and Title parameter validation is performed by OsPatchScanProvider.InstallPatch()
 	// to prevent command injection
 
 	// Get the provider to check if it's an OS Patch provider
@@ -72,7 +74,7 @@ func (c *ApiController) InstallPatch() {
 	}
 
 	// Install the patch
-	progress, err := osPatchProvider.InstallPatch(kb)
+	progress, err := osPatchProvider.InstallPatch(kb, title)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -86,23 +88,25 @@ func (c *ApiController) InstallPatch() {
 // @Tag Patch API
 // @Description monitor the installation progress of an OS patch
 // @Param   provider query string true "The provider ID (owner/name)"
-// @Param   kb query string true "The KB number of the patch being installed"
+// @Param   kb query string false "The KB number of the patch being installed"
+// @Param   title query string false "The title of the patch being installed (required if kb is not provided)"
 // @Success 200 {object} controllers.Response The Response object with InstallProgress
 // @router /monitor-patch-progress [get]
 func (c *ApiController) MonitorPatchProgress() {
 	providerID := c.Input().Get("provider")
 	kb := c.Input().Get("kb")
+	title := c.Input().Get("title")
 
 	if providerID == "" {
 		c.ResponseError("Provider ID is required")
 		return
 	}
 
-	if kb == "" {
-		c.ResponseError("KB number is required")
+	if kb == "" && title == "" {
+		c.ResponseError("Either KB number or Title is required")
 		return
 	}
-	// Note: KB parameter validation is performed by OsPatchScanProvider.MonitorInstallProgress()
+	// Note: KB and Title parameter validation is performed by OsPatchScanProvider.MonitorInstallProgress()
 	// to prevent command injection
 
 	// Get the provider to check if it's an OS Patch provider
@@ -125,7 +129,7 @@ func (c *ApiController) MonitorPatchProgress() {
 	}
 
 	// Start monitoring with configured polling interval
-	progressChan, err := osPatchProvider.MonitorInstallProgress(kb, patchProgressPollingInterval)
+	progressChan, err := osPatchProvider.MonitorInstallProgress(kb, title, patchProgressPollingInterval)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

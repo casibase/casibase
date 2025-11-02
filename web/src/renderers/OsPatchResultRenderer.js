@@ -98,18 +98,22 @@ class OsPatchResultRenderer extends React.Component {
     return null;
   }
 
-  handleInstallPatch(kb) {
+  handleInstallPatch(kb, title) {
     const provider = this.getProviderFromContext();
     if (!provider) {
       Setting.showMessage("error", i18next.t("scan:Provider not found"));
       return;
     }
 
+    // Use KB as identifier if available, otherwise use title
+    const identifier = kb || title;
+
     this.setState({
-      installingKB: kb,
+      installingKB: identifier,
       installModalVisible: true,
       installProgress: {
         kb: kb,
+        title: title,
         status: "Starting",
         percentComplete: 0,
         isComplete: false,
@@ -118,7 +122,7 @@ class OsPatchResultRenderer extends React.Component {
     });
 
     // Call install API
-    PatchBackend.installPatch(provider, kb)
+    PatchBackend.installPatch(provider, kb, title)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -138,7 +142,7 @@ class OsPatchResultRenderer extends React.Component {
             }
           } else {
             // Start monitoring progress
-            this.startMonitoring(provider, kb);
+            this.startMonitoring(provider, kb, title);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("scan:Failed to install patch")}: ${res.msg}`);
@@ -165,14 +169,14 @@ class OsPatchResultRenderer extends React.Component {
       });
   }
 
-  startMonitoring(provider, kb) {
+  startMonitoring(provider, kb, title) {
     // Clear any existing interval before starting a new one
     if (this.monitorInterval) {
       clearInterval(this.monitorInterval);
     }
 
     this.monitorInterval = setInterval(() => {
-      PatchBackend.monitorPatchProgress(provider, kb)
+      PatchBackend.monitorPatchProgress(provider, kb, title)
         .then((res) => {
           if (res.status === "ok") {
             this.setState({
@@ -257,9 +261,16 @@ class OsPatchResultRenderer extends React.Component {
         maskClosable={false}
       >
         <Space direction="vertical" size="middle" style={{width: "100%"}}>
-          <div>
-            <Text strong>{i18next.t("scan:KB")}:</Text> <Text code>{installProgress.kb}</Text>
-          </div>
+          {installProgress.kb && (
+            <div>
+              <Text strong>{i18next.t("scan:KB")}:</Text> <Text code>{installProgress.kb}</Text>
+            </div>
+          )}
+          {installProgress.title && (
+            <div>
+              <Text strong>{i18next.t("scan:Title")}:</Text> <Text>{installProgress.title}</Text>
+            </div>
+          )}
           <div>
             <Text strong>{i18next.t("general:Status")}:</Text> {this.renderStatus(installProgress.status)}
           </div>
@@ -370,13 +381,16 @@ class OsPatchResultRenderer extends React.Component {
             return null;
           }
 
+          // Use KB as identifier if available, otherwise use title
+          const identifier = record.kb || record.title;
+
           return (
             <Button
               type="primary"
               size="small"
-              onClick={() => this.handleInstallPatch(record.kb)}
-              disabled={!record.kb || this.state.installingKB === record.kb}
-              loading={this.state.installingKB === record.kb}
+              onClick={() => this.handleInstallPatch(record.kb, record.title)}
+              disabled={this.state.installingKB === identifier}
+              loading={this.state.installingKB === identifier}
             >
               {i18next.t("scan:Install")}
             </Button>

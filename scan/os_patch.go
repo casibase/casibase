@@ -44,6 +44,7 @@ type WindowsPatch struct {
 // InstallProgress represents the installation progress of a patch
 type InstallProgress struct {
 	KB              string `json:"kb"`
+	Title           string `json:"title,omitempty"`
 	Status          string `json:"status"`
 	PercentComplete int    `json:"percentComplete"`
 	IsComplete      bool   `json:"isComplete"`
@@ -114,9 +115,10 @@ func (p *OsPatchScanProvider) ParseResult(rawResult string) (string, error) {
 
 // validateKB validates and sanitizes a KB number to prevent command injection
 // Returns the sanitized KB number (without "KB" prefix) or an error
+// If KB is empty, returns empty string without error (for patches without KB)
 func validateKB(kb string) (string, error) {
 	if kb == "" {
-		return "", fmt.Errorf("KB number is required")
+		return "", nil
 	}
 
 	// Remove "KB" prefix if present
@@ -132,6 +134,20 @@ func validateKB(kb string) (string, error) {
 	}
 
 	return kb, nil
+}
+
+// validateTitle validates and sanitizes a patch title to prevent command injection
+// Returns the sanitized title or an error
+func validateTitle(title string) (string, error) {
+	if title == "" {
+		return "", fmt.Errorf("title is required when KB is not provided")
+	}
+
+	// Prevent command injection by escaping single quotes
+	// Replace single quote with two single quotes (PowerShell escape sequence)
+	title = strings.ReplaceAll(title, "'", "''")
+
+	return title, nil
 }
 
 // runPowerShell executes a PowerShell command and returns the output
@@ -308,8 +324,9 @@ func (p *OsPatchScanProvider) ListInstalledPatches() ([]*WindowsPatch, error) {
 	return patches, nil
 }
 
-// InstallPatch installs a specific patch by KB number
-func (p *OsPatchScanProvider) InstallPatch(kb string) (*InstallProgress, error) {
+// InstallPatch installs a specific patch by KB number or Title
+// If kb is provided, it will be used; otherwise, title must be provided
+func (p *OsPatchScanProvider) InstallPatch(kb string, title string) (*InstallProgress, error) {
 	// Validate and sanitize KB number to prevent command injection
 	sanitizedKB, err := validateKB(kb)
 	if err != nil {
@@ -317,30 +334,62 @@ func (p *OsPatchScanProvider) InstallPatch(kb string) (*InstallProgress, error) 
 	}
 	kb = sanitizedKB
 
+	// If no KB is provided, validate and use title
+	var sanitizedTitle string
+	if kb == "" {
+		sanitizedTitle, err = validateTitle(title)
+		if err != nil {
+			return nil, err
+		}
+		title = sanitizedTitle
+	}
+
 	progress := &InstallProgress{
 		KB:              kb,
+		Title:           title,
 		Status:          "Starting",
 		PercentComplete: 0,
 		IsComplete:      false,
 		StartTime:       time.Now().Format(time.RFC3339),
 	}
 
-	// Install the patch using PSWindowsUpdate
-	// Note: KB number has been validated to contain only digits, preventing command injection
-	psCommand := fmt.Sprintf(`
-		$ErrorActionPreference = 'Stop';
-		$ProgressPreference = 'Continue';
-		Import-Module PSWindowsUpdate -Force;
-		$result = Install-WindowsUpdate -KBArticleID '%s' -AcceptAll -IgnoreReboot -Confirm:$false -Verbose;
-		if ($result) {
-			$result | Select-Object @{Name='Status';Expression={$_.Result}},
-				@{Name='RebootRequired';Expression={$_.RebootRequired}},
-				@{Name='KB';Expression={$_.KB}} | 
-			ConvertTo-Json
-		} else {
-			@{Status='NotFound'; RebootRequired=$false; KB='%s'} | ConvertTo-Json
-		}
-	`, kb, kb)
+	var psCommand string
+	if kb != "" {
+		// Install by KB number
+		// Note: KB number has been validated to contain only digits, preventing command injection
+		psCommand = fmt.Sprintf(`
+			$ErrorActionPreference = 'Stop';
+			$ProgressPreference = 'Continue';
+			Import-Module PSWindowsUpdate -Force;
+			$result = Install-WindowsUpdate -KBArticleID '%s' -AcceptAll -IgnoreReboot -Confirm:$false -Verbose;
+			if ($result) {
+				$result | Select-Object @{Name='Status';Expression={$_.Result}},
+					@{Name='RebootRequired';Expression={$_.RebootRequired}},
+					@{Name='KB';Expression={$_.KB}} | 
+				ConvertTo-Json
+			} else {
+				@{Status='NotFound'; RebootRequired=$false; KB='%s'} | ConvertTo-Json
+			}
+		`, kb, kb)
+	} else {
+		// Install by Title
+		// Note: Title has been sanitized by escaping single quotes, preventing command injection
+		psCommand = fmt.Sprintf(`
+			$ErrorActionPreference = 'Stop';
+			$ProgressPreference = 'Continue';
+			Import-Module PSWindowsUpdate -Force;
+			$result = Install-WindowsUpdate -Title '%s' -AcceptAll -IgnoreReboot -Confirm:$false -Verbose;
+			if ($result) {
+				$result | Select-Object @{Name='Status';Expression={$_.Result}},
+					@{Name='RebootRequired';Expression={$_.RebootRequired}},
+					@{Name='KB';Expression={$_.KB}},
+					@{Name='Title';Expression={$_.Title}} | 
+				ConvertTo-Json
+			} else {
+				@{Status='NotFound'; RebootRequired=$false; Title='%s'} | ConvertTo-Json
+			}
+		`, title, title)
+	}
 
 	output, err := p.runPowerShell(psCommand)
 	if err != nil {
@@ -381,13 +430,24 @@ func (p *OsPatchScanProvider) InstallPatch(kb string) (*InstallProgress, error) 
 
 // MonitorInstallProgress monitors the installation progress of a patch
 // This function polls the Windows Update service to check installation status
-func (p *OsPatchScanProvider) MonitorInstallProgress(kb string, intervalSeconds int) (<-chan *InstallProgress, error) {
+// If kb is provided, it will be used; otherwise, title must be provided
+func (p *OsPatchScanProvider) MonitorInstallProgress(kb string, title string, intervalSeconds int) (<-chan *InstallProgress, error) {
 	// Validate and sanitize KB number to prevent command injection
 	sanitizedKB, err := validateKB(kb)
 	if err != nil {
 		return nil, err
 	}
 	kb = sanitizedKB
+
+	// If no KB is provided, validate and use title
+	var sanitizedTitle string
+	if kb == "" {
+		sanitizedTitle, err = validateTitle(title)
+		if err != nil {
+			return nil, err
+		}
+		title = sanitizedTitle
+	}
 
 	if intervalSeconds <= 0 {
 		intervalSeconds = 5
@@ -405,31 +465,55 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(kb string, intervalSeconds 
 		for {
 			progress := &InstallProgress{
 				KB:              kb,
+				Title:           title,
 				Status:          "Installing",
 				PercentComplete: 0,
 				IsComplete:      false,
 				StartTime:       startTime,
 			}
 
-			// Check if the update is still installing
-			// Note: KB number has been validated to contain only digits, preventing command injection
-			psCommand := fmt.Sprintf(`
-				$ErrorActionPreference = 'Stop';
-				$ProgressPreference = 'Continue';
-				Import-Module PSWindowsUpdate -Force;
-				$history = Get-WUHistory -ErrorAction SilentlyContinue | Where-Object { $_.Title -match 'KB%s' } | Select-Object -First 1;
-				$installing = Get-WindowsUpdate -KBArticleID '%s' -MicrosoftUpdate;
-				
-				if ($history -and $history.Result -eq 'Succeeded') {
-					@{Status='Completed'; PercentComplete=100; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
-				} elseif ($history -and $history.Result -eq 'Failed') {
-					@{Status='Failed'; PercentComplete=0; IsComplete=$true; RebootRequired=$false; Error=$history.Title} | ConvertTo-Json
-				} elseif ($installing) {
-					@{Status='Installing'; PercentComplete=50; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
-				} else {
-					@{Status='NotFound'; PercentComplete=0; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
-				}
-			`, kb, kb)
+			var psCommand string
+			if kb != "" {
+				// Monitor by KB number
+				// Note: KB number has been validated to contain only digits, preventing command injection
+				psCommand = fmt.Sprintf(`
+					$ErrorActionPreference = 'Stop';
+					$ProgressPreference = 'Continue';
+					Import-Module PSWindowsUpdate -Force;
+					$history = Get-WUHistory -ErrorAction SilentlyContinue | Where-Object { $_.Title -match 'KB%s' } | Select-Object -First 1;
+					$installing = Get-WindowsUpdate -KBArticleID '%s' -MicrosoftUpdate;
+					
+					if ($history -and $history.Result -eq 'Succeeded') {
+						@{Status='Completed'; PercentComplete=100; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
+					} elseif ($history -and $history.Result -eq 'Failed') {
+						@{Status='Failed'; PercentComplete=0; IsComplete=$true; RebootRequired=$false; Error=$history.Title} | ConvertTo-Json
+					} elseif ($installing) {
+						@{Status='Installing'; PercentComplete=50; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
+					} else {
+						@{Status='NotFound'; PercentComplete=0; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
+					}
+				`, kb, kb)
+			} else {
+				// Monitor by Title
+				// Note: Title has been sanitized by escaping single quotes, preventing command injection
+				psCommand = fmt.Sprintf(`
+					$ErrorActionPreference = 'Stop';
+					$ProgressPreference = 'Continue';
+					Import-Module PSWindowsUpdate -Force;
+					$history = Get-WUHistory -ErrorAction SilentlyContinue | Where-Object { $_.Title -eq '%s' } | Select-Object -First 1;
+					$installing = Get-WindowsUpdate -Title '%s' -MicrosoftUpdate;
+					
+					if ($history -and $history.Result -eq 'Succeeded') {
+						@{Status='Completed'; PercentComplete=100; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
+					} elseif ($history -and $history.Result -eq 'Failed') {
+						@{Status='Failed'; PercentComplete=0; IsComplete=$true; RebootRequired=$false; Error=$history.Title} | ConvertTo-Json
+					} elseif ($installing) {
+						@{Status='Installing'; PercentComplete=50; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
+					} else {
+						@{Status='NotFound'; PercentComplete=0; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
+					}
+				`, title, title)
+			}
 
 			output, err := p.runPowerShell(psCommand)
 			if err != nil {
