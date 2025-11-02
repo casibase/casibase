@@ -64,7 +64,12 @@
     "Edit Scan": "スキャンの編集",
     "New Scan": "新しいスキャン",
     "Provider - Tooltip": "使用するスキャンプロバイダー",
-    "Result - Tooltip": "スキャン結果の出力"
+    "Result - Tooltip": "スキャン結果の出力",
+    "Manual Input": "Manual Input",
+    "Target": "Target",
+    "Target - Tooltip": "The target to scan (IP address or network range)",
+    "Target mode": "Target mode",
+    "Target mode - Tooltip": "Select how to specify the scan target"
   },
   "caase": {
     "Edit Caase": "症例を編集",

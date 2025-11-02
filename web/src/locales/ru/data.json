@@ -64,7 +64,12 @@
     "Edit Scan": "Редактировать сканирование",
     "New Scan": "Новое сканирование",
     "Provider - Tooltip": "Провайдер сканирования для использования",
-    "Result - Tooltip": "Вывод результата сканирования"
+    "Result - Tooltip": "Вывод результата сканирования",
+    "Manual Input": "Manual Input",
+    "Target": "Target",
+    "Target - Tooltip": "The target to scan (IP address or network range)",
+    "Target mode": "Target mode",
+    "Target mode - Tooltip": "Select how to specify the scan target"
   },
   "caase": {
     "Edit Caase": "Редактировать случай",

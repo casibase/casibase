@@ -64,7 +64,12 @@
     "Edit Scan": "Editar Varredura",
     "New Scan": "Nova Varredura",
     "Provider - Tooltip": "Provedor de varredura a ser usado",
-    "Result - Tooltip": "Saída do resultado da varredura"
+    "Result - Tooltip": "Saída do resultado da varredura",
+    "Manual Input": "Manual Input",
+    "Target": "Target",
+    "Target - Tooltip": "The target to scan (IP address or network range)",
+    "Target mode": "Target mode",
+    "Target mode - Tooltip": "Select how to specify the scan target"
   },
   "caase": {
     "Edit Caase": "Edit Case",
