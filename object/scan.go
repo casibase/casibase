@@ -16,7 +16,6 @@ package object
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/casibase/casibase/scan"
 	"github.com/casibase/casibase/util"
@@ -129,7 +128,7 @@ func (scan *Scan) GetId() string {
 // @param scan: Optional scan ID (owner/name) for saving results to existing scan
 // @param targetMode: "Manual Input" or "Asset"
 // @param target: IP address or network range (for Manual Input mode)
-// @param asset: Asset name (without owner prefix) for Asset mode
+// @param asset: Asset name for Asset mode
 // @param command: Scan command with optional %s placeholder for target
 // @param saveToScan: Whether to save results to scan object (true for scan edit page, false for provider edit page)
 func ScanAsset(provider, scanParam, targetMode, target, asset, command string, saveToScan bool, lang string) (string, error) {
@@ -154,26 +153,18 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	// Determine the scan target
 	var scanTarget string
 	if targetMode == "Asset" {
-		// Handle asset parameter - can be either just name or full ID (owner/name) for backward compatibility
-		var fullAssetId string
-		if strings.Contains(asset, "/") {
-			// Asset already contains owner/name format (backward compatibility)
-			fullAssetId = asset
+		// Construct full asset ID from owner and asset name
+		var owner string
+		if scanParam != "" {
+			owner, _ = util.GetOwnerAndNameFromId(scanParam)
 		} else {
-			// Asset only contains the name, need to construct full ID
-			// Get owner from scan object if available, otherwise from provider
-			var owner string
-			if scanParam != "" {
-				owner, _ = util.GetOwnerAndNameFromId(scanParam)
-			} else {
-				owner, _ = util.GetOwnerAndNameFromId(provider)
-			}
-			if owner == "" {
-				return "", fmt.Errorf("unable to determine asset owner from scan or provider")
-			}
-			fullAssetId = fmt.Sprintf("%s/%s", owner, asset)
+			owner, _ = util.GetOwnerAndNameFromId(provider)
 		}
-		
+		if owner == "" {
+			return "", fmt.Errorf("unable to determine asset owner from scan or provider")
+		}
+		fullAssetId := fmt.Sprintf("%s/%s", owner, asset)
+
 		// Get the asset
 		assetObj, err := GetAsset(fullAssetId)
 		if err != nil {
