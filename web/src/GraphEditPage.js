@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Checkbox, Col, Input, Row, Select} from "antd";
+import {Button, Card, Col, Input, Row, Select, Switch} from "antd";
 import * as GraphBackend from "./backend/GraphBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -147,14 +147,12 @@ class GraphEditPage extends React.Component {
             {Setting.getLabel(i18next.t("graph:Save Layout"), i18next.t("graph:Save Layout - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Checkbox
+            <Switch
               checked={this.state.graph.saveLayout}
-              onChange={e => {
-                this.updateGraphField("saveLayout", e.target.checked);
+              onChange={checked => {
+                this.updateGraphField("saveLayout", checked);
               }}
-            >
-              {i18next.t("graph:Enable saving node positions")}
-            </Checkbox>
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

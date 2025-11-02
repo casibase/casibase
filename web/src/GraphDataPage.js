@@ -178,7 +178,11 @@ class GraphDataPage extends React.Component {
 
   getOption() {
     const {nodes, links, categories} = this.state.data;
-    const layout = this.props.layout || "force";
+    let layout = this.props.layout || "force";
+    // If SaveLayout is enabled and we have saved positions, use "none" layout to preserve positions
+    if (this.props.saveLayout && this.props.layoutData) {
+      layout = "none";
+    }
     const density = this.props.density || 5; // Default density is 5 (medium)
     const themeColor = Setting.getThemeColor();
 
