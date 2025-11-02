@@ -25,7 +25,7 @@ func GetScanProvider(typ string, clientId string, lang string) (ScanProvider, er
 
 	if typ == "Nmap" {
 		p, err = NewNmapScanProvider(clientId)
-	} else if typ == "OsPatch" {
+	} else if typ == "OS Patch" {
 		p, err = NewOsPatchScanProvider(clientId)
 	} else {
 		return nil, nil
