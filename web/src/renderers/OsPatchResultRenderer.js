@@ -98,6 +98,11 @@ class OsPatchResultRenderer extends React.Component {
     return null;
   }
 
+  getPatchIdentifier(record) {
+    // Use KB as identifier if available, otherwise use title
+    return record.kb || record.title;
+  }
+
   handleInstallPatch(kb, title) {
     const provider = this.getProviderFromContext();
     if (!provider) {
@@ -106,7 +111,7 @@ class OsPatchResultRenderer extends React.Component {
     }
 
     // Use KB as identifier if available, otherwise use title
-    const identifier = kb || title;
+    const identifier = this.getPatchIdentifier({kb, title});
 
     this.setState({
       installingKB: identifier,
@@ -381,8 +386,7 @@ class OsPatchResultRenderer extends React.Component {
             return null;
           }
 
-          // Use KB as identifier if available, otherwise use title
-          const identifier = record.kb || record.title;
+          const identifier = this.getPatchIdentifier(record);
 
           return (
             <Button

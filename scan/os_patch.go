@@ -114,8 +114,8 @@ func (p *OsPatchScanProvider) ParseResult(rawResult string) (string, error) {
 }
 
 // validateKB validates and sanitizes a KB number to prevent command injection
-// Returns the sanitized KB number (without "KB" prefix) or an error
-// If KB is empty, returns empty string without error (for patches without KB)
+// Returns the sanitized KB number (without "KB" prefix) or an error.
+// If KB is empty, returns empty string without error (for patches without KB).
 func validateKB(kb string) (string, error) {
 	if kb == "" {
 		return "", nil
