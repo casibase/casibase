@@ -110,6 +110,29 @@ func (p *OsPatchScanProvider) ScanWithCommand(target string, command string) (st
 	return string(result), nil
 }
 
+// ScanStructured implements the ScanProvider interface for OS patch scanning
+// It returns both raw and structured JSON data
+func (p *OsPatchScanProvider) ScanStructured(target string) (*ScanResult, error) {
+	return p.ScanWithCommandStructured(target, "available")
+}
+
+// ScanWithCommandStructured implements the ScanProvider interface for OS patch scanning with custom command
+// For OS patches, the result is already in JSON format, so we use it as both raw and structured data
+func (p *OsPatchScanProvider) ScanWithCommandStructured(target string, command string) (*ScanResult, error) {
+	// Get the JSON result
+	jsonResult, err := p.ScanWithCommand(target, command)
+	if err != nil {
+		return nil, err
+	}
+
+	// For OS Patch, the result is already structured JSON
+	// We'll use the same JSON for both rawResult and result
+	return &ScanResult{
+		RawResult: jsonResult,
+		Result:    jsonResult,
+	}, nil
+}
+
 // validateKB validates and sanitizes a KB number to prevent command injection
 // Returns the sanitized KB number (without "KB" prefix) or an error
 func validateKB(kb string) (string, error) {

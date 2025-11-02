@@ -35,7 +35,9 @@ type Scan struct {
 	Provider   string `xorm:"varchar(100)" json:"provider"`
 	State      string `xorm:"varchar(100)" json:"state"`
 	Command    string `xorm:"varchar(500)" json:"command"`
-	ResultText string `xorm:"mediumtext" json:"resultText"`
+	ResultText string `xorm:"mediumtext" json:"resultText"` // Deprecated: use RawResult instead
+	RawResult  string `xorm:"mediumtext" json:"rawResult"`  // Original text output
+	Result     string `xorm:"mediumtext" json:"result"`     // Structured JSON output
 }
 
 func GetScanCount(owner, field, value string) (int64, error) {
@@ -130,6 +132,7 @@ func (scan *Scan) GetId() string {
 // @param asset: Asset ID (owner/name) for Asset mode
 // @param command: Scan command with optional %s placeholder for target
 // @param saveToScan: Whether to save results to scan object (true for scan edit page, false for provider edit page)
+// Returns the structured JSON result as a string for backward compatibility
 func ScanAsset(provider, scanParam, targetMode, target, asset, command string, saveToScan bool, lang string) (string, error) {
 	// Get the provider
 	providerObj, err := GetProvider(provider)
@@ -171,12 +174,12 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 		scanTarget = target
 	}
 
-	// Perform scan
-	var result string
+	// Perform scan with structured results
+	var scanResult *scan.ScanResult
 	if command != "" {
-		result, err = scanProvider.ScanWithCommand(scanTarget, command)
+		scanResult, err = scanProvider.ScanWithCommandStructured(scanTarget, command)
 	} else {
-		result, err = scanProvider.Scan(scanTarget)
+		scanResult, err = scanProvider.ScanStructured(scanTarget)
 	}
 
 	if err != nil {
@@ -187,15 +190,18 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	if saveToScan && scanParam != "" {
 		scanObj, err := GetScan(scanParam)
 		if err != nil {
-			return result, err // Return result even if save fails
+			return scanResult.Result, err // Return result even if save fails
 		}
 		if scanObj != nil {
 			scanObj.State = "Completed"
-			scanObj.ResultText = result
+			scanObj.ResultText = scanResult.RawResult // Keep for backward compatibility
+			scanObj.RawResult = scanResult.RawResult
+			scanObj.Result = scanResult.Result
 			scanObj.UpdatedTime = util.GetCurrentTime()
 			_, _ = UpdateScan(scanParam, scanObj) // Ignore save errors, still return result
 		}
 	}
 
-	return result, nil
+	// Return the structured JSON result
+	return scanResult.Result, nil
 }
