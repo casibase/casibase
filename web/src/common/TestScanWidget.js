@@ -151,8 +151,8 @@ class TestScanWidget extends React.Component {
     }
 
     // Determine the provider
-    let providerOwner = this.props.provider.owner;
-    let providerName = this.props.provider.name;
+    let providerOwner = this.props.provider?.owner || "admin";
+    let providerName = this.props.provider?.name || "";
 
     // If provider selection is enabled and a provider is selected, use it
     if (this.props.showProviderSelection && this.state.selectedProvider) {
@@ -160,8 +160,6 @@ class TestScanWidget extends React.Component {
       if (providerParts.length === 2) {
         providerOwner = providerParts[0];
         providerName = providerParts[1];
-      } else {
-        providerName = this.state.selectedProvider;
       }
     }
 

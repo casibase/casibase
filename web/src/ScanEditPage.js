@@ -256,7 +256,7 @@ class ScanEditPage extends React.Component {
         </Row>
         <TestScanWidget
           provider={{
-            owner: this.state.scan.owner,
+            owner: this.props.account.name,
             name: this.state.scan.provider,
             category: "Scan",
             isRemote: false,
