@@ -185,4 +185,3 @@ func (c *ApiController) ScanAsset() {
 
 	c.ResponseOk(result)
 }
-
