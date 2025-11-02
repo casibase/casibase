@@ -216,7 +216,7 @@ class ScanListPage extends BaseListPage {
         render: (text, record, index) => {
           const icon = this.getAssetTypeIcon(text);
           return (
-            <Link to={`/assets/admin/${text}`}>
+            <Link to={`/assets/${text}`}>
               <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
                 {icon && <img src={icon} alt={text} style={{width: "20px", height: "20px"}} />}
                 <span>{text}</span>

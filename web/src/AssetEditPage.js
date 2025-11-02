@@ -25,7 +25,6 @@ class AssetEditPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      assetOwner: props.match.params.organizationName,
       assetName: props.match.params.assetName,
       asset: null,
       providers: [],
@@ -98,7 +97,7 @@ class AssetEditPage extends React.Component {
           if (exitAfterSave) {
             this.props.history.push("/assets");
           } else {
-            this.props.history.push(`/assets/${this.state.asset.owner}/${this.state.asset.name}`);
+            this.props.history.push(`/assets/${this.state.asset.name}`);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);

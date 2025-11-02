@@ -84,7 +84,7 @@ class AssetListPage extends BaseListPage {
     AssetBackend.addAsset(newAsset)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/assets/${newAsset.owner}/${newAsset.name}`, mode: "add"});
+          this.props.history.push({pathname: `/assets/${newAsset.name}`, mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
@@ -170,7 +170,7 @@ class AssetListPage extends BaseListPage {
         ...this.getColumnSearchProps("owner"),
         render: (text, record, index) => {
           return (
-            <Link to={`/assets/${text}/${record.name}`}>{text}</Link>
+            <Link to={`/assets/${record.name}`}>{text}</Link>
           );
         },
       },
@@ -183,7 +183,7 @@ class AssetListPage extends BaseListPage {
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
-            <Link to={`/assets/${record.owner}/${text}`}>{text}</Link>
+            <Link to={`/assets/${text}`}>{text}</Link>
           );
         },
       },
@@ -307,7 +307,7 @@ class AssetListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/assets/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/assets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <PopconfirmModal
                 title={i18next.t("general:Sure to delete") + `: ${record.name} ?`}
                 onConfirm={() => this.deleteAsset(index)}
