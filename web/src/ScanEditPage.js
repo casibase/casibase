@@ -86,6 +86,35 @@ class ScanEditPage extends React.Component {
       });
   }
 
+  getAssetTypeIcon(assetName) {
+    if (!assetName) {
+      return null;
+    }
+    const asset = this.state.assets.find(asset => `${asset.owner}/${asset.name}` === assetName);
+    if (!asset) {
+      return null;
+    }
+    const typeIcons = Setting.getAssetTypeIcons();
+    return typeIcons[asset.type] || null;
+  }
+
+  getProviderLogo(providerName) {
+    if (!providerName) {
+      return null;
+    }
+    const provider = this.state.providers.find(p => p.name === providerName);
+    if (!provider) {
+      return null;
+    }
+
+    const otherProviderInfo = Setting.getOtherProviderInfo();
+    if (!otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {
+      return null;
+    }
+
+    return otherProviderInfo[provider.category][provider.type].logo;
+  }
+
   parseScanField(key, value) {
     return value;
   }
@@ -200,7 +229,18 @@ class ScanEditPage extends React.Component {
                 this.updateScanField("asset", value);
               })} >
               {
-                this.state.assets?.map((asset, index) => <Option key={index} value={`${asset.owner}/${asset.name}`}>{`${asset.owner}/${asset.name} (${asset.displayName})`}</Option>)
+                this.state.assets?.map((asset, index) => {
+                  const typeIcons = Setting.getAssetTypeIcons();
+                  const icon = typeIcons[asset.type];
+                  return (
+                    <Option key={index} value={`${asset.owner}/${asset.name}`}>
+                      <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                        {icon && <img src={icon} alt={asset.type} style={{width: "16px", height: "16px"}} />}
+                        <span>{`${asset.owner}/${asset.name} (${asset.displayName})`}</span>
+                      </div>
+                    </Option>
+                  );
+                })
               }
             </Select>
           </Col>
@@ -215,7 +255,17 @@ class ScanEditPage extends React.Component {
                 this.updateScanField("provider", value);
               })} >
               {
-                this.state.providers?.map((provider, index) => <Option key={index} value={provider.name}>{provider.name}</Option>)
+                this.state.providers?.map((provider, index) => {
+                  const logo = this.getProviderLogo(provider.name);
+                  return (
+                    <Option key={index} value={provider.name}>
+                      <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                        {logo && <img src={logo} alt={provider.name} style={{width: "16px", height: "16px"}} />}
+                        <span>{provider.name}</span>
+                      </div>
+                    </Option>
+                  );
+                })
               }
             </Select>
           </Col>
