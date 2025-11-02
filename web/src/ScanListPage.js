@@ -25,6 +25,8 @@ import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import {ScanResultPopover} from "./common/ScanResultPopover";
 
+const DEFAULT_PROVIDER_TYPE = "Nmap";
+
 class ScanListPage extends BaseListPage {
   constructor(props) {
     super(props);
@@ -103,7 +105,7 @@ class ScanListPage extends BaseListPage {
   getProviderType(providerName) {
     const provider = this.getProviderInfo(providerName);
     if (!provider) {
-      return "Nmap"; // Default to Nmap if provider not found
+      return DEFAULT_PROVIDER_TYPE;
     }
     return provider.type;
   }

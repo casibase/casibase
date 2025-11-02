@@ -50,10 +50,11 @@ export function ScanResultRenderer({scanResult, providerType, height = "300px"})
     );
   }
 
-  // Determine if result is JSON
+  // Determine if result is JSON and parse it once
   let isJson = false;
+  let parsedResult = null;
   try {
-    JSON.parse(scanResult);
+    parsedResult = JSON.parse(scanResult);
     isJson = true;
   } catch (e) {
     isJson = false;
@@ -91,7 +92,7 @@ export function ScanResultRenderer({scanResult, providerType, height = "300px"})
       </TabPane>
       <TabPane tab={i18next.t("scan:Raw JSON")} key="raw">
         <CodeMirror
-          value={JSON.stringify(JSON.parse(scanResult), null, 2)}
+          value={JSON.stringify(parsedResult, null, 2)}
           options={{
             mode: "application/json",
             theme: "material-darker",
