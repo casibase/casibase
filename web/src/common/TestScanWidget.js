@@ -412,7 +412,14 @@ class TestScanWidget extends React.Component {
         <TabPane tab={i18next.t("scan:Structured View")} key="structured">
           <div style={{padding: "16px", backgroundColor: "#f5f5f5", minHeight: "300px"}}>
             {providerType === "Nmap" && <NmapResultRenderer result={scanResult} />}
-            {providerType === "OS Patch" && <OsPatchResultRenderer result={scanResult} />}
+            {providerType === "OS Patch" && (
+              <OsPatchResultRenderer
+                result={scanResult}
+                provider={this.props.provider}
+                scan={this.props.scan}
+                onRefresh={() => this.testScan()}
+              />
+            )}
           </div>
         </TabPane>
         <TabPane tab={i18next.t("scan:Raw JSON")} key="raw">
