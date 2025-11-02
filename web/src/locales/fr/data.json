@@ -64,7 +64,12 @@
     "Edit Scan": "Modifier l'analyse",
     "New Scan": "Nouvelle analyse",
     "Provider - Tooltip": "Fournisseur de scan à utiliser",
-    "Result - Tooltip": "Sortie du résultat de l'analyse"
+    "Result - Tooltip": "Sortie du résultat de l'analyse",
+    "Manual Input": "Saisie Manuelle",
+    "Target": "Cible",
+    "Target - Tooltip": "La cible à scanner (adresse IP ou plage réseau)",
+    "Target mode": "Mode cible",
+    "Target mode - Tooltip": "Sélectionnez comment spécifier la cible du scan"
   },
   "caase": {
     "Edit Caase": "Modifier le cas",
@@ -693,7 +698,9 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Limite du nombre de tokens candidates (1-6)",
     "Top P": "Top P",
-    "Top P - Tooltip": "Seuil d'échantillonnage probabiliste (0-1)"
+    "Top P - Tooltip": "Seuil d'échantillonnage probabiliste (0-1)",
+    "Action": "Action",
+    "Action - Tooltip": "Execute scan action"
   },
   "record": {
     "Commit": "Mise en chaîne",

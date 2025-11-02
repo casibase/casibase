@@ -64,7 +64,12 @@
     "Edit Scan": "Editar Varredura",
     "New Scan": "Nova Varredura",
     "Provider - Tooltip": "Provedor de varredura a ser usado",
-    "Result - Tooltip": "Saída do resultado da varredura"
+    "Result - Tooltip": "Saída do resultado da varredura",
+    "Manual Input": "Entrada Manual",
+    "Target": "Alvo",
+    "Target - Tooltip": "O alvo a ser escaneado (endereço IP ou faixa de rede)",
+    "Target mode": "Modo de alvo",
+    "Target mode - Tooltip": "Selecione como especificar o alvo do scan"
   },
   "caase": {
     "Edit Caase": "Edit Case",
@@ -693,7 +698,9 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Number of candidate tokens",
     "Top P": "Top P",
-    "Top P - Tooltip": "Probability sampling threshold"
+    "Top P - Tooltip": "Probability sampling threshold",
+    "Action": "Action",
+    "Action - Tooltip": "Execute scan action"
   },
   "record": {
     "Commit": "Commit",

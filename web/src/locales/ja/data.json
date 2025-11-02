@@ -64,7 +64,12 @@
     "Edit Scan": "スキャンの編集",
     "New Scan": "新しいスキャン",
     "Provider - Tooltip": "使用するスキャンプロバイダー",
-    "Result - Tooltip": "スキャン結果の出力"
+    "Result - Tooltip": "スキャン結果の出力",
+    "Manual Input": "手動入力",
+    "Target": "ターゲット",
+    "Target - Tooltip": "スキャンするターゲット（IPアドレスまたはネットワーク範囲）",
+    "Target mode": "ターゲットモード",
+    "Target mode - Tooltip": "スキャンターゲットの指定方法を選択"
   },
   "caase": {
     "Edit Caase": "症例を編集",
@@ -693,7 +698,9 @@
     "Top K": "Top K",
     "Top K - Tooltip": "候補token数制限（1-6）",
     "Top P": "Top P",
-    "Top P - Tooltip": "確率サンプリング閾値（0-1）"
+    "Top P - Tooltip": "確率サンプリング閾値（0-1）",
+    "Action": "Action",
+    "Action - Tooltip": "Execute scan action"
   },
   "record": {
     "Commit": "チェーン上げ",

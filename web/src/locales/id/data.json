@@ -64,7 +64,12 @@
     "Edit Scan": "Edit Pemindaian",
     "New Scan": "Pemindaian Baru",
     "Provider - Tooltip": "Penyedia pemindaian yang akan digunakan",
-    "Result - Tooltip": "Output hasil pemindaian"
+    "Result - Tooltip": "Output hasil pemindaian",
+    "Manual Input": "Input Manual",
+    "Target": "Target",
+    "Target - Tooltip": "Target yang akan dipindai (alamat IP atau rentang jaringan)",
+    "Target mode": "Mode target",
+    "Target mode - Tooltip": "Pilih cara menentukan target pemindaian"
   },
   "caase": {
     "Edit Caase": "Edit kasus",
@@ -693,7 +698,9 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Batas jumlah token kandidat (1-6)",
     "Top P": "Top P",
-    "Top P - Tooltip": "Ambang sampling probabilitas (0-1)"
+    "Top P - Tooltip": "Ambang sampling probabilitas (0-1)",
+    "Action": "Action",
+    "Action - Tooltip": "Execute scan action"
   },
   "record": {
     "Commit": "Komit",

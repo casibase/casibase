@@ -13,27 +13,95 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Input, Radio, Row} from "antd";
+import {Button, Col, Input, Radio, Row, Select} from "antd";
 import * as Setting from "../Setting";
 import i18next from "i18next";
+import * as ScanBackend from "../backend/ScanBackend";
 import * as ProviderBackend from "../backend/ProviderBackend";
+import * as AssetBackend from "../backend/AssetBackend";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
 
-// Max height for the scan result CodeMirror editor to prevent UI overflow
-const RESULT_MAX_HEIGHT = "calc(100vh - 400px)";
+const {Option} = Select;
+
+const DEFAULT_SCAN_TARGET = "127.0.0.1";
+const DEFAULT_SCAN_COMMAND = "-sn %s";
 
 class TestScanWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      targetMode: "Manual Input", // "Manual Input" or "Asset"
       scanTarget: "",
+      selectedAsset: "",
+      selectedProvider: "",
       scanCommand: "",
       scanResult: "",
       scanButtonLoading: false,
+      assets: [],
+      providers: [],
     };
+  }
+
+  componentDidMount() {
+    this.loadAssets();
+    this.loadProviders();
+    this.initializeDefaults();
+  }
+
+  componentDidUpdate(prevProps) {
+    // Re-initialize if scan or provider changes
+    if (this.props.scan && prevProps.scan !== this.props.scan) {
+      this.initializeDefaults();
+    }
+    if (this.props.provider && prevProps.provider?.name !== this.props.provider?.name) {
+      this.initializeDefaults();
+    }
+  }
+
+  loadAssets() {
+    if (!this.props.account) {
+      return;
+    }
+    AssetBackend.getAssets(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          // Filter to only show Virtual Machine assets
+          const vmAssets = res.data.filter(asset => asset.type === "Virtual Machine");
+          this.setState({
+            assets: vmAssets,
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get assets")}: ${res.msg}`);
+        }
+      })
+      .catch((error) => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to get assets")}: ${error}`);
+      });
+  }
+
+  loadProviders() {
+    if (!this.props.account) {
+      return;
+    }
+    ProviderBackend.getProviders(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          const scanProviders = res.data.filter(provider =>
+            provider.category === "Scan"
+          );
+          this.setState({
+            providers: scanProviders,
+          });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get providers")}: ${res.msg}`);
+        }
+      })
+      .catch((error) => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to get providers")}: ${error}`);
+      });
   }
 
   getCommandTemplates() {
@@ -50,41 +118,59 @@ class TestScanWidget extends React.Component {
   }
 
   initializeDefaults() {
-    if (!this.props.provider || this.props.provider.category !== "Scan") {
+    // Initialize from scan object (for ScanEditPage)
+    if (this.props.scan) {
+      const defaultCommand = this.props.scan.command || DEFAULT_SCAN_COMMAND;
+      const targetMode = this.props.scan.targetMode || (this.props.scan.asset ? "Asset" : "Manual Input");
+      const scanTarget = this.props.scan.target || DEFAULT_SCAN_TARGET;
+
+      this.setState({
+        targetMode: targetMode,
+        scanTarget: scanTarget,
+        selectedAsset: this.props.scan.asset || "",
+        selectedProvider: this.props.scan.provider || "",
+        scanCommand: defaultCommand,
+        scanResult: this.props.scan.resultText || "",
+      });
       return;
     }
 
-    // Set default network if empty
-    if (this.props.provider.network === "") {
-      this.props.provider.network = "127.0.0.1";
-      if (this.props.onUpdateProvider) {
-        this.props.onUpdateProvider("network", "127.0.0.1");
+    // Initialize from provider object (for ProviderEditPage)
+    if (this.props.provider && this.props.provider.category === "Scan") {
+      const defaultCommand = this.props.provider.text || DEFAULT_SCAN_COMMAND;
+      const defaultTarget = this.props.provider.target || this.props.provider.network || DEFAULT_SCAN_TARGET;
+      const targetMode = this.props.provider.targetMode || "Manual Input";
+
+      // Set default values if empty
+      if (!this.props.provider.target && !this.props.provider.network) {
+        this.props.provider.target = defaultTarget;
+        if (this.props.onUpdateProvider) {
+          this.props.onUpdateProvider("target", defaultTarget);
+        }
       }
-    }
 
-    // Set default command if empty
-    const defaultCommand = "-sn %s";
-    if (this.props.provider.text === "" || this.props.provider.text === undefined) {
-      this.props.provider.text = defaultCommand;
-      if (this.props.onUpdateProvider) {
-        this.props.onUpdateProvider("text", defaultCommand);
+      if (!this.props.provider.text) {
+        this.props.provider.text = defaultCommand;
+        if (this.props.onUpdateProvider) {
+          this.props.onUpdateProvider("text", defaultCommand);
+        }
       }
-    }
 
-    this.setState({
-      scanTarget: this.props.provider.network || "127.0.0.1",
-      scanCommand: this.props.provider.text || defaultCommand,
-      scanResult: this.props.provider.configText || "",
-    });
-  }
+      if (!this.props.provider.targetMode) {
+        this.props.provider.targetMode = targetMode;
+        if (this.props.onUpdateProvider) {
+          this.props.onUpdateProvider("targetMode", targetMode);
+        }
+      }
 
-  componentDidMount() {
-    this.initializeDefaults();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.provider?.name !== this.props.provider?.name) {
-      this.initializeDefaults();
+      this.setState({
+        targetMode: targetMode,
+        scanTarget: defaultTarget,
+        selectedAsset: this.props.provider.asset || "",
+        selectedProvider: this.props.provider.name || "",
+        scanCommand: defaultCommand,
+        scanResult: this.props.provider.configText || "",
+      });
     }
   }
 
@@ -93,16 +179,66 @@ class TestScanWidget extends React.Component {
       scanButtonLoading: true,
     });
 
-    ProviderBackend.testScan(this.props.provider.owner, this.props.provider.name, this.state.scanTarget, this.state.scanCommand)
+    // Determine parameters based on context
+    let providerId = "";
+    let scanId = "";
+    const targetMode = this.state.targetMode;
+    const target = this.state.scanTarget;
+    const asset = this.state.selectedAsset;
+    const command = this.state.scanCommand;
+    let saveToScan = false;
+
+    // For ProviderEditPage, use the provider passed via props
+    if (this.props.provider && this.props.provider.category === "Scan") {
+      providerId = `${this.props.provider.owner}/${this.props.provider.name}`;
+      saveToScan = false;
+    } else if (this.props.scan) {
+      const providerObj = this.state.providers.find(p => p.name === this.state.selectedProvider);
+      if (providerObj) {
+        providerId = `${providerObj.owner}/${providerObj.name}`;
+      }
+      scanId = `${this.props.scan.owner}/${this.props.scan.name}`;
+      saveToScan = true; // Scan edit page saves results to scan object
+    }
+
+    if (!providerId) {
+      Setting.showMessage("error", i18next.t("general:Please select a provider"));
+      this.setState({scanButtonLoading: false});
+      return;
+    }
+
+    if (targetMode === "Manual Input" && !target) {
+      Setting.showMessage("error", i18next.t("general:Please enter a target"));
+      this.setState({scanButtonLoading: false});
+      return;
+    }
+
+    if (targetMode === "Asset" && !asset) {
+      Setting.showMessage("error", i18next.t("general:Please select an asset"));
+      this.setState({scanButtonLoading: false});
+      return;
+    }
+
+    // Save widget state to DB before executing scan
+    this.saveWidgetState();
+
+    // Call unified scan-asset API
+    ScanBackend.scanAsset(providerId, scanId, targetMode, target, asset, command, saveToScan)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully executed"));
           this.setState({
             scanResult: res.data,
           });
-          // Save scan result to ConfigText field
+
+          // Save scan result to provider ConfigText field (for ProviderEditPage)
           if (this.props.onUpdateProvider) {
             this.props.onUpdateProvider("configText", res.data);
+          }
+
+          // Save scan result to scan ResultText field (for ScanEditPage)
+          if (this.props.onUpdateScan) {
+            this.props.onUpdateScan("resultText", res.data);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
@@ -122,32 +258,188 @@ class TestScanWidget extends React.Component {
       });
   }
 
-  render() {
-    if (!this.props.provider || this.props.provider.category !== "Scan") {
+  saveWidgetState() {
+    // Save all widget field values to DB
+    if (this.props.onUpdateProvider) {
+      // For ProviderEditPage - save to Provider fields
+      this.props.onUpdateProvider("targetMode", this.state.targetMode);
+      this.props.onUpdateProvider("target", this.state.scanTarget);
+      this.props.onUpdateProvider("asset", this.state.selectedAsset);
+      this.props.onUpdateProvider("text", this.state.scanCommand); // Command is saved to text field
+    }
+
+    if (this.props.onUpdateScan) {
+      // For ScanEditPage - save to Scan fields
+      this.props.onUpdateScan("targetMode", this.state.targetMode);
+      this.props.onUpdateScan("target", this.state.scanTarget);
+      this.props.onUpdateScan("asset", this.state.selectedAsset);
+      this.props.onUpdateScan("command", this.state.scanCommand);
+    }
+  }
+
+  getAssetTypeIcon(assetName) {
+    if (!assetName) {
+      return null;
+    }
+    const asset = this.state.assets.find(asset => `${asset.owner}/${asset.name}` === assetName);
+    if (!asset) {
+      return null;
+    }
+    const typeIcons = Setting.getAssetTypeIcons();
+    return typeIcons[asset.type] || null;
+  }
+
+  getProviderLogo(providerName) {
+    if (!providerName) {
+      return null;
+    }
+    const provider = this.state.providers.find(p => p.name === providerName);
+    if (!provider) {
       return null;
     }
 
-    const isRemote = this.props.provider.isRemote;
+    const otherProviderInfo = Setting.getOtherProviderInfo();
+    if (!otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {
+      return null;
+    }
+
+    return otherProviderInfo[provider.category][provider.type].logo;
+  }
+
+  render() {
+    // Only render for Scan providers or when scan is provided
+    if (!this.props.provider && !this.props.scan) {
+      return null;
+    }
+
+    if (this.props.provider && this.props.provider.category !== "Scan") {
+      return null;
+    }
+
+    const isRemote = this.props.provider?.isRemote;
+    const isScanEditPage = !!this.props.scan;
 
     return (
       <div>
+        {isScanEditPage && (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
+              {Setting.getLabel(i18next.t("general:Provider"), i18next.t("scan:Provider - Tooltip"))} :
+            </Col>
+            <Col span={22} >
+              <Select
+                virtual={false}
+                style={{width: "100%"}}
+                value={this.state.selectedProvider}
+                onChange={(value) => {
+                  this.setState({selectedProvider: value});
+                  if (this.props.onUpdateScan) {
+                    this.props.onUpdateScan("provider", value);
+                  }
+                }}
+              >
+                {
+                  this.state.providers?.map((provider, index) => {
+                    const logo = this.getProviderLogo(provider.name);
+                    return (
+                      <Option key={index} value={provider.name}>
+                        <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                          {logo && <img src={logo} alt={provider.name} style={{width: "16px", height: "16px"}} />}
+                          <span>{provider.name}</span>
+                        </div>
+                      </Option>
+                    );
+                  })
+                }
+              </Select>
+            </Col>
+          </Row>
+        )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Network"), i18next.t("general:Network - Tooltip"))} :
+            {Setting.getLabel(i18next.t("scan:Target mode"), i18next.t("scan:Target mode - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input
+            <Radio.Group
               disabled={isRemote}
-              value={this.state.scanTarget}
-              onChange={e => {
-                this.setState({scanTarget: e.target.value});
+              value={this.state.targetMode}
+              onChange={(e) => {
+                const newMode = e.target.value;
+                this.setState({targetMode: newMode});
                 if (this.props.onUpdateProvider) {
-                  this.props.onUpdateProvider("network", e.target.value);
+                  this.props.onUpdateProvider("targetMode", newMode);
+                }
+                if (this.props.onUpdateScan) {
+                  this.props.onUpdateScan("targetMode", newMode);
                 }
               }}
-            />
+            >
+              <Radio value="Manual Input">{i18next.t("scan:Manual Input")}</Radio>
+              <Radio value="Asset">{i18next.t("general:Asset")}</Radio>
+            </Radio.Group>
           </Col>
         </Row>
+        {this.state.targetMode === "Manual Input" ? (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
+              {Setting.getLabel(i18next.t("scan:Target"), i18next.t("scan:Target - Tooltip"))} :
+            </Col>
+            <Col span={22} >
+              <Input
+                disabled={isRemote}
+                value={this.state.scanTarget}
+                placeholder="127.0.0.1 or 192.168.1.0/24"
+                onChange={e => {
+                  const newValue = e.target.value;
+                  this.setState({scanTarget: newValue});
+                  if (this.props.onUpdateProvider) {
+                    this.props.onUpdateProvider("target", newValue);
+                  }
+                  if (this.props.onUpdateScan) {
+                    this.props.onUpdateScan("target", newValue);
+                  }
+                }}
+              />
+            </Col>
+          </Row>
+        ) : (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
+              {Setting.getLabel(i18next.t("general:Asset"), i18next.t("scan:Asset - Tooltip"))} :
+            </Col>
+            <Col span={22} >
+              <Select
+                virtual={false}
+                style={{width: "100%"}}
+                value={this.state.selectedAsset}
+                onChange={(value) => {
+                  this.setState({selectedAsset: value});
+                  if (this.props.onUpdateProvider) {
+                    this.props.onUpdateProvider("asset", value);
+                  }
+                  if (this.props.onUpdateScan) {
+                    this.props.onUpdateScan("asset", value);
+                  }
+                }}
+              >
+                {
+                  this.state.assets?.map((asset, index) => {
+                    const typeIcons = Setting.getAssetTypeIcons();
+                    const icon = typeIcons[asset.type];
+                    return (
+                      <Option key={index} value={`${asset.owner}/${asset.name}`}>
+                        <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                          {icon && <img src={icon} alt={asset.type} style={{width: "16px", height: "16px"}} />}
+                          <span>{`${asset.owner}/${asset.name} (${asset.displayName})`}</span>
+                        </div>
+                      </Option>
+                    );
+                  })
+                }
+              </Select>
+            </Col>
+          </Row>
+        )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Template"), i18next.t("general:Template - Tooltip"))} :
@@ -163,6 +455,9 @@ class TestScanWidget extends React.Component {
                   this.setState({scanCommand: template.command});
                   if (this.props.onUpdateProvider) {
                     this.props.onUpdateProvider("text", template.command);
+                  }
+                  if (this.props.onUpdateScan) {
+                    this.props.onUpdateScan("command", template.command);
                   }
                 }
               }}
@@ -189,13 +484,16 @@ class TestScanWidget extends React.Component {
                 if (this.props.onUpdateProvider) {
                   this.props.onUpdateProvider("text", e.target.value);
                 }
+                if (this.props.onUpdateScan) {
+                  this.props.onUpdateScan("command", e.target.value);
+                }
               }}
             />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-            {Setting.getLabel(i18next.t("provider:Provider test"), i18next.t("provider:Provider test - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Action"), i18next.t("general:Action - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Button
@@ -214,17 +512,22 @@ class TestScanWidget extends React.Component {
             {Setting.getLabel(i18next.t("general:Result"), i18next.t("general:Result - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <div style={{maxHeight: RESULT_MAX_HEIGHT, overflow: "auto"}}>
-              <CodeMirror
-                value={this.state.scanResult}
-                options={{
-                  mode: "text/plain",
-                  theme: "material-darker",
-                  readOnly: true,
-                  lineNumbers: true,
-                }}
-              />
-            </div>
+            <CodeMirror
+              value={this.state.scanResult}
+              options={{
+                mode: "text/plain",
+                theme: "material-darker",
+                readOnly: true,
+                lineNumbers: true,
+              }}
+              editorDidMount={(editor) => {
+                // Set minimum height to 10 lines
+                editor.setSize(null, "auto");
+                const lineHeight = editor.defaultTextHeight();
+                const minHeight = lineHeight * 10;
+                editor.getWrapperElement().style.minHeight = `${minHeight}px`;
+              }}
+            />
           </Col>
         </Row>
       </div>

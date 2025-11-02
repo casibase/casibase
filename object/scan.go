@@ -29,7 +29,9 @@ type Scan struct {
 	UpdatedTime string `xorm:"varchar(100)" json:"updatedTime"`
 	DisplayName string `xorm:"varchar(200)" json:"displayName"`
 
-	Asset      string `xorm:"varchar(200)" json:"asset"`
+	TargetMode string `xorm:"varchar(100)" json:"targetMode"`
+	Target     string `xorm:"varchar(100)" json:"target"`
+	Asset      string `xorm:"varchar(100)" json:"asset"`
 	Provider   string `xorm:"varchar(100)" json:"provider"`
 	State      string `xorm:"varchar(100)" json:"state"`
 	Command    string `xorm:"varchar(500)" json:"command"`
@@ -196,4 +198,82 @@ func StartScan(id string, lang string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+// ScanAsset performs a scan on an asset - unified API that combines test-scan and start-scan functionality
+// @param providerId: The provider ID (owner/name) for scan provider
+// @param scanId: Optional scan ID (owner/name) for saving results to existing scan
+// @param targetMode: "Manual Input" or "Asset"
+// @param target: IP address or network range (for Manual Input mode)
+// @param asset: Asset ID (owner/name) for Asset mode
+// @param command: Scan command with optional %s placeholder for target
+// @param saveToScan: Whether to save results to scan object (true for scan edit page, false for provider edit page)
+func ScanAsset(providerId, scanId, targetMode, target, asset, command string, saveToScan bool, lang string) (string, error) {
+	// Get the provider
+	provider, err := GetProvider(providerId)
+	if err != nil {
+		return "", err
+	}
+	if provider == nil {
+		return "", fmt.Errorf("provider not found")
+	}
+
+	// Create scan provider
+	scanProvider, err := scan.GetScanProvider(provider.Type, provider.ClientId, lang)
+	if err != nil {
+		return "", err
+	}
+	if scanProvider == nil {
+		return "", fmt.Errorf("scan provider not supported")
+	}
+
+	// Determine the scan target
+	var scanTarget string
+	if targetMode == "Asset" {
+		// Get the asset
+		assetObj, err := GetAsset(asset)
+		if err != nil {
+			return "", err
+		}
+		if assetObj == nil {
+			return "", fmt.Errorf("asset not found")
+		}
+
+		// Get the scan target from asset
+		scanTarget, err = assetObj.GetScanTarget()
+		if err != nil {
+			return "", fmt.Errorf("error getting scan target: %v", err)
+		}
+	} else {
+		// Use manual input target
+		scanTarget = target
+	}
+
+	// Perform scan
+	var result string
+	if command != "" {
+		result, err = scanProvider.ScanWithCommand(scanTarget, command)
+	} else {
+		result, err = scanProvider.Scan(scanTarget)
+	}
+
+	if err != nil {
+		return "", err
+	}
+
+	// If saveToScan is true and scanId is provided, update the scan object with results
+	if saveToScan && scanId != "" {
+		scanObj, err := GetScan(scanId)
+		if err != nil {
+			return result, err // Return result even if save fails
+		}
+		if scanObj != nil {
+			scanObj.State = "Completed"
+			scanObj.ResultText = result
+			scanObj.UpdatedTime = util.GetCurrentTime()
+			_, _ = UpdateScan(scanId, scanObj) // Ignore save errors, still return result
+		}
+	}
+
+	return result, nil
 }

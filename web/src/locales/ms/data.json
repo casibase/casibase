@@ -64,7 +64,12 @@
     "Edit Scan": "Edit Imbasan",
     "New Scan": "Imbasan Baru",
     "Provider - Tooltip": "Pembekal imbasan untuk digunakan",
-    "Result - Tooltip": "Output hasil imbasan"
+    "Result - Tooltip": "Output hasil imbasan",
+    "Manual Input": "Input Manual",
+    "Target": "Sasaran",
+    "Target - Tooltip": "Sasaran untuk diimbas (alamat IP atau julat rangkaian)",
+    "Target mode": "Mod sasaran",
+    "Target mode - Tooltip": "Pilih cara untuk menentukan sasaran imbasan"
   },
   "caase": {
     "Edit Caase": "Edit Case",
@@ -693,7 +698,9 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Number of candidate tokens",
     "Top P": "Top P",
-    "Top P - Tooltip": "Probability sampling threshold"
+    "Top P - Tooltip": "Probability sampling threshold",
+    "Action": "Action",
+    "Action - Tooltip": "Execute scan action"
   },
   "record": {
     "Commit": "Commit",

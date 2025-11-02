@@ -154,3 +154,34 @@ func (c *ApiController) StartScan() {
 
 	c.ResponseOk(object.StartScan(id, c.GetAcceptLanguage()))
 }
+
+// ScanAsset
+// @Title ScanAsset
+// @Tag Scan API
+// @Description unified API for scanning assets (combines test-scan and start-scan functionality)
+// @Param providerId query string true "The provider ID (owner/name)"
+// @Param scanId query string false "The scan ID (owner/name) for saving results"
+// @Param targetMode query string true "Target mode: 'Manual Input' or 'Asset'"
+// @Param target query string false "Manual input target (IP address or network range)"
+// @Param asset query string false "Asset ID (owner/name) for Asset mode"
+// @Param command query string false "Scan command with optional %s placeholder for target"
+// @Param saveToScan query string false "Whether to save results to scan object (true/false)"
+// @Success 200 {object} controllers.Response The Response object
+// @router /scan-asset [post]
+func (c *ApiController) ScanAsset() {
+	providerId := c.Input().Get("providerId")
+	scanId := c.Input().Get("scanId")
+	targetMode := c.Input().Get("targetMode")
+	target := c.Input().Get("target")
+	asset := c.Input().Get("asset")
+	command := c.Input().Get("command")
+	saveToScan := c.Input().Get("saveToScan") == "true"
+
+	result, err := object.ScanAsset(providerId, scanId, targetMode, target, asset, command, saveToScan, c.GetAcceptLanguage())
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(result)
+}

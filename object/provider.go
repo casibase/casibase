@@ -74,6 +74,11 @@ type Provider struct {
 	Chain          string `xorm:"varchar(100)" json:"chain"`
 	TestContent    string `xorm:"varchar(100)" json:"testContent"`
 
+	// New fields for unified scan widget (for Scan category providers)
+	TargetMode string `xorm:"varchar(100)" json:"targetMode"` // "Manual Input" or "Asset"
+	Target     string `xorm:"varchar(500)" json:"target"`     // Manual input target (IP address or network range)
+	Asset      string `xorm:"varchar(200)" json:"asset"`      // Selected asset for scan
+
 	IsDefault  bool   `json:"isDefault"`
 	IsRemote   bool   `json:"isRemote"`
 	State      string `xorm:"varchar(100)" json:"state"`

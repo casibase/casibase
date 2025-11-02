@@ -64,7 +64,12 @@
     "Edit Scan": "Taramayı Düzenle",
     "New Scan": "Yeni Tarama",
     "Provider - Tooltip": "Kullanılacak tarama sağlayıcısı",
-    "Result - Tooltip": "Tarama sonucu çıktısı"
+    "Result - Tooltip": "Tarama sonucu çıktısı",
+    "Manual Input": "Manuel Giriş",
+    "Target": "Hedef",
+    "Target - Tooltip": "Taranacak hedef (IP adresi veya ağ aralığı)",
+    "Target mode": "Hedef modu",
+    "Target mode - Tooltip": "Tarama hedefinin nasıl belirtileceğini seçin"
   },
   "caase": {
     "Edit Caase": "Edit Case",
@@ -693,7 +698,9 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Number of candidate tokens",
     "Top P": "Top P",
-    "Top P - Tooltip": "Probability sampling threshold"
+    "Top P - Tooltip": "Probability sampling threshold",
+    "Action": "Action",
+    "Action - Tooltip": "Execute scan action"
   },
   "record": {
     "Commit": "Commit",

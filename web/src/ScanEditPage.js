@@ -13,15 +13,11 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row, Select} from "antd";
+import {Button, Card, Col, Input, Row} from "antd";
 import * as ScanBackend from "./backend/ScanBackend";
-import * as AssetBackend from "./backend/AssetBackend";
-import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-
-const {Option} = Select;
-const {TextArea} = Input;
+import TestScanWidget from "./common/TestScanWidget";
 
 class ScanEditPage extends React.Component {
   constructor(props) {
@@ -30,16 +26,12 @@ class ScanEditPage extends React.Component {
       classes: props,
       scanName: props.match.params.scanName,
       scan: null,
-      assets: [],
-      providers: [],
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getScan();
-    this.getAssets();
-    this.getProviders();
   }
 
   getScan() {
@@ -53,66 +45,6 @@ class ScanEditPage extends React.Component {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
-  }
-
-  getAssets() {
-    AssetBackend.getAssets(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          // Filter to only show Virtual Machine assets
-          const vmAssets = res.data.filter(asset => asset.type === "Virtual Machine");
-          this.setState({
-            assets: vmAssets,
-          });
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
-        }
-      });
-  }
-
-  getProviders() {
-    ProviderBackend.getProviders(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          const scanProviders = res.data.filter(provider =>
-            provider.category === "Scan"
-          );
-          this.setState({
-            providers: scanProviders,
-          });
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
-        }
-      });
-  }
-
-  getAssetTypeIcon(assetName) {
-    if (!assetName) {
-      return null;
-    }
-    const asset = this.state.assets.find(asset => `${asset.owner}/${asset.name}` === assetName);
-    if (!asset) {
-      return null;
-    }
-    const typeIcons = Setting.getAssetTypeIcons();
-    return typeIcons[asset.type] || null;
-  }
-
-  getProviderLogo(providerName) {
-    if (!providerName) {
-      return null;
-    }
-    const provider = this.state.providers.find(p => p.name === providerName);
-    if (!provider) {
-      return null;
-    }
-
-    const otherProviderInfo = Setting.getOtherProviderInfo();
-    if (!otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {
-      return null;
-    }
-
-    return otherProviderInfo[provider.category][provider.type].logo;
   }
 
   parseScanField(key, value) {
@@ -166,21 +98,6 @@ class ScanEditPage extends React.Component {
       });
   }
 
-  startScan() {
-    ScanBackend.startScan(this.state.scan.owner, this.state.scan.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully executed"));
-          this.getScan();
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
-        }
-      })
-      .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
-      });
-  }
-
   renderScan() {
     return (
       <Card size="small" title={
@@ -219,88 +136,17 @@ class ScanEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Asset"), i18next.t("scan:Asset - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.scan.asset}
-              onChange={(value => {
-                this.updateScanField("asset", value);
-              })} >
-              {
-                this.state.assets?.map((asset, index) => {
-                  const typeIcons = Setting.getAssetTypeIcons();
-                  const icon = typeIcons[asset.type];
-                  return (
-                    <Option key={index} value={`${asset.owner}/${asset.name}`}>
-                      <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                        {icon && <img src={icon} alt={asset.type} style={{width: "16px", height: "16px"}} />}
-                        <span>{`${asset.owner}/${asset.name} (${asset.displayName})`}</span>
-                      </div>
-                    </Option>
-                  );
-                })
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Provider"), i18next.t("scan:Provider - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.scan.provider}
-              onChange={(value => {
-                this.updateScanField("provider", value);
-              })} >
-              {
-                this.state.providers?.map((provider, index) => {
-                  const logo = this.getProviderLogo(provider.name);
-                  return (
-                    <Option key={index} value={provider.name}>
-                      <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                        {logo && <img src={logo} alt={provider.name} style={{width: "16px", height: "16px"}} />}
-                        <span>{provider.name}</span>
-                      </div>
-                    </Option>
-                  );
-                })
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("container:Command"), i18next.t("container:Command - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.scan.command} onChange={e => {
-              this.updateScanField("command", e.target.value);
-            }} placeholder="-sn %s" />
-          </Col>
-        </Row>
+        <TestScanWidget
+          scan={this.state.scan}
+          account={this.props.account}
+          onUpdateScan={this.updateScanField.bind(this)}
+        />
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.scan.state} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Result"), i18next.t("scan:Result - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <TextArea value={this.state.scan.resultText} rows={10} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col span={22} offset={2}>
-            <Button type="primary" onClick={() => this.startScan()} disabled={this.state.scan.state === "Running"}>
-              {i18next.t("asset:Scan")}
-            </Button>
+            <Input value={this.state.scan.state} disabled />
           </Col>
         </Row>
       </Card>

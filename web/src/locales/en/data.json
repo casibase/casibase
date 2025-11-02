@@ -64,7 +64,12 @@
     "Edit Scan": "Edit Scan",
     "New Scan": "New Scan",
     "Provider - Tooltip": "Scan provider to use",
-    "Result - Tooltip": "Scan result output"
+    "Result - Tooltip": "Scan result output",
+    "Manual Input": "Manual Input",
+    "Target": "Target",
+    "Target - Tooltip": "The target to scan (IP address or network range)",
+    "Target mode": "Target mode",
+    "Target mode - Tooltip": "Select how to specify the scan target"
   },
   "caase": {
     "Edit Caase": "Edit Case",
@@ -693,7 +698,9 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Number of candidate tokens",
     "Top P": "Top P",
-    "Top P - Tooltip": "Probability sampling threshold"
+    "Top P - Tooltip": "Probability sampling threshold",
+    "Action": "Action",
+    "Action - Tooltip": "Execute scan action"
   },
   "record": {
     "Commit": "Commit",
