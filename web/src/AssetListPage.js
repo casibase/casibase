@@ -215,10 +215,12 @@ class AssetListPage extends BaseListPage {
         render: (text, record, index) => {
           const logo = this.getProviderLogo(text);
           return (
-            <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-              {logo && <img src={logo} alt={text} style={{width: "20px", height: "20px"}} />}
-              <span>{text}</span>
-            </div>
+            <Link to={`/providers/${text}`}>
+              <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                {logo && <img src={logo} alt={text} style={{width: "20px", height: "20px"}} />}
+                <span>{text}</span>
+              </div>
+            </Link>
           );
         },
       },

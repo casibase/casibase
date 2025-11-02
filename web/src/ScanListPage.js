@@ -18,11 +18,77 @@ import {Button, Table, Tag} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as ScanBackend from "./backend/ScanBackend";
+import * as AssetBackend from "./backend/AssetBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
 
 class ScanListPage extends BaseListPage {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.state,
+      assets: [],
+      providers: [],
+    };
+  }
+
+  componentDidMount() {
+    this.getAssets();
+    this.getProviders();
+  }
+
+  getAssets() {
+    AssetBackend.getAssets(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            assets: res.data || [],
+          });
+        }
+      });
+  }
+
+  getProviders() {
+    ProviderBackend.getProviders(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            providers: res.data || [],
+          });
+        }
+      });
+  }
+
+  getAssetInfo(assetName) {
+    if (!assetName) {return null;}
+    return this.state.assets.find(asset => `${asset.owner}/${asset.name}` === assetName);
+  }
+
+  getProviderInfo(providerName) {
+    if (!providerName) {return null;}
+    return this.state.providers.find(provider => provider.name === providerName);
+  }
+
+  getAssetTypeIcon(assetName) {
+    const asset = this.getAssetInfo(assetName);
+    if (!asset) {return null;}
+    const typeIcons = Setting.getAssetTypeIcons();
+    return typeIcons[asset.type] || null;
+  }
+
+  getProviderLogo(providerName) {
+    const provider = this.getProviderInfo(providerName);
+    if (!provider) {return null;}
+
+    const otherProviderInfo = Setting.getOtherProviderInfo();
+    if (!otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {
+      return null;
+    }
+
+    return otherProviderInfo[provider.category][provider.type].logo;
+  }
   newScan() {
     return {
       owner: this.props.account.name,
@@ -130,8 +196,14 @@ class ScanListPage extends BaseListPage {
         sorter: true,
         ...this.getColumnSearchProps("asset"),
         render: (text, record, index) => {
+          const icon = this.getAssetTypeIcon(text);
           return (
-            <Link to={`/assets/${text}`}>{text}</Link>
+            <Link to={`/assets/${text}`}>
+              <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                {icon && <img src={icon} alt={text} style={{width: "20px", height: "20px"}} />}
+                <span>{text}</span>
+              </div>
+            </Link>
           );
         },
       },
@@ -143,8 +215,14 @@ class ScanListPage extends BaseListPage {
         sorter: true,
         ...this.getColumnSearchProps("provider"),
         render: (text, record, index) => {
+          const logo = this.getProviderLogo(text);
           return (
-            <Link to={`/providers/${text}`}>{text}</Link>
+            <Link to={`/providers/${text}`}>
+              <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                {logo && <img src={logo} alt={text} style={{width: "20px", height: "20px"}} />}
+                <span>{text}</span>
+              </div>
+            </Link>
           );
         },
       },
