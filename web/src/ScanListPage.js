@@ -107,7 +107,7 @@ class ScanListPage extends BaseListPage {
       displayName: `New Scan - ${Setting.getRandomName()}`,
       asset: "",
       provider: "",
-      state: "",
+      state: "Idle",
       command: "",
       rawResult: "",
       result: "",

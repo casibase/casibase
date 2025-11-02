@@ -134,7 +134,7 @@ func executeScan(s *Scan) {
 	// Update scan state to "Running"
 	s.State = "Running"
 	s.UpdatedTime = util.GetCurrentTime()
-	s.ResultText = "Scan started..."
+	s.Result = "Scan started..."
 	_, err := UpdateScan(scanId, s)
 	if err != nil {
 		logs.Error("executeScan() failed to update scan state to Running: %v", err)
@@ -149,7 +149,7 @@ func executeScan(s *Scan) {
 	command := s.Command
 
 	// Execute the scan using ScanAsset
-	result, err := ScanAsset(provider, scanId, targetMode, target, asset, command, true, "en")
+	_, err = ScanAsset(provider, scanId, targetMode, target, asset, command, true, "en")
 	
 	if err != nil {
 		// Update scan with error
@@ -160,7 +160,7 @@ func executeScan(s *Scan) {
 		}
 		if scanObj != nil {
 			scanObj.State = "Failed"
-			scanObj.ResultText = fmt.Sprintf("Scan failed: %v", err)
+			scanObj.Result = fmt.Sprintf("Scan failed: %v", err)
 			scanObj.UpdatedTime = util.GetCurrentTime()
 			_, updateErr := UpdateScan(scanId, scanObj)
 			if updateErr != nil {
