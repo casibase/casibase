@@ -155,7 +155,7 @@ class OsPatchResultRenderer extends React.Component {
               showTotal: (total) => `${i18next.t("general:Total")}: ${total}`,
             }}
             size="small"
-            rowKey={(record, index) => `${record.kb || index}`}
+            rowKey={(record, index) => `patch-${index}-${record.kb || ""}`}
             expandable={{
               expandedRowRender: (record) => (
                 <div style={{margin: 0}}>
