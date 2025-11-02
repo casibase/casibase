@@ -66,8 +66,15 @@ class ScanListPage extends BaseListPage {
     if (!assetName) {
       return null;
     }
-    // Asset field now only contains the name, construct full ID using scan.owner
-    const fullAssetId = `${scan.owner}/${assetName}`;
+    // Handle both new format (name only) and old format (owner/name) for backward compatibility
+    let fullAssetId;
+    if (assetName.includes("/")) {
+      // Old format: already contains owner/name
+      fullAssetId = assetName;
+    } else {
+      // New format: only contains name, construct full ID using scan.owner
+      fullAssetId = `${scan.owner}/${assetName}`;
+    }
     return this.state.assets.find(asset => `${asset.owner}/${asset.name}` === fullAssetId);
   }
 
@@ -212,8 +219,15 @@ class ScanListPage extends BaseListPage {
             return null;
           }
           const icon = this.getAssetTypeIcon(record, text);
-          // Asset field now only contains the name, construct full ID for link
-          const fullAssetId = `${record.owner}/${text}`;
+          // Handle both new format (name only) and old format (owner/name) for backward compatibility
+          let fullAssetId;
+          if (text.includes("/")) {
+            // Old format: already contains owner/name
+            fullAssetId = text;
+          } else {
+            // New format: only contains name, construct full ID
+            fullAssetId = `${record.owner}/${text}`;
+          }
           return (
             <Link to={`/assets/${fullAssetId}`}>
               <div style={{display: "flex", alignItems: "center", gap: "8px"}}>

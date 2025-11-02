@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/casibase/casibase/scan"
 	"github.com/casibase/casibase/util"
@@ -153,17 +154,22 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	// Determine the scan target
 	var scanTarget string
 	if targetMode == "Asset" {
-		// Asset parameter now only contains the name, need to construct full ID
-		// Get owner from scan object if available, otherwise from provider
-		var owner string
-		if scanParam != "" {
-			owner, _ = util.GetOwnerAndNameFromId(scanParam)
+		// Handle asset parameter - can be either just name or full ID (owner/name) for backward compatibility
+		var fullAssetId string
+		if strings.Contains(asset, "/") {
+			// Asset already contains owner/name format (backward compatibility)
+			fullAssetId = asset
 		} else {
-			owner, _ = util.GetOwnerAndNameFromId(provider)
+			// Asset only contains the name, need to construct full ID
+			// Get owner from scan object if available, otherwise from provider
+			var owner string
+			if scanParam != "" {
+				owner, _ = util.GetOwnerAndNameFromId(scanParam)
+			} else {
+				owner, _ = util.GetOwnerAndNameFromId(provider)
+			}
+			fullAssetId = fmt.Sprintf("%s/%s", owner, asset)
 		}
-		
-		// Construct full asset ID
-		fullAssetId := fmt.Sprintf("%s/%s", owner, asset)
 		
 		// Get the asset
 		assetObj, err := GetAsset(fullAssetId)

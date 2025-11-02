@@ -326,7 +326,15 @@ class TestScanWidget extends React.Component {
     if (!assetName) {
       return null;
     }
-    const asset = this.state.assets.find(asset => asset.name === assetName);
+    // Handle both new format (name only) and old format (owner/name) for backward compatibility
+    let asset;
+    if (assetName.includes("/")) {
+      // Old format: owner/name
+      asset = this.state.assets.find(a => `${a.owner}/${a.name}` === assetName);
+    } else {
+      // New format: name only
+      asset = this.state.assets.find(a => a.name === assetName);
+    }
     if (!asset) {
       return null;
     }
