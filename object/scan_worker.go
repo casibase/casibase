@@ -51,7 +51,7 @@ func InitScanWorker() {
 	schedule := "@every 1m"
 	_, err = cronJob.AddFunc(schedule, scanPendingScans)
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("Failed to add cron job with schedule %s: %v", schedule, err))
 	}
 
 	cronJob.Start()
