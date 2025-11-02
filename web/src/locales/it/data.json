@@ -65,11 +65,11 @@
     "New Scan": "Nuova scansione",
     "Provider - Tooltip": "Fornitore di scansione da utilizzare",
     "Result - Tooltip": "Output del risultato della scansione",
-    "Manual Input": "Manual Input",
-    "Target": "Target",
-    "Target - Tooltip": "The target to scan (IP address or network range)",
-    "Target mode": "Target mode",
-    "Target mode - Tooltip": "Select how to specify the scan target"
+    "Manual Input": "Inserimento Manuale",
+    "Target": "Obiettivo",
+    "Target - Tooltip": "L obiettivo da scansionare (indirizzo IP o intervallo di rete)",
+    "Target mode": "Modalità obiettivo",
+    "Target mode - Tooltip": "Seleziona come specificare l obiettivo della scansione"
   },
   "caase": {
     "Edit Caase": "Edit Case",

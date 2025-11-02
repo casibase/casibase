@@ -65,11 +65,11 @@
     "New Scan": "Quét Mới",
     "Provider - Tooltip": "Nhà cung cấp quét để sử dụng",
     "Result - Tooltip": "Đầu ra kết quả quét",
-    "Manual Input": "Manual Input",
-    "Target": "Target",
-    "Target - Tooltip": "The target to scan (IP address or network range)",
-    "Target mode": "Target mode",
-    "Target mode - Tooltip": "Select how to specify the scan target"
+    "Manual Input": "Nhập thủ công",
+    "Target": "Mục tiêu",
+    "Target - Tooltip": "Mục tiêu để quét (địa chỉ IP hoặc dải mạng)",
+    "Target mode": "Chế độ mục tiêu",
+    "Target mode - Tooltip": "Chọn cách chỉ định mục tiêu quét"
   },
   "caase": {
     "Edit Caase": "Edit Case",

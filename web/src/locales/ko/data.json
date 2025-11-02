@@ -65,11 +65,11 @@
     "New Scan": "새 스캔",
     "Provider - Tooltip": "사용할 스캔 공급자",
     "Result - Tooltip": "스캔 결과 출력",
-    "Manual Input": "Manual Input",
-    "Target": "Target",
-    "Target - Tooltip": "The target to scan (IP address or network range)",
-    "Target mode": "Target mode",
-    "Target mode - Tooltip": "Select how to specify the scan target"
+    "Manual Input": "수동 입력",
+    "Target": "대상",
+    "Target - Tooltip": "스캔할 대상 (IP 주소 또는 네트워크 범위)",
+    "Target mode": "대상 모드",
+    "Target mode - Tooltip": "스캔 대상 지정 방법 선택"
   },
   "caase": {
     "Edit Caase": "사례 편집",

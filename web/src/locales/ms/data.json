@@ -65,11 +65,11 @@
     "New Scan": "Imbasan Baru",
     "Provider - Tooltip": "Pembekal imbasan untuk digunakan",
     "Result - Tooltip": "Output hasil imbasan",
-    "Manual Input": "Manual Input",
-    "Target": "Target",
-    "Target - Tooltip": "The target to scan (IP address or network range)",
-    "Target mode": "Target mode",
-    "Target mode - Tooltip": "Select how to specify the scan target"
+    "Manual Input": "Input Manual",
+    "Target": "Sasaran",
+    "Target - Tooltip": "Sasaran untuk diimbas (alamat IP atau julat rangkaian)",
+    "Target mode": "Mod sasaran",
+    "Target mode - Tooltip": "Pilih cara untuk menentukan sasaran imbasan"
   },
   "caase": {
     "Edit Caase": "Edit Case",
