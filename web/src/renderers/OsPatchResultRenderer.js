@@ -97,7 +97,7 @@ class OsPatchResultRenderer extends React.Component {
         dataIndex: "kb",
         key: "kb",
         width: "10%",
-        render: (kb) => <Text code>{kb}</Text>,
+        render: (kb) => kb ? <Text code>{kb}</Text> : null,
       },
       {
         title: i18next.t("scan:Status"),
@@ -155,7 +155,7 @@ class OsPatchResultRenderer extends React.Component {
               showTotal: (total) => `${i18next.t("general:Total")}: ${total}`,
             }}
             size="small"
-            rowKey={(record, index) => `${record.kb || index}`}
+            rowKey={(record, index) => `patch-${index}-${record.kb || ""}`}
             expandable={{
               expandedRowRender: (record) => (
                 <div style={{margin: 0}}>
