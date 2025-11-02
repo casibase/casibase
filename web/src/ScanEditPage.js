@@ -87,17 +87,25 @@ class ScanEditPage extends React.Component {
   }
 
   getAssetTypeIcon(assetName) {
-    if (!assetName) {return null;}
+    if (!assetName) {
+      return null;
+    }
     const asset = this.state.assets.find(asset => `${asset.owner}/${asset.name}` === assetName);
-    if (!asset) {return null;}
+    if (!asset) {
+      return null;
+    }
     const typeIcons = Setting.getAssetTypeIcons();
     return typeIcons[asset.type] || null;
   }
 
   getProviderLogo(providerName) {
-    if (!providerName) {return null;}
+    if (!providerName) {
+      return null;
+    }
     const provider = this.state.providers.find(p => p.name === providerName);
-    if (!provider) {return null;}
+    if (!provider) {
+      return null;
+    }
 
     const otherProviderInfo = Setting.getOtherProviderInfo();
     if (!otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {

@@ -35,6 +35,7 @@ class ScanListPage extends BaseListPage {
   }
 
   componentDidMount() {
+    super.componentDidMount();
     this.getAssets();
     this.getProviders();
   }
@@ -62,25 +63,33 @@ class ScanListPage extends BaseListPage {
   }
 
   getAssetInfo(assetName) {
-    if (!assetName) {return null;}
+    if (!assetName) {
+      return null;
+    }
     return this.state.assets.find(asset => `${asset.owner}/${asset.name}` === assetName);
   }
 
   getProviderInfo(providerName) {
-    if (!providerName) {return null;}
+    if (!providerName) {
+      return null;
+    }
     return this.state.providers.find(provider => provider.name === providerName);
   }
 
   getAssetTypeIcon(assetName) {
     const asset = this.getAssetInfo(assetName);
-    if (!asset) {return null;}
+    if (!asset) {
+      return null;
+    }
     const typeIcons = Setting.getAssetTypeIcons();
     return typeIcons[asset.type] || null;
   }
 
   getProviderLogo(providerName) {
     const provider = this.getProviderInfo(providerName);
-    if (!provider) {return null;}
+    if (!provider) {
+      return null;
+    }
 
     const otherProviderInfo = Setting.getOtherProviderInfo();
     if (!otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {
