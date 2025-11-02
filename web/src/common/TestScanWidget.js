@@ -25,6 +25,9 @@ require("codemirror/theme/material-darker.css");
 
 const {Option} = Select;
 
+const DEFAULT_SCAN_TARGET = "127.0.0.1";
+const DEFAULT_SCAN_COMMAND = "-sn %s";
+
 class TestScanWidget extends React.Component {
   constructor(props) {
     super(props);
@@ -69,7 +72,12 @@ class TestScanWidget extends React.Component {
           this.setState({
             assets: vmAssets,
           });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get assets")}: ${res.msg}`);
         }
+      })
+      .catch((error) => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to get assets")}: ${error}`);
       });
   }
 
@@ -86,7 +94,12 @@ class TestScanWidget extends React.Component {
           this.setState({
             providers: scanProviders,
           });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get providers")}: ${res.msg}`);
         }
+      })
+      .catch((error) => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to get providers")}: ${error}`);
       });
   }
 
@@ -106,10 +119,10 @@ class TestScanWidget extends React.Component {
   initializeDefaults() {
     // Initialize from scan object (for ScanEditPage)
     if (this.props.scan) {
-      const defaultCommand = this.props.scan.command || "-sn %s";
+      const defaultCommand = this.props.scan.command || DEFAULT_SCAN_COMMAND;
       this.setState({
         targetMode: this.props.scan.asset ? "Asset" : "Manual Input",
-        scanTarget: this.props.scan.asset ? "" : "127.0.0.1",
+        scanTarget: this.props.scan.asset ? "" : DEFAULT_SCAN_TARGET,
         selectedAsset: this.props.scan.asset || "",
         selectedProvider: this.props.scan.provider || "",
         scanCommand: defaultCommand,
@@ -120,11 +133,11 @@ class TestScanWidget extends React.Component {
 
     // Initialize from provider object (for ProviderEditPage)
     if (this.props.provider && this.props.provider.category === "Scan") {
-      const defaultCommand = this.props.provider.text || "-sn %s";
-      const defaultTarget = this.props.provider.network || "127.0.0.1";
+      const defaultCommand = this.props.provider.text || DEFAULT_SCAN_COMMAND;
+      const defaultTarget = this.props.provider.network || DEFAULT_SCAN_TARGET;
 
       // Set default network if empty
-      if (this.props.provider.network === "" || !this.props.provider.network) {
+      if (!this.props.provider.network) {
         this.props.provider.network = defaultTarget;
         if (this.props.onUpdateProvider) {
           this.props.onUpdateProvider("network", defaultTarget);
@@ -132,7 +145,7 @@ class TestScanWidget extends React.Component {
       }
 
       // Set default command if empty
-      if (this.props.provider.text === "" || this.props.provider.text === undefined) {
+      if (!this.props.provider.text) {
         this.props.provider.text = defaultCommand;
         if (this.props.onUpdateProvider) {
           this.props.onUpdateProvider("text", defaultCommand);
