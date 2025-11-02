@@ -698,7 +698,9 @@
     "Top K": "Top K",
     "Top K - Tooltip": "Ограничение количества кандидатов токенов (1-6)",
     "Top P": "Top P",
-    "Top P - Tooltip": "Порог вероятностного сэмплирования (0-1)"
+    "Top P - Tooltip": "Порог вероятностного сэмплирования (0-1)",
+    "Action": "Action",
+    "Action - Tooltip": "Execute scan action"
   },
   "record": {
     "Commit": "Записать в блокчейн",

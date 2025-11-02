@@ -698,7 +698,9 @@
     "Top K": "Top K",
     "Top K - Tooltip": "후보 토큰 수량 제한(1-6)",
     "Top P": "Top P",
-    "Top P - Tooltip": "확률 샘플링 임계값(0-1)"
+    "Top P - Tooltip": "확률 샘플링 임계값(0-1)",
+    "Action": "Action",
+    "Action - Tooltip": "Execute scan action"
   },
   "record": {
     "Commit": "체인 등록",
