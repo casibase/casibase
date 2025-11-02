@@ -15,7 +15,7 @@
 //go:build !skipCi
 // +build !skipCi
 
-package object
+package scan
 
 import (
 	"fmt"
@@ -31,11 +31,14 @@ func TestListPatches(t *testing.T) {
 		t.Skip("Skipping test: not running on Windows")
 	}
 
-	updater := NewUpdater()
+	provider, err := NewOsPatchScanProvider("")
+	if err != nil {
+		t.Fatalf("Failed to create OsPatchScanProvider: %v", err)
+	}
 
 	// Test listing available patches
 	t.Log("Testing ListPatches()...")
-	patches, err := updater.ListPatches()
+	patches, err := provider.ListPatches()
 	if err != nil {
 		t.Fatalf("Failed to list patches: %v", err)
 	}
@@ -58,7 +61,7 @@ func TestListPatches(t *testing.T) {
 
 	// Test listing installed patches
 	t.Log("\nTesting ListInstalledPatches()...")
-	installedPatches, err := updater.ListInstalledPatches()
+	installedPatches, err := provider.ListInstalledPatches()
 	if err != nil {
 		t.Fatalf("Failed to list installed patches: %v", err)
 	}
@@ -99,10 +102,13 @@ func TestInstallPatch(t *testing.T) {
 		t.Skip("Skipping test: not running on Windows")
 	}
 
-	updater := NewUpdater()
+	provider, err := NewOsPatchScanProvider("")
+	if err != nil {
+		t.Fatalf("Failed to create OsPatchScanProvider: %v", err)
+	}
 
 	// First, get available patches
-	patches, err := updater.ListPatches()
+	patches, err := provider.ListPatches()
 	if err != nil {
 		t.Fatalf("Failed to list patches: %v", err)
 	}
@@ -116,14 +122,14 @@ func TestInstallPatch(t *testing.T) {
 	t.Logf("Testing installation of patch: %s (KB%s)", testPatch.Title, testPatch.KB)
 
 	// Start monitoring in a goroutine
-	progressChan, err := updater.MonitorInstallProgress(testPatch.KB, 2)
+	progressChan, err := provider.MonitorInstallProgress(testPatch.KB, 2)
 	if err != nil {
 		t.Fatalf("Failed to start monitoring: %v", err)
 	}
 
 	// Start installation
 	go func() {
-		progress, err := updater.InstallPatch(testPatch.KB)
+		progress, err := provider.InstallPatch(testPatch.KB)
 		if err != nil {
 			t.Logf("Installation error: %v", err)
 		} else {
@@ -158,10 +164,15 @@ func TestInstallPatch(t *testing.T) {
 	}
 }
 
-// Example demonstrates how to use the Windows Update patcher
-func ExampleUpdater_ListPatches() {
-	updater := NewUpdater()
-	patches, err := updater.ListPatches()
+// Example demonstrates how to use the OsPatchScanProvider to list patches
+func ExampleOsPatchScanProvider_ListPatches() {
+	provider, err := NewOsPatchScanProvider("")
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	patches, err := provider.ListPatches()
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		return
@@ -174,11 +185,15 @@ func ExampleUpdater_ListPatches() {
 }
 
 // Example demonstrates how to install a patch
-func ExampleUpdater_InstallPatch() {
-	updater := NewUpdater()
+func ExampleOsPatchScanProvider_InstallPatch() {
+	provider, err := NewOsPatchScanProvider("")
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
 
 	// Install a patch
-	progress, err := updater.InstallPatch("KB1234567")
+	progress, err := provider.InstallPatch("KB1234567")
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		return
