@@ -24,6 +24,7 @@ class OsPatchResultRenderer extends React.Component {
     this.state = {
       patches: null,
       error: null,
+      pageSize: 10,
     };
   }
 
@@ -150,9 +151,12 @@ class OsPatchResultRenderer extends React.Component {
             columns={columns}
             dataSource={patches}
             pagination={{
-              pageSize: 10,
+              pageSize: this.state.pageSize,
               showSizeChanger: true,
               showTotal: (total) => `${i18next.t("general:Total")}: ${total}`,
+              onChange: (page, pageSize) => {
+                this.setState({pageSize});
+              },
             }}
             size="small"
             rowKey={(record, index) => `patch-${index}-${record.kb || ""}`}
