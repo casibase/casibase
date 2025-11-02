@@ -27,6 +27,8 @@ const {Option} = Select;
 
 const DEFAULT_SCAN_TARGET = "127.0.0.1";
 const DEFAULT_SCAN_COMMAND = "-sn %s";
+const DEFAULT_OS_PATCH_COMMAND = "available";
+const DEFAULT_PROVIDER_TYPE = "Nmap";
 
 class TestScanWidget extends React.Component {
   constructor(props) {
@@ -103,23 +105,62 @@ class TestScanWidget extends React.Component {
       });
   }
 
+  getProviderType() {
+    // For ProviderEditPage, get type from props.provider
+    if (this.props.provider && this.props.provider.category === "Scan") {
+      return this.props.provider.type;
+    }
+    // For ScanEditPage, get type from selected provider
+    if (this.props.scan && this.state.selectedProvider) {
+      const selectedProviderObj = this.state.providers.find(p => p.name === this.state.selectedProvider);
+      if (selectedProviderObj) {
+        return selectedProviderObj.type;
+      }
+    }
+    // Default to Nmap if provider type cannot be determined
+    return DEFAULT_PROVIDER_TYPE;
+  }
+
   getCommandTemplates() {
-    return [
-      {id: "custom", name: "Custom", command: ""},
-      {id: "ping", name: "Ping Scan", command: "-sn %s"},
-      {id: "quick", name: "Quick Scan", command: "-T4 -F %s"},
-      {id: "intense", name: "Intense Scan", command: "-T4 -A -v %s"},
-      {id: "comprehensive", name: "Comprehensive Scan", command: "-sS -sU -T4 -A -v %s"},
-      {id: "port", name: "Port Scan", command: "-p 1-65535 %s"},
-      {id: "os", name: "OS Detection", command: "-O %s"},
-      {id: "service", name: "Service Version Detection", command: "-sV %s"},
-    ];
+    const providerType = this.getProviderType();
+
+    // Return templates based on provider type
+    if (providerType === "OS Patch") {
+      return [
+        {id: "custom", name: "Custom", command: ""},
+        {id: "available", name: "Available Patches", command: "available"},
+        {id: "installed", name: "Installed Patches", command: "installed"},
+      ];
+    } else {
+      // Nmap templates
+      return [
+        {id: "custom", name: "Custom", command: ""},
+        {id: "ping", name: "Ping Scan", command: "-sn %s"},
+        {id: "quick", name: "Quick Scan", command: "-T4 -F %s"},
+        {id: "intense", name: "Intense Scan", command: "-T4 -A -v %s"},
+        {id: "comprehensive", name: "Comprehensive Scan", command: "-sS -sU -T4 -A -v %s"},
+        {id: "port", name: "Port Scan", command: "-p 1-65535 %s"},
+        {id: "os", name: "OS Detection", command: "-O %s"},
+        {id: "service", name: "Service Version Detection", command: "-sV %s"},
+      ];
+    }
+  }
+
+  getDefaultCommand(providerType) {
+    if (providerType === "OS Patch") {
+      return DEFAULT_OS_PATCH_COMMAND;
+    }
+    return DEFAULT_SCAN_COMMAND;
   }
 
   initializeDefaults() {
     // Initialize from scan object (for ScanEditPage)
     if (this.props.scan) {
-      const defaultCommand = this.props.scan.command || DEFAULT_SCAN_COMMAND;
+      // Determine the provider type to use appropriate default command
+      const providerType = this.getProviderType();
+      const providerTypeDefault = this.getDefaultCommand(providerType);
+
+      const defaultCommand = this.props.scan.command || providerTypeDefault;
       const targetMode = this.props.scan.targetMode || (this.props.scan.asset ? "Asset" : "Manual Input");
       const scanTarget = this.props.scan.target || DEFAULT_SCAN_TARGET;
 
@@ -136,7 +177,8 @@ class TestScanWidget extends React.Component {
 
     // Initialize from provider object (for ProviderEditPage)
     if (this.props.provider && this.props.provider.category === "Scan") {
-      const defaultCommand = this.props.provider.text || DEFAULT_SCAN_COMMAND;
+      const providerTypeDefault = this.getDefaultCommand(this.props.provider.type);
+      const defaultCommand = this.props.provider.text || providerTypeDefault;
       const defaultTarget = this.props.provider.target || this.props.provider.network || DEFAULT_SCAN_TARGET;
       const targetMode = this.props.provider.targetMode || "Manual Input";
 
