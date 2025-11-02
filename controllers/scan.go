@@ -27,6 +27,8 @@ import (
 const (
 	// patchProgressTimeout is the maximum time to wait for patch installation progress updates
 	patchProgressTimeout = 30 * time.Second
+	// patchProgressPollingInterval is the interval for polling patch installation progress
+	patchProgressPollingInterval = 5
 )
 
 // GetScans
@@ -170,6 +172,8 @@ func (c *ApiController) InstallPatch() {
 		c.ResponseError("KB number is required")
 		return
 	}
+	// Note: KB parameter validation is performed by OsPatchScanProvider.InstallPatch()
+	// to prevent command injection
 
 	// Get the provider to check if it's an OS Patch provider
 	provider, err := object.GetProvider(providerID)
@@ -221,6 +225,8 @@ func (c *ApiController) MonitorPatchProgress() {
 		c.ResponseError("KB number is required")
 		return
 	}
+	// Note: KB parameter validation is performed by OsPatchScanProvider.MonitorInstallProgress()
+	// to prevent command injection
 
 	// Get the provider to check if it's an OS Patch provider
 	provider, err := object.GetProvider(providerID)
@@ -241,8 +247,8 @@ func (c *ApiController) MonitorPatchProgress() {
 		return
 	}
 
-	// Start monitoring (with 5 second intervals)
-	progressChan, err := osPatchProvider.MonitorInstallProgress(kb, 5)
+	// Start monitoring with configured polling interval
+	progressChan, err := osPatchProvider.MonitorInstallProgress(kb, patchProgressPollingInterval)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
