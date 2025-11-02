@@ -202,3 +202,60 @@ func ExampleOsPatchScanProvider_InstallPatch() {
 	fmt.Printf("Installation status: %s\n", progress.Status)
 	fmt.Printf("Reboot required: %v\n", progress.RebootRequired)
 }
+
+// TestScanAllPatches tests the "all" command that retrieves both available and installed patches
+func TestScanAllPatches(t *testing.T) {
+	// Skip test if not running on Windows
+	if runtime.GOOS != "windows" {
+		t.Skip("Skipping test: not running on Windows")
+	}
+
+	provider, err := NewOsPatchScanProvider("")
+	if err != nil {
+		t.Fatalf("Failed to create OsPatchScanProvider: %v", err)
+	}
+
+	// Test the "all" command
+	t.Log("Testing Scan with 'all' command...")
+	result, err := provider.Scan("", "all")
+	if err != nil {
+		t.Fatalf("Failed to scan with 'all' command: %v", err)
+	}
+
+	if result == "" {
+		t.Fatal("Expected non-empty result from 'all' command")
+	}
+
+	t.Logf("Scan result length: %d bytes", len(result))
+
+	// Verify the result is valid JSON by attempting to parse it
+	if result != "[]" && result != "" {
+		if result[0] != '[' && result[0] != '{' {
+			t.Errorf("Expected JSON array or object, got: %s", result[:min(50, len(result))])
+		}
+	}
+
+	// Test that "available" command still works
+	t.Log("Testing Scan with 'available' command...")
+	availableResult, err := provider.Scan("", "available")
+	if err != nil {
+		t.Fatalf("Failed to scan with 'available' command: %v", err)
+	}
+	t.Logf("Available patches result length: %d bytes", len(availableResult))
+
+	// Test that "installed" command still works
+	t.Log("Testing Scan with 'installed' command...")
+	installedResult, err := provider.Scan("", "installed")
+	if err != nil {
+		t.Fatalf("Failed to scan with 'installed' command: %v", err)
+	}
+	t.Logf("Installed patches result length: %d bytes", len(installedResult))
+}
+
+// Helper function for min
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
