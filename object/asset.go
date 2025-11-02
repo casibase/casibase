@@ -182,3 +182,19 @@ func (a *Asset) processAssetParams(assetDb *Asset) {
 func (asset *Asset) GetId() string {
 	return fmt.Sprintf("%s/%s", asset.Owner, asset.Name)
 }
+
+func (asset *Asset) GetScanTarget() (string, error) {
+	if asset.Type == "Virtual Machine" {
+		publicIp, err := util.GetFieldFromJsonString(asset.Properties, "publicIp")
+		if err != nil {
+			return "", fmt.Errorf("failed to parse publicIp from properties: %v", err)
+		}
+		if publicIp != "" {
+			return publicIp, nil
+		}
+		// Fallback to asset.Id if publicIp is not available
+		return asset.Id, nil
+	}
+	// For non-Virtual Machine types, use asset.Id
+	return asset.Id, nil
+}

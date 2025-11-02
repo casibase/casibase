@@ -38,3 +38,33 @@ func StructToJsonNoIndent(v interface{}) string {
 func JsonToStruct(data string, v interface{}) error {
 	return json.Unmarshal([]byte(data), v)
 }
+
+func GetFieldFromJsonString(jsonStr string, fieldName string) (string, error) {
+	if jsonStr == "" {
+		return "", nil
+	}
+
+	var data map[string]interface{}
+	err := json.Unmarshal([]byte(jsonStr), &data)
+	if err != nil {
+		return "", err
+	}
+
+	value, exists := data[fieldName]
+	if !exists {
+		return "", nil
+	}
+
+	// Convert value to string
+	switch v := value.(type) {
+	case string:
+		return v, nil
+	default:
+		// For other types, marshal to JSON string
+		bytes, err := json.Marshal(v)
+		if err != nil {
+			return "", err
+		}
+		return string(bytes), nil
+	}
+}

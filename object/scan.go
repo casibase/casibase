@@ -164,11 +164,21 @@ func StartScan(id string, lang string) (bool, error) {
 		return false, err
 	}
 
+	// Get the scan target based on asset type
+	scanTarget, err := asset.GetScanTarget()
+	if err != nil {
+		scanObj.State = "Failed"
+		scanObj.ResultText = fmt.Sprintf("Error getting scan target: %v", err)
+		scanObj.UpdatedTime = util.GetCurrentTime()
+		_, _ = UpdateScan(id, scanObj)
+		return false, err
+	}
+
 	var result string
 	if scanObj.Command != "" {
-		result, err = scanProvider.ScanWithCommand(asset.Id, scanObj.Command)
+		result, err = scanProvider.ScanWithCommand(scanTarget, scanObj.Command)
 	} else {
-		result, err = scanProvider.Scan(asset.Id)
+		result, err = scanProvider.Scan(scanTarget)
 	}
 
 	if err != nil {
