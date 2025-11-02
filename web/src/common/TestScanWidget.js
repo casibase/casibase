@@ -503,29 +503,27 @@ class TestScanWidget extends React.Component {
               onChange={(e) => {
                 const newMode = e.target.value;
                 this.setState({targetMode: newMode});
+
+                // Clear asset when switching to Manual Input, clear target when switching to Asset
+                if (newMode === "Manual Input") {
+                  this.setState({selectedAsset: ""});
+                } else if (newMode === "Asset") {
+                  this.setState({scanTarget: ""});
+                }
+
                 if (this.props.onUpdateProvider) {
                   this.props.onUpdateProvider("targetMode", newMode);
-                  // Clear asset when switching to Manual Input
                   if (newMode === "Manual Input") {
-                    this.setState({selectedAsset: ""});
                     this.props.onUpdateProvider("asset", "");
-                  }
-                  // Clear target when switching to Asset
-                  if (newMode === "Asset") {
-                    this.setState({scanTarget: ""});
+                  } else if (newMode === "Asset") {
                     this.props.onUpdateProvider("target", "");
                   }
                 }
                 if (this.props.onUpdateScan) {
                   this.props.onUpdateScan("targetMode", newMode);
-                  // Clear asset when switching to Manual Input
                   if (newMode === "Manual Input") {
-                    this.setState({selectedAsset: ""});
                     this.props.onUpdateScan("asset", "");
-                  }
-                  // Clear target when switching to Asset
-                  if (newMode === "Asset") {
-                    this.setState({scanTarget: ""});
+                  } else if (newMode === "Asset") {
                     this.props.onUpdateScan("target", "");
                   }
                 }
