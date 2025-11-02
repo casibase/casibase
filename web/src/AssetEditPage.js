@@ -290,7 +290,7 @@ class AssetEditPage extends React.Component {
                 this.updateAssetField("properties", value);
               }}
               editable={true}
-              height="300px"
+              height="500px"
             />
           </Col>
         </Row>

@@ -293,7 +293,7 @@ class AssetListPage extends BaseListPage {
               placement="right"
               maxDisplayLength={30}
               width="600px"
-              height="400px"
+              height="500px"
             />
           );
         },
