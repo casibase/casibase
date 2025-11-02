@@ -42,6 +42,7 @@ func main() {
 	object.InitCleanupChats()
 	object.InitStoreCount()
 	object.InitCommitRecordsTask()
+	object.InitScanWorker()
 
 	beego.SetStaticPath("/swagger", "swagger")
 	beego.InsertFilter("*", beego.BeforeRouter, routers.CorsFilter)
