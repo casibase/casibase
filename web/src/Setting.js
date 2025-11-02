@@ -1025,6 +1025,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_nmap.png`,
         url: "https://nmap.org/",
       },
+      "OS Patch": {
+        logo: `${StaticBaseUrl}/img/social_windows_update.png`,
+        url: "https://learn.microsoft.com/en-us/windows/deployment/update/",
+      },
     },
   };
 
@@ -1238,6 +1242,7 @@ export function getProviderTypeOptions(category) {
   } else if (category === "Scan") {
     return [
       {id: "Nmap", name: "Nmap"},
+      {id: "OS Patch", name: "OS Patch"},
     ];
   } else {
     return [];
