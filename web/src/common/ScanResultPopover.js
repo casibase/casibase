@@ -26,6 +26,8 @@ require("codemirror/mode/javascript/javascript");
 
 const {TabPane} = Tabs;
 
+const DEFAULT_PROVIDER_TYPE = "Nmap";
+
 /**
  * ScanResultPopover - A popover component that displays scan results with tabs
  * @param {string} result - The scan result (JSON string)
@@ -35,15 +37,16 @@ const {TabPane} = Tabs;
  * @param {string} width - Width of the popover (default: "800px")
  * @param {string} height - Height of the popover (default: "600px")
  */
-export function ScanResultPopover({result, providerType = "Nmap", placement = "right", maxDisplayLength = 30, width = "800px", height = "600px"}) {
+export function ScanResultPopover({result, providerType = DEFAULT_PROVIDER_TYPE, placement = "right", maxDisplayLength = 30, width = "800px", height = "600px"}) {
   if (!result) {
     return <span>-</span>;
   }
 
-  // Determine if result is JSON
+  // Parse JSON once and reuse
+  let parsedResult = null;
   let isJson = false;
   try {
-    JSON.parse(result);
+    parsedResult = JSON.parse(result);
     isJson = true;
   } catch (e) {
     isJson = false;
@@ -51,20 +54,15 @@ export function ScanResultPopover({result, providerType = "Nmap", placement = "r
 
   // Generate preview text
   let previewText = result;
-  if (isJson) {
-    try {
-      const parsed = JSON.parse(result);
-      // Create a short summary for preview
-      if (parsed.summary) {
-        previewText = parsed.summary;
-      } else if (parsed.hosts && Array.isArray(parsed.hosts)) {
-        previewText = `${parsed.hosts.length} host(s) scanned`;
-      } else if (Array.isArray(parsed)) {
-        previewText = `${parsed.length} item(s)`;
-      } else {
-        previewText = "View scan result";
-      }
-    } catch (e) {
+  if (isJson && parsedResult) {
+    // Create a short summary for preview
+    if (parsedResult.summary) {
+      previewText = parsedResult.summary;
+    } else if (parsedResult.hosts && Array.isArray(parsedResult.hosts)) {
+      previewText = `${parsedResult.hosts.length} host(s) scanned`;
+    } else if (Array.isArray(parsedResult)) {
+      previewText = `${parsedResult.length} item(s)`;
+    } else {
       previewText = "View scan result";
     }
   }
@@ -91,11 +89,12 @@ export function ScanResultPopover({result, providerType = "Nmap", placement = "r
     }
 
     // JSON result with tabs
+    const formattedJson = JSON.stringify(parsedResult, null, 2);
     return (
       <div style={{width: width, height: height, overflow: "auto"}}>
         <Tabs defaultActiveKey="structured" type="card">
           <TabPane tab={i18next.t("scan:Structured View")} key="structured">
-            <div style={{padding: "16px", backgroundColor: "#f5f5f5", minHeight: "500px", maxHeight: height, overflow: "auto"}}>
+            <div style={{padding: "16px", backgroundColor: "#f5f5f5", minHeight: height, maxHeight: height, overflow: "auto"}}>
               {providerType === "Nmap" && <NmapResultRenderer result={result} />}
               {providerType === "OS Patch" && <OsPatchResultRenderer result={result} />}
               {providerType !== "Nmap" && providerType !== "OS Patch" && (
@@ -105,7 +104,7 @@ export function ScanResultPopover({result, providerType = "Nmap", placement = "r
           </TabPane>
           <TabPane tab={i18next.t("scan:Raw JSON")} key="raw">
             <CodeMirror
-              value={JSON.stringify(JSON.parse(result), null, 2)}
+              value={formattedJson}
               options={{
                 mode: "application/json",
                 theme: "material-darker",
