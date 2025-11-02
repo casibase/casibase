@@ -1026,6 +1026,7 @@ export function getOtherProviderInfo() {
         url: "https://nmap.org/",
       },
       "OS Patch": {
+        // Note: social_windows.png should be added to the img/ directory
         logo: `${StaticBaseUrl}/img/social_windows.png`,
         url: "https://learn.microsoft.com/en-us/windows/deployment/update/",
       },

@@ -28,6 +28,7 @@ const {Option} = Select;
 const DEFAULT_SCAN_TARGET = "127.0.0.1";
 const DEFAULT_SCAN_COMMAND = "-sn %s";
 const DEFAULT_OS_PATCH_COMMAND = "available";
+const DEFAULT_PROVIDER_TYPE = "Nmap";
 
 class TestScanWidget extends React.Component {
   constructor(props) {
@@ -117,7 +118,7 @@ class TestScanWidget extends React.Component {
       }
     }
     // Default to Nmap if provider type cannot be determined
-    return "Nmap";
+    return DEFAULT_PROVIDER_TYPE;
   }
 
   getCommandTemplates() {
