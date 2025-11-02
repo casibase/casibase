@@ -65,6 +65,7 @@ func NewOsPatchScanProvider(clientId string) (*OsPatchScanProvider, error) {
 
 // Scan implements the ScanProvider interface for OS patch scanning
 // It returns a list of available patches as a string
+// Note: The target parameter is not used for OS patch scanning as it scans the local system
 func (p *OsPatchScanProvider) Scan(target string) (string, error) {
 	patches, err := p.ListPatches()
 	if err != nil {
@@ -82,6 +83,7 @@ func (p *OsPatchScanProvider) Scan(target string) (string, error) {
 
 // ScanWithCommand implements the ScanProvider interface for OS patch scanning with custom command
 // For OS patches, the command parameter specifies the scan type: "available" or "installed"
+// Note: The target parameter is not used for OS patch scanning as it scans the local system
 func (p *OsPatchScanProvider) ScanWithCommand(target string, command string) (string, error) {
 	command = strings.TrimSpace(strings.ToLower(command))
 
