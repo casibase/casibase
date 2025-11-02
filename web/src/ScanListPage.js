@@ -62,11 +62,13 @@ class ScanListPage extends BaseListPage {
       });
   }
 
-  getAssetInfo(assetName) {
+  getAssetInfo(scan, assetName) {
     if (!assetName) {
       return null;
     }
-    return this.state.assets.find(asset => `${asset.owner}/${asset.name}` === assetName);
+    // Asset field now only contains the name, construct full ID using scan.owner
+    const fullAssetId = `${scan.owner}/${assetName}`;
+    return this.state.assets.find(asset => `${asset.owner}/${asset.name}` === fullAssetId);
   }
 
   getProviderInfo(providerName) {
@@ -76,8 +78,8 @@ class ScanListPage extends BaseListPage {
     return this.state.providers.find(provider => provider.name === providerName);
   }
 
-  getAssetTypeIcon(assetName) {
-    const asset = this.getAssetInfo(assetName);
+  getAssetTypeIcon(scan, assetName) {
+    const asset = this.getAssetInfo(scan, assetName);
     if (!asset) {
       return null;
     }
@@ -206,12 +208,17 @@ class ScanListPage extends BaseListPage {
         sorter: true,
         ...this.getColumnSearchProps("asset"),
         render: (text, record, index) => {
-          const icon = this.getAssetTypeIcon(text);
+          if (!text) {
+            return null;
+          }
+          const icon = this.getAssetTypeIcon(record, text);
+          // Asset field now only contains the name, construct full ID for link
+          const fullAssetId = `${record.owner}/${text}`;
           return (
-            <Link to={`/assets/${text}`}>
+            <Link to={`/assets/${fullAssetId}`}>
               <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
                 {icon && <img src={icon} alt={text} style={{width: "20px", height: "20px"}} />}
-                <span>{text}</span>
+                <span>{fullAssetId}</span>
               </div>
             </Link>
           );
