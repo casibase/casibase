@@ -91,17 +91,3 @@ export function refreshMcpTools(provider) {
     body: JSON.stringify(newProvider),
   }).then(res => res.json());
 }
-
-export function testScan(owner, name, target, command = "") {
-  let url = `${Setting.ServerUrl}/api/test-scan?id=${owner}/${encodeURIComponent(name)}&target=${encodeURIComponent(target)}`;
-  if (command) {
-    url += `&command=${encodeURIComponent(command)}`;
-  }
-  return fetch(url, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Accept-Language": Setting.getAcceptLanguage(),
-    },
-  }).then(res => res.json());
-}

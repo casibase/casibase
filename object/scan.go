@@ -35,7 +35,8 @@ type Scan struct {
 	Provider   string `xorm:"varchar(100)" json:"provider"`
 	State      string `xorm:"varchar(100)" json:"state"`
 	Command    string `xorm:"varchar(500)" json:"command"`
-	ResultText string `xorm:"mediumtext" json:"resultText"`
+	RawResult  string `xorm:"mediumtext" json:"rawResult"`
+	Result     string `xorm:"mediumtext" json:"result"`
 }
 
 func GetScanCount(owner, field, value string) (int64, error) {
@@ -122,7 +123,7 @@ func (scan *Scan) GetId() string {
 	return fmt.Sprintf("%s/%s", scan.Owner, scan.Name)
 }
 
-// ScanAsset performs a scan on an asset - unified API that combines test-scan and start-scan functionality
+// ScanAsset performs a scan on an asset
 // @param provider: The provider ID (owner/name) for scan provider
 // @param scan: Optional scan ID (owner/name) for saving results to existing scan
 // @param targetMode: "Manual Input" or "Asset"
@@ -172,13 +173,13 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	}
 
 	// Perform scan
-	var result string
-	if command != "" {
-		result, err = scanProvider.ScanWithCommand(scanTarget, command)
-	} else {
-		result, err = scanProvider.Scan(scanTarget)
+	rawResult, err := scanProvider.Scan(scanTarget, command)
+	if err != nil {
+		return "", err
 	}
 
+	// Parse the raw result into structured JSON
+	result, err := scanProvider.ParseResult(rawResult)
 	if err != nil {
 		return "", err
 	}
@@ -187,13 +188,14 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	if saveToScan && scanParam != "" {
 		scanObj, err := GetScan(scanParam)
 		if err != nil {
-			return result, err // Return result even if save fails
+			return result, err
 		}
 		if scanObj != nil {
 			scanObj.State = "Completed"
-			scanObj.ResultText = result
+			scanObj.RawResult = rawResult
+			scanObj.Result = result
 			scanObj.UpdatedTime = util.GetCurrentTime()
-			_, _ = UpdateScan(scanParam, scanObj) // Ignore save errors, still return result
+			_, _ = UpdateScan(scanParam, scanObj)
 		}
 	}
 

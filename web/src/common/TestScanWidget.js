@@ -13,17 +13,20 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Input, Radio, Row, Select} from "antd";
+import {Button, Col, Input, Radio, Row, Select, Tabs} from "antd";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import * as AssetBackend from "../backend/AssetBackend";
 import * as ProviderBackend from "../backend/ProviderBackend";
+import NmapResultRenderer from "../renderers/NmapResultRenderer";
+import OsPatchResultRenderer from "../renderers/OsPatchResultRenderer";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
 
 const {Option} = Select;
+const {TabPane} = Tabs;
 
 const DEFAULT_SCAN_TARGET = "127.0.0.1";
 const DEFAULT_SCAN_COMMAND = "-sn %s";
@@ -170,7 +173,7 @@ class TestScanWidget extends React.Component {
         selectedAsset: this.props.scan.asset || "",
         selectedProvider: this.props.scan.provider || "",
         scanCommand: defaultCommand,
-        scanResult: this.props.scan.resultText || "",
+        scanResult: this.props.scan.result || "",
       });
       return;
     }
@@ -282,9 +285,9 @@ class TestScanWidget extends React.Component {
             this.props.onUpdateProvider("configText", res.data);
           }
 
-          // Save scan result to scan ResultText field (for ScanEditPage)
+          // Save scan result to scan Result field (for ScanEditPage)
           if (this.props.onUpdateScan) {
-            this.props.onUpdateScan("resultText", res.data);
+            this.props.onUpdateScan("result", res.data);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
@@ -350,6 +353,91 @@ class TestScanWidget extends React.Component {
     }
 
     return otherProviderInfo[provider.category][provider.type].logo;
+  }
+
+  renderScanResult() {
+    const {scanResult} = this.state;
+
+    if (!scanResult) {
+      return (
+        <CodeMirror
+          value=""
+          options={{
+            mode: "text/plain",
+            theme: "material-darker",
+            readOnly: true,
+            lineNumbers: true,
+          }}
+          editorDidMount={(editor) => {
+            editor.setSize(null, "auto");
+            const lineHeight = editor.defaultTextHeight();
+            const minHeight = lineHeight * 10;
+            editor.getWrapperElement().style.minHeight = `${minHeight}px`;
+          }}
+        />
+      );
+    }
+
+    const providerType = this.getProviderType();
+
+    // Determine if result is JSON
+    let isJson = false;
+    try {
+      JSON.parse(scanResult);
+      isJson = true;
+    } catch (e) {
+      isJson = false;
+    }
+
+    // If not JSON, just show as plain text
+    if (!isJson) {
+      return (
+        <CodeMirror
+          value={scanResult}
+          options={{
+            mode: "text/plain",
+            theme: "material-darker",
+            readOnly: true,
+            lineNumbers: true,
+          }}
+          editorDidMount={(editor) => {
+            editor.setSize(null, "auto");
+            const lineHeight = editor.defaultTextHeight();
+            const minHeight = lineHeight * 10;
+            editor.getWrapperElement().style.minHeight = `${minHeight}px`;
+          }}
+        />
+      );
+    }
+
+    // Render with tabs for structured and raw views
+    return (
+      <Tabs defaultActiveKey="structured" type="card">
+        <TabPane tab={i18next.t("scan:Structured View")} key="structured">
+          <div style={{padding: "16px", backgroundColor: "#f5f5f5", minHeight: "300px"}}>
+            {providerType === "Nmap" && <NmapResultRenderer result={scanResult} />}
+            {providerType === "OS Patch" && <OsPatchResultRenderer result={scanResult} />}
+          </div>
+        </TabPane>
+        <TabPane tab={i18next.t("scan:Raw JSON")} key="raw">
+          <CodeMirror
+            value={JSON.stringify(JSON.parse(scanResult), null, 2)}
+            options={{
+              mode: "application/json",
+              theme: "material-darker",
+              readOnly: true,
+              lineNumbers: true,
+            }}
+            editorDidMount={(editor) => {
+              editor.setSize(null, "auto");
+              const lineHeight = editor.defaultTextHeight();
+              const minHeight = lineHeight * 10;
+              editor.getWrapperElement().style.minHeight = `${minHeight}px`;
+            }}
+          />
+        </TabPane>
+      </Tabs>
+    );
   }
 
   render() {
@@ -558,22 +646,7 @@ class TestScanWidget extends React.Component {
             {Setting.getLabel(i18next.t("general:Result"), i18next.t("general:Result - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <CodeMirror
-              value={this.state.scanResult}
-              options={{
-                mode: "text/plain",
-                theme: "material-darker",
-                readOnly: true,
-                lineNumbers: true,
-              }}
-              editorDidMount={(editor) => {
-                // Set minimum height to 10 lines
-                editor.setSize(null, "auto");
-                const lineHeight = editor.defaultTextHeight();
-                const minHeight = lineHeight * 10;
-                editor.getWrapperElement().style.minHeight = `${minHeight}px`;
-              }}
-            />
+            {this.renderScanResult()}
           </Col>
         </Row>
       </div>

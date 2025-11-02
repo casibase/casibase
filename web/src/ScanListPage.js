@@ -109,7 +109,8 @@ class ScanListPage extends BaseListPage {
       provider: "",
       state: "",
       command: "",
-      resultText: "",
+      rawResult: "",
+      result: "",
     };
   }
 

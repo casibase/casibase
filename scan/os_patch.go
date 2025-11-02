@@ -64,27 +64,9 @@ func NewOsPatchScanProvider(clientId string) (*OsPatchScanProvider, error) {
 }
 
 // Scan implements the ScanProvider interface for OS patch scanning
-// It returns a list of available patches as a string
-// Note: The target parameter is not used for OS patch scanning as it scans the local system
-func (p *OsPatchScanProvider) Scan(target string) (string, error) {
-	patches, err := p.ListPatches()
-	if err != nil {
-		return "", err
-	}
-
-	// Convert patches to JSON string for consistency with ScanProvider interface
-	result, err := json.Marshal(patches)
-	if err != nil {
-		return "", fmt.Errorf("failed to marshal patches: %v", err)
-	}
-
-	return string(result), nil
-}
-
-// ScanWithCommand implements the ScanProvider interface for OS patch scanning with custom command
-// For OS patches, the command parameter specifies the scan type: "available" or "installed"
-// Note: The target parameter is not used for OS patch scanning as it scans the local system
-func (p *OsPatchScanProvider) ScanWithCommand(target string, command string) (string, error) {
+// The command parameter specifies the scan type: "available" or "installed"
+// The target parameter is not used for OS patch scanning as it scans the local system
+func (p *OsPatchScanProvider) Scan(target string, command string) (string, error) {
 	command = strings.TrimSpace(strings.ToLower(command))
 
 	var patches []*WindowsPatch
@@ -108,6 +90,12 @@ func (p *OsPatchScanProvider) ScanWithCommand(target string, command string) (st
 	}
 
 	return string(result), nil
+}
+
+// ParseResult implements the ScanProvider interface for OS patch scanning
+// For OS patches, the raw result is already in JSON format, so this just returns it as-is
+func (p *OsPatchScanProvider) ParseResult(rawResult string) (string, error) {
+	return rawResult, nil
 }
 
 // validateKB validates and sanitizes a KB number to prevent command injection
