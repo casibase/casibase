@@ -14,17 +14,9 @@
 
 package scan
 
-// ScanResult contains both raw text output and structured JSON data
-type ScanResult struct {
-	RawResult string `json:"rawResult"` // Original text output
-	Result    string `json:"result"`    // Structured JSON output
-}
-
 type ScanProvider interface {
-	Scan(target string) (string, error)
-	ScanWithCommand(target string, command string) (string, error)
-	ScanStructured(target string) (*ScanResult, error)
-	ScanWithCommandStructured(target string, command string) (*ScanResult, error)
+	Scan(target string, command string) (string, error)
+	ParseResult(rawResult string) (string, error)
 }
 
 func GetScanProvider(typ string, clientId string, lang string) (ScanProvider, error) {

@@ -45,7 +45,6 @@ type NmapPort struct {
 
 // NmapScanResult represents the complete scan result
 type NmapScanResult struct {
-	Command   string     `json:"command"`
 	StartTime string     `json:"startTime,omitempty"`
 	EndTime   string     `json:"endTime,omitempty"`
 	Hosts     []NmapHost `json:"hosts"`
@@ -73,12 +72,7 @@ func NewNmapScanProvider(clientId string) (*NmapScanProvider, error) {
 	return provider, nil
 }
 
-func (p *NmapScanProvider) Scan(target string) (string, error) {
-	// Use default command for backward compatibility
-	return p.ScanWithCommand(target, "-sn %s")
-}
-
-func (p *NmapScanProvider) ScanWithCommand(target string, command string) (string, error) {
+func (p *NmapScanProvider) Scan(target string, command string) (string, error) {
 	if target == "" {
 		return "", fmt.Errorf("scan target cannot be empty")
 	}
@@ -132,37 +126,23 @@ func (p *NmapScanProvider) ScanWithCommand(target string, command string) (strin
 	return result, nil
 }
 
-func (p *NmapScanProvider) ScanStructured(target string) (*ScanResult, error) {
-	return p.ScanWithCommandStructured(target, "-sn %s")
-}
-
-func (p *NmapScanProvider) ScanWithCommandStructured(target string, command string) (*ScanResult, error) {
-	// Get raw text output
-	rawResult, err := p.ScanWithCommand(target, command)
-	if err != nil {
-		return nil, err
-	}
-
+func (p *NmapScanProvider) ParseResult(rawResult string) (string, error) {
 	// Parse the raw output into structured data
-	parsedResult := p.parseNmapOutput(rawResult, command)
+	parsedResult := p.parseNmapOutput(rawResult)
 
 	// Convert to JSON
 	jsonBytes, err := json.Marshal(parsedResult)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal nmap result: %v", err)
+		return "", fmt.Errorf("failed to marshal nmap result: %v", err)
 	}
 
-	return &ScanResult{
-		RawResult: rawResult,
-		Result:    string(jsonBytes),
-	}, nil
+	return string(jsonBytes), nil
 }
 
 // parseNmapOutput parses the text output from nmap and creates a structured result
-func (p *NmapScanProvider) parseNmapOutput(output string, command string) *NmapScanResult {
+func (p *NmapScanProvider) parseNmapOutput(output string) *NmapScanResult {
 	result := &NmapScanResult{
-		Command: command,
-		Hosts:   []NmapHost{},
+		Hosts: []NmapHost{},
 	}
 
 	lines := strings.Split(output, "\n")

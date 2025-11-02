@@ -35,9 +35,8 @@ type Scan struct {
 	Provider   string `xorm:"varchar(100)" json:"provider"`
 	State      string `xorm:"varchar(100)" json:"state"`
 	Command    string `xorm:"varchar(500)" json:"command"`
-	ResultText string `xorm:"mediumtext" json:"resultText"` // Deprecated: use RawResult instead
-	RawResult  string `xorm:"mediumtext" json:"rawResult"`  // Original text output
-	Result     string `xorm:"mediumtext" json:"result"`     // Structured JSON output
+	RawResult  string `xorm:"mediumtext" json:"rawResult"`
+	Result     string `xorm:"mediumtext" json:"result"`
 }
 
 func GetScanCount(owner, field, value string) (int64, error) {
@@ -124,7 +123,7 @@ func (scan *Scan) GetId() string {
 	return fmt.Sprintf("%s/%s", scan.Owner, scan.Name)
 }
 
-// ScanAsset performs a scan on an asset - unified API that combines test-scan and start-scan functionality
+// ScanAsset performs a scan on an asset
 // @param provider: The provider ID (owner/name) for scan provider
 // @param scan: Optional scan ID (owner/name) for saving results to existing scan
 // @param targetMode: "Manual Input" or "Asset"
@@ -132,7 +131,6 @@ func (scan *Scan) GetId() string {
 // @param asset: Asset ID (owner/name) for Asset mode
 // @param command: Scan command with optional %s placeholder for target
 // @param saveToScan: Whether to save results to scan object (true for scan edit page, false for provider edit page)
-// Returns the structured JSON result as a string for backward compatibility
 func ScanAsset(provider, scanParam, targetMode, target, asset, command string, saveToScan bool, lang string) (string, error) {
 	// Get the provider
 	providerObj, err := GetProvider(provider)
@@ -174,14 +172,14 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 		scanTarget = target
 	}
 
-	// Perform scan with structured results
-	var scanResult *scan.ScanResult
-	if command != "" {
-		scanResult, err = scanProvider.ScanWithCommandStructured(scanTarget, command)
-	} else {
-		scanResult, err = scanProvider.ScanStructured(scanTarget)
+	// Perform scan
+	rawResult, err := scanProvider.Scan(scanTarget, command)
+	if err != nil {
+		return "", err
 	}
 
+	// Parse the raw result into structured JSON
+	structuredResult, err := scanProvider.ParseResult(rawResult)
 	if err != nil {
 		return "", err
 	}
@@ -190,18 +188,16 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	if saveToScan && scanParam != "" {
 		scanObj, err := GetScan(scanParam)
 		if err != nil {
-			return scanResult.Result, err // Return result even if save fails
+			return structuredResult, err
 		}
 		if scanObj != nil {
 			scanObj.State = "Completed"
-			scanObj.ResultText = scanResult.RawResult // Keep for backward compatibility
-			scanObj.RawResult = scanResult.RawResult
-			scanObj.Result = scanResult.Result
+			scanObj.RawResult = rawResult
+			scanObj.Result = structuredResult
 			scanObj.UpdatedTime = util.GetCurrentTime()
-			_, _ = UpdateScan(scanParam, scanObj) // Ignore save errors, still return result
+			_, _ = UpdateScan(scanParam, scanObj)
 		}
 	}
 
-	// Return the structured JSON result
-	return scanResult.Result, nil
+	return structuredResult, nil
 }

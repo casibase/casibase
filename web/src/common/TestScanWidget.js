@@ -173,7 +173,7 @@ class TestScanWidget extends React.Component {
         selectedAsset: this.props.scan.asset || "",
         selectedProvider: this.props.scan.provider || "",
         scanCommand: defaultCommand,
-        scanResult: this.props.scan.resultText || "",
+        scanResult: this.props.scan.result || "",
       });
       return;
     }
@@ -280,9 +280,9 @@ class TestScanWidget extends React.Component {
             this.props.onUpdateProvider("configText", res.data);
           }
 
-          // Save scan result to scan ResultText field (for ScanEditPage)
+          // Save scan result to scan Result field (for ScanEditPage)
           if (this.props.onUpdateScan) {
-            this.props.onUpdateScan("resultText", res.data);
+            this.props.onUpdateScan("result", res.data);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
