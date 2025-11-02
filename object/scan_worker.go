@@ -150,7 +150,6 @@ func executeScan(s *Scan) {
 
 	// Execute the scan using ScanAsset
 	_, err = ScanAsset(provider, scanId, targetMode, target, asset, command, true, "en")
-
 	if err != nil {
 		// Update scan with error
 		scanObj, getErr := GetScan(scanId)
