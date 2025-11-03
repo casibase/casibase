@@ -140,11 +140,7 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 
 	// Create streaming callback function
 	streamCallbackFn := func(ctx context.Context, chunk []byte) error {
-		err := flushDataThink(string(chunk), "message", writer, lang)
-		if err != nil {
-			return err
-		}
-		return nil
+		return flushDataThink(string(chunk), "message", writer, lang)
 	}
 
 	// Build request
