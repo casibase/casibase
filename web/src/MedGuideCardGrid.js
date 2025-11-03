@@ -200,13 +200,12 @@ const MedGuideCardGrid = (props) => {
     return (
         <div style={{ padding: "50px" }} >
             {/* className="mg-main-wrap" */}
-            <div
-                // className="mg-btn-list"
+            {/* // className="mg-btn-list"
                 style={{
                     // background: `linear-gradient(120deg, ${primaryGroup.bg} 100%, #fff 100%)`,
                     // width: '100%'
-                }}
-            >
+                }} */}
+            <div>
                 {groups.map((grp, gi) => (
                     <div key={grp.name} style={{ marginBottom: 50 }} className="mg-group-section">
                         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 12 }}>
