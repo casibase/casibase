@@ -277,8 +277,7 @@ func (p *AzureModelProvider) QueryText(question string, writer io.Writer, histor
 				}
 			}
 
-			flushStandard := flushData.(func(string, io.Writer, string) error)
-			err := flushStandard(data, writer, lang)
+			err := flushDataOpenai(data, writer, lang)
 			if err != nil {
 				return nil, err
 			}
