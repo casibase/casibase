@@ -31,15 +31,19 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/mem"
+	"github.com/shirou/gopsutil/net"
 	"github.com/shirou/gopsutil/process"
 )
 
 type SystemInfo struct {
-	CpuUsage    []float64 `json:"cpuUsage"`
-	MemoryUsed  uint64    `json:"memoryUsed"`
-	MemoryTotal uint64    `json:"memoryTotal"`
-	DiskUsed    uint64    `json:"diskUsed"`
-	DiskTotal   uint64    `json:"diskTotal"`
+	CpuUsage     []float64 `json:"cpuUsage"`
+	MemoryUsed   uint64    `json:"memoryUsed"`
+	MemoryTotal  uint64    `json:"memoryTotal"`
+	DiskUsed     uint64    `json:"diskUsed"`
+	DiskTotal    uint64    `json:"diskTotal"`
+	NetworkSent  uint64    `json:"networkSent"`
+	NetworkRecv  uint64    `json:"networkRecv"`
+	NetworkTotal uint64    `json:"networkTotal"`
 }
 
 type VersionInfo struct {
@@ -88,6 +92,25 @@ func getDiskUsage() (uint64, uint64, error) {
 	return diskStat.Used, diskStat.Total, nil
 }
 
+// getNetworkUsage gets network usage (bytes sent and received)
+func getNetworkUsage() (uint64, uint64, uint64, error) {
+	ioCounters, err := net.IOCounters(false)
+	if err != nil {
+		return 0, 0, 0, err
+	}
+
+	if len(ioCounters) == 0 {
+		return 0, 0, 0, nil
+	}
+
+	// When pernic is false, it returns aggregated stats
+	bytesSent := ioCounters[0].BytesSent
+	bytesRecv := ioCounters[0].BytesRecv
+	bytesTotal := bytesSent + bytesRecv
+
+	return bytesSent, bytesRecv, bytesTotal, nil
+}
+
 func GetSystemInfo() (*SystemInfo, error) {
 	cpuUsage, err := getCpuUsage()
 	if err != nil {
@@ -104,12 +127,20 @@ func GetSystemInfo() (*SystemInfo, error) {
 		return nil, err
 	}
 
+	networkSent, networkRecv, networkTotal, err := getNetworkUsage()
+	if err != nil {
+		return nil, err
+	}
+
 	res := &SystemInfo{
-		CpuUsage:    cpuUsage,
-		MemoryUsed:  memoryUsed,
-		MemoryTotal: memoryTotal,
-		DiskUsed:    diskUsed,
-		DiskTotal:   diskTotal,
+		CpuUsage:     cpuUsage,
+		MemoryUsed:   memoryUsed,
+		MemoryTotal:  memoryTotal,
+		DiskUsed:     diskUsed,
+		DiskTotal:    diskTotal,
+		NetworkSent:  networkSent,
+		NetworkRecv:  networkRecv,
+		NetworkTotal: networkTotal,
 	}
 	return res, nil
 }
