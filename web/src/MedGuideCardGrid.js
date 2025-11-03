@@ -208,7 +208,7 @@ const MedGuideCardGrid = (props) => {
                 }}
             >
                 {groups.map((grp, gi) => (
-                    <div key={grp.name} style={{ marginBottom: 36 }} className="mg-group-section">
+                    <div key={grp.name} style={{ marginBottom: 50 }} className="mg-group-section">
                         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 12 }}>
                             <div style={{ fontSize: 28, fontWeight: 700, color: grp.color }}>{grp.name}</div>
                             {grp.subtitle ? <div style={{ fontSize: 16, color: '#999' }}>{grp.subtitle}</div> : null}
