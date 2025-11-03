@@ -57,6 +57,6 @@ func addRecordForFile(c *ApiController, userName string, action string, sessionI
 	}
 
 	text := fmt.Sprintf("%s%s, Session: %s, Path: %s", action, typ, storeName, path)
-	err := addRecord(c, userName, text, lang)
+	err = addRecord(c, userName, text, lang)
 	return err
 }
