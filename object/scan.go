@@ -199,12 +199,10 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	}
 
 	// If saveToScan is true and scanParam is provided, update the scan object with results
+	// Note: We ignore errors here to ensure scan results are returned even if saving fails
 	if saveToScan && scanParam != "" {
 		scanObj, err := GetScan(scanParam)
-		if err != nil {
-			return nil, err
-		}
-		if scanObj != nil {
+		if err == nil && scanObj != nil {
 			scanObj.State = "Completed"
 			scanObj.RawResult = rawResult
 			scanObj.Result = result
