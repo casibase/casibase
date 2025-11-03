@@ -133,15 +133,19 @@ const MedGuideCardGrid = (props) => {
                 /* 隐藏旧的分组列样式（保持兼容） */
                 .mg-group-list { display: none; }
                 .mg-group-item { display: none; }
-                /* 按钮容器：允许内部滚动并使用响应式网格 */
+                /* 按钮容器：每行最多 3 个卡片，落单靠左 */
                 .mg-btn-list { flex: 1; display: block; padding: 12px 20px; border-radius: 12px; min-height: 240px; box-sizing: border-box; overflow: visible; }
                 .mg-btn-title { font-size: 22px; font-weight: bold; margin-bottom: 12px; }
-                .mg-btns { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-                .mg-btn { background: #fff; border-radius: 16px; box-shadow: 0 6px 18px rgba(18,35,85,0.06); border: 1px solid #f0f2f7; display: flex; flex-direction: column; padding: 18px; box-sizing: border-box; cursor: pointer; transition: transform 0.16s, box-shadow 0.16s; }
+                /* 固定为 3 列，gap 稍大一丢丢；使用 minmax(0,1fr) 避免溢出 */
+                .mg-btns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; justify-items: start; }
+                /* 卡片统一高度并使用 space-between 保持底部按钮在同一行 */
+                .mg-btn { background: #fff; border-radius: 16px; box-shadow: 0 6px 18px rgba(18,35,85,0.06); border: 1px solid #f0f2f7; display: flex; flex-direction: column; justify-content: space-between; padding: 18px; box-sizing: border-box; cursor: pointer; transition: transform 0.16s, box-shadow 0.16s; min-height: 200px; }
                 .mg-btn:hover { transform: translateY(-6px); }
                 /* 卡片内部布局限制，避免超高 */
                 .mg-btn .mg-card-arrow { transition: all 0.32s cubic-bezier(.4,2,.6,1); }
-                @media (max-width: 900px) { .mg-main-wrap { width: calc(100% - 32px); padding: 12px; flex-direction: column; } .mg-btn-list { padding: 12px; } .mg-btns { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; } }
+                /* 响应式： <=900px 使用两列， <=560px 使用一列 */
+                @media (max-width: 900px) { .mg-main-wrap { width: calc(100% - 32px); padding: 12px; flex-direction: column; } .mg-btn-list { padding: 12px; } .mg-btns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; } }
+                @media (max-width: 560px) { .mg-btns { grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 14px; } }
             `;
         document.head.appendChild(style);
         return () => { document.head.removeChild(style); };
@@ -194,148 +198,157 @@ const MedGuideCardGrid = (props) => {
     const primaryGroup = groups[0] || { color: '#23408e', bg: '#f6f8fb' };
 
     return (
-        <div className="mg-main-wrap">
+        <div style={{ padding: "50px" }} >
+            {/* className="mg-main-wrap" */}
             <div
-                className="mg-btn-list"
+                // className="mg-btn-list"
                 style={{
-                    background: `linear-gradient(120deg, ${primaryGroup.bg} 100%, #fff 100%)`,
-                    width: '100%'
+                    // background: `linear-gradient(120deg, ${primaryGroup.bg} 100%, #fff 100%)`,
+                    // width: '100%'
                 }}
             >
-                <div className="mg-btn-title" style={{ color: primaryGroup.color }}>{/* 去掉分组标题，保持留白 */}</div>
-                <div className="mg-btns" style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-                    gap: '20px',
-                    width: '100%',
-                    justifyItems: 'center',
-                    paddingRight: '32px',
-                }}>
-                    {flatButtons.map(btnObj => (
-                        <div
-                            key={btnObj.title}
-                            className="mg-btn mg-btn-card"
-                            style={{
-                                background: '#fff',
-                                borderRadius: 16,
-                                boxShadow: '0 2px 12px 0 rgba(0,0,0,0.06)',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'flex-start',
-                                justifyContent: 'flex-start',
-                                width: '100%',
-                                minWidth: 0,
-                                maxWidth: 340,
-                                aspectRatio: '16/9',
-                                height: 'auto',
-                                padding: '18px 18px 14px 18px',
-                                position: 'relative',
-                                cursor: 'pointer',
-                                transition: 'box-shadow 0.14s, border 0.16s, transform 0.16s cubic-bezier(.4,2,.6,1)',
-                                border: '2px solid #fff',
-                                overflow: 'hidden',
-                            }}
-                            onClick={() => handleBtnClick(btnObj)}
-                            onMouseOver={e => {
-                                e.currentTarget.style.boxShadow = `0 10px 24px 0 ${primaryGroup.color}33`;
-                                e.currentTarget.style.border = `2px solid ${primaryGroup.color}`;
-                                e.currentTarget.style.transform = 'translateY(-4px)';
-                                const arrow = e.currentTarget.querySelector('.mg-card-arrow');
-                                if (arrow) {
-                                    arrow.style.opacity = '1';
-                                    arrow.style.transform = 'translateX(0)';
-                                }
-                            }}
-                            onMouseOut={e => {
-                                e.currentTarget.style.boxShadow = '0 2px 12px 0 rgba(0,0,0,0.06)';
-                                e.currentTarget.style.border = '2px solid #fff';
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                const arrow = e.currentTarget.querySelector('.mg-card-arrow');
-                                if (arrow) {
-                                    arrow.style.opacity = '0';
-                                    arrow.style.transform = 'translateX(24px)';
-                                }
-                            }}
-                        >
-                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', marginBottom: 6 }}>
-                                <div style={{ flex: '0 0 48px', width: 48, aspectRatio: '1/1', borderRadius: 12, background: primaryGroup.color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14, overflow: 'hidden' }}>
-                                    <span style={{ fontSize: 32, color: primaryGroup.color, width: '70%', height: '70%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', lineHeight: 1 }}>{btnObj.icon}</span>
-                                </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                                    <div style={{ fontWeight: 700, fontSize: 20, color: '#222', marginBottom: 2 }}>{btnObj.title}</div>
-                                    <div style={{ fontSize: 14, color: '#888', fontWeight: 400, marginTop: 0 }}>{btnObj.desc}</div>
-                                </div>
-                            </div>
-                            <img
-                                className="mg-card-arrow"
-                                src={require('./assets/home/right-arrow.png')}
-                                alt="right-arrow"
-                                style={{
-                                    position: 'absolute',
-                                    right: 18,
-                                    top: '50%',
-                                    transform: 'translateY(-50%) translateX(24px)',
-                                    width: 28,
-                                    height: 28,
-                                    opacity: 0,
-                                    transition: 'all 0.32s cubic-bezier(.4,2,.6,1)',
-                                    pointerEvents: 'none',
-                                    zIndex: 10,
-                                }}
-                            />
-                            <div style={{
-                                display: 'flex',
-                                width: '100%',
-                                borderTop: '1px solid #f0f0f0',
-                                marginTop: 'auto',
-                                position: 'absolute',
-                                left: 0,
-                                bottom: 0,
-                                background: '#fff',
-                                borderRadius: '0 0 16px 16px',
-                                overflow: 'hidden',
-                            }}>
-                                {!btnObj.introRoute ? null : <button
-                                    style={{
-                                        flex: 1,
-                                        padding: '12px 0',
-                                        border: 'none',
-                                        background: '#fff',
-                                        color: '#888',
-                                        fontWeight: 500,
-                                        fontSize: 15,
-                                        cursor: 'pointer',
-                                        transition: 'color 0.18s',
-                                        outline: 'none',
-                                    }}
-                                    onClick={e => {
-                                        e.stopPropagation();
-                                        if (btnObj.introRoute) {
-                                            history.push(btnObj.introRoute);
-                                        } else {
-                                            alert('功能介绍未搭建');
-                                        }
-                                    }}
-                                >功能介绍</button>}
-                                <button
-                                    style={{
-                                        flex: 1,
-                                        padding: '12px 0',
-                                        border: 'none',
-                                        background: '#fff',
-                                        color: primaryGroup.color,
-                                        fontWeight: 600,
-                                        fontSize: 15,
-                                        cursor: 'pointer',
-                                        transition: 'color 0.18s',
-                                        outline: 'none',
-                                    }}
-                                    onClick={e => { e.stopPropagation(); handleBtnClick(btnObj); }}
-                                >开始使用</button>
-                            </div>
+                {groups.map((grp, gi) => (
+                    <div key={grp.name} style={{ marginBottom: 36 }} className="mg-group-section">
+                        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 12 }}>
+                            <div style={{ fontSize: 28, fontWeight: 700, color: grp.color }}>{grp.name}</div>
+                            {grp.subtitle ? <div style={{ fontSize: 16, color: '#999' }}>{grp.subtitle}</div> : null}
                         </div>
-                    ))}
-                </div>
+                        <div className="mg-btns" style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+                            gap: '36px',
+                            width: '100%',
+                            justifyItems: 'start',
+                        }}>
+                            {grp.buttons.map(btnObj => {
+                                const groupColor = grp.color || primaryGroup.color;
+                                return (
+                                    <div
+                                        key={btnObj.title}
+                                        className="mg-btn mg-btn-card"
+                                        style={{
+                                            background: '#fff',
+                                            borderRadius: 16,
+                                            boxShadow: '0 6px 18px 0 rgba(0,0,0,0.06)',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'flex-start',
+                                            justifyContent: 'flex-start',
+                                            width: '100%',
+                                            minWidth: 0,
+                                            maxWidth: '100%',
+                                            minHeight: 200,
+                                            padding: '20px',
+                                            position: 'relative',
+                                            cursor: 'pointer',
+                                            transition: 'box-shadow 0.14s, border 0.16s, transform 0.16s cubic-bezier(.4,2,.6,1)',
+                                            border: '2px solid #fff',
+                                            overflow: 'hidden',
+                                        }}
+                                        onClick={() => handleBtnClick(btnObj)}
+                                        onMouseOver={e => {
+                                            e.currentTarget.style.boxShadow = `0 12px 28px 0 ${groupColor}33`;
+                                            e.currentTarget.style.border = `2px solid ${groupColor}`;
+                                            e.currentTarget.style.transform = 'translateY(-6px)';
+                                            const arrow = e.currentTarget.querySelector('.mg-card-arrow');
+                                            if (arrow) {
+                                                arrow.style.opacity = '1';
+                                                arrow.style.transform = 'translateX(0)';
+                                            }
+                                        }}
+                                        onMouseOut={e => {
+                                            e.currentTarget.style.boxShadow = '0 2px 12px 0 rgba(0,0,0,0.06)';
+                                            e.currentTarget.style.border = '2px solid #fff';
+                                            e.currentTarget.style.transform = 'translateY(0)';
+                                            const arrow = e.currentTarget.querySelector('.mg-card-arrow');
+                                            if (arrow) {
+                                                arrow.style.opacity = '0';
+                                                arrow.style.transform = 'translateX(24px)';
+                                            }
+                                        }}
+                                    >
+                                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', marginBottom: 8 }}>
+                                            <div style={{ flex: '0 0 56px', width: 56, aspectRatio: '1/1', borderRadius: 12, background: groupColor + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 16, overflow: 'hidden' }}>
+                                                <span style={{ fontSize: 36, color: groupColor, width: '70%', height: '70%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', lineHeight: 1 }}>{btnObj.icon}</span>
+                                            </div>
+                                            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                                <div style={{ fontWeight: 700, fontSize: 24, color: '#222', marginBottom: 4 }}>{btnObj.title}</div>
+                                                <div style={{ fontSize: 18, color: '#666', fontWeight: 400, marginTop: 0 }}>{btnObj.desc}</div>
+                                            </div>
+                                        </div>
+                                        <img
+                                            className="mg-card-arrow"
+                                            src={require('./assets/home/right-arrow.png')}
+                                            alt="right-arrow"
+                                            style={{
+                                                position: 'absolute',
+                                                right: 18,
+                                                top: '50%',
+                                                transform: 'translateY(-50%) translateX(24px)',
+                                                width: 28,
+                                                height: 28,
+                                                opacity: 0,
+                                                transition: 'all 0.32s cubic-bezier(.4,2,.6,1)',
+                                                pointerEvents: 'none',
+                                                zIndex: 10,
+                                            }}
+                                        />
+                                        <div style={{
+                                            display: 'flex',
+                                            width: '100%',
+                                            borderTop: '1px solid #f0f0f0',
+                                            marginTop: 'auto',
+                                            position: 'absolute',
+                                            left: 0,
+                                            bottom: 0,
+                                            background: '#fff',
+                                            borderRadius: '0 0 16px 16px',
+                                            overflow: 'hidden',
+                                        }}>
+                                            {!btnObj.introRoute ? null : <button
+                                                style={{
+                                                    flex: 1,
+                                                    padding: '12px 0',
+                                                    border: 'none',
+                                                    background: '#fff',
+                                                    color: '#888',
+                                                    fontWeight: 500,
+                                                    fontSize: 15,
+                                                    cursor: 'pointer',
+                                                    transition: 'color 0.18s',
+                                                    outline: 'none',
+                                                }}
+                                                onClick={e => {
+                                                    e.stopPropagation();
+                                                    if (btnObj.introRoute) {
+                                                        history.push(btnObj.introRoute);
+                                                    } else {
+                                                        alert('功能介绍未搭建');
+                                                    }
+                                                }}
+                                            >功能介绍</button>}
+                                            <button
+                                                style={{
+                                                    flex: 1,
+                                                    padding: '12px 0',
+                                                    border: 'none',
+                                                    background: '#fff',
+                                                    color: groupColor,
+                                                    fontWeight: 600,
+                                                    fontSize: 15,
+                                                    cursor: 'pointer',
+                                                    transition: 'color 0.18s',
+                                                    outline: 'none',
+                                                }}
+                                                onClick={e => { e.stopPropagation(); handleBtnClick(btnObj); }}
+                                            >开始使用</button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
