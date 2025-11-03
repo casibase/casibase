@@ -29,6 +29,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/process"
 )
@@ -37,6 +38,8 @@ type SystemInfo struct {
 	CpuUsage    []float64 `json:"cpuUsage"`
 	MemoryUsed  uint64    `json:"memoryUsed"`
 	MemoryTotal uint64    `json:"memoryTotal"`
+	DiskUsed    uint64    `json:"diskUsed"`
+	DiskTotal   uint64    `json:"diskTotal"`
 }
 
 type VersionInfo struct {
@@ -74,6 +77,16 @@ func getMemoryUsage() (uint64, uint64, error) {
 	return memInfo.RSS, virtualMem.Total, nil
 }
 
+// getDiskUsage get disk usage
+func getDiskUsage() (uint64, uint64, error) {
+	diskStat, err := disk.Usage("/")
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return diskStat.Used, diskStat.Total, nil
+}
+
 func GetSystemInfo() (*SystemInfo, error) {
 	cpuUsage, err := getCpuUsage()
 	if err != nil {
@@ -85,10 +98,17 @@ func GetSystemInfo() (*SystemInfo, error) {
 		return nil, err
 	}
 
+	diskUsed, diskTotal, err := getDiskUsage()
+	if err != nil {
+		return nil, err
+	}
+
 	res := &SystemInfo{
 		CpuUsage:    cpuUsage,
 		MemoryUsed:  memoryUsed,
 		MemoryTotal: memoryTotal,
+		DiskUsed:    diskUsed,
+		DiskTotal:   diskTotal,
 	}
 	return res, nil
 }

@@ -24,7 +24,7 @@ class SystemInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      systemInfo: {cpuUsage: [], memoryUsed: 0, memoryTotal: 0},
+      systemInfo: {cpuUsage: [], memoryUsed: 0, memoryTotal: 0, diskUsed: 0, diskTotal: 0},
       versionInfo: {},
       prometheusInfo: {apiThroughput: [], apiLatency: [], totalThroughput: 0},
       intervalId: null,
@@ -122,6 +122,14 @@ class SystemInfo extends React.Component {
         <br /> <br />
         <Progress type="circle" percent={Number((Number(this.state.systemInfo.memoryUsed) / Number(this.state.systemInfo.memoryTotal) * 100).toFixed(2))} />
       </div>;
+
+    const diskUi = this.state.systemInfo.diskUsed && this.state.systemInfo.diskTotal && this.state.systemInfo.diskTotal <= 0 ? i18next.t("system:Failed to get disk usage") :
+      <div>
+        {Setting.getFriendlyFileSize(this.state.systemInfo.diskUsed)} / {Setting.getFriendlyFileSize(this.state.systemInfo.diskTotal)}
+        <br /> <br />
+        <Progress type="circle" percent={Number((Number(this.state.systemInfo.diskUsed) / Number(this.state.systemInfo.diskTotal) * 100).toFixed(2))} />
+      </div>;
+
     const latencyUi = this.state.prometheusInfo?.apiLatency === null || this.state.prometheusInfo?.apiLatency?.length <= 0 ? <Spin size="large" /> :
       <PrometheusInfoTable prometheusInfo={this.state.prometheusInfo} table={"latency"} />;
     const throughputUi = this.state.prometheusInfo?.apiThroughput === null || this.state.prometheusInfo?.apiThroughput?.length <= 0 ? <Spin size="large" /> :
@@ -136,17 +144,22 @@ class SystemInfo extends React.Component {
       return (
         <>
           <Row>
-            <Col span={6}></Col>
-            <Col span={12}>
-              <Row gutter={[10, 10]}>
-                <Col span={12}>
+            <Col span={2}></Col>
+            <Col span={20}>
+              <Row gutter={[16, 16]}>
+                <Col span={8}>
                   <Card id="cpu-card" title={i18next.t("system:CPU Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
                     {this.state.loading ? <Spin size="large" /> : cpuUi}
                   </Card>
                 </Col>
-                <Col span={12}>
+                <Col span={8}>
                   <Card id="memory-card" title={i18next.t("system:Memory Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
                     {this.state.loading ? <Spin size="large" /> : memUi}
+                  </Card>
+                </Col>
+                <Col span={8}>
+                  <Card id="disk-card" title={i18next.t("system:Disk Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
+                    {this.state.loading ? <Spin size="large" /> : diskUi}
                   </Card>
                 </Col>
                 <Col span={24}>
@@ -172,13 +185,13 @@ class SystemInfo extends React.Component {
                 {i18next.t("system:Community")}: <a target="_blank" rel="noreferrer" href="https://casibase.org/#:~:text=Casibase%20API-,Community,-GitHub">Get in Touch!</a>
               </Card>
             </Col>
-            <Col span={6}></Col>
+            <Col span={2}></Col>
           </Row>
         </>
       );
     } else {
       return (
-        <Row gutter={[16, 0]}>
+        <Row gutter={[16, 16]}>
           <Col span={24}>
             <Card title={i18next.t("system:CPU Usage")} bordered={true} style={{textAlign: "center", width: "100%"}}>
               {this.state.loading ? <Spin size="large" /> : cpuUi}
@@ -187,6 +200,11 @@ class SystemInfo extends React.Component {
           <Col span={24}>
             <Card title={i18next.t("system:Memory Usage")} bordered={true} style={{textAlign: "center", width: "100%"}}>
               {this.state.loading ? <Spin size="large" /> : memUi}
+            </Card>
+          </Col>
+          <Col span={24}>
+            <Card title={i18next.t("system:Disk Usage")} bordered={true} style={{textAlign: "center", width: "100%"}}>
+              {this.state.loading ? <Spin size="large" /> : diskUi}
             </Card>
           </Col>
           <Col span={24}>
