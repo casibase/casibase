@@ -15,9 +15,13 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"io"
+	"net/http"
 
+	dashscopego "github.com/casibase/dashscope-go-sdk"
+	"github.com/casibase/dashscope-go-sdk/qwen"
 	"github.com/casibase/casibase/i18n"
 )
 
@@ -81,8 +85,8 @@ func (p *AlibabacloudModelProvider) calculatePrice(modelResult *ModelResult, lan
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
-		inputPrice := getPrice(modelResult.TotalTokenCount, priceItem[0])
-		outputPrice := getPrice(modelResult.TotalTokenCount, priceItem[1])
+		inputPrice := getPrice(modelResult.PromptTokenCount, priceItem[0])
+		outputPrice := getPrice(modelResult.ResponseTokenCount, priceItem[1])
 		price = inputPrice + outputPrice
 	} else {
 		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
@@ -94,21 +98,83 @@ func (p *AlibabacloudModelProvider) calculatePrice(modelResult *ModelResult, lan
 }
 
 func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
-	const BaseUrl = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-	// Create a new LocalModelProvider to handle the request
-	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
+	ctx := context.Background()
+	flusher, ok := writer.(http.Flusher)
+	if !ok {
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
+	}
+
+	// Create Alibaba Cloud client using official SDK
+	cli := dashscopego.NewTongyiClient(p.subType, p.apiKey)
+
+	// Prepare messages from history, prompt, and knowledge
+	maxTokens := getContextLength(p.subType)
+	rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, p.subType, maxTokens, lang)
+	if err != nil {
+		return nil, err
+	}
+	if agentInfo != nil && agentInfo.AgentMessages != nil && agentInfo.AgentMessages.Messages != nil {
+		rawMessages = append(rawMessages, agentInfo.AgentMessages.Messages...)
+	}
+
+	// Convert messages to Alibaba Cloud format
+	var messages []qwen.Message[*qwen.TextContent]
+	for _, rawMsg := range rawMessages {
+		content := &qwen.TextContent{Text: rawMsg.Text}
+		messages = append(messages, qwen.Message[*qwen.TextContent]{
+			Role:    rawMsg.Author,
+			Content: content,
+		})
+	}
+
+	// Set up parameters with web_search support
+	params := qwen.DefaultParameters().
+		SetTemperature(float64(p.temperature)).
+		SetTopP(float64(p.topP)).
+		SetIncrementalOutput(true)
+
+	// Enable web search if requested
+	if agentInfo != nil && agentInfo.AgentClients != nil && agentInfo.AgentClients.WebSearchEnabled {
+		params.SetEnableSearch(true)
+	}
+
+	// Create streaming callback function
+	streamCallbackFn := func(ctx context.Context, chunk []byte) error {
+		err := flushDataThink(string(chunk), "message", writer, lang)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	// Build request
+	req := &qwen.Request[*qwen.TextContent]{
+		Model: p.subType,
+		Input: qwen.Input[*qwen.TextContent]{
+			Messages: messages,
+		},
+		Parameters:  params,
+		StreamingFn: streamCallbackFn,
+	}
+
+	// Execute streaming request
+	resp, err := cli.CreateCompletion(ctx, req)
 	if err != nil {
 		return nil, err
 	}
 
-	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo, lang)
-	if err != nil {
-		return nil, err
+	// Calculate tokens and price
+	modelResult := &ModelResult{
+		PromptTokenCount:   resp.Usage.InputTokens,
+		ResponseTokenCount: resp.Usage.OutputTokens,
+		TotalTokenCount:    resp.Usage.TotalTokens,
 	}
 
 	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}
+
+	flusher.Flush()
 	return modelResult, nil
 }
