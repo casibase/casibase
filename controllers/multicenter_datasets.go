@@ -399,3 +399,29 @@ func (c *ApiController) GetMultiCenterAuditRecords() {
 	}
 	c.ResponseOk(records) 
 }
+
+// /add-multicenter-dataset-record-by-ids [post]
+func (c *ApiController) AddMultiCenterDatasetRecordByIds() {
+	type AddMultiCenterDatasetRecordByIdsReq struct {
+		Ids []int64 `json:"ids"`
+	}
+	var rq AddMultiCenterDatasetRecordByIdsReq
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &rq)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	// rq.Ids is []int64 (from JSON). Convert to []int for object layer.
+	ids64 := rq.Ids
+	ids := make([]int, len(ids64))
+	for i, v := range ids64 {
+		ids[i] = int(v)
+	}
+
+	records, err := object.AddMultiCenterDatasetRecordByIds(ids)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(records)
+}

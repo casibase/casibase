@@ -358,4 +358,5 @@ func initAPI() {
 	beego.Router("/api/multicenter/check-and-get-dataset-source", &controllers.ApiController{}, "POST:CheckAndGetDatasetSource")
 	beego.Router("/api/multicenter/check-usage", &controllers.ApiController{}, "GET:CheckUsage")
 	beego.Router("/api/multicenter/audit-usage", &controllers.ApiController{}, "GET:GetMultiCenterAuditRecords")
+	beego.Router("/api/multicenter/add-multicenter-dataset-record-by-ids", &controllers.ApiController{}, "POST:AddMultiCenterDatasetRecordByIds")
 }

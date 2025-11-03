@@ -1242,6 +1242,20 @@ func AddMultiCenterDatasetRecord(records []*Record) (int, error) {
 		if record == nil {
 			continue
 		}
+
+
+		recordId := record.Id
+		// 检查相同的recordId是否已存在，存在则跳过
+		existed, err := adapter.engine.Where("record_id = ?", recordId).Exist(&MulticenterDatasetsRecords{})
+		if err != nil {
+			fmt.Printf("[AddMultiCenterDatasetRecord] failed to check existence for record %d: %v", record.Id, err)
+			continue
+		}
+		if existed {
+			continue
+		}
+
+		
 		var ObjMap map[string]interface{}
 		if err := json.Unmarshal([]byte(record.Object), &ObjMap); err != nil {
 			// 跳过该条记录，继续处理下一个
@@ -1258,11 +1272,11 @@ func AddMultiCenterDatasetRecord(records []*Record) (int, error) {
 			continue
 		}
 		keywords := strings.Split(diagnosis, ";")
-		// 去除空字符串
+		// 去除空字符
 		filteredKeywords := []string{}
 		for _, kw := range keywords {
 			trimmed := strings.TrimSpace(kw)
-			if trimmed != "" {
+			if trimmed != "" && trimmed != ";" && trimmed != "-" {
 				filteredKeywords = append(filteredKeywords, trimmed)
 			}
 		}

@@ -287,3 +287,12 @@ export function getAuditUsage() {
     credentials: "include",
   }).then(res => res.json());
 }
+
+
+export function addMultiCenterDatasetRecordByIds(ids) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/add-multicenter-dataset-record-by-ids`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(ids),
+  }).then(res => res.json());
+}

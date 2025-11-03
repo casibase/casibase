@@ -118,6 +118,7 @@ import DataWorkBench from "./multicentre/DataWorkBench";
 import DataAuditLog from "./multicentre/DataAuditLog";
 import MyDataSet from "./multicentre/DataUsage/MyDataSet";
 import MyApplication from "./multicentre/DataUsage/MyApplication";
+import AddRecordsMulticenter from "./multicentre/DataUsage/AddRecordsMulticenter";
 
 import DynamicConfigPage from "./DynamicConfigPage";
 import MedRecordCenterPage from "./component/record/MedRecordCenterPage";
@@ -1143,6 +1144,10 @@ class App extends Component {
         }} />
         <Route exact path="/multi-center/data-usage/my-data-application" render={(props) => {
           const DataCenterWithPermission = withPagePermission(MyApplication, "/multi-center");
+          return this.renderSigninIfNotSignedIn(<DataCenterWithPermission account={this.state.account} {...props} />);
+        }} />
+        <Route exact path="/multi-center/data-usage/add-records-multicenter" render={(props) => {
+          const DataCenterWithPermission = withPagePermission(AddRecordsMulticenter, "/multi-center");
           return this.renderSigninIfNotSignedIn(<DataCenterWithPermission account={this.state.account} {...props} />);
         }} />
 
