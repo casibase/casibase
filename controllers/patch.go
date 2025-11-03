@@ -19,6 +19,7 @@ import (
 
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/scan"
+	"github.com/casibase/casibase/util"
 )
 
 const (
@@ -37,11 +38,11 @@ const (
 // @Success 200 {object} controllers.Response The Response object with InstallProgress
 // @router /install-patch [post]
 func (c *ApiController) InstallPatch() {
-	providerID := c.Input().Get("provider")
+	providerName := c.Input().Get("provider")
 	patchId := c.Input().Get("patchId")
 
-	if providerID == "" {
-		c.ResponseError("Provider ID is required")
+	if providerName == "" {
+		c.ResponseError("Provider is required")
 		return
 	}
 
@@ -51,7 +52,8 @@ func (c *ApiController) InstallPatch() {
 	}
 
 	// Get the provider to check if it's an OS Patch provider
-	provider, err := object.GetProvider(providerID)
+	providerId := util.GetIdFromOwnerAndName("admin", providerName)
+	provider, err := object.GetProvider(providerId)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
