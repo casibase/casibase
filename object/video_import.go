@@ -197,7 +197,7 @@ func importVideos(path string) error {
 	}
 
 	for i, video := range videos {
-		logs.Info("[%d] Add video: %v\n", i, video)
+		logs.Info("[%d] Add video: %v", i, video)
 		_, err = AddVideo(video)
 		if err != nil {
 			return err

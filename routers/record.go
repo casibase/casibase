@@ -33,7 +33,7 @@ func RecordMessage(ctx *context.Context) {
 func AfterRecordMessage(ctx *context.Context) {
 	record, err := object.NewRecord(ctx)
 	if err != nil {
-		logs.Error("AfterRecordMessage() error: %s\n", err.Error())
+		logs.Error("AfterRecordMessage() error: %s", err.Error())
 		return
 	}
 

@@ -211,7 +211,7 @@ func (p *VolcengineModelProvider) QueryText(question string, writer io.Writer, h
 
 	stream, err := client.CreateChatCompletionStream(ctx, request)
 	if err != nil {
-		logs.Error("stream chat error: %v\n", err)
+		logs.Error("stream chat error: %v", err)
 		return nil, err
 	}
 	defer stream.Close()

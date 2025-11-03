@@ -153,11 +153,11 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			}
 
 			if vector != nil {
-				logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s\n", i+1, len(textSections), storeName, file.Key, i, "Skipped due to already exists")
+				logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s", i+1, len(textSections), storeName, file.Key, i, "Skipped due to already exists")
 				continue
 			}
 
-			logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s\n", i+1, len(textSections), storeName, file.Key, i, textSection)
+			logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s", i+1, len(textSections), storeName, file.Key, i, textSection)
 
 			operation := func() error {
 				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType, lang)
@@ -171,7 +171,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			}
 			err = backoff.Retry(operation, backoff.NewExponentialBackOff())
 			if err != nil {
-				logs.Error("Failed to generate embedding after retries: %v\n", err)
+				logs.Error("Failed to generate embedding after retries: %v", err)
 				return false, err
 			}
 		}
@@ -208,7 +208,7 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string,
 		if err != nil {
 			err = fmt.Errorf(i18n.Translate(lang, "object:queryVectorSafe() error, %s"), err.Error())
 			if i > 0 {
-				logs.Error("\tFailed (%d): %s\n", i+1, err.Error())
+				logs.Error("\tFailed (%d): %s", i+1, err.Error())
 			}
 		} else {
 			break

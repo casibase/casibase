@@ -101,7 +101,7 @@ func cleanupChats() error {
 				return err
 			}
 
-			logs.Info("[%d] Cleaned up empty chat: [%s], user = [%s], clientIp = [%s], userAgent = [%s]\n", i, chat.Name, chat.User, chat.ClientIp, chat.UserAgent)
+			logs.Info("[%d] Cleaned up empty chat: [%s], user = [%s], clientIp = [%s], userAgent = [%s]", i, chat.Name, chat.User, chat.ClientIp, chat.UserAgent)
 			i += 1
 		}
 	}
@@ -112,7 +112,7 @@ func cleanupChats() error {
 func cleanupChatsNoError() {
 	err := cleanupChats()
 	if err != nil {
-		logs.Error("cleanupChatsNoError() error: %s\n", err.Error())
+		logs.Error("cleanupChatsNoError() error: %s", err.Error())
 	}
 }
 

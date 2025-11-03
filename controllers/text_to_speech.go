@@ -97,6 +97,6 @@ func (c *ApiController) GenerateTextToSpeechAudioStream() {
 
 	err = object.UpdateChatStats(chat, ttsResult)
 	if err != nil {
-		logs.Error("Error updating chat: %s\n", err.Error())
+		logs.Error("Error updating chat: %s", err.Error())
 	}
 }

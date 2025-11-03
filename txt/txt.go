@@ -40,7 +40,7 @@ func GetParsedTextFromUrl(url string, ext string, lang string) (string, error) {
 		defer func() {
 			err = os.Remove(path)
 			if err != nil {
-				logs.Error("%v\n", err.Error())
+				logs.Error("%v", err.Error())
 			}
 		}()
 	}

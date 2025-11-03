@@ -85,7 +85,7 @@ func (c *ApiController) ActivateFile() {
 
 	path := fmt.Sprintf("%s/%s", cacheDir, key)
 	cacheMap[prefix] = path
-	logs.Info("%v\n", cacheMap)
+	logs.Info("%v", cacheMap)
 
 	if !util.FileExist(getAppPath(filename)) {
 		util.CopyFile(getAppPath(filename), getAppPath(prefix))

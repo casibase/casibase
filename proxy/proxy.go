@@ -49,7 +49,7 @@ func isAddressOpen(address string) bool {
 
 	if conn != nil {
 		defer conn.Close()
-		logs.Info("Socks5 proxy enabled: %s\n", address)
+		logs.Info("Socks5 proxy enabled: %s", address)
 		return true
 	}
 

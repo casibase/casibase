@@ -77,14 +77,14 @@ func (c *ApiController) WecomBotHandleMessage() {
 	postData := c.Ctx.Input.RequestBody
 	plaintext, cryptErr := wxcpt.DecryptMsg(msgSignature, timestamp, nonce, postData)
 	if cryptErr != nil {
-		logs.Error("[WechatWork Bot] Decrypt message error: %v\n", cryptErr)
+		logs.Error("[WechatWork Bot] Decrypt message error: %v", cryptErr)
 		c.Ctx.ResponseWriter.Write([]byte("error"))
 		return
 	}
 
 	var message object.WecomBotMessage
 	if err := json.Unmarshal(plaintext, &message); err != nil {
-		logs.Error("[WechatWork Bot] Parse message error: %v\n", err)
+		logs.Error("[WechatWork Bot] Parse message error: %v", err)
 		c.Ctx.ResponseWriter.Write([]byte("error"))
 		return
 	}
@@ -94,13 +94,13 @@ func (c *ApiController) WecomBotHandleMessage() {
 	case "text", "stream":
 		responseMsg, cryptErr = c.handleTextMessage(&message, wxcpt, nonce, timestamp, c.GetAcceptLanguage())
 	default:
-		logs.Error("[WechatWork Bot] Unsupported message type: %s\n", message.MsgType)
+		logs.Error("[WechatWork Bot] Unsupported message type: %s", message.MsgType)
 		c.Ctx.ResponseWriter.Write([]byte("success"))
 		return
 	}
 
 	if cryptErr != nil {
-		logs.Error("[WechatWork Bot] Handle message error: %v\n", cryptErr)
+		logs.Error("[WechatWork Bot] Handle message error: %v", cryptErr)
 		c.Ctx.ResponseWriter.Write([]byte("error"))
 		return
 	}
