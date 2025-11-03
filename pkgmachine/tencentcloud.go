@@ -98,7 +98,7 @@ func (client MachineTencentClient) GetMachines(lang string) ([]*Machine, error) 
 		return nil, err
 	}
 
-	logs.Info("DescribeInstances response: %s\n", response.ToJsonString())
+	logs.Info("DescribeInstances response: %s", response.ToJsonString())
 
 	machines := []*Machine{}
 	for _, reservation := range response.Response.InstanceSet {
@@ -155,7 +155,7 @@ func (client MachineTencentClient) UpdateMachineState(name string, state string,
 
 		_, err = client.Client.StartInstances(startReq)
 		if err != nil {
-			logs.Error("Error starting instance: %v\n", err)
+			logs.Error("Error starting instance: %v", err)
 			return false, "", err
 		}
 
@@ -165,7 +165,7 @@ func (client MachineTencentClient) UpdateMachineState(name string, state string,
 
 		_, err = client.Client.StopInstances(stopReq)
 		if err != nil {
-			logs.Error("Error stopping instance: %v\n", err)
+			logs.Error("Error stopping instance: %v", err)
 			return false, "", err
 		}
 	default:

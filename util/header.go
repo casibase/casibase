@@ -57,7 +57,7 @@ func updateAllHeaders() {
 					return err
 				}
 
-				logs.Info("Handled path: [%s]\n", path)
+				logs.Info("Handled path: [%s]", path)
 			}
 		}
 		return nil

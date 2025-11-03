@@ -30,7 +30,7 @@ func initTemplates() {
 	templatesDir := "./data/template"
 	files, err := os.ReadDir(templatesDir)
 	if err != nil {
-		logs.Error("Failed to read template directory: %v\n", err)
+		logs.Error("Failed to read template directory: %v", err)
 	}
 
 	for _, file := range files {
@@ -42,13 +42,13 @@ func initTemplates() {
 		}
 		tpl, err := parseTemplateFromFile(owner, filepath.Join(templatesDir, file.Name()))
 		if err != nil {
-			logs.Error("Failed to parse template file %s: %v\n", file.Name(), err)
+			logs.Error("Failed to parse template file %s: %v", file.Name(), err)
 			continue
 		}
 		if tpl != nil {
 			_, err = AddTemplate(tpl)
 			if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
-				logs.Error("Failed to add template %s: %v\n", tpl.Name, err)
+				logs.Error("Failed to add template %s: %v", tpl.Name, err)
 			}
 		}
 	}

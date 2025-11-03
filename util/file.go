@@ -167,7 +167,7 @@ func downloadMaxmindFiles(cityExists, asnExists bool) {
 
 		EnsureFileFolderExists(filePath)
 
-		logs.Info("Downloading %s database from %s\n", filename, fileUrl)
+		logs.Info("Downloading %s database from %s", filename, fileUrl)
 		buffer, err := DownloadFile(fileUrl)
 		if err != nil {
 			return err

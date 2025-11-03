@@ -172,7 +172,7 @@ func parseVideoFile2(filePath string, lang string) (*Video, error) {
 	}
 
 	for _, label := range labels {
-		logs.Info("%v\n", label)
+		logs.Info("%v", label)
 	}
 
 	video.CreatedTime = util.GetCurrentTime()
@@ -188,7 +188,7 @@ func importVideos2(path string, lang string) error {
 	}
 
 	for i, video := range videos {
-		logs.Info("[%d] Add video: %v\n", i, video)
+		logs.Info("[%d] Add video: %v", i, video)
 		_, err = AddVideo(video)
 		if err != nil {
 			return err

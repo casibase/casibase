@@ -61,7 +61,7 @@ func processPdf(localPDFPath, number string) error {
 	}
 
 	pageCount := ctx.PageCount
-	logs.Info("Total pages: %d\n", pageCount)
+	logs.Info("Total pages: %d", pageCount)
 
 	ans := ""
 	batchSize := 20
