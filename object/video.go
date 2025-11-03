@@ -136,7 +136,10 @@ func getVideo(owner string, name string) (*Video, error) {
 }
 
 func GetVideo(id string, lang string) (*Video, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	v, err := getVideo(owner, name)
 	if err != nil {
 		return nil, err
@@ -168,8 +171,11 @@ func GetVideo(id string, lang string) (*Video, error) {
 }
 
 func UpdateVideo(id string, video *Video) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getVideo(owner, name)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
+	_, err = getVideo(owner, name)
 	if err != nil {
 		return false, err
 	}

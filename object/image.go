@@ -115,7 +115,10 @@ func getImage(owner string, name string) (*Image, error) {
 }
 
 func GetImage(id string) (*Image, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getImage(owner, name)
 }
 
@@ -151,7 +154,10 @@ func GetMaskedImages(images []*Image, errs ...error) ([]*Image, error) {
 }
 
 func UpdateImage(id string, image *Image) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	p, err := getImage(owner, name)
 	if err != nil {
 		return false, err

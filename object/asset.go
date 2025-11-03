@@ -113,12 +113,18 @@ func getAsset(owner string, name string) (*Asset, error) {
 }
 
 func GetAsset(id string) (*Asset, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getAsset(owner, name)
 }
 
 func UpdateAsset(id string, asset *Asset) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	assetDb, err := getAsset(owner, name)
 	if err != nil {
 		return false, err

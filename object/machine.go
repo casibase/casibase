@@ -100,7 +100,10 @@ func getMachine(owner string, name string) (*Machine, error) {
 }
 
 func GetMachine(id string) (*Machine, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getMachine(owner, name)
 }
 
@@ -137,7 +140,10 @@ func GetMaskedMachines(machines []*Machine, errs ...error) ([]*Machine, error) {
 }
 
 func UpdateMachine(id string, machine *Machine) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	oldMachine, err := getMachine(owner, name)
 	if err != nil {
 		return false, err

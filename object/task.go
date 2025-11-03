@@ -104,13 +104,19 @@ func getTask(owner string, name string) (*Task, error) {
 }
 
 func GetTask(id string) (*Task, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getTask(owner, name)
 }
 
 func UpdateTask(id string, task *Task) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getTask(owner, name)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
+	_, err = getTask(owner, name)
 	if err != nil {
 		return false, err
 	}

@@ -89,7 +89,10 @@ func getContainer(owner string, name string) (*Container, error) {
 }
 
 func GetContainer(id string) (*Container, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getContainer(owner, name)
 }
 
@@ -122,7 +125,10 @@ func GetMaskedContainers(containers []*Container, errs ...error) ([]*Container, 
 }
 
 func UpdateContainer(id string, container *Container, lang string) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	oldContainer, err := getContainer(owner, name)
 	if err != nil {
 		return false, err

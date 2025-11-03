@@ -92,13 +92,19 @@ func getWorkflow(owner string, name string) (*Workflow, error) {
 }
 
 func GetWorkflow(id string) (*Workflow, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getWorkflow(owner, name)
 }
 
 func UpdateWorkflow(id string, workflow *Workflow, lang string) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getWorkflow(owner, name)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
+	_, err = getWorkflow(owner, name)
 	if err != nil {
 		return false, err
 	}

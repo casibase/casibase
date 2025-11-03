@@ -49,7 +49,10 @@ func addProviderMessage(providerId, text string, lang string) (*Message, *Chat, 
 }
 
 func createProviderChat(chatId string, provider *Provider) (*Chat, error) {
-	_, chatName := util.GetOwnerAndNameFromId(chatId)
+	_, chatName, err := util.GetOwnerAndNameFromIdWithError(chatId)
+	if err != nil {
+		return nil, err
+	}
 	chat := &Chat{
 		Name:        chatName,
 		Type:        "Provider",

@@ -169,13 +169,19 @@ func getStore(owner string, name string) (*Store, error) {
 }
 
 func GetStore(id string) (*Store, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getStore(owner, name)
 }
 
 func UpdateStore(id string, store *Store) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getStore(owner, name)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
+	_, err = getStore(owner, name)
 	if err != nil {
 		return false, err
 	}
