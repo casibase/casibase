@@ -355,7 +355,11 @@ func (c *ApiController) UploadVideo() {
 
 	fileType := "unknown"
 	contentType := header.Header.Get("Content-Type")
-	fileType, _ = util.GetOwnerAndNameFromId(contentType)
+	fileType, _, err = util.GetOwnerAndNameFromIdWithError(contentType)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 	if fileType != "video" {
 		c.ResponseError(fmt.Sprintf("contentType: %s is not video", contentType))
 		return

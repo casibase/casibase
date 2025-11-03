@@ -257,7 +257,11 @@ func (c *ApiController) UndeployApplication() {
 		return
 	}
 
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 
 	// Undeploy the application synchronously and wait for completion
 	success, err := object.UndeployApplicationSync(owner, name, application.Namespace, c.GetAcceptLanguage())

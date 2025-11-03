@@ -82,8 +82,12 @@ func (c *ApiController) GetMachines() {
 func (c *ApiController) GetMachine() {
 	id := c.Input().Get("id")
 
-	owner, _ := util.GetOwnerAndNameFromId(id)
-	_, err := object.SyncMachinesCloud(owner, c.GetAcceptLanguage())
+	owner, _, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	_, err = object.SyncMachinesCloud(owner, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
