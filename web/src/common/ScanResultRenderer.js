@@ -24,6 +24,14 @@ require("codemirror/theme/material-darker.css");
 
 const {TabPane} = Tabs;
 
+// Helper function to configure CodeMirror editor mount
+const configureEditorMinHeight = (editor, minHeight) => {
+  editor.setSize(null, "auto");
+  const lineHeight = editor.defaultTextHeight();
+  const defaultMinHeight = lineHeight * 10;
+  editor.getWrapperElement().style.minHeight = minHeight || `${defaultMinHeight}px`;
+};
+
 /**
  * ScanResultRenderer - A reusable component to render scan results
  * @param {string} scanResult - The scan result to display
@@ -44,12 +52,7 @@ export function ScanResultRenderer({scanResult, providerType, provider, scan, on
           readOnly: true,
           lineNumbers: true,
         }}
-        editorDidMount={(editor) => {
-          editor.setSize(null, "auto");
-          const lineHeight = editor.defaultTextHeight();
-          const defaultMinHeight = lineHeight * 10;
-          editor.getWrapperElement().style.minHeight = minHeight || `${defaultMinHeight}px`;
-        }}
+        editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
       />
     );
   }
@@ -74,12 +77,7 @@ export function ScanResultRenderer({scanResult, providerType, provider, scan, on
           readOnly: true,
           lineNumbers: true,
         }}
-        editorDidMount={(editor) => {
-          editor.setSize(null, "auto");
-          const lineHeight = editor.defaultTextHeight();
-          const defaultMinHeight = lineHeight * 10;
-          editor.getWrapperElement().style.minHeight = minHeight || `${defaultMinHeight}px`;
-        }}
+        editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
       />
     );
   }
@@ -109,12 +107,7 @@ export function ScanResultRenderer({scanResult, providerType, provider, scan, on
             readOnly: true,
             lineNumbers: true,
           }}
-          editorDidMount={(editor) => {
-            editor.setSize(null, "auto");
-            const lineHeight = editor.defaultTextHeight();
-            const defaultMinHeight = lineHeight * 10;
-            editor.getWrapperElement().style.minHeight = minHeight || `${defaultMinHeight}px`;
-          }}
+          editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
         />
       </TabPane>
     </Tabs>

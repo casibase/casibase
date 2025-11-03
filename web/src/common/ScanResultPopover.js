@@ -26,7 +26,14 @@ import {ScanResultRenderer} from "./ScanResultRenderer";
  * @param {string} width - Width of the popover (default: "700px")
  * @param {string} height - Height of the popover (default: "500px")
  */
-export function ScanResultPopover({result, providerType = "Nmap", placement = "left", maxDisplayLength = 30, width = "700px", height = "500px"}) {
+export function ScanResultPopover({
+  result,
+  providerType = "Nmap",
+  placement = "left",
+  maxDisplayLength = 30,
+  width = "700px",
+  height = "500px",
+}) {
   if (!result) {
     return <span>-</span>;
   }
