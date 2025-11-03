@@ -39,7 +39,11 @@ func AfterRecordMessage(ctx *context.Context) {
 
 	userId := ctx.Input.Params()["recordUserId"]
 	if userId != "" {
-		record.Organization, record.User = util.GetOwnerAndNameFromId(userId)
+		organization, user, err := util.GetOwnerAndNameFromIdWithError(userId)
+		if err != nil {
+			panic(err)
+		}
+		record.Organization, record.User = organization, user
 	}
 
 	object.AddRecord(record, "en")

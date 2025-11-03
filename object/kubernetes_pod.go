@@ -79,7 +79,10 @@ func getPod(owner string, name string) (*Pod, error) {
 }
 
 func GetPod(id string) (*Pod, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getPod(owner, name)
 }
 
@@ -112,7 +115,10 @@ func GetMaskedPods(pods []*Pod, errs ...error) ([]*Pod, error) {
 }
 
 func UpdatePod(id string, pod *Pod, lang string) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	oldPod, err := getPod(owner, name)
 	if err != nil {
 		return false, err

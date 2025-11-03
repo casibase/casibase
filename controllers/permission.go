@@ -46,7 +46,11 @@ func (c *ApiController) GetPermissions() {
 // @router /get-permission [get]
 func (c *ApiController) GetPermission() {
 	id := c.Input().Get("id")
-	_, name := util.GetOwnerAndNameFromId(id)
+	_, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 
 	permission, err := casdoorsdk.GetPermission(name)
 	if err != nil {

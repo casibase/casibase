@@ -79,7 +79,10 @@ func getConsultation(owner string, name string) (*Consultation, error) {
 }
 
 func GetConsultation(id string) (*Consultation, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getConsultation(owner, name)
 }
 
@@ -112,7 +115,10 @@ func GetMaskedConsultations(consultations []*Consultation, errs ...error) ([]*Co
 }
 
 func UpdateConsultation(id string, consultation *Consultation) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	p, err := getConsultation(owner, name)
 	if err != nil {
 		return false, err

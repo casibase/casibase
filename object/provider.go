@@ -202,12 +202,18 @@ func getProvider(owner string, name string) (*Provider, error) {
 }
 
 func GetProvider(id string) (*Provider, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getProvider(owner, name)
 }
 
 func UpdateProvider(id string, provider *Provider) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	providerDb, err := getProvider(owner, name)
 	if err != nil {
 		return false, err

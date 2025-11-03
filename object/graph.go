@@ -101,13 +101,19 @@ func getGraph(owner string, name string) (*Graph, error) {
 }
 
 func GetGraph(id string) (*Graph, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getGraph(owner, name)
 }
 
 func UpdateGraph(id string, graph *Graph) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getGraph(owner, name)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
+	_, err = getGraph(owner, name)
 	if err != nil {
 		return false, err
 	}

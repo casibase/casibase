@@ -46,7 +46,10 @@ func addRecordForFile(c *ApiController, userName string, action string, sessionI
 		typ = "File"
 	}
 
-	_, storeName := util.GetOwnerAndNameFromId(sessionId)
+	_, storeName, err := util.GetOwnerAndNameFromIdWithError(sessionId)
+	if err != nil {
+		return err
+	}
 
 	path := fmt.Sprintf("/%s/%s", key, filename)
 	if filename == "" {
@@ -54,6 +57,6 @@ func addRecordForFile(c *ApiController, userName string, action string, sessionI
 	}
 
 	text := fmt.Sprintf("%s%s, Session: %s, Path: %s", action, typ, storeName, path)
-	err := addRecord(c, userName, text, lang)
+	err = addRecord(c, userName, text, lang)
 	return err
 }

@@ -86,7 +86,10 @@ func responseError(ctx *context.Context, error string, data ...interface{}) {
 }
 
 func setSessionUser(ctx *context.Context, userId string) {
-	owner, name := util.GetOwnerAndNameFromId(userId)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(userId)
+	if err != nil {
+		panic(err)
+	}
 	claims := casdoorsdk.Claims{
 		User: casdoorsdk.User{
 			Owner:   owner,
@@ -94,7 +97,7 @@ func setSessionUser(ctx *context.Context, userId string) {
 			IsAdmin: true,
 		},
 	}
-	err := ctx.Input.CruSession.Set("user", claims)
+	err = ctx.Input.CruSession.Set("user", claims)
 	if err != nil {
 		panic(err)
 	}

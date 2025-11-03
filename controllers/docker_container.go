@@ -82,8 +82,12 @@ func (c *ApiController) GetContainers() {
 func (c *ApiController) GetContainer() {
 	id := c.Input().Get("id")
 
-	owner, _ := util.GetOwnerAndNameFromId(id)
-	_, err := object.SyncDockerContainers(owner)
+	owner, _, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	_, err = object.SyncDockerContainers(owner)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

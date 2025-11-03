@@ -83,12 +83,18 @@ func getScan(owner string, name string) (*Scan, error) {
 }
 
 func GetScan(id string) (*Scan, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getScan(owner, name)
 }
 
 func UpdateScan(id string, scan *Scan) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	if _, err := getScan(owner, name); err != nil {
 		return false, err
 	}
