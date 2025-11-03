@@ -129,8 +129,8 @@ func validatePatchId(patchId string) (string, bool, error) {
 	}
 
 	// It's a title - validate it doesn't contain dangerous characters
-	// Allow alphanumeric, spaces, and common punctuation
-	titlePattern := regexp.MustCompile(`^[a-zA-Z0-9\s\-_.,():/]+$`)
+	// Allow alphanumeric, spaces, and common punctuation (but not path separators or command injection chars)
+	titlePattern := regexp.MustCompile(`^[a-zA-Z0-9\s\-_.,()]+$`)
 	if !titlePattern.MatchString(patchId) {
 		return "", false, fmt.Errorf("invalid patch ID format: contains unsafe characters")
 	}
@@ -346,8 +346,11 @@ func (p *OsPatchScanProvider) InstallPatch(patchId string) (*InstallProgress, er
 		}
 	`, sanitizedPatchId, sanitizedPatchId)
 	} else {
-		// Install by title - need to escape single quotes in the title
-		escapedTitle := strings.ReplaceAll(sanitizedPatchId, "'", "''")
+		// Install by title - escape for PowerShell
+		// Escape single quotes, backticks, and dollar signs which are special in PowerShell
+		escapedTitle := strings.ReplaceAll(sanitizedPatchId, "`", "``")
+		escapedTitle = strings.ReplaceAll(escapedTitle, "'", "''")
+		escapedTitle = strings.ReplaceAll(escapedTitle, "$", "`$")
 		psCommand = fmt.Sprintf(`
 		$ErrorActionPreference = 'Stop';
 		$ProgressPreference = 'Continue';
@@ -458,8 +461,11 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSec
 				}
 			`, sanitizedPatchId, sanitizedPatchId)
 			} else {
-				// Check progress by title - need to escape single quotes
-				escapedTitle := strings.ReplaceAll(sanitizedPatchId, "'", "''")
+				// Check progress by title - escape for PowerShell
+				// Escape single quotes, backticks, and dollar signs which are special in PowerShell
+				escapedTitle := strings.ReplaceAll(sanitizedPatchId, "`", "``")
+				escapedTitle = strings.ReplaceAll(escapedTitle, "'", "''")
+				escapedTitle = strings.ReplaceAll(escapedTitle, "$", "`$")
 				psCommand = fmt.Sprintf(`
 				$ErrorActionPreference = 'Stop';
 				$ProgressPreference = 'Continue';
