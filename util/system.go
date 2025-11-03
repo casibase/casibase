@@ -77,7 +77,7 @@ func getMemoryUsage() (uint64, uint64, error) {
 	return memInfo.RSS, virtualMem.Total, nil
 }
 
-// getDiskUsage get disk usage for root filesystem
+// getDiskUsage gets disk usage for root filesystem
 // Note: This monitors the root filesystem ("/") by default
 func getDiskUsage() (uint64, uint64, error) {
 	diskStat, err := disk.Usage("/")
