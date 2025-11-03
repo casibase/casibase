@@ -202,7 +202,7 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	if saveToScan && scanParam != "" {
 		scanObj, err := GetScan(scanParam)
 		if err != nil {
-			return &ScanResult{RawResult: rawResult, Result: result}, err
+			return nil, err
 		}
 		if scanObj != nil {
 			scanObj.State = "Completed"

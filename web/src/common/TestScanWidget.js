@@ -271,8 +271,7 @@ class TestScanWidget extends React.Component {
           Setting.showMessage("success", i18next.t("general:Successfully executed"));
 
           // res.data now contains {rawResult, result}
-          const rawResult = res.data.rawResult || "";
-          const result = res.data.result || "";
+          const {rawResult = "", result = ""} = res.data;
 
           this.setState({
             scanResult: result,

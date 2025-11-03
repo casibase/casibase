@@ -43,10 +43,27 @@ const configureEditorMinHeight = (editor, minHeight) => {
  * @param {string} minHeight - Minimum height for the editor (default: "300px")
  */
 export function ScanResultRenderer({scanResult, scanRawResult, providerType, provider, scan, onRefresh, minHeight = "300px"}) {
-  if (!scanResult) {
+  // If neither result is available, show empty editor
+  if (!scanResult && !scanRawResult) {
     return (
       <CodeMirror
         value=""
+        options={{
+          mode: "text/plain",
+          theme: "material-darker",
+          readOnly: true,
+          lineNumbers: true,
+        }}
+        editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
+      />
+    );
+  }
+
+  // If only raw result is available, show it as plain text
+  if (!scanResult && scanRawResult) {
+    return (
+      <CodeMirror
+        value={scanRawResult}
         options={{
           mode: "text/plain",
           theme: "material-darker",
