@@ -100,12 +100,18 @@ func getVectorByIndex(owner string, store string, file string, index int) (*Vect
 }
 
 func GetVector(id string) (*Vector, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getVector(owner, name)
 }
 
 func UpdateVector(id string, vector *Vector, lang string) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	oldVector, err := getVector(owner, name)
 	if err != nil {
 		return false, err

@@ -83,7 +83,10 @@ func getPatient(owner string, name string) (*Patient, error) {
 }
 
 func GetPatient(id string) (*Patient, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getPatient(owner, name)
 }
 
@@ -116,7 +119,10 @@ func GetMaskedPatients(patients []*Patient, errs ...error) ([]*Patient, error) {
 }
 
 func UpdatePatient(id string, patient *Patient) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	p, err := getPatient(owner, name)
 	if err != nil {
 		return false, err

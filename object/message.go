@@ -135,12 +135,18 @@ func getMessage(owner, name string) (*Message, error) {
 }
 
 func GetMessage(id string) (*Message, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getMessage(owner, name)
 }
 
 func UpdateMessage(id string, message *Message, isHitOnly bool) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	originMessage, err := getMessage(owner, name)
 	if err != nil {
 		return false, err

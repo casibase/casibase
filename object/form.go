@@ -103,12 +103,18 @@ func getForm(owner string, name string) (*Form, error) {
 }
 
 func GetForm(id string) (*Form, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getForm(owner, name)
 }
 
 func UpdateForm(id string, form *Form, lang string) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	existingForm, err := getForm(owner, name)
 	if existingForm == nil {
 		return false, fmt.Errorf(i18n.Translate(lang, "object:the form: %s is not found"), id)

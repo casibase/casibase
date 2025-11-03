@@ -62,7 +62,10 @@ func GetSessionCount(owner, field, value string) (int64, error) {
 }
 
 func GetSession(id string) (*Session, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	session := Session{Owner: owner, Name: name}
 	get, err := adapter.engine.Get(&session)
 	if err != nil {
@@ -77,7 +80,10 @@ func GetSession(id string) (*Session, error) {
 }
 
 func UpdateSession(id string, session *Session) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 
 	if ss, err := GetSession(id); err != nil {
 		return false, err
@@ -132,7 +138,10 @@ func AddSession(session *Session) (bool, error) {
 }
 
 func DeleteSession(id string) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	session, err := GetSession(id)
 	if err != nil {
 		return false, err
@@ -163,7 +172,10 @@ func DeleteSessionId(id string, sessionId string) (bool, error) {
 
 	session.SessionId = util.DeleteVal(session.SessionId, sessionId)
 	if len(session.SessionId) == 0 {
-		owner, name := util.GetOwnerAndNameFromId(id)
+		owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+		if err != nil {
+			return false, err
+		}
 		affected, err := adapter.engine.ID(core.PK{owner, name}).Delete(&Session{})
 		if err != nil {
 			return false, err

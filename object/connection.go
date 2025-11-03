@@ -123,7 +123,10 @@ func GetConnection(id string) (*Connection, error) {
 }
 
 func UpdateConnection(id string, connection *Connection, columns ...string) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	if oldConnection, err := getConnection(owner, name); err != nil {
 		return false, err
 	} else if oldConnection == nil {
@@ -155,7 +158,10 @@ func DeleteConnection(connection *Connection) (bool, error) {
 }
 
 func DeleteConnectionById(id string) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	return DeleteConnection(&Connection{Owner: owner, Name: name})
 }
 

@@ -81,13 +81,19 @@ func getFile(owner string, name string) (*File, error) {
 }
 
 func GetFile(id string) (*File, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getFile(owner, name)
 }
 
 func UpdateFile(id string, file *File) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getFile(owner, name)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
+	_, err = getFile(owner, name)
 	if err != nil {
 		return false, err
 	}

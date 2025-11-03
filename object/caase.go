@@ -90,7 +90,10 @@ func getCaase(owner string, name string) (*Caase, error) {
 }
 
 func GetCaase(id string) (*Caase, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getCaase(owner, name)
 }
 
@@ -123,7 +126,10 @@ func GetMaskedCaases(caases []*Caase, errs ...error) ([]*Caase, error) {
 }
 
 func UpdateCaase(id string, caase *Caase) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	p, err := getCaase(owner, name)
 	if err != nil {
 		return false, err
