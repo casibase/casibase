@@ -123,18 +123,18 @@
     "Please add a model provider first": "Aggiungi prima un provider di modello",
     "Please add an embedding provider first": "Aggiungi prima un provider di embedding",
     "Question message: [%s] doesn't exist": "Messaggio domanda: [%s] non esiste",
-    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() error, the receiver user: ",
-    "The agent provider: %s is expected to be ": "The agent provider: %s is expected to be ",
+    "SendErrorEmail() error, the receiver user: ": "Errore SendErrorEmail(), utente destinatario: ",
+    "The agent provider: %s is expected to be ": "Il provider agente: %s dovrebbe essere ",
     "The chat: %s is not found": "La chat: %s non è stata trovata",
     "The default video provider should not be empty": "Il provider video predefinito non deve essere vuoto",
     "The embedding provider for store: %s is not found": "Il provider di embedding per l'archivio: %s non è stato trovato",
-    "The embedding provider: %s is expected to be ": "The embedding provider: %s is expected to be ",
+    "The embedding provider: %s is expected to be ": "Il provider di embedding: %s dovrebbe essere ",
     "The embedding provider: %s is not found": "Il provider di embedding: %s non è stato trovato",
     "The embedding provider: %s's client secret should not be empty": "Il segreto client del provider di embedding: %s non deve essere vuoto",
     "The image provider for store: %s should not be empty": "Il provider di immagini per l'archivio: %s non deve essere vuoto",
     "The message: %s is not found": "Il messaggio: %s non è stato trovato",
     "The model provider for store: %s is not found": "Il provider di modello per l'archivio: %s non è stato trovato",
-    "The model provider: %s is expected to be ": "The model provider: %s is expected to be ",
+    "The model provider: %s is expected to be ": "Il provider di modello: %s dovrebbe essere ",
     "The model provider: %s is not found": "Il provider di modello: %s non è stato trovato",
     "The model provider: %s's client secret should not be empty": "Il segreto client del provider di modello: %s non deve essere vuoto",
     "The provider is not found": "Il provider non è stato trovato",
@@ -242,6 +242,9 @@
     "VMware API error, code = %d, message = %s": "Errore API VMware, codice = %d, messaggio = %s",
     "unsupported provider type: %s": "tipo di provider non supportato: %s"
   },
+  "provider": {
+    "Provider not found": "Provider non trovato"
+  },
   "resource": {
     "Invalid file data format": "Formato dati file non valido",
     "Missing required parameters": "Parametri obbligatori mancanti"
@@ -251,6 +254,13 @@
   },
   "store": {
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "dato che ci deve essere un archivio predefinito in Casibase, non puoi impostare questo archivio come non predefinito. Puoi impostare direttamente un altro archivio come predefinito"
+  },
+  "scan": {
+    "Scan not found": "Scansione non trovata",
+    "Asset not found": "Risorsa non trovata",
+    "Provider not found": "Fornitore non trovato",
+    "Scan provider not supported": "Fornitore di scansione non supportato",
+    "Failed to start scan": "Impossibile avviare la scansione"
   },
   "stt": {
     "API error: %s": "Errore API: %s",

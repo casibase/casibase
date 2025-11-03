@@ -242,6 +242,9 @@
     "VMware API error, code = %d, message = %s": "VMware API 错误，错误码 = %d，错误信息 = %s",
     "unsupported provider type: %s": "不支持的提供商类型：%s"
   },
+  "provider": {
+    "Provider not found": "Provider not found"
+  },
   "resource": {
     "Invalid file data format": "Invalid file data format",
     "Missing required parameters": "缺少必需参数"
@@ -251,6 +254,13 @@
   },
   "store": {
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
+  },
+  "scan": {
+    "Scan not found": "未找到扫描",
+    "Asset not found": "未找到资产",
+    "Provider not found": "未找到提供商",
+    "Scan provider not supported": "不支持扫描提供商",
+    "Failed to start scan": "启动扫描失败"
   },
   "stt": {
     "API error: %s": "API 错误：%s",
