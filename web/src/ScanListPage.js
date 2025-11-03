@@ -23,6 +23,7 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
+import {ScanResultPopover} from "./common/ScanResultPopover";
 
 class ScanListPage extends BaseListPage {
   constructor(props) {
@@ -105,6 +106,14 @@ class ScanListPage extends BaseListPage {
     }
 
     return otherProviderInfo[provider.category][provider.type].logo;
+  }
+
+  getProviderType(providerName) {
+    const provider = this.getProviderInfo(providerName);
+    if (!provider) {
+      return "Nmap"; // Default to Nmap
+    }
+    return provider.type || "Nmap";
   }
   newScan() {
     return {
@@ -272,6 +281,26 @@ class ScanListPage extends BaseListPage {
             color = "default";
           }
           return <Tag color={color}>{text}</Tag>;
+        },
+      },
+      {
+        title: i18next.t("general:Result"),
+        dataIndex: "result",
+        key: "result",
+        width: "200px",
+        fixed: (Setting.isMobile()) ? "false" : "right",
+        render: (text, record, index) => {
+          const providerType = this.getProviderType(record.provider);
+          return (
+            <ScanResultPopover
+              result={text}
+              providerType={providerType}
+              placement="left"
+              maxDisplayLength={30}
+              width="700px"
+              height="500px"
+            />
+          );
         },
       },
       {
