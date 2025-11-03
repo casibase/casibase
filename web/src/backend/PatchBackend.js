@@ -14,8 +14,8 @@
 
 import * as Setting from "../Setting";
 
-export function installPatch(provider, kb) {
-  return fetch(`${Setting.ServerUrl}/api/install-patch?provider=${encodeURIComponent(provider)}&kb=${encodeURIComponent(kb)}`, {
+export function installPatch(provider, patchId) {
+  return fetch(`${Setting.ServerUrl}/api/install-patch?provider=${encodeURIComponent(provider)}&patchId=${encodeURIComponent(patchId)}`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -24,8 +24,8 @@ export function installPatch(provider, kb) {
   }).then(res => res.json());
 }
 
-export function monitorPatchProgress(provider, kb) {
-  return fetch(`${Setting.ServerUrl}/api/monitor-patch-progress?provider=${encodeURIComponent(provider)}&kb=${encodeURIComponent(kb)}`, {
+export function monitorPatchProgress(provider, patchId) {
+  return fetch(`${Setting.ServerUrl}/api/monitor-patch-progress?provider=${encodeURIComponent(provider)}&patchId=${encodeURIComponent(patchId)}`, {
     method: "GET",
     credentials: "include",
     headers: {
