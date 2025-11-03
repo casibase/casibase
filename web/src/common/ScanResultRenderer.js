@@ -34,18 +34,36 @@ const configureEditorMinHeight = (editor, minHeight) => {
 
 /**
  * ScanResultRenderer - A reusable component to render scan results
- * @param {string} scanResult - The scan result to display
+ * @param {string} scanResult - The scan result to display (JSON)
+ * @param {string} scanRawResult - The raw scan result to display (plain text)
  * @param {string} providerType - The type of provider (e.g., "Nmap", "OS Patch")
  * @param {object} provider - The provider object (optional, for OS Patch)
  * @param {object} scan - The scan object (optional, for OS Patch)
  * @param {function} onRefresh - Callback for refresh action (optional, for OS Patch)
  * @param {string} minHeight - Minimum height for the editor (default: "300px")
  */
-export function ScanResultRenderer({scanResult, providerType, provider, scan, onRefresh, minHeight = "300px"}) {
-  if (!scanResult) {
+export function ScanResultRenderer({scanResult, scanRawResult, providerType, provider, scan, onRefresh, minHeight = "300px"}) {
+  // If neither result is available, show empty editor
+  if (!scanResult && !scanRawResult) {
     return (
       <CodeMirror
         value=""
+        options={{
+          mode: "text/plain",
+          theme: "material-darker",
+          readOnly: true,
+          lineNumbers: true,
+        }}
+        editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
+      />
+    );
+  }
+
+  // If only raw result is available, show it as plain text
+  if (!scanResult && scanRawResult) {
+    return (
+      <CodeMirror
+        value={scanRawResult}
         options={{
           mode: "text/plain",
           theme: "material-darker",
@@ -82,7 +100,7 @@ export function ScanResultRenderer({scanResult, providerType, provider, scan, on
     );
   }
 
-  // Render with tabs for structured and raw views
+  // Render with tabs for structured, raw JSON, and raw text views
   return (
     <Tabs defaultActiveKey="structured" type="card">
       <TabPane tab={i18next.t("scan:Structured View")} key="structured">
@@ -103,6 +121,18 @@ export function ScanResultRenderer({scanResult, providerType, provider, scan, on
           value={JSON.stringify(JSON.parse(scanResult), null, 2)}
           options={{
             mode: "application/json",
+            theme: "material-darker",
+            readOnly: true,
+            lineNumbers: true,
+          }}
+          editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
+        />
+      </TabPane>
+      <TabPane tab={i18next.t("scan:Raw Text")} key="rawText">
+        <CodeMirror
+          value={scanRawResult || ""}
+          options={{
+            mode: "text/plain",
             theme: "material-darker",
             readOnly: true,
             lineNumbers: true,

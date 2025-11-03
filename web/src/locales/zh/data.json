@@ -90,6 +90,7 @@
     "Provider - Tooltip": "要使用的扫描提供商",
     "Provider not found": "未找到提供商",
     "Raw JSON": "原始JSON",
+    "Raw Text": "原始文本",
     "Reboot Required": "需要重启",
     "Required": "需要",
     "Result - Tooltip": "扫描结果输出",

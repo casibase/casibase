@@ -129,6 +129,12 @@ func (scan *Scan) GetId() string {
 	return fmt.Sprintf("%s/%s", scan.Owner, scan.Name)
 }
 
+// ScanResult represents the result of a scan operation
+type ScanResult struct {
+	RawResult string `json:"rawResult"`
+	Result    string `json:"result"`
+}
+
 // ScanAsset performs a scan on an asset
 // @param provider: The provider ID (owner/name) for scan provider
 // @param scan: Optional scan ID (owner/name) for saving results to existing scan
@@ -137,23 +143,23 @@ func (scan *Scan) GetId() string {
 // @param asset: Asset name for Asset mode
 // @param command: Scan command with optional %s placeholder for target
 // @param saveToScan: Whether to save results to scan object (true for scan edit page, false for provider edit page)
-func ScanAsset(provider, scanParam, targetMode, target, asset, command string, saveToScan bool, lang string) (string, error) {
+func ScanAsset(provider, scanParam, targetMode, target, asset, command string, saveToScan bool, lang string) (*ScanResult, error) {
 	// Get the provider
 	providerObj, err := GetProvider(provider)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if providerObj == nil {
-		return "", fmt.Errorf("provider not found")
+		return nil, fmt.Errorf("provider not found")
 	}
 
 	// Create scan provider
 	scanProvider, err := scan.GetScanProvider(providerObj.Type, providerObj.ClientId, lang)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if scanProvider == nil {
-		return "", fmt.Errorf("scan provider not supported")
+		return nil, fmt.Errorf("scan provider not supported")
 	}
 
 	// Determine the scan target
@@ -164,16 +170,16 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 		// Get the asset
 		assetObj, err := GetAsset(assetId)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 		if assetObj == nil {
-			return "", fmt.Errorf("asset not found")
+			return nil, fmt.Errorf("asset not found")
 		}
 
 		// Get the scan target from asset
 		scanTarget, err = assetObj.GetScanTarget()
 		if err != nil {
-			return "", fmt.Errorf("error getting scan target: %v", err)
+			return nil, fmt.Errorf("error getting scan target: %v", err)
 		}
 	} else {
 		// Use manual input target
@@ -183,22 +189,20 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	// Perform scan
 	rawResult, err := scanProvider.Scan(scanTarget, command)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	// Parse the raw result into structured JSON
 	result, err := scanProvider.ParseResult(rawResult)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	// If saveToScan is true and scanParam is provided, update the scan object with results
+	// Note: We ignore errors here to ensure scan results are returned even if saving fails
 	if saveToScan && scanParam != "" {
 		scanObj, err := GetScan(scanParam)
-		if err != nil {
-			return result, err
-		}
-		if scanObj != nil {
+		if err == nil && scanObj != nil {
 			scanObj.State = "Completed"
 			scanObj.RawResult = rawResult
 			scanObj.Result = result
@@ -207,5 +211,5 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 		}
 	}
 
-	return result, nil
+	return &ScanResult{RawResult: rawResult, Result: result}, nil
 }

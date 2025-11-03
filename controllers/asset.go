@@ -166,13 +166,13 @@ func (c *ApiController) ScanAsset() {
 	command := c.Input().Get("command")
 	saveToScan := c.Input().Get("saveToScan") == "true"
 
-	result, err := object.ScanAsset(provider, scan, targetMode, target, asset, command, saveToScan, c.GetAcceptLanguage())
+	scanResult, err := object.ScanAsset(provider, scan, targetMode, target, asset, command, saveToScan, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(result)
+	c.ResponseOk(scanResult)
 }
 
 // ScanAssets

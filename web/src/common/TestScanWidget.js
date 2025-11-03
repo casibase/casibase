@@ -37,6 +37,7 @@ class TestScanWidget extends React.Component {
       selectedProvider: "",
       scanCommand: "",
       scanResult: "",
+      scanRawResult: "",
       scanButtonLoading: false,
       assets: [],
       providers: [],
@@ -169,6 +170,7 @@ class TestScanWidget extends React.Component {
         selectedProvider: this.props.scan.provider || "",
         scanCommand: defaultCommand,
         scanResult: this.props.scan.result || "",
+        scanRawResult: this.props.scan.rawResult || "",
       });
       return;
     }
@@ -209,6 +211,7 @@ class TestScanWidget extends React.Component {
         selectedProvider: this.props.provider.name || "",
         scanCommand: defaultCommand,
         scanResult: this.props.provider.configText || "",
+        scanRawResult: this.props.provider.rawText || "",
       });
     }
   }
@@ -266,23 +269,31 @@ class TestScanWidget extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully executed"));
+
+          // res.data now contains {rawResult, result}
+          const {rawResult = "", result = ""} = res.data;
+
           this.setState({
-            scanResult: res.data,
+            scanResult: result,
+            scanRawResult: rawResult,
           });
 
-          // Save scan result to provider ConfigText field (for ProviderEditPage)
+          // Save scan results to provider fields (for ProviderEditPage)
           if (this.props.onUpdateProvider) {
-            this.props.onUpdateProvider("configText", res.data);
+            this.props.onUpdateProvider("configText", result);
+            this.props.onUpdateProvider("rawText", rawResult);
           }
 
-          // Save scan result to scan Result field (for ScanEditPage)
+          // Save scan results to scan fields (for ScanEditPage)
           if (this.props.onUpdateScan) {
-            this.props.onUpdateScan("result", res.data);
+            this.props.onUpdateScan("result", result);
+            this.props.onUpdateScan("rawResult", rawResult);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
           this.setState({
             scanResult: `Error: ${res.msg}`,
+            scanRawResult: "",
           });
         }
       })
@@ -290,6 +301,7 @@ class TestScanWidget extends React.Component {
         Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${error}`);
         this.setState({
           scanResult: `Error: ${error}`,
+          scanRawResult: "",
         });
       })
       .finally(() => {
@@ -367,12 +379,13 @@ class TestScanWidget extends React.Component {
   }
 
   renderScanResult() {
-    const {scanResult} = this.state;
+    const {scanResult, scanRawResult} = this.state;
     const providerType = this.getProviderType();
 
     return (
       <ScanResultRenderer
         scanResult={scanResult}
+        scanRawResult={scanRawResult}
         providerType={providerType}
         provider={this.props.provider}
         scan={this.props.scan}
