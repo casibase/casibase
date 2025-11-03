@@ -20,9 +20,9 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/casibase/casibase/i18n"
 	dashscopego "github.com/casibase/dashscope-go-sdk"
 	"github.com/casibase/dashscope-go-sdk/qwen"
-	"github.com/casibase/casibase/i18n"
 )
 
 type AlibabacloudModelProvider struct {
