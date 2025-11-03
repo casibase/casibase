@@ -297,8 +297,8 @@ class ScanListPage extends BaseListPage {
               providerType={providerType}
               placement="left"
               maxDisplayLength={30}
-              width="700px"
-              height="500px"
+              width="1000px"
+              height="600px"
             />
           );
         },
