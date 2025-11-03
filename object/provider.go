@@ -52,6 +52,7 @@ type Provider struct {
 	McpTools           []*agent.McpTools `xorm:"text" json:"mcpTools"`
 	Text               string            `xorm:"mediumtext" json:"text"`
 	ConfigText         string            `xorm:"mediumtext" json:"configText"`
+	RawText            string            `xorm:"mediumtext" json:"rawText"` // Raw result from scan (for Scan category providers)
 
 	EnableThinking   bool    `json:"enableThinking"`
 	Temperature      float32 `xorm:"float" json:"temperature"`
