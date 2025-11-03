@@ -116,14 +116,14 @@ class SystemInfo extends React.Component {
         );
       });
 
-    const memUi = this.state.systemInfo.memoryUsed && this.state.systemInfo.memoryTotal && this.state.systemInfo.memoryTotal <= 0 ? i18next.t("system:Failed to get memory usage") :
+    const memUi = !this.state.systemInfo.memoryTotal || this.state.systemInfo.memoryTotal <= 0 ? i18next.t("system:Failed to get memory usage") :
       <div>
         {Setting.getFriendlyFileSize(this.state.systemInfo.memoryUsed)} / {Setting.getFriendlyFileSize(this.state.systemInfo.memoryTotal)}
         <br /> <br />
         <Progress type="circle" percent={Number((Number(this.state.systemInfo.memoryUsed) / Number(this.state.systemInfo.memoryTotal) * 100).toFixed(2))} />
       </div>;
 
-    const diskUi = this.state.systemInfo.diskUsed && this.state.systemInfo.diskTotal && this.state.systemInfo.diskTotal <= 0 ? i18next.t("system:Failed to get disk usage") :
+    const diskUi = !this.state.systemInfo.diskTotal || this.state.systemInfo.diskTotal <= 0 ? i18next.t("system:Failed to get disk usage") :
       <div>
         {Setting.getFriendlyFileSize(this.state.systemInfo.diskUsed)} / {Setting.getFriendlyFileSize(this.state.systemInfo.diskTotal)}
         <br /> <br />
