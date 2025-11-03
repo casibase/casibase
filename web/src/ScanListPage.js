@@ -85,6 +85,14 @@ class ScanListPage extends BaseListPage {
     return typeIcons[asset.type] || null;
   }
 
+  getAssetDisplayName(assetName) {
+    const asset = this.getAssetInfo(assetName);
+    if (!asset) {
+      return assetName;
+    }
+    return asset.displayName || assetName;
+  }
+
   getProviderLogo(providerName) {
     const provider = this.getProviderInfo(providerName);
     if (!provider) {
@@ -215,11 +223,12 @@ class ScanListPage extends BaseListPage {
         ...this.getColumnSearchProps("asset"),
         render: (text, record, index) => {
           const icon = this.getAssetTypeIcon(text);
+          const displayName = this.getAssetDisplayName(text);
           return (
             <Link to={`/assets/${text}`}>
               <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
                 {icon && <img src={icon} alt={text} style={{width: "20px", height: "20px"}} />}
-                <span>{text}</span>
+                <span>{displayName}</span>
               </div>
             </Link>
           );
