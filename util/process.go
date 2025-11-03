@@ -92,7 +92,7 @@ func StopOldInstance(port int) error {
 	if err != nil {
 		return err
 	} else {
-		logs.Warn("The old instance with pid: %d has been stopped\n", pid)
+		logs.Warn("The old instance with pid: %d has been stopped", pid)
 	}
 
 	return nil
