@@ -41,10 +41,9 @@ func AfterRecordMessage(ctx *context.Context) {
 	if userId != "" {
 		organization, user, err := util.GetOwnerAndNameFromIdWithError(userId)
 		if err != nil {
-			logs.Error("GetOwnerAndNameFromIdWithError() error: %s\n", err.Error())
-		} else {
-			record.Organization, record.User = organization, user
+			panic(err)
 		}
+		record.Organization, record.User = organization, user
 	}
 
 	object.AddRecord(record, "en")
