@@ -130,13 +130,15 @@ class SystemInfo extends React.Component {
         <Progress type="circle" percent={Number((Number(this.state.systemInfo.diskUsed) / Number(this.state.systemInfo.diskTotal) * 100).toFixed(2))} />
       </div>;
 
-    const networkUi = this.state.systemInfo.networkTotal <= 0 ? i18next.t("system:Failed to get network usage") :
+    const networkUi = this.state.systemInfo.networkTotal === undefined || this.state.systemInfo.networkTotal === null ? i18next.t("system:Failed to get network usage") :
       <div>
         {i18next.t("system:Sent")}: {Setting.getFriendlyFileSize(this.state.systemInfo.networkSent)}
         <br />
         {i18next.t("system:Received")}: {Setting.getFriendlyFileSize(this.state.systemInfo.networkRecv)}
         <br /> <br />
-        <Progress type="circle" percent={100} format={() => Setting.getFriendlyFileSize(this.state.systemInfo.networkTotal)} />
+        <div style={{fontSize: "16px", fontWeight: "600", color: "rgba(0, 0, 0, 0.85)"}}>
+          {i18next.t("system:Total Throughput")}: {Setting.getFriendlyFileSize(this.state.systemInfo.networkTotal)}
+        </div>
       </div>;
 
     const latencyUi = this.state.prometheusInfo?.apiLatency === null || this.state.prometheusInfo?.apiLatency?.length <= 0 ? <Spin size="large" /> :
