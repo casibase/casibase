@@ -119,17 +119,21 @@ func TestInstallPatch(t *testing.T) {
 
 	// Select the first available patch for testing
 	testPatch := patches[0]
-	t.Logf("Testing installation of patch: %s (KB%s)", testPatch.Title, testPatch.KB)
+	patchId := testPatch.KB
+	if patchId == "" {
+		patchId = testPatch.Title
+	}
+	t.Logf("Testing installation of patch: %s (PatchId: %s)", testPatch.Title, patchId)
 
 	// Start monitoring in a goroutine
-	progressChan, err := provider.MonitorInstallProgress(testPatch.KB, 2)
+	progressChan, err := provider.MonitorInstallProgress(patchId, 2)
 	if err != nil {
 		t.Fatalf("Failed to start monitoring: %v", err)
 	}
 
 	// Start installation
 	go func() {
-		progress, err := provider.InstallPatch(testPatch.KB)
+		progress, err := provider.InstallPatch(patchId)
 		if err != nil {
 			t.Logf("Installation error: %v", err)
 		} else {
@@ -146,8 +150,8 @@ func TestInstallPatch(t *testing.T) {
 				t.Log("Progress monitoring completed")
 				return
 			}
-			t.Logf("Progress: KB%s - Status: %s, Percent: %d%%, Complete: %v, RebootRequired: %v",
-				progress.KB, progress.Status, progress.PercentComplete, progress.IsComplete, progress.RebootRequired)
+			t.Logf("Progress: PatchId: %s - Status: %s, Percent: %d%%, Complete: %v, RebootRequired: %v",
+				progress.PatchId, progress.Status, progress.PercentComplete, progress.IsComplete, progress.RebootRequired)
 
 			if progress.Error != "" {
 				t.Logf("  Error: %s", progress.Error)

@@ -27,7 +27,7 @@ class OsPatchResultRenderer extends React.Component {
       patches: null,
       error: null,
       pageSize: 10,
-      installingKB: null,
+      installingPatchId: null,
       installModalVisible: false,
       installProgress: null,
     };
@@ -49,6 +49,16 @@ class OsPatchResultRenderer extends React.Component {
     if (this.monitorInterval) {
       clearInterval(this.monitorInterval);
     }
+  }
+
+  getPatchId(patch) {
+    // Generate a unique patch ID by combining KB and title
+    // If KB exists, use it; otherwise use the title
+    if (patch.kb) {
+      return patch.kb;
+    }
+    // Use title as patchId when KB is not available
+    return patch.title || "";
   }
 
   parseResult() {
@@ -98,7 +108,7 @@ class OsPatchResultRenderer extends React.Component {
     return null;
   }
 
-  handleInstallPatch(kb) {
+  handleInstallPatch(patchId) {
     const provider = this.getProviderFromContext();
     if (!provider) {
       Setting.showMessage("error", i18next.t("scan:Provider not found"));
@@ -106,10 +116,10 @@ class OsPatchResultRenderer extends React.Component {
     }
 
     this.setState({
-      installingKB: kb,
+      installingPatchId: patchId,
       installModalVisible: true,
       installProgress: {
-        kb: kb,
+        patchId: patchId,
         status: "Starting",
         percentComplete: 0,
         isComplete: false,
@@ -118,7 +128,7 @@ class OsPatchResultRenderer extends React.Component {
     });
 
     // Call install API
-    PatchBackend.installPatch(provider, kb)
+    PatchBackend.installPatch(provider, patchId)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -138,7 +148,7 @@ class OsPatchResultRenderer extends React.Component {
             }
           } else {
             // Start monitoring progress
-            this.startMonitoring(provider, kb);
+            this.startMonitoring(provider, patchId);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("scan:Failed to install patch")}: ${res.msg}`);
@@ -165,14 +175,14 @@ class OsPatchResultRenderer extends React.Component {
       });
   }
 
-  startMonitoring(provider, kb) {
+  startMonitoring(provider, patchId) {
     // Clear any existing interval before starting a new one
     if (this.monitorInterval) {
       clearInterval(this.monitorInterval);
     }
 
     this.monitorInterval = setInterval(() => {
-      PatchBackend.monitorPatchProgress(provider, kb)
+      PatchBackend.monitorPatchProgress(provider, patchId)
         .then((res) => {
           if (res.status === "ok") {
             this.setState({
@@ -224,7 +234,7 @@ class OsPatchResultRenderer extends React.Component {
     }
 
     this.setState({
-      installingKB: null,
+      installingPatchId: null,
       installModalVisible: false,
       installProgress: null,
     });
@@ -258,7 +268,7 @@ class OsPatchResultRenderer extends React.Component {
       >
         <Space direction="vertical" size="middle" style={{width: "100%"}}>
           <div>
-            <Text strong>{i18next.t("scan:KB")}:</Text> <Text code>{installProgress.kb}</Text>
+            <Text strong>{i18next.t("scan:Patch ID")}:</Text> <Text code>{installProgress.patchId}</Text>
           </div>
           <div>
             <Text strong>{i18next.t("general:Status")}:</Text> {this.renderStatus(installProgress.status)}
@@ -370,13 +380,14 @@ class OsPatchResultRenderer extends React.Component {
             return null;
           }
 
+          const patchId = this.getPatchId(record);
           return (
             <Button
               type="primary"
               size="small"
-              onClick={() => this.handleInstallPatch(record.kb)}
-              disabled={!record.kb || this.state.installingKB === record.kb}
-              loading={this.state.installingKB === record.kb}
+              onClick={() => this.handleInstallPatch(patchId)}
+              disabled={!patchId || this.state.installingPatchId === patchId}
+              loading={this.state.installingPatchId === patchId}
             >
               {i18next.t("scan:Install")}
             </Button>
@@ -400,7 +411,7 @@ class OsPatchResultRenderer extends React.Component {
               },
             }}
             size="small"
-            rowKey={(record, index) => `patch-${index}-${record.kb || ""}`}
+            rowKey={(record, index) => `patch-${index}-${this.getPatchId(record)}`}
             expandable={{
               expandedRowRender: (record) => (
                 <div style={{margin: 0}}>
