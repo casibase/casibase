@@ -25,6 +25,7 @@ import i18next from "i18next";
 const ChatInput = ({
   value,
   store,
+  chat,
   files,
   onFileChange,
   onChange,
@@ -179,6 +180,8 @@ const ChatInput = ({
               onWebSearchChange={setWebSearchEnabled}
               onFileUpload={handleFileUploadClick}
               disableFileUpload={store?.disableFileUpload}
+              store={store}
+              chat={chat}
             />
           }
           loading={loading}

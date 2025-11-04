@@ -361,6 +361,7 @@ class ChatBox extends React.Component {
             <ChatInput
               value={this.state.value}
               store={this.props.store}
+              chat={this.props.chat}
               files={this.state.files}
               onFileChange={(files) => this.setState({files})}
               onChange={(value) => this.setState({value})}

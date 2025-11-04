@@ -12,17 +12,50 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Button, Dropdown, Space} from "antd";
 import {CheckOutlined, GlobalOutlined, PaperClipOutlined, PlusOutlined} from "@ant-design/icons";
 import i18next from "i18next";
+import * as ProviderBackend from "../backend/ProviderBackend";
+import * as Setting from "../Setting";
 
-const ChatInputMenu = ({disabled, webSearchEnabled, onWebSearchChange, onFileUpload, disableFileUpload}) => {
+const ChatInputMenu = ({disabled, webSearchEnabled, onWebSearchChange, onFileUpload, disableFileUpload, store, chat}) => {
+  const [webSearchSupported, setWebSearchSupported] = useState(false);
+  const prevModelProviderRef = useRef(null);
+
   const handleWebSearchToggle = () => {
     if (onWebSearchChange) {
       onWebSearchChange(!webSearchEnabled);
     }
   };
+
+  useEffect(() => {
+    const modelProvider = chat?.modelProvider || store?.modelProvider;
+
+    if (prevModelProviderRef.current !== null && prevModelProviderRef.current !== modelProvider) {
+      if (webSearchEnabled && onWebSearchChange) {
+        onWebSearchChange(false);
+      }
+    }
+    prevModelProviderRef.current = modelProvider;
+
+    if (!modelProvider) {
+      setWebSearchSupported(false);
+      return;
+    }
+
+    ProviderBackend.getProvider("admin", modelProvider)
+      .then((res) => {
+        if (res.status === "ok" && res.data) {
+          setWebSearchSupported(Setting.isProviderSupportWebSearch(res.data));
+        } else {
+          setWebSearchSupported(false);
+        }
+      })
+      .catch(() => {
+        setWebSearchSupported(false);
+      });
+  }, [chat?.modelProvider, store?.modelProvider, webSearchEnabled, onWebSearchChange]);
 
   const menuItems = [
     {
@@ -61,6 +94,7 @@ const ChatInputMenu = ({disabled, webSearchEnabled, onWebSearchChange, onFileUpl
         </div>
       ),
       onClick: handleWebSearchToggle,
+      disabled: !webSearchSupported,
     },
   ];
 
