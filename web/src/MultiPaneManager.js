@@ -463,7 +463,7 @@ const MultiPaneManager = ({
               )}
 
               <div style={{flex: 1}}>
-                <ChatBox disableInput={false} loading={messageLoading} messages={pane.messages || []} messageError={messageError} sendMessage={(text, fileName, regenerate = false) => sendMessage(index, text, fileName, false, regenerate)} onMessageEdit={() => getMessages(index, pane.chat)} onCancelMessage={onCancelMessage} account={account} name={pane.chat?.name} displayName={pane.chat?.displayName} store={pane.store || defaultStore} />
+                <ChatBox disableInput={false} loading={messageLoading} messages={pane.messages || []} messageError={messageError} sendMessage={(text, fileName, regenerate = false) => sendMessage(index, text, fileName, false, regenerate)} onMessageEdit={() => getMessages(index, pane.chat)} onCancelMessage={onCancelMessage} account={account} name={pane.chat?.name} displayName={pane.chat?.displayName} chatModelProvider={pane.chat?.modelProvider} store={pane.store || defaultStore} />
               </div>
             </div>
           );

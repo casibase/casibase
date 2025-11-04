@@ -23,6 +23,7 @@ import MessageList from "./chat/MessageList";
 import ChatInput from "./chat/ChatInput";
 import WelcomeHeader from "./chat/WelcomeHeader";
 import * as MessageBackend from "./backend/MessageBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
 import TtsHelper from "./TextToSpeech";
 import SpeechToTextHelper from "./SpeechToText";
 
@@ -41,6 +42,7 @@ class ChatBox extends React.Component {
       isLoadingTTS: false,
       isVoiceInput: false,
       rerenderErrorMessage: false,
+      providerType: null,
     };
     this.synth = window.speechSynthesis;
     this.cursorPosition = undefined;
@@ -55,6 +57,7 @@ class ChatBox extends React.Component {
       this.synth.cancel();
     });
     this.addCursorPositionListener();
+    this.fetchProviderType();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -70,6 +73,12 @@ class ChatBox extends React.Component {
     if (prevProps.messages?.length !== this.props.messages?.length) {
       this.setState({messages: this.props.messages});
       this.scrollToBottom();
+    }
+    // Fetch provider type when model provider changes
+    const prevProvider = prevProps.chatModelProvider || prevProps.store?.modelProvider;
+    const currentProvider = this.props.chatModelProvider || this.props.store?.modelProvider;
+    if (prevProvider !== currentProvider) {
+      this.fetchProviderType();
     }
   }
 
@@ -317,6 +326,27 @@ class ChatBox extends React.Component {
       });
   };
 
+  fetchProviderType = () => {
+    // Get provider name from chat first, then fall back to store
+    const providerName = this.props.chatModelProvider || this.props.store?.modelProvider;
+    if (!providerName) {
+      this.setState({providerType: null});
+      return;
+    }
+
+    ProviderBackend.getProvider("admin", providerName)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({providerType: res.data?.type});
+        } else {
+          this.setState({providerType: null});
+        }
+      })
+      .catch(() => {
+        this.setState({providerType: null});
+      });
+  };
+
   render() {
     let messages = this.props.messages;
     if (messages === null) {
@@ -361,6 +391,7 @@ class ChatBox extends React.Component {
             <ChatInput
               value={this.state.value}
               store={this.props.store}
+              providerType={this.state.providerType}
               files={this.state.files}
               onFileChange={(files) => this.setState({files})}
               onChange={(value) => this.setState({value})}

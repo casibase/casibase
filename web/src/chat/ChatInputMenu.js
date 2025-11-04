@@ -17,12 +17,16 @@ import {Button, Dropdown, Space} from "antd";
 import {CheckOutlined, GlobalOutlined, PaperClipOutlined, PlusOutlined} from "@ant-design/icons";
 import i18next from "i18next";
 
-const ChatInputMenu = ({disabled, webSearchEnabled, onWebSearchChange, onFileUpload, disableFileUpload}) => {
+const ChatInputMenu = ({disabled, webSearchEnabled, onWebSearchChange, onFileUpload, disableFileUpload, providerType}) => {
   const handleWebSearchToggle = () => {
     if (onWebSearchChange) {
       onWebSearchChange(!webSearchEnabled);
     }
   };
+
+  // Check if the provider supports web search
+  // Web search is only supported for OpenAI and Alibaba Cloud providers
+  const webSearchSupported = providerType === "OpenAI" || providerType === "Alibaba Cloud";
 
   const menuItems = [
     {
@@ -61,6 +65,7 @@ const ChatInputMenu = ({disabled, webSearchEnabled, onWebSearchChange, onFileUpl
         </div>
       ),
       onClick: handleWebSearchToggle,
+      disabled: !webSearchSupported,
     },
   ];
 

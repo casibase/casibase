@@ -794,6 +794,7 @@ class ChatPage extends BaseListPage {
                 account={this.props.account}
                 name={this.state.chat?.name}
                 displayName={this.state.chat?.displayName}
+                chatModelProvider={this.state.chat?.modelProvider}
                 store={this.state.chat ?
                   this.state.stores?.find(store => store.name === this.state.chat.store) :
                   this.state.stores?.find(store => store.name === this.state.storeName) ||
