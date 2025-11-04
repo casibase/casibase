@@ -115,6 +115,7 @@ class ScanListPage extends BaseListPage {
     }
     return provider.type || "Nmap";
   }
+
   newScan() {
     return {
       owner: this.props.account.name,
@@ -122,8 +123,10 @@ class ScanListPage extends BaseListPage {
       createdTime: moment().format(),
       updatedTime: moment().format(),
       displayName: `New Scan - ${Setting.getRandomName()}`,
-      asset: "",
       provider: "",
+      targetMode: "Manual Input",
+      target: "127.0.0.1",
+      asset: "",
       state: "Created",
       command: "",
       rawResult: "",
