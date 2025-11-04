@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/util"
 	"github.com/robfig/cron/v3"
 )
@@ -40,13 +41,13 @@ func processPendingScans() {
 	// Get all pending scans
 	scans, err := getPendingScans()
 	if err != nil {
-		fmt.Printf("Error getting pending scans: %v\n", err)
+		logs.Error("processPendingScans() error getting pending scans: %v", err)
 		return
 	}
 
 	hostname, err := os.Hostname()
 	if err != nil {
-		fmt.Printf("Error getting hostname: %v\n", err)
+		logs.Error("processPendingScans() error getting hostname: %v", err)
 		return
 	}
 
@@ -54,7 +55,7 @@ func processPendingScans() {
 		// Try to claim this scan job
 		claimed, err := claimScanJob(scan, hostname)
 		if err != nil {
-			fmt.Printf("Error claiming scan job %s: %v\n", scan.GetId(), err)
+			logs.Error("processPendingScans() error claiming scan job %s: %v", scan.GetId(), err)
 			continue
 		}
 
@@ -89,7 +90,7 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 		if err == nil && provider != nil && provider.Type == "OS Patch" {
 			// For OS Patch scans, check if the target asset matches this instance's hostname
 			if scan.TargetMode == "Asset" && scan.Asset != "" {
-				asset, err := GetAsset(util.GetIdFromOwnerAndName("admin", scan.Asset))
+				asset, err := GetAsset(util.GetIdFromOwnerAndName(scan.Owner, scan.Asset))
 				if err == nil && asset != nil {
 					// Check if the asset name matches the current hostname
 					// This ensures only the Casibase instance on the target machine picks up the job
@@ -126,12 +127,15 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 func executeScanJob(scan *Scan, hostname string) {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Printf("Recovered from panic in scan job %s: %v\n", scan.GetId(), r)
+			logs.Error("executeScanJob() recovered from panic in scan job %s: %v", scan.GetId(), r)
 			// Update scan state to failed
 			scan.State = "Failed"
 			scan.Result = fmt.Sprintf("Error: %v", r)
 			scan.UpdatedTime = util.GetCurrentTime()
-			_, _ = UpdateScan(scan.GetId(), scan)
+			_, err := UpdateScan(scan.GetId(), scan)
+			if err != nil {
+				logs.Error("executeScanJob() error updating scan after panic %s: %v", scan.GetId(), err)
+			}
 		}
 	}()
 
@@ -152,6 +156,6 @@ func executeScanJob(scan *Scan, hostname string) {
 
 	_, err = UpdateScan(scan.GetId(), scan)
 	if err != nil {
-		fmt.Printf("Error updating scan %s: %v\n", scan.GetId(), err)
+		logs.Error("executeScanJob() error updating scan %s: %v", scan.GetId(), err)
 	}
 }
