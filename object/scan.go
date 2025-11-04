@@ -239,3 +239,26 @@ func executeScan(provider, scanParam, targetMode, target, asset, command, owner 
 
 	return &ScanResult{RawResult: rawResult, Result: result}, nil
 }
+
+// GetPendingScans returns all scans with state "Pending"
+func GetPendingScans() ([]*Scan, error) {
+	scans := []*Scan{}
+	err := adapter.engine.Where("state = ?", "Pending").Find(&scans)
+	if err != nil {
+		return nil, err
+	}
+	return scans, nil
+}
+
+// AtomicClaimScan atomically updates a scan's state from "Pending" to "Running"
+// This operation will only succeed for one instance due to the WHERE condition on state
+// Returns the number of affected rows
+func AtomicClaimScan(owner, name, hostname string) (int64, error) {
+	affected, err := adapter.engine.Where("owner = ? AND name = ? AND state = ?", owner, name, "Pending").
+		Update(map[string]interface{}{
+			"state":        "Running",
+			"runner":       hostname,
+			"updated_time": util.GetCurrentTime(),
+		})
+	return affected, err
+}

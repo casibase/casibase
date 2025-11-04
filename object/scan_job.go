@@ -39,7 +39,7 @@ func InitScanJobProcessor() {
 // processPendingScans picks up pending scans and executes them
 func processPendingScans() {
 	// Get all pending scans
-	scans, err := getPendingScans()
+	scans, err := GetPendingScans()
 	if err != nil {
 		logs.Error("processPendingScans() error getting pending scans: %v", err)
 		return
@@ -64,20 +64,12 @@ func processPendingScans() {
 			continue
 		}
 
-		// Execute the scan in a goroutine to avoid blocking
-		go executeScanJob(scan, hostname)
+		// Execute the scan
+		executeScanJob(scan, hostname)
 	}
 }
 
-// getPendingScans returns all scans with state "Pending"
-func getPendingScans() ([]*Scan, error) {
-	scans := []*Scan{}
-	err := adapter.engine.Where("state = ?", "Pending").Find(&scans)
-	if err != nil {
-		return nil, err
-	}
-	return scans, nil
-}
+
 
 // claimScanJob attempts to claim a scan job by setting its state to "Running"
 // Returns true if the claim was successful, false otherwise
@@ -88,7 +80,8 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 	}
 
 	// Get provider to check scan type
-	provider, err := GetProvider(scan.Provider)
+	providerId := util.GetId("admin", scan.Provider)
+	provider, err := GetProvider(providerId)
 	if err != nil {
 		return false, err
 	}
@@ -102,7 +95,8 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 	if provider.Type == "OS Patch" {
 		// For OS Patch scans in Asset mode, check if the target asset matches this instance's hostname
 		if scan.TargetMode == "Asset" && scan.Asset != "" {
-			asset, err := GetAsset(util.GetIdFromOwnerAndName(scan.Owner, scan.Asset))
+			assetId := util.GetIdFromOwnerAndName(scan.Owner, scan.Asset)
+			asset, err := GetAsset(assetId)
 			if err != nil {
 				return false, err
 			}
@@ -125,12 +119,7 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 
 	// Try to update the scan state from "Pending" to "Running"
 	// This is an atomic operation that will only succeed for one instance
-	affected, err := adapter.engine.Where("owner = ? AND name = ? AND state = ?", scan.Owner, scan.Name, "Pending").
-		Update(map[string]interface{}{
-			"state":        "Running",
-			"runner":       hostname,
-			"updated_time": util.GetCurrentTime(),
-		})
+	affected, err := AtomicClaimScan(scan.Owner, scan.Name, hostname)
 	if err != nil {
 		return false, err
 	}
