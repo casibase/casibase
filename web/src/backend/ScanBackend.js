@@ -24,6 +24,16 @@ export function getScans(owner, page = "", pageSize = "", field = "", value = ""
   }).then(res => res.json());
 }
 
+export function getScansByAsset(owner, assetName) {
+  return fetch(`${Setting.ServerUrl}/api/get-scans?owner=${owner}&asset=${encodeURIComponent(assetName)}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}
+
 export function getScan(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-scan?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",

@@ -16,9 +16,11 @@ import React from "react";
 import {Button, Card, Col, Input, Row} from "antd";
 import * as AssetBackend from "./backend/AssetBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
+import * as ScanBackend from "./backend/ScanBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import {JsonCodeMirrorEditor} from "./common/JsonCodeMirrorWidget";
+import ScanTable from "./common/ScanTable";
 
 class AssetEditPage extends React.Component {
   constructor(props) {
@@ -28,6 +30,8 @@ class AssetEditPage extends React.Component {
       assetName: props.match.params.assetName,
       asset: null,
       providers: [],
+      scans: [],
+      loadingScans: false,
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
   }
@@ -35,6 +39,7 @@ class AssetEditPage extends React.Component {
   UNSAFE_componentWillMount() {
     this.getAsset();
     this.getProviders();
+    this.getScans();
   }
 
   getProviders() {
@@ -50,6 +55,30 @@ class AssetEditPage extends React.Component {
         } else {
           Setting.showMessage("error", res.msg);
         }
+      });
+  }
+
+  getScans() {
+    this.setState({loadingScans: true});
+    ScanBackend.getScansByAsset("admin", this.state.assetName)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            scans: res.data || [],
+            loadingScans: false,
+          });
+        } else {
+          this.setState({
+            scans: [],
+            loadingScans: false,
+          });
+        }
+      })
+      .catch(() => {
+        this.setState({
+          scans: [],
+          loadingScans: false,
+        });
       });
   }
 
@@ -303,6 +332,21 @@ class AssetEditPage extends React.Component {
         {
           this.state.asset !== null ? this.renderAsset() : null
         }
+        {this.state.asset !== null && (
+          <Card size="small" title={i18next.t("scan:Related Scans")} style={{marginTop: "20px", marginLeft: "5px"}} type="inner">
+            {this.state.loadingScans ? (
+              <div style={{textAlign: "center", padding: "40px"}}>
+                {i18next.t("general:Loading")}...
+              </div>
+            ) : this.state.scans.length > 0 ? (
+              <ScanTable scans={this.state.scans} showAsset={false} />
+            ) : (
+              <div style={{textAlign: "center", padding: "40px", color: "#999"}}>
+                {i18next.t("scan:No scans found for this asset")}
+              </div>
+            )}
+          </Card>
+        )}
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitAssetEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitAssetEdit(true)}>{i18next.t("general:Save & Exit")}</Button>

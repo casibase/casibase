@@ -17,7 +17,9 @@ import ReactEcharts from "echarts-for-react";
 import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as AssetBackend from "./backend/AssetBackend";
+import * as ScanBackend from "./backend/ScanBackend";
 import {transformAssetsToGraph} from "./utils/assetToGraph";
+import ScanTable from "./common/ScanTable";
 
 class GraphErrorBoundary extends React.Component {
   constructor(props) {
@@ -53,6 +55,8 @@ class GraphDataPage extends React.Component {
       errorText: "",
       renderError: "",
       selectedNode: null,
+      nodeScans: [],
+      loadingScans: false,
     };
     this.chartRef = React.createRef();
     this.containerRef = React.createRef();
@@ -546,8 +550,42 @@ class GraphDataPage extends React.Component {
       if (node) {
         this.setState({
           selectedNode: node,
+          loadingScans: true,
+          nodeScans: [],
+        });
+        // Load scans for this asset
+        this.loadNodeScans(node);
+      }
+    }
+  };
+
+  loadNodeScans = async(node) => {
+    // Only load scans if this is an asset node
+    if (node.assetName) {
+      try {
+        const owner = this.props.owner || this.props.account?.name || "admin";
+        const res = await ScanBackend.getScansByAsset(owner, node.assetName);
+        if (res.status === "ok") {
+          this.setState({
+            nodeScans: res.data || [],
+            loadingScans: false,
+          });
+        } else {
+          this.setState({
+            nodeScans: [],
+            loadingScans: false,
+          });
+        }
+      } catch (error) {
+        this.setState({
+          nodeScans: [],
+          loadingScans: false,
         });
       }
+    } else {
+      this.setState({
+        loadingScans: false,
+      });
     }
   };
 
@@ -574,6 +612,8 @@ class GraphDataPage extends React.Component {
   handleClosePanel = () => {
     this.setState({
       selectedNode: null,
+      nodeScans: [],
+      loadingScans: false,
     });
   };
 
@@ -700,6 +740,26 @@ class GraphDataPage extends React.Component {
                 {selectedNode.properties.expireTime && (
                   <div style={{marginBottom: "4px"}}>
                     <strong>Expire Time:</strong> {selectedNode.properties.expireTime}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          {selectedNode.assetName && (
+            <div style={{marginTop: "16px", borderTop: "1px solid #e8e8e8", paddingTop: "12px"}}>
+              <strong style={{fontSize: "14px"}}>{i18next.t("scan:Related Scans")}:</strong>
+              <div style={{marginTop: "8px"}}>
+                {this.state.loadingScans ? (
+                  <div style={{textAlign: "center", padding: "20px", color: "#999"}}>
+                    {i18next.t("general:Loading")}...
+                  </div>
+                ) : this.state.nodeScans.length > 0 ? (
+                  <div style={{fontSize: "12px", maxHeight: "250px", overflow: "auto"}}>
+                    <ScanTable scans={this.state.nodeScans} compact={true} showAsset={false} />
+                  </div>
+                ) : (
+                  <div style={{textAlign: "center", padding: "20px", color: "#999"}}>
+                    {i18next.t("scan:No scans found")}
                   </div>
                 )}
               </div>

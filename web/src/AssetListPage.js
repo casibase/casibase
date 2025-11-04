@@ -20,10 +20,12 @@ import moment from "moment";
 import * as Setting from "./Setting";
 import * as AssetBackend from "./backend/AssetBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
+import * as ScanBackend from "./backend/ScanBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import {JsonCodeMirrorPopover} from "./common/JsonCodeMirrorWidget";
+import ScanTable from "./common/ScanTable";
 
 const {Option} = Select;
 
@@ -35,6 +37,8 @@ class AssetListPage extends BaseListPage {
       providers: [],
       selectedProvider: "",
       scanning: false,
+      expandedRowScans: {},
+      loadingExpandedScans: {},
     };
   }
 
@@ -157,6 +161,37 @@ class AssetListPage extends BaseListPage {
   getTypeIcon(typeName) {
     const typeIcons = Setting.getAssetTypeIcons();
     return typeIcons[typeName] || null;
+  }
+
+  loadScansForAsset(assetName) {
+    if (this.state.expandedRowScans[assetName]) {
+      return; // Already loaded
+    }
+
+    this.setState((prevState) => ({
+      loadingExpandedScans: {...prevState.loadingExpandedScans, [assetName]: true},
+    }));
+
+    ScanBackend.getScansByAsset("admin", assetName)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState((prevState) => ({
+            expandedRowScans: {...prevState.expandedRowScans, [assetName]: res.data || []},
+            loadingExpandedScans: {...prevState.loadingExpandedScans, [assetName]: false},
+          }));
+        } else {
+          this.setState((prevState) => ({
+            expandedRowScans: {...prevState.expandedRowScans, [assetName]: []},
+            loadingExpandedScans: {...prevState.loadingExpandedScans, [assetName]: false},
+          }));
+        }
+      })
+      .catch(() => {
+        this.setState((prevState) => ({
+          expandedRowScans: {...prevState.expandedRowScans, [assetName]: []},
+          loadingExpandedScans: {...prevState.loadingExpandedScans, [assetName]: false},
+        }));
+      });
   }
 
   renderTable(assets) {
@@ -367,6 +402,35 @@ class AssetListPage extends BaseListPage {
           )}
           loading={this.state.loading}
           onChange={this.handleTableChange}
+          expandable={{
+            expandedRowRender: (record) => {
+              const assetName = record.name;
+              const scans = this.state.expandedRowScans[assetName] || [];
+              const isLoading = this.state.loadingExpandedScans[assetName] || false;
+
+              return (
+                <div style={{margin: "16px 0"}}>
+                  <h4 style={{marginBottom: "12px"}}>{i18next.t("scan:Related Scans")}</h4>
+                  {isLoading ? (
+                    <div style={{textAlign: "center", padding: "20px"}}>
+                      {i18next.t("general:Loading")}...
+                    </div>
+                  ) : scans.length > 0 ? (
+                    <ScanTable scans={scans} showAsset={false} compact={true} />
+                  ) : (
+                    <div style={{textAlign: "center", padding: "20px", color: "#999"}}>
+                      {i18next.t("scan:No scans found for this asset")}
+                    </div>
+                  )}
+                </div>
+              );
+            },
+            onExpand: (expanded, record) => {
+              if (expanded) {
+                this.loadScansForAsset(record.name);
+              }
+            },
+          }}
         />
       </div>
     );
