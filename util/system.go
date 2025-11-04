@@ -35,11 +35,14 @@ import (
 )
 
 type SystemInfo struct {
-	CpuUsage    []float64 `json:"cpuUsage"`
-	MemoryUsed  uint64    `json:"memoryUsed"`
-	MemoryTotal uint64    `json:"memoryTotal"`
-	DiskUsed    uint64    `json:"diskUsed"`
-	DiskTotal   uint64    `json:"diskTotal"`
+	CpuUsage     []float64 `json:"cpuUsage"`
+	MemoryUsed   uint64    `json:"memoryUsed"`
+	MemoryTotal  uint64    `json:"memoryTotal"`
+	DiskUsed     uint64    `json:"diskUsed"`
+	DiskTotal    uint64    `json:"diskTotal"`
+	NetworkSent  uint64    `json:"networkSent"`
+	NetworkRecv  uint64    `json:"networkRecv"`
+	NetworkTotal uint64    `json:"networkTotal"`
 }
 
 type VersionInfo struct {
@@ -77,15 +80,73 @@ func getMemoryUsage() (uint64, uint64, error) {
 	return memInfo.RSS, virtualMem.Total, nil
 }
 
-// getDiskUsage gets disk usage for root filesystem
-// Note: This monitors the root filesystem ("/") by default
+// getDiskUsage gets disk usage for Casibase's data directory
 func getDiskUsage() (uint64, uint64, error) {
-	diskStat, err := disk.Usage("/")
+	// Get the root path of the project
+	_, filename, _, _ := runtime.Caller(0)
+	rootPath := path.Dir(path.Dir(filename))
+	dataPath := filepath.Join(rootPath, "data")
+
+	// Calculate directory size recursively
+	var size uint64
+	err := filepath.Walk(dataPath, func(_ string, info os.FileInfo, err error) error {
+		if err != nil {
+			// If data directory doesn't exist, return 0 size
+			return nil
+		}
+		if !info.IsDir() {
+			size += uint64(info.Size())
+		}
+		return nil
+	})
 	if err != nil {
 		return 0, 0, err
 	}
 
-	return diskStat.Used, diskStat.Total, nil
+	// Get the disk total from the filesystem where data directory resides
+	diskStat, err := disk.Usage(dataPath)
+	if err != nil {
+		// Fallback to root if data directory doesn't exist
+		diskStat, err = disk.Usage("/")
+		if err != nil {
+			return 0, 0, err
+		}
+	}
+
+	return size, diskStat.Total, nil
+}
+
+// getNetworkUsage gets Casibase process's own network I/O usage
+func getNetworkUsage() (uint64, uint64, uint64, error) {
+	proc, err := process.NewProcess(int32(os.Getpid()))
+	if err != nil {
+		return 0, 0, 0, err
+	}
+
+	// Try to get process-specific network I/O counters
+	netCounters, err := proc.NetIOCounters(false)
+	if err != nil || len(netCounters) == 0 {
+		// NetIOCounters may not be available on all platforms
+		// Fall back to process disk I/O as a proxy for I/O activity
+		ioCounters, err := proc.IOCounters()
+		if err != nil {
+			return 0, 0, 0, err
+		}
+		bytesSent := ioCounters.WriteBytes
+		bytesRecv := ioCounters.ReadBytes
+		bytesTotal := bytesSent + bytesRecv
+		return bytesSent, bytesRecv, bytesTotal, nil
+	}
+
+	// Aggregate network I/O across all interfaces
+	var bytesSent, bytesRecv uint64
+	for _, counter := range netCounters {
+		bytesSent += counter.BytesSent
+		bytesRecv += counter.BytesRecv
+	}
+	bytesTotal := bytesSent + bytesRecv
+
+	return bytesSent, bytesRecv, bytesTotal, nil
 }
 
 func GetSystemInfo() (*SystemInfo, error) {
@@ -104,12 +165,20 @@ func GetSystemInfo() (*SystemInfo, error) {
 		return nil, err
 	}
 
+	networkSent, networkRecv, networkTotal, err := getNetworkUsage()
+	if err != nil {
+		return nil, err
+	}
+
 	res := &SystemInfo{
-		CpuUsage:    cpuUsage,
-		MemoryUsed:  memoryUsed,
-		MemoryTotal: memoryTotal,
-		DiskUsed:    diskUsed,
-		DiskTotal:   diskTotal,
+		CpuUsage:     cpuUsage,
+		MemoryUsed:   memoryUsed,
+		MemoryTotal:  memoryTotal,
+		DiskUsed:     diskUsed,
+		DiskTotal:    diskTotal,
+		NetworkSent:  networkSent,
+		NetworkRecv:  networkRecv,
+		NetworkTotal: networkTotal,
 	}
 	return res, nil
 }

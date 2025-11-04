@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Card, Col, Divider, Progress, Row, Spin} from "antd";
+import {Card, Col, Progress, Row, Spin} from "antd";
 import * as SystemBackend from "./backend/SystemInfo";
 import React from "react";
 import * as Setting from "./Setting";
@@ -24,7 +24,7 @@ class SystemInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      systemInfo: {cpuUsage: [], memoryUsed: 0, memoryTotal: 0, diskUsed: 0, diskTotal: 0},
+      systemInfo: {cpuUsage: [], memoryUsed: 0, memoryTotal: 0, diskUsed: 0, diskTotal: 0, networkSent: 0, networkRecv: 0, networkTotal: 0},
       versionInfo: {},
       prometheusInfo: {apiThroughput: [], apiLatency: [], totalThroughput: 0},
       intervalId: null,
@@ -130,6 +130,17 @@ class SystemInfo extends React.Component {
         <Progress type="circle" percent={Number((Number(this.state.systemInfo.diskUsed) / Number(this.state.systemInfo.diskTotal) * 100).toFixed(2))} />
       </div>;
 
+    const networkUi = this.state.systemInfo.networkTotal === undefined || this.state.systemInfo.networkTotal === null ? i18next.t("system:Failed to get network usage") :
+      <div>
+        {i18next.t("system:Sent")}: {Setting.getFriendlyFileSize(this.state.systemInfo.networkSent)}
+        <br />
+        {i18next.t("system:Received")}: {Setting.getFriendlyFileSize(this.state.systemInfo.networkRecv)}
+        <br /> <br />
+        <div style={{fontSize: "16px", fontWeight: "600", color: "rgba(0, 0, 0, 0.85)"}}>
+          {i18next.t("system:Total Throughput")}: {Setting.getFriendlyFileSize(this.state.systemInfo.networkTotal)}
+        </div>
+      </div>;
+
     const latencyUi = this.state.prometheusInfo?.apiLatency === null || this.state.prometheusInfo?.apiLatency?.length <= 0 ? <Spin size="large" /> :
       <PrometheusInfoTable prometheusInfo={this.state.prometheusInfo} table={"latency"} />;
     const throughputUi = this.state.prometheusInfo?.apiThroughput === null || this.state.prometheusInfo?.apiThroughput?.length <= 0 ? <Spin size="large" /> :
@@ -143,37 +154,38 @@ class SystemInfo extends React.Component {
     if (!Setting.isMobile()) {
       return (
         <>
-          <Row>
-            <Col span={2}></Col>
-            <Col span={20}>
-              <Row gutter={[16, 16]}>
-                <Col span={8}>
-                  <Card id="cpu-card" title={i18next.t("system:CPU Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
-                    {this.state.loading ? <Spin size="large" /> : cpuUi}
-                  </Card>
-                </Col>
-                <Col span={8}>
-                  <Card id="memory-card" title={i18next.t("system:Memory Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
-                    {this.state.loading ? <Spin size="large" /> : memUi}
-                  </Card>
-                </Col>
-                <Col span={8}>
-                  <Card id="disk-card" title={i18next.t("system:Disk Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
-                    {this.state.loading ? <Spin size="large" /> : diskUi}
-                  </Card>
-                </Col>
-                <Col span={24}>
-                  <Card id="latency-card" title={i18next.t("system:API Latency")} bordered={true} style={{textAlign: "center", height: "100%"}}>
-                    {this.state.loading ? <Spin size="large" /> : latencyUi}
-                  </Card>
-                </Col>
-                <Col span={24}>
-                  <Card id="throughput-card" title={i18next.t("system:API Throughput")} bordered={true} style={{textAlign: "center", height: "100%"}}>
-                    {this.state.loading ? <Spin size="large" /> : throughputUi}
-                  </Card>
-                </Col>
-              </Row>
-              <Divider />
+          <Row gutter={[16, 16]}>
+            <Col span={6}>
+              <Card id="network-card" title={i18next.t("system:Network Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
+                {this.state.loading ? <Spin size="large" /> : networkUi}
+              </Card>
+            </Col>
+            <Col span={6}>
+              <Card id="cpu-card" title={i18next.t("system:CPU Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
+                {this.state.loading ? <Spin size="large" /> : cpuUi}
+              </Card>
+            </Col>
+            <Col span={6}>
+              <Card id="memory-card" title={i18next.t("system:Memory Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
+                {this.state.loading ? <Spin size="large" /> : memUi}
+              </Card>
+            </Col>
+            <Col span={6}>
+              <Card id="disk-card" title={i18next.t("system:Disk Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
+                {this.state.loading ? <Spin size="large" /> : diskUi}
+              </Card>
+            </Col>
+            <Col span={12}>
+              <Card id="latency-card" title={i18next.t("system:API Latency")} bordered={true} style={{textAlign: "center", height: "100%"}}>
+                {this.state.loading ? <Spin size="large" /> : latencyUi}
+              </Card>
+            </Col>
+            <Col span={12}>
+              <Card id="throughput-card" title={i18next.t("system:API Throughput")} bordered={true} style={{textAlign: "center", height: "100%"}}>
+                {this.state.loading ? <Spin size="large" /> : throughputUi}
+              </Card>
+            </Col>
+            <Col span={24}>
               <Card id="about-card" title={i18next.t("system:About Casibase")} bordered={true} style={{textAlign: "center"}}>
                 <div>{i18next.t("system:🚀⚡️Open-Source LangChain-like AI Knowledge Database & Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)")}</div>
                 GitHub: <a target="_blank" rel="noreferrer" href="https://github.com/casibase/casibase">Casibase</a>
@@ -185,13 +197,17 @@ class SystemInfo extends React.Component {
                 {i18next.t("system:Community")}: <a target="_blank" rel="noreferrer" href="https://casibase.org/#:~:text=Casibase%20API-,Community,-GitHub">Get in Touch!</a>
               </Card>
             </Col>
-            <Col span={2}></Col>
           </Row>
         </>
       );
     } else {
       return (
         <Row gutter={[16, 16]}>
+          <Col span={24}>
+            <Card title={i18next.t("system:Network Usage")} bordered={true} style={{textAlign: "center", width: "100%"}}>
+              {this.state.loading ? <Spin size="large" /> : networkUi}
+            </Card>
+          </Col>
           <Col span={24}>
             <Card title={i18next.t("system:CPU Usage")} bordered={true} style={{textAlign: "center", width: "100%"}}>
               {this.state.loading ? <Spin size="large" /> : cpuUi}
