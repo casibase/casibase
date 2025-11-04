@@ -87,11 +87,9 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 		return false, fmt.Errorf("The provider: %s is not found", scan.Provider)
 	}
 
-	// For OS Patch scans, check if this instance should execute the scan
-	// OS Patch scans can only be run on the local machine (they use PowerShell locally)
-	// so only the Casibase instance running on the target machine should claim the job
-	if provider.Type == "OS Patch" {
-		// For OS Patch scans in Asset mode, check if the target asset matches this instance's hostname
+	// For OS Patch and Nmap scans, check if this instance should execute the scan based on target
+	if provider.Type == "OS Patch" || provider.Type == "Nmap" {
+		// For scans in Asset mode, check if the target asset matches this instance's hostname
 		if scan.TargetMode == "Asset" && scan.Asset != "" {
 			assetId := util.GetIdFromOwnerAndName(scan.Owner, scan.Asset)
 			asset, err := GetAsset(assetId)
@@ -107,13 +105,15 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 				return false, nil
 			}
 		} else if scan.TargetMode == "Manual Input" && scan.Target != "" {
-			// For manual input mode, only claim if target is localhost or 127.0.0.1
-			if scan.Target != "localhost" && scan.Target != "127.0.0.1" {
+			// For manual input mode, use enhanced target matching logic
+			match, err := util.MatchTargetWithMachine(scan.Target, hostname)
+			if err != nil {
+				return false, fmt.Errorf("error matching target with machine: %v", err)
+			}
+			if !match {
 				return false, nil
 			}
 		}
-	} else if provider.Type == "Nmap" {
-		// For Nmap scans, any instance can claim the job (no hostname check needed)
 	} else {
 		return false, fmt.Errorf("The provider type: %s is not supported for provider: %s", provider.Type, provider.Name)
 	}
