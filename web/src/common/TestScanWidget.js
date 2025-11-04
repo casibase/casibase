@@ -168,7 +168,7 @@ class TestScanWidget extends React.Component {
     const providerType = providerObj.type;
     const defaultCommand = this.getDefaultCommand(providerType);
 
-    // Update state
+    // Update state (template radio button will auto-update based on matching command)
     this.setState({
       selectedProvider: providerName,
       scanCommand: defaultCommand,
@@ -450,7 +450,7 @@ class TestScanWidget extends React.Component {
                 style={{width: "100%"}}
                 value={this.state.selectedProvider}
                 onChange={(value) => {
-                  // Reset template and command to defaults when provider changes
+                  // Reset command to defaults when provider changes (template auto-updates based on command)
                   this.setDefaultProviderAndCommand(value);
                 }}
               >
