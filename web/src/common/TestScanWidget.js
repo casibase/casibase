@@ -319,50 +319,68 @@ class TestScanWidget extends React.Component {
     // Save widget state to DB before executing scan
     this.saveWidgetState();
 
-    // Call unified scan-asset API
-    AssetBackend.scanAsset(provider, scan, targetMode, target, asset, command, saveToScan)
-      .then((res) => {
-        if (res.status === "ok") {
+    // For scan edit page, save scan to DB before executing scan (without showing toast)
+    const executeScan = () => {
+      // Call unified scan-asset API
+      AssetBackend.scanAsset(provider, scan, targetMode, target, asset, command, saveToScan)
+        .then((res) => {
+          if (res.status === "ok") {
           // For scan edit page (async execution), start polling for results
-          if (saveToScan && scan) {
-            Setting.showMessage("success", i18next.t("general:Scan started, waiting for results..."));
-            this.pollScanResults(scan);
-          } else {
+            if (saveToScan && scan) {
+              Setting.showMessage("success", i18next.t("general:Scan started, waiting for results..."));
+              this.pollScanResults(scan);
+            } else {
             // For provider edit page (sync execution), show results immediately
-            Setting.showMessage("success", i18next.t("general:Successfully executed"));
+              Setting.showMessage("success", i18next.t("general:Successfully executed"));
 
-            // res.data now contains {rawResult, result}
-            const {rawResult = "", result = ""} = res.data;
+              // res.data now contains {rawResult, result}
+              const {rawResult = "", result = ""} = res.data;
 
+              this.setState({
+                scanResult: result,
+                scanRawResult: rawResult,
+                scanButtonLoading: false,
+              });
+
+              // Save scan results to provider fields (for ProviderEditPage)
+              if (this.props.onUpdateProvider) {
+                this.props.onUpdateProvider("configText", result);
+                this.props.onUpdateProvider("rawText", rawResult);
+              }
+            }
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
             this.setState({
-              scanResult: result,
-              scanRawResult: rawResult,
+              scanResult: `Error: ${res.msg}`,
+              scanRawResult: "",
               scanButtonLoading: false,
             });
-
-            // Save scan results to provider fields (for ProviderEditPage)
-            if (this.props.onUpdateProvider) {
-              this.props.onUpdateProvider("configText", result);
-              this.props.onUpdateProvider("rawText", rawResult);
-            }
           }
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
+        })
+        .catch((error) => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${error}`);
           this.setState({
-            scanResult: `Error: ${res.msg}`,
+            scanResult: `Error: ${error}`,
             scanRawResult: "",
             scanButtonLoading: false,
           });
-        }
-      })
-      .catch((error) => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${error}`);
-        this.setState({
-          scanResult: `Error: ${error}`,
-          scanRawResult: "",
-          scanButtonLoading: false,
         });
-      });
+    };
+
+    // If onSaveScan callback is provided (scan edit page), save to DB first
+    if (this.props.onSaveScan && this.props.scan) {
+      this.props.onSaveScan()
+        .then(() => {
+          executeScan();
+        })
+        .catch((error) => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to save scan")}: ${error}`);
+          this.setState({scanButtonLoading: false});
+        });
+    } else {
+      // For provider edit page, execute scan directly
+      executeScan();
+    }
   }
 
   pollScanResults(scanId) {

@@ -84,6 +84,21 @@ class ScanEditPage extends React.Component {
       });
   }
 
+  saveScanSilently() {
+    const scan = Setting.deepCopy(this.state.scan);
+    return ScanBackend.updateScan(this.state.scan.owner, this.state.scanName, scan)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            scanName: this.state.scan.name,
+          });
+          return Promise.resolve();
+        } else {
+          return Promise.reject(res.msg);
+        }
+      });
+  }
+
   deleteScan() {
     ScanBackend.deleteScan(this.state.scan)
       .then((res) => {
@@ -140,6 +155,7 @@ class ScanEditPage extends React.Component {
           scan={this.state.scan}
           account={this.props.account}
           onUpdateScan={this.updateScanField.bind(this)}
+          onSaveScan={this.saveScanSilently.bind(this)}
         />
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
