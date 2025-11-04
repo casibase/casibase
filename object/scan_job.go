@@ -124,6 +124,9 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	if affected == 0 {
+		logs.Info("processPendingScans() skipping scan job %s, another instance claimed this job", scan.GetId())
+	}
 
 	return affected > 0, nil
 }
