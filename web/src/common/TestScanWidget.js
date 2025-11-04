@@ -93,6 +93,12 @@ class TestScanWidget extends React.Component {
           );
           this.setState({
             providers: scanProviders,
+          }, () => {
+            // For new scans with no provider set, select the first provider by default
+            if (this.props.scan && !this.props.scan.provider && scanProviders.length > 0) {
+              const firstProvider = scanProviders[0];
+              this.setDefaultProviderAndCommand(firstProvider.name);
+            }
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get providers")}: ${res.msg}`);
@@ -150,6 +156,29 @@ class TestScanWidget extends React.Component {
       return DEFAULT_OS_PATCH_COMMAND;
     }
     return DEFAULT_SCAN_COMMAND;
+  }
+
+  setDefaultProviderAndCommand(providerName) {
+    // Get the provider type
+    const providerObj = this.state.providers.find(p => p.name === providerName);
+    if (!providerObj) {
+      return;
+    }
+
+    const providerType = providerObj.type;
+    const defaultCommand = this.getDefaultCommand(providerType);
+
+    // Update state
+    this.setState({
+      selectedProvider: providerName,
+      scanCommand: defaultCommand,
+    });
+
+    // Update the scan object
+    if (this.props.onUpdateScan) {
+      this.props.onUpdateScan("provider", providerName);
+      this.props.onUpdateScan("command", defaultCommand);
+    }
   }
 
   initializeDefaults() {
@@ -421,10 +450,8 @@ class TestScanWidget extends React.Component {
                 style={{width: "100%"}}
                 value={this.state.selectedProvider}
                 onChange={(value) => {
-                  this.setState({selectedProvider: value});
-                  if (this.props.onUpdateScan) {
-                    this.props.onUpdateScan("provider", value);
-                  }
+                  // Reset template and command to defaults when provider changes
+                  this.setDefaultProviderAndCommand(value);
                 }}
               >
                 {
