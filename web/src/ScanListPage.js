@@ -128,6 +128,8 @@ class ScanListPage extends BaseListPage {
       target: "127.0.0.1",
       asset: "",
       state: "Created",
+      runner: "",
+      errorText: "",
       command: "",
       rawResult: "",
       result: "",
@@ -295,6 +297,27 @@ class ScanListPage extends BaseListPage {
         width: "150px",
         sorter: true,
         ...this.getColumnSearchProps("runner"),
+      },
+      {
+        title: i18next.t("scan:Error"),
+        dataIndex: "errorText",
+        key: "errorText",
+        width: "200px",
+        sorter: true,
+        ...this.getColumnSearchProps("errorText"),
+        render: (text, record, index) => {
+          if (!text) {
+            return null;
+          }
+          // Show truncated error text with hover tooltip
+          const maxLength = 50;
+          const displayText = text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+          return (
+            <span style={{color: "red"}} title={text}>
+              {displayText}
+            </span>
+          );
+        },
       },
       {
         title: i18next.t("general:Result"),

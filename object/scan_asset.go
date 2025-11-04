@@ -49,6 +49,11 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 
 		scanObj.State = "Pending"
 		scanObj.UpdatedTime = util.GetCurrentTime()
+		// Clear Runner, ErrorText, and results when re-clicking Scan button
+		scanObj.Runner = ""
+		scanObj.ErrorText = ""
+		scanObj.RawResult = ""
+		scanObj.Result = ""
 		_, err = UpdateScan(scanParam, scanObj)
 		if err != nil {
 			return nil, err
