@@ -34,6 +34,7 @@ type Scan struct {
 	Asset      string `xorm:"varchar(100)" json:"asset"`
 	Provider   string `xorm:"varchar(100)" json:"provider"`
 	State      string `xorm:"varchar(100)" json:"state"`
+	Runner     string `xorm:"varchar(100)" json:"runner"`
 	Command    string `xorm:"varchar(500)" json:"command"`
 	RawResult  string `xorm:"mediumtext" json:"rawResult"`
 	Result     string `xorm:"mediumtext" json:"result"`
@@ -144,6 +145,36 @@ type ScanResult struct {
 // @param command: Scan command with optional %s placeholder for target
 // @param saveToScan: Whether to save results to scan object (true for scan edit page, false for provider edit page)
 func ScanAsset(provider, scanParam, targetMode, target, asset, command string, saveToScan bool, lang string) (*ScanResult, error) {
+	// If saveToScan is true, set the scan state to "Pending" and return
+	// The actual scan will be executed by the scan job processor
+	if saveToScan && scanParam != "" {
+		scanObj, err := GetScan(scanParam)
+		if err != nil {
+			return nil, err
+		}
+		if scanObj == nil {
+			return nil, fmt.Errorf("scan not found")
+		}
+
+		scanObj.State = "Pending"
+		scanObj.UpdatedTime = util.GetCurrentTime()
+		_, err = UpdateScan(scanParam, scanObj)
+		if err != nil {
+			return nil, err
+		}
+
+		return &ScanResult{
+			RawResult: "",
+			Result:    "",
+		}, nil
+	}
+
+	// For provider edit page (saveToScan=false), execute scan immediately
+	return executeScan(provider, scanParam, targetMode, target, asset, command, lang)
+}
+
+// executeScan performs the actual scan execution
+func executeScan(provider, scanParam, targetMode, target, asset, command string, lang string) (*ScanResult, error) {
 	// Get the provider
 	providerObj, err := GetProvider(provider)
 	if err != nil {
@@ -196,19 +227,6 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	result, err := scanProvider.ParseResult(rawResult)
 	if err != nil {
 		return nil, err
-	}
-
-	// If saveToScan is true and scanParam is provided, update the scan object with results
-	// Note: We ignore errors here to ensure scan results are returned even if saving fails
-	if saveToScan && scanParam != "" {
-		scanObj, err := GetScan(scanParam)
-		if err == nil && scanObj != nil {
-			scanObj.State = "Completed"
-			scanObj.RawResult = rawResult
-			scanObj.Result = result
-			scanObj.UpdatedTime = util.GetCurrentTime()
-			_, _ = UpdateScan(scanParam, scanObj)
-		}
 	}
 
 	return &ScanResult{RawResult: rawResult, Result: result}, nil

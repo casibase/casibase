@@ -124,7 +124,7 @@ class ScanListPage extends BaseListPage {
       displayName: `New Scan - ${Setting.getRandomName()}`,
       asset: "",
       provider: "",
-      state: "Pending",
+      state: "Created",
       command: "",
       rawResult: "",
       result: "",
@@ -278,6 +278,8 @@ class ScanListPage extends BaseListPage {
           } else if (text === "Failed") {
             color = "error";
           } else if (text === "Pending") {
+            color = "warning";
+          } else if (text === "Created") {
             color = "default";
           }
           return <Tag color={color}>{text}</Tag>;
