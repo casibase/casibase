@@ -334,16 +334,26 @@ class ChatBox extends React.Component {
       return;
     }
 
-    const owner = this.props.store?.owner || "admin";
+    // Get owner from store; if not available, the provider won't be fetched
+    // This ensures we don't accidentally access providers with wrong ownership
+    const owner = this.props.store?.owner;
+    if (!owner) {
+      this.setState({providerType: null});
+      return;
+    }
+
     ProviderBackend.getProvider(owner, providerName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({providerType: res.data?.type});
         } else {
+          // Provider not found or error - disable web search by default
           this.setState({providerType: null});
         }
       })
       .catch(() => {
+        // Gracefully handle errors by disabling web search
+        // This prevents disruption to the user experience
         this.setState({providerType: null});
       });
   };
