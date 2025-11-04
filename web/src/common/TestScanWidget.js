@@ -18,6 +18,7 @@ import * as Setting from "../Setting";
 import i18next from "i18next";
 import * as AssetBackend from "../backend/AssetBackend";
 import * as ProviderBackend from "../backend/ProviderBackend";
+import * as ScanBackend from "../backend/ScanBackend";
 import {ScanResultRenderer} from "./ScanResultRenderer";
 
 const {Option} = Select;
@@ -42,6 +43,8 @@ class TestScanWidget extends React.Component {
       assets: [],
       providers: [],
     };
+    this.pollInterval = null;
+    this.pollTimeout = null;
   }
 
   componentDidMount() {
@@ -57,6 +60,16 @@ class TestScanWidget extends React.Component {
     }
     if (this.props.provider && prevProps.provider?.name !== this.props.provider?.name) {
       this.initializeDefaults();
+    }
+  }
+
+  componentWillUnmount() {
+    // Clean up polling intervals
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+    }
+    if (this.pollTimeout) {
+      clearTimeout(this.pollTimeout);
     }
   }
 
@@ -217,9 +230,22 @@ class TestScanWidget extends React.Component {
   }
 
   testScan() {
+    // Clear previous results first
     this.setState({
       scanButtonLoading: true,
+      scanResult: "",
+      scanRawResult: "",
     });
+
+    // Clear results in parent component
+    if (this.props.onUpdateProvider) {
+      this.props.onUpdateProvider("configText", "");
+      this.props.onUpdateProvider("rawText", "");
+    }
+    if (this.props.onUpdateScan) {
+      this.props.onUpdateScan("result", "");
+      this.props.onUpdateScan("rawResult", "");
+    }
 
     // Determine parameters based on context
     let provider = "";
@@ -268,32 +294,35 @@ class TestScanWidget extends React.Component {
     AssetBackend.scanAsset(provider, scan, targetMode, target, asset, command, saveToScan)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully executed"));
+          // For scan edit page (async execution), start polling for results
+          if (saveToScan && scan) {
+            Setting.showMessage("success", i18next.t("general:Scan started, waiting for results..."));
+            this.pollScanResults(scan);
+          } else {
+            // For provider edit page (sync execution), show results immediately
+            Setting.showMessage("success", i18next.t("general:Successfully executed"));
 
-          // res.data now contains {rawResult, result}
-          const {rawResult = "", result = ""} = res.data;
+            // res.data now contains {rawResult, result}
+            const {rawResult = "", result = ""} = res.data;
 
-          this.setState({
-            scanResult: result,
-            scanRawResult: rawResult,
-          });
+            this.setState({
+              scanResult: result,
+              scanRawResult: rawResult,
+              scanButtonLoading: false,
+            });
 
-          // Save scan results to provider fields (for ProviderEditPage)
-          if (this.props.onUpdateProvider) {
-            this.props.onUpdateProvider("configText", result);
-            this.props.onUpdateProvider("rawText", rawResult);
-          }
-
-          // Save scan results to scan fields (for ScanEditPage)
-          if (this.props.onUpdateScan) {
-            this.props.onUpdateScan("result", result);
-            this.props.onUpdateScan("rawResult", rawResult);
+            // Save scan results to provider fields (for ProviderEditPage)
+            if (this.props.onUpdateProvider) {
+              this.props.onUpdateProvider("configText", result);
+              this.props.onUpdateProvider("rawText", rawResult);
+            }
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
           this.setState({
             scanResult: `Error: ${res.msg}`,
             scanRawResult: "",
+            scanButtonLoading: false,
           });
         }
       })
@@ -302,11 +331,76 @@ class TestScanWidget extends React.Component {
         this.setState({
           scanResult: `Error: ${error}`,
           scanRawResult: "",
+          scanButtonLoading: false,
         });
-      })
-      .finally(() => {
-        this.setState({scanButtonLoading: false});
       });
+  }
+
+  pollScanResults(scanId) {
+    // Clear any existing polling
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+    }
+    if (this.pollTimeout) {
+      clearTimeout(this.pollTimeout);
+    }
+
+    this.pollInterval = setInterval(() => {
+      ScanBackend.getScan(this.props.account.name, scanId.split("/")[1])
+        .then((res) => {
+          if (res.status === "ok" && res.data) {
+            const scanData = res.data;
+
+            // Check if scan is complete (Completed or Failed state)
+            if (scanData.state === "Completed" || scanData.state === "Failed") {
+              clearInterval(this.pollInterval);
+              clearTimeout(this.pollTimeout);
+              this.pollInterval = null;
+              this.pollTimeout = null;
+
+              this.setState({
+                scanResult: scanData.result || "",
+                scanRawResult: scanData.rawResult || "",
+                scanButtonLoading: false,
+              });
+
+              // Update parent component
+              if (this.props.onUpdateScan) {
+                this.props.onUpdateScan("result", scanData.result || "");
+                this.props.onUpdateScan("rawResult", scanData.rawResult || "");
+                this.props.onUpdateScan("state", scanData.state);
+              }
+
+              if (scanData.state === "Completed") {
+                Setting.showMessage("success", i18next.t("general:Scan completed successfully"));
+              } else {
+                Setting.showMessage("error", i18next.t("general:Scan failed"));
+              }
+            }
+          }
+        })
+        .catch((error) => {
+          clearInterval(this.pollInterval);
+          clearTimeout(this.pollTimeout);
+          this.pollInterval = null;
+          this.pollTimeout = null;
+          Setting.showMessage("error", `${i18next.t("general:Failed to get scan results")}: ${error}`);
+          this.setState({scanButtonLoading: false});
+        });
+    }, 2000); // Poll every 2 seconds
+
+    // Stop polling after 5 minutes to prevent infinite polling
+    this.pollTimeout = setTimeout(() => {
+      if (this.pollInterval) {
+        clearInterval(this.pollInterval);
+        this.pollInterval = null;
+      }
+      this.pollTimeout = null;
+      if (this.state.scanButtonLoading) {
+        Setting.showMessage("warning", i18next.t("general:Scan is taking longer than expected"));
+        this.setState({scanButtonLoading: false});
+      }
+    }, 300000);
   }
 
   clearFieldsByTargetMode(newMode) {

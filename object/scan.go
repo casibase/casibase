@@ -34,6 +34,7 @@ type Scan struct {
 	Asset      string `xorm:"varchar(100)" json:"asset"`
 	Provider   string `xorm:"varchar(100)" json:"provider"`
 	State      string `xorm:"varchar(100)" json:"state"`
+	Runner     string `xorm:"varchar(100)" json:"runner"`
 	Command    string `xorm:"varchar(500)" json:"command"`
 	RawResult  string `xorm:"mediumtext" json:"rawResult"`
 	Result     string `xorm:"mediumtext" json:"result"`
@@ -144,6 +145,44 @@ type ScanResult struct {
 // @param command: Scan command with optional %s placeholder for target
 // @param saveToScan: Whether to save results to scan object (true for scan edit page, false for provider edit page)
 func ScanAsset(provider, scanParam, targetMode, target, asset, command string, saveToScan bool, lang string) (*ScanResult, error) {
+	// If saveToScan is true, set the scan state to "Pending" and return
+	// The actual scan will be executed by the scan job processor
+	if saveToScan && scanParam != "" {
+		scanObj, err := GetScan(scanParam)
+		if err != nil {
+			return nil, err
+		}
+		if scanObj == nil {
+			return nil, fmt.Errorf("scan not found")
+		}
+
+		scanObj.State = "Pending"
+		scanObj.UpdatedTime = util.GetCurrentTime()
+		_, err = UpdateScan(scanParam, scanObj)
+		if err != nil {
+			return nil, err
+		}
+
+		return &ScanResult{
+			RawResult: "",
+			Result:    "",
+		}, nil
+	}
+
+	// For provider edit page (saveToScan=false), execute scan immediately
+	// Extract owner from provider ID
+	owner := "admin" // Default owner
+	if provider != "" {
+		providerObj, err := GetProvider(provider)
+		if err == nil && providerObj != nil {
+			owner = providerObj.Owner
+		}
+	}
+	return executeScan(provider, scanParam, targetMode, target, asset, command, owner, lang)
+}
+
+// executeScan performs the actual scan execution
+func executeScan(provider, scanParam, targetMode, target, asset, command, owner string, lang string) (*ScanResult, error) {
 	// Get the provider
 	providerObj, err := GetProvider(provider)
 	if err != nil {
@@ -165,7 +204,7 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	// Determine the scan target
 	var scanTarget string
 	if targetMode == "Asset" {
-		assetId := util.GetIdFromOwnerAndName("admin", asset)
+		assetId := util.GetIdFromOwnerAndName(owner, asset)
 
 		// Get the asset
 		assetObj, err := GetAsset(assetId)
@@ -198,18 +237,29 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 		return nil, err
 	}
 
-	// If saveToScan is true and scanParam is provided, update the scan object with results
-	// Note: We ignore errors here to ensure scan results are returned even if saving fails
-	if saveToScan && scanParam != "" {
-		scanObj, err := GetScan(scanParam)
-		if err == nil && scanObj != nil {
-			scanObj.State = "Completed"
-			scanObj.RawResult = rawResult
-			scanObj.Result = result
-			scanObj.UpdatedTime = util.GetCurrentTime()
-			_, _ = UpdateScan(scanParam, scanObj)
-		}
-	}
-
 	return &ScanResult{RawResult: rawResult, Result: result}, nil
+}
+
+// GetPendingScans returns all scans with state "Pending"
+func GetPendingScans() ([]*Scan, error) {
+	scans := []*Scan{}
+	err := adapter.engine.Where("state = ?", "Pending").Find(&scans)
+	if err != nil {
+		return nil, err
+	}
+	return scans, nil
+}
+
+// AtomicClaimScan atomically updates a scan's state from "Pending" to "Running"
+// This operation will only succeed for one instance due to the WHERE condition on state
+// Returns the number of affected rows
+func AtomicClaimScan(owner, name, hostname string) (int64, error) {
+	affected, err := adapter.engine.Table(&Scan{}).
+		Where("owner = ? AND name = ? AND state = ?", owner, name, "Pending").
+		Update(map[string]interface{}{
+			"state":        "Running",
+			"runner":       hostname,
+			"updated_time": util.GetCurrentTime(),
+		})
+	return affected, err
 }

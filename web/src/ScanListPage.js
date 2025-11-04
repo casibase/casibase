@@ -124,7 +124,7 @@ class ScanListPage extends BaseListPage {
       displayName: `New Scan - ${Setting.getRandomName()}`,
       asset: "",
       provider: "",
-      state: "Pending",
+      state: "Created",
       command: "",
       rawResult: "",
       result: "",
@@ -278,10 +278,20 @@ class ScanListPage extends BaseListPage {
           } else if (text === "Failed") {
             color = "error";
           } else if (text === "Pending") {
+            color = "warning";
+          } else if (text === "Created") {
             color = "default";
           }
           return <Tag color={color}>{text}</Tag>;
         },
+      },
+      {
+        title: i18next.t("scan:Runner"),
+        dataIndex: "runner",
+        key: "runner",
+        width: "150px",
+        sorter: true,
+        ...this.getColumnSearchProps("runner"),
       },
       {
         title: i18next.t("general:Result"),
