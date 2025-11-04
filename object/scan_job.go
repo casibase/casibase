@@ -131,7 +131,6 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 			"runner":       hostname,
 			"updated_time": util.GetCurrentTime(),
 		})
-
 	if err != nil {
 		return false, err
 	}
