@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button} from "antd";
 import {Sender} from "@ant-design/x";
 import {CloseOutlined, GlobalOutlined} from "@ant-design/icons";
@@ -39,6 +39,14 @@ const ChatInput = ({
   isVoiceInput,
 }) => {
   const [webSearchEnabled, setWebSearchEnabled] = useState(false);
+
+  // Automatically disable web search when provider doesn't support it
+  useEffect(() => {
+    const webSearchSupported = providerType === "OpenAI" || providerType === "Alibaba Cloud";
+    if (!webSearchSupported && webSearchEnabled) {
+      setWebSearchEnabled(false);
+    }
+  }, [providerType, webSearchEnabled]);
 
   let storageThemeAlgorithm = [];
   try {
