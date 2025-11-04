@@ -316,70 +316,100 @@ class TestScanWidget extends React.Component {
       return;
     }
 
-    // Save widget state to DB before executing scan
+    // Save widget state to parent component
     this.saveWidgetState();
 
-    // For scan edit page, save scan to DB before executing scan (without showing toast)
-    const executeScan = () => {
-      // Call unified scan-asset API
-      AssetBackend.scanAsset(provider, scan, targetMode, target, asset, command, saveToScan)
-        .then((res) => {
-          if (res.status === "ok") {
+    // Save to DB first (without showing toast), then execute scan
+    this.saveToDB()
+      .then(() => {
+        // Call unified scan-asset API after saving
+        return AssetBackend.scanAsset(provider, scan, targetMode, target, asset, command, saveToScan);
+      })
+      .then((res) => {
+        if (res.status === "ok") {
           // For scan edit page (async execution), start polling for results
-            if (saveToScan && scan) {
-              Setting.showMessage("success", i18next.t("general:Scan started, waiting for results..."));
-              this.pollScanResults(scan);
-            } else {
-            // For provider edit page (sync execution), show results immediately
-              Setting.showMessage("success", i18next.t("general:Successfully executed"));
-
-              // res.data now contains {rawResult, result}
-              const {rawResult = "", result = ""} = res.data;
-
-              this.setState({
-                scanResult: result,
-                scanRawResult: rawResult,
-                scanButtonLoading: false,
-              });
-
-              // Save scan results to provider fields (for ProviderEditPage)
-              if (this.props.onUpdateProvider) {
-                this.props.onUpdateProvider("configText", result);
-                this.props.onUpdateProvider("rawText", rawResult);
-              }
-            }
+          if (saveToScan && scan) {
+            Setting.showMessage("success", i18next.t("general:Scan started, waiting for results..."));
+            this.pollScanResults(scan);
           } else {
-            Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
+            // For provider edit page (sync execution), show results immediately
+            Setting.showMessage("success", i18next.t("general:Successfully executed"));
+
+            // res.data now contains {rawResult, result}
+            const {rawResult = "", result = ""} = res.data;
+
             this.setState({
-              scanResult: `Error: ${res.msg}`,
-              scanRawResult: "",
+              scanResult: result,
+              scanRawResult: rawResult,
               scanButtonLoading: false,
             });
+
+            // Save scan results to provider fields (for ProviderEditPage)
+            if (this.props.onUpdateProvider) {
+              this.props.onUpdateProvider("configText", result);
+              this.props.onUpdateProvider("rawText", rawResult);
+            }
           }
-        })
-        .catch((error) => {
-          Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${error}`);
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${res.msg}`);
           this.setState({
-            scanResult: `Error: ${error}`,
+            scanResult: `Error: ${res.msg}`,
             scanRawResult: "",
             scanButtonLoading: false,
           });
+        }
+      })
+      .catch((error) => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to execute")}: ${error}`);
+        this.setState({
+          scanResult: `Error: ${error}`,
+          scanRawResult: "",
+          scanButtonLoading: false,
         });
-    };
+      });
+  }
 
-    // If onSaveScan callback is provided (scan edit page), save to DB first
-    if (this.props.onSaveScan && this.props.scan) {
-      this.props.onSaveScan()
-        .then(() => {
-          executeScan();
+  saveToDB() {
+    // Save scan or provider to DB without showing toast
+    if (this.props.scan) {
+      // For ScanEditPage
+      const scanCopy = Setting.deepCopy(this.props.scan);
+      return ScanBackend.updateScan(this.props.scan.owner, this.props.scan.name, scanCopy)
+        .then((res) => {
+          if (res.status === "ok") {
+            return Promise.resolve();
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
+            return Promise.reject(res.msg);
+          }
         })
         .catch((error) => {
-          Setting.showMessage("error", `${i18next.t("general:Failed to save scan")}: ${typeof error === "string" ? error : error.message || String(error)}`);
+          const errorMsg = typeof error === "string" ? error : (error.message || String(error));
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${errorMsg}`);
           this.setState({scanButtonLoading: false});
+          return Promise.reject(error);
+        });
+    } else if (this.props.provider && this.props.provider.category === "Scan") {
+      // For ProviderEditPage
+      const providerCopy = Setting.deepCopy(this.props.provider);
+      return ProviderBackend.updateProvider(this.props.provider.owner, this.props.provider.name, providerCopy)
+        .then((res) => {
+          if (res.status === "ok") {
+            return Promise.resolve();
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
+            return Promise.reject(res.msg);
+          }
+        })
+        .catch((error) => {
+          const errorMsg = typeof error === "string" ? error : (error.message || String(error));
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${errorMsg}`);
+          this.setState({scanButtonLoading: false});
+          return Promise.reject(error);
         });
     } else {
-      // For provider edit page, execute scan directly
-      executeScan();
+      // No save needed
+      return Promise.resolve();
     }
   }
 
