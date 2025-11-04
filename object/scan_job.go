@@ -74,7 +74,7 @@ func processPendingScans() {
 func claimScanJob(scan *Scan, hostname string) (bool, error) {
 	// If provider is empty, skip this scan (cannot determine scan type)
 	if scan.Provider == "" {
-		return false, nil
+		return false, fmt.Errorf("provider is empty for scan job: %s", scan.Name)
 	}
 
 	// Get provider to check scan type
@@ -84,7 +84,7 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 		return false, err
 	}
 	if provider == nil {
-		return false, nil
+		return false, fmt.Errorf("The provider: %s is not found", scan.Provider)
 	}
 
 	// For OS Patch scans, check if this instance should execute the scan
@@ -112,8 +112,11 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 				return false, nil
 			}
 		}
+	} else if provider.Type == "Nmap" {
+		// For Nmap scans, any instance can claim the job (no hostname check needed)
+	} else {
+		return false, fmt.Errorf("The provider type: %s is not supported for provider: %s", provider.Type, provider.Name)
 	}
-	// For Nmap scans, any instance can claim the job (no hostname check needed)
 
 	// Try to update the scan state from "Pending" to "Running"
 	// This is an atomic operation that will only succeed for one instance
