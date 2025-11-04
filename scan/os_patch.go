@@ -67,7 +67,6 @@ func NewOsPatchScanProvider(clientId string) (*OsPatchScanProvider, error) {
 // The command parameter specifies the scan type: "available", "installed", or "all"
 // The target parameter is not used for OS patch scanning as it scans the local system
 func (p *OsPatchScanProvider) Scan(target string, command string) (string, error) {
-	fmt.Printf("[OS Patch] Starting scan with command: %s\n", command)
 	command = strings.TrimSpace(strings.ToLower(command))
 
 	var patches []*WindowsPatch
@@ -76,7 +75,6 @@ func (p *OsPatchScanProvider) Scan(target string, command string) (string, error
 	if command == "installed" {
 		patches, err = p.ListInstalledPatches()
 	} else if command == "all" {
-		fmt.Println("[OS Patch] Scanning both available and installed patches...")
 		// Get both available and installed patches
 		availablePatches, err1 := p.ListPatches()
 		installedPatches, err2 := p.ListInstalledPatches()
@@ -90,7 +88,6 @@ func (p *OsPatchScanProvider) Scan(target string, command string) (string, error
 
 		// Combine patches: available first, then installed
 		patches = append(availablePatches, installedPatches...)
-		fmt.Printf("[OS Patch] Combined %d available and %d installed patches\n", len(availablePatches), len(installedPatches))
 	} else {
 		// Default to available patches
 		patches, err = p.ListPatches()
@@ -106,7 +103,6 @@ func (p *OsPatchScanProvider) Scan(target string, command string) (string, error
 		return "", fmt.Errorf("failed to marshal patches: %v", err)
 	}
 
-	fmt.Printf("[OS Patch] Scan completed successfully, returning %d patches\n", len(patches))
 	return string(result), nil
 }
 
@@ -186,7 +182,6 @@ func extractJSON(output string) string {
 
 // ListPatches returns all Windows OS patches that need to be updated
 func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
-	fmt.Println("[OS Patch] Starting to list available patches...")
 	// Use PSWindowsUpdate to get available updates
 	psCommand := `
 		$ErrorActionPreference = 'Stop';
@@ -215,13 +210,13 @@ func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
 		}
 	`
 
-	fmt.Println("[OS Patch] Executing PowerShell command to query available patches...")
+	fmt.Printf("[OS Patch] Executing PowerShell command:\n%s\n", psCommand)
 	output, err := p.runPowerShell(psCommand)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list patches: %v", err)
 	}
+	fmt.Printf("[OS Patch] PowerShell output:\n%s\n", output)
 
-	fmt.Println("[OS Patch] Processing available patches output...")
 	// Extract JSON from output, removing any non-JSON lines (e.g., interactive prompts)
 	output = extractJSON(output)
 
@@ -247,13 +242,11 @@ func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
 		return nil, fmt.Errorf("failed to parse patches JSON: %v", err)
 	}
 
-	fmt.Printf("[OS Patch] Successfully retrieved %d available patches\n", len(patches))
 	return patches, nil
 }
 
 // ListInstalledPatches returns all recently installed patches, including those with "Pending restart" status
 func (p *OsPatchScanProvider) ListInstalledPatches() ([]*WindowsPatch, error) {
-	fmt.Println("[OS Patch] Starting to list installed patches...")
 	// Use PSWindowsUpdate to get update history
 	// Based on reference implementation that uses proper error handling
 	psCommand := `
@@ -288,13 +281,13 @@ func (p *OsPatchScanProvider) ListInstalledPatches() ([]*WindowsPatch, error) {
 		}
 	`
 
-	fmt.Println("[OS Patch] Executing PowerShell command to query installed patches...")
+	fmt.Printf("[OS Patch] Executing PowerShell command:\n%s\n", psCommand)
 	output, err := p.runPowerShell(psCommand)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list installed patches: %v", err)
 	}
+	fmt.Printf("[OS Patch] PowerShell output:\n%s\n", output)
 
-	fmt.Println("[OS Patch] Processing installed patches output...")
 	// Extract JSON from output, removing any non-JSON lines (e.g., interactive prompts)
 	output = extractJSON(output)
 
@@ -320,13 +313,11 @@ func (p *OsPatchScanProvider) ListInstalledPatches() ([]*WindowsPatch, error) {
 		return nil, fmt.Errorf("failed to parse installed patches JSON: %v", err)
 	}
 
-	fmt.Printf("[OS Patch] Successfully retrieved %d installed patches\n", len(patches))
 	return patches, nil
 }
 
 // InstallPatch installs a specific patch by patch ID (KB number or title)
 func (p *OsPatchScanProvider) InstallPatch(patchId string) (*InstallProgress, error) {
-	fmt.Printf("[OS Patch] Starting installation of patch: %s\n", patchId)
 	// Validate and sanitize patch ID to prevent command injection
 	sanitizedPatchId, isKB, err := validatePatchId(patchId)
 	if err != nil {
@@ -340,7 +331,6 @@ func (p *OsPatchScanProvider) InstallPatch(patchId string) (*InstallProgress, er
 		IsComplete:      false,
 		StartTime:       time.Now().Format(time.RFC3339),
 	}
-	fmt.Println("[OS Patch] Patch ID validated, preparing installation command...")
 
 	var psCommand string
 	if isKB {
@@ -386,7 +376,7 @@ func (p *OsPatchScanProvider) InstallPatch(patchId string) (*InstallProgress, er
 	`, escapedTitle, escapedTitle, escapedTitle)
 	}
 
-	fmt.Println("[OS Patch] Executing PowerShell command to install patch (this may take several minutes)...")
+	fmt.Printf("[OS Patch] Executing PowerShell command:\n%s\n", psCommand)
 	output, err := p.runPowerShell(psCommand)
 	if err != nil {
 		progress.Status = "Failed"
@@ -395,6 +385,7 @@ func (p *OsPatchScanProvider) InstallPatch(patchId string) (*InstallProgress, er
 		progress.EndTime = time.Now().Format(time.RFC3339)
 		return progress, fmt.Errorf("failed to install patch: %v", err)
 	}
+	fmt.Printf("[OS Patch] PowerShell output:\n%s\n", output)
 
 	// Parse the result
 	var result map[string]interface{}
@@ -421,14 +412,12 @@ func (p *OsPatchScanProvider) InstallPatch(patchId string) (*InstallProgress, er
 	progress.IsComplete = true
 	progress.EndTime = time.Now().Format(time.RFC3339)
 
-	fmt.Printf("[OS Patch] Installation completed with status: %s\n", progress.Status)
 	return progress, nil
 }
 
 // MonitorInstallProgress monitors the installation progress of a patch
 // This function polls the Windows Update service to check installation status
 func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSeconds int) (<-chan *InstallProgress, error) {
-	fmt.Printf("[OS Patch] Starting progress monitoring for patch: %s\n", patchId)
 	// Validate and sanitize patch ID to prevent command injection
 	sanitizedPatchId, isKB, err := validatePatchId(patchId)
 	if err != nil {
@@ -440,7 +429,6 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSec
 	}
 
 	progressChan := make(chan *InstallProgress, 10)
-	fmt.Printf("[OS Patch] Monitoring will check status every %d seconds\n", intervalSeconds)
 
 	go func() {
 		defer close(progressChan)
@@ -503,7 +491,7 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSec
 			`, escapedTitle, escapedTitle)
 			}
 
-			fmt.Println("[OS Patch] Checking installation progress...")
+			fmt.Printf("[OS Patch] Executing PowerShell command:\n%s\n", psCommand)
 			output, err := p.runPowerShell(psCommand)
 			if err != nil {
 				progress.Status = "Error"
@@ -513,6 +501,7 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSec
 				progressChan <- progress
 				return
 			}
+			fmt.Printf("[OS Patch] PowerShell output:\n%s\n", output)
 
 			// Parse the result
 			var result map[string]interface{}
@@ -540,9 +529,6 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSec
 
 			if progress.IsComplete {
 				progress.EndTime = time.Now().Format(time.RFC3339)
-				fmt.Printf("[OS Patch] Monitoring completed - Final status: %s\n", progress.Status)
-			} else {
-				fmt.Printf("[OS Patch] Current progress: %s - %d%% complete\n", progress.Status, progress.PercentComplete)
 			}
 
 			progressChan <- progress
