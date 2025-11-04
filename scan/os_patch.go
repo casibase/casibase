@@ -100,7 +100,6 @@ func (p *OsPatchScanProvider) Scan(target string, command string) (string, error
 		return "", err
 	}
 
-	fmt.Println("[OS Patch] Converting results to JSON format...")
 	// Convert patches to JSON string
 	result, err := json.Marshal(patches)
 	if err != nil {
@@ -222,7 +221,7 @@ func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
 		return nil, fmt.Errorf("failed to list patches: %v", err)
 	}
 
-	fmt.Println("[OS Patch] Processing PowerShell output...")
+	fmt.Println("[OS Patch] Processing available patches output...")
 	// Extract JSON from output, removing any non-JSON lines (e.g., interactive prompts)
 	output = extractJSON(output)
 
@@ -295,7 +294,7 @@ func (p *OsPatchScanProvider) ListInstalledPatches() ([]*WindowsPatch, error) {
 		return nil, fmt.Errorf("failed to list installed patches: %v", err)
 	}
 
-	fmt.Println("[OS Patch] Processing PowerShell output...")
+	fmt.Println("[OS Patch] Processing installed patches output...")
 	// Extract JSON from output, removing any non-JSON lines (e.g., interactive prompts)
 	output = extractJSON(output)
 
