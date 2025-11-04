@@ -23,7 +23,6 @@ import MessageList from "./chat/MessageList";
 import ChatInput from "./chat/ChatInput";
 import WelcomeHeader from "./chat/WelcomeHeader";
 import * as MessageBackend from "./backend/MessageBackend";
-import * as ProviderBackend from "./backend/ProviderBackend";
 import TtsHelper from "./TextToSpeech";
 import SpeechToTextHelper from "./SpeechToText";
 
@@ -57,7 +56,7 @@ class ChatBox extends React.Component {
       this.synth.cancel();
     });
     this.addCursorPositionListener();
-    this.fetchProviderType();
+    this.updateProviderType();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -74,11 +73,11 @@ class ChatBox extends React.Component {
       this.setState({messages: this.props.messages});
       this.scrollToBottom();
     }
-    // Fetch provider type when model provider changes
+    // Update provider type when model provider or modelProviders changes
     const prevProvider = prevProps.chatModelProvider || prevProps.store?.modelProvider;
     const currentProvider = this.props.chatModelProvider || this.props.store?.modelProvider;
-    if (prevProvider !== currentProvider) {
-      this.fetchProviderType();
+    if (prevProvider !== currentProvider || prevProps.modelProviders !== this.props.modelProviders) {
+      this.updateProviderType();
     }
   }
 
@@ -326,7 +325,7 @@ class ChatBox extends React.Component {
       });
   };
 
-  fetchProviderType = () => {
+  updateProviderType = () => {
     // Get provider name from chat first, then fall back to store
     const providerName = this.props.chatModelProvider || this.props.store?.modelProvider;
     if (!providerName) {
@@ -334,28 +333,14 @@ class ChatBox extends React.Component {
       return;
     }
 
-    // Get owner from store; if not available, the provider won't be fetched
-    // This ensures we don't accidentally access providers with wrong ownership
-    const owner = this.props.store?.owner;
-    if (!owner) {
+    // Find the provider in the modelProviders array
+    const provider = this.props.modelProviders?.find(p => p.name === providerName);
+    if (provider) {
+      this.setState({providerType: provider.type});
+    } else {
+      // Provider not found - disable web search by default
       this.setState({providerType: null});
-      return;
     }
-
-    ProviderBackend.getProvider(owner, providerName)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({providerType: res.data?.type});
-        } else {
-          // Provider not found or error - disable web search by default
-          this.setState({providerType: null});
-        }
-      })
-      .catch(() => {
-        // Gracefully handle errors by disabling web search
-        // This prevents disruption to the user experience
-        this.setState({providerType: null});
-      });
   };
 
   render() {

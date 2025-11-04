@@ -17,6 +17,7 @@ import {Button, Drawer, Modal, Spin} from "antd";
 import {BarsOutlined, CloseCircleFilled, MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as StoreBackend from "./backend/StoreBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
 import ChatMenu from "./ChatMenu";
 import ChatBox from "./ChatBox";
 import StoreInfoTitle from "./StoreInfoTitle";
@@ -61,6 +62,7 @@ class ChatPage extends BaseListPage {
       filteredStores: [],
       paneCount: 1,
       storeName: currentStore, // Store the current store name in state
+      modelProviders: [],
     });
 
     this.fetch();
@@ -154,10 +156,35 @@ class ChatPage extends BaseListPage {
           defaultStore: defaultStore,
           filteredStores: filteredStores,
         });
+
+        // Fetch model providers after stores are loaded
+        this.getModelProviders(defaultStore);
       } else {
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
       }
     });
+  }
+
+  getModelProviders(defaultStore) {
+    // If no defaultStore or no childModelProviders, clear the providers
+    if (!defaultStore || !defaultStore.childModelProviders || defaultStore.childModelProviders.length === 0) {
+      this.setState({modelProviders: []});
+      return;
+    }
+
+    // Use "admin" as owner since providers are typically owned by admin
+    ProviderBackend.getProviders("admin")
+      .then((res) => {
+        if (res.status === "ok") {
+          const providers = res.data.filter(provider =>
+            provider.category === "Model" && defaultStore.childModelProviders.includes(provider.name)
+          );
+          this.setState({modelProviders: providers});
+        }
+      })
+      .catch(() => {
+        this.setState({modelProviders: []});
+      });
   }
 
   getChat() {
@@ -795,6 +822,7 @@ class ChatPage extends BaseListPage {
                 name={this.state.chat?.name}
                 displayName={this.state.chat?.displayName}
                 chatModelProvider={this.state.chat?.modelProvider}
+                modelProviders={this.state.modelProviders}
                 store={this.state.chat ?
                   this.state.stores?.find(store => store.name === this.state.chat.store) :
                   this.state.stores?.find(store => store.name === this.state.storeName) ||
