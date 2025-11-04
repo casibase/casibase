@@ -334,7 +334,8 @@ class ChatBox extends React.Component {
       return;
     }
 
-    ProviderBackend.getProvider("admin", providerName)
+    const owner = this.props.store?.owner || "admin";
+    ProviderBackend.getProvider(owner, providerName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({providerType: res.data?.type});
