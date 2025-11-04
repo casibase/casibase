@@ -156,6 +156,11 @@ class SystemInfo extends React.Component {
         <>
           <Row gutter={[16, 16]}>
             <Col span={6}>
+              <Card id="network-card" title={i18next.t("system:Network Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
+                {this.state.loading ? <Spin size="large" /> : networkUi}
+              </Card>
+            </Col>
+            <Col span={6}>
               <Card id="cpu-card" title={i18next.t("system:CPU Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
                 {this.state.loading ? <Spin size="large" /> : cpuUi}
               </Card>
@@ -168,11 +173,6 @@ class SystemInfo extends React.Component {
             <Col span={6}>
               <Card id="disk-card" title={i18next.t("system:Disk Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
                 {this.state.loading ? <Spin size="large" /> : diskUi}
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card id="network-card" title={i18next.t("system:Network Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
-                {this.state.loading ? <Spin size="large" /> : networkUi}
               </Card>
             </Col>
             <Col span={12}>
@@ -204,6 +204,11 @@ class SystemInfo extends React.Component {
       return (
         <Row gutter={[16, 16]}>
           <Col span={24}>
+            <Card title={i18next.t("system:Network Usage")} bordered={true} style={{textAlign: "center", width: "100%"}}>
+              {this.state.loading ? <Spin size="large" /> : networkUi}
+            </Card>
+          </Col>
+          <Col span={24}>
             <Card title={i18next.t("system:CPU Usage")} bordered={true} style={{textAlign: "center", width: "100%"}}>
               {this.state.loading ? <Spin size="large" /> : cpuUi}
             </Card>
@@ -216,11 +221,6 @@ class SystemInfo extends React.Component {
           <Col span={24}>
             <Card title={i18next.t("system:Disk Usage")} bordered={true} style={{textAlign: "center", width: "100%"}}>
               {this.state.loading ? <Spin size="large" /> : diskUi}
-            </Card>
-          </Col>
-          <Col span={24}>
-            <Card title={i18next.t("system:Network Usage")} bordered={true} style={{textAlign: "center", width: "100%"}}>
-              {this.state.loading ? <Spin size="large" /> : networkUi}
             </Card>
           </Col>
           <Col span={24}>

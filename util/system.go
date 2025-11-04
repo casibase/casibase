@@ -31,7 +31,6 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/mem"
-	"github.com/shirou/gopsutil/net"
 	"github.com/shirou/gopsutil/process"
 )
 
@@ -81,31 +80,70 @@ func getMemoryUsage() (uint64, uint64, error) {
 	return memInfo.RSS, virtualMem.Total, nil
 }
 
-// getDiskUsage gets disk usage for root filesystem
-// Note: This monitors the root filesystem ("/") by default
+// getDiskUsage gets disk usage for Casibase's data directory
 func getDiskUsage() (uint64, uint64, error) {
-	diskStat, err := disk.Usage("/")
+	// Get the root path of the project
+	_, filename, _, _ := runtime.Caller(0)
+	rootPath := path.Dir(path.Dir(filename))
+	dataPath := filepath.Join(rootPath, "data")
+
+	// Calculate directory size recursively
+	var size uint64
+	err := filepath.Walk(dataPath, func(_ string, info os.FileInfo, err error) error {
+		if err != nil {
+			// If data directory doesn't exist, return 0 size
+			return nil
+		}
+		if !info.IsDir() {
+			size += uint64(info.Size())
+		}
+		return nil
+	})
 	if err != nil {
 		return 0, 0, err
 	}
 
-	return diskStat.Used, diskStat.Total, nil
+	// Get the disk total from the filesystem where data directory resides
+	diskStat, err := disk.Usage(dataPath)
+	if err != nil {
+		// Fallback to root if data directory doesn't exist
+		diskStat, err = disk.Usage("/")
+		if err != nil {
+			return 0, 0, err
+		}
+	}
+
+	return size, diskStat.Total, nil
 }
 
-// getNetworkUsage gets network usage (bytes sent and received)
+// getNetworkUsage gets Casibase process's own network I/O usage
 func getNetworkUsage() (uint64, uint64, uint64, error) {
-	ioCounters, err := net.IOCounters(false)
+	proc, err := process.NewProcess(int32(os.Getpid()))
 	if err != nil {
 		return 0, 0, 0, err
 	}
 
-	if len(ioCounters) == 0 {
-		return 0, 0, 0, nil
+	// Try to get process-specific network I/O counters
+	netCounters, err := proc.NetIOCounters(false)
+	if err != nil || len(netCounters) == 0 {
+		// NetIOCounters may not be available on all platforms
+		// Fall back to process disk I/O as a proxy for I/O activity
+		ioCounters, err := proc.IOCounters()
+		if err != nil {
+			return 0, 0, 0, err
+		}
+		bytesSent := ioCounters.WriteBytes
+		bytesRecv := ioCounters.ReadBytes
+		bytesTotal := bytesSent + bytesRecv
+		return bytesSent, bytesRecv, bytesTotal, nil
 	}
 
-	// When pernic is false, it returns aggregated stats
-	bytesSent := ioCounters[0].BytesSent
-	bytesRecv := ioCounters[0].BytesRecv
+	// Aggregate network I/O across all interfaces
+	var bytesSent, bytesRecv uint64
+	for _, counter := range netCounters {
+		bytesSent += counter.BytesSent
+		bytesRecv += counter.BytesRecv
+	}
 	bytesTotal := bytesSent + bytesRecv
 
 	return bytesSent, bytesRecv, bytesTotal, nil
