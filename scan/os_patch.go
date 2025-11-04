@@ -59,13 +59,19 @@ type OsPatchScanProvider struct {
 	// Optional configuration can be added here in the future
 }
 
-// getHostnamePrefix returns a hostname prefix for logging, or empty string on error
+var cachedHostnamePrefix string
+
+// getHostnamePrefix returns a hostname prefix for logging, or [unknown-host] on error
 func getHostnamePrefix() string {
-	hostname, err := os.Hostname()
-	if err != nil {
-		return "[unknown-host]"
+	if cachedHostnamePrefix == "" {
+		hostname, err := os.Hostname()
+		if err != nil {
+			cachedHostnamePrefix = "[unknown-host]"
+		} else {
+			cachedHostnamePrefix = fmt.Sprintf("[%s]", hostname)
+		}
 	}
-	return fmt.Sprintf("[%s]", hostname)
+	return cachedHostnamePrefix
 }
 
 // NewOsPatchScanProvider creates a new OsPatchScanProvider instance
