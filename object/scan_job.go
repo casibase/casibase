@@ -28,8 +28,8 @@ var scanJobCron *cron.Cron
 // InitScanJobProcessor initializes the scan job processor with a cron job
 func InitScanJobProcessor() {
 	scanJobCron = cron.New()
-	// Run every minute
-	_, err := scanJobCron.AddFunc("@every 1m", processPendingScans)
+	// Run every second
+	_, err := scanJobCron.AddFunc("@every 1s", processPendingScans)
 	if err != nil {
 		panic(err)
 	}
@@ -82,30 +82,46 @@ func getPendingScans() ([]*Scan, error) {
 // claimScanJob attempts to claim a scan job by setting its state to "Running"
 // Returns true if the claim was successful, false otherwise
 func claimScanJob(scan *Scan, hostname string) (bool, error) {
+	// If provider is empty, skip this scan (cannot determine scan type)
+	if scan.Provider == "" {
+		return false, nil
+	}
+
+	// Get provider to check scan type
+	provider, err := GetProvider(scan.Provider)
+	if err != nil {
+		return false, err
+	}
+	if provider == nil {
+		return false, nil
+	}
+
 	// For OS Patch scans, check if this instance should execute the scan
 	// OS Patch scans can only be run on the local machine (they use PowerShell locally)
 	// so only the Casibase instance running on the target machine should claim the job
-	if scan.Provider != "" {
-		provider, err := GetProvider(scan.Provider)
-		if err == nil && provider != nil && provider.Type == "OS Patch" {
-			// For OS Patch scans, check if the target asset matches this instance's hostname
-			if scan.TargetMode == "Asset" && scan.Asset != "" {
-				asset, err := GetAsset(util.GetIdFromOwnerAndName(scan.Owner, scan.Asset))
-				if err == nil && asset != nil {
-					// Check if the asset name matches the current hostname
-					// This ensures only the Casibase instance on the target machine picks up the job
-					if asset.Name != hostname {
-						return false, nil
-					}
-				}
-			} else if scan.TargetMode == "Manual Input" && scan.Target != "" {
-				// For manual input mode, only claim if target is localhost or 127.0.0.1
-				if scan.Target != "localhost" && scan.Target != "127.0.0.1" {
-					return false, nil
-				}
+	if provider.Type == "OS Patch" {
+		// For OS Patch scans in Asset mode, check if the target asset matches this instance's hostname
+		if scan.TargetMode == "Asset" && scan.Asset != "" {
+			asset, err := GetAsset(util.GetIdFromOwnerAndName(scan.Owner, scan.Asset))
+			if err != nil {
+				return false, err
+			}
+			if asset == nil {
+				return false, nil
+			}
+			// Check if the asset name matches the current hostname
+			// This ensures only the Casibase instance on the target machine picks up the job
+			if asset.Name != hostname {
+				return false, nil
+			}
+		} else if scan.TargetMode == "Manual Input" && scan.Target != "" {
+			// For manual input mode, only claim if target is localhost or 127.0.0.1
+			if scan.Target != "localhost" && scan.Target != "127.0.0.1" {
+				return false, nil
 			}
 		}
 	}
+	// For Nmap scans, any instance can claim the job (no hostname check needed)
 
 	// Try to update the scan state from "Pending" to "Running"
 	// This is an atomic operation that will only succeed for one instance
