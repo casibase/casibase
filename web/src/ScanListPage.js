@@ -286,6 +286,14 @@ class ScanListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("scan:Runner"),
+        dataIndex: "runner",
+        key: "runner",
+        width: "150px",
+        sorter: true,
+        ...this.getColumnSearchProps("runner"),
+      },
+      {
         title: i18next.t("general:Result"),
         dataIndex: "result",
         key: "result",

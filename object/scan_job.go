@@ -81,20 +81,26 @@ func getPendingScans() ([]*Scan, error) {
 // claimScanJob attempts to claim a scan job by setting its state to "Running"
 // Returns true if the claim was successful, false otherwise
 func claimScanJob(scan *Scan, hostname string) (bool, error) {
-	// For OS Patch scans, only the localhost can execute the scan
+	// For OS Patch scans, check if this instance should execute the scan
+	// OS Patch scans can only be run on the local machine (they use PowerShell locally)
+	// so only the Casibase instance running on the target machine should claim the job
 	if scan.Provider != "" {
 		provider, err := GetProvider(scan.Provider)
 		if err == nil && provider != nil && provider.Type == "OS Patch" {
-			// Check if the asset is local to this instance
-			if scan.Asset != "" {
+			// For OS Patch scans, check if the target asset matches this instance's hostname
+			if scan.TargetMode == "Asset" && scan.Asset != "" {
 				asset, err := GetAsset(util.GetIdFromOwnerAndName("admin", scan.Asset))
 				if err == nil && asset != nil {
-					// Check if asset hostname matches current hostname
-					assetHostname := asset.Name // Assuming asset.Name contains hostname
-					if assetHostname != hostname {
-						// This scan should be executed by another instance
+					// Check if the asset name matches the current hostname
+					// This ensures only the Casibase instance on the target machine picks up the job
+					if asset.Name != hostname {
 						return false, nil
 					}
+				}
+			} else if scan.TargetMode == "Manual Input" && scan.Target != "" {
+				// For manual input mode, only claim if target is localhost or 127.0.0.1
+				if scan.Target != "localhost" && scan.Target != "127.0.0.1" {
+					return false, nil
 				}
 			}
 		}
