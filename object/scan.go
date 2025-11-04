@@ -254,7 +254,8 @@ func GetPendingScans() ([]*Scan, error) {
 // This operation will only succeed for one instance due to the WHERE condition on state
 // Returns the number of affected rows
 func AtomicClaimScan(owner, name, hostname string) (int64, error) {
-	affected, err := adapter.engine.Where("owner = ? AND name = ? AND state = ?", owner, name, "Pending").
+	affected, err := adapter.engine.Table(&Scan{}).
+		Where("owner = ? AND name = ? AND state = ?", owner, name, "Pending").
 		Update(map[string]interface{}{
 			"state":        "Running",
 			"runner":       hostname,
