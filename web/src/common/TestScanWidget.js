@@ -316,11 +316,15 @@ class TestScanWidget extends React.Component {
       return;
     }
 
-    // Save widget state to DB before executing scan
+    // Save widget state to parent component
     this.saveWidgetState();
 
-    // Call unified scan-asset API
-    AssetBackend.scanAsset(provider, scan, targetMode, target, asset, command, saveToScan)
+    // Save to DB first (without showing toast), then execute scan
+    this.saveToDB()
+      .then(() => {
+        // Call unified scan-asset API after saving
+        return AssetBackend.scanAsset(provider, scan, targetMode, target, asset, command, saveToScan);
+      })
       .then((res) => {
         if (res.status === "ok") {
           // For scan edit page (async execution), start polling for results
@@ -363,6 +367,50 @@ class TestScanWidget extends React.Component {
           scanButtonLoading: false,
         });
       });
+  }
+
+  saveToDB() {
+    // Save scan or provider to DB without showing toast
+    if (this.props.scan) {
+      // For ScanEditPage
+      const scanCopy = Setting.deepCopy(this.props.scan);
+      return ScanBackend.updateScan(this.props.scan.owner, this.props.scan.name, scanCopy)
+        .then((res) => {
+          if (res.status === "ok") {
+            return Promise.resolve();
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
+            return Promise.reject(res.msg);
+          }
+        })
+        .catch((error) => {
+          const errorMsg = typeof error === "string" ? error : (error.message || String(error));
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${errorMsg}`);
+          this.setState({scanButtonLoading: false});
+          return Promise.reject(error);
+        });
+    } else if (this.props.provider && this.props.provider.category === "Scan") {
+      // For ProviderEditPage
+      const providerCopy = Setting.deepCopy(this.props.provider);
+      return ProviderBackend.updateProvider(this.props.provider.owner, this.props.provider.name, providerCopy)
+        .then((res) => {
+          if (res.status === "ok") {
+            return Promise.resolve();
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
+            return Promise.reject(res.msg);
+          }
+        })
+        .catch((error) => {
+          const errorMsg = typeof error === "string" ? error : (error.message || String(error));
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${errorMsg}`);
+          this.setState({scanButtonLoading: false});
+          return Promise.reject(error);
+        });
+    } else {
+      // No save needed
+      return Promise.resolve();
+    }
   }
 
   pollScanResults(scanId) {
