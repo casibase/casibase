@@ -374,7 +374,7 @@ class TestScanWidget extends React.Component {
           executeScan();
         })
         .catch((error) => {
-          Setting.showMessage("error", `${i18next.t("general:Failed to save scan")}: ${error}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to save scan")}: ${typeof error === "string" ? error : error.message || String(error)}`);
           this.setState({scanButtonLoading: false});
         });
     } else {
