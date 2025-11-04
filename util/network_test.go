@@ -87,7 +87,11 @@ func TestGetLocalIPAddresses(t *testing.T) {
 
 func TestMatchTargetWithMachine(t *testing.T) {
 	// Get actual local IPs for testing
-	localIPs, _ := GetLocalIPAddresses()
+	localIPs, err := GetLocalIPAddresses()
+	if err != nil {
+		// It's OK if we can't get local IPs, we just won't test that case
+		t.Logf("Warning: Could not get local IP addresses: %v", err)
+	}
 	
 	tests := []struct {
 		name        string
