@@ -141,7 +141,7 @@ func executeScanJob(scan *Scan, hostname string) {
 
 	// Execute the scan
 	provider := util.GetIdFromOwnerAndName(scan.Owner, scan.Provider)
-	scanResult, err := executeScan(provider, scan.GetId(), scan.TargetMode, scan.Target, scan.Asset, scan.Command, "en")
+	scanResult, err := executeScan(provider, scan.GetId(), scan.TargetMode, scan.Target, scan.Asset, scan.Command, scan.Owner, "en")
 
 	// Update scan with results
 	scan.UpdatedTime = util.GetCurrentTime()

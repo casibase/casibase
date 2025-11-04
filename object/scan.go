@@ -170,11 +170,19 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 	}
 
 	// For provider edit page (saveToScan=false), execute scan immediately
-	return executeScan(provider, scanParam, targetMode, target, asset, command, lang)
+	// Extract owner from provider ID
+	owner := "admin" // Default owner
+	if provider != "" {
+		providerObj, err := GetProvider(provider)
+		if err == nil && providerObj != nil {
+			owner = providerObj.Owner
+		}
+	}
+	return executeScan(provider, scanParam, targetMode, target, asset, command, owner, lang)
 }
 
 // executeScan performs the actual scan execution
-func executeScan(provider, scanParam, targetMode, target, asset, command string, lang string) (*ScanResult, error) {
+func executeScan(provider, scanParam, targetMode, target, asset, command, owner string, lang string) (*ScanResult, error) {
 	// Get the provider
 	providerObj, err := GetProvider(provider)
 	if err != nil {
@@ -196,7 +204,7 @@ func executeScan(provider, scanParam, targetMode, target, asset, command string,
 	// Determine the scan target
 	var scanTarget string
 	if targetMode == "Asset" {
-		assetId := util.GetIdFromOwnerAndName("admin", asset)
+		assetId := util.GetIdFromOwnerAndName(owner, asset)
 
 		// Get the asset
 		assetObj, err := GetAsset(assetId)
