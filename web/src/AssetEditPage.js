@@ -46,11 +46,8 @@ class AssetEditPage extends React.Component {
     ProviderBackend.getProviders(this.props.account.owner)
       .then((res) => {
         if (res.status === "ok") {
-          const cloudProviders = res.data.filter(provider =>
-            provider.category === "Public Cloud"
-          );
           this.setState({
-            providers: cloudProviders,
+            providers: res.data || [],
           });
         } else {
           Setting.showMessage("error", res.msg);
@@ -339,7 +336,7 @@ class AssetEditPage extends React.Component {
                 {i18next.t("general:Loading")}...
               </div>
             ) : this.state.scans.length > 0 ? (
-              <ScanTable scans={this.state.scans} showAsset={false} />
+              <ScanTable scans={this.state.scans} providers={this.state.providers} showAsset={false} />
             ) : (
               <div style={{textAlign: "center", padding: "40px", color: "#999"}}>
                 {i18next.t("scan:No scans found for this asset")}

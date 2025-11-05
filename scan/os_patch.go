@@ -565,3 +565,36 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSec
 
 	return progressChan, nil
 }
+
+// GetResultSummary generates a short summary of the scan result
+func (p *OsPatchScanProvider) GetResultSummary(result string) string {
+	if result == "" {
+		return ""
+	}
+
+	// Parse the JSON result
+	var patches []*WindowsPatch
+	err := json.Unmarshal([]byte(result), &patches)
+	if err != nil {
+		return ""
+	}
+
+	// Count available and installed patches
+	availableCount := 0
+	installedCount := 0
+	for _, patch := range patches {
+		if patch.IsInstalled {
+			installedCount++
+		} else {
+			availableCount++
+		}
+	}
+
+	if availableCount > 0 {
+		return fmt.Sprintf("%d available patches found", availableCount)
+	} else if installedCount > 0 {
+		return fmt.Sprintf("%d patches installed", installedCount)
+	}
+
+	return "No patches found"
+}

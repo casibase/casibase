@@ -133,6 +133,7 @@ class ScanListPage extends BaseListPage {
       command: "",
       rawResult: "",
       result: "",
+      resultSummary: "",
     };
   }
 

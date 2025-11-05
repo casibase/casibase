@@ -244,3 +244,37 @@ func (p *NmapScanProvider) parseNmapOutput(output string) *NmapScanResult {
 
 	return result
 }
+
+// GetResultSummary generates a short summary of the scan result
+func (p *NmapScanProvider) GetResultSummary(result string) string {
+	if result == "" {
+		return ""
+	}
+
+	// Parse the JSON result
+	var scanResult NmapScanResult
+	err := json.Unmarshal([]byte(result), &scanResult)
+	if err != nil {
+		return ""
+	}
+
+	// Count total ports found across all hosts
+	totalPorts := 0
+	hostsUp := 0
+	for _, host := range scanResult.Hosts {
+		if host.Status == "up" {
+			hostsUp++
+		}
+		totalPorts += len(host.Ports)
+	}
+
+	if totalPorts > 0 {
+		return fmt.Sprintf("%d ports found", totalPorts)
+	} else if hostsUp > 0 {
+		return fmt.Sprintf("%d hosts up", hostsUp)
+	} else if len(scanResult.Hosts) > 0 {
+		return fmt.Sprintf("%d hosts scanned", len(scanResult.Hosts))
+	}
+
+	return "Scan completed"
+}

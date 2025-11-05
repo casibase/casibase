@@ -29,15 +29,17 @@ const SCAN_STATE_COLORS = {
 /**
  * ScanDetailPopover - A popover component that displays scan details with metadata
  * @param {object} scan - The scan object containing all scan information
+ * @param {object} provider - The provider object containing provider information (optional)
  * @param {string} placement - Popover placement (default: "left")
  * @param {string} width - Width of the popover (default: "800px")
  * @param {string} height - Max height of the popover (default: "600px")
  * @returns {React.Element|null} A popover component with scan details or null if no scan provided
  * @example
- * <ScanDetailPopover scan={scanObject} placement="left" />
+ * <ScanDetailPopover scan={scanObject} provider={providerObject} placement="left" />
  */
 export function ScanDetailPopover({
   scan,
+  provider = null,
   placement = "left",
   width = "800px",
   height = "600px",
@@ -47,6 +49,15 @@ export function ScanDetailPopover({
   }
 
   const tagColor = SCAN_STATE_COLORS[scan.state] || "processing";
+
+  // Get provider logo
+  let providerLogo = null;
+  if (provider) {
+    const otherProviderInfo = Setting.getOtherProviderInfo();
+    if (otherProviderInfo[provider.category] && otherProviderInfo[provider.category][provider.type]) {
+      providerLogo = otherProviderInfo[provider.category][provider.type].logo;
+    }
+  }
 
   const popoverContent = (
     <div style={{width: width, maxHeight: height, overflow: "auto"}}>
@@ -85,7 +96,12 @@ export function ScanDetailPopover({
     >
       <Link to={`/scans/${scan.name}`}>
         <Tag color={tagColor} style={{cursor: "pointer", margin: "2px"}}>
-          {scan.displayName || scan.name}
+          <div style={{display: "flex", alignItems: "center", gap: "4px"}}>
+            {providerLogo && (
+              <img src={providerLogo} alt="provider" style={{width: "16px", height: "16px"}} />
+            )}
+            <span>{scan.resultSummary || scan.displayName || scan.name}</span>
+          </div>
         </Tag>
       </Link>
     </Popover>

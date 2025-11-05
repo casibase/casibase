@@ -20,8 +20,21 @@ import * as Setting from "../Setting";
 import {ScanResultPopover} from "./ScanResultPopover";
 
 class ScanTable extends React.Component {
+  getProviderLogo(provider) {
+    if (!provider) {
+      return null;
+    }
+
+    const otherProviderInfo = Setting.getOtherProviderInfo();
+    if (!otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {
+      return null;
+    }
+
+    return otherProviderInfo[provider.category][provider.type].logo;
+  }
+
   render() {
-    const {scans, showAsset = false, compact = false} = this.props;
+    const {scans, providers = [], showAsset = false, compact = false} = this.props;
 
     const columns = [
       {
@@ -74,13 +87,21 @@ class ScanTable extends React.Component {
         title: i18next.t("scan:Provider"),
         dataIndex: "provider",
         key: "provider",
-        width: compact ? "100px" : "150px",
+        width: compact ? "150px" : "200px",
         render: (text, record, index) => {
           if (!text) {
             return i18next.t("general:None");
           }
+          const provider = providers.find(p => p.name === text);
+          const logo = this.getProviderLogo(provider);
+          
           return (
-            <Link to={`/providers/${text}`}>{text}</Link>
+            <Link to={`/providers/${text}`}>
+              <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                {logo && <img src={logo} alt={text} style={{width: "20px", height: "20px"}} />}
+                <span>{record.resultSummary || text}</span>
+              </div>
+            </Link>
           );
         },
       },
