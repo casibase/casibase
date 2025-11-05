@@ -14,6 +14,26 @@
 
 package scan
 
+import (
+	"fmt"
+	"os"
+)
+
+var cachedHostnamePrefix string
+
+// getHostnamePrefix returns a hostname prefix for logging, or [unknown-host] on error
+func getHostnamePrefix() string {
+	if cachedHostnamePrefix == "" {
+		hostname, err := os.Hostname()
+		if err != nil {
+			cachedHostnamePrefix = "[unknown-host]"
+		} else {
+			cachedHostnamePrefix = fmt.Sprintf("[%s]", hostname)
+		}
+	}
+	return cachedHostnamePrefix
+}
+
 type ScanProvider interface {
 	Scan(target string, command string) (string, error)
 	ParseResult(rawResult string) (string, error)

@@ -210,12 +210,12 @@ func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
 		}
 	`
 
-	fmt.Printf("[OS Patch] Executing PowerShell command:\n%s\n", psCommand)
+	fmt.Printf("%s [OS Patch] Executing PowerShell command:\n%s\n", getHostnamePrefix(), psCommand)
 	output, err := p.runPowerShell(psCommand)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list patches: %v", err)
 	}
-	fmt.Printf("[OS Patch] PowerShell output:\n%s\n", output)
+	fmt.Printf("%s [OS Patch] PowerShell output:\n%s\n", getHostnamePrefix(), output)
 
 	// Extract JSON from output, removing any non-JSON lines (e.g., interactive prompts)
 	output = extractJSON(output)
@@ -281,12 +281,12 @@ func (p *OsPatchScanProvider) ListInstalledPatches() ([]*WindowsPatch, error) {
 		}
 	`
 
-	fmt.Printf("[OS Patch] Executing PowerShell command:\n%s\n", psCommand)
+	fmt.Printf("%s [OS Patch] Executing PowerShell command:\n%s\n", getHostnamePrefix(), psCommand)
 	output, err := p.runPowerShell(psCommand)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list installed patches: %v", err)
 	}
-	fmt.Printf("[OS Patch] PowerShell output:\n%s\n", output)
+	fmt.Printf("%s [OS Patch] PowerShell output:\n%s\n", getHostnamePrefix(), output)
 
 	// Extract JSON from output, removing any non-JSON lines (e.g., interactive prompts)
 	output = extractJSON(output)
@@ -376,7 +376,7 @@ func (p *OsPatchScanProvider) InstallPatch(patchId string) (*InstallProgress, er
 	`, escapedTitle, escapedTitle, escapedTitle)
 	}
 
-	fmt.Printf("[OS Patch] Executing PowerShell command:\n%s\n", psCommand)
+	fmt.Printf("%s [OS Patch] Executing PowerShell command:\n%s\n", getHostnamePrefix(), psCommand)
 	output, err := p.runPowerShell(psCommand)
 	if err != nil {
 		progress.Status = "Failed"
@@ -385,7 +385,7 @@ func (p *OsPatchScanProvider) InstallPatch(patchId string) (*InstallProgress, er
 		progress.EndTime = time.Now().Format(time.RFC3339)
 		return progress, fmt.Errorf("failed to install patch: %v", err)
 	}
-	fmt.Printf("[OS Patch] PowerShell output:\n%s\n", output)
+	fmt.Printf("%s [OS Patch] PowerShell output:\n%s\n", getHostnamePrefix(), output)
 
 	// Parse the result
 	var result map[string]interface{}
@@ -491,7 +491,7 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSec
 			`, escapedTitle, escapedTitle)
 			}
 
-			fmt.Printf("[OS Patch] Executing PowerShell command:\n%s\n", psCommand)
+			fmt.Printf("%s [OS Patch] Executing PowerShell command:\n%s\n", getHostnamePrefix(), psCommand)
 			output, err := p.runPowerShell(psCommand)
 			if err != nil {
 				progress.Status = "Error"
@@ -501,7 +501,7 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSec
 				progressChan <- progress
 				return
 			}
-			fmt.Printf("[OS Patch] PowerShell output:\n%s\n", output)
+			fmt.Printf("%s [OS Patch] PowerShell output:\n%s\n", getHostnamePrefix(), output)
 
 			// Parse the result
 			var result map[string]interface{}
