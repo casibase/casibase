@@ -14,8 +14,12 @@
 
 import * as Setting from "../Setting";
 
-export function installPatch(provider, patchId) {
-  return fetch(`${Setting.ServerUrl}/api/install-patch?provider=${encodeURIComponent(provider)}&patchId=${encodeURIComponent(patchId)}`, {
+export function installPatch(provider, patchId, scan) {
+  let url = `${Setting.ServerUrl}/api/install-patch?provider=${encodeURIComponent(provider)}&patchId=${encodeURIComponent(patchId)}`;
+  if (scan) {
+    url += `&scan=${encodeURIComponent(scan)}`;
+  }
+  return fetch(url, {
     method: "POST",
     credentials: "include",
     headers: {
