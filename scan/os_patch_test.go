@@ -24,8 +24,8 @@ import (
 	"time"
 )
 
-// TestListPatches tests listing available and installed Windows updates
-func TestListPatches(t *testing.T) {
+// TestListAvailablePatches tests listing available and installed Windows updates
+func TestListAvailablePatches(t *testing.T) {
 	// Skip test if not running on Windows
 	if runtime.GOOS != "windows" {
 		t.Skip("Skipping test: not running on Windows")
@@ -37,8 +37,8 @@ func TestListPatches(t *testing.T) {
 	}
 
 	// Test listing available patches
-	t.Log("Testing ListPatches()...")
-	patches, err := provider.ListPatches()
+	t.Log("Testing ListAvailablePatches()...")
+	patches, err := provider.ListAvailablePatches()
 	if err != nil {
 		t.Fatalf("Failed to list patches: %v", err)
 	}
@@ -108,9 +108,9 @@ func TestInstallPatch(t *testing.T) {
 	}
 
 	// First, get available patches
-	patches, err := provider.ListPatches()
+	patches, err := provider.ListAvailablePatches()
 	if err != nil {
-		t.Fatalf("Failed to list patches: %v", err)
+		t.Fatalf("Failed to list available patches: %v", err)
 	}
 
 	if len(patches) == 0 {
@@ -168,15 +168,15 @@ func TestInstallPatch(t *testing.T) {
 	}
 }
 
-// Example demonstrates how to use the OsPatchScanProvider to list patches
-func ExampleOsPatchScanProvider_ListPatches() {
+// Example demonstrates how to use the OsPatchScanProvider to list available patches
+func ExampleOsPatchScanProvider_ListAvailablePatches() {
 	provider, err := NewOsPatchScanProvider("")
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		return
 	}
 
-	patches, err := provider.ListPatches()
+	patches, err := provider.ListAvailablePatches()
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		return

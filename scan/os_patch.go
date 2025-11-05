@@ -76,7 +76,7 @@ func (p *OsPatchScanProvider) Scan(target string, command string) (string, error
 		patches, err = p.ListInstalledPatches()
 	} else if command == "all" {
 		// Get both available and installed patches
-		availablePatches, err1 := p.ListPatches()
+		availablePatches, err1 := p.ListAvailablePatches()
 		installedPatches, err2 := p.ListInstalledPatches()
 
 		if err1 != nil {
@@ -90,7 +90,7 @@ func (p *OsPatchScanProvider) Scan(target string, command string) (string, error
 		patches = append(availablePatches, installedPatches...)
 	} else {
 		// Default to available patches
-		patches, err = p.ListPatches()
+		patches, err = p.ListAvailablePatches()
 	}
 
 	if err != nil {
@@ -185,9 +185,9 @@ func extractJSON(output string) string {
 	return strings.Join(jsonLines, "\n")
 }
 
-// ListPatches returns all available Windows OS patches that can be installed
+// ListAvailablePatches returns all available Windows OS patches that can be installed
 // This queries the Windows Update online service to find patches that are available but not yet installed
-func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
+func (p *OsPatchScanProvider) ListAvailablePatches() ([]*WindowsPatch, error) {
 	// Use Get-WindowsUpdate to query Windows Update online service for available patches
 	// This searches for updates that are available to install but not yet installed
 	psCommand := `
