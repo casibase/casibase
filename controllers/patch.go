@@ -35,11 +35,13 @@ const (
 // @Description install an OS patch by patch ID (KB number or title)
 // @Param   provider query string true "The provider ID (owner/name)"
 // @Param   patchId query string true "The patch ID (KB number or title)"
-// @Success 200 {object} controllers.Response The Response object with InstallProgress
+// @Param   scan query string false "The scan ID (owner/name) for async execution"
+// @Success 200 {object} controllers.Response The Response object
 // @router /install-patch [post]
 func (c *ApiController) InstallPatch() {
 	providerName := c.Input().Get("provider")
 	patchId := c.Input().Get("patchId")
+	scanParam := c.Input().Get("scan")
 
 	if providerName == "" {
 		c.ResponseError("Provider is required")
@@ -64,6 +66,42 @@ func (c *ApiController) InstallPatch() {
 		return
 	}
 
+	// If scan parameter is provided, use async execution (similar to ScanAsset)
+	if scanParam != "" {
+		scanObj, err := object.GetScan(scanParam)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		if scanObj == nil {
+			c.ResponseError("Scan not found")
+			return
+		}
+
+		// Update scan with install command and set state to Pending
+		scanObj.Command = "install:" + patchId
+		scanObj.State = "Pending"
+		scanObj.UpdatedTime = util.GetCurrentTime()
+		// Clear previous results
+		scanObj.Runner = ""
+		scanObj.ErrorText = ""
+		scanObj.RawResult = ""
+		scanObj.Result = ""
+		scanObj.ResultSummary = ""
+
+		_, err = object.UpdateScan(scanParam, scanObj)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(map[string]interface{}{
+			"status": "Pending",
+		})
+		return
+	}
+
+	// For backward compatibility: if no scan parameter, execute synchronously
 	// Create an OsPatchScanProvider instance
 	osPatchProvider, err := scan.NewOsPatchScanProvider(provider.ClientId)
 	if err != nil {

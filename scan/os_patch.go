@@ -64,17 +64,41 @@ func NewOsPatchScanProvider(clientId string) (*OsPatchScanProvider, error) {
 }
 
 // Scan implements the ScanProvider interface for OS patch scanning
-// The command parameter specifies the scan type: "available", "installed", or "all"
+// The command parameter specifies the scan type: "available", "installed", "all", or "install:<patchId>"
 // The target parameter is not used for OS patch scanning as it scans the local system
 func (p *OsPatchScanProvider) Scan(target string, command string) (string, error) {
-	command = strings.TrimSpace(strings.ToLower(command))
+	command = strings.TrimSpace(command)
+	commandLower := strings.ToLower(command)
+
+	// Check if this is an install command
+	if strings.HasPrefix(commandLower, "install:") {
+		// Extract patch ID from command
+		patchId := strings.TrimSpace(command[8:]) // Remove "install:" prefix
+		if patchId == "" {
+			return "", fmt.Errorf("%s patch ID is required for install command", getHostnamePrefix())
+		}
+
+		// Install the patch
+		progress, err := p.InstallPatch(patchId)
+		if err != nil {
+			return "", err
+		}
+
+		// Convert progress to JSON string
+		result, err := json.Marshal(progress)
+		if err != nil {
+			return "", fmt.Errorf("%s failed to marshal install progress: %v", getHostnamePrefix(), err)
+		}
+
+		return string(result), nil
+	}
 
 	var patches []*WindowsPatch
 	var err error
 
-	if command == "installed" {
+	if commandLower == "installed" {
 		patches, err = p.ListInstalledPatches()
-	} else if command == "all" {
+	} else if commandLower == "all" {
 		// Get both available and installed patches
 		availablePatches, err1 := p.ListAvailablePatches()
 		installedPatches, err2 := p.ListInstalledPatches()
