@@ -19,6 +19,8 @@ import i18next from "i18next";
 import * as Setting from "../Setting";
 import {ScanResultPopover} from "./ScanResultPopover";
 
+const DEFAULT_PROVIDER_TYPE = "Nmap";
+
 class ScanTable extends React.Component {
   getProviderLogo(provider) {
     if (!provider) {
@@ -140,7 +142,7 @@ class ScanTable extends React.Component {
             return (
               <ScanResultPopover
                 result={text}
-                providerType={record.providerType || "Nmap"}
+                providerType={record.providerType || DEFAULT_PROVIDER_TYPE}
                 placement="left"
                 maxDisplayLength={30}
                 width="1000px"
@@ -158,7 +160,7 @@ class ScanTable extends React.Component {
           return (
             <ScanResultPopover
               result={text}
-              providerType={record.providerType || "Nmap"}
+              providerType={record.providerType || DEFAULT_PROVIDER_TYPE}
             />
           );
         },
