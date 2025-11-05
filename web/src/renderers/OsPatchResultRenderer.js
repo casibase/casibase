@@ -129,8 +129,6 @@ class OsPatchResultRenderer extends React.Component {
       });
   }
 
-
-
   render() {
     const {patches, error} = this.state;
 
