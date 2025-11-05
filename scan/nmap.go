@@ -55,6 +55,22 @@ type NmapScanProvider struct {
 	nmapPath string
 }
 
+// IsNmapAvailable checks if nmap is available in the system
+// Returns true if nmap is available (either through clientId path or system PATH)
+func IsNmapAvailable(clientId string) bool {
+	// If clientId is provided, validate the path exists and is executable
+	if clientId != "" {
+		// Try to run nmap --version to verify it's executable
+		cmd := exec.Command(clientId, "--version")
+		err := cmd.Run()
+		return err == nil
+	}
+
+	// Check if nmap is in system PATH
+	_, err := exec.LookPath("nmap")
+	return err == nil
+}
+
 func NewNmapScanProvider(clientId string) (*NmapScanProvider, error) {
 	provider := &NmapScanProvider{
 		nmapPath: clientId,

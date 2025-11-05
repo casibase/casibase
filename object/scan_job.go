@@ -19,6 +19,7 @@ import (
 	"os"
 
 	"github.com/beego/beego/logs"
+	scanpkg "github.com/casibase/casibase/scan"
 	"github.com/casibase/casibase/util"
 	"github.com/robfig/cron/v3"
 )
@@ -89,6 +90,14 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 
 	if provider.Type != "Nmap" && provider.Type != "OS Patch" {
 		return false, fmt.Errorf("The provider type: %s is not supported for provider: %s", provider.Type, provider.Name)
+	}
+
+	// Check if required tools are available before claiming the job
+	if provider.Type == "Nmap" {
+		if !scanpkg.IsNmapAvailable(provider.ClientId) {
+			// Don't claim this job if nmap is not available
+			return false, nil
+		}
 	}
 
 	// For scans in Asset mode, check if the target asset matches this instance's hostname
