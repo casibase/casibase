@@ -334,10 +334,28 @@ class AssetListPage extends BaseListPage {
         ...this.getColumnSearchProps("state"),
       },
       {
+        title: i18next.t("asset:Properties"),
+        dataIndex: "properties",
+        key: "properties",
+        width: "200px",
+        render: (text, record, index) => {
+          return (
+            <JsonCodeMirrorPopover
+              text={text}
+              placement="right"
+              maxDisplayLength={30}
+              width="600px"
+              height="500px"
+            />
+          );
+        },
+      },
+      {
         title: i18next.t("scan:Scans"),
         dataIndex: "name",
         key: "scans",
         width: "200px",
+        fixed: "right",
         render: (text, record, index) => {
           const scans = this.getScansForAsset(record.name);
           if (scans.length === 0) {
@@ -357,24 +375,6 @@ class AssetListPage extends BaseListPage {
                 );
               })}
             </div>
-          );
-        },
-      },
-      {
-        title: i18next.t("asset:Properties"),
-        dataIndex: "properties",
-        key: "properties",
-        width: "200px",
-        fixed: "right",
-        render: (text, record, index) => {
-          return (
-            <JsonCodeMirrorPopover
-              text={text}
-              placement="right"
-              maxDisplayLength={30}
-              width="600px"
-              height="500px"
-            />
           );
         },
       },
