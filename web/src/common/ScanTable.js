@@ -19,6 +19,8 @@ import i18next from "i18next";
 import * as Setting from "../Setting";
 import {ScanResultPopover} from "./ScanResultPopover";
 
+const DEFAULT_PROVIDER_TYPE = "Nmap";
+
 class ScanTable extends React.Component {
   getProviderLogo(provider) {
     if (!provider) {
@@ -99,7 +101,7 @@ class ScanTable extends React.Component {
             <Link to={`/providers/${text}`}>
               <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
                 {logo && <img src={logo} alt={text} style={{width: "20px", height: "20px"}} />}
-                <span>{record.resultSummary || text}</span>
+                <span>{text}</span>
               </div>
             </Link>
           );
@@ -131,10 +133,36 @@ class ScanTable extends React.Component {
           if (!text || text === "") {
             return i18next.t("general:None");
           }
+          const provider = providers.find(p => p.name === record.provider);
+          const logo = this.getProviderLogo(provider);
+          const resultSummary = record.resultSummary;
+          // Derive provider type from provider object, not from scan record
+          const providerType = provider?.type || DEFAULT_PROVIDER_TYPE;
+
+          // Display result summary with provider icon, with popover for full result
+          if (resultSummary) {
+            return (
+              <ScanResultPopover
+                result={text}
+                providerType={providerType}
+                placement="left"
+                maxDisplayLength={30}
+                width="1000px"
+                height="600px"
+              >
+                <div style={{display: "flex", alignItems: "center", gap: "8px", cursor: "pointer"}}>
+                  {logo && <img src={logo} alt="provider" style={{width: "20px", height: "20px"}} />}
+                  <span>{resultSummary}</span>
+                </div>
+              </ScanResultPopover>
+            );
+          }
+
+          // Fallback to original popover if no result summary
           return (
             <ScanResultPopover
               result={text}
-              providerType={record.providerType || "Nmap"}
+              providerType={providerType}
             />
           );
         },

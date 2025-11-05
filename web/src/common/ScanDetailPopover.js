@@ -50,9 +50,11 @@ export function ScanDetailPopover({
 
   const tagColor = SCAN_STATE_COLORS[scan.state] || "processing";
 
-  // Get provider logo
+  // Get provider type and logo from provider object
   let providerLogo = null;
+  let providerType = scan.providerType || DEFAULT_PROVIDER_TYPE;
   if (provider) {
+    providerType = provider.type || DEFAULT_PROVIDER_TYPE;
     const otherProviderInfo = Setting.getOtherProviderInfo();
     if (otherProviderInfo[provider.category] && otherProviderInfo[provider.category][provider.type]) {
       providerLogo = otherProviderInfo[provider.category][provider.type].logo;
@@ -79,7 +81,7 @@ export function ScanDetailPopover({
           </div>
           <ScanResultRenderer
             scanResult={scan.result}
-            providerType={scan.providerType || DEFAULT_PROVIDER_TYPE}
+            providerType={providerType}
             minHeight="200px"
           />
         </div>

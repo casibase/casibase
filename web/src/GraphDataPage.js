@@ -18,6 +18,7 @@ import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as AssetBackend from "./backend/AssetBackend";
 import * as ScanBackend from "./backend/ScanBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
 import {transformAssetsToGraph} from "./utils/assetToGraph";
 import {ScanDetailPopover} from "./common/ScanDetailPopover";
 
@@ -58,6 +59,7 @@ class GraphDataPage extends React.Component {
       nodeScans: [],
       loadingScans: false,
       allScans: [],
+      allProviders: [],
     };
     this.chartRef = React.createRef();
     this.containerRef = React.createRef();
@@ -67,6 +69,7 @@ class GraphDataPage extends React.Component {
   componentDidMount() {
     this.loadGraphData();
     this.loadAllScans();
+    this.loadAllProviders();
   }
 
   loadAllScans = async() => {
@@ -82,6 +85,28 @@ class GraphDataPage extends React.Component {
         // Ignore errors
       }
     }
+  };
+
+  loadAllProviders = async() => {
+    const category = this.props.category || "Default";
+    if (category === "Assets") {
+      try {
+        const owner = this.props.owner || this.props.account?.name || "admin";
+        const res = await ProviderBackend.getProviders(owner);
+        if (res.status === "ok") {
+          this.setState({allProviders: res.data || []});
+        }
+      } catch (error) {
+        // Ignore errors
+      }
+    }
+  };
+
+  getProviderForScan = (scanProviderName) => {
+    if (!scanProviderName) {
+      return null;
+    }
+    return this.state.allProviders.find(provider => provider.name === scanProviderName);
   };
 
   componentDidUpdate(prevProps) {
@@ -787,13 +812,17 @@ class GraphDataPage extends React.Component {
                   </div>
                 ) : this.state.nodeScans.length > 0 ? (
                   <div style={{display: "flex", flexWrap: "wrap", gap: "4px"}}>
-                    {this.state.nodeScans.map((scan) => (
-                      <ScanDetailPopover
-                        key={scan.name}
-                        scan={scan}
-                        placement="left"
-                      />
-                    ))}
+                    {this.state.nodeScans.map((scan) => {
+                      const provider = this.getProviderForScan(scan.provider);
+                      return (
+                        <ScanDetailPopover
+                          key={scan.name}
+                          scan={scan}
+                          provider={provider}
+                          placement="left"
+                        />
+                      );
+                    })}
                   </div>
                 ) : (
                   <div style={{textAlign: "center", padding: "20px", color: "#999"}}>
