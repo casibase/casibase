@@ -133,6 +133,7 @@ class ScanListPage extends BaseListPage {
       command: "",
       rawResult: "",
       result: "",
+      resultSummary: "",
     };
   }
 
@@ -327,6 +328,29 @@ class ScanListPage extends BaseListPage {
         fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, record, index) => {
           const providerType = this.getProviderType(record.provider);
+          const logo = this.getProviderLogo(record.provider);
+          const resultSummary = record.resultSummary;
+
+          // Display result summary with provider icon, with popover for full result
+          if (resultSummary) {
+            return (
+              <ScanResultPopover
+                result={text}
+                providerType={providerType}
+                placement="left"
+                maxDisplayLength={30}
+                width="1000px"
+                height="600px"
+              >
+                <div style={{display: "flex", alignItems: "center", gap: "8px", cursor: "pointer"}}>
+                  {logo && <img src={logo} alt="provider" style={{width: "20px", height: "20px"}} />}
+                  <span>{resultSummary}</span>
+                </div>
+              </ScanResultPopover>
+            );
+          }
+
+          // Fallback to original popover if no result summary
           return (
             <ScanResultPopover
               result={text}

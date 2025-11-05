@@ -164,6 +164,7 @@ func executeScanJob(scan *Scan, hostname string) {
 		scan.State = "Completed"
 		scan.RawResult = scanResult.RawResult
 		scan.Result = scanResult.Result
+		scan.ResultSummary = scanResult.ResultSummary
 		scan.ErrorText = ""
 	}
 

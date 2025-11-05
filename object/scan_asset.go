@@ -23,8 +23,9 @@ import (
 
 // ScanResult represents the result of a scan operation
 type ScanResult struct {
-	RawResult string `json:"rawResult"`
-	Result    string `json:"result"`
+	RawResult     string `json:"rawResult"`
+	Result        string `json:"result"`
+	ResultSummary string `json:"resultSummary"`
 }
 
 // ScanAsset performs a scan on an asset
@@ -54,6 +55,7 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 		scanObj.ErrorText = ""
 		scanObj.RawResult = ""
 		scanObj.Result = ""
+		scanObj.ResultSummary = ""
 		_, err = UpdateScan(scanParam, scanObj)
 		if err != nil {
 			return nil, err
@@ -133,7 +135,10 @@ func executeScan(provider, scanParam, targetMode, target, asset, command, owner 
 		return nil, err
 	}
 
-	return &ScanResult{RawResult: rawResult, Result: result}, nil
+	// Generate result summary
+	resultSummary := scanProvider.GetResultSummary(result)
+
+	return &ScanResult{RawResult: rawResult, Result: result, ResultSummary: resultSummary}, nil
 }
 
 // GetPendingScans returns all scans with state "Pending"

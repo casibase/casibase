@@ -28,16 +28,17 @@ type Scan struct {
 	UpdatedTime string `xorm:"varchar(100)" json:"updatedTime"`
 	DisplayName string `xorm:"varchar(200)" json:"displayName"`
 
-	TargetMode string `xorm:"varchar(100)" json:"targetMode"`
-	Target     string `xorm:"varchar(100)" json:"target"`
-	Asset      string `xorm:"varchar(100)" json:"asset"`
-	Provider   string `xorm:"varchar(100)" json:"provider"`
-	State      string `xorm:"varchar(100)" json:"state"`
-	Runner     string `xorm:"varchar(100)" json:"runner"`
-	ErrorText  string `xorm:"mediumtext" json:"errorText"`
-	Command    string `xorm:"varchar(500)" json:"command"`
-	RawResult  string `xorm:"mediumtext" json:"rawResult"`
-	Result     string `xorm:"mediumtext" json:"result"`
+	TargetMode    string `xorm:"varchar(100)" json:"targetMode"`
+	Target        string `xorm:"varchar(100)" json:"target"`
+	Asset         string `xorm:"varchar(100)" json:"asset"`
+	Provider      string `xorm:"varchar(100)" json:"provider"`
+	State         string `xorm:"varchar(100)" json:"state"`
+	Runner        string `xorm:"varchar(100)" json:"runner"`
+	ErrorText     string `xorm:"mediumtext" json:"errorText"`
+	Command       string `xorm:"varchar(500)" json:"command"`
+	RawResult     string `xorm:"mediumtext" json:"rawResult"`
+	Result        string `xorm:"mediumtext" json:"result"`
+	ResultSummary string `xorm:"varchar(500)" json:"resultSummary"`
 }
 
 func GetScanCount(owner, field, value string) (int64, error) {
