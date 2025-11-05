@@ -144,7 +144,7 @@ func (p *OsPatchScanProvider) runPowerShell(command string) (string, error) {
 	// Wrap the command to set output encoding to UTF-8
 	// This ensures proper handling of non-ASCII characters on systems with different default encodings
 	wrappedCommand := fmt.Sprintf("[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; %s", command)
-	
+
 	cmd := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", wrappedCommand)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
