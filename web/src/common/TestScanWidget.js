@@ -369,8 +369,8 @@ class TestScanWidget extends React.Component {
             // For provider edit page (sync execution), show results immediately
             Setting.showMessage("success", i18next.t("general:Successfully executed"));
 
-            // res.data now contains {rawResult, result, resultSummary}
-            const {rawResult = "", result = "", resultSummary = ""} = res.data;
+            // res.data now contains {rawResult, result, resultSummary, runner}
+            const {rawResult = "", result = "", resultSummary = "", runner = ""} = res.data;
 
             this.setState({
               scanResult: result,
@@ -383,6 +383,7 @@ class TestScanWidget extends React.Component {
               this.props.onUpdateProvider("configText", result);
               this.props.onUpdateProvider("rawText", rawResult);
               this.props.onUpdateProvider("resultSummary", resultSummary);
+              this.props.onUpdateProvider("runner", runner);
             }
           }
         } else {
