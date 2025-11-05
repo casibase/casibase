@@ -28,6 +28,7 @@ import (
 // @Description get all scans
 // @Param   pageSize     query    string  false        "The size of each page"
 // @Param   p     query    string  false        "The number of the page"
+// @Param   asset     query    string  false        "Filter by asset name"
 // @Success 200 {object} object.Scan The Response object
 // @router /get-scans [get]
 func (c *ApiController) GetScans() {
@@ -38,6 +39,18 @@ func (c *ApiController) GetScans() {
 	value := c.Input().Get("value")
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
+	asset := c.Input().Get("asset")
+
+	// If asset filter is provided, use GetScansByAsset
+	if asset != "" {
+		scans, err := object.GetScansByAsset(owner, asset)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		c.ResponseOk(scans)
+		return
+	}
 
 	if limit == "" || page == "" {
 		scans, err := object.GetScans(owner)

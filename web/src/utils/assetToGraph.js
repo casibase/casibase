@@ -102,6 +102,7 @@ export function transformAssetsToGraph(assets) {
       icon: typeIcons[assetType] || `${StaticBaseUrl}/img/cloud/default.png`,
       // Additional asset metadata
       displayName: asset.displayName,
+      assetName: asset.name,
       assetId: asset.id,
       assetType: asset.type,
       region: asset.region,
