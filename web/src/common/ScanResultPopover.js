@@ -45,8 +45,15 @@ export function ScanResultPopover({
   if (!children) {
     try {
       const resultObj = JSON.parse(result);
-      // Try to create a meaningful preview
-      if (resultObj.summary) {
+      // Try to create a meaningful preview based on provider type
+      if (providerType === "OS Patch") {
+        // OS Patch result is an array of patches
+        if (Array.isArray(resultObj)) {
+          previewText = `${resultObj.length} patch(es) found`;
+        } else {
+          previewText = "Patch data available";
+        }
+      } else if (resultObj.summary) {
         previewText = resultObj.summary;
       } else if (resultObj.hosts && Array.isArray(resultObj.hosts)) {
         previewText = `${resultObj.hosts.length} host(s) scanned`;

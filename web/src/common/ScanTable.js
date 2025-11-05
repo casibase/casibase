@@ -99,7 +99,7 @@ class ScanTable extends React.Component {
             <Link to={`/providers/${text}`}>
               <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
                 {logo && <img src={logo} alt={text} style={{width: "20px", height: "20px"}} />}
-                <span>{record.resultSummary || text}</span>
+                <span>{text}</span>
               </div>
             </Link>
           );
@@ -131,6 +131,30 @@ class ScanTable extends React.Component {
           if (!text || text === "") {
             return i18next.t("general:None");
           }
+          const provider = providers.find(p => p.name === record.provider);
+          const logo = this.getProviderLogo(provider);
+          const resultSummary = record.resultSummary;
+
+          // Display result summary with provider icon, with popover for full result
+          if (resultSummary) {
+            return (
+              <ScanResultPopover
+                result={text}
+                providerType={record.providerType || "Nmap"}
+                placement="left"
+                maxDisplayLength={30}
+                width="1000px"
+                height="600px"
+              >
+                <div style={{display: "flex", alignItems: "center", gap: "8px", cursor: "pointer"}}>
+                  {logo && <img src={logo} alt="provider" style={{width: "20px", height: "20px"}} />}
+                  <span>{resultSummary}</span>
+                </div>
+              </ScanResultPopover>
+            );
+          }
+
+          // Fallback to original popover if no result summary
           return (
             <ScanResultPopover
               result={text}
