@@ -94,7 +94,7 @@ class ScanTable extends React.Component {
           }
           const provider = providers.find(p => p.name === text);
           const logo = this.getProviderLogo(provider);
-          
+
           return (
             <Link to={`/providers/${text}`}>
               <div style={{display: "flex", alignItems: "center", gap: "8px"}}>

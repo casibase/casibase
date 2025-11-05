@@ -576,6 +576,8 @@ func (p *OsPatchScanProvider) GetResultSummary(result string) string {
 	var patches []*WindowsPatch
 	err := json.Unmarshal([]byte(result), &patches)
 	if err != nil {
+		// Log the error but return empty string instead of failing
+		fmt.Printf("%s [OS Patch] Unable to parse patch results for summary: %v\n", getHostnamePrefix(), err)
 		return ""
 	}
 

@@ -255,6 +255,8 @@ func (p *NmapScanProvider) GetResultSummary(result string) string {
 	var scanResult NmapScanResult
 	err := json.Unmarshal([]byte(result), &scanResult)
 	if err != nil {
+		// Log the error but return empty string instead of failing
+		fmt.Printf("%s [Nmap] Unable to parse scan results for summary: %v\n", getHostnamePrefix(), err)
 		return ""
 	}
 
