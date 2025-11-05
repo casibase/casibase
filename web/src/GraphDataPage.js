@@ -443,7 +443,17 @@ class GraphDataPage extends React.Component {
       const isSelected = this.state.selectedNode && this.state.selectedNode.id === node.id;
       const scanCount = node.assetName ? this.getScanCountForAsset(node.assetName) : 0;
       const nodeName = node.name || node.id;
-      const labelText = scanCount > 0 ? `${nodeName} (${scanCount})` : nodeName;
+
+      // Create label with badge for scan count
+      let labelFormatter;
+      if (scanCount > 0) {
+        // Add badge indicator for nodes with scans - positioned next to name with spacing
+        labelFormatter = sanitizedIcon ?
+          `{name|${nodeName}} {badge|${scanCount}}` :
+          `${nodeName} {badge|${scanCount}}`;
+      } else {
+        labelFormatter = sanitizedIcon ? `{name|${nodeName}}` : nodeName;
+      }
 
       return {
         id: node.id,
@@ -466,7 +476,7 @@ class GraphDataPage extends React.Component {
         label: {
           show: true,
           position: "bottom",
-          formatter: sanitizedIcon ? `{name|${labelText}}` : labelText,
+          formatter: labelFormatter,
           rich: {
             name: {
               fontSize: 12,
@@ -474,6 +484,17 @@ class GraphDataPage extends React.Component {
               backgroundColor: isSelected ? themeColor : "transparent",
               padding: isSelected ? [4, 8, 4, 8] : [2, 0, 0, 0],
               borderRadius: isSelected ? 4 : 0,
+            },
+            badge: {
+              fontSize: 11,
+              fontWeight: "bold",
+              color: "#ffffff",
+              backgroundColor: "#ff4d4f", // Red background like iOS notification badge
+              padding: [3, 7, 3, 7],
+              borderRadius: 12,
+              align: "center",
+              height: 18,
+              lineHeight: 18,
             },
           },
         },
