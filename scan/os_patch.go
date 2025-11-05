@@ -180,32 +180,38 @@ func extractJSON(output string) string {
 	return strings.Join(jsonLines, "\n")
 }
 
-// ListPatches returns all Windows OS patches that need to be updated
+// ListPatches returns all Windows OS patches from local cache
+// This uses Get-WUHistory API for faster scanning without online searches
 func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
-	// Use PSWindowsUpdate to get available updates
+	// Use Get-WUHistory to get update information from local cache only
+	// This is much faster than Get-WindowsUpdate which searches online
 	psCommand := `
 		$ErrorActionPreference = 'Stop';
 		$ProgressPreference = 'Continue';
 		Import-Module PSWindowsUpdate -Force;
-		$updates = Get-WindowsUpdate -MicrosoftUpdate;
+		$updates = Get-WUHistory -Last 100;
 		if ($null -eq $updates) {
 			Write-Output '[]'
 		} else {
 			$updates | Select-Object @{Name='Title';Expression={$_.Title}},
-				@{Name='KB';Expression={$_.KBArticleIDs -join ','}},
-				@{Name='Size';Expression={[math]::Round($_.MaxDownloadSize/1MB, 2).ToString() + ' MB'}},
+				@{Name='KB';Expression={
+					if ($_.Title -match 'KB[0-9]+') { $matches[0] }
+					else { '' }
+				}},
+				@{Name='Size';Expression={'N/A'}},
 				@{Name='Status';Expression={
-					if ($_.IsDownloaded) { 'Downloaded' }
-					elseif ($_.IsInstalled) { 'Installed' }
-					else { 'Available' }
+					if ($_.Result -eq 'Succeeded') { 'Installed' }
+					elseif ($_.Result -eq 'Failed') { 'Failed' }
+					elseif ($_.Result -eq 'InProgress') { 'Installing' }
+					else { $_.Result }
 				}},
 				@{Name='Description';Expression={$_.Description}},
-				@{Name='RebootRequired';Expression={$_.RebootRequired}},
-				@{Name='Categories';Expression={($_.Categories | ForEach-Object { $_.Name }) -join ','}},
-				@{Name='IsInstalled';Expression={$_.IsInstalled}},
-				@{Name='IsDownloaded';Expression={$_.IsDownloaded}},
-				@{Name='IsMandatory';Expression={$_.IsMandatory}},
-				@{Name='AutoSelectOnWebSites';Expression={$_.AutoSelectOnWebSites}} | 
+				@{Name='RebootRequired';Expression={$false}},
+				@{Name='Categories';Expression={''}},
+				@{Name='IsInstalled';Expression={$_.Result -eq 'Succeeded'}},
+				@{Name='IsDownloaded';Expression={$true}},
+				@{Name='IsMandatory';Expression={$false}},
+				@{Name='AutoSelectOnWebSites';Expression={$false}} | 
 			ConvertTo-Json
 		}
 	`
@@ -448,26 +454,25 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSec
 
 			var psCommand string
 			if isKB {
-				// Check progress by KB number
+				// Check progress by KB number using only local cache (Get-WUHistory)
 				psCommand = fmt.Sprintf(`
 				$ErrorActionPreference = 'Stop';
 				$ProgressPreference = 'Continue';
 				Import-Module PSWindowsUpdate -Force;
 				$history = Get-WUHistory -ErrorAction SilentlyContinue | Where-Object { $_.Title -match 'KB%s' } | Select-Object -First 1;
-				$installing = Get-WindowsUpdate -KBArticleID '%s' -MicrosoftUpdate;
 				
 				if ($history -and $history.Result -eq 'Succeeded') {
 					@{Status='Completed'; PercentComplete=100; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
 				} elseif ($history -and $history.Result -eq 'Failed') {
 					@{Status='Failed'; PercentComplete=0; IsComplete=$true; RebootRequired=$false; Error=$history.Title} | ConvertTo-Json
-				} elseif ($installing) {
+				} elseif ($history -and $history.Result -eq 'InProgress') {
 					@{Status='Installing'; PercentComplete=50; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
 				} else {
-					@{Status='NotFound'; PercentComplete=0; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
+					@{Status='Installing'; PercentComplete=25; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
 				}
-			`, sanitizedPatchId, sanitizedPatchId)
+			`, sanitizedPatchId)
 			} else {
-				// Check progress by title - escape for PowerShell
+				// Check progress by title using only local cache (Get-WUHistory)
 				// Escape single quotes, backticks, and dollar signs which are special in PowerShell
 				escapedTitle := strings.ReplaceAll(sanitizedPatchId, "`", "``")
 				escapedTitle = strings.ReplaceAll(escapedTitle, "'", "''")
@@ -477,18 +482,17 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSec
 				$ProgressPreference = 'Continue';
 				Import-Module PSWindowsUpdate -Force;
 				$history = Get-WUHistory -ErrorAction SilentlyContinue | Where-Object { $_.Title -eq '%s' } | Select-Object -First 1;
-				$installing = Get-WindowsUpdate -MicrosoftUpdate | Where-Object { $_.Title -eq '%s' };
 				
 				if ($history -and $history.Result -eq 'Succeeded') {
 					@{Status='Completed'; PercentComplete=100; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
 				} elseif ($history -and $history.Result -eq 'Failed') {
 					@{Status='Failed'; PercentComplete=0; IsComplete=$true; RebootRequired=$false; Error=$history.Title} | ConvertTo-Json
-				} elseif ($installing) {
+				} elseif ($history -and $history.Result -eq 'InProgress') {
 					@{Status='Installing'; PercentComplete=50; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
 				} else {
-					@{Status='NotFound'; PercentComplete=0; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
+					@{Status='Installing'; PercentComplete=25; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
 				}
-			`, escapedTitle, escapedTitle)
+			`, escapedTitle)
 			}
 
 			fmt.Printf("%s [OS Patch] Executing PowerShell command:\n%s\n", getHostnamePrefix(), psCommand)
