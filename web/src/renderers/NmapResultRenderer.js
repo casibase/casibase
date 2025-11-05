@@ -163,9 +163,6 @@ class NmapResultRenderer extends React.Component {
       <div>
         <Card size="small" style={{marginBottom: "16px"}}>
           <Descriptions column={1} size="small">
-            <Descriptions.Item label={i18next.t("scan:Command")}>
-              <Text code>{scanResult.command}</Text>
-            </Descriptions.Item>
             {scanResult.startTime && (
               <Descriptions.Item label={i18next.t("scan:Start Time")}>
                 {scanResult.startTime}
