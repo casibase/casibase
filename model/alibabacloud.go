@@ -15,10 +15,15 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"io"
+	"net/http"
+	"strings"
 
 	"github.com/casibase/casibase/i18n"
+	"github.com/casibase/dashscopego"
+	"github.com/casibase/dashscopego/qwen"
 )
 
 type AlibabacloudModelProvider struct {
@@ -81,8 +86,8 @@ func (p *AlibabacloudModelProvider) calculatePrice(modelResult *ModelResult, lan
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
-		inputPrice := getPrice(modelResult.TotalTokenCount, priceItem[0])
-		outputPrice := getPrice(modelResult.TotalTokenCount, priceItem[1])
+		inputPrice := getPrice(modelResult.PromptTokenCount, priceItem[0])
+		outputPrice := getPrice(modelResult.ResponseTokenCount, priceItem[1])
 		price = inputPrice + outputPrice
 	} else {
 		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
@@ -94,21 +99,102 @@ func (p *AlibabacloudModelProvider) calculatePrice(modelResult *ModelResult, lan
 }
 
 func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
-	const BaseUrl = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-	// Create a new LocalModelProvider to handle the request
-	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
+	ctx := context.Background()
+	flusher, ok := writer.(http.Flusher)
+	if !ok {
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
+	}
+
+	cli := dashscopego.NewTongyiClient(p.subType, p.apiKey)
+
+	if strings.HasPrefix(question, "$CasibaseDryRun$") {
+		modelResult, err := getDefaultModelResult(p.subType, question, "")
+		if err != nil {
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))
+		}
+		if getContextLength(p.subType) > modelResult.TotalTokenCount {
+			return modelResult, nil
+		} else {
+			return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
+		}
+	}
+
+	params := qwen.DefaultParameters().
+		SetTemperature(float64(p.temperature)).
+		SetTopP(float64(p.topP)).
+		SetIncrementalOutput(true)
+
+	if agentInfo != nil && agentInfo.AgentClients != nil && agentInfo.AgentClients.WebSearchEnabled {
+		params.SetEnableSearch(true)
+		params.SetSearchOptions(&qwen.SearchOptions{
+			ForcedSearch:   true,
+			EnableSource:   true,
+			EnableCitation: true,
+		})
+	}
+
+	streamCallbackFn := func(ctx context.Context, typ string, chunk []byte) error {
+		data := string(chunk)
+		if data == "" {
+			return nil
+		}
+		return flushDataThink(data, typ, writer, lang)
+	}
+
+	req := &qwen.Request[*qwen.TextContent]{
+		Model: p.subType,
+		Input: qwen.Input[*qwen.TextContent]{
+			Messages: buildMessages(question, history, prompt, knowledgeMessages),
+		},
+		Parameters:  params,
+		StreamingFn: streamCallbackFn,
+	}
+
+	resp, err := cli.CreateCompletion(ctx, req)
 	if err != nil {
 		return nil, err
 	}
 
-	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo, lang)
-	if err != nil {
-		return nil, err
+	modelResult := &ModelResult{
+		PromptTokenCount:   resp.Usage.InputTokens,
+		ResponseTokenCount: resp.Usage.OutputTokens,
+		TotalTokenCount:    resp.Usage.TotalTokens,
 	}
 
 	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}
+
+	flusher.Flush()
 	return modelResult, nil
+}
+
+func buildMessages(question string, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) []qwen.Message[*qwen.TextContent] {
+	systemMessages := getSystemMessages(prompt, knowledgeMessages)
+	var messages []qwen.Message[*qwen.TextContent]
+	for _, systemMsg := range systemMessages {
+		content := &qwen.TextContent{Text: systemMsg.Text}
+		messages = append(messages, qwen.Message[*qwen.TextContent]{
+			Role:    "system",
+			Content: content,
+		})
+	}
+
+	for i := len(history) - 1; i >= 0; i-- {
+		historyMessage := history[i]
+		content := &qwen.TextContent{Text: historyMessage.Text}
+		messages = append(messages, qwen.Message[*qwen.TextContent]{
+			Role:    "user",
+			Content: content,
+		})
+	}
+
+	questionContent := &qwen.TextContent{Text: question}
+	messages = append(messages, qwen.Message[*qwen.TextContent]{
+		Role:    "user",
+		Content: questionContent,
+	})
+
+	return messages
 }
