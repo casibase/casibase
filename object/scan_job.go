@@ -101,7 +101,7 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 			}
 			// Check if the asset name matches the current hostname
 			// This ensures only the Casibase instance on the target machine picks up the job
-			if asset.Name != hostname {
+			if asset.DisplayName != hostname {
 				return false, nil
 			}
 		} else if scan.TargetMode == "Manual Input" && scan.Target != "" {
