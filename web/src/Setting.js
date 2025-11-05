@@ -1136,7 +1136,7 @@ export function isProviderSupportWebSearch(provider) {
     return false;
   }
 
-  return ["OpenAI"].includes(provider.type);
+  return ["OpenAI", "Alibaba Cloud"].includes(provider.type);
 }
 
 export function getProviderTypeOptions(category) {
