@@ -151,7 +151,7 @@ class ScanEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("scan:Result Summary"), i18next.t("scan:Result Summary - Tooltip"))} :
+            {Setting.getLabel(i18next.t("scan:Result summary"), i18next.t("scan:Result summary - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.scan.resultSummary} disabled />

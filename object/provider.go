@@ -76,11 +76,12 @@ type Provider struct {
 	TestContent    string `xorm:"varchar(100)" json:"testContent"`
 
 	// New fields for unified scan widget (for Scan category providers)
-	TargetMode string `xorm:"varchar(100)" json:"targetMode"` // "Manual Input" or "Asset"
-	Target     string `xorm:"varchar(500)" json:"target"`     // Manual input target (IP address or network range)
-	Asset      string `xorm:"varchar(200)" json:"asset"`      // Selected asset for scan
-	Runner     string `xorm:"varchar(100)" json:"runner"`     // Hostname about who runs the scan job
-	ErrorText  string `xorm:"mediumtext" json:"errorText"`    // Error message for the job execution
+	TargetMode    string `xorm:"varchar(100)" json:"targetMode"` // "Manual Input" or "Asset"
+	Target        string `xorm:"varchar(500)" json:"target"`     // Manual input target (IP address or network range)
+	Asset         string `xorm:"varchar(200)" json:"asset"`      // Selected asset for scan
+	Runner        string `xorm:"varchar(100)" json:"runner"`     // Hostname about who runs the scan job
+	ErrorText     string `xorm:"mediumtext" json:"errorText"`    // Error message for the job execution
+	ResultSummary string `xorm:"varchar(500)" json:"resultSummary"` // Short summary of scan results
 
 	IsDefault  bool   `json:"isDefault"`
 	IsRemote   bool   `json:"isRemote"`

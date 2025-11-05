@@ -265,12 +265,13 @@ class TestScanWidget extends React.Component {
       scanRawResult: "",
     });
 
-    // Clear results, runner, errorText, and set state to "Created" in parent component
+    // Clear results, runner, errorText, resultSummary, and set state to "Created" in parent component
     if (this.props.onUpdateProvider) {
       this.props.onUpdateProvider("configText", "");
       this.props.onUpdateProvider("rawText", "");
       this.props.onUpdateProvider("runner", "");
       this.props.onUpdateProvider("errorText", "");
+      this.props.onUpdateProvider("resultSummary", "");
       this.props.onUpdateProvider("state", "Created");
     }
     if (this.props.onUpdateScan) {
@@ -278,6 +279,7 @@ class TestScanWidget extends React.Component {
       this.props.onUpdateScan("rawResult", "");
       this.props.onUpdateScan("runner", "");
       this.props.onUpdateScan("errorText", "");
+      this.props.onUpdateScan("resultSummary", "");
       this.props.onUpdateScan("state", "Created");
     }
 
@@ -292,18 +294,20 @@ class TestScanWidget extends React.Component {
       scanRawResult: "",
     });
 
-    // Clear results, runner, and errorText in parent component
+    // Clear results, runner, errorText, and resultSummary in parent component
     if (this.props.onUpdateProvider) {
       this.props.onUpdateProvider("configText", "");
       this.props.onUpdateProvider("rawText", "");
       this.props.onUpdateProvider("runner", "");
       this.props.onUpdateProvider("errorText", "");
+      this.props.onUpdateProvider("resultSummary", "");
     }
     if (this.props.onUpdateScan) {
       this.props.onUpdateScan("result", "");
       this.props.onUpdateScan("rawResult", "");
       this.props.onUpdateScan("runner", "");
       this.props.onUpdateScan("errorText", "");
+      this.props.onUpdateScan("resultSummary", "");
     }
 
     // Determine parameters based on context
@@ -365,8 +369,8 @@ class TestScanWidget extends React.Component {
             // For provider edit page (sync execution), show results immediately
             Setting.showMessage("success", i18next.t("general:Successfully executed"));
 
-            // res.data now contains {rawResult, result}
-            const {rawResult = "", result = ""} = res.data;
+            // res.data now contains {rawResult, result, resultSummary}
+            const {rawResult = "", result = "", resultSummary = ""} = res.data;
 
             this.setState({
               scanResult: result,
@@ -378,6 +382,7 @@ class TestScanWidget extends React.Component {
             if (this.props.onUpdateProvider) {
               this.props.onUpdateProvider("configText", result);
               this.props.onUpdateProvider("rawText", rawResult);
+              this.props.onUpdateProvider("resultSummary", resultSummary);
             }
           }
         } else {
@@ -475,6 +480,7 @@ class TestScanWidget extends React.Component {
               if (this.props.onUpdateScan) {
                 this.props.onUpdateScan("result", scanData.result || "");
                 this.props.onUpdateScan("rawResult", scanData.rawResult || "");
+                this.props.onUpdateScan("resultSummary", scanData.resultSummary || "");
                 this.props.onUpdateScan("state", scanData.state);
                 this.props.onUpdateScan("runner", scanData.runner || "");
                 this.props.onUpdateScan("errorText", scanData.errorText || "");
