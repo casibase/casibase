@@ -261,11 +261,11 @@ class OsPatchResultRenderer extends React.Component {
 
               // Parse the result as InstallProgress
               let progress = {
-                patchId: this.state.installProgress.patchId,
+                patchId: this.state.installProgress?.patchId || "",
                 status: scanData.state,
                 percentComplete: scanData.state === "Completed" ? 100 : 0,
                 isComplete: true,
-                startTime: this.state.installProgress.startTime,
+                startTime: this.state.installProgress?.startTime || scanData.createdTime,
                 endTime: scanData.updatedTime,
                 error: scanData.errorText || "",
               };
