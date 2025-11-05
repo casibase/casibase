@@ -1140,6 +1140,36 @@ class ProviderEditPage extends React.Component {
             </Row>
           ) : null
         }
+        {
+          this.state.provider.category === "Scan" ? (
+            <>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("scan:Result summary"), i18next.t("scan:Result summary - Tooltip"))} :
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.resultSummary} disabled />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("scan:Runner"), i18next.t("scan:Runner - Tooltip"))} :
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.runner} disabled />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("scan:Error"), i18next.t("scan:Error - Tooltip"))} :
+                </Col>
+                <Col span={22} >
+                  <Input.TextArea value={this.state.provider.errorText} disabled rows={4} />
+                </Col>
+              </Row>
+            </>
+          ) : null
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {this.getProviderUrlLabel(this.state.provider)} :
@@ -1182,36 +1212,6 @@ class ProviderEditPage extends React.Component {
             ].map(item => Setting.getOption(item.label, item.value))} />
           </Col>
         </Row>
-        {
-          this.state.provider.category === "Scan" ? (
-            <>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("scan:Result summary"), i18next.t("scan:Result summary - Tooltip"))} :
-                </Col>
-                <Col span={22} >
-                  <Input value={this.state.provider.resultSummary} disabled />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("scan:Runner"), i18next.t("scan:Runner - Tooltip"))} :
-                </Col>
-                <Col span={22} >
-                  <Input value={this.state.provider.runner} disabled />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("scan:Error"), i18next.t("scan:Error - Tooltip"))} :
-                </Col>
-                <Col span={22} >
-                  <Input.TextArea value={this.state.provider.errorText} disabled rows={4} />
-                </Col>
-              </Row>
-            </>
-          ) : null
-        }
       </Card>
     );
   }
