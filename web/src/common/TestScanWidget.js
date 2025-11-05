@@ -258,6 +258,32 @@ class TestScanWidget extends React.Component {
     }
   }
 
+  clearScan() {
+    // Clear all results, runner, errorText, and set state to "Created"
+    this.setState({
+      scanResult: "",
+      scanRawResult: "",
+    });
+
+    // Clear results, runner, errorText, and set state to "Created" in parent component
+    if (this.props.onUpdateProvider) {
+      this.props.onUpdateProvider("configText", "");
+      this.props.onUpdateProvider("rawText", "");
+      this.props.onUpdateProvider("runner", "");
+      this.props.onUpdateProvider("errorText", "");
+      this.props.onUpdateProvider("state", "Created");
+    }
+    if (this.props.onUpdateScan) {
+      this.props.onUpdateScan("result", "");
+      this.props.onUpdateScan("rawResult", "");
+      this.props.onUpdateScan("runner", "");
+      this.props.onUpdateScan("errorText", "");
+      this.props.onUpdateScan("state", "Created");
+    }
+
+    Setting.showMessage("success", i18next.t("general:Successfully cleared"));
+  }
+
   testScan() {
     // Clear previous results first
     this.setState({
@@ -769,6 +795,13 @@ class TestScanWidget extends React.Component {
               onClick={() => this.testScan()}
             >
               {i18next.t("asset:Scan")}
+            </Button>
+            <Button
+              disabled={isRemote}
+              style={{marginBottom: "10px", marginLeft: "10px"}}
+              onClick={() => this.clearScan()}
+            >
+              {i18next.t("general:Clear")}
             </Button>
           </Col>
         </Row>
