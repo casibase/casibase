@@ -94,7 +94,7 @@ func (p *OsPatchScanProvider) Scan(target string, command string) (string, error
 	}
 
 	if err != nil {
-		return "", fmt.Errorf("%s %w", getHostnamePrefix(), err)
+		return "", fmt.Errorf("%s: %w", getHostnamePrefix(), err)
 	}
 
 	// Convert patches to JSON string
