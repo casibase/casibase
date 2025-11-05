@@ -139,8 +139,13 @@ func validatePatchId(patchId string) (string, bool, error) {
 }
 
 // runPowerShell executes a PowerShell command and returns the output
+// The output encoding is forced to UTF-8 to handle non-English Windows systems correctly
 func (p *OsPatchScanProvider) runPowerShell(command string) (string, error) {
-	cmd := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", command)
+	// Wrap the command to set output encoding to UTF-8
+	// This ensures proper handling of non-ASCII characters on systems with different default encodings
+	wrappedCommand := fmt.Sprintf("[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; %s", command)
+	
+	cmd := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", wrappedCommand)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
