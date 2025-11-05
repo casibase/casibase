@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"runtime"
 	"testing"
-	"time"
 )
 
 // TestListAvailablePatches tests listing available and installed Windows updates
@@ -95,7 +94,7 @@ func TestListAvailablePatches(t *testing.T) {
 	}
 }
 
-// TestInstallPatch tests installing a patch and monitoring its progress
+// TestInstallPatch tests installing a patch
 func TestInstallPatch(t *testing.T) {
 	// Skip test if not running on Windows
 	if runtime.GOOS != "windows" {
@@ -125,47 +124,21 @@ func TestInstallPatch(t *testing.T) {
 	}
 	t.Logf("Testing installation of patch: %s (PatchId: %s)", testPatch.Title, patchId)
 
-	// Start monitoring in a goroutine
-	progressChan, err := provider.MonitorInstallProgress(patchId, 2)
+	// Install the patch
+	progress, err := provider.InstallPatch(patchId)
 	if err != nil {
-		t.Fatalf("Failed to start monitoring: %v", err)
+		t.Fatalf("Installation error: %v", err)
 	}
 
-	// Start installation
-	go func() {
-		progress, err := provider.InstallPatch(patchId)
-		if err != nil {
-			t.Logf("Installation error: %v", err)
-		} else {
-			t.Logf("Installation completed with status: %s", progress.Status)
-		}
-	}()
+	t.Logf("Installation completed with status: %s", progress.Status)
+	t.Logf("Progress: PatchId: %s - Status: %s, Percent: %d%%, Complete: %v, RebootRequired: %v",
+		progress.PatchId, progress.Status, progress.PercentComplete, progress.IsComplete, progress.RebootRequired)
 
-	// Monitor progress with timeout
-	timeout := time.After(5 * time.Minute)
-	for {
-		select {
-		case progress, ok := <-progressChan:
-			if !ok {
-				t.Log("Progress monitoring completed")
-				return
-			}
-			t.Logf("Progress: PatchId: %s - Status: %s, Percent: %d%%, Complete: %v, RebootRequired: %v",
-				progress.PatchId, progress.Status, progress.PercentComplete, progress.IsComplete, progress.RebootRequired)
-
-			if progress.Error != "" {
-				t.Logf("  Error: %s", progress.Error)
-			}
-
-			if progress.IsComplete {
-				t.Logf("Installation completed. StartTime: %s, EndTime: %s", progress.StartTime, progress.EndTime)
-				return
-			}
-
-		case <-timeout:
-			t.Fatal("Test timeout: installation took too long")
-		}
+	if progress.Error != "" {
+		t.Logf("  Error: %s", progress.Error)
 	}
+
+	t.Logf("Installation completed. StartTime: %s, EndTime: %s", progress.StartTime, progress.EndTime)
 }
 
 // Example demonstrates how to use the OsPatchScanProvider to list available patches
