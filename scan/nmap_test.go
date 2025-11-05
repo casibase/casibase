@@ -27,17 +27,17 @@ func TestIsNmapAvailable(t *testing.T) {
 	available := IsNmapAvailable("")
 	t.Logf("Nmap available in system PATH: %v", available)
 
-	// Test with a non-empty clientId - should always return true
+	// Test with a valid nmap path (if nmap is installed)
+	// This will only pass if nmap is actually installed at /usr/bin/nmap
 	available = IsNmapAvailable("/usr/bin/nmap")
-	if !available {
-		t.Error("Expected IsNmapAvailable to return true when clientId is provided")
-	}
+	t.Logf("Nmap available at /usr/bin/nmap: %v", available)
 
-	// Test with another non-empty clientId
-	available = IsNmapAvailable("/custom/path/to/nmap")
-	if !available {
-		t.Error("Expected IsNmapAvailable to return true when clientId is provided")
+	// Test with an invalid path - should return false
+	available = IsNmapAvailable("/nonexistent/path/to/nmap")
+	if available {
+		t.Error("Expected IsNmapAvailable to return false for invalid path")
 	}
+	t.Logf("Invalid path correctly returns false")
 }
 
 // TestNewNmapScanProvider tests creating a new NmapScanProvider
