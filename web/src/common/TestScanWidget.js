@@ -203,7 +203,7 @@ class TestScanWidget extends React.Component {
 
       const defaultCommand = this.props.scan.command || providerTypeDefault;
       const targetMode = this.props.scan.targetMode || (this.props.scan.asset ? "Asset" : "Manual Input");
-      const scanTarget = this.props.scan.target || DEFAULT_SCAN_TARGET;
+      const scanTarget = targetMode === "Asset" ? "" : (this.props.scan.target || DEFAULT_SCAN_TARGET);
 
       this.setState({
         targetMode: targetMode,
@@ -221,11 +221,11 @@ class TestScanWidget extends React.Component {
     if (this.props.provider && this.props.provider.category === "Scan") {
       const providerTypeDefault = this.getDefaultCommand(this.props.provider.type);
       const defaultCommand = this.props.provider.text || providerTypeDefault;
-      const defaultTarget = this.props.provider.target || this.props.provider.network || DEFAULT_SCAN_TARGET;
       const targetMode = this.props.provider.targetMode || "Manual Input";
+      const defaultTarget = targetMode === "Asset" ? "" : (this.props.provider.target || this.props.provider.network || DEFAULT_SCAN_TARGET);
 
       // Set default values if empty
-      if (!this.props.provider.target && !this.props.provider.network) {
+      if (!this.props.provider.target && !this.props.provider.network && targetMode !== "Asset") {
         this.props.provider.target = defaultTarget;
         if (this.props.onUpdateProvider) {
           this.props.onUpdateProvider("target", defaultTarget);
@@ -545,7 +545,7 @@ class TestScanWidget extends React.Component {
     if (this.props.onUpdateProvider) {
       // For ProviderEditPage - save to Provider fields
       this.props.onUpdateProvider("targetMode", this.state.targetMode);
-      this.props.onUpdateProvider("target", this.state.scanTarget);
+      this.props.onUpdateProvider("target", this.state.targetMode === "Asset" ? "" : this.state.scanTarget);
       this.props.onUpdateProvider("asset", this.state.selectedAsset);
       this.props.onUpdateProvider("text", this.state.scanCommand); // Command is saved to text field
     }
@@ -553,7 +553,7 @@ class TestScanWidget extends React.Component {
     if (this.props.onUpdateScan) {
       // For ScanEditPage - save to Scan fields
       this.props.onUpdateScan("targetMode", this.state.targetMode);
-      this.props.onUpdateScan("target", this.state.scanTarget);
+      this.props.onUpdateScan("target", this.state.targetMode === "Asset" ? "" : this.state.scanTarget);
       this.props.onUpdateScan("asset", this.state.selectedAsset);
       this.props.onUpdateScan("command", this.state.scanCommand);
     }
