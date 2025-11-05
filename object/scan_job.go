@@ -138,7 +138,9 @@ func executeScanJob(scan *Scan, hostname string) {
 			logs.Error("executeScanJob() recovered from panic in scan job %s: %v", scan.GetId(), r)
 			// Update scan state to failed
 			scan.State = "Failed"
-			scan.Result = fmt.Sprintf("Error: %v", r)
+			errorMsg := fmt.Sprintf("Error: %v", r)
+			scan.Result = errorMsg
+			scan.ErrorText = errorMsg
 			scan.UpdatedTime = util.GetCurrentTime()
 			_, err := UpdateScan(scan.GetId(), scan)
 			if err != nil {
@@ -155,11 +157,14 @@ func executeScanJob(scan *Scan, hostname string) {
 	scan.UpdatedTime = util.GetCurrentTime()
 	if err != nil {
 		scan.State = "Failed"
-		scan.Result = fmt.Sprintf("Error: %v", err)
+		errorMsg := fmt.Sprintf("Error: %v", err)
+		scan.Result = errorMsg
+		scan.ErrorText = errorMsg
 	} else {
 		scan.State = "Completed"
 		scan.RawResult = scanResult.RawResult
 		scan.Result = scanResult.Result
+		scan.ErrorText = ""
 	}
 
 	_, err = UpdateScan(scan.GetId(), scan)

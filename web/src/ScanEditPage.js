@@ -149,6 +149,22 @@ class ScanEditPage extends React.Component {
             <Input value={this.state.scan.state} disabled />
           </Col>
         </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("scan:Runner"), i18next.t("scan:Runner - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.scan.runner} disabled />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("scan:Error"), i18next.t("scan:Error - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input.TextArea value={this.state.scan.errorText} disabled rows={4} />
+          </Col>
+        </Row>
       </Card>
     );
   }

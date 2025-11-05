@@ -34,6 +34,7 @@ type Scan struct {
 	Provider   string `xorm:"varchar(100)" json:"provider"`
 	State      string `xorm:"varchar(100)" json:"state"`
 	Runner     string `xorm:"varchar(100)" json:"runner"`
+	ErrorText  string `xorm:"mediumtext" json:"errorText"`
 	Command    string `xorm:"varchar(500)" json:"command"`
 	RawResult  string `xorm:"mediumtext" json:"rawResult"`
 	Result     string `xorm:"mediumtext" json:"result"`

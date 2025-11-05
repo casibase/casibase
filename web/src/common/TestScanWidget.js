@@ -266,14 +266,18 @@ class TestScanWidget extends React.Component {
       scanRawResult: "",
     });
 
-    // Clear results in parent component
+    // Clear results, runner, and errorText in parent component
     if (this.props.onUpdateProvider) {
       this.props.onUpdateProvider("configText", "");
       this.props.onUpdateProvider("rawText", "");
+      this.props.onUpdateProvider("runner", "");
+      this.props.onUpdateProvider("errorText", "");
     }
     if (this.props.onUpdateScan) {
       this.props.onUpdateScan("result", "");
       this.props.onUpdateScan("rawResult", "");
+      this.props.onUpdateScan("runner", "");
+      this.props.onUpdateScan("errorText", "");
     }
 
     // Determine parameters based on context
@@ -446,6 +450,8 @@ class TestScanWidget extends React.Component {
                 this.props.onUpdateScan("result", scanData.result || "");
                 this.props.onUpdateScan("rawResult", scanData.rawResult || "");
                 this.props.onUpdateScan("state", scanData.state);
+                this.props.onUpdateScan("runner", scanData.runner || "");
+                this.props.onUpdateScan("errorText", scanData.errorText || "");
               }
 
               if (scanData.state === "Completed") {
