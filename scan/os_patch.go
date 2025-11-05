@@ -80,10 +80,10 @@ func (p *OsPatchScanProvider) Scan(target string, command string) (string, error
 		installedPatches, err2 := p.ListInstalledPatches()
 
 		if err1 != nil {
-			return "", fmt.Errorf("failed to list available patches: %v", err1)
+			return "", fmt.Errorf("%s failed to list available patches: %v", getHostnamePrefix(), err1)
 		}
 		if err2 != nil {
-			return "", fmt.Errorf("failed to list installed patches: %v", err2)
+			return "", fmt.Errorf("%s failed to list installed patches: %v", getHostnamePrefix(), err2)
 		}
 
 		// Combine patches: available first, then installed
@@ -94,13 +94,13 @@ func (p *OsPatchScanProvider) Scan(target string, command string) (string, error
 	}
 
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%s %w", getHostnamePrefix(), err)
 	}
 
 	// Convert patches to JSON string
 	result, err := json.Marshal(patches)
 	if err != nil {
-		return "", fmt.Errorf("failed to marshal patches: %v", err)
+		return "", fmt.Errorf("%s failed to marshal patches: %v", getHostnamePrefix(), err)
 	}
 
 	return string(result), nil
@@ -118,7 +118,7 @@ func (p *OsPatchScanProvider) ParseResult(rawResult string) (string, error) {
 // Returns the sanitized patch ID and whether it's a KB number
 func validatePatchId(patchId string) (string, bool, error) {
 	if patchId == "" {
-		return "", false, fmt.Errorf("patch ID is required")
+		return "", false, fmt.Errorf("%s patch ID is required", getHostnamePrefix())
 	}
 
 	// Check if it looks like a KB number (digits or KB followed by digits)
@@ -132,7 +132,7 @@ func validatePatchId(patchId string) (string, bool, error) {
 	// Allow alphanumeric, spaces, and common punctuation (but not path separators or command injection chars)
 	titlePattern := regexp.MustCompile(`^[a-zA-Z0-9\s\-_.,()]+$`)
 	if !titlePattern.MatchString(patchId) {
-		return "", false, fmt.Errorf("invalid patch ID format: contains unsafe characters")
+		return "", false, fmt.Errorf("%s invalid patch ID format: contains unsafe characters", getHostnamePrefix())
 	}
 
 	return patchId, false, nil
@@ -147,7 +147,7 @@ func (p *OsPatchScanProvider) runPowerShell(command string) (string, error) {
 
 	err := cmd.Run()
 	if err != nil {
-		return "", fmt.Errorf("powershell command failed: %v, stderr: %s", err, stderr.String())
+		return "", fmt.Errorf("%s powershell command failed: %v, stderr: %s", getHostnamePrefix(), err, stderr.String())
 	}
 
 	return stdout.String(), nil
@@ -213,7 +213,7 @@ func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
 	fmt.Printf("%s [OS Patch] Executing PowerShell command:\n%s\n", getHostnamePrefix(), psCommand)
 	output, err := p.runPowerShell(psCommand)
 	if err != nil {
-		return nil, fmt.Errorf("failed to list patches: %v", err)
+		return nil, fmt.Errorf("%s failed to list patches: %v", getHostnamePrefix(), err)
 	}
 	fmt.Printf("%s [OS Patch] PowerShell output:\n%s\n", getHostnamePrefix(), output)
 
@@ -239,7 +239,7 @@ func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse patches JSON: %v", err)
+		return nil, fmt.Errorf("%s failed to parse patches JSON: %v", getHostnamePrefix(), err)
 	}
 
 	return patches, nil
@@ -284,7 +284,7 @@ func (p *OsPatchScanProvider) ListInstalledPatches() ([]*WindowsPatch, error) {
 	fmt.Printf("%s [OS Patch] Executing PowerShell command:\n%s\n", getHostnamePrefix(), psCommand)
 	output, err := p.runPowerShell(psCommand)
 	if err != nil {
-		return nil, fmt.Errorf("failed to list installed patches: %v", err)
+		return nil, fmt.Errorf("%s failed to list installed patches: %v", getHostnamePrefix(), err)
 	}
 	fmt.Printf("%s [OS Patch] PowerShell output:\n%s\n", getHostnamePrefix(), output)
 
@@ -310,7 +310,7 @@ func (p *OsPatchScanProvider) ListInstalledPatches() ([]*WindowsPatch, error) {
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse installed patches JSON: %v", err)
+		return nil, fmt.Errorf("%s failed to parse installed patches JSON: %v", getHostnamePrefix(), err)
 	}
 
 	return patches, nil
@@ -383,7 +383,7 @@ func (p *OsPatchScanProvider) InstallPatch(patchId string) (*InstallProgress, er
 		progress.Error = err.Error()
 		progress.IsComplete = true
 		progress.EndTime = time.Now().Format(time.RFC3339)
-		return progress, fmt.Errorf("failed to install patch: %v", err)
+		return progress, fmt.Errorf("%s failed to install patch: %v", getHostnamePrefix(), err)
 	}
 	fmt.Printf("%s [OS Patch] PowerShell output:\n%s\n", getHostnamePrefix(), output)
 
@@ -394,10 +394,10 @@ func (p *OsPatchScanProvider) InstallPatch(patchId string) (*InstallProgress, er
 		err = json.Unmarshal([]byte(output), &result)
 		if err != nil {
 			progress.Status = "Failed"
-			progress.Error = fmt.Sprintf("failed to parse result: %v", err)
+			progress.Error = fmt.Sprintf("%s failed to parse result: %v", getHostnamePrefix(), err)
 			progress.IsComplete = true
 			progress.EndTime = time.Now().Format(time.RFC3339)
-			return progress, fmt.Errorf("failed to parse install result: %v", err)
+			return progress, fmt.Errorf("%s failed to parse install result: %v", getHostnamePrefix(), err)
 		}
 
 		if status, ok := result["Status"].(string); ok {
