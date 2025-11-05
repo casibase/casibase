@@ -64,7 +64,7 @@ func NewNmapScanProvider(clientId string) (*NmapScanProvider, error) {
 	if provider.nmapPath == "" {
 		nmapPath, err := exec.LookPath("nmap")
 		if err != nil {
-			return nil, fmt.Errorf("nmap not found in system PATH, please specify the path to nmap binary")
+			return nil, fmt.Errorf("%s nmap not found in system PATH, please specify the path to nmap binary", getHostnamePrefix())
 		}
 		provider.nmapPath = nmapPath
 	}
@@ -74,13 +74,13 @@ func NewNmapScanProvider(clientId string) (*NmapScanProvider, error) {
 
 func (p *NmapScanProvider) Scan(target string, command string) (string, error) {
 	if target == "" {
-		return "", fmt.Errorf("scan target cannot be empty")
+		return "", fmt.Errorf("%s scan target cannot be empty", getHostnamePrefix())
 	}
 
 	// Validate target to prevent command injection
 	target = strings.TrimSpace(target)
 	if strings.ContainsAny(target, ";&|`$") {
-		return "", fmt.Errorf("invalid characters in scan target")
+		return "", fmt.Errorf("%s invalid characters in scan target", getHostnamePrefix())
 	}
 
 	// Use default command if empty
@@ -91,7 +91,7 @@ func (p *NmapScanProvider) Scan(target string, command string) (string, error) {
 	// Validate command to prevent command injection
 	command = strings.TrimSpace(command)
 	if strings.ContainsAny(command, ";&|`$") {
-		return "", fmt.Errorf("invalid characters in scan command")
+		return "", fmt.Errorf("%s invalid characters in scan command", getHostnamePrefix())
 	}
 
 	// Replace %s with target, or append target if no %s placeholder
@@ -116,7 +116,7 @@ func (p *NmapScanProvider) Scan(target string, command string) (string, error) {
 	fmt.Printf("%s [Nmap] Executing nmap scan: %s %s\n", getHostnamePrefix(), p.nmapPath, strings.Join(args, " "))
 	err := cmd.Run()
 	if err != nil {
-		return "", fmt.Errorf("nmap scan failed: %v, stderr: %s", err, stderr.String())
+		return "", fmt.Errorf("%s nmap scan failed: %v, stderr: %s", getHostnamePrefix(), err, stderr.String())
 	}
 	fmt.Printf("%s [Nmap] Scan completed successfully\n", getHostnamePrefix())
 
@@ -136,7 +136,7 @@ func (p *NmapScanProvider) ParseResult(rawResult string) (string, error) {
 	// Convert to JSON
 	jsonBytes, err := json.Marshal(parsedResult)
 	if err != nil {
-		return "", fmt.Errorf("failed to marshal nmap result: %v", err)
+		return "", fmt.Errorf("%s failed to marshal nmap result: %v", getHostnamePrefix(), err)
 	}
 	fmt.Printf("%s [Nmap] Successfully parsed %d host(s)\n", getHostnamePrefix(), len(parsedResult.Hosts))
 
