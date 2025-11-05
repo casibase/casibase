@@ -122,11 +122,12 @@ func (c *ApiController) InstallPatch() {
 // MonitorPatchProgress
 // @Title MonitorPatchProgress
 // @Tag Patch API
-// @Description monitor the installation progress of an OS patch
+// @Description (Deprecated) Monitor the installation progress of an OS patch. Use get-scan API instead for async patch installations.
 // @Param   provider query string true "The provider ID (owner/name)"
 // @Param   patchId query string true "The patch ID (KB number or title) being installed"
 // @Success 200 {object} controllers.Response The Response object with InstallProgress
 // @router /monitor-patch-progress [get]
+// @Deprecated This API is deprecated. For async patch installations, use the get-scan API to poll the scan state instead.
 func (c *ApiController) MonitorPatchProgress() {
 	providerID := c.Input().Get("provider")
 	patchId := c.Input().Get("patchId")
