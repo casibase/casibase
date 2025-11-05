@@ -136,13 +136,15 @@ class ScanTable extends React.Component {
           const provider = providers.find(p => p.name === record.provider);
           const logo = this.getProviderLogo(provider);
           const resultSummary = record.resultSummary;
+          // Derive provider type from provider object, not from scan record
+          const providerType = provider?.type || DEFAULT_PROVIDER_TYPE;
 
           // Display result summary with provider icon, with popover for full result
           if (resultSummary) {
             return (
               <ScanResultPopover
                 result={text}
-                providerType={record.providerType || DEFAULT_PROVIDER_TYPE}
+                providerType={providerType}
                 placement="left"
                 maxDisplayLength={30}
                 width="1000px"
@@ -160,7 +162,7 @@ class ScanTable extends React.Component {
           return (
             <ScanResultPopover
               result={text}
-              providerType={record.providerType || DEFAULT_PROVIDER_TYPE}
+              providerType={providerType}
             />
           );
         },
