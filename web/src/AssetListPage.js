@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Select, Table, Tooltip} from "antd";
+import {Button, Popover, Select, Table, Tag, Tooltip} from "antd";
 import {ReloadOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -25,7 +25,7 @@ import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import {JsonCodeMirrorPopover} from "./common/JsonCodeMirrorWidget";
-import ScanTable from "./common/ScanTable";
+import {ScanResultRenderer} from "./common/ScanResultRenderer";
 
 const {Option} = Select;
 
@@ -37,13 +37,14 @@ class AssetListPage extends BaseListPage {
       providers: [],
       selectedProvider: "",
       scanning: false,
-      expandedRowScans: {},
-      loadingExpandedScans: {},
+      allScans: [],
+      loadingScans: false,
     };
   }
 
   componentDidMount() {
     this.getProviders();
+    this.loadAllScans();
   }
 
   getProviders() {
@@ -163,35 +164,32 @@ class AssetListPage extends BaseListPage {
     return typeIcons[typeName] || null;
   }
 
-  loadScansForAsset(assetName) {
-    if (this.state.expandedRowScans[assetName]) {
-      return; // Already loaded
-    }
-
-    this.setState((prevState) => ({
-      loadingExpandedScans: {...prevState.loadingExpandedScans, [assetName]: true},
-    }));
-
-    ScanBackend.getScansByAsset("admin", assetName)
+  loadAllScans() {
+    this.setState({loadingScans: true});
+    ScanBackend.getScans("admin")
       .then((res) => {
         if (res.status === "ok") {
-          this.setState((prevState) => ({
-            expandedRowScans: {...prevState.expandedRowScans, [assetName]: res.data || []},
-            loadingExpandedScans: {...prevState.loadingExpandedScans, [assetName]: false},
-          }));
+          this.setState({
+            allScans: res.data || [],
+            loadingScans: false,
+          });
         } else {
-          this.setState((prevState) => ({
-            expandedRowScans: {...prevState.expandedRowScans, [assetName]: []},
-            loadingExpandedScans: {...prevState.loadingExpandedScans, [assetName]: false},
-          }));
+          this.setState({
+            allScans: [],
+            loadingScans: false,
+          });
         }
       })
       .catch(() => {
-        this.setState((prevState) => ({
-          expandedRowScans: {...prevState.expandedRowScans, [assetName]: []},
-          loadingExpandedScans: {...prevState.loadingExpandedScans, [assetName]: false},
-        }));
+        this.setState({
+          allScans: [],
+          loadingScans: false,
+        });
       });
+  }
+
+  getScansForAsset(assetName) {
+    return this.state.allScans.filter(scan => scan.asset === assetName);
   }
 
   renderTable(assets) {
@@ -316,6 +314,67 @@ class AssetListPage extends BaseListPage {
         ...this.getColumnSearchProps("state"),
       },
       {
+        title: i18next.t("scan:Scans"),
+        dataIndex: "name",
+        key: "scans",
+        width: "200px",
+        render: (text, record, index) => {
+          const scans = this.getScansForAsset(record.name);
+          if (scans.length === 0) {
+            return <span style={{color: "#999"}}>-</span>;
+          }
+          return (
+            <div style={{display: "flex", flexWrap: "wrap", gap: "4px"}}>
+              {scans.map((scan) => {
+                const tagColor = scan.state === "Completed" ? "success" : scan.state === "Failed" ? "error" : "processing";
+                const popoverContent = (
+                  <div style={{width: "500px", maxHeight: "400px", overflow: "auto"}}>
+                    <div style={{marginBottom: "12px"}}>
+                      <div style={{fontSize: "16px", fontWeight: "bold", marginBottom: "8px"}}>
+                        {scan.displayName || scan.name}
+                      </div>
+                      <div style={{fontSize: "12px", color: "#666"}}>
+                        <div><strong>{i18next.t("general:Name")}:</strong> {scan.name}</div>
+                        <div><strong>{i18next.t("general:Created time")}:</strong> {Setting.getFormattedDate(scan.createdTime)}</div>
+                        <div><strong>{i18next.t("scan:Provider")}:</strong> {scan.provider || "-"}</div>
+                        <div><strong>{i18next.t("general:State")}:</strong> {scan.state}</div>
+                      </div>
+                    </div>
+                    {scan.result && (
+                      <div>
+                        <div style={{fontSize: "14px", fontWeight: "bold", marginBottom: "8px"}}>
+                          {i18next.t("scan:Result")}:
+                        </div>
+                        <ScanResultRenderer
+                          scanResult={scan.result}
+                          providerType={scan.providerType || "Nmap"}
+                          minHeight="200px"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+                return (
+                  <Popover
+                    key={scan.name}
+                    content={popoverContent}
+                    title={null}
+                    trigger="hover"
+                    placement="left"
+                  >
+                    <Link to={`/scans/${scan.name}`}>
+                      <Tag color={tagColor} style={{cursor: "pointer", margin: "2px"}}>
+                        {scan.displayName || scan.name}
+                      </Tag>
+                    </Link>
+                  </Popover>
+                );
+              })}
+            </div>
+          );
+        },
+      },
+      {
         title: i18next.t("asset:Properties"),
         dataIndex: "properties",
         key: "properties",
@@ -402,35 +461,6 @@ class AssetListPage extends BaseListPage {
           )}
           loading={this.state.loading}
           onChange={this.handleTableChange}
-          expandable={{
-            expandedRowRender: (record) => {
-              const assetName = record.name;
-              const scans = this.state.expandedRowScans[assetName] || [];
-              const isLoading = this.state.loadingExpandedScans[assetName] || false;
-
-              return (
-                <div style={{margin: "16px 0"}}>
-                  <h4 style={{marginBottom: "12px"}}>{i18next.t("scan:Related Scans")}</h4>
-                  {isLoading ? (
-                    <div style={{textAlign: "center", padding: "20px"}}>
-                      {i18next.t("general:Loading")}...
-                    </div>
-                  ) : scans.length > 0 ? (
-                    <ScanTable scans={scans} showAsset={false} compact={true} />
-                  ) : (
-                    <div style={{textAlign: "center", padding: "20px", color: "#999"}}>
-                      {i18next.t("scan:No scans found for this asset")}
-                    </div>
-                  )}
-                </div>
-              );
-            },
-            onExpand: (expanded, record) => {
-              if (expanded) {
-                this.loadScansForAsset(record.name);
-              }
-            },
-          }}
         />
       </div>
     );

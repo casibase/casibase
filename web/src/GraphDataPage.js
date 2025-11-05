@@ -14,12 +14,14 @@
 
 import React from "react";
 import ReactEcharts from "echarts-for-react";
+import {Link} from "react-router-dom";
+import {Popover, Tag} from "antd";
 import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as AssetBackend from "./backend/AssetBackend";
 import * as ScanBackend from "./backend/ScanBackend";
 import {transformAssetsToGraph} from "./utils/assetToGraph";
-import ScanTable from "./common/ScanTable";
+import {ScanResultRenderer} from "./common/ScanResultRenderer";
 
 class GraphErrorBoundary extends React.Component {
   constructor(props) {
@@ -57,6 +59,7 @@ class GraphDataPage extends React.Component {
       selectedNode: null,
       nodeScans: [],
       loadingScans: false,
+      allScans: [],
     };
     this.chartRef = React.createRef();
     this.containerRef = React.createRef();
@@ -65,7 +68,23 @@ class GraphDataPage extends React.Component {
 
   componentDidMount() {
     this.loadGraphData();
+    this.loadAllScans();
   }
+
+  loadAllScans = async() => {
+    const category = this.props.category || "Default";
+    if (category === "Assets") {
+      try {
+        const owner = this.props.owner || this.props.account?.name || "admin";
+        const res = await ScanBackend.getScans(owner);
+        if (res.status === "ok") {
+          this.setState({allScans: res.data || []});
+        }
+      } catch (error) {
+        // Ignore errors
+      }
+    }
+  };
 
   componentDidUpdate(prevProps) {
     if (this.props.graphText !== prevProps.graphText ||
@@ -424,6 +443,10 @@ class GraphDataPage extends React.Component {
     const echartNodes = processedNodes.map(node => {
       const sanitizedIcon = sanitizeIconUrl(node.icon);
       const isSelected = this.state.selectedNode && this.state.selectedNode.id === node.id;
+      const scanCount = node.assetName ? this.getScanCountForAsset(node.assetName) : 0;
+      const nodeName = node.name || node.id;
+      const labelText = scanCount > 0 ? `${nodeName} (${scanCount})` : nodeName;
+      
       return {
         id: node.id,
         name: node.name || node.id,
@@ -445,7 +468,7 @@ class GraphDataPage extends React.Component {
         label: {
           show: true,
           position: "bottom",
-          formatter: sanitizedIcon ? `{name|${node.name || node.id}}` : "{b}",
+          formatter: sanitizedIcon ? `{name|${labelText}}` : labelText,
           rich: {
             name: {
               fontSize: 12,
@@ -559,34 +582,24 @@ class GraphDataPage extends React.Component {
     }
   };
 
-  loadNodeScans = async(node) => {
+  loadNodeScans = (node) => {
     // Only load scans if this is an asset node
     if (node.assetName) {
-      try {
-        const owner = this.props.owner || this.props.account?.name || "admin";
-        const res = await ScanBackend.getScansByAsset(owner, node.assetName);
-        if (res.status === "ok") {
-          this.setState({
-            nodeScans: res.data || [],
-            loadingScans: false,
-          });
-        } else {
-          this.setState({
-            nodeScans: [],
-            loadingScans: false,
-          });
-        }
-      } catch (error) {
-        this.setState({
-          nodeScans: [],
-          loadingScans: false,
-        });
-      }
+      // Filter scans from cached data
+      const nodeScans = this.state.allScans.filter(scan => scan.asset === node.assetName);
+      this.setState({
+        nodeScans: nodeScans,
+        loadingScans: false,
+      });
     } else {
       this.setState({
         loadingScans: false,
       });
     }
+  };
+
+  getScanCountForAsset = (assetName) => {
+    return this.state.allScans.filter(scan => scan.asset === assetName).length;
   };
 
   handleMouseOver = (params) => {
@@ -754,8 +767,52 @@ class GraphDataPage extends React.Component {
                     {i18next.t("general:Loading")}...
                   </div>
                 ) : this.state.nodeScans.length > 0 ? (
-                  <div style={{fontSize: "12px", maxHeight: "250px", overflow: "auto"}}>
-                    <ScanTable scans={this.state.nodeScans} compact={true} showAsset={false} />
+                  <div style={{display: "flex", flexWrap: "wrap", gap: "4px"}}>
+                    {this.state.nodeScans.map((scan) => {
+                      const tagColor = scan.state === "Completed" ? "success" : scan.state === "Failed" ? "error" : "processing";
+                      const popoverContent = (
+                        <div style={{width: "500px", maxHeight: "400px", overflow: "auto"}}>
+                          <div style={{marginBottom: "12px"}}>
+                            <div style={{fontSize: "16px", fontWeight: "bold", marginBottom: "8px"}}>
+                              {scan.displayName || scan.name}
+                            </div>
+                            <div style={{fontSize: "12px", color: "#666"}}>
+                              <div><strong>{i18next.t("general:Name")}:</strong> {scan.name}</div>
+                              <div><strong>{i18next.t("general:Created time")}:</strong> {Setting.getFormattedDate(scan.createdTime)}</div>
+                              <div><strong>{i18next.t("scan:Provider")}:</strong> {scan.provider || "-"}</div>
+                              <div><strong>{i18next.t("general:State")}:</strong> {scan.state}</div>
+                            </div>
+                          </div>
+                          {scan.result && (
+                            <div>
+                              <div style={{fontSize: "14px", fontWeight: "bold", marginBottom: "8px"}}>
+                                {i18next.t("scan:Result")}:
+                              </div>
+                              <ScanResultRenderer
+                                scanResult={scan.result}
+                                providerType={scan.providerType || "Nmap"}
+                                minHeight="200px"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      );
+                      return (
+                        <Popover
+                          key={scan.name}
+                          content={popoverContent}
+                          title={null}
+                          trigger="hover"
+                          placement="left"
+                        >
+                          <Link to={`/scans/${scan.name}`}>
+                            <Tag color={tagColor} style={{cursor: "pointer", margin: "2px"}}>
+                              {scan.displayName || scan.name}
+                            </Tag>
+                          </Link>
+                        </Popover>
+                      );
+                    })}
                   </div>
                 ) : (
                   <div style={{textAlign: "center", padding: "20px", color: "#999"}}>
