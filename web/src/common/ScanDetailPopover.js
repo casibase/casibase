@@ -19,12 +19,22 @@ import i18next from "i18next";
 import * as Setting from "../Setting";
 import {ScanResultRenderer} from "./ScanResultRenderer";
 
+const DEFAULT_PROVIDER_TYPE = "Nmap";
+
+const SCAN_STATE_COLORS = {
+  "Completed": "success",
+  "Failed": "error",
+};
+
 /**
  * ScanDetailPopover - A popover component that displays scan details with metadata
  * @param {object} scan - The scan object containing all scan information
  * @param {string} placement - Popover placement (default: "left")
  * @param {string} width - Width of the popover (default: "800px")
  * @param {string} height - Max height of the popover (default: "600px")
+ * @returns {React.Element|null} A popover component with scan details or null if no scan provided
+ * @example
+ * <ScanDetailPopover scan={scanObject} placement="left" />
  */
 export function ScanDetailPopover({
   scan,
@@ -36,7 +46,7 @@ export function ScanDetailPopover({
     return null;
   }
 
-  const tagColor = scan.state === "Completed" ? "success" : scan.state === "Failed" ? "error" : "processing";
+  const tagColor = SCAN_STATE_COLORS[scan.state] || "processing";
 
   const popoverContent = (
     <div style={{width: width, maxHeight: height, overflow: "auto"}}>
@@ -58,7 +68,7 @@ export function ScanDetailPopover({
           </div>
           <ScanResultRenderer
             scanResult={scan.result}
-            providerType={scan.providerType || "Nmap"}
+            providerType={scan.providerType || DEFAULT_PROVIDER_TYPE}
             minHeight="200px"
           />
         </div>
