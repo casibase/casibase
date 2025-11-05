@@ -446,7 +446,7 @@ class GraphDataPage extends React.Component {
       const scanCount = node.assetName ? this.getScanCountForAsset(node.assetName) : 0;
       const nodeName = node.name || node.id;
       const labelText = scanCount > 0 ? `${nodeName} (${scanCount})` : nodeName;
-      
+
       return {
         id: node.id,
         name: node.name || node.id,
