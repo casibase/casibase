@@ -185,39 +185,46 @@ func extractJSON(output string) string {
 	return strings.Join(jsonLines, "\n")
 }
 
-// ListPatches returns all Windows OS patches from local cache
-// This uses Get-WUHistory API for faster scanning without online searches
+// ListPatches returns all available Windows OS patches that can be installed
+// This queries the Windows Update online service to find patches that are available but not yet installed
 func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
-	// Use Get-WUHistory to get update information from local cache only
-	// This is much faster than Get-WindowsUpdate which searches online
-	// Returns up to 500 most recent updates from Windows Update history
+	// Use Get-WindowsUpdate to query Windows Update online service for available patches
+	// This searches for updates that are available to install but not yet installed
 	psCommand := `
 		$ErrorActionPreference = 'Stop';
 		$ProgressPreference = 'Continue';
 		Import-Module PSWindowsUpdate -Force;
-		$updates = Get-WUHistory -Last 500;
+		$updates = Get-WindowsUpdate -MicrosoftUpdate;
 		if ($null -eq $updates) {
 			Write-Output '[]'
 		} else {
 			$updates | Select-Object @{Name='Title';Expression={$_.Title}},
 				@{Name='KB';Expression={
-					if ($_.Title -match 'KB[0-9]+') { $matches[0] }
+					if ($_.KB -ne $null) { "KB$($_.KB)" }
+					elseif ($_.Title -match 'KB[0-9]+') { $matches[0] }
 					else { '' }
 				}},
-				@{Name='Size';Expression={'N/A'}},
+				@{Name='Size';Expression={
+					if ($_.Size -gt 0) { 
+						$sizeMB = [math]::Round($_.Size / 1MB, 2)
+						"$sizeMB MB"
+					}
+					else { 'N/A' }
+				}},
 				@{Name='Status';Expression={
-					if ($_.Result -eq 'Succeeded') { 'Installed' }
-					elseif ($_.Result -eq 'Failed') { 'Failed' }
-					elseif ($_.Result -eq 'InProgress') { 'Installing' }
-					else { $_.Result }
+					if ($_.IsDownloaded) { 'Downloaded' }
+					else { 'Available' }
 				}},
 				@{Name='Description';Expression={$_.Description}},
-				@{Name='RebootRequired';Expression={$false}},
-				@{Name='Categories';Expression={''}},
-				@{Name='IsInstalled';Expression={$_.Result -eq 'Succeeded'}},
-				@{Name='IsDownloaded';Expression={$true}},
-				@{Name='IsMandatory';Expression={$false}},
-				@{Name='AutoSelectOnWebSites';Expression={$false}} | 
+				@{Name='RebootRequired';Expression={$_.RebootRequired}},
+				@{Name='Categories';Expression={
+					if ($_.Categories -ne $null) { ($_.Categories | ForEach-Object { $_.Name }) -join ', ' }
+					else { '' }
+				}},
+				@{Name='IsInstalled';Expression={$false}},
+				@{Name='IsDownloaded';Expression={$_.IsDownloaded}},
+				@{Name='IsMandatory';Expression={$_.IsMandatory}},
+				@{Name='AutoSelectOnWebSites';Expression={$_.AutoSelectOnWebSites}} | 
 			ConvertTo-Json
 		}
 	`
@@ -258,9 +265,10 @@ func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
 }
 
 // ListInstalledPatches returns all recently installed patches, including those with "Pending restart" status
+// This uses Get-WUHistory to read from local cache without querying Windows Update online service
 func (p *OsPatchScanProvider) ListInstalledPatches() ([]*WindowsPatch, error) {
-	// Use PSWindowsUpdate to get update history
-	// Based on reference implementation that uses proper error handling
+	// Use Get-WUHistory to get update history from local cache
+	// This is fast and does not require querying Windows Update online service
 	psCommand := `
 		$ErrorActionPreference = 'Stop';
 		$ProgressPreference = 'Continue';
