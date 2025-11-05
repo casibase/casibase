@@ -242,6 +242,9 @@
     "VMware API error, code = %d, message = %s": "VMware API error, code = %d, message = %s",
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
+  "provider": {
+    "Provider not found": "Provider not found"
+  },
   "resource": {
     "Invalid file data format": "Invalid file data format",
     "Missing required parameters": "Faltan parámetros requeridos"
@@ -251,6 +254,13 @@
   },
   "store": {
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
+  },
+  "scan": {
+    "Scan not found": "Escaneo no encontrado",
+    "Asset not found": "Activo no encontrado",
+    "Provider not found": "Proveedor no encontrado",
+    "Scan provider not supported": "Proveedor de escaneo no compatible",
+    "Failed to start scan": "Error al iniciar el escaneo"
   },
   "stt": {
     "API error: %s": "API error: %s",

@@ -116,6 +116,11 @@ class OsPatchResultRenderer extends React.Component {
       return;
     }
 
+    if (!this.props.scan) {
+      Setting.showMessage("error", i18next.t("scan:Scan context not found"));
+      return;
+    }
+
     this.setState({
       installingPatchId: patchId,
       installModalVisible: true,
@@ -128,39 +133,14 @@ class OsPatchResultRenderer extends React.Component {
       },
     });
 
-    // Check if we have a scan context - if yes, use async pattern
-    const scan = this.props.scan ? `${this.props.scan.owner}/${this.props.scan.name}` : null;
+    const scan = `${this.props.scan.owner}/${this.props.scan.name}`;
 
-    // Call install API with optional scan parameter
+    // Call install API with scan parameter for async execution
     PatchBackend.installPatch(provider, patchId, scan)
       .then((res) => {
         if (res.status === "ok") {
-          // If scan parameter was provided, use async polling pattern
-          if (scan) {
-            Setting.showMessage("success", i18next.t("scan:Patch installation started, waiting for results..."));
-            this.startPolling(scan);
-          } else {
-            // Sync execution - handle response directly
-            this.setState({
-              installProgress: res.data,
-            });
-
-            // If installation is complete, stop monitoring
-            if (res.data.isComplete) {
-              if (res.data.status === "Succeeded" || res.data.status === "Completed") {
-                Setting.showMessage("success", i18next.t("scan:Patch installed successfully"));
-                // Trigger a refresh if callback is provided
-                if (this.props.onRefresh) {
-                  this.props.onRefresh();
-                }
-              } else {
-                Setting.showMessage("error", `${i18next.t("scan:Installation failed")}: ${res.data.error || res.data.status}`);
-              }
-            } else {
-              // Start monitoring progress for async monitoring (old behavior)
-              this.startMonitoring(provider, patchId);
-            }
-          }
+          Setting.showMessage("success", i18next.t("scan:Patch installation started, waiting for results..."));
+          this.startPolling(scan);
         } else {
           Setting.showMessage("error", `${i18next.t("scan:Failed to install patch")}: ${res.msg}`);
           this.setState({
@@ -184,57 +164,6 @@ class OsPatchResultRenderer extends React.Component {
           },
         });
       });
-  }
-
-  startMonitoring(provider, patchId) {
-    // Clear any existing interval before starting a new one
-    if (this.monitorInterval) {
-      clearInterval(this.monitorInterval);
-    }
-
-    this.monitorInterval = setInterval(() => {
-      PatchBackend.monitorPatchProgress(provider, patchId)
-        .then((res) => {
-          if (res.status === "ok") {
-            this.setState({
-              installProgress: res.data,
-            });
-
-            // If installation is complete, stop monitoring
-            if (res.data.isComplete) {
-              if (this.monitorInterval) {
-                clearInterval(this.monitorInterval);
-                this.monitorInterval = null;
-              }
-
-              if (res.data.status === "Succeeded" || res.data.status === "Completed") {
-                Setting.showMessage("success", i18next.t("scan:Patch installed successfully"));
-                // Trigger a refresh if callback is provided
-                if (this.props.onRefresh) {
-                  this.props.onRefresh();
-                }
-              } else {
-                Setting.showMessage("error", `${i18next.t("scan:Installation failed")}: ${res.data.error || res.data.status}`);
-              }
-            }
-          }
-        })
-        .catch((error) => {
-          // Failed to monitor progress, stop monitoring
-          if (this.monitorInterval) {
-            clearInterval(this.monitorInterval);
-            this.monitorInterval = null;
-          }
-          this.setState({
-            installProgress: {
-              ...this.state.installProgress,
-              status: "Error",
-              error: error.toString(),
-              isComplete: true,
-            },
-          });
-        });
-    }, 5000); // Poll every 5 seconds
   }
 
   startPolling(scanId) {
