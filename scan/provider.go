@@ -37,6 +37,7 @@ func getHostnamePrefix() string {
 type ScanProvider interface {
 	Scan(target string, command string) (string, error)
 	ParseResult(rawResult string) (string, error)
+	GetResultSummary(result string) string
 }
 
 func GetScanProvider(typ string, clientId string, lang string) (ScanProvider, error) {

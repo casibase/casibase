@@ -25,6 +25,7 @@ import {ScanResultRenderer} from "./ScanResultRenderer";
  * @param {number} maxDisplayLength - Maximum length for display text (default: 30)
  * @param {string} width - Width of the popover (default: "700px")
  * @param {string} height - Height of the popover (default: "500px")
+ * @param {React.ReactNode} children - Optional custom content to display instead of default preview
  */
 export function ScanResultPopover({
   result,
@@ -33,30 +34,33 @@ export function ScanResultPopover({
   maxDisplayLength = 30,
   width = "700px",
   height = "500px",
+  children,
 }) {
   if (!result) {
     return <span>-</span>;
   }
 
-  // Generate preview text
+  // Generate preview text if children not provided
   let previewText = result;
-  try {
-    const resultObj = JSON.parse(result);
-    // Try to create a meaningful preview
-    if (resultObj.summary) {
-      previewText = resultObj.summary;
-    } else if (resultObj.hosts && Array.isArray(resultObj.hosts)) {
-      previewText = `${resultObj.hosts.length} host(s) scanned`;
-    } else {
-      // Get first few keys
-      const keys = Object.keys(resultObj);
-      if (keys.length > 0) {
-        previewText = keys.slice(0, 3).join(", ");
+  if (!children) {
+    try {
+      const resultObj = JSON.parse(result);
+      // Try to create a meaningful preview
+      if (resultObj.summary) {
+        previewText = resultObj.summary;
+      } else if (resultObj.hosts && Array.isArray(resultObj.hosts)) {
+        previewText = `${resultObj.hosts.length} host(s) scanned`;
+      } else {
+        // Get first few keys
+        const keys = Object.keys(resultObj);
+        if (keys.length > 0) {
+          previewText = keys.slice(0, 3).join(", ");
+        }
       }
+    } catch (e) {
+      // Use raw text as preview if not JSON
+      previewText = result;
     }
-  } catch (e) {
-    // Use raw text as preview if not JSON
-    previewText = result;
   }
 
   return (
@@ -73,9 +77,11 @@ export function ScanResultPopover({
       }
       trigger="hover"
     >
-      <div style={{maxWidth: "200px", cursor: "pointer"}}>
-        {Setting.getShortText(previewText, maxDisplayLength)}
-      </div>
+      {children || (
+        <div style={{maxWidth: "200px", cursor: "pointer"}}>
+          {Setting.getShortText(previewText, maxDisplayLength)}
+        </div>
+      )}
     </Popover>
   );
 }

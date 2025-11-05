@@ -35,6 +35,7 @@ class AssetListPage extends BaseListPage {
     this.state = {
       ...this.state,
       providers: [],
+      allProviders: [],
       selectedProvider: "",
       scanning: false,
       allScans: [],
@@ -45,6 +46,7 @@ class AssetListPage extends BaseListPage {
   componentDidMount() {
     this.getProviders();
     this.loadAllScans();
+    this.loadAllProviders();
   }
 
   getProviders() {
@@ -192,6 +194,24 @@ class AssetListPage extends BaseListPage {
     return this.state.allScans.filter(scan => scan.asset === assetName);
   }
 
+  loadAllProviders() {
+    ProviderBackend.getProviders(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            allProviders: res.data || [],
+          });
+        }
+      });
+  }
+
+  getProviderForScan(scanProviderName) {
+    if (!scanProviderName) {
+      return null;
+    }
+    return this.state.allProviders.find(provider => provider.name === scanProviderName);
+  }
+
   renderTable(assets) {
     const columns = [
       {
@@ -325,13 +345,17 @@ class AssetListPage extends BaseListPage {
           }
           return (
             <div style={{display: "flex", flexWrap: "wrap", gap: "4px"}}>
-              {scans.map((scan) => (
-                <ScanDetailPopover
-                  key={scan.name}
-                  scan={scan}
-                  placement="left"
-                />
-              ))}
+              {scans.map((scan) => {
+                const provider = this.getProviderForScan(scan.provider);
+                return (
+                  <ScanDetailPopover
+                    key={scan.name}
+                    scan={scan}
+                    provider={provider}
+                    placement="left"
+                  />
+                );
+              })}
             </div>
           );
         },
