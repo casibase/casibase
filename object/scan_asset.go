@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/casibase/casibase/scan"
 	"github.com/casibase/casibase/util"
@@ -26,6 +27,7 @@ type ScanResult struct {
 	RawResult     string `json:"rawResult"`
 	Result        string `json:"result"`
 	ResultSummary string `json:"resultSummary"`
+	Runner        string `json:"runner"`
 }
 
 // ScanAsset performs a scan on an asset
@@ -81,6 +83,12 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 
 // executeScan performs the actual scan execution
 func executeScan(provider, scanParam, targetMode, target, asset, command, owner string, lang string) (*ScanResult, error) {
+	// Get the hostname to identify the runner
+	hostname, err := os.Hostname()
+	if err != nil {
+		return nil, fmt.Errorf("error getting hostname: %v", err)
+	}
+
 	// Get the provider
 	providerObj, err := GetProvider(provider)
 	if err != nil {
@@ -138,7 +146,7 @@ func executeScan(provider, scanParam, targetMode, target, asset, command, owner 
 	// Generate result summary
 	resultSummary := scanProvider.GetResultSummary(result)
 
-	return &ScanResult{RawResult: rawResult, Result: result, ResultSummary: resultSummary}, nil
+	return &ScanResult{RawResult: rawResult, Result: result, ResultSummary: resultSummary, Runner: hostname}, nil
 }
 
 // GetPendingScans returns all scans with state "Pending"
