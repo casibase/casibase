@@ -14,14 +14,12 @@
 
 import React from "react";
 import ReactEcharts from "echarts-for-react";
-import {Link} from "react-router-dom";
-import {Popover, Tag} from "antd";
 import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as AssetBackend from "./backend/AssetBackend";
 import * as ScanBackend from "./backend/ScanBackend";
 import {transformAssetsToGraph} from "./utils/assetToGraph";
-import {ScanResultRenderer} from "./common/ScanResultRenderer";
+import {ScanDetailPopover} from "./common/ScanDetailPopover";
 
 class GraphErrorBoundary extends React.Component {
   constructor(props) {
@@ -768,51 +766,13 @@ class GraphDataPage extends React.Component {
                   </div>
                 ) : this.state.nodeScans.length > 0 ? (
                   <div style={{display: "flex", flexWrap: "wrap", gap: "4px"}}>
-                    {this.state.nodeScans.map((scan) => {
-                      const tagColor = scan.state === "Completed" ? "success" : scan.state === "Failed" ? "error" : "processing";
-                      const popoverContent = (
-                        <div style={{width: "800px", maxHeight: "600px", overflow: "auto"}}>
-                          <div style={{marginBottom: "12px"}}>
-                            <div style={{fontSize: "16px", fontWeight: "bold", marginBottom: "8px"}}>
-                              {scan.displayName || scan.name}
-                            </div>
-                            <div style={{fontSize: "12px", color: "#666"}}>
-                              <div><strong>{i18next.t("general:Name")}:</strong> {scan.name}</div>
-                              <div><strong>{i18next.t("general:Created time")}:</strong> {Setting.getFormattedDate(scan.createdTime)}</div>
-                              <div><strong>{i18next.t("scan:Provider")}:</strong> {scan.provider || "-"}</div>
-                              <div><strong>{i18next.t("general:State")}:</strong> {scan.state}</div>
-                            </div>
-                          </div>
-                          {scan.result && (
-                            <div>
-                              <div style={{fontSize: "14px", fontWeight: "bold", marginBottom: "8px"}}>
-                                {i18next.t("scan:Result")}:
-                              </div>
-                              <ScanResultRenderer
-                                scanResult={scan.result}
-                                providerType={scan.providerType || "Nmap"}
-                                minHeight="200px"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      );
-                      return (
-                        <Popover
-                          key={scan.name}
-                          content={popoverContent}
-                          title={null}
-                          trigger="hover"
-                          placement="left"
-                        >
-                          <Link to={`/scans/${scan.name}`}>
-                            <Tag color={tagColor} style={{cursor: "pointer", margin: "2px"}}>
-                              {scan.displayName || scan.name}
-                            </Tag>
-                          </Link>
-                        </Popover>
-                      );
-                    })}
+                    {this.state.nodeScans.map((scan) => (
+                      <ScanDetailPopover
+                        key={scan.name}
+                        scan={scan}
+                        placement="left"
+                      />
+                    ))}
                   </div>
                 ) : (
                   <div style={{textAlign: "center", padding: "20px", color: "#999"}}>
