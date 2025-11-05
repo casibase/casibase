@@ -185,11 +185,12 @@ func extractJSON(output string) string {
 func (p *OsPatchScanProvider) ListPatches() ([]*WindowsPatch, error) {
 	// Use Get-WUHistory to get update information from local cache only
 	// This is much faster than Get-WindowsUpdate which searches online
+	// Returns up to 500 most recent updates from Windows Update history
 	psCommand := `
 		$ErrorActionPreference = 'Stop';
 		$ProgressPreference = 'Continue';
 		Import-Module PSWindowsUpdate -Force;
-		$updates = Get-WUHistory -Last 100;
+		$updates = Get-WUHistory -Last 500;
 		if ($null -eq $updates) {
 			Write-Output '[]'
 		} else {
@@ -467,8 +468,10 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSec
 					@{Status='Failed'; PercentComplete=0; IsComplete=$true; RebootRequired=$false; Error=$history.Title} | ConvertTo-Json
 				} elseif ($history -and $history.Result -eq 'InProgress') {
 					@{Status='Installing'; PercentComplete=50; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
-				} else {
+				} elseif ($history) {
 					@{Status='Installing'; PercentComplete=25; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
+				} else {
+					@{Status='NotFound'; PercentComplete=0; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
 				}
 			`, sanitizedPatchId)
 			} else {
@@ -489,8 +492,10 @@ func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSec
 					@{Status='Failed'; PercentComplete=0; IsComplete=$true; RebootRequired=$false; Error=$history.Title} | ConvertTo-Json
 				} elseif ($history -and $history.Result -eq 'InProgress') {
 					@{Status='Installing'; PercentComplete=50; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
-				} else {
+				} elseif ($history) {
 					@{Status='Installing'; PercentComplete=25; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
+				} else {
+					@{Status='NotFound'; PercentComplete=0; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
 				}
 			`, escapedTitle)
 			}
