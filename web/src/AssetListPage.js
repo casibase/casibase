@@ -14,16 +14,18 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Select, Table, Tooltip} from "antd";
+import {Button, Popover, Select, Table, Tag, Tooltip} from "antd";
 import {ReloadOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as AssetBackend from "./backend/AssetBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
+import * as ScanBackend from "./backend/ScanBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import {JsonCodeMirrorPopover} from "./common/JsonCodeMirrorWidget";
+import {ScanResultRenderer} from "./common/ScanResultRenderer";
 
 const {Option} = Select;
 
@@ -35,11 +37,14 @@ class AssetListPage extends BaseListPage {
       providers: [],
       selectedProvider: "",
       scanning: false,
+      allScans: [],
+      loadingScans: false,
     };
   }
 
   componentDidMount() {
     this.getProviders();
+    this.loadAllScans();
   }
 
   getProviders() {
@@ -157,6 +162,34 @@ class AssetListPage extends BaseListPage {
   getTypeIcon(typeName) {
     const typeIcons = Setting.getAssetTypeIcons();
     return typeIcons[typeName] || null;
+  }
+
+  loadAllScans() {
+    this.setState({loadingScans: true});
+    ScanBackend.getScans("admin")
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            allScans: res.data || [],
+            loadingScans: false,
+          });
+        } else {
+          this.setState({
+            allScans: [],
+            loadingScans: false,
+          });
+        }
+      })
+      .catch(() => {
+        this.setState({
+          allScans: [],
+          loadingScans: false,
+        });
+      });
+  }
+
+  getScansForAsset(assetName) {
+    return this.state.allScans.filter(scan => scan.asset === assetName);
   }
 
   renderTable(assets) {
@@ -279,6 +312,67 @@ class AssetListPage extends BaseListPage {
         width: "120px",
         sorter: true,
         ...this.getColumnSearchProps("state"),
+      },
+      {
+        title: i18next.t("scan:Scans"),
+        dataIndex: "name",
+        key: "scans",
+        width: "200px",
+        render: (text, record, index) => {
+          const scans = this.getScansForAsset(record.name);
+          if (scans.length === 0) {
+            return <span style={{color: "#999"}}>-</span>;
+          }
+          return (
+            <div style={{display: "flex", flexWrap: "wrap", gap: "4px"}}>
+              {scans.map((scan) => {
+                const tagColor = scan.state === "Completed" ? "success" : scan.state === "Failed" ? "error" : "processing";
+                const popoverContent = (
+                  <div style={{width: "500px", maxHeight: "400px", overflow: "auto"}}>
+                    <div style={{marginBottom: "12px"}}>
+                      <div style={{fontSize: "16px", fontWeight: "bold", marginBottom: "8px"}}>
+                        {scan.displayName || scan.name}
+                      </div>
+                      <div style={{fontSize: "12px", color: "#666"}}>
+                        <div><strong>{i18next.t("general:Name")}:</strong> {scan.name}</div>
+                        <div><strong>{i18next.t("general:Created time")}:</strong> {Setting.getFormattedDate(scan.createdTime)}</div>
+                        <div><strong>{i18next.t("scan:Provider")}:</strong> {scan.provider || "-"}</div>
+                        <div><strong>{i18next.t("general:State")}:</strong> {scan.state}</div>
+                      </div>
+                    </div>
+                    {scan.result && (
+                      <div>
+                        <div style={{fontSize: "14px", fontWeight: "bold", marginBottom: "8px"}}>
+                          {i18next.t("scan:Result")}:
+                        </div>
+                        <ScanResultRenderer
+                          scanResult={scan.result}
+                          providerType={scan.providerType || "Nmap"}
+                          minHeight="200px"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+                return (
+                  <Popover
+                    key={scan.name}
+                    content={popoverContent}
+                    title={null}
+                    trigger="hover"
+                    placement="left"
+                  >
+                    <Link to={`/scans/${scan.name}`}>
+                      <Tag color={tagColor} style={{cursor: "pointer", margin: "2px"}}>
+                        {scan.displayName || scan.name}
+                      </Tag>
+                    </Link>
+                  </Popover>
+                );
+              })}
+            </div>
+          );
+        },
       },
       {
         title: i18next.t("asset:Properties"),
