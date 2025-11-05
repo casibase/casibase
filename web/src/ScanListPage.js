@@ -300,6 +300,26 @@ class ScanListPage extends BaseListPage {
         ...this.getColumnSearchProps("runner"),
       },
       {
+        title: i18next.t("scan:Result Summary"),
+        dataIndex: "resultSummary",
+        key: "resultSummary",
+        width: "200px",
+        sorter: true,
+        ...this.getColumnSearchProps("resultSummary"),
+        render: (text, record, index) => {
+          if (!text) {
+            return <span style={{color: "#999"}}>-</span>;
+          }
+          const logo = this.getProviderLogo(record.provider);
+          return (
+            <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+              {logo && <img src={logo} alt="provider" style={{width: "20px", height: "20px"}} />}
+              <span>{text}</span>
+            </div>
+          );
+        },
+      },
+      {
         title: i18next.t("scan:Error"),
         dataIndex: "errorText",
         key: "errorText",
