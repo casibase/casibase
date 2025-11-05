@@ -13,10 +13,9 @@
 // limitations under the License.
 
 import React from "react";
-import {Alert, Button, Modal, Progress, Space, Table, Tag, Typography} from "antd";
+import {Alert, Button, Space, Table, Tag, Typography} from "antd";
 import i18next from "i18next";
 import * as PatchBackend from "../backend/PatchBackend";
-import * as ScanBackend from "../backend/ScanBackend";
 import * as Setting from "../Setting";
 
 const {Text} = Typography;
@@ -28,11 +27,7 @@ class OsPatchResultRenderer extends React.Component {
       patches: null,
       error: null,
       pageSize: 10,
-      installingPatchId: null,
-      installModalVisible: false,
-      installProgress: null,
     };
-    this.monitorInterval = null;
   }
 
   componentDidMount() {
@@ -42,13 +37,6 @@ class OsPatchResultRenderer extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.result !== this.props.result) {
       this.parseResult();
-    }
-  }
-
-  componentWillUnmount() {
-    // Clean up monitoring interval when component unmounts
-    if (this.monitorInterval) {
-      clearInterval(this.monitorInterval);
     }
   }
 
@@ -121,202 +109,27 @@ class OsPatchResultRenderer extends React.Component {
       return;
     }
 
-    this.setState({
-      installingPatchId: patchId,
-      installModalVisible: true,
-      installProgress: {
-        patchId: patchId,
-        status: "Starting",
-        percentComplete: 0,
-        isComplete: false,
-        startTime: new Date().toISOString(),
-      },
-    });
-
     const scan = `${this.props.scan.owner}/${this.props.scan.name}`;
 
     // Call install API with scan parameter for async execution
     PatchBackend.installPatch(provider, patchId, scan)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("scan:Patch installation started, waiting for results..."));
-          this.startPolling(scan);
+          Setting.showMessage("success", i18next.t("scan:Patch installation started"));
+          // Trigger refresh to update scan state - the page's existing polling will show progress
+          if (this.props.onRefresh) {
+            this.props.onRefresh();
+          }
         } else {
           Setting.showMessage("error", `${i18next.t("scan:Failed to install patch")}: ${res.msg}`);
-          this.setState({
-            installProgress: {
-              ...this.state.installProgress,
-              status: "Failed",
-              error: res.msg,
-              isComplete: true,
-            },
-          });
         }
       })
       .catch((error) => {
         Setting.showMessage("error", `${i18next.t("scan:Failed to install patch")}: ${error}`);
-        this.setState({
-          installProgress: {
-            ...this.state.installProgress,
-            status: "Failed",
-            error: error.toString(),
-            isComplete: true,
-          },
-        });
       });
   }
 
-  startPolling(scanId) {
-    // Clear any existing interval before starting a new one
-    if (this.monitorInterval) {
-      clearInterval(this.monitorInterval);
-    }
 
-    // Parse scan ID to get owner and name
-    const scanParts = scanId.split("/");
-    const owner = scanParts[0];
-    const name = scanParts[1];
-
-    this.monitorInterval = setInterval(() => {
-      ScanBackend.getScan(owner, name)
-        .then((res) => {
-          if (res.status === "ok" && res.data) {
-            const scanData = res.data;
-
-            // Check if scan is complete (Completed or Failed state)
-            if (scanData.state === "Completed" || scanData.state === "Failed") {
-              clearInterval(this.monitorInterval);
-              this.monitorInterval = null;
-
-              // Parse the result as InstallProgress
-              let progress = {
-                patchId: this.state.installProgress?.patchId || "",
-                status: scanData.state,
-                percentComplete: scanData.state === "Completed" ? 100 : 0,
-                isComplete: true,
-                startTime: this.state.installProgress?.startTime || scanData.createdTime,
-                endTime: scanData.updatedTime,
-                error: scanData.errorText || "",
-              };
-
-              // If result is JSON, try to parse it as InstallProgress
-              if (scanData.result) {
-                try {
-                  const parsedResult = JSON.parse(scanData.result);
-                  // If it's an InstallProgress object, use it
-                  if (parsedResult.patchId || parsedResult.status) {
-                    progress = {...progress, ...parsedResult};
-                  }
-                } catch (e) {
-                  // Not JSON or not InstallProgress, keep default progress
-                }
-              }
-
-              this.setState({
-                installProgress: progress,
-              });
-
-              if (scanData.state === "Completed") {
-                Setting.showMessage("success", i18next.t("scan:Patch installed successfully"));
-                // Trigger a refresh if callback is provided
-                if (this.props.onRefresh) {
-                  this.props.onRefresh();
-                }
-              } else {
-                Setting.showMessage("error", `${i18next.t("scan:Installation failed")}: ${scanData.errorText || progress.error}`);
-              }
-            }
-          }
-        })
-        .catch((error) => {
-          clearInterval(this.monitorInterval);
-          this.monitorInterval = null;
-          this.setState({
-            installProgress: {
-              ...this.state.installProgress,
-              status: "Error",
-              error: error.toString(),
-              isComplete: true,
-            },
-          });
-        });
-    }, 2000); // Poll every 2 seconds (same as TestScanWidget)
-  }
-
-  handleCloseModal() {
-    // Clean up monitoring interval when modal is closed
-    if (this.monitorInterval) {
-      clearInterval(this.monitorInterval);
-      this.monitorInterval = null;
-    }
-
-    this.setState({
-      installingPatchId: null,
-      installModalVisible: false,
-      installProgress: null,
-    });
-  }
-
-  renderInstallModal() {
-    const {installProgress} = this.state;
-
-    if (!installProgress) {
-      return null;
-    }
-
-    const isComplete = installProgress.isComplete;
-    const isSuccess = isComplete && (installProgress.status === "Succeeded" || installProgress.status === "Completed");
-    const isFailed = isComplete && !isSuccess;
-
-    return (
-      <Modal
-        title={i18next.t("scan:Installing Patch")}
-        open={this.state.installModalVisible}
-        onCancel={() => this.handleCloseModal()}
-        footer={
-          isComplete ? [
-            <Button key="close" type="primary" onClick={() => this.handleCloseModal()}>
-              {i18next.t("general:Close")}
-            </Button>,
-          ] : null
-        }
-        closable={isComplete}
-        maskClosable={false}
-      >
-        <Space direction="vertical" size="middle" style={{width: "100%"}}>
-          <div>
-            <Text strong>{i18next.t("scan:Patch ID")}:</Text> <Text code>{installProgress.patchId}</Text>
-          </div>
-          <div>
-            <Text strong>{i18next.t("general:Status")}:</Text> {this.renderStatus(installProgress.status)}
-          </div>
-          <div>
-            <Text strong>{i18next.t("general:Progress")}:</Text>
-            <Progress
-              percent={installProgress.percentComplete}
-              status={isFailed ? "exception" : isSuccess ? "success" : "active"}
-            />
-          </div>
-          {installProgress.rebootRequired && (
-            <Alert
-              message={i18next.t("scan:Reboot Required")}
-              description={i18next.t("scan:A system reboot is required to complete the installation")}
-              type="warning"
-              showIcon
-            />
-          )}
-          {installProgress.error && (
-            <Alert
-              message={i18next.t("general:Error")}
-              description={installProgress.error}
-              type="error"
-              showIcon
-            />
-          )}
-        </Space>
-      </Modal>
-    );
-  }
 
   render() {
     const {patches, error} = this.state;
@@ -414,39 +227,36 @@ class OsPatchResultRenderer extends React.Component {
     ];
 
     return (
-      <div>
-        <Space direction="vertical" size="middle" style={{width: "100%"}}>
-          <Table
-            columns={columns}
-            dataSource={patches}
-            pagination={{
-              pageSize: this.state.pageSize,
-              showSizeChanger: true,
-              showTotal: (total) => `${i18next.t("general:Total")}: ${total}`,
-              onChange: (page, pageSize) => {
-                this.setState({pageSize});
-              },
-            }}
-            size="small"
-            rowKey={(record, index) => `patch-${index}-${this.getPatchId(record)}`}
-            expandable={{
-              expandedRowRender: (record) => (
-                <div style={{margin: 0}}>
-                  <Text strong>{i18next.t("scan:Description")}:</Text>
-                  <p style={{marginTop: "8px"}}>{record.description || i18next.t("scan:No description available")}</p>
-                  {record.categories && (
-                    <p style={{marginTop: "8px"}}>
-                      <Text strong>{i18next.t("scan:Categories")}:</Text> {record.categories}
-                    </p>
-                  )}
-                </div>
-              ),
-              rowExpandable: (record) => record.description || record.categories,
-            }}
-          />
-        </Space>
-        {this.renderInstallModal()}
-      </div>
+      <Space direction="vertical" size="middle" style={{width: "100%"}}>
+        <Table
+          columns={columns}
+          dataSource={patches}
+          pagination={{
+            pageSize: this.state.pageSize,
+            showSizeChanger: true,
+            showTotal: (total) => `${i18next.t("general:Total")}: ${total}`,
+            onChange: (page, pageSize) => {
+              this.setState({pageSize});
+            },
+          }}
+          size="small"
+          rowKey={(record, index) => `patch-${index}-${this.getPatchId(record)}`}
+          expandable={{
+            expandedRowRender: (record) => (
+              <div style={{margin: 0}}>
+                <Text strong>{i18next.t("scan:Description")}:</Text>
+                <p style={{marginTop: "8px"}}>{record.description || i18next.t("scan:No description available")}</p>
+                {record.categories && (
+                  <p style={{marginTop: "8px"}}>
+                    <Text strong>{i18next.t("scan:Categories")}:</Text> {record.categories}
+                  </p>
+                )}
+              </div>
+            ),
+            rowExpandable: (record) => record.description || record.categories,
+          }}
+        />
+      </Space>
     );
   }
 }
