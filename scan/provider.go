@@ -48,6 +48,8 @@ func GetScanProvider(typ string, clientId string, lang string) (ScanProvider, er
 		p, err = NewNmapScanProvider(clientId)
 	} else if typ == "OS Patch" {
 		p, err = NewOsPatchScanProvider(clientId)
+	} else if typ == "Nuclei" {
+		p, err = NewNucleiScanProvider(clientId)
 	} else {
 		return nil, nil
 	}

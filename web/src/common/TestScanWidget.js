@@ -26,6 +26,7 @@ const {Option} = Select;
 const DEFAULT_SCAN_TARGET = "127.0.0.1";
 const DEFAULT_SCAN_COMMAND = "-sn %s";
 const DEFAULT_OS_PATCH_COMMAND = "all";
+const DEFAULT_NUCLEI_COMMAND = "-u %s -jsonl";
 const DEFAULT_PROVIDER_TYPE = "Nmap";
 
 class TestScanWidget extends React.Component {
@@ -149,6 +150,19 @@ class TestScanWidget extends React.Component {
         {id: "available", name: "Available Patches", command: "available"},
         {id: "installed", name: "Installed Patches", command: "installed"},
       ];
+    } else if (providerType === "Nuclei") {
+      // Nuclei templates
+      return [
+        {id: "custom", name: "Custom", command: ""},
+        {id: "basic", name: "Basic Scan", command: "-u %s -jsonl"},
+        {id: "severity-critical", name: "Critical Severity", command: "-u %s -jsonl -s critical"},
+        {id: "severity-high", name: "High Severity", command: "-u %s -jsonl -s high"},
+        {id: "severity-medium", name: "Medium Severity", command: "-u %s -jsonl -s medium"},
+        {id: "cve", name: "CVE Templates", command: "-u %s -jsonl -t cves/"},
+        {id: "misconfiguration", name: "Misconfigurations", command: "-u %s -jsonl -t misconfiguration/"},
+        {id: "exposures", name: "Exposures", command: "-u %s -jsonl -t exposures/"},
+        {id: "vulnerabilities", name: "All Vulnerabilities", command: "-u %s -jsonl -t vulnerabilities/"},
+      ];
     } else {
       // Nmap templates
       return [
@@ -167,6 +181,8 @@ class TestScanWidget extends React.Component {
   getDefaultCommand(providerType) {
     if (providerType === "OS Patch") {
       return DEFAULT_OS_PATCH_COMMAND;
+    } else if (providerType === "Nuclei") {
+      return DEFAULT_NUCLEI_COMMAND;
     }
     return DEFAULT_SCAN_COMMAND;
   }
