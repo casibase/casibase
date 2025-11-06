@@ -64,17 +64,41 @@ func NewOsPatchScanProvider(clientId string) (*OsPatchScanProvider, error) {
 }
 
 // Scan implements the ScanProvider interface for OS patch scanning
-// The command parameter specifies the scan type: "available", "installed", or "all"
+// The command parameter specifies the scan type: "available", "installed", "all", or "install:<patchId>"
 // The target parameter is not used for OS patch scanning as it scans the local system
 func (p *OsPatchScanProvider) Scan(target string, command string) (string, error) {
-	command = strings.TrimSpace(strings.ToLower(command))
+	command = strings.TrimSpace(command)
+	commandLower := strings.ToLower(command)
+
+	// Check if this is an install command
+	if strings.HasPrefix(commandLower, "install:") {
+		// Extract patch ID from command
+		patchId := strings.TrimSpace(command[8:]) // Remove "install:" prefix
+		if patchId == "" {
+			return "", fmt.Errorf("%s patch ID is required for install command", getHostnamePrefix())
+		}
+
+		// Install the patch
+		progress, err := p.InstallPatch(patchId)
+		if err != nil {
+			return "", err
+		}
+
+		// Convert progress to JSON string
+		result, err := json.Marshal(progress)
+		if err != nil {
+			return "", fmt.Errorf("%s failed to marshal install progress: %v", getHostnamePrefix(), err)
+		}
+
+		return string(result), nil
+	}
 
 	var patches []*WindowsPatch
 	var err error
 
-	if command == "installed" {
+	if commandLower == "installed" {
 		patches, err = p.ListInstalledPatches()
-	} else if command == "all" {
+	} else if commandLower == "all" {
 		// Get both available and installed patches
 		availablePatches, err1 := p.ListAvailablePatches()
 		installedPatches, err2 := p.ListInstalledPatches()
@@ -433,137 +457,6 @@ func (p *OsPatchScanProvider) InstallPatch(patchId string) (*InstallProgress, er
 	progress.EndTime = time.Now().Format(time.RFC3339)
 
 	return progress, nil
-}
-
-// MonitorInstallProgress monitors the installation progress of a patch
-// This function polls the Windows Update service to check installation status
-func (p *OsPatchScanProvider) MonitorInstallProgress(patchId string, intervalSeconds int) (<-chan *InstallProgress, error) {
-	// Validate and sanitize patch ID to prevent command injection
-	sanitizedPatchId, isKB, err := validatePatchId(patchId)
-	if err != nil {
-		return nil, err
-	}
-
-	if intervalSeconds <= 0 {
-		intervalSeconds = 5
-	}
-
-	progressChan := make(chan *InstallProgress, 10)
-
-	go func() {
-		defer close(progressChan)
-
-		startTime := time.Now().Format(time.RFC3339)
-		ticker := time.NewTicker(time.Duration(intervalSeconds) * time.Second)
-		defer ticker.Stop()
-
-		for {
-			progress := &InstallProgress{
-				PatchId:         patchId,
-				Status:          "Installing",
-				PercentComplete: 0,
-				IsComplete:      false,
-				StartTime:       startTime,
-			}
-
-			var psCommand string
-			if isKB {
-				// Check progress by KB number using only local cache (Get-WUHistory)
-				psCommand = fmt.Sprintf(`
-				$ErrorActionPreference = 'Stop';
-				$ProgressPreference = 'Continue';
-				Import-Module PSWindowsUpdate -Force;
-				$history = Get-WUHistory -ErrorAction SilentlyContinue | Where-Object { $_.Title -match 'KB%s' } | Select-Object -First 1;
-				
-				if ($history -and $history.Result -eq 'Succeeded') {
-					@{Status='Completed'; PercentComplete=100; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
-				} elseif ($history -and $history.Result -eq 'Failed') {
-					@{Status='Failed'; PercentComplete=0; IsComplete=$true; RebootRequired=$false; Error=$history.Title} | ConvertTo-Json
-				} elseif ($history -and $history.Result -eq 'InProgress') {
-					@{Status='Installing'; PercentComplete=50; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
-				} elseif ($history) {
-					@{Status='Installing'; PercentComplete=25; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
-				} else {
-					@{Status='NotFound'; PercentComplete=0; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
-				}
-			`, sanitizedPatchId)
-			} else {
-				// Check progress by title using only local cache (Get-WUHistory)
-				// Escape single quotes, backticks, and dollar signs which are special in PowerShell
-				escapedTitle := strings.ReplaceAll(sanitizedPatchId, "`", "``")
-				escapedTitle = strings.ReplaceAll(escapedTitle, "'", "''")
-				escapedTitle = strings.ReplaceAll(escapedTitle, "$", "`$")
-				psCommand = fmt.Sprintf(`
-				$ErrorActionPreference = 'Stop';
-				$ProgressPreference = 'Continue';
-				Import-Module PSWindowsUpdate -Force;
-				$history = Get-WUHistory -ErrorAction SilentlyContinue | Where-Object { $_.Title -eq '%s' } | Select-Object -First 1;
-				
-				if ($history -and $history.Result -eq 'Succeeded') {
-					@{Status='Completed'; PercentComplete=100; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
-				} elseif ($history -and $history.Result -eq 'Failed') {
-					@{Status='Failed'; PercentComplete=0; IsComplete=$true; RebootRequired=$false; Error=$history.Title} | ConvertTo-Json
-				} elseif ($history -and $history.Result -eq 'InProgress') {
-					@{Status='Installing'; PercentComplete=50; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
-				} elseif ($history) {
-					@{Status='Installing'; PercentComplete=25; IsComplete=$false; RebootRequired=$false} | ConvertTo-Json
-				} else {
-					@{Status='NotFound'; PercentComplete=0; IsComplete=$true; RebootRequired=$false} | ConvertTo-Json
-				}
-			`, escapedTitle)
-			}
-
-			fmt.Printf("%s [OS Patch] Executing PowerShell command:\n%s\n", getHostnamePrefix(), psCommand)
-			output, err := p.runPowerShell(psCommand)
-			if err != nil {
-				progress.Status = "Error"
-				progress.Error = err.Error()
-				progress.IsComplete = true
-				progress.EndTime = time.Now().Format(time.RFC3339)
-				progressChan <- progress
-				return
-			}
-			fmt.Printf("%s [OS Patch] PowerShell output:\n%s\n", getHostnamePrefix(), output)
-
-			// Parse the result
-			var result map[string]interface{}
-			output = strings.TrimSpace(output)
-			if output != "" && output != "null" {
-				err = json.Unmarshal([]byte(output), &result)
-				if err == nil {
-					if status, ok := result["Status"].(string); ok {
-						progress.Status = status
-					}
-					if percent, ok := result["PercentComplete"].(float64); ok {
-						progress.PercentComplete = int(percent)
-					}
-					if isComplete, ok := result["IsComplete"].(bool); ok {
-						progress.IsComplete = isComplete
-					}
-					if reboot, ok := result["RebootRequired"].(bool); ok {
-						progress.RebootRequired = reboot
-					}
-					if errMsg, ok := result["Error"].(string); ok {
-						progress.Error = errMsg
-					}
-				}
-			}
-
-			if progress.IsComplete {
-				progress.EndTime = time.Now().Format(time.RFC3339)
-			}
-
-			progressChan <- progress
-
-			if progress.IsComplete {
-				return
-			}
-
-			<-ticker.C
-		}
-	}()
-
-	return progressChan, nil
 }
 
 // GetResultSummary generates a short summary of the scan result

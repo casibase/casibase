@@ -14,19 +14,9 @@
 
 import * as Setting from "../Setting";
 
-export function installPatch(provider, patchId) {
-  return fetch(`${Setting.ServerUrl}/api/install-patch?provider=${encodeURIComponent(provider)}&patchId=${encodeURIComponent(patchId)}`, {
+export function installPatch(provider, patchId, scan) {
+  return fetch(`${Setting.ServerUrl}/api/install-patch?provider=${encodeURIComponent(provider)}&patchId=${encodeURIComponent(patchId)}&scan=${encodeURIComponent(scan)}`, {
     method: "POST",
-    credentials: "include",
-    headers: {
-      "Accept-Language": Setting.getAcceptLanguage(),
-    },
-  }).then(res => res.json());
-}
-
-export function monitorPatchProgress(provider, patchId) {
-  return fetch(`${Setting.ServerUrl}/api/monitor-patch-progress?provider=${encodeURIComponent(provider)}&patchId=${encodeURIComponent(patchId)}`, {
-    method: "GET",
     credentials: "include",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
