@@ -33,18 +33,18 @@ type ZapAlert struct {
 	RiskDesc    string `json:"riskdesc"`
 	Description string `json:"desc"`
 	Instances   []struct {
-		URI    string `json:"uri"`
-		Method string `json:"method"`
-		Param  string `json:"param"`
-		Attack string `json:"attack"`
+		URI      string `json:"uri"`
+		Method   string `json:"method"`
+		Param    string `json:"param"`
+		Attack   string `json:"attack"`
 		Evidence string `json:"evidence"`
 	} `json:"instances"`
-	Count      string   `json:"count"`
-	Solution   string   `json:"solution"`
-	Reference  string   `json:"reference"`
-	CweID      string   `json:"cweid"`
-	WascID     string   `json:"wascid"`
-	SourceID   string   `json:"sourceid"`
+	Count     string `json:"count"`
+	Solution  string `json:"solution"`
+	Reference string `json:"reference"`
+	CweID     string `json:"cweid"`
+	WascID    string `json:"wascid"`
+	SourceID  string `json:"sourceid"`
 }
 
 // ZapSite represents a scanned site
@@ -64,8 +64,8 @@ type ZapScanResult struct {
 
 // ZapSummary provides a summary of the scan results
 type ZapSummary struct {
-	TotalAlerts int            `json:"totalAlerts"`
-	ByRisk      map[string]int `json:"byRisk"`
+	TotalAlerts  int            `json:"totalAlerts"`
+	ByRisk       map[string]int `json:"byRisk"`
 	ByConfidence map[string]int `json:"byConfidence"`
 }
 
@@ -257,13 +257,13 @@ func (p *ZapScanProvider) parseZapOutput(output string) *ZapScanResult {
 			// Update summary
 			for _, alert := range site.Alerts {
 				result.Summary.TotalAlerts++
-				
+
 				// Parse risk level from riskdesc (e.g., "High (Warning)")
 				riskLevel := p.extractRiskLevel(alert.RiskDesc)
 				if riskLevel != "" {
 					result.Summary.ByRisk[riskLevel]++
 				}
-				
+
 				if alert.Confidence != "" {
 					result.Summary.ByConfidence[alert.Confidence]++
 				}
@@ -373,7 +373,7 @@ func (p *ZapScanProvider) parseAlert(alertData interface{}) ZapAlert {
 					Attack   string `json:"attack"`
 					Evidence string `json:"evidence"`
 				}{}
-				
+
 				if uri, ok := instMap["uri"].(string); ok {
 					instance.URI = uri
 				}
@@ -389,7 +389,7 @@ func (p *ZapScanProvider) parseAlert(alertData interface{}) ZapAlert {
 				if evidence, ok := instMap["evidence"].(string); ok {
 					instance.Evidence = evidence
 				}
-				
+
 				alert.Instances = append(alert.Instances, instance)
 			}
 		}
