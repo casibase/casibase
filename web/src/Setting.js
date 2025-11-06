@@ -1140,7 +1140,23 @@ export function isProviderSupportWebSearch(provider) {
     return false;
   }
 
-  return ["OpenAI", "Alibaba Cloud"].includes(provider.type);
+  if (provider.type === "OpenAI") {
+    return true;
+  }
+
+  if (provider.type === "Alibaba Cloud") {
+    // Not all Alibaba Cloud models support web search
+    // DeepSeek V3 does not support web search
+    const unsupportedModels = ["deepseek-v3"];
+
+    if (!provider.subType) {
+      return true; // Default to true for Alibaba Cloud if subType is not specified
+    }
+
+    return !unsupportedModels.includes(provider.subType);
+  }
+
+  return false;
 }
 
 export function getProviderTypeOptions(category) {
