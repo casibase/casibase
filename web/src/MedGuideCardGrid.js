@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import * as Setting from "./Setting";
+import { getDashBoardData } from "./backend/DashboardBackend";
 
 // 分组与按钮数据
 const GROUPS = [
@@ -149,6 +150,15 @@ const MedGuideCardGrid = (props) => {
             `;
         document.head.appendChild(style);
         return () => { document.head.removeChild(style); };
+    }, []);
+
+    // 页面启动时触发一次 dashboard 数据请求（不处理返回）
+    useEffect(() => {
+        try {
+            getDashBoardData();
+        } catch (e) {
+            // 忽略任何错误
+        }
     }, []);
 
 
