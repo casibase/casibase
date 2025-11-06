@@ -24,20 +24,20 @@ import (
 
 // NucleiVulnerability represents a single vulnerability found by Nuclei
 type NucleiVulnerability struct {
-	TemplateID   string                 `json:"templateID"`
-	Name         string                 `json:"name"`
-	Type         string                 `json:"type"`
-	Severity     string                 `json:"severity"`
-	Host         string                 `json:"host"`
-	MatchedAt    string                 `json:"matchedAt"`
-	ExtractedResults []string           `json:"extractedResults,omitempty"`
-	IP           string                 `json:"ip,omitempty"`
-	Timestamp    string                 `json:"timestamp,omitempty"`
-	CurlCommand  string                 `json:"curlCommand,omitempty"`
-	Description  string                 `json:"description,omitempty"`
-	Reference    []string               `json:"reference,omitempty"`
-	Classification map[string]interface{} `json:"classification,omitempty"`
-	Metadata     map[string]interface{} `json:"metadata,omitempty"`
+	TemplateID       string                 `json:"templateID"`
+	Name             string                 `json:"name"`
+	Type             string                 `json:"type"`
+	Severity         string                 `json:"severity"`
+	Host             string                 `json:"host"`
+	MatchedAt        string                 `json:"matchedAt"`
+	ExtractedResults []string               `json:"extractedResults,omitempty"`
+	IP               string                 `json:"ip,omitempty"`
+	Timestamp        string                 `json:"timestamp,omitempty"`
+	CurlCommand      string                 `json:"curlCommand,omitempty"`
+	Description      string                 `json:"description,omitempty"`
+	Reference        []string               `json:"reference,omitempty"`
+	Classification   map[string]interface{} `json:"classification,omitempty"`
+	Metadata         map[string]interface{} `json:"metadata,omitempty"`
 }
 
 // NucleiScanResult represents the complete Nuclei scan result
@@ -172,7 +172,7 @@ func contains(slice []string, item string) bool {
 func (p *NucleiScanProvider) ParseResult(rawResult string) (string, error) {
 	// Parse the JSONL output into structured data
 	fmt.Printf("%s [Nuclei] Parsing scan results\n", getHostnamePrefix())
-	
+
 	if rawResult == "" || rawResult == "Scan completed with no vulnerabilities found" {
 		emptyResult := &NucleiScanResult{
 			Vulnerabilities: []NucleiVulnerability{},
@@ -196,7 +196,7 @@ func (p *NucleiScanProvider) ParseResult(rawResult string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("%s failed to marshal nuclei result: %v", getHostnamePrefix(), err)
 	}
-	
+
 	vulnCount := len(parsedResult.Vulnerabilities)
 	vulnWord := "vulnerabilities"
 	if vulnCount == 1 {
@@ -235,7 +235,7 @@ func (p *NucleiScanProvider) parseNucleiOutput(output string) *NucleiScanResult 
 
 		// Extract vulnerability information
 		vuln := NucleiVulnerability{}
-		
+
 		if templateID, ok := rawVuln["template-id"].(string); ok {
 			vuln.TemplateID = templateID
 		} else if templateID, ok := rawVuln["templateID"].(string); ok {
@@ -302,7 +302,7 @@ func (p *NucleiScanProvider) parseNucleiOutput(output string) *NucleiScanResult 
 		}
 
 		result.Vulnerabilities = append(result.Vulnerabilities, vuln)
-		
+
 		// Update summary
 		result.Summary.TotalVulnerabilities++
 		if vuln.Severity != "" {

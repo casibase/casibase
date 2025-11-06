@@ -91,7 +91,7 @@ func TestNucleiParseResult(t *testing.T) {
 
 	// Test with valid JSONL output
 	rawResult := `{"template-id":"test-vuln","info":{"name":"Test","severity":"critical"},"type":"http","host":"http://test.com","matched-at":"http://test.com/admin"}`
-	
+
 	result, err := provider.ParseResult(rawResult)
 	if err != nil {
 		t.Fatalf("ParseResult failed: %v", err)
