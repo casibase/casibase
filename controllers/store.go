@@ -261,6 +261,11 @@ func (c *ApiController) DeleteStore() {
 		return
 	}
 
+	if store.IsDefault {
+		c.ResponseError(c.T("store:Cannot delete the default store"))
+		return
+	}
+
 	success, err := object.DeleteStore(&store)
 	if err != nil {
 		c.ResponseError(err.Error())

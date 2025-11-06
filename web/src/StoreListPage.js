@@ -422,8 +422,9 @@ class StoreListPage extends BaseListPage {
                       onConfirm={() => this.deleteStore(record)}
                       okText={i18next.t("general:OK")}
                       cancelText={i18next.t("general:Cancel")}
+                      disabled={record.isDefault}
                     >
-                      <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
+                      <Button style={{marginBottom: "10px"}} type="primary" danger disabled={record.isDefault}>{i18next.t("general:Delete")}</Button>
                     </Popconfirm>
                   </React.Fragment>
                 )
