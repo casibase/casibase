@@ -27,6 +27,7 @@ const DEFAULT_SCAN_TARGET = "127.0.0.1";
 const DEFAULT_SCAN_COMMAND = "-sn %s";
 const DEFAULT_OS_PATCH_COMMAND = "all";
 const DEFAULT_NUCLEI_COMMAND = "-u %s -jsonl";
+const DEFAULT_ZAP_COMMAND = "-cmd -quickurl %s -quickout /dev/stdout -quickprogress";
 const DEFAULT_PROVIDER_TYPE = "Nmap";
 
 class TestScanWidget extends React.Component {
@@ -163,6 +164,15 @@ class TestScanWidget extends React.Component {
         {id: "exposures", name: "Exposures", command: "-u %s -jsonl -t exposures/"},
         {id: "vulnerabilities", name: "All Vulnerabilities", command: "-u %s -jsonl -t vulnerabilities/"},
       ];
+    } else if (providerType === "ZAP") {
+      // ZAP templates
+      return [
+        {id: "custom", name: "Custom", command: ""},
+        {id: "quick", name: "Quick Scan", command: "-cmd -quickurl %s -quickout /dev/stdout -quickprogress"},
+        {id: "baseline", name: "Baseline Scan", command: "-cmd -quickurl %s -quickout /dev/stdout"},
+        {id: "full", name: "Full Scan", command: "-daemon -quickurl %s -quickout /dev/stdout"},
+        {id: "ajax-spider", name: "AJAX Spider", command: "-cmd -quickurl %s -quickout /dev/stdout -ajax"},
+      ];
     } else {
       // Nmap templates
       return [
@@ -183,6 +193,8 @@ class TestScanWidget extends React.Component {
       return DEFAULT_OS_PATCH_COMMAND;
     } else if (providerType === "Nuclei") {
       return DEFAULT_NUCLEI_COMMAND;
+    } else if (providerType === "ZAP") {
+      return DEFAULT_ZAP_COMMAND;
     }
     return DEFAULT_SCAN_COMMAND;
   }

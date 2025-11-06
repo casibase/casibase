@@ -1034,6 +1034,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_nuclei.png`,
         url: "https://github.com/projectdiscovery/nuclei",
       },
+      "ZAP": {
+        logo: `${StaticBaseUrl}/img/social_zap.png`,
+        url: "https://github.com/zaproxy/zaproxy",
+      },
     },
   };
 
