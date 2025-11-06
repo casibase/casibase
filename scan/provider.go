@@ -50,6 +50,8 @@ func GetScanProvider(typ string, clientId string, lang string) (ScanProvider, er
 		p, err = NewOsPatchScanProvider(clientId)
 	} else if typ == "Nuclei" {
 		p, err = NewNucleiScanProvider(clientId)
+	} else if typ == "ZAP" {
+		p, err = NewZapScanProvider(clientId)
 	} else {
 		return nil, nil
 	}
