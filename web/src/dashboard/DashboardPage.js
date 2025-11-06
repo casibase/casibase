@@ -1115,7 +1115,7 @@ class DashboardPage extends Component {
 
         <Row gutter={[24, 24]}>
           {/* 功能入口卡片 */}
-          <Col span={24}>
+          {/* <Col span={24}>
             <Card
               title="卫生健康数据可信共享链平台"
               bordered={false}
@@ -1145,7 +1145,7 @@ class DashboardPage extends Component {
                 </Space>
               </div>
             </Card>
-          </Col>
+          </Col> */}
           {/* 总览卡片 */}
           <Col span={24}>
             <Card

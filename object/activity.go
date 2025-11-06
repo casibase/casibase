@@ -18,6 +18,7 @@ import (
 	"errors"
 	"fmt"
 	"time"
+	"encoding/json"
 
 	"github.com/casibase/casibase/i18n"
 )
@@ -60,6 +61,25 @@ func getTargetfieldValue(record *Record, fieldName string) (string, error) {
 
 	}
 	return "", errors.New("no matched field")
+}
+
+
+func GetActivitiesDashBoard(days int, user string, fieldNames []string, lang string) (map[string][]*Activity, error) {
+	go GetActivities(days, user, fieldNames, lang)
+	cacheKey := "dashboard_activities"
+	cacheJson, err := GetCacheByKey(cacheKey)
+	if err != nil {
+		return nil, err
+	}
+	if cacheJson == nil {
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:no cached activities data found"))
+	}
+	var resp map[string][]*Activity
+	if err := json.Unmarshal(cacheJson, &resp);  err != nil {
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:failed to unmarshal cached activities data: %v"), err)
+	}
+	return resp, nil
+
 }
 
 func GetActivities(days int, user string, fieldNames []string, lang string) (map[string][]*Activity, error) {
@@ -119,6 +139,16 @@ func GetActivities(days int, user string, fieldNames []string, lang string) (map
 				activities[i].FieldCount[action] += count
 			}
 		}
+	}
+
+	// 将resp存入缓存数据库中
+	cacheKey := "dashboard_activities"
+	cacheData, err := json.Marshal(resp)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal cache data: %v", err)
+	}
+	if err := CacheSave(cacheKey, string(cacheData)); err != nil {
+		return nil, fmt.Errorf("failed to save cache data: %v", err)
 	}
 
 	return resp, nil

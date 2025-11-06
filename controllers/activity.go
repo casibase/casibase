@@ -42,3 +42,19 @@ func (c *ApiController) GetActivities() {
 
 	c.ResponseOk(activities)
 }
+
+// /get-activities-dashboard
+func (c *ApiController) GetActivitiesDashBoard() {
+	days := util.ParseInt(c.Input().Get("days"))
+	user := c.Input().Get("selectedUser")
+	fieldParam := c.Input().Get("field")
+	fields := strings.Split(fieldParam, ",")
+
+	activities, err := object.GetActivitiesDashBoard(days, user, fields, c.GetAcceptLanguage())
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(activities)
+}

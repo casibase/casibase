@@ -15,7 +15,7 @@
 import * as Setting from "../Setting";
 
 export function getDashBoardData(daysBefore = "30", selectedUser = "All", field = "unit,diseaseCategory,action") {
-  return fetch(`${Setting.ServerUrl}/api/get-activities?days=${daysBefore}&selectedUser=${selectedUser}&field=${field}`, {
+  return fetch(`${Setting.ServerUrl}/api/get-activities-dashboard?days=${daysBefore}&selectedUser=${selectedUser}&field=${field}`, {
     method: "GET",
     credentials: "include",
     headers: {
