@@ -188,7 +188,7 @@ func TestNucleiGetResultSummary(t *testing.T) {
 					BySeverity:           map[string]int{"low": 1},
 				},
 			},
-			expected: "1 vulnerabilities (1 low)",
+			expected: "1 vulnerability (1 low)",
 		},
 	}
 

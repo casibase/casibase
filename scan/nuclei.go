@@ -196,7 +196,13 @@ func (p *NucleiScanProvider) ParseResult(rawResult string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("%s failed to marshal nuclei result: %v", getHostnamePrefix(), err)
 	}
-	fmt.Printf("%s [Nuclei] Successfully parsed %d vulnerability/vulnerabilities\n", getHostnamePrefix(), len(parsedResult.Vulnerabilities))
+	
+	vulnCount := len(parsedResult.Vulnerabilities)
+	vulnWord := "vulnerabilities"
+	if vulnCount == 1 {
+		vulnWord = "vulnerability"
+	}
+	fmt.Printf("%s [Nuclei] Successfully parsed %d %s\n", getHostnamePrefix(), vulnCount, vulnWord)
 
 	return string(jsonBytes), nil
 }
@@ -336,15 +342,20 @@ func (p *NucleiScanProvider) GetResultSummary(result string) string {
 	medium := scanResult.Summary.BySeverity["medium"]
 	low := scanResult.Summary.BySeverity["low"]
 
-	if critical > 0 {
-		return fmt.Sprintf("%d vulnerabilities (%d critical)", total, critical)
-	} else if high > 0 {
-		return fmt.Sprintf("%d vulnerabilities (%d high)", total, high)
-	} else if medium > 0 {
-		return fmt.Sprintf("%d vulnerabilities (%d medium)", total, medium)
-	} else if low > 0 {
-		return fmt.Sprintf("%d vulnerabilities (%d low)", total, low)
+	vulnWord := "vulnerabilities"
+	if total == 1 {
+		vulnWord = "vulnerability"
 	}
 
-	return fmt.Sprintf("%d vulnerabilities found", total)
+	if critical > 0 {
+		return fmt.Sprintf("%d %s (%d critical)", total, vulnWord, critical)
+	} else if high > 0 {
+		return fmt.Sprintf("%d %s (%d high)", total, vulnWord, high)
+	} else if medium > 0 {
+		return fmt.Sprintf("%d %s (%d medium)", total, vulnWord, medium)
+	} else if low > 0 {
+		return fmt.Sprintf("%d %s (%d low)", total, vulnWord, low)
+	}
+
+	return fmt.Sprintf("%d %s found", total, vulnWord)
 }
