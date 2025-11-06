@@ -224,3 +224,13 @@ func OpenaiGenerateMessages(prompt string, question string, recentMessages []*Ra
 	res = append(res, queryMessage)
 	return res, nil
 }
+
+func AddWebSearchGuidanceToQuestion(question string) string {
+	webSearchGuidance := `[IMPORTANT] You have web search capability available. You MUST use web search in these situations:
+- When asked about recent events, news, or real-time information (weather, stock prices, sports scores, etc.)
+- When your knowledge is insufficient or outdated to answer accurately
+- When the user explicitly requests to search the web or get latest information
+Please prioritize using web search when current or verified information is needed.
+`
+	return webSearchGuidance + question
+}
