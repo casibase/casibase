@@ -52,6 +52,8 @@ func GetScanProvider(typ string, clientId string, lang string) (ScanProvider, er
 		p, err = NewNucleiScanProvider(clientId)
 	} else if typ == "ZAP" {
 		p, err = NewZapScanProvider(clientId)
+	} else if typ == "Subfinder" {
+		p, err = NewSubfinderScanProvider(clientId)
 	} else {
 		return nil, nil
 	}

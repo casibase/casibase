@@ -88,7 +88,7 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 		return false, fmt.Errorf("The provider: %s is not found", scan.Provider)
 	}
 
-	if provider.Type != "Nmap" && provider.Type != "OS Patch" && provider.Type != "Nuclei" && provider.Type != "ZAP" {
+	if provider.Type != "Nmap" && provider.Type != "OS Patch" && provider.Type != "Nuclei" && provider.Type != "ZAP" && provider.Type != "Subfinder" {
 		return false, fmt.Errorf("The provider type: %s is not supported for provider: %s", provider.Type, provider.Name)
 	}
 
@@ -106,6 +106,11 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 	} else if provider.Type == "ZAP" {
 		if !scanpkg.IsZapAvailable(provider.ClientId) {
 			// Don't claim this job if ZAP is not available
+			return false, nil
+		}
+	} else if provider.Type == "Subfinder" {
+		if !scanpkg.IsSubfinderAvailable(provider.ClientId) {
+			// Don't claim this job if Subfinder is not available
 			return false, nil
 		}
 	}

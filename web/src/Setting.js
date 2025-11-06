@@ -1038,6 +1038,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_zap.png`,
         url: "https://github.com/zaproxy/zaproxy",
       },
+      "Subfinder": {
+        logo: `${StaticBaseUrl}/img/social_subfinder.png`,
+        url: "https://github.com/projectdiscovery/subfinder",
+      },
     },
   };
 
@@ -1278,6 +1282,7 @@ export function getProviderTypeOptions(category) {
       {id: "OS Patch", name: "OS Patch"},
       {id: "Nuclei", name: "Nuclei"},
       {id: "ZAP", name: "ZAP"},
+      {id: "Subfinder", name: "Subfinder"},
     ];
   } else {
     return [];

@@ -28,6 +28,7 @@ const DEFAULT_SCAN_COMMAND = "-sn %s";
 const DEFAULT_OS_PATCH_COMMAND = "all";
 const DEFAULT_NUCLEI_COMMAND = "-u %s -jsonl";
 const DEFAULT_ZAP_COMMAND = "-cmd -quickurl %s -quickout /dev/stdout -quickprogress";
+const DEFAULT_SUBFINDER_COMMAND = "-d %s -json";
 const DEFAULT_PROVIDER_TYPE = "Nmap";
 
 class TestScanWidget extends React.Component {
@@ -173,6 +174,16 @@ class TestScanWidget extends React.Component {
         {id: "full", name: "Full Scan", command: "-daemon -quickurl %s -quickout /dev/stdout"},
         {id: "ajax-spider", name: "AJAX Spider", command: "-cmd -quickurl %s -quickout /dev/stdout -ajax"},
       ];
+    } else if (providerType === "Subfinder") {
+      // Subfinder templates
+      return [
+        {id: "custom", name: "Custom", command: ""},
+        {id: "basic", name: "Basic Scan", command: "-d %s -json"},
+        {id: "silent", name: "Silent Mode", command: "-d %s -json -silent"},
+        {id: "recursive", name: "Recursive Scan", command: "-d %s -json -recursive"},
+        {id: "all-sources", name: "All Sources", command: "-d %s -json -all"},
+        {id: "passive", name: "Passive Only", command: "-d %s -json -passive"},
+      ];
     } else {
       // Nmap templates
       return [
@@ -195,6 +206,8 @@ class TestScanWidget extends React.Component {
       return DEFAULT_NUCLEI_COMMAND;
     } else if (providerType === "ZAP") {
       return DEFAULT_ZAP_COMMAND;
+    } else if (providerType === "Subfinder") {
+      return DEFAULT_SUBFINDER_COMMAND;
     }
     return DEFAULT_SCAN_COMMAND;
   }
