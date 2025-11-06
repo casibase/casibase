@@ -14,7 +14,8 @@
 
 import * as Setting from "../Setting";
 
-export function getDashBoardData(daysBefore = "30", selectedUser = "All", field = "unit,diseaseCategory,action") {
+//https://med.casibase.com/api/get-activities-dashboard?days=100&selectedUser=All&field=section,diseaseCategory,action,response,region,city,client_ip,organization,user_agent
+export function getDashBoardData(daysBefore = "100", selectedUser = "All", field = "section,diseaseCategory,action,response,region,city,client_ip,organization,user_agent") {
   return fetch(`${Setting.ServerUrl}/api/get-activities-dashboard?days=${daysBefore}&selectedUser=${selectedUser}&field=${field}`, {
     method: "GET",
     credentials: "include",
