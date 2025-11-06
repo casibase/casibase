@@ -20,6 +20,7 @@ import i18next from "i18next";
 import NmapResultRenderer from "../renderers/NmapResultRenderer";
 import OsPatchResultRenderer from "../renderers/OsPatchResultRenderer";
 import NucleiResultRenderer from "../renderers/NucleiResultRenderer";
+import ZapResultRenderer from "../renderers/ZapResultRenderer";
 
 require("codemirror/theme/material-darker.css");
 
@@ -116,6 +117,7 @@ export function ScanResultRenderer({scanResult, scanRawResult, providerType, pro
             />
           )}
           {providerType === "Nuclei" && <NucleiResultRenderer result={scanResult} />}
+          {providerType === "ZAP" && <ZapResultRenderer result={scanResult} />}
         </div>
       </TabPane>
       <TabPane tab={i18next.t("scan:Raw JSON")} key="raw">

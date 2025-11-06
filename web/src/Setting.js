@@ -1034,6 +1034,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_nuclei.png`,
         url: "https://github.com/projectdiscovery/nuclei",
       },
+      "ZAP": {
+        logo: `${StaticBaseUrl}/img/social_zap.png`,
+        url: "https://github.com/zaproxy/zaproxy",
+      },
     },
   };
 
@@ -1273,6 +1277,7 @@ export function getProviderTypeOptions(category) {
       {id: "Nmap", name: "Nmap"},
       {id: "OS Patch", name: "OS Patch"},
       {id: "Nuclei", name: "Nuclei"},
+      {id: "ZAP", name: "ZAP"},
     ];
   } else {
     return [];
