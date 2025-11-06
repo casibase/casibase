@@ -47,7 +47,7 @@ func (c *ApiController) GetVersionInfo() {
 		errInfo = "Git error: " + err.Error()
 	}
 
-	if versionInfo.Version != "" {
+	if versionInfo.Version != "" || versionInfo.CommitId != "" {
 		c.ResponseOk(versionInfo)
 		return
 	}
