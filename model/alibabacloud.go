@@ -184,8 +184,12 @@ func buildMessages(question string, history []*RawMessage, prompt string, knowle
 	for i := len(history) - 1; i >= 0; i-- {
 		historyMessage := history[i]
 		content := &qwen.TextContent{Text: historyMessage.Text}
+		role := "user"
+		if historyMessage.Author == "AI" {
+			role = "assistant"
+		}
 		messages = append(messages, qwen.Message[*qwen.TextContent]{
-			Role:    "user",
+			Role:    role,
 			Content: content,
 		})
 	}
