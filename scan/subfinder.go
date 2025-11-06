@@ -249,7 +249,11 @@ func (p *SubfinderScanProvider) GetResultSummary(result string) string {
 	// Count unique sources
 	sourceCount := len(scanResult.Summary.BySource)
 	if sourceCount > 0 {
-		return fmt.Sprintf("%d %s from %d sources", total, subdomainWord, sourceCount)
+		sourceWord := "sources"
+		if sourceCount == 1 {
+			sourceWord = "source"
+		}
+		return fmt.Sprintf("%d %s from %d %s", total, subdomainWord, sourceCount, sourceWord)
 	}
 
 	return fmt.Sprintf("%d %s found", total, subdomainWord)

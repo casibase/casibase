@@ -172,7 +172,7 @@ func TestSubfinderGetResultSummary(t *testing.T) {
 					BySource:        map[string]int{"crtsh": 1},
 				},
 			},
-			expected: "1 subdomain from 1 sources",
+			expected: "1 subdomain from 1 source",
 		},
 	}
 
