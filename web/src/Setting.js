@@ -1030,6 +1030,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_windows.png`,
         url: "https://learn.microsoft.com/en-us/windows/deployment/update/",
       },
+      "Nuclei": {
+        logo: `${StaticBaseUrl}/img/social_nuclei.png`,
+        url: "https://github.com/projectdiscovery/nuclei",
+      },
     },
   };
 
@@ -1252,6 +1256,7 @@ export function getProviderTypeOptions(category) {
     return [
       {id: "Nmap", name: "Nmap"},
       {id: "OS Patch", name: "OS Patch"},
+      {id: "Nuclei", name: "Nuclei"},
     ];
   } else {
     return [];

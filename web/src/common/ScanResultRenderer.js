@@ -19,6 +19,7 @@ import "codemirror/lib/codemirror.css";
 import i18next from "i18next";
 import NmapResultRenderer from "../renderers/NmapResultRenderer";
 import OsPatchResultRenderer from "../renderers/OsPatchResultRenderer";
+import NucleiResultRenderer from "../renderers/NucleiResultRenderer";
 
 require("codemirror/theme/material-darker.css");
 
@@ -114,6 +115,7 @@ export function ScanResultRenderer({scanResult, scanRawResult, providerType, pro
               onRefresh={onRefresh}
             />
           )}
+          {providerType === "Nuclei" && <NucleiResultRenderer result={scanResult} />}
         </div>
       </TabPane>
       <TabPane tab={i18next.t("scan:Raw JSON")} key="raw">
