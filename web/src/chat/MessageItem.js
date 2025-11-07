@@ -390,7 +390,7 @@ const MessageItem = ({
                   <div style={{fontWeight: "bold", marginBottom: "4px", color: "#666"}}>
                     {i18next.t("chat:Web Search Results")}:
                   </div>
-                  <div dangerouslySetInnerHTML={{__html: renderText(message.searchResults)}} />
+                  {renderText(message.searchResults)}
                 </div>
               )}
               {message.author === "AI" && isLastMessage && (

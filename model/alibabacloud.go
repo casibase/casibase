@@ -184,7 +184,9 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 
 	// If web search is enabled, try to extract and emit search results
 	if webSearchEnabled {
-		// Marshal the response to JSON and unmarshal to our extended type
+		// Note: We use JSON marshal/unmarshal to extract SearchInfo because the dashscopego
+		// library's OutputResponse type doesn't include this field. This is a pragmatic
+		// workaround until the library is updated to include SearchInfo.
 		respJSON, err := json.Marshal(resp)
 		if err == nil {
 			var extResp ExtendedResponse
@@ -197,7 +199,7 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 						err := flushDataThink(searchText, "search", writer, lang)
 						if err != nil {
 							// Log error but don't fail the request
-							fmt.Printf("Warning: Failed to emit search results: %v\n", err)
+							fmt.Printf("[Warning] Failed to emit search results: %v\n", err)
 						}
 					}
 				}
