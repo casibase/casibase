@@ -16,6 +16,7 @@ package model
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -31,6 +32,30 @@ type AlibabacloudModelProvider struct {
 	apiKey      string
 	temperature float32
 	topP        float32
+}
+
+// SearchResult represents a single web search result
+type SearchResult struct {
+	Title string `json:"title"`
+	URL   string `json:"url"`
+}
+
+// SearchInfo contains web search results
+type SearchInfo struct {
+	SearchResults []SearchResult `json:"search_results"`
+}
+
+// ExtendedOutput extends the qwen Output with search info
+type ExtendedOutput struct {
+	Choices    []interface{} `json:"choices"`
+	SearchInfo *SearchInfo   `json:"search_info,omitempty"`
+}
+
+// ExtendedResponse is used to capture search results from the API response
+type ExtendedResponse struct {
+	Output    ExtendedOutput `json:"output"`
+	Usage     interface{}    `json:"usage"`
+	RequestID string         `json:"request_id"`
 }
 
 func NewAlibabacloudModelProvider(subType string, apiKey string, temperature float32, topP float32) (*AlibabacloudModelProvider, error) {
@@ -124,6 +149,7 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 		SetTopP(float64(p.topP)).
 		SetIncrementalOutput(true)
 
+	webSearchEnabled := false
 	if agentInfo != nil && agentInfo.AgentClients != nil && agentInfo.AgentClients.WebSearchEnabled {
 		params.SetEnableSearch(true)
 		params.SetSearchOptions(&qwen.SearchOptions{
@@ -131,6 +157,7 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 			EnableSource:   true,
 			EnableCitation: true,
 		})
+		webSearchEnabled = true
 	}
 
 	streamCallbackFn := func(ctx context.Context, typ string, chunk []byte) error {
@@ -155,6 +182,29 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 		return nil, err
 	}
 
+	// If web search is enabled, try to extract and emit search results
+	if webSearchEnabled {
+		// Marshal the response to JSON and unmarshal to our extended type
+		respJSON, err := json.Marshal(resp)
+		if err == nil {
+			var extResp ExtendedResponse
+			if err := json.Unmarshal(respJSON, &extResp); err == nil {
+				if extResp.Output.SearchInfo != nil && len(extResp.Output.SearchInfo.SearchResults) > 0 {
+					// Format search results
+					searchText := formatSearchResults(extResp.Output.SearchInfo.SearchResults)
+					if searchText != "" {
+						// Emit search results as a "search" event
+						err := flushDataThink(searchText, "search", writer, lang)
+						if err != nil {
+							// Log error but don't fail the request
+							fmt.Printf("Warning: Failed to emit search results: %v\n", err)
+						}
+					}
+				}
+			}
+		}
+	}
+
 	modelResult := &ModelResult{
 		PromptTokenCount:   resp.Usage.InputTokens,
 		ResponseTokenCount: resp.Usage.OutputTokens,
@@ -168,6 +218,19 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 
 	flusher.Flush()
 	return modelResult, nil
+}
+
+// formatSearchResults formats search results into markdown links
+func formatSearchResults(results []SearchResult) string {
+	if len(results) == 0 {
+		return ""
+	}
+
+	var sb strings.Builder
+	for i, result := range results {
+		sb.WriteString(fmt.Sprintf("[%d] %s (%s)\n", i+1, result.Title, result.URL))
+	}
+	return sb.String()
 }
 
 func buildMessages(question string, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) []qwen.Message[*qwen.TextContent] {

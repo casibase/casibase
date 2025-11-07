@@ -380,6 +380,19 @@ const MessageItem = ({
                   isRegenerating={isRegenerating}
                 />
               )}
+              {message.author === "AI" && message.searchResults && (
+                <div style={{
+                  padding: "8px",
+                  backgroundColor: "#f5f5f5",
+                  borderRadius: "8px",
+                  fontSize: "0.9em",
+                }}>
+                  <div style={{fontWeight: "bold", marginBottom: "4px", color: "#666"}}>
+                    {i18next.t("chat:Web Search Results")}:
+                  </div>
+                  <div dangerouslySetInnerHTML={{__html: renderText(message.searchResults)}} />
+                </div>
+              )}
               {message.author === "AI" && isLastMessage && (
                 <MessageSuggestions message={message} sendMessage={sendMessage} />
               )}

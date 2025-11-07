@@ -69,6 +69,7 @@ type Message struct {
 	DisLikeUsers      []string         `json:"dislikeUsers"`
 	Suggestions       []Suggestion     `json:"suggestions"`
 	ToolCalls         []model.ToolCall `xorm:"mediumtext" json:"toolCalls"`
+	SearchResults     string           `xorm:"mediumtext" json:"searchResults"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {

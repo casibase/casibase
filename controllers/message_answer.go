@@ -184,7 +184,7 @@ func (c *ApiController) GetMessageAnswer() {
 		embeddingResult = &embedding.EmbeddingResult{}
 	}
 
-	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}, []byte{}, []byte{}, []byte{}}
+	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}, []byte{}, []byte{}, []byte{}, []byte{}}
 
 	if questionMessage != nil {
 		questionMessage.TokenCount = embeddingResult.TokenCount
@@ -281,6 +281,7 @@ func (c *ApiController) GetMessageAnswer() {
 	answer := writer.MessageString()
 	message.ReasonText = writer.ReasonString()
 	message.ToolCalls = model.GetToolCallsFromWriter(writer.ToolString())
+	message.SearchResults = writer.SearchString()
 	message.TokenCount = modelResult.TotalTokenCount
 	message.Price = modelResult.TotalPrice
 	message.Currency = modelResult.Currency

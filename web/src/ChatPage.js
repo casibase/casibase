@@ -432,6 +432,21 @@ class ChatPage extends BaseListPage {
               this.setState({
                 messages: res.data,
               });
+            }, (data) => {
+              // onSearch callback
+              if (!chat || (this.state.chat.name !== chat.name)) {
+                return;
+              }
+              const jsonData = JSON.parse(data);
+
+              const currentMessage = res.data[res.data.length - 1];
+              const lastMessage2 = Setting.deepCopy(currentMessage);
+              lastMessage2.searchResults = jsonData.text || "";
+              res.data[res.data.length - 1] = lastMessage2;
+
+              this.setState({
+                messages: res.data,
+              });
             }, (error) => {
               Setting.showMessage("error", Setting.getRefinedErrorText(error));
 
@@ -463,6 +478,11 @@ class ChatPage extends BaseListPage {
               // Preserve tool calls when finalizing the message
               if (res.data[res.data.length - 1].toolCalls) {
                 lastMessage2.toolCalls = res.data[res.data.length - 1].toolCalls;
+              }
+
+              // Preserve search results when finalizing the message
+              if (res.data[res.data.length - 1].searchResults) {
+                lastMessage2.searchResults = res.data[res.data.length - 1].searchResults;
               }
 
               // We're no longer in reasoning phase
