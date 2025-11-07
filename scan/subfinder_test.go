@@ -30,8 +30,8 @@ func TestParseSubfinderOutput(t *testing.T) {
 	}
 
 	// Sample JSON output from Subfinder
-	sampleOutput := `{"host":"www.example.com","input":"example.com","source":["crtsh","hackertarget"]}
-{"host":"mail.example.com","input":"example.com","source":["dnsdumpster"]}`
+	sampleOutput := `{"host":"www.example.com","input":"example.com","source":"crtsh"}
+{"host":"mail.example.com","input":"example.com","source":"dnsdumpster"}`
 
 	result := provider.parseSubfinderOutput(sampleOutput)
 
@@ -48,8 +48,8 @@ func TestParseSubfinderOutput(t *testing.T) {
 	if subdomain1.Input != "example.com" {
 		t.Errorf("Expected input example.com, got %s", subdomain1.Input)
 	}
-	if len(subdomain1.Source) != 2 {
-		t.Errorf("Expected 2 sources, got %d", len(subdomain1.Source))
+	if subdomain1.Source != "crtsh" {
+		t.Errorf("Expected source crtsh, got %s", subdomain1.Source)
 	}
 
 	// Check summary
@@ -87,7 +87,7 @@ func TestSubfinderParseResult(t *testing.T) {
 	}
 
 	// Test with valid JSON output
-	rawResult := `{"host":"test.example.com","input":"example.com","source":["crtsh"]}`
+	rawResult := `{"host":"test.example.com","input":"example.com","source":"crtsh"}`
 
 	result, err := provider.ParseResult(rawResult)
 	if err != nil {
@@ -150,9 +150,9 @@ func TestSubfinderGetResultSummary(t *testing.T) {
 			name: "Multiple subdomains from multiple sources",
 			result: SubfinderScanResult{
 				Subdomains: []SubfinderSubdomain{
-					{Host: "www.example.com", Source: []string{"crtsh"}},
-					{Host: "mail.example.com", Source: []string{"dnsdumpster"}},
-					{Host: "api.example.com", Source: []string{"hackertarget"}},
+					{Host: "www.example.com", Source: "crtsh"},
+					{Host: "mail.example.com", Source: "dnsdumpster"},
+					{Host: "api.example.com", Source: "hackertarget"},
 				},
 				Summary: SubfinderSummary{
 					TotalSubdomains: 3,
@@ -165,7 +165,7 @@ func TestSubfinderGetResultSummary(t *testing.T) {
 			name: "Single subdomain",
 			result: SubfinderScanResult{
 				Subdomains: []SubfinderSubdomain{
-					{Host: "www.example.com", Source: []string{"crtsh"}},
+					{Host: "www.example.com", Source: "crtsh"},
 				},
 				Summary: SubfinderSummary{
 					TotalSubdomains: 1,

@@ -73,13 +73,13 @@ function SubfinderResultRenderer({result}) {
       title: "Sources",
       dataIndex: "source",
       key: "source",
-      render: (sources) => (
+      render: (source) => (
         <>
-          {sources && sources.map((source, idx) => (
-            <Tag key={idx} color="blue" style={{marginBottom: 4}}>
+          {source && (
+            <Tag color="blue" style={{marginBottom: 4}}>
               {source}
             </Tag>
-          ))}
+          )}
         </>
       ),
     },

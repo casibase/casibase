@@ -24,9 +24,9 @@ import (
 
 // SubfinderSubdomain represents a single subdomain found by Subfinder
 type SubfinderSubdomain struct {
-	Host   string   `json:"host"`
-	Input  string   `json:"input"`
-	Source []string `json:"source,omitempty"`
+	Host   string `json:"host"`
+	Input  string `json:"input"`
+	Source string `json:"source,omitempty"`
 }
 
 // SubfinderScanResult represents the complete Subfinder scan result
@@ -213,8 +213,8 @@ func (p *SubfinderScanProvider) parseSubfinderOutput(output string) *SubfinderSc
 
 		// Update summary
 		result.Summary.TotalSubdomains++
-		for _, source := range subdomain.Source {
-			result.Summary.BySource[source]++
+		if subdomain.Source != "" {
+			result.Summary.BySource[subdomain.Source]++
 		}
 	}
 
