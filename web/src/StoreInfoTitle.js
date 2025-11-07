@@ -113,11 +113,17 @@ const StoreInfoTitle = (props) => {
             const providers = res.data.filter(provider =>
               provider.category === "Model" && defaultStore.childModelProviders.includes(provider.name)
             );
+            if (storeInfo?.modelProvider && !providers.some(p => p.name === storeInfo.modelProvider)) {
+              const missingProvider = res.data.find(p => p.name === storeInfo.modelProvider && p.category === "Model");
+              if (missingProvider) {
+                providers.unshift(missingProvider);
+              }
+            }
             setModelProviders(providers);
           }
         });
     }
-  }, [chat, defaultStore]);
+  }, [chat, defaultStore, storeInfo]);
 
   // Combined update function to handle both store and provider updates
   const updateStoreAndChat = async(newStore, newProvider) => {
