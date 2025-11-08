@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Badge, Card, Descriptions, Empty, Table, Tag} from "antd";
-import {CheckCircleOutlined, CloseCircleOutlined, GlobalOutlined, LinkOutlined} from "@ant-design/icons";
+import {GlobalOutlined, LinkOutlined} from "@ant-design/icons";
 
 /**
  * HttpxResultRenderer - Renders structured httpx scan results
