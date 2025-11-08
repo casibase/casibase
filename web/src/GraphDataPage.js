@@ -200,7 +200,7 @@ class GraphDataPage extends React.Component {
     const defaultData = {nodes: [], links: [], categories: []};
     const text = this.props.graphText || "";
     if (text.trim() === "") {
-      return {data: defaultData, errorText: "Graph text is empty"};
+      return {data: defaultData, errorText: ""};
     }
     try {
       const obj = JSON.parse(text);

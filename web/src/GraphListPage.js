@@ -115,6 +115,13 @@ class GraphListPage extends BaseListPage {
         ...this.getColumnSearchProps("displayName"),
       },
       {
+        title: i18next.t("general:Created time"),
+        dataIndex: "createdTime",
+        key: "createdTime",
+        width: "200px",
+        sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
+      },
+      {
         title: i18next.t("provider:Category"),
         dataIndex: "category",
         key: "category",
@@ -135,7 +142,7 @@ class GraphListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("store:Store"),
+        title: i18next.t("general:Store"),
         dataIndex: "store",
         key: "store",
         width: "120px",
@@ -145,7 +152,7 @@ class GraphListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Start time"),
+        title: i18next.t("video:Start time (s)"),
         dataIndex: "startTime",
         key: "startTime",
         width: "180px",
@@ -155,7 +162,7 @@ class GraphListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:End time"),
+        title: i18next.t("video:End time (s)"),
         dataIndex: "endTime",
         key: "endTime",
         width: "180px",
@@ -165,15 +172,7 @@ class GraphListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Created time"),
-        dataIndex: "createdTime",
-        key: "createdTime",
-        width: "200px",
-        sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
-      },
-      {
-        title: i18next.t("general:Preview"),
-        fixed: "right",
+        title: i18next.t("general:Text"),
         dataIndex: "text",
         key: "text",
         width: "200px",
@@ -212,10 +211,11 @@ class GraphListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Graphs"),
+        title: i18next.t("general:Preview"),
         dataIndex: "text",
-        key: "graph",
+        key: "preview",
         width: "240px",
+        fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, record, index) => {
           return (
             <div style={{height: "240px", width: "100%"}}>

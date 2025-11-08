@@ -14,9 +14,9 @@
 
 import React from "react";
 import {Card, Table} from "antd";
-import {Link} from "react-router-dom";
 import i18next from "i18next";
 import * as Setting from "./Setting";
+import * as Conf from "./Conf";
 
 class GraphChatTable extends React.Component {
   render() {
@@ -34,9 +34,9 @@ class GraphChatTable extends React.Component {
         width: "150px",
         render: (text, record, index) => {
           return (
-            <Link to={`/chats/${text}`}>
+            <a target="_blank" rel="noreferrer" href={`/chats/${text}`}>
               {text}
-            </Link>
+            </a>
           );
         },
       },
@@ -45,12 +45,30 @@ class GraphChatTable extends React.Component {
         dataIndex: "displayName",
         key: "displayName",
         width: "200px",
+        render: (text, record, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={`/chats/${record.name}`}>
+              {text}
+            </a>
+          );
+        },
       },
       {
         title: i18next.t("general:User"),
         dataIndex: "user",
         key: "user",
         width: "120px",
+        render: (text, record, index) => {
+          if (text.startsWith("u-")) {
+            return text;
+          }
+
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${Conf.AuthConfig.organizationName}/${text}`)}>
+              {text}
+            </a>
+          );
+        },
       },
       {
         title: i18next.t("general:Created time"),
@@ -71,7 +89,7 @@ class GraphChatTable extends React.Component {
         },
       },
       {
-        title: i18next.t("chat:Count"),
+        title: i18next.t("store:Message count"),
         dataIndex: "messageCount",
         key: "messageCount",
         width: "100px",
@@ -85,7 +103,7 @@ class GraphChatTable extends React.Component {
     ];
 
     return (
-      <Card size="small" title={i18next.t("general:Filtered Chats")} style={{marginTop: "20px", marginLeft: "5px"}} type="inner">
+      <Card size="small" title={i18next.t("general:Chats")} style={{marginTop: "20px", marginLeft: "5px"}} type="inner">
         <Table
           columns={columns}
           dataSource={chats}

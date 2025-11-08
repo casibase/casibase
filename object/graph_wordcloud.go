@@ -131,7 +131,7 @@ func GenerateWordCloudData(messages []*Message) (string, error) {
 	}
 
 	// Convert to JSON
-	jsonData, err := json.Marshal(wordList)
+	jsonData, err := json.MarshalIndent(wordList, "", "  ")
 	if err != nil {
 		return "", err
 	}

@@ -157,59 +157,6 @@ class GraphEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        {this.state.graph.category === "Chats" && (
-          <>
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("store:Store"), i18next.t("store:Store - Tooltip"))} :
-              </Col>
-              <Col span={22} >
-                <Select
-                  style={{width: "100%"}}
-                  value={this.state.graph.store}
-                  onChange={value => {
-                    this.updateGraphField("store", value);
-                  }}
-                  allowClear
-                >
-                  {this.state.stores.map((store) => (
-                    <Select.Option key={store.name} value={store.name}>{store.displayName || store.name}</Select.Option>
-                  ))}
-                </Select>
-              </Col>
-            </Row>
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("general:Start time"), i18next.t("general:Start time - Tooltip"))} :
-              </Col>
-              <Col span={22} >
-                <DatePicker
-                  showTime
-                  style={{width: "100%"}}
-                  value={this.state.graph.startTime ? moment(this.state.graph.startTime) : null}
-                  onChange={(date, dateString) => {
-                    this.updateGraphField("startTime", dateString);
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("general:End time"), i18next.t("general:End time - Tooltip"))} :
-              </Col>
-              <Col span={22} >
-                <DatePicker
-                  showTime
-                  style={{width: "100%"}}
-                  value={this.state.graph.endTime ? moment(this.state.graph.endTime) : null}
-                  onChange={(date, dateString) => {
-                    this.updateGraphField("endTime", dateString);
-                  }}
-                />
-              </Col>
-            </Row>
-          </>
-        )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("graph:Layout"), i18next.t("graph:Layout - Tooltip"))} :
@@ -238,16 +185,66 @@ class GraphEditPage extends React.Component {
           </Col>
         </Row>
         {this.state.graph.category === "Chats" && (
-          <Row style={{marginTop: "20px"}} >
-            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-              {i18next.t("general:Generate")}:
-            </Col>
-            <Col span={22} >
-              <Button type="primary" onClick={() => this.generateGraphData()}>
-                {i18next.t("general:Generate Word Cloud Data")}
-              </Button>
-            </Col>
-          </Row>
+          <>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Store"), i18next.t("general:Store - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select
+                  style={{width: "100%"}}
+                  value={this.state.graph.store}
+                  onChange={value => {
+                    this.updateGraphField("store", value);
+                  }}
+                  allowClear
+                >
+                  {this.state.stores.map((store) => (
+                    <Select.Option key={store.name} value={store.name}>{store.displayName || store.name}</Select.Option>
+                  ))}
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("video:Start time (s)"), i18next.t("video:Start time (s) - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <DatePicker
+                  showTime
+                  style={{width: "100%"}}
+                  value={this.state.graph.startTime ? moment(this.state.graph.startTime) : null}
+                  onChange={(date, dateString) => {
+                    this.updateGraphField("startTime", dateString);
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("video:End time (s)"), i18next.t("video:End time (s) - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <DatePicker
+                  showTime
+                  style={{width: "100%"}}
+                  value={this.state.graph.endTime ? moment(this.state.graph.endTime) : null}
+                  onChange={(date, dateString) => {
+                    this.updateGraphField("endTime", dateString);
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              </Col>
+              <Col span={22} >
+                <Button type="primary" onClick={() => this.generateGraphData()}>
+                  {i18next.t("general:Generate")}
+                </Button>
+              </Col>
+            </Row>
+          </>
         )}
         {this.state.graph.category !== "Chats" && (
           <Row style={{marginTop: "20px"}} >

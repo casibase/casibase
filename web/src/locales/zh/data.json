@@ -302,7 +302,7 @@
     "Footer HTML - Tooltip": "页脚 HTML - 提示信息",
     "Forms": "表单",
     "Go to writable demo site?": "前往可写的演示站点？",
-    "Graphs": "图",
+    "Graphs": "图表",
     "HTML title": "HTML 标题",
     "HTML title - Tooltip": "HTML 标题 - 提示信息",
     "Home": "首页",
@@ -501,7 +501,7 @@
   "graph": {
     "Circular": "环形",
     "Compute": "计算",
-    "Edit Graph": "编辑图",
+    "Edit Graph": "编辑图表",
     "Force": "力导向",
     "Grid": "网格",
     "Layout": "布局",
