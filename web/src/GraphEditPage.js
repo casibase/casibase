@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, DatePicker, Input, Row, Select} from "antd";
+import {Button, Card, Col, DatePicker, Input, Row, Select, Table} from "antd";
 import * as GraphBackend from "./backend/GraphBackend";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
@@ -21,6 +21,7 @@ import i18next from "i18next";
 import GraphDataPage from "./GraphDataPage";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import moment from "moment";
+import {Link} from "react-router-dom";
 
 class GraphEditPage extends React.Component {
   constructor(props) {
@@ -31,6 +32,7 @@ class GraphEditPage extends React.Component {
       graph: null,
       graphCount: "key",
       stores: [],
+      filteredChats: [],
     };
   }
 
@@ -56,6 +58,8 @@ class GraphEditPage extends React.Component {
         if (res.status === "ok") {
           this.setState({
             graph: res.data,
+          }, () => {
+            this.loadFilteredChats();
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -90,6 +94,7 @@ class GraphEditPage extends React.Component {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully generated"));
           this.getGraph();
+          this.loadFilteredChats();
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to generate")}: ${res.msg}`);
         }
@@ -97,6 +102,95 @@ class GraphEditPage extends React.Component {
       .catch(error => {
         Setting.showMessage("error", `${i18next.t("general:Failed to generate")}: ${error}`);
       });
+  }
+
+  loadFilteredChats() {
+    if (this.state.graph && this.state.graph.category === "Chats") {
+      GraphBackend.getGraphChats(this.state.graph.owner, this.state.graph.name)
+        .then((res) => {
+          if (res.status === "ok") {
+            this.setState({
+              filteredChats: res.data || [],
+            });
+          }
+        });
+    }
+  }
+
+  renderChatTable() {
+    if (!this.state.graph || this.state.graph.category !== "Chats" || this.state.filteredChats.length === 0) {
+      return null;
+    }
+
+    const columns = [
+      {
+        title: i18next.t("general:Name"),
+        dataIndex: "name",
+        key: "name",
+        width: "150px",
+        render: (text, record, index) => {
+          return (
+            <Link to={`/chats/${text}`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Display name"),
+        dataIndex: "displayName",
+        key: "displayName",
+        width: "200px",
+      },
+      {
+        title: i18next.t("general:User"),
+        dataIndex: "user",
+        key: "user",
+        width: "120px",
+      },
+      {
+        title: i18next.t("general:Created time"),
+        dataIndex: "createdTime",
+        key: "createdTime",
+        width: "180px",
+        render: (text, record, index) => {
+          return Setting.getFormattedDate(text);
+        },
+      },
+      {
+        title: i18next.t("general:Updated time"),
+        dataIndex: "updatedTime",
+        key: "updatedTime",
+        width: "180px",
+        render: (text, record, index) => {
+          return Setting.getFormattedDate(text);
+        },
+      },
+      {
+        title: i18next.t("chat:Count"),
+        dataIndex: "messageCount",
+        key: "messageCount",
+        width: "100px",
+      },
+      {
+        title: i18next.t("chat:Token count"),
+        dataIndex: "tokenCount",
+        key: "tokenCount",
+        width: "120px",
+      },
+    ];
+
+    return (
+      <Card size="small" title={i18next.t("general:Filtered Chats")} style={{marginTop: "20px", marginLeft: "5px"}} type="inner">
+        <Table
+          columns={columns}
+          dataSource={this.state.filteredChats}
+          rowKey="name"
+          size="middle"
+          pagination={{pageSize: 10}}
+        />
+      </Card>
+    );
   }
 
   renderGraph() {
@@ -287,6 +381,14 @@ class GraphEditPage extends React.Component {
     );
   }
 
+  renderFilteredChatsSection() {
+    if (!this.state.graph || this.state.graph.category !== "Chats" || this.state.filteredChats.length === 0) {
+      return null;
+    }
+
+    return this.renderChatTable();
+  }
+
   submitGraphEdit(exitAfterSave) {
     const graph = Setting.deepCopy(this.state.graph);
     if (!exitAfterSave) {
@@ -325,6 +427,9 @@ class GraphEditPage extends React.Component {
       <div>
         {
           this.state.graph !== null ? this.renderGraph() : null
+        }
+        {
+          this.renderFilteredChatsSection()
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitGraphEdit(false)}>{i18next.t("general:Save")}</Button>
