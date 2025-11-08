@@ -23,6 +23,7 @@ import * as GraphBackend from "./backend/GraphBackend";
 import i18next from "i18next";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import GraphDataPage from "./GraphDataPage";
+import GraphChatDataPage from "./GraphChatDataPage";
 
 class GraphListPage extends BaseListPage {
   constructor(props) {
@@ -120,45 +121,46 @@ class GraphListPage extends BaseListPage {
         key: "createdTime",
         width: "200px",
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
+        render: (text, record, index) => {
+          return Setting.getFormattedDate(text);
+        },
       },
       {
         title: i18next.t("provider:Category"),
         dataIndex: "category",
         key: "category",
         width: "140px",
-        sorter: (a, b) => (a.category || "Default").localeCompare(b.category || "Default"),
-        render: (text, record, index) => {
-          return text || "Default";
-        },
+        sorter: (a, b) => a.category.localeCompare(b.category),
       },
       {
         title: i18next.t("graph:Layout"),
         dataIndex: "layout",
         key: "layout",
         width: "120px",
-        sorter: (a, b) => (a.layout || "").localeCompare(b.layout || ""),
-        render: (text, record, index) => {
-          return text || "force";
-        },
+        sorter: (a, b) => a.layout.localeCompare(b.layout),
+      },
+      {
+        title: i18next.t("graph:Threshold"),
+        dataIndex: "density",
+        key: "density",
+        width: "130px",
+        sorter: (a, b) => a.density - b.density,
       },
       {
         title: i18next.t("general:Store"),
         dataIndex: "store",
         key: "store",
         width: "120px",
-        sorter: (a, b) => (a.store || "").localeCompare(b.store || ""),
-        render: (text, record, index) => {
-          return text || "-";
-        },
+        sorter: (a, b) => a.store.localeCompare(b.store),
       },
       {
         title: i18next.t("video:Start time (s)"),
         dataIndex: "startTime",
         key: "startTime",
         width: "180px",
-        sorter: (a, b) => (a.startTime || "").localeCompare(b.startTime || ""),
+        sorter: (a, b) => a.startTime.localeCompare(b.startTime),
         render: (text, record, index) => {
-          return text || "-";
+          return Setting.getFormattedDate(text);
         },
       },
       {
@@ -166,9 +168,9 @@ class GraphListPage extends BaseListPage {
         dataIndex: "endTime",
         key: "endTime",
         width: "180px",
-        sorter: (a, b) => (a.endTime || "").localeCompare(b.endTime || ""),
+        sorter: (a, b) => a.endTime.localeCompare(b.endTime),
         render: (text, record, index) => {
-          return text || "-";
+          return Setting.getFormattedDate(text);
         },
       },
       {
@@ -219,15 +221,19 @@ class GraphListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <div style={{height: "240px", width: "100%"}}>
-              <GraphDataPage
-                account={this.props.account}
-                owner={record.owner}
-                graphName={record.name}
-                graphText={text}
-                category={record.category}
-                layout={record.layout}
-                showLegend={false}
-              />
+              {record.category === "Chats" ? (
+                <GraphChatDataPage graphText={text} showBorder={false} />
+              ) : (
+                <GraphDataPage
+                  account={this.props.account}
+                  owner={record.owner}
+                  graphName={record.name}
+                  graphText={text}
+                  category={record.category}
+                  layout={record.layout}
+                  showLegend={false}
+                />
+              )}
             </div>
           );
         },

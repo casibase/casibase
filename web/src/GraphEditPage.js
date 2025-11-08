@@ -271,10 +271,11 @@ class GraphEditPage extends React.Component {
             </Row>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("graph:Word Threshold"), i18next.t("graph:Word Threshold - Tooltip"))} :
+                {Setting.getLabel(i18next.t("graph:Threshold"), i18next.t("graph:Threshold - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Input
+                  style={{width: "200px"}}
                   type="number"
                   min={1}
                   step={1}
@@ -299,7 +300,7 @@ class GraphEditPage extends React.Component {
         {this.state.graph.category !== "Chats" && (
           <Row style={{marginTop: "20px"}} >
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-              {Setting.getLabel(i18next.t("graph:Node Density"), i18next.t("graph:Node Density - Tooltip"))} :
+              {Setting.getLabel(i18next.t("graph:Node density"), i18next.t("graph:Node density - Tooltip"))} :
             </Col>
             <Col span={22} >
               <Input

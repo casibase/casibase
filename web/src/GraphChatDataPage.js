@@ -67,16 +67,6 @@ class GraphChatDataPage extends React.Component {
   getWordCloudOption() {
     const {wordCloud} = this.state.data;
 
-    if (!wordCloud || wordCloud.length === 0) {
-      return {
-        title: {
-          text: "No data available",
-          left: "center",
-          top: "center",
-        },
-      };
-    }
-
     return {
       tooltip: {
         show: true,
