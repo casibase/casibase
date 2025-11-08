@@ -14,6 +14,7 @@
 
 import React from "react";
 import ReactEcharts from "echarts-for-react";
+import "echarts-wordcloud";
 import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as AssetBackend from "./backend/AssetBackend";
@@ -168,6 +169,17 @@ class GraphDataPage extends React.Component {
           this.props.onErrorChange(`Error fetching assets: ${error.message}`);
         }
       }
+    } else if (category === "Chats") {
+      // For Chats category, parse word cloud data
+      const result = this.parseWordCloudData();
+      this.setState({
+        data: result.data,
+        errorText: result.errorText,
+        renderError: "",
+      });
+      if (this.props.onErrorChange) {
+        this.props.onErrorChange(result.errorText);
+      }
     } else {
       // Default behavior: parse graph text
       const result = this.parseData();
@@ -216,9 +228,90 @@ class GraphDataPage extends React.Component {
     }
   }
 
+  parseWordCloudData() {
+    const defaultData = {wordCloud: []};
+    const text = this.props.graphText || "";
+    if (text.trim() === "") {
+      return {data: defaultData, errorText: "Word cloud data is empty"};
+    }
+    try {
+      const wordCloud = JSON.parse(text);
+      if (Array.isArray(wordCloud)) {
+        return {data: {wordCloud}, errorText: ""};
+      } else {
+        return {data: defaultData, errorText: "Invalid word cloud format: must be an array"};
+      }
+    } catch (e) {
+      return {data: defaultData, errorText: `JSON parse error: ${e.message}`};
+    }
+  }
+
+  getWordCloudOption() {
+    const {wordCloud} = this.state.data;
+
+    if (!wordCloud || wordCloud.length === 0) {
+      return {
+        title: {
+          text: "No data available",
+          left: "center",
+          top: "center",
+        },
+      };
+    }
+
+    return {
+      tooltip: {
+        show: true,
+        formatter: function(params) {
+          return `${params.name}: ${params.value}`;
+        },
+      },
+      series: [{
+        type: "wordCloud",
+        shape: "circle",
+        left: "center",
+        top: "center",
+        width: "90%",
+        height: "90%",
+        sizeRange: [12, 60],
+        rotationRange: [-45, 45],
+        rotationStep: 15,
+        gridSize: 8,
+        drawOutOfBound: false,
+        layoutAnimation: true,
+        textStyle: {
+          fontFamily: "sans-serif",
+          fontWeight: "bold",
+          color: function() {
+            const colors = [
+              "#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de",
+              "#3ba272", "#fc8452", "#9a60b4", "#ea7ccc", "#5470c6",
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+          },
+        },
+        emphasis: {
+          focus: "self",
+          textStyle: {
+            textShadowBlur: 10,
+            textShadowColor: "#333",
+          },
+        },
+        data: wordCloud,
+      }],
+    };
+  }
+
   getOption() {
-    const {nodes, links, categories} = this.state.data;
     const layout = this.props.layout || "force";
+    const category = this.props.category || "Default";
+
+    // Handle word cloud layout for Chats category
+    if (layout === "wordcloud" && category === "Chats") {
+      return this.getWordCloudOption();
+    }
+
+    const {nodes, links, categories} = this.state.data;
     const density = this.props.density || 5; // Default density is 5 (medium)
     const themeColor = Setting.getThemeColor();
 

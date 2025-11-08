@@ -135,6 +135,16 @@ class GraphListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("store:Store"),
+        dataIndex: "store",
+        key: "store",
+        width: "120px",
+        sorter: (a, b) => (a.store || "").localeCompare(b.store || ""),
+        render: (text, record, index) => {
+          return text || "-";
+        },
+      },
+      {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",

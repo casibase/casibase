@@ -13,12 +13,14 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row, Select} from "antd";
+import {Button, Card, Col, DatePicker, Input, Row, Select} from "antd";
 import * as GraphBackend from "./backend/GraphBackend";
+import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import GraphDataPage from "./GraphDataPage";
 import {Controlled as CodeMirror} from "react-codemirror2";
+import moment from "moment";
 
 class GraphEditPage extends React.Component {
   constructor(props) {
@@ -28,11 +30,24 @@ class GraphEditPage extends React.Component {
       graphName: props.match.params.graphName,
       graph: null,
       graphCount: "key",
+      stores: [],
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getGraph();
+    this.getStores();
+  }
+
+  getStores() {
+    StoreBackend.getStores(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            stores: res.data || [],
+          });
+        }
+      });
   }
 
   getGraph() {
@@ -67,6 +82,21 @@ class GraphEditPage extends React.Component {
 
   handleErrorChange(errorText) {
     this.updateGraphField("errorText", errorText);
+  }
+
+  generateGraphData() {
+    GraphBackend.generateGraphData(this.state.graph.owner, this.state.graph.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", i18next.t("general:Successfully generated"));
+          this.getGraph();
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to generate")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to generate")}: ${error}`);
+      });
   }
 
   renderGraph() {
@@ -112,9 +142,63 @@ class GraphEditPage extends React.Component {
             >
               <Select.Option value="Default">{i18next.t("general:Default")}</Select.Option>
               <Select.Option value={"Assets"}>{i18next.t("general:Assets")}</Select.Option>
+              <Select.Option value={"Chats"}>{i18next.t("general:Chats")}</Select.Option>
             </Select>
           </Col>
         </Row>
+        {this.state.graph.category === "Chats" && (
+          <>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Store"), i18next.t("store:Store - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select
+                  style={{width: "100%"}}
+                  value={this.state.graph.store}
+                  onChange={value => {
+                    this.updateGraphField("store", value);
+                  }}
+                  allowClear
+                >
+                  {this.state.stores.map((store) => (
+                    <Select.Option key={store.name} value={store.name}>{store.displayName || store.name}</Select.Option>
+                  ))}
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Start time"), i18next.t("general:Start time - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <DatePicker
+                  showTime
+                  style={{width: "100%"}}
+                  value={this.state.graph.startTime ? moment(this.state.graph.startTime) : null}
+                  onChange={(date, dateString) => {
+                    this.updateGraphField("startTime", dateString);
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:End time"), i18next.t("general:End time - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <DatePicker
+                  showTime
+                  style={{width: "100%"}}
+                  value={this.state.graph.endTime ? moment(this.state.graph.endTime) : null}
+                  onChange={(date, dateString) => {
+                    this.updateGraphField("endTime", dateString);
+                  }}
+                />
+              </Col>
+            </Row>
+          </>
+        )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("graph:Layout"), i18next.t("graph:Layout - Tooltip"))} :
@@ -122,37 +206,57 @@ class GraphEditPage extends React.Component {
           <Col span={22} >
             <Select
               style={{width: "100%"}}
-              value={this.state.graph.layout || "force"}
+              value={this.state.graph.layout || (this.state.graph.category === "Chats" ? "wordcloud" : "force")}
               onChange={value => {
                 this.updateGraphField("layout", value);
               }}
             >
-              <Select.Option value="force">{i18next.t("graph:Force")}</Select.Option>
-              <Select.Option value="circular">{i18next.t("graph:Circular")}</Select.Option>
-              <Select.Option value="radial">{i18next.t("graph:Radial")}</Select.Option>
-              <Select.Option value="grid">{i18next.t("graph:Grid")}</Select.Option>
-              <Select.Option value="tree">{i18next.t("graph:Tree")}</Select.Option>
-              <Select.Option value="none">{i18next.t("graph:None")}</Select.Option>
+              {this.state.graph.category === "Chats" ? (
+                <Select.Option value="wordcloud">{i18next.t("graph:Word Cloud")}</Select.Option>
+              ) : (
+                <>
+                  <Select.Option value="force">{i18next.t("graph:Force")}</Select.Option>
+                  <Select.Option value="circular">{i18next.t("graph:Circular")}</Select.Option>
+                  <Select.Option value="radial">{i18next.t("graph:Radial")}</Select.Option>
+                  <Select.Option value="grid">{i18next.t("graph:Grid")}</Select.Option>
+                  <Select.Option value="tree">{i18next.t("graph:Tree")}</Select.Option>
+                  <Select.Option value="none">{i18next.t("graph:None")}</Select.Option>
+                </>
+              )}
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("graph:Node Density"), i18next.t("graph:Node Density - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input
-              type="number"
-              min={0.1}
-              max={10}
-              step={0.1}
-              value={this.state.graph.density || 5}
-              onChange={e => {
-                this.updateGraphField("density", e.target.value);
-              }}
-            />
-          </Col>
-        </Row>
+        {this.state.graph.category === "Chats" && (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              {i18next.t("general:Generate")}:
+            </Col>
+            <Col span={22} >
+              <Button type="primary" onClick={() => this.generateGraphData()}>
+                {i18next.t("general:Generate Word Cloud Data")}
+              </Button>
+            </Col>
+          </Row>
+        )}
+        {this.state.graph.category !== "Chats" && (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              {Setting.getLabel(i18next.t("graph:Node Density"), i18next.t("graph:Node Density - Tooltip"))} :
+            </Col>
+            <Col span={22} >
+              <Input
+                type="number"
+                min={0.1}
+                max={10}
+                step={0.1}
+                value={this.state.graph.density || 5}
+                onChange={e => {
+                  this.updateGraphField("density", e.target.value);
+                }}
+              />
+            </Col>
+          </Row>
+        )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
