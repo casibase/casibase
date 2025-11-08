@@ -1042,6 +1042,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_subfinder.png`,
         url: "https://github.com/projectdiscovery/subfinder",
       },
+      "httpx": {
+        logo: `${StaticBaseUrl}/img/social_httpx.png`,
+        url: "https://github.com/projectdiscovery/httpx",
+      },
     },
   };
 
@@ -1283,6 +1287,7 @@ export function getProviderTypeOptions(category) {
       {id: "Nuclei", name: "Nuclei"},
       {id: "ZAP", name: "ZAP"},
       {id: "Subfinder", name: "Subfinder"},
+      {id: "httpx", name: "httpx"},
     ];
   } else {
     return [];
