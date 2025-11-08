@@ -39,6 +39,9 @@ type Graph struct {
 	Category    string `xorm:"varchar(100)" json:"category"`
 	Layout      string `xorm:"varchar(100)" json:"layout"`
 	Density     int    `xorm:"int" json:"density"`
+	Store       string `xorm:"varchar(100)" json:"store"`
+	StartTime   string `xorm:"varchar(100)" json:"startTime"`
+	EndTime     string `xorm:"varchar(100)" json:"endTime"`
 	Text        string `xorm:"mediumtext" json:"text"`
 	ErrorText   string `xorm:"mediumtext" json:"errorText"`
 }

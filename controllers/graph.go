@@ -96,6 +96,15 @@ func (c *ApiController) GetGraph() {
 		return
 	}
 
+	// Auto-generate data for Chats category if Text is empty
+	if Graph != nil && Graph.Category == "Chats" && Graph.Text == "" {
+		err = c.generateChatGraphData(id, Graph)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+	}
+
 	c.ResponseOk(object.GetMaskedGraph(Graph, true))
 }
 

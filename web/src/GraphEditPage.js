@@ -13,12 +13,17 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row, Select} from "antd";
+import {Button, Card, Col, DatePicker, Input, Row, Select} from "antd";
 import * as GraphBackend from "./backend/GraphBackend";
+import * as ChatBackend from "./backend/ChatBackend";
+import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import GraphDataPage from "./GraphDataPage";
+import GraphChatDataPage from "./GraphChatDataPage";
+import GraphChatTable from "./GraphChatTable";
 import {Controlled as CodeMirror} from "react-codemirror2";
+import moment from "moment";
 
 class GraphEditPage extends React.Component {
   constructor(props) {
@@ -28,11 +33,25 @@ class GraphEditPage extends React.Component {
       graphName: props.match.params.graphName,
       graph: null,
       graphCount: "key",
+      stores: [],
+      filteredChats: [],
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getGraph();
+    this.getStores();
+  }
+
+  getStores() {
+    StoreBackend.getStores(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            stores: res.data || [],
+          });
+        }
+      });
   }
 
   getGraph() {
@@ -41,6 +60,8 @@ class GraphEditPage extends React.Component {
         if (res.status === "ok") {
           this.setState({
             graph: res.data,
+          }, () => {
+            this.loadFilteredChats();
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -67,6 +88,26 @@ class GraphEditPage extends React.Component {
 
   handleErrorChange(errorText) {
     this.updateGraphField("errorText", errorText);
+  }
+
+  generateGraphData() {
+    // Simply reload the graph, which will auto-generate data on the backend if Text is empty
+    this.getGraph();
+    this.loadFilteredChats();
+    Setting.showMessage("success", i18next.t("general:Successfully generated"));
+  }
+
+  loadFilteredChats() {
+    if (this.state.graph && this.state.graph.category === "Chats") {
+      ChatBackend.getChats("admin", this.state.graph.store, "", "", "", "", "", "", "", this.state.graph.startTime, this.state.graph.endTime)
+        .then((res) => {
+          if (res.status === "ok") {
+            this.setState({
+              filteredChats: res.data || [],
+            });
+          }
+        });
+    }
   }
 
   renderGraph() {
@@ -112,9 +153,63 @@ class GraphEditPage extends React.Component {
             >
               <Select.Option value="Default">{i18next.t("general:Default")}</Select.Option>
               <Select.Option value={"Assets"}>{i18next.t("general:Assets")}</Select.Option>
+              <Select.Option value={"Chats"}>{i18next.t("general:Chats")}</Select.Option>
             </Select>
           </Col>
         </Row>
+        {this.state.graph.category === "Chats" && (
+          <>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Store"), i18next.t("store:Store - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select
+                  style={{width: "100%"}}
+                  value={this.state.graph.store}
+                  onChange={value => {
+                    this.updateGraphField("store", value);
+                  }}
+                  allowClear
+                >
+                  {this.state.stores.map((store) => (
+                    <Select.Option key={store.name} value={store.name}>{store.displayName || store.name}</Select.Option>
+                  ))}
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Start time"), i18next.t("general:Start time - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <DatePicker
+                  showTime
+                  style={{width: "100%"}}
+                  value={this.state.graph.startTime ? moment(this.state.graph.startTime) : null}
+                  onChange={(date, dateString) => {
+                    this.updateGraphField("startTime", dateString);
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:End time"), i18next.t("general:End time - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <DatePicker
+                  showTime
+                  style={{width: "100%"}}
+                  value={this.state.graph.endTime ? moment(this.state.graph.endTime) : null}
+                  onChange={(date, dateString) => {
+                    this.updateGraphField("endTime", dateString);
+                  }}
+                />
+              </Col>
+            </Row>
+          </>
+        )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("graph:Layout"), i18next.t("graph:Layout - Tooltip"))} :
@@ -122,37 +217,57 @@ class GraphEditPage extends React.Component {
           <Col span={22} >
             <Select
               style={{width: "100%"}}
-              value={this.state.graph.layout || "force"}
+              value={this.state.graph.layout || (this.state.graph.category === "Chats" ? "wordcloud" : "force")}
               onChange={value => {
                 this.updateGraphField("layout", value);
               }}
             >
-              <Select.Option value="force">{i18next.t("graph:Force")}</Select.Option>
-              <Select.Option value="circular">{i18next.t("graph:Circular")}</Select.Option>
-              <Select.Option value="radial">{i18next.t("graph:Radial")}</Select.Option>
-              <Select.Option value="grid">{i18next.t("graph:Grid")}</Select.Option>
-              <Select.Option value="tree">{i18next.t("graph:Tree")}</Select.Option>
-              <Select.Option value="none">{i18next.t("graph:None")}</Select.Option>
+              {this.state.graph.category === "Chats" ? (
+                <Select.Option value="wordcloud">{i18next.t("graph:Word Cloud")}</Select.Option>
+              ) : (
+                <>
+                  <Select.Option value="force">{i18next.t("graph:Force")}</Select.Option>
+                  <Select.Option value="circular">{i18next.t("graph:Circular")}</Select.Option>
+                  <Select.Option value="radial">{i18next.t("graph:Radial")}</Select.Option>
+                  <Select.Option value="grid">{i18next.t("graph:Grid")}</Select.Option>
+                  <Select.Option value="tree">{i18next.t("graph:Tree")}</Select.Option>
+                  <Select.Option value="none">{i18next.t("graph:None")}</Select.Option>
+                </>
+              )}
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("graph:Node Density"), i18next.t("graph:Node Density - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input
-              type="number"
-              min={0.1}
-              max={10}
-              step={0.1}
-              value={this.state.graph.density || 5}
-              onChange={e => {
-                this.updateGraphField("density", e.target.value);
-              }}
-            />
-          </Col>
-        </Row>
+        {this.state.graph.category === "Chats" && (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              {i18next.t("general:Generate")}:
+            </Col>
+            <Col span={22} >
+              <Button type="primary" onClick={() => this.generateGraphData()}>
+                {i18next.t("general:Generate Word Cloud Data")}
+              </Button>
+            </Col>
+          </Row>
+        )}
+        {this.state.graph.category !== "Chats" && (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              {Setting.getLabel(i18next.t("graph:Node Density"), i18next.t("graph:Node Density - Tooltip"))} :
+            </Col>
+            <Col span={22} >
+              <Input
+                type="number"
+                min={0.1}
+                max={10}
+                step={0.1}
+                value={this.state.graph.density || 5}
+                onChange={e => {
+                  this.updateGraphField("density", e.target.value);
+                }}
+              />
+            </Col>
+          </Row>
+        )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
@@ -175,12 +290,24 @@ class GraphEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div key={this.state.graphCount} style={{height: "1000px", width: "100%"}}>
-              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} category={this.state.graph?.category} layout={this.state.graph?.layout} density={this.state.graph?.density} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
+              {this.state.graph?.category === "Chats" ? (
+                <GraphChatDataPage graphText={this.state.graph?.text} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
+              ) : (
+                <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} category={this.state.graph?.category} layout={this.state.graph?.layout} density={this.state.graph?.density} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
+              )}
             </div>
           </Col>
         </Row>
       </Card>
     );
+  }
+
+  renderFilteredChatsSection() {
+    if (!this.state.graph || this.state.graph.category !== "Chats") {
+      return null;
+    }
+
+    return <GraphChatTable chats={this.state.filteredChats} />;
   }
 
   submitGraphEdit(exitAfterSave) {
@@ -221,6 +348,9 @@ class GraphEditPage extends React.Component {
       <div>
         {
           this.state.graph !== null ? this.renderGraph() : null
+        }
+        {
+          this.renderFilteredChatsSection()
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitGraphEdit(false)}>{i18next.t("general:Save")}</Button>
