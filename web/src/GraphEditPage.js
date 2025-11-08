@@ -91,10 +91,27 @@ class GraphEditPage extends React.Component {
   }
 
   generateGraphData() {
-    // Simply reload the graph, which will auto-generate data on the backend if Text is empty
-    this.getGraph();
-    this.loadFilteredChats();
-    Setting.showMessage("success", i18next.t("general:Successfully generated"));
+    // First, clear the text field
+    this.updateGraphField("text", "");
+    
+    // Then save the graph to DB with empty text
+    const graph = Setting.deepCopy(this.state.graph);
+    graph.text = "";
+    
+    GraphBackend.updateGraph(this.state.graph.owner, this.state.graphName, graph)
+      .then((res) => {
+        if (res.status === "ok") {
+          // After saving, reload the graph (which will auto-generate data on backend)
+          this.getGraph();
+          this.loadFilteredChats();
+          Setting.showMessage("success", i18next.t("general:Successfully generated"));
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to generate")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to generate")}: ${error}`);
+      });
   }
 
   loadFilteredChats() {
@@ -214,8 +231,10 @@ class GraphEditPage extends React.Component {
                   showTime
                   style={{width: "100%"}}
                   value={this.state.graph.startTime ? moment(this.state.graph.startTime) : null}
-                  onChange={(date, dateString) => {
-                    this.updateGraphField("startTime", dateString);
+                  onChange={(date) => {
+                    // Convert to RFC3339 format with timezone
+                    const rfc3339 = date ? date.format("YYYY-MM-DDTHH:mm:ssZ") : "";
+                    this.updateGraphField("startTime", rfc3339);
                   }}
                 />
               </Col>
@@ -229,8 +248,26 @@ class GraphEditPage extends React.Component {
                   showTime
                   style={{width: "100%"}}
                   value={this.state.graph.endTime ? moment(this.state.graph.endTime) : null}
-                  onChange={(date, dateString) => {
-                    this.updateGraphField("endTime", dateString);
+                  onChange={(date) => {
+                    // Convert to RFC3339 format with timezone
+                    const rfc3339 = date ? date.format("YYYY-MM-DDTHH:mm:ssZ") : "";
+                    this.updateGraphField("endTime", rfc3339);
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("graph:Word Threshold"), i18next.t("graph:Word Threshold - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input
+                  type="number"
+                  min={1}
+                  step={1}
+                  value={this.state.graph.density || 1}
+                  onChange={e => {
+                    this.updateGraphField("density", e.target.value);
                   }}
                 />
               </Col>
