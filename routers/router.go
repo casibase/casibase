@@ -112,8 +112,6 @@ func initAPI() {
 	beego.Router("/api/update-graph", &controllers.ApiController{}, "POST:UpdateGraph")
 	beego.Router("/api/add-graph", &controllers.ApiController{}, "POST:AddGraph")
 	beego.Router("/api/delete-graph", &controllers.ApiController{}, "POST:DeleteGraph")
-	beego.Router("/api/generate-graph-data", &controllers.ApiController{}, "POST:GenerateGraphData")
-	beego.Router("/api/get-graph-chats", &controllers.ApiController{}, "GET:GetGraphChats")
 
 	beego.Router("/api/get-templates", &controllers.ApiController{}, "GET:GetTemplates")
 	beego.Router("/api/get-template", &controllers.ApiController{}, "GET:GetTemplate")

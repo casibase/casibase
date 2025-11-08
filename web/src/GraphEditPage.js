@@ -13,15 +13,17 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, DatePicker, Input, Row, Select, Table} from "antd";
+import {Button, Card, Col, DatePicker, Input, Row, Select} from "antd";
 import * as GraphBackend from "./backend/GraphBackend";
+import * as ChatBackend from "./backend/ChatBackend";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import GraphDataPage from "./GraphDataPage";
+import GraphChatDataPage from "./GraphChatDataPage";
+import GraphChatTable from "./GraphChatTable";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import moment from "moment";
-import {Link} from "react-router-dom";
 
 class GraphEditPage extends React.Component {
   constructor(props) {
@@ -89,24 +91,15 @@ class GraphEditPage extends React.Component {
   }
 
   generateGraphData() {
-    GraphBackend.generateGraphData(this.state.graph.owner, this.state.graph.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully generated"));
-          this.getGraph();
-          this.loadFilteredChats();
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to generate")}: ${res.msg}`);
-        }
-      })
-      .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to generate")}: ${error}`);
-      });
+    // Simply reload the graph, which will auto-generate data on the backend if Text is empty
+    this.getGraph();
+    this.loadFilteredChats();
+    Setting.showMessage("success", i18next.t("general:Successfully generated"));
   }
 
   loadFilteredChats() {
     if (this.state.graph && this.state.graph.category === "Chats") {
-      GraphBackend.getGraphChats(this.state.graph.owner, this.state.graph.name)
+      ChatBackend.getChats("admin", this.state.graph.store, "", "", "", "", "", "", "", this.state.graph.startTime, this.state.graph.endTime)
         .then((res) => {
           if (res.status === "ok") {
             this.setState({
@@ -117,81 +110,7 @@ class GraphEditPage extends React.Component {
     }
   }
 
-  renderChatTable() {
-    if (!this.state.graph || this.state.graph.category !== "Chats" || this.state.filteredChats.length === 0) {
-      return null;
-    }
 
-    const columns = [
-      {
-        title: i18next.t("general:Name"),
-        dataIndex: "name",
-        key: "name",
-        width: "150px",
-        render: (text, record, index) => {
-          return (
-            <Link to={`/chats/${text}`}>
-              {text}
-            </Link>
-          );
-        },
-      },
-      {
-        title: i18next.t("general:Display name"),
-        dataIndex: "displayName",
-        key: "displayName",
-        width: "200px",
-      },
-      {
-        title: i18next.t("general:User"),
-        dataIndex: "user",
-        key: "user",
-        width: "120px",
-      },
-      {
-        title: i18next.t("general:Created time"),
-        dataIndex: "createdTime",
-        key: "createdTime",
-        width: "180px",
-        render: (text, record, index) => {
-          return Setting.getFormattedDate(text);
-        },
-      },
-      {
-        title: i18next.t("general:Updated time"),
-        dataIndex: "updatedTime",
-        key: "updatedTime",
-        width: "180px",
-        render: (text, record, index) => {
-          return Setting.getFormattedDate(text);
-        },
-      },
-      {
-        title: i18next.t("chat:Count"),
-        dataIndex: "messageCount",
-        key: "messageCount",
-        width: "100px",
-      },
-      {
-        title: i18next.t("chat:Token count"),
-        dataIndex: "tokenCount",
-        key: "tokenCount",
-        width: "120px",
-      },
-    ];
-
-    return (
-      <Card size="small" title={i18next.t("general:Filtered Chats")} style={{marginTop: "20px", marginLeft: "5px"}} type="inner">
-        <Table
-          columns={columns}
-          dataSource={this.state.filteredChats}
-          rowKey="name"
-          size="middle"
-          pagination={{pageSize: 10}}
-        />
-      </Card>
-    );
-  }
 
   renderGraph() {
     return (
@@ -373,7 +292,11 @@ class GraphEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div key={this.state.graphCount} style={{height: "1000px", width: "100%"}}>
-              <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} category={this.state.graph?.category} layout={this.state.graph?.layout} density={this.state.graph?.density} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
+              {this.state.graph?.category === "Chats" ? (
+                <GraphChatDataPage graphText={this.state.graph?.text} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
+              ) : (
+                <GraphDataPage account={this.props.account} owner={this.state.graph?.owner} graphName={this.state.graph?.name} graphText={this.state.graph?.text} category={this.state.graph?.category} layout={this.state.graph?.layout} density={this.state.graph?.density} showBorder={true} onErrorChange={(errorText) => this.handleErrorChange(errorText)} />
+              )}
             </div>
           </Col>
         </Row>
@@ -382,11 +305,11 @@ class GraphEditPage extends React.Component {
   }
 
   renderFilteredChatsSection() {
-    if (!this.state.graph || this.state.graph.category !== "Chats" || this.state.filteredChats.length === 0) {
+    if (!this.state.graph || this.state.graph.category !== "Chats") {
       return null;
     }
 
-    return this.renderChatTable();
+    return <GraphChatTable chats={this.state.filteredChats} />;
   }
 
   submitGraphEdit(exitAfterSave) {

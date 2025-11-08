@@ -175,28 +175,23 @@ func GetPaginationGraphs(owner string, offset, limit int, field, value, sortFiel
 	return graphs, nil
 }
 
-func GetFilteredChats(owner, store, startTime, endTime string) ([]*Chat, error) {
-	chats := []*Chat{}
-	session := adapter.engine.Where("owner = ?", owner)
-	
-	if store != "" {
-		session = session.And("store = ?", store)
+func FilterChatsByTimeRange(chats []*Chat, startTime, endTime string) []*Chat {
+	if startTime == "" && endTime == "" {
+		return chats
 	}
 	
-	if startTime != "" {
-		session = session.And("created_time >= ?", startTime)
+	filtered := make([]*Chat, 0)
+	for _, chat := range chats {
+		if startTime != "" && chat.CreatedTime < startTime {
+			continue
+		}
+		if endTime != "" && chat.CreatedTime > endTime {
+			continue
+		}
+		filtered = append(filtered, chat)
 	}
 	
-	if endTime != "" {
-		session = session.And("created_time <= ?", endTime)
-	}
-	
-	err := session.Desc("created_time").Find(&chats)
-	if err != nil {
-		return nil, err
-	}
-	
-	return chats, nil
+	return filtered
 }
 
 func GetMessagesForChats(chats []*Chat) ([]*Message, error) {
@@ -221,24 +216,6 @@ func GetMessagesForChats(chats []*Chat) ([]*Message, error) {
 func GenerateWordCloudData(messages []*Message) (string, error) {
 	wordFreq := make(map[string]int)
 	
-	// Common stop words to filter out
-	stopWords := map[string]bool{
-		"the": true, "a": true, "an": true, "and": true, "or": true, "but": true,
-		"in": true, "on": true, "at": true, "to": true, "for": true, "of": true,
-		"with": true, "by": true, "from": true, "as": true, "is": true, "was": true,
-		"are": true, "were": true, "been": true, "be": true, "have": true, "has": true,
-		"had": true, "do": true, "does": true, "did": true, "will": true, "would": true,
-		"should": true, "could": true, "may": true, "might": true, "must": true,
-		"can": true, "this": true, "that": true, "these": true, "those": true,
-		"i": true, "you": true, "he": true, "she": true, "it": true, "we": true,
-		"they": true, "what": true, "which": true, "who": true, "when": true,
-		"where": true, "why": true, "how": true, "all": true, "each": true,
-		"every": true, "both": true, "few": true, "more": true, "most": true,
-		"other": true, "some": true, "such": true, "no": true, "nor": true,
-		"not": true, "only": true, "own": true, "same": true, "so": true,
-		"than": true, "too": true, "very": true, "s": true, "t": true,
-	}
-	
 	// Regular expression to extract words (including Chinese characters)
 	wordRegex := regexp.MustCompile(`[\p{L}\p{N}]+`)
 	
@@ -248,8 +225,8 @@ func GenerateWordCloudData(messages []*Message) (string, error) {
 		words := wordRegex.FindAllString(text, -1)
 		
 		for _, word := range words {
-			// Filter out stop words and short words
-			if len(word) > 2 && !stopWords[word] {
+			// Filter out stop words (both English and Chinese) and short words
+			if len(word) > 2 && !stopWords[word] && !stopWordsZh[word] {
 				// Check if word contains any letter (to avoid pure numbers)
 				hasLetter := false
 				for _, r := range word {

@@ -72,6 +72,8 @@ func (c *ApiController) GetGlobalChats() {
 // @Param user query string true "The user of chat"
 // @Param field query string true "The field of chat"
 // @Param value query string true "The value of chat"
+// @Param startTime query string false "Filter by start time"
+// @Param endTime query string false "Filter by end time"
 // @Success 200 {array} object.Chat The Response object
 // @router /get-chats [get]
 func (c *ApiController) GetChats() {
@@ -80,6 +82,8 @@ func (c *ApiController) GetChats() {
 	value := c.Input().Get("value")
 	selectedUser := c.Input().Get("selectedUser")
 	storeName := c.Input().Get("store")
+	startTime := c.Input().Get("startTime")
+	endTime := c.Input().Get("endTime")
 
 	if c.IsAdmin() {
 		user = ""
@@ -104,6 +108,11 @@ func (c *ApiController) GetChats() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	// Filter by time range if specified
+	if startTime != "" || endTime != "" {
+		chats = object.FilterChatsByTimeRange(chats, startTime, endTime)
 	}
 
 	c.ResponseOk(chats)

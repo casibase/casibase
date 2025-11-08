@@ -145,6 +145,26 @@ class GraphListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("general:Start time"),
+        dataIndex: "startTime",
+        key: "startTime",
+        width: "180px",
+        sorter: (a, b) => (a.startTime || "").localeCompare(b.startTime || ""),
+        render: (text, record, index) => {
+          return text || "-";
+        },
+      },
+      {
+        title: i18next.t("general:End time"),
+        dataIndex: "endTime",
+        key: "endTime",
+        width: "180px",
+        sorter: (a, b) => (a.endTime || "").localeCompare(b.endTime || ""),
+        render: (text, record, index) => {
+          return text || "-";
+        },
+      },
+      {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",
@@ -152,7 +172,8 @@ class GraphListPage extends BaseListPage {
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
       },
       {
-        title: i18next.t("general:Text"),
+        title: i18next.t("general:Preview"),
+        fixed: "right",
         dataIndex: "text",
         key: "text",
         width: "200px",

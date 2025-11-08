@@ -96,6 +96,41 @@ func (c *ApiController) GetGraph() {
 		return
 	}
 
+	// Auto-generate data for Chats category if Text is empty
+	if Graph != nil && Graph.Category == "Chats" && Graph.Text == "" {
+		// Get filtered chats
+		chats, err := object.GetChats("admin", Graph.Store, "")
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		// Filter by time range if specified
+		filteredChats := object.FilterChatsByTimeRange(chats, Graph.StartTime, Graph.EndTime)
+
+		// Get messages for those chats
+		messages, err := object.GetMessagesForChats(filteredChats)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		// Generate word cloud data
+		wordCloudData, err := object.GenerateWordCloudData(messages)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		// Update graph with generated data
+		Graph.Text = wordCloudData
+		_, err = object.UpdateGraph(id, Graph)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+	}
+
 	c.ResponseOk(object.GetMaskedGraph(Graph, true))
 }
 
@@ -172,95 +207,4 @@ func (c *ApiController) DeleteGraph() {
 	}
 
 	c.ResponseOk(success)
-}
-
-// GenerateGraphData
-// @Title GenerateGraphData
-// @Tag Graph API
-// @Description generate graph data for Chats category
-// @Param id query string true "The id (owner/name) of Graph"
-// @Success 200 {object} controllers.Response The Response object
-// @router /generate-graph-data [post]
-func (c *ApiController) GenerateGraphData() {
-	id := c.Input().Get("id")
-
-	graph, err := object.GetGraph(id)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	if graph == nil {
-		c.ResponseError("Graph not found")
-		return
-	}
-
-	if graph.Category == "Chats" {
-		// Get filtered chats
-		chats, err := object.GetFilteredChats(graph.Owner, graph.Store, graph.StartTime, graph.EndTime)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-
-		// Get messages for those chats
-		messages, err := object.GetMessagesForChats(chats)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-
-		// Generate word cloud data
-		wordCloudData, err := object.GenerateWordCloudData(messages)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-
-		// Update graph with generated data
-		graph.Text = wordCloudData
-		success, err := object.UpdateGraph(id, graph)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-
-		c.ResponseOk(success, wordCloudData)
-	} else {
-		c.ResponseError("Only Chats category supports data generation")
-	}
-}
-
-// GetGraphChats
-// @Title GetGraphChats
-// @Tag Graph API
-// @Description get filtered chats for a graph
-// @Param id query string true "The id (owner/name) of Graph"
-// @Success 200 {array} object.Chat The Response object
-// @router /get-graph-chats [get]
-func (c *ApiController) GetGraphChats() {
-	id := c.Input().Get("id")
-
-	graph, err := object.GetGraph(id)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	if graph == nil {
-		c.ResponseError("Graph not found")
-		return
-	}
-
-	if graph.Category == "Chats" {
-		chats, err := object.GetFilteredChats(graph.Owner, graph.Store, graph.StartTime, graph.EndTime)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-
-		c.ResponseOk(chats)
-	} else {
-		c.ResponseError("Only Chats category supports chat filtering")
-	}
 }

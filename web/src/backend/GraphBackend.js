@@ -79,23 +79,3 @@ export function deleteGraph(graph) {
     body: JSON.stringify(newGraph),
   }).then(res => res.json());
 }
-
-export function generateGraphData(owner, name) {
-  return fetch(`${Setting.ServerUrl}/api/generate-graph-data?id=${owner}/${encodeURIComponent(name)}`, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Accept-Language": Setting.getAcceptLanguage(),
-    },
-  }).then(res => res.json());
-}
-
-export function getGraphChats(owner, name) {
-  return fetch(`${Setting.ServerUrl}/api/get-graph-chats?id=${owner}/${encodeURIComponent(name)}`, {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Accept-Language": Setting.getAcceptLanguage(),
-    },
-  }).then(res => res.json());
-}
