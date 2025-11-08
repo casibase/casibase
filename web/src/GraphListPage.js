@@ -23,6 +23,7 @@ import * as GraphBackend from "./backend/GraphBackend";
 import i18next from "i18next";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import GraphDataPage from "./GraphDataPage";
+import GraphChatDataPage from "./GraphChatDataPage";
 
 class GraphListPage extends BaseListPage {
   constructor(props) {
@@ -219,15 +220,19 @@ class GraphListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <div style={{height: "240px", width: "100%"}}>
-              <GraphDataPage
-                account={this.props.account}
-                owner={record.owner}
-                graphName={record.name}
-                graphText={text}
-                category={record.category}
-                layout={record.layout}
-                showLegend={false}
-              />
+              {record.category === "Chats" ? (
+                <GraphChatDataPage graphText={text} showBorder={false} />
+              ) : (
+                <GraphDataPage
+                  account={this.props.account}
+                  owner={record.owner}
+                  graphName={record.name}
+                  graphText={text}
+                  category={record.category}
+                  layout={record.layout}
+                  showLegend={false}
+                />
+              )}
             </div>
           );
         },
