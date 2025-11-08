@@ -35,6 +35,8 @@ class GraphEditPage extends React.Component {
       graphCount: "key",
       stores: [],
       filteredChats: [],
+      tempStartTime: null,
+      tempEndTime: null,
     };
   }
 
@@ -230,11 +232,28 @@ class GraphEditPage extends React.Component {
                 <DatePicker
                   showTime
                   style={{width: "100%"}}
-                  value={this.state.graph.startTime ? moment(this.state.graph.startTime) : null}
+                  value={
+                    this.state.tempStartTime !== null
+                      ? this.state.tempStartTime
+                      : (this.state.graph.startTime ? moment(this.state.graph.startTime) : null)
+                  }
                   onChange={(date) => {
-                    // Convert to RFC3339 format with timezone
+                    // Store in temporary state during selection to avoid re-render issues
+                    this.setState({tempStartTime: date});
+                  }}
+                  onOk={(date) => {
+                    // When user clicks OK, save to graph and clear temp state
                     const rfc3339 = date ? date.format("YYYY-MM-DDTHH:mm:ssZ") : "";
                     this.updateGraphField("startTime", rfc3339);
+                    this.setState({tempStartTime: null});
+                  }}
+                  onOpenChange={(open) => {
+                    // If picker closes without OK, commit the temp value or revert
+                    if (!open && this.state.tempStartTime !== null) {
+                      const rfc3339 = this.state.tempStartTime ? this.state.tempStartTime.format("YYYY-MM-DDTHH:mm:ssZ") : "";
+                      this.updateGraphField("startTime", rfc3339);
+                      this.setState({tempStartTime: null});
+                    }
                   }}
                 />
               </Col>
@@ -247,11 +266,28 @@ class GraphEditPage extends React.Component {
                 <DatePicker
                   showTime
                   style={{width: "100%"}}
-                  value={this.state.graph.endTime ? moment(this.state.graph.endTime) : null}
+                  value={
+                    this.state.tempEndTime !== null
+                      ? this.state.tempEndTime
+                      : (this.state.graph.endTime ? moment(this.state.graph.endTime) : null)
+                  }
                   onChange={(date) => {
-                    // Convert to RFC3339 format with timezone
+                    // Store in temporary state during selection to avoid re-render issues
+                    this.setState({tempEndTime: date});
+                  }}
+                  onOk={(date) => {
+                    // When user clicks OK, save to graph and clear temp state
                     const rfc3339 = date ? date.format("YYYY-MM-DDTHH:mm:ssZ") : "";
                     this.updateGraphField("endTime", rfc3339);
+                    this.setState({tempEndTime: null});
+                  }}
+                  onOpenChange={(open) => {
+                    // If picker closes without OK, commit the temp value or revert
+                    if (!open && this.state.tempEndTime !== null) {
+                      const rfc3339 = this.state.tempEndTime ? this.state.tempEndTime.format("YYYY-MM-DDTHH:mm:ssZ") : "";
+                      this.updateGraphField("endTime", rfc3339);
+                      this.setState({tempEndTime: null});
+                    }
                   }}
                 />
               </Col>
