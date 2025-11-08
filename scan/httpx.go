@@ -24,46 +24,46 @@ import (
 
 // HttpxHost represents a single host probed by httpx
 type HttpxHost struct {
-	Timestamp      string   `json:"timestamp,omitempty"`
-	Hash           string   `json:"hash,omitempty"`
-	Port           string   `json:"port,omitempty"`
-	URL            string   `json:"url"`
-	Input          string   `json:"input,omitempty"`
-	Title          string   `json:"title,omitempty"`
-	Scheme         string   `json:"scheme,omitempty"`
-	Webserver      string   `json:"webserver,omitempty"`
-	ContentType    string   `json:"content_type,omitempty"`
-	Method         string   `json:"method,omitempty"`
-	Host           string   `json:"host,omitempty"`
-	Path           string   `json:"path,omitempty"`
-	FavIconMMH3    string   `json:"favicon_mmh3,omitempty"`
-	StatusCode     int      `json:"status_code,omitempty"`
-	ContentLength  int      `json:"content_length,omitempty"`
-	Words          int      `json:"words,omitempty"`
-	Lines          int      `json:"lines,omitempty"`
-	Failed         bool     `json:"failed,omitempty"`
-	TLSData        string   `json:"tls,omitempty"`
-	CSPData        string   `json:"csp,omitempty"`
-	VHost          bool     `json:"vhost,omitempty"`
-	WebSocket      bool     `json:"websocket,omitempty"`
-	Technologies   []string `json:"technologies,omitempty"`
-	A              []string `json:"a,omitempty"`
-	CNAMEs         []string `json:"cname,omitempty"`
-	ChainStatusCodes []int  `json:"chain_status_codes,omitempty"`
+	Timestamp        string   `json:"timestamp,omitempty"`
+	Hash             string   `json:"hash,omitempty"`
+	Port             string   `json:"port,omitempty"`
+	URL              string   `json:"url"`
+	Input            string   `json:"input,omitempty"`
+	Title            string   `json:"title,omitempty"`
+	Scheme           string   `json:"scheme,omitempty"`
+	Webserver        string   `json:"webserver,omitempty"`
+	ContentType      string   `json:"content_type,omitempty"`
+	Method           string   `json:"method,omitempty"`
+	Host             string   `json:"host,omitempty"`
+	Path             string   `json:"path,omitempty"`
+	FavIconMMH3      string   `json:"favicon_mmh3,omitempty"`
+	StatusCode       int      `json:"status_code,omitempty"`
+	ContentLength    int      `json:"content_length,omitempty"`
+	Words            int      `json:"words,omitempty"`
+	Lines            int      `json:"lines,omitempty"`
+	Failed           bool     `json:"failed,omitempty"`
+	TLSData          string   `json:"tls,omitempty"`
+	CSPData          string   `json:"csp,omitempty"`
+	VHost            bool     `json:"vhost,omitempty"`
+	WebSocket        bool     `json:"websocket,omitempty"`
+	Technologies     []string `json:"technologies,omitempty"`
+	A                []string `json:"a,omitempty"`
+	CNAMEs           []string `json:"cname,omitempty"`
+	ChainStatusCodes []int    `json:"chain_status_codes,omitempty"`
 }
 
 // HttpxScanResult represents the complete httpx scan result
 type HttpxScanResult struct {
-	Hosts   []HttpxHost   `json:"hosts"`
-	Summary HttpxSummary  `json:"summary"`
+	Hosts   []HttpxHost  `json:"hosts"`
+	Summary HttpxSummary `json:"summary"`
 }
 
 // HttpxSummary provides a summary of the scan results
 type HttpxSummary struct {
-	TotalHosts     int            `json:"totalHosts"`
-	ByStatusCode   map[string]int `json:"byStatusCode"`
-	ByScheme       map[string]int `json:"byScheme"`
-	WithTech       int            `json:"withTech"`
+	TotalHosts   int            `json:"totalHosts"`
+	ByStatusCode map[string]int `json:"byStatusCode"`
+	ByScheme     map[string]int `json:"byScheme"`
+	WithTech     int            `json:"withTech"`
 }
 
 type HttpxScanProvider struct {
@@ -242,18 +242,18 @@ func (p *HttpxScanProvider) parseHttpxOutput(output string) *HttpxScanResult {
 
 		// Update summary
 		result.Summary.TotalHosts++
-		
+
 		// Count by status code
 		if host.StatusCode > 0 {
 			statusCodeStr := fmt.Sprintf("%d", host.StatusCode)
 			result.Summary.ByStatusCode[statusCodeStr]++
 		}
-		
+
 		// Count by scheme
 		if host.Scheme != "" {
 			result.Summary.ByScheme[host.Scheme]++
 		}
-		
+
 		// Count hosts with technologies
 		if len(host.Technologies) > 0 {
 			result.Summary.WithTech++
