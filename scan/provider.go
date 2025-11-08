@@ -54,6 +54,8 @@ func GetScanProvider(typ string, clientId string, lang string) (ScanProvider, er
 		p, err = NewZapScanProvider(clientId)
 	} else if typ == "Subfinder" {
 		p, err = NewSubfinderScanProvider(clientId)
+	} else if typ == "httpx" {
+		p, err = NewHttpxScanProvider(clientId)
 	} else {
 		return nil, nil
 	}

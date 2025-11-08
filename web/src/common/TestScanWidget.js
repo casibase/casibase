@@ -29,6 +29,7 @@ const DEFAULT_OS_PATCH_COMMAND = "all";
 const DEFAULT_NUCLEI_COMMAND = "-u %s -jsonl";
 const DEFAULT_ZAP_COMMAND = "-cmd -quickurl %s -quickout /dev/stdout -quickprogress";
 const DEFAULT_SUBFINDER_COMMAND = "-d %s -json";
+const DEFAULT_HTTPX_COMMAND = "-u %s -json";
 const DEFAULT_PROVIDER_TYPE = "Nmap";
 
 class TestScanWidget extends React.Component {
@@ -184,6 +185,17 @@ class TestScanWidget extends React.Component {
         {id: "all-sources", name: "All Sources", command: "-d %s -json -all"},
         {id: "passive", name: "Passive Only", command: "-d %s -json -passive"},
       ];
+    } else if (providerType === "httpx") {
+      // httpx templates
+      return [
+        {id: "custom", name: "Custom", command: ""},
+        {id: "basic", name: "Basic Scan", command: "-u %s -json"},
+        {id: "silent", name: "Silent Mode", command: "-u %s -json -silent"},
+        {id: "tech-detect", name: "Technology Detection", command: "-u %s -json -tech-detect"},
+        {id: "status-code", name: "With Status Code", command: "-u %s -json -status-code"},
+        {id: "follow-redirects", name: "Follow Redirects", command: "-u %s -json -follow-redirects"},
+        {id: "screenshot", name: "With Screenshot", command: "-u %s -json -screenshot"},
+      ];
     } else {
       // Nmap templates
       return [
@@ -208,6 +220,8 @@ class TestScanWidget extends React.Component {
       return DEFAULT_ZAP_COMMAND;
     } else if (providerType === "Subfinder") {
       return DEFAULT_SUBFINDER_COMMAND;
+    } else if (providerType === "httpx") {
+      return DEFAULT_HTTPX_COMMAND;
     }
     return DEFAULT_SCAN_COMMAND;
   }
