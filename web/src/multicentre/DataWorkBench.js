@@ -810,7 +810,46 @@ export default function DataWorkBench(props) {
                                                 const dynamicCols = Array.from(colSet).map(k => ({ title: (columnsMap[k] || k), dataIndex: k, key: k, render: v => (v === null || typeof v === 'undefined') ? '' : String(v) }));
                                                 // ensure stable order: sort keys alphabetically
                                                 dynamicCols.sort((a, b) => a.title.localeCompare(b.title, 'zh-CN'));
-                                                return <Table columns={dynamicCols} dataSource={rows} pagination={false} bordered rowKey="_rowIndex" style={{ marginTop: 18 }} />;
+
+                                                // 每列最大宽度（px）
+                                                const maxColWidth = 200;
+                                                // 当列较多时，每列的最小期望宽度（用于计算表格的 minWidth，以触发横向滚动）
+                                                const preferredColWidth = 150;
+                                                const totalMinWidth = dynamicCols.length * preferredColWidth;
+
+                                                // 给每列附加 cell 样式，限制最大宽度并允许换行展示完整内容
+                                                const colsWithCellStyle = dynamicCols.map(col => ({
+                                                    ...col,
+                                                    onHeaderCell: () => ({
+                                                        style: {
+                                                            maxWidth: maxColWidth,
+                                                            whiteSpace: 'normal',
+                                                            wordBreak: 'break-word',
+                                                        }
+                                                    }),
+                                                    onCell: () => ({
+                                                        style: {
+                                                            maxWidth: maxColWidth,
+                                                            whiteSpace: 'normal',
+                                                            wordBreak: 'break-word',
+                                                            overflowWrap: 'anywhere',
+                                                        }
+                                                    })
+                                                }));
+
+                                                return (
+                                                    <div style={{ marginTop: 18, overflowX: 'auto' }}>
+                                                        <Table
+                                                            columns={colsWithCellStyle}
+                                                            dataSource={rows}
+                                                            pagination={false}
+                                                            bordered
+                                                            rowKey="_rowIndex"
+                                                            tableLayout="fixed" // 平均分配列宽
+                                                            style={{ width: '100%', minWidth: `${totalMinWidth}px` }}
+                                                        />
+                                                    </div>
+                                                );
                                             })()
                                         )
                                     ) : (
