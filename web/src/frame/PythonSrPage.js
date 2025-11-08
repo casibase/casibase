@@ -83,7 +83,7 @@ class PythonSrPage extends React.Component {
     } else {
       chartData = [
         { value: 4, name: '广东省人民医院', itemStyle: { color: '#165DFF' } },
-        { value: 3, name: '中国医科大学第一附属医院', itemStyle: { color: '#36BFFA' } }
+        { value: 3, name: '中国医科大学附属第一医院', itemStyle: { color: '#36BFFA' } }
       ];
     }
 
@@ -595,7 +595,7 @@ class PythonSrPage extends React.Component {
     const isDoctor = userTag === 'doctor';
 
     // 定义可选医院列表
-    const availableHospitals = ['广东省人民医院', '中国医科大学第一附属医院'];
+    const availableHospitals = ['广东省人民医院', '中国医科大学附属第一医院'];
 
     return (
       <div style={{ padding: '24px', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>

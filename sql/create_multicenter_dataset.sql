@@ -8,7 +8,8 @@ CREATE TABLE multicenter_datasets (
     keyword VARCHAR(200),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    expired_at DATETIME
+    expired_at DATETIME,
+    unit VARCHAR(255) COMMENT '医院单位'
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- 创建 AccessRequests 表
