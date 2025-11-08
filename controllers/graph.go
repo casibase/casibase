@@ -98,33 +98,7 @@ func (c *ApiController) GetGraph() {
 
 	// Auto-generate data for Chats category if Text is empty
 	if Graph != nil && Graph.Category == "Chats" && Graph.Text == "" {
-		// Get filtered chats
-		chats, err := object.GetChats("admin", Graph.Store, "")
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-
-		// Filter by time range if specified
-		filteredChats := object.FilterChatsByTimeRange(chats, Graph.StartTime, Graph.EndTime)
-
-		// Get messages for those chats
-		messages, err := object.GetMessagesForChats(filteredChats)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-
-		// Generate word cloud data
-		wordCloudData, err := object.GenerateWordCloudData(messages)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-
-		// Update graph with generated data
-		Graph.Text = wordCloudData
-		_, err = object.UpdateGraph(id, Graph)
+		err = c.generateChatGraphData(id, Graph)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return

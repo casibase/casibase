@@ -179,7 +179,7 @@ func FilterChatsByTimeRange(chats []*Chat, startTime, endTime string) []*Chat {
 	if startTime == "" && endTime == "" {
 		return chats
 	}
-	
+
 	filtered := make([]*Chat, 0)
 	for _, chat := range chats {
 		if startTime != "" && chat.CreatedTime < startTime {
@@ -190,7 +190,7 @@ func FilterChatsByTimeRange(chats []*Chat, startTime, endTime string) []*Chat {
 		}
 		filtered = append(filtered, chat)
 	}
-	
+
 	return filtered
 }
 
@@ -198,32 +198,32 @@ func GetMessagesForChats(chats []*Chat) ([]*Message, error) {
 	if len(chats) == 0 {
 		return []*Message{}, nil
 	}
-	
+
 	chatNames := make([]string, 0, len(chats))
 	for _, chat := range chats {
 		chatNames = append(chatNames, chat.Name)
 	}
-	
+
 	messages := []*Message{}
 	err := adapter.engine.In("chat", chatNames).Asc("created_time").Find(&messages)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return messages, nil
 }
 
 func GenerateWordCloudData(messages []*Message) (string, error) {
 	wordFreq := make(map[string]int)
-	
+
 	// Regular expression to extract words (including Chinese characters)
 	wordRegex := regexp.MustCompile(`[\p{L}\p{N}]+`)
-	
+
 	for _, message := range messages {
 		// Extract words from message text
 		text := strings.ToLower(message.Text)
 		words := wordRegex.FindAllString(text, -1)
-		
+
 		for _, word := range words {
 			// Filter out stop words (both English and Chinese) and short words
 			if len(word) > 2 && !stopWords[word] && !stopWordsZh[word] {
@@ -241,23 +241,23 @@ func GenerateWordCloudData(messages []*Message) (string, error) {
 			}
 		}
 	}
-	
+
 	// Convert to format expected by word cloud: array of {name, value}
 	type WordData struct {
 		Name  string `json:"name"`
 		Value int    `json:"value"`
 	}
-	
+
 	wordList := make([]WordData, 0, len(wordFreq))
 	for word, count := range wordFreq {
 		wordList = append(wordList, WordData{Name: word, Value: count})
 	}
-	
+
 	// Convert to JSON
 	jsonData, err := json.Marshal(wordList)
 	if err != nil {
 		return "", err
 	}
-	
+
 	return string(jsonData), nil
 }

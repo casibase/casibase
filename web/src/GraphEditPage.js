@@ -110,8 +110,6 @@ class GraphEditPage extends React.Component {
     }
   }
 
-
-
   renderGraph() {
     return (
       <Card size="small" title={
