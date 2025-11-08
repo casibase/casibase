@@ -90,13 +90,18 @@ func GetMessagesForChats(chats []*Chat) ([]*Message, error) {
 	return messages, nil
 }
 
-func GenerateWordCloudData(messages []*Message) (string, error) {
+func GenerateWordCloudData(messages []*Message, density int) (string, error) {
 	wordFreq := make(map[string]int)
 
 	// Regular expression to extract words (including Chinese characters)
 	wordRegex := regexp.MustCompile(`[\p{L}\p{N}]+`)
 
 	for _, message := range messages {
+		// Skip AI messages - only include messages from real users
+		if message.Author == "AI" {
+			continue
+		}
+
 		// Extract words from message text
 		text := strings.ToLower(message.Text)
 		words := wordRegex.FindAllString(text, -1)
@@ -127,7 +132,10 @@ func GenerateWordCloudData(messages []*Message) (string, error) {
 
 	wordList := make([]WordData, 0, len(wordFreq))
 	for word, count := range wordFreq {
-		wordList = append(wordList, WordData{Name: word, Value: count})
+		// Apply density threshold: exclude words with count < density
+		if count >= density {
+			wordList = append(wordList, WordData{Name: word, Value: count})
+		}
 	}
 
 	// Convert to JSON

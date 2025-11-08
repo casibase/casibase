@@ -27,6 +27,7 @@
     "copy-to-clipboard": "^3.3.1",
     "craco-less": "2.0.0",
     "d3-force": "^3.0.0",
+    "dayjs": "^1.11.19",
     "dompurify": "^3.0.9",
     "echarts": "^5.4.2",
     "echarts-for-react": "^3.0.2",

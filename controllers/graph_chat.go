@@ -34,8 +34,14 @@ func (c *ApiController) generateChatGraphData(id string, graph *object.Graph) er
 		return err
 	}
 
+	// Use density as threshold, default to 1 if not set
+	density := graph.Density
+	if density < 1 {
+		density = 1
+	}
+
 	// Generate word cloud data
-	wordCloudData, err := object.GenerateWordCloudData(messages)
+	wordCloudData, err := object.GenerateWordCloudData(messages, density)
 	if err != nil {
 		return err
 	}
