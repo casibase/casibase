@@ -27,7 +27,7 @@ export function addPermission(account, store, file = null, fileKeys = null) {
     users: [],
     roles: [],
     domains: [store.name],
-    model: "Default",
+    model: "casbin/user-model-built-in",
     resourceType: "TreeNode",
     resources: (file !== null) ? [file.key] : fileKeys,
     actions: ["Read"],
