@@ -50,10 +50,10 @@ class FormDataPage extends Component {
     // 检查url中是否包含了问号
     if (url.includes("?")) {
       // 如果包含问号，则将accountName添加为参数
-      return `${url}&accountName=${accountName}`;
+      return `${url}&user=${accountName}`;
     } else {
       // 否则，将accountName添加为查询参数
-      return `${url}?accountName=${accountName}`;
+      return `${url}?user=${accountName}`;
     }
   }
 
@@ -70,7 +70,7 @@ class FormDataPage extends Component {
       return <FormDataTablePage {...this.props} />;
     } else if (this.state.form.category === "iFrame") {
       return (
-        <iframe id="formData" title="formData" src={getUrl(this.state.form.url, this.state.accountName)} style={{ width: "100%", height: "calc(100vh - 134px)" }} frameBorder="no" />
+        <iframe id="formData" title="formData" src={this.getUrl(this.state.form.url, this.state.accountName)} style={{ width: "100%", height: "calc(100vh - 134px)" }} frameBorder="no" />
       );
     } else {
       return `Unsupported form category: ${this.state.form.category}`;
