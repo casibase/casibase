@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, {Component} from "react";
-import {Spin} from "antd";
+import React, { Component } from "react";
+import { Spin } from "antd";
 import * as Setting from "./Setting";
 import * as FormBackend from "./backend/FormBackend";
 import i18next from "i18next";
@@ -26,6 +26,7 @@ class FormDataPage extends Component {
       classes: props,
       formName: props.match.params.formName,
       form: null,
+      accountName: props.account?.name || "",
     };
   }
 
@@ -45,12 +46,22 @@ class FormDataPage extends Component {
         }
       });
   }
+  getUrl(url, accountName) {
+    // 检查url中是否包含了问号
+    if (url.includes("?")) {
+      // 如果包含问号，则将accountName添加为参数
+      return `${url}&accountName=${accountName}`;
+    } else {
+      // 否则，将accountName添加为查询参数
+      return `${url}?accountName=${accountName}`;
+    }
+  }
 
   render(record) {
     if (!this.state.form) {
       return (
         <div className="App">
-          <Spin size="large" tip={i18next.t("general:Loading...")} style={{paddingTop: "10%"}} />
+          <Spin size="large" tip={i18next.t("general:Loading...")} style={{ paddingTop: "10%" }} />
         </div>
       );
     }
@@ -59,7 +70,7 @@ class FormDataPage extends Component {
       return <FormDataTablePage {...this.props} />;
     } else if (this.state.form.category === "iFrame") {
       return (
-        <iframe id="formData" title="formData" src={this.state.form.url} style={{width: "100%", height: "calc(100vh - 134px)"}} frameBorder="no" />
+        <iframe id="formData" title="formData" src={getUrl(this.state.form.url, this.state.accountName)} style={{ width: "100%", height: "calc(100vh - 134px)" }} frameBorder="no" />
       );
     } else {
       return `Unsupported form category: ${this.state.form.category}`;

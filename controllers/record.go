@@ -50,8 +50,22 @@ func (c *ApiController) GetRecords() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 
+	// 仅管理员可获取自己的
+	username := c.GetSessionUsername()
+	if username == "" {
+		c.ResponseError("Please login first")
+		return
+	}
+	usertag := c.GetSessionUserTag()
+
+	if usertag == "admin" {
+		username = ""
+		// 标识为非管理员时，强制只查询自己的
+	}
+
+
 	if limit == "" || page == "" {
-		records, err := object.GetRecords(owner)
+		records, err := object.GetRecords(owner,username)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -65,14 +79,14 @@ func (c *ApiController) GetRecords() {
 			return
 		}
 
-		count, err := object.GetRecordCount(owner, field, value)
+		count, err := object.GetRecordCount(owner, field, value,username)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		records, err := object.GetPaginationRecords(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		records, err := object.GetPaginationRecords(owner, paginator.Offset(), limit, field, value, sortField, sortOrder,username)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return

@@ -101,8 +101,9 @@ class RecordEditPage extends React.Component {
           {this.state.mode === "add" ? i18next.t("record:New Record") : i18next.t("record:View Record")}&nbsp;&nbsp;&nbsp;&nbsp;
           {this.state.mode !== "123" ? (
             <React.Fragment>
-              <Button onClick={() => this.submitRecordEdit(false)}>{i18next.t("general:Save")}</Button>
-              <Button style={{ marginLeft: "20px" }} type="primary" onClick={() => this.submitRecordEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+              {/* <Button onClick={() => this.submitRecordEdit(false)}>{i18next.t("general:Save")}</Button>
+              <Button style={{ marginLeft: "20px" }} type="primary" onClick={() => this.submitRecordEdit(true)}>{i18next.t("general:Save & Exit")}</Button> */}
+
             </React.Fragment>
           ) : (
             <Button type="primary" onClick={() => this.props.history.push("/records")}>{i18next.t("general:Exit")}</Button>
@@ -603,8 +604,8 @@ class RecordEditPage extends React.Component {
         <div style={{ marginTop: "20px", marginLeft: "40px" }}>
           {this.state.mode !== "123" ? (
             <React.Fragment>
-              <Button size="large" onClick={() => this.submitRecordEdit(false)}>{i18next.t("general:Save")}</Button>
-              <Button style={{ marginLeft: "20px" }} type="primary" size="large" onClick={() => this.submitRecordEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+              {/* <Button size="large" onClick={() => this.submitRecordEdit(false)}>{i18next.t("general:Save")}</Button>
+              <Button style={{ marginLeft: "20px" }} type="primary" size="large" onClick={() => this.submitRecordEdit(true)}>{i18next.t("general:Save & Exit")}</Button> */}
             </React.Fragment>
           ) : (
             <Button type="primary" size="large" onClick={() => this.props.history.push("/records")}>{i18next.t("general:Exit")}</Button>

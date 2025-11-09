@@ -21,8 +21,11 @@ export class IPFSSearchPage extends Component {
     this.state = {
       correlationId: '',
       focused: false,
+      userTag: props.account?.tag || ''
     };
   }
+
+
 
   handleInputChange = (e) => {
     this.setState({
@@ -163,14 +166,18 @@ export class IPFSSearchPage extends Component {
             <FontAwesomeIcon icon={faExclamationCircle} style={{ color: '#3460d3', fontSize: 18 }} />
             所有查询操作均会被记录
           </div>
-          <Button
-            type="primary"
-            onClick={() => {
-              this.props.history.push('/search-audit');
-            }}
-          >
-            审计日志查询
-          </Button>
+          {
+            this.state.userTag === 'admin' ? (
+              <Button
+                type="primary"
+                onClick={() => {
+                  this.props.history.push('/search-audit');
+                }}
+              >
+                审计日志查询
+              </Button>
+            ) : null
+          }
         </div>
 
 

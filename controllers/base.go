@@ -49,6 +49,14 @@ func GetUserAffiliation(user *casdoorsdk.User) string {
 	return user.Affiliation
 }
 
+func GetUserTag(user *casdoorsdk.User) string {
+	if user == nil {
+		return ""
+	}
+
+	return user.Tag
+}
+
 func (c *ApiController) GetSessionClaims() *casdoorsdk.Claims {
 	s := c.GetSession("user")
 	if s == nil {
@@ -97,6 +105,16 @@ func (c *ApiController) GetSessionUsername() string {
 	}
 
 	return GetUserName(user)
+}
+
+
+func (c *ApiController) GetSessionUserTag() string {
+	user := c.GetSessionUser()
+	if user == nil {
+		return ""
+	}
+
+	return GetUserTag(user)
 }
 
 func (c *ApiController) GetSessionUserAffiliation() string {

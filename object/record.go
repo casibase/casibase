@@ -83,17 +83,32 @@ type Response struct {
 	Msg    string `json:"msg"`
 }
 
-func GetRecordCount(owner, field, value string) (int64, error) {
+func GetRecordCount(owner, field, value,username string) (int64, error) {
 	session := GetDbSession(owner, -1, -1, field, value, "", "")
-	return session.Count(&Record{Owner: owner})
+	if username == "" {
+		return session.Count(&Record{Owner: owner})
+	} else {
+		return session.Count(&Record{Owner: owner, User: username})
+	}
 }
 
-func GetRecords(owner string) ([]*Record, error) {
+func GetRecords(owner,username string) ([]*Record, error) {
 	records := []*Record{}
-	err := adapter.engine.Desc("id").Find(&records, &Record{Owner: owner})
-	if err != nil {
-		return records, err
+	// 如果username==""，则获取所有owner的记录
+	// 否则获取指定owner和user的记录
+	if username == "" {
+		err := adapter.engine.Desc("id").Find(&records, &Record{Owner: owner})
+		if err != nil {
+			return records, err
+		}
+	}else{
+		err := adapter.engine.Desc("id").Find(&records, &Record{Owner: owner, User: username})
+		if err != nil {
+			return records, err
+		}
 	}
+
+	
 
 	return records, nil
 }
@@ -139,12 +154,20 @@ func getValidAndNeedCommitRecords(records []*Record) ([]*Record, []int, []interf
 	return validRecords, needCommitIdx, data, nil
 }
 
-func GetPaginationRecords(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Record, error) {
+func GetPaginationRecords(owner string, offset, limit int, field, value, sortField, sortOrder,username string) ([]*Record, error) {
 	records := []*Record{}
 	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
-	err := session.Find(&records)
-	if err != nil {
-		return records, err
+	if username == "" {
+		err := session.Find(&records)
+		if err != nil {
+			return records, err
+		}
+	}else{
+		session.And("user=?", username)
+		err := session.Find(&records)
+		if err != nil {
+			return records, err
+		}
 	}
 
 	return records, nil

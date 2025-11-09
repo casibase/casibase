@@ -50,7 +50,7 @@ const GROUPS = [
         bg: "#f7f6fa",
         buttons: [
             // { title: "医疗影像分析", icon: "📸", desc: "AI驱动医学影像检测、分割与辅助诊断。", route: "/yolov8mi" },
-            { title: "受控使用", icon: "🛡️", desc: "实现数据分级授权与受控访问，保障数据安全。", route: "/multi-center/data-usage/my-data-application" },
+            { title: "受控使用", icon: "🛡️", desc: "实现数据分级授权与受控访问，保障数据安全。", route: "/forms/受控使用/data" },
             { title: "可信联邦", icon: "🤝", desc: "安全可信的数据解密服务，合规可控。", route: "http://172.25.77.152/" },
             { title: "密文计算", icon: "🧮", desc: "支持隐私保护计算，数据加密流转与分析。", route: "/forms/密文计算/data" },
             // { title: "SM9-IPFE", icon: "🔐", desc: "支持SM9-IPFE，保障数据安全与合规。", route: "/forms/SM9-IPFE/data" },
@@ -114,6 +114,11 @@ const MedGuideCardGrid = (props) => {
                 const canViewResourceManagement = userTag !== 'user' && userTag !== 'doctor';
                 return canViewResourceManagement;
             }
+            // 医疗数据归档 - 不是user 和 doctor 标签（如果有这个按钮的话）
+            if (button.title === "医疗数据归档") {
+                const canViewIpfsArchive = userTag !== 'user' && userTag !== 'doctor';
+                return canViewIpfsArchive;
+            }
             // 其他按钮正常显示
             return true;
         });
@@ -154,11 +159,11 @@ const MedGuideCardGrid = (props) => {
 
     // 页面启动时触发一次 dashboard 数据请求（不处理返回）
     useEffect(() => {
-        try {
-            getDashBoardData();
-        } catch (e) {
-            // 忽略任何错误
-        }
+        // try {
+        //     getDashBoardData();
+        // } catch (e) {
+        //     // 忽略任何错误
+        // }
     }, []);
 
 
