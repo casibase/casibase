@@ -788,6 +788,9 @@ class App extends Component {
     } else if (domain === "med" || true) {
       // med专属左侧菜单
 
+      // 上链服务
+      const canViewBlockchainExplorer = isAdmin && userTag !== 'user' && userTag !== 'doctor';
+
       // 数据管理
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/dashboard">{i18next.t("leftSideMedMenu:DataManage")}</Link>, "/dashboard", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/dashboard">{i18next.t("leftSideMedMenu:Dashboard")}</Link>, "/dashboard"),
@@ -800,22 +803,23 @@ class App extends Component {
             {Setting.renderExternalLink()}
           </a>, "/knowledge-graph"),
         ] : []),
-      ]));
-
-      // 上链服务
-      const canViewBlockchainExplorer = isAdmin && userTag !== 'user' && userTag !== 'doctor';
-
-      const chainServicesItems = [
-        Setting.getItem(<Link to="/ipfs-archive">{i18next.t("leftSideMedMenu:IpfsArchives")}</Link>, "/ipfs-archive"),
-        Setting.getItem(<Link to="/records">{i18next.t("leftSideMedMenu:Records")}</Link>, "/records"),
-        // 病例数据中心（录入/导入/列表）
-        Setting.getItem(<Link to="/med-records">病例数据</Link>, "/med-records"),
-        // 区块链浏览器 - 仅管理员可见，隐藏 user 和 doctor 标签用户
         ...(canViewBlockchainExplorer ? [Setting.getItem(
           <a target="_blank" rel="noreferrer" href="http://192.168.0.228:9996/chain1/home">
             {i18next.t("leftSideMedMenu:chainExpoler")}
             {Setting.renderExternalLink()}
           </a>, "http://192.168.0.228:9996/chain1/home")] : []),
+      ]));
+
+
+
+      const chainServicesItems = [
+
+        Setting.getItem(<Link to="/records">{i18next.t("leftSideMedMenu:Records")}</Link>, "/records"),
+        Setting.getItem(<Link to="/ipfs-archive">{i18next.t("leftSideMedMenu:IpfsArchives")}</Link>, "/ipfs-archive"),
+        // // 病例数据中心（录入/导入/列表）
+        // Setting.getItem(<Link to="/med-records">病例数据</Link>, "/med-records"),
+        // 区块链浏览器 - 仅管理员可见，隐藏 user 和 doctor 标签用户
+
         Setting.getItem(<Link to="/ipfs-search">{i18next.t("leftSideMedMenu:Audit")}</Link>, "/ipfs-search"),
       ];
 
@@ -825,17 +829,20 @@ class App extends Component {
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/yolov8mi">{i18next.t("leftSideMedMenu:Sharing Services")}</Link>, "/yolov8mi", <BuildTwoTone twoToneColor={twoToneColor} />, [
 
 
-        Setting.getItem(<Link to="/yolov8mi">{i18next.t("leftSideMedMenu:Medical Image Analysis")}</Link>, "/yolov8mi"),
-        Setting.getItem(<Link to="/forms/密文计算/data">{i18next.t("leftSideMedMenu:Encrypted Computation")}</Link>, "/forms/密文计算/data"),
-        Setting.getItem(<Link to="/forms/SM9-IPFE/data">{i18next.t("leftSideMedMenu:Privacy-Preserving Inference")}</Link>, "/forms/SM9-IPFE/data"),
+        // Setting.getItem(<Link to="/yolov8mi">{i18next.t("leftSideMedMenu:Medical Image Analysis")}</Link>, "/yolov8mi"),
         Setting.getItem(<Link to="/forms/受控使用/data">{i18next.t("leftSideMedMenu:Controlled Usage")}</Link>, "/forms/受控使用/data"),
-        // Setting.getItem(<Link to="/forms/联邦学习/data">{i18next.t("leftSideMedMenu:Federated Learning")}</Link>, "/forms/联邦学习/data"),
+
         // 联邦学习 - 仅对非 user 标签用户可见
         ...(userTag !== 'user' ? [Setting.getItem(
           <a target="_blank" rel="noreferrer" href="http://172.25.77.152">
             {i18next.t("leftSideMedMenu:Federated Learning")}
             {Setting.renderExternalLink()}
           </a>, "http://172.25.77.152/")] : []),
+        Setting.getItem(<Link to="/forms/密文计算/data">{i18next.t("leftSideMedMenu:Encrypted Computation")}</Link>, "/forms/密文计算/data"),
+        // Setting.getItem(<Link to="/forms/SM9-IPFE/data">{i18next.t("leftSideMedMenu:Privacy-Preserving Inference")}</Link>, "/forms/SM9-IPFE/data"),
+
+        // Setting.getItem(<Link to="/forms/联邦学习/data">{i18next.t("leftSideMedMenu:Federated Learning")}</Link>, "/forms/联邦学习/data"),
+
         // 预留：受控使用、密文计算
 
       ],

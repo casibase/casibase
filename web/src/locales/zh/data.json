@@ -601,7 +601,7 @@
     
 
     "Chain Services": "上链服务",
-    "IpfsArchives":"医疗记录上链",
+    "IpfsArchives":"医疗数据归档",
     "Records":"数据操作上链",
     "chainExpoler":"区块链浏览器",
     "Audit":"查询与审计",

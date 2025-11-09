@@ -60,9 +60,9 @@ class MedicalRecordChainIntro extends Component {
                 >
                     {/* 左侧文字 */}
                     <div style={{ flex: 1, minWidth: 0, color: "#fff", padding: "0 0 0 0" }}>
-                        <div style={{ fontSize: 38, fontWeight: 800, marginBottom: 18, letterSpacing: 1 }}>医疗记录上链</div>
+                        <div style={{ fontSize: 38, fontWeight: 800, marginBottom: 18, letterSpacing: 1 }}>医疗数据归档</div>
                         <div style={{ fontSize: 18, color: "#e5e7eb", marginBottom: 32, lineHeight: 1.8 }}>
-                            医疗记录上链功能，支持将各类医疗文档（门诊、住院、专病、互联网医院等）高效、批量写入区块链，实现数据的不可篡改、可追溯与合规共享。平台自动完成数据脱敏、加密与归档，严格保障患者隐私与数据安全。
+                            医疗数据归档功能，支持将各类医疗文档（门诊、住院、专病、互联网医院等）高效、批量写入区块链，实现数据的不可篡改、可追溯与合规共享。平台自动完成数据脱敏、加密与归档，严格保障患者隐私与数据安全。
                         </div>
                     </div>
                     {/* 右侧按钮 */}
