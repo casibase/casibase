@@ -212,10 +212,6 @@ github.com/casdoor/casdoor-go-sdk v1.14.0 h1:HrvwBxF0Vt+BSuNsf5MfhCvqSfETolpv4hz
 github.com/casdoor/casdoor-go-sdk v1.14.0/go.mod h1:cMnkCQJgMYpgAlgEx8reSt1AVaDIQLcJ1zk5pzBaz+4=
 github.com/casibase/dashscope-go-sdk v0.0.2 h1:8J24x5g2N5eDslELPAHs0uflHjfpgtBqLGrqxbTx7QM=
 github.com/casibase/dashscope-go-sdk v0.0.2/go.mod h1:bpoto3SbZoci9vOM8mjskQl+IEfn+R1QHXrbvEMtGtc=
-github.com/casibase/dashscopego v0.3.0 h1:NE4dYp3PP0C0WHetNqIH2001nEen6iXL12kY3EvzMDk=
-github.com/casibase/dashscopego v0.3.0/go.mod h1:HhSXDEL5BeWaE1414dkbrkquWSCmFauaOLveewrMiIg=
-github.com/casibase/dashscopego v0.4.0 h1:4RnWqzv1Quac2EEI2ndlGBafv1AS9iFf2R1es4UvzEY=
-github.com/casibase/dashscopego v0.4.0/go.mod h1:HhSXDEL5BeWaE1414dkbrkquWSCmFauaOLveewrMiIg=
 github.com/casibase/dashscopego v0.5.0 h1:MO5sEOr5/qHMD5uEQydyxZelJdPNepgsJ2QQrGMgsX0=
 github.com/casibase/dashscopego v0.5.0/go.mod h1:HhSXDEL5BeWaE1414dkbrkquWSCmFauaOLveewrMiIg=
 github.com/casibase/go-openai v1.39.0 h1:oWIcjwCULAgYj+Nzmn3djUv5oLD+p6C91kYgW8J/ZpU=
