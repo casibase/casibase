@@ -48,7 +48,7 @@ type UsageInfo struct {
 	StartTime  time.Time `xorm:"created" json:"startTime"`
 }
 
-type Prompt struct {
+type ExampleQuestion struct {
 	Title string `json:"title"`
 	Text  string `json:"text"`
 	Image string `json:"image"`
@@ -79,12 +79,12 @@ type Store struct {
 	LimitMinutes        int      `json:"limitMinutes"`
 	KnowledgeCount      int      `json:"knowledgeCount"`
 	SuggestionCount     int      `json:"suggestionCount"`
-	Welcome             string   `xorm:"varchar(100)" json:"welcome"`
-	WelcomeTitle        string   `xorm:"varchar(100)" json:"welcomeTitle"`
-	WelcomeText         string   `xorm:"varchar(100)" json:"welcomeText"`
-	Prompt              string   `xorm:"mediumtext" json:"prompt"`
-	Prompts             []Prompt `xorm:"mediumtext" json:"prompts"`
-	ThemeColor          string   `xorm:"varchar(100)" json:"themeColor"`
+	Welcome             string            `xorm:"varchar(100)" json:"welcome"`
+	WelcomeTitle        string            `xorm:"varchar(100)" json:"welcomeTitle"`
+	WelcomeText         string            `xorm:"varchar(100)" json:"welcomeText"`
+	Prompt              string            `xorm:"mediumtext" json:"prompt"`
+	ExampleQuestions    []ExampleQuestion `xorm:"mediumtext" json:"exampleQuestions"`
+	ThemeColor          string            `xorm:"varchar(100)" json:"themeColor"`
 	Avatar              string   `xorm:"varchar(200)" json:"avatar"`
 	Title               string   `xorm:"varchar(100)" json:"title"`
 	HtmlTitle           string   `xorm:"varchar(100)" json:"htmlTitle"`

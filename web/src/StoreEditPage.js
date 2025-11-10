@@ -21,7 +21,7 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import FileTree from "./FileTree";
 import {ThemeDefault} from "./Conf";
-import PromptTable from "./table/PromptTable";
+import ExampleQuestionTable from "./table/ExampleQuestionTable";
 import StoreAvatarUploader from "./AvatarUpload";
 import {LinkOutlined} from "@ant-design/icons";
 import {Controlled as CodeMirror} from "react-codemirror2";
@@ -525,11 +525,11 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Prompts"), i18next.t("store:Prompts - Tooltip"))} :
+            {Setting.getLabel(i18next.t("store:Example questions"), i18next.t("store:Example questions - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <PromptTable prompts={this.state.store.prompts} onUpdatePrompts={(prompts) => {
-              this.updateStoreField("prompts", prompts);
+            <ExampleQuestionTable table={this.state.store.exampleQuestions} onUpdateTable={(exampleQuestions) => {
+              this.updateStoreField("exampleQuestions", exampleQuestions);
             }} />
           </Col>
         </Row>
