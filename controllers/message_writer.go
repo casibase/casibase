@@ -31,10 +31,11 @@ type RefinedWriter struct {
 	messageBuf    []byte
 	reasonBuf     []byte
 	toolBuf       []byte
+	searchBuf     []byte
 }
 
 func newRefinedWriter(w context.Response) *RefinedWriter {
-	return &RefinedWriter{w, *NewCleaner(6), []byte{}, []byte{}, []byte{}, []byte{}}
+	return &RefinedWriter{w, *NewCleaner(6), []byte{}, []byte{}, []byte{}, []byte{}, []byte{}}
 }
 
 func (w *RefinedWriter) Write(p []byte) (n int, err error) {
@@ -49,6 +50,11 @@ func (w *RefinedWriter) Write(p []byte) (n int, err error) {
 	} else if bytes.HasPrefix(p, []byte("event: tool")) {
 		eventType = "tool"
 		prefix := []byte("event: tool\ndata: ")
+		suffix := []byte("\n\n")
+		data = string(bytes.TrimSuffix(bytes.TrimPrefix(p, prefix), suffix))
+	} else if bytes.HasPrefix(p, []byte("event: search")) {
+		eventType = "search"
+		prefix := []byte("event: search\ndata: ")
 		suffix := []byte("\n\n")
 		data = string(bytes.TrimSuffix(bytes.TrimPrefix(p, prefix), suffix))
 	} else {
@@ -69,9 +75,11 @@ func (w *RefinedWriter) Write(p []byte) (n int, err error) {
 			w.toolBuf = append(w.toolBuf, '\n')
 		}
 		w.toolBuf = append(w.toolBuf, []byte(data)...)
+	} else if eventType == "search" {
+		w.searchBuf = append(w.searchBuf, []byte(data)...)
 	}
 
-	if eventType == "tool" {
+	if eventType == "tool" || eventType == "search" {
 		fmt.Print(data)
 		n, err := w.ResponseWriter.Write([]byte(fmt.Sprintf("event: %s\ndata: %s\n\n", eventType, data)))
 		if flusher, ok := w.ResponseWriter.(http.Flusher); ok {
@@ -116,6 +124,10 @@ func (w *RefinedWriter) ReasonString() string {
 
 func (w *RefinedWriter) ToolString() string {
 	return string(w.toolBuf)
+}
+
+func (w *RefinedWriter) SearchString() string {
+	return string(w.searchBuf)
 }
 
 type Cleaner struct {

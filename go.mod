@@ -27,7 +27,7 @@ require (
 	github.com/carmel/gooxml v0.0.0-20220216072414-40ff56130850
 	github.com/casdoor/casdoor-go-sdk v1.14.0
 	github.com/casibase/dashscope-go-sdk v0.0.2
-	github.com/casibase/dashscopego v0.3.0
+	github.com/casibase/dashscopego v0.5.0
 	github.com/casibase/go-openrouter v1.0.0
 	github.com/casibase/pdf v1.2.0
 	github.com/cenkalti/backoff/v4 v4.3.0
