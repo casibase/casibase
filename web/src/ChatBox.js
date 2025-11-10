@@ -18,7 +18,7 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import copy from "copy-to-clipboard";
 import moment from "moment";
-import ChatPrompts from "./ChatPrompts";
+import ChatExampleQuestions from "./ChatExampleQuestions";
 import MessageList from "./chat/MessageList";
 import ChatInput from "./chat/ChatInput";
 import WelcomeHeader from "./chat/WelcomeHeader";
@@ -323,9 +323,9 @@ class ChatBox extends React.Component {
       messages = [];
     }
 
-    let prompts = this.props.store?.prompts;
-    if (!prompts) {
-      prompts = [];
+    let exampleQuestions = this.props.store?.exampleQuestions;
+    if (!exampleQuestions) {
+      exampleQuestions = [];
     }
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -378,9 +378,9 @@ class ChatBox extends React.Component {
         </Card>
 
         {messages.length === 0 ? (
-          <ChatPrompts
+          <ChatExampleQuestions
             sendMessage={this.props.sendMessage}
-            prompts={prompts}
+            exampleQuestions={exampleQuestions}
           />
         ) : null}
       </Layout>

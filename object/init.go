@@ -69,7 +69,7 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		WelcomeTitle:         "Hello, this is the Casibase AI Assistant",
 		WelcomeText:          "I'm here to help answer your questions",
 		Prompt:               "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems.",
-		Prompts:              []Prompt{},
+		ExampleQuestions:     []ExampleQuestion{},
 		KnowledgeCount:       5,
 		SuggestionCount:      3,
 		ThemeColor:           "#5734d3",
