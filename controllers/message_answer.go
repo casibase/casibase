@@ -220,9 +220,6 @@ func (c *ApiController) GetMessageAnswer() {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
-	if questionMessage.WebSearchEnabled {
-		question = model.AddWebSearchGuidanceToQuestion(question)
-	}
 	var modelResult *model.ModelResult
 	if agentClients != nil {
 		messages := &model.AgentMessages{
