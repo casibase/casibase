@@ -16,6 +16,7 @@ package model
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -127,9 +128,10 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 	if agentInfo != nil && agentInfo.AgentClients != nil && agentInfo.AgentClients.WebSearchEnabled {
 		params.SetEnableSearch(true)
 		params.SetSearchOptions(&qwen.SearchOptions{
-			ForcedSearch:   true,
-			EnableSource:   true,
-			EnableCitation: true,
+			ForcedSearch:        true,
+			EnableSource:        true,
+			EnableCitation:      true,
+			PrependSearchResult: true,
 		})
 	}
 
@@ -153,6 +155,11 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 	resp, err := cli.CreateCompletion(ctx, req)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.Output.SearchInfo != nil && resp.Output.SearchInfo.SearchResults != nil && len(resp.Output.SearchInfo.SearchResults) > 0 {
+		searchResultsJSON, _ := json.Marshal(resp.Output.SearchInfo.SearchResults)
+		flushDataThink(string(searchResultsJSON), "search", writer, lang)
 	}
 
 	modelResult := &ModelResult{

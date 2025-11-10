@@ -15,6 +15,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -184,7 +185,7 @@ func (c *ApiController) GetMessageAnswer() {
 		embeddingResult = &embedding.EmbeddingResult{}
 	}
 
-	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}, []byte{}, []byte{}, []byte{}}
+	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}, []byte{}, []byte{}, []byte{}, []byte{}}
 
 	if questionMessage != nil {
 		questionMessage.TokenCount = embeddingResult.TokenCount
@@ -278,6 +279,15 @@ func (c *ApiController) GetMessageAnswer() {
 	answer := writer.MessageString()
 	message.ReasonText = writer.ReasonString()
 	message.ToolCalls = model.GetToolCallsFromWriter(writer.ToolString())
+	searchString := writer.SearchString()
+	if searchString != "" {
+		var searchResults []object.SearchResult
+		err := json.Unmarshal([]byte(searchString), &searchResults)
+		if err == nil {
+			message.SearchResults = searchResults
+		}
+	}
+
 	message.TokenCount = modelResult.TotalTokenCount
 	message.Price = modelResult.TotalPrice
 	message.Currency = modelResult.Currency

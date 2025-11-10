@@ -36,6 +36,12 @@ type Suggestion struct {
 	IsHit bool   `json:"isHit"`
 }
 
+type SearchResult struct {
+	Index int    `json:"index"`
+	Title string `json:"title"`
+	URL   string `json:"url"`
+}
+
 type Message struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
@@ -69,6 +75,7 @@ type Message struct {
 	DisLikeUsers      []string         `json:"dislikeUsers"`
 	Suggestions       []Suggestion     `json:"suggestions"`
 	ToolCalls         []model.ToolCall `xorm:"mediumtext" json:"toolCalls"`
+	SearchResults     []SearchResult   `xorm:"mediumtext" json:"searchResults"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {
