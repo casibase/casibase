@@ -595,7 +595,7 @@ class PythonSrPage extends React.Component {
     const isDoctor = userTag === 'doctor';
 
     // 定义可选医院列表
-    const availableHospitals = ['广东省人民医院', '中国医科大学附属第一医院'];
+    const availableHospitals = ['广东省人民医院', '中国医科大学附属第一医院', '中国医科大学附属第一医院互联网医院', '中国医科大学附属第一医院浑南院区', '江苏省人民医院'];
 
     return (
       <div style={{ padding: '24px', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
