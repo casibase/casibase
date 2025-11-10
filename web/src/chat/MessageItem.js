@@ -15,6 +15,7 @@
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
 import {Alert, Button, Col, Collapse, Row} from "antd";
+import {LinkOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -24,6 +25,7 @@ import MessageActions from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
 import MessageEdit from "./MessageEdit";
 import {MessageCarrier} from "./MessageCarrier";
+import SearchSourcesDrawer from "./SearchSourcesDrawer";
 
 const {Panel} = Collapse;
 
@@ -48,6 +50,7 @@ const MessageItem = ({
   const [avatarSrc, setAvatarSrc] = useState(null);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [reasonExpanded, setReasonExpanded] = useState(["reason"]);
+  const [searchDrawerVisible, setSearchDrawerVisible] = useState(false);
   const themeColor = Setting.getThemeColor();
   const toolColor = (message.reasonText && message.toolCalls) ? "#1890ff" : themeColor;
 
@@ -83,10 +86,10 @@ const MessageItem = ({
         </div>
         <style>{`
           @keyframes thinkingDot {
-            0%, 80%, 100% { 
+            0%, 80%, 100% {
               transform: scale(0);
-            } 
-            40% { 
+            }
+            40% {
               transform: scale(1.0);
             }
           }
@@ -363,22 +366,40 @@ const MessageItem = ({
           footer={
             <div style={{display: "flex", flexDirection: "column", gap: "12px"}}>
               {!isEditing && message.author === "AI" && (disableInput === false || index !== isLastMessage) && (
-                <MessageActions
-                  message={message}
-                  isLastMessage={isLastMessage}
-                  index={index}
-                  onCopy={onCopy}
-                  onRegenerate={onRegenerate}
-                  onLike={onLike}
-                  onToggleRead={onToggleRead}
-                  onEdit={() => setIsHovering(true)}
-                  isReading={isReading}
-                  isLoadingTTS={isLoadingTTS} // Pass loading state to MessageActions
-                  readingMessage={readingMessage}
-                  account={account}
-                  setIsRegenerating={setIsRegenerating}
-                  isRegenerating={isRegenerating}
-                />
+                <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                  <MessageActions
+                    message={message}
+                    isLastMessage={isLastMessage}
+                    index={index}
+                    onCopy={onCopy}
+                    onRegenerate={onRegenerate}
+                    onLike={onLike}
+                    onToggleRead={onToggleRead}
+                    onEdit={() => setIsHovering(true)}
+                    isReading={isReading}
+                    isLoadingTTS={isLoadingTTS} // Pass loading state to MessageActions
+                    readingMessage={readingMessage}
+                    account={account}
+                    setIsRegenerating={setIsRegenerating}
+                    isRegenerating={isRegenerating}
+                  />
+                  {message.searchResults?.length > 0 && (
+                    <Button
+                      type="text"
+                      size="small"
+                      icon={<LinkOutlined />}
+                      onClick={() => setSearchDrawerVisible(true)}
+                      style={{
+                        fontSize: "12px",
+                        color: themeColor,
+                        padding: "0 8px",
+                        height: "24px",
+                      }}
+                    >
+                      {message.searchResults.length} {i18next.t("chat:Sources")}
+                    </Button>
+                  )}
+                </div>
               )}
               {message.author === "AI" && isLastMessage && (
                 <MessageSuggestions message={message} sendMessage={sendMessage} />
@@ -407,29 +428,37 @@ const MessageItem = ({
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "90%",
-        margin: message.author === "AI" ? "0 auto 0 0" : "0 0 0 auto",
-        position: "relative",
-      }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div style={{
-        textAlign: message.author === "AI" ? "left" : "right",
-        color: "#999",
-        fontSize: "12px",
-        marginBottom: "8px",
-        padding: "0 12px",
-      }}>
-        {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
+    <>
+      <div
+        style={{
+          maxWidth: "90%",
+          margin: message.author === "AI" ? "0 auto 0 0" : "0 0 0 auto",
+          position: "relative",
+        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div style={{
+          textAlign: message.author === "AI" ? "left" : "right",
+          color: "#999",
+          fontSize: "12px",
+          marginBottom: "8px",
+          padding: "0 12px",
+        }}>
+          {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
+        </div>
+
+        {renderReasoningBubble()}
+
+        {renderMessageBubble()}
       </div>
 
-      {renderReasoningBubble()}
-
-      {renderMessageBubble()}
-    </div>
+      <SearchSourcesDrawer
+        visible={searchDrawerVisible}
+        onClose={() => setSearchDrawerVisible(false)}
+        searchResults={message.searchResults}
+      />
+    </>
   );
 };
 

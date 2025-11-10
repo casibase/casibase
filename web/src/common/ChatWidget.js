@@ -24,12 +24,12 @@ import {MessageCarrier} from "../chat/MessageCarrier";
 
 /**
  * ChatWidget - A complete chat component with header, model selector, and chat interface
- * 
+ *
  * @component
- * @description 
+ * @description
  * A comprehensive chat component that includes a title bar, model selector, new chat button, and chat interface.
  * Supports automatic loading or creating chats, managing message state, and model provider switching.
- * 
+ *
  * @param {string} chatName - Required. Unique identifier for the chat, used to load or create the chat
  * @param {string} [displayName] - Optional. Display name for the chat. If not provided, uses default format
  * @param {string} [title] - Optional. Title shown in the header when chat has no displayName
@@ -48,28 +48,28 @@ import {MessageCarrier} from "../chat/MessageCarrier";
  * @param {Function} [onChatTitleUpdated] - Optional. Callback when chat title is updated
  * @param {Function} [onMessageSent] - Optional. Callback after message is sent
  * @param {Function} [onChatCleared] - Optional. Callback when chat is cleared
- * 
+ *
  * @typedef {Object} PromptItem
  * @property {string} title - Prompt title
  * @property {string} text - Prompt content
  * @property {string} image - Prompt image URL
- * 
+ *
  * @typedef {Object} Account
  * @property {string} name - User name
  * @property {string} owner - User owner
  * @property {string} [createdIp] - User's IP when created
  * @property {string} [education] - User education info
- * 
+ *
  * @typedef {Object} Chat
  * @property {string} name - Chat name
  * @property {string} displayName - Chat display name
  * @property {string} modelProvider - Model provider name
- * 
+ *
  * @typedef {Object} Message
  * @property {string} name - Message name
  * @property {string} text - Message text
  * @property {string} author - Message author
- * 
+ *
  * @example
  * // Basic usage
  * <ChatWidget
@@ -78,7 +78,7 @@ import {MessageCarrier} from "../chat/MessageCarrier";
  *   account={userAccount}
  *   height="500px"
  * />
- * 
+ *
  * @example
  * // Advanced usage with callbacks and prompts
  * <ChatWidget
@@ -524,6 +524,24 @@ class ChatWidget extends React.Component {
           messages: updatedMessages,
         });
       },
+      // onSearch
+      (data) => {
+        if (!chat || (this.state.currentChat?.name !== chat.name)) {
+          return;
+        }
+        // data is already a JSON string from backend, parse it to get the array
+        const searchResults = JSON.parse(data);
+
+        const lastMessage2 = Setting.deepCopy(lastMessage);
+        lastMessage2.searchResults = searchResults;
+
+        const updatedMessages = [...messages];
+        updatedMessages[updatedMessages.length - 1] = lastMessage2;
+
+        this.setState({
+          messages: updatedMessages,
+        });
+      },
       // onError
       (error) => {
         Setting.showMessage("error", Setting.getRefinedErrorText(error));
@@ -561,6 +579,11 @@ class ChatWidget extends React.Component {
         // Keep the tool calls if they exist
         if (messages[messages.length - 1].toolCalls) {
           lastMessage2.toolCalls = messages[messages.length - 1].toolCalls;
+        }
+
+        // Keep the search results if they exist
+        if (messages[messages.length - 1].searchResults) {
+          lastMessage2.searchResults = messages[messages.length - 1].searchResults;
         }
 
         lastMessage2.isReasoningPhase = false;
