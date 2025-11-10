@@ -570,7 +570,8 @@ func GetPatientByHashID(hashID string) ([]*Record, error) {
 	records := []*Record{}
 	
 	// 查询object字段包含指定HashID且requestUri为/api/add-outpatient的记录
-	err := adapter.engine.Where("object LIKE ? AND request_uri = ?", "%"+hashID+"%", "/api/add-outpatient").Find(&records)
+	// err := adapter.engine.Where("object LIKE ? AND request_uri = ?", "%"+hashID+"%", "/api/add-outpatient").Find(&records)
+	err := adapter.engine.Where("correlation_id = ?", hashID).Find(&records)
 	if err != nil {
 		return records, err
 	}
