@@ -40,7 +40,7 @@ const resourceListInit = dataSetsIds.map(id => ({ id, description: '', loading: 
 import { useHistory } from 'react-router-dom';
 import { is } from "bpmn-js/lib/util/ModelUtil";
 
-export default function MuiltiCenter() {
+export default function MuiltiCenter(props) {
     const [search, setSearch] = useState("");
     const [resourceList, setResourceList] = useState(resourceListInit);
     const [loading, setLoading] = useState(false);
@@ -48,6 +48,8 @@ export default function MuiltiCenter() {
     const [modalResource, setModalResource] = useState(null);
     const [form] = Form.useForm();
     const history = useHistory();
+    const account = props.account;
+    const isUserTagAdmin = account?.tag?.includes('admin');
 
     // 全局灰度开关（window.isHuidu 可由外部注入）
     const routeTo = async (path) => {
@@ -89,7 +91,10 @@ export default function MuiltiCenter() {
                 </div>
                 <div style={{ position: 'absolute', right: 36, top: 36, display: 'flex', gap: 16 }}>
                     <Button onClick={() => history.push('/multi-center/data-workbench')} style={{ fontWeight: 500, background: '#fff', color: '#23408e', border: '1px solid #d9d9d9' }}>数据工作台</Button>
-                    <Button onClick={() => history.push('/multi-center/audit-log')} style={{ fontWeight: 500, background: '#fff', color: '#23408e', border: '1px solid #d9d9d9' }}>数据审计记录</Button>
+                    {isUserTagAdmin &&
+                        <Button onClick={() => history.push('/multi-center/audit-log')} style={{ fontWeight: 500, background: '#fff', color: '#23408e', border: '1px solid #d9d9d9' }}>数据审计记录</Button>
+                    }
+
                 </div>
             </div>
 

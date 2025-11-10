@@ -22,6 +22,7 @@ const data = [
 
 export default function DataWorkBench(props) {
     const { account } = props;
+    const isUserTagAdmin = account?.tag?.includes('admin');
     const history = typeof window !== 'undefined' && window.history && window.location ? require('react-router-dom').useHistory() : null;
     // try read dataset id from route query params: ?datasetId=xxx or ?id=xxx
     const routeRequestedDatasetId = (() => {
@@ -432,7 +433,7 @@ export default function DataWorkBench(props) {
                     border: 'none',
                     boxShadow: 'none'
                 }}>
-                    <div
+                    {isUserTagAdmin && <div
                         style={{
                             flex: 1,
                             background: '#f6faff',
@@ -453,7 +454,7 @@ export default function DataWorkBench(props) {
                             <div style={{ color: '#23408e', fontWeight: 700, fontSize: 17, marginBottom: 2, whiteSpace: 'nowrap' }}>数据审计记录</div>
                             <div style={{ color: '#888', fontSize: 14 }}>区块链全程追溯</div>
                         </div>
-                    </div>
+                    </div>}
                     <div
                         style={{
                             flex: 1,
