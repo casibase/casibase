@@ -57,15 +57,22 @@ func (c *ApiController) GetRecords() {
 		return
 	}
 	usertag := c.GetSessionUserTag()
+	isUserTagAdmin := false
 
 	if usertag == "admin" {
+		isUserTagAdmin = true
 		username = ""
 		// 标识为非管理员时，强制只查询自己的
 	}
 
 
 	if limit == "" || page == "" {
-		records, err := object.GetRecords(owner,username)
+		records, err := []*object.Record{}, error(nil)
+		if isUserTagAdmin == false {
+			records, err = object.GetRecordsFilterUser(owner,username)
+		} else{
+			records, err = object.GetRecords(owner)
+		}
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -79,14 +86,24 @@ func (c *ApiController) GetRecords() {
 			return
 		}
 
-		count, err := object.GetRecordCount(owner, field, value,username)
+		count := int64(0)
+		if isUserTagAdmin == false {
+			count, err = object.GetRecordCountFilterUser(owner, field, value,username)
+		} else {
+			count, err = object.GetRecordCount(owner, field, value)
+		}
+		
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
-
+		records := []*object.Record{}
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		records, err := object.GetPaginationRecords(owner, paginator.Offset(), limit, field, value, sortField, sortOrder,username)
+		if isUserTagAdmin == false {
+			records, err = object.GetPaginationRecordsFilterUser(owner, paginator.Offset(), limit, field, value, sortField, sortOrder,username)
+		} else {
+			records, err = object.GetPaginationRecords(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		}
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
