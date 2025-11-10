@@ -112,7 +112,9 @@ const MultiPaneManager = ({
     if (!chat) {return;}
 
     MessageBackend.getChatMessages("admin", chat.name).then((res) => {
-      res.data.forEach(message => message.html = renderText(message.text));
+      res.data.forEach(message => {
+        message.html = renderText(message.text);
+      });
 
       setPanes(prev => prev.map((pane, i) =>
         i === paneIndex ? {...pane, messages: res.data} : pane
@@ -201,6 +203,17 @@ const MultiPaneManager = ({
           i === paneIndex ? {...pane, messages: [...messages]} : pane
         ));
       },
+      (data) => {
+        const searchResults = JSON.parse(data);
+
+        const lastMessage2 = Setting.deepCopy(lastMessage);
+        lastMessage2.searchResults = searchResults;
+
+        messages[messages.length - 1] = lastMessage2;
+        setPanes(prev => prev.map((pane, i) =>
+          i === paneIndex ? {...pane, messages: [...messages]} : pane
+        ));
+      },
       (error) => {
         Setting.showMessage("error", Setting.getRefinedErrorText(error));
         const errorMessage = Setting.deepCopy(lastMessage);
@@ -224,6 +237,10 @@ const MultiPaneManager = ({
 
         if (toolCalls.length > 0) {
           finalMessage.toolCalls = toolCalls;
+        }
+
+        if (messages[messages.length - 1].searchResults) {
+          finalMessage.searchResults = messages[messages.length - 1].searchResults;
         }
 
         const parsedResult = messageCarrier.parseAnswerWithCarriers(text);
