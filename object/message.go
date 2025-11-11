@@ -37,9 +37,11 @@ type Suggestion struct {
 }
 
 type SearchResult struct {
-	Index int    `json:"index"`
-	Title string `json:"title"`
-	URL   string `json:"url"`
+	Icon     string `json:"icon,omitempty"`
+	SiteName string `json:"site_name,omitempty"`
+	Index    int    `json:"index"`
+	Title    string `json:"title"`
+	URL      string `json:"url"`
 }
 
 type Message struct {
