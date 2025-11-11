@@ -24,6 +24,18 @@ import (
 	"github.com/casibase/casibase/object"
 )
 
+func getCarrier(suggestionCount int, needTitle bool) (string, error) {
+	carriedQuestion, err := getQuestionWithCarriers("", suggestionCount, needTitle)
+	if err != nil {
+		return "", err
+	}
+
+	carrierInstructions := strings.Replace(carriedQuestion, "Here is the user's question: ", "", 1)
+	carrierInstructions = strings.TrimSpace(carrierInstructions)
+
+	return carrierInstructions, nil
+}
+
 func getQuestionWithCarriers(question string, suggestionCount int, needTitle bool) (string, error) {
 	carriedQuestion := question
 
@@ -33,6 +45,9 @@ func getQuestionWithCarriers(question string, suggestionCount int, needTitle boo
 	}
 
 	carriedQuestion, err = suggestionCarrier.GetQuestion(carriedQuestion)
+	if err != nil {
+		return "", err
+	}
 
 	titleCarrier, err := carrier.NewTitleCarrier(needTitle)
 	if err != nil {
@@ -44,7 +59,20 @@ func getQuestionWithCarriers(question string, suggestionCount int, needTitle boo
 		return "", err
 	}
 
-	return carriedQuestion, err
+	return carriedQuestion, nil
+}
+
+func getPromptWithCarrier(prompt string, suggestionCount int, needTitle bool) (string, error) {
+	if prompt == "" {
+		prompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems."
+	}
+
+	carrierInstructions, err := getCarrier(suggestionCount, needTitle)
+	if err != nil {
+		return "", err
+	}
+	prompt = prompt + "\n\n" + carrierInstructions
+	return prompt, nil
 }
 
 func parseAnswerWithCarriers(answer string, suggestionCount int, needTitle bool) (string, []object.Suggestion, string, error) {

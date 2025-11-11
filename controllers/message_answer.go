@@ -168,7 +168,11 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	agentClients = agent.MergeBuiltinAndWebSearchTools(agentClients, store.BuiltinTools, questionMessage.WebSearchEnabled)
+	webSearchEnabled := false
+	if questionMessage != nil {
+		webSearchEnabled = questionMessage.WebSearchEnabled
+	}
+	agentClients = agent.MergeBuiltinAndWebSearchTools(agentClients, store.BuiltinTools, webSearchEnabled)
 
 	knowledgeCount := store.KnowledgeCount
 	if knowledgeCount <= 0 {
@@ -214,12 +218,17 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
+	prompt := store.Prompt
 	if modelProvider.Type != "Dummy" && !isReasonModel(modelProvider.SubType) {
-		question, err = getQuestionWithCarriers(question, store.SuggestionCount, chat.NeedTitle)
-	}
-	if err != nil {
-		c.ResponseErrorStream(message, err.Error())
-		return
+		if modelProvider.Type == "Alibaba Cloud" && webSearchEnabled {
+			prompt, err = getPromptWithCarrier(prompt, store.SuggestionCount, chat.NeedTitle)
+		} else {
+			question, err = getQuestionWithCarriers(question, store.SuggestionCount, chat.NeedTitle)
+		}
+		if err != nil {
+			c.ResponseErrorStream(message, err.Error())
+			return
+		}
 	}
 	var modelResult *model.ModelResult
 	if agentClients != nil {
@@ -231,12 +240,12 @@ func (c *ApiController) GetMessageAnswer() {
 			AgentClients:  agentClients,
 			AgentMessages: messages,
 		}
-		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, store.Prompt, knowledge, agentInfo, c.GetAcceptLanguage())
+		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, prompt, knowledge, agentInfo, c.GetAcceptLanguage())
 	} else {
 		if isReasonModel(modelProvider.SubType) {
-			modelResult, err = QueryCarrierText(question, writer, history, store.Prompt, knowledge, modelProviderObj, chat.NeedTitle, store.SuggestionCount, c.GetAcceptLanguage())
+			modelResult, err = QueryCarrierText(question, writer, history, prompt, knowledge, modelProviderObj, chat.NeedTitle, store.SuggestionCount, c.GetAcceptLanguage())
 		} else {
-			modelResult, err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge, nil, c.GetAcceptLanguage())
+			modelResult, err = modelProviderObj.QueryText(question, writer, history, prompt, knowledge, nil, c.GetAcceptLanguage())
 		}
 	}
 	if err != nil {
