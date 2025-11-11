@@ -1158,8 +1158,7 @@ export function isProviderSupportWebSearch(provider) {
 
   if (provider.type === "Alibaba Cloud") {
     // Not all Alibaba Cloud models support web search
-    // DeepSeek V3 does not support web search
-    const unsupportedModels = ["deepseek-v3"];
+    const unsupportedModels = [""];
 
     if (!provider.subType) {
       return true; // Default to true for Alibaba Cloud if subType is not specified
