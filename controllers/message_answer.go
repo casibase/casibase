@@ -168,7 +168,11 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	agentClients = agent.MergeBuiltinAndWebSearchTools(agentClients, store.BuiltinTools, questionMessage.WebSearchEnabled)
+	webSearchEnabled := false
+	if questionMessage != nil {
+		webSearchEnabled = questionMessage.WebSearchEnabled
+	}
+	agentClients = agent.MergeBuiltinAndWebSearchTools(agentClients, store.BuiltinTools, webSearchEnabled)
 
 	knowledgeCount := store.KnowledgeCount
 	if knowledgeCount <= 0 {
