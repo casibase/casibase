@@ -317,13 +317,34 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 				case responses.ResponseFunctionToolCall:
 					toolCalls = append(toolCalls, v)
 				case responses.ResponseFunctionWebSearch:
-					if v.Action.Type != "" {
+					if v.Status == "completed" && v.Action.Type != "" {
+						var searchInfo map[string]interface{}
 						switch v.Action.Type {
+						case "search":
+							searchInfo = map[string]interface{}{
+								"action": "search",
+								"query":  v.Action.Query,
+								"id":     v.ID,
+							}
 						case "open_page":
-							//err = flushThink(v.Action.URL, "tool_call", writer, lang)
-							//if err != nil {
-							//	return nil, err
-							//}
+							searchInfo = map[string]interface{}{
+								"action": "open_page",
+								"url":    v.Action.URL,
+								"id":     v.ID,
+							}
+						case "find":
+							searchInfo = map[string]interface{}{
+								"action":  "find",
+								"pattern": v.Action.Pattern,
+								"id":      v.ID,
+							}
+						}
+						if searchInfo != nil {
+							searchInfoJSON, _ := json.Marshal(searchInfo)
+							err = flushThink(string(searchInfoJSON), "search", writer, lang)
+							if err != nil {
+								return nil, err
+							}
 						}
 					}
 				}
