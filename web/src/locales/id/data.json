@@ -754,6 +754,7 @@
     "Forbidden words - Tooltip": "Kata yang tidak diizinkan dalam pesan chat. Pesan yang berisi kata-kata ini akan ditolak.",
     "Frequency": "Frekuensi",
     "Frequency - Tooltip": "Batas frekuensi pemanggilan model AI (kali/permenit)",
+    "Hide chat": "Hide chat",
     "Hide thinking": "Sembunyikan penalaran",
     "Hide thinking - Tooltip": "Sembunyikan penalaran - Tooltip",
     "History": "Sejarah",

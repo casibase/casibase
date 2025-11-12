@@ -753,6 +753,7 @@
     "Forbidden words - Tooltip": "Words not allowed in chat messages. Messages containing these words will be rejected.",
     "Frequency": "Frequency",
     "Frequency - Tooltip": "Max API calls per minute",
+    "Hide chat": "Hide chat",
     "Hide thinking": "Sembunyikan pemikiran",
     "Hide thinking - Tooltip": "Hide thinking - Tooltip",
     "History": "History",
