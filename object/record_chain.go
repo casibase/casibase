@@ -157,35 +157,35 @@ func CommitRecord(record *Record, lang string) (bool, map[string]interface{}, er
 
 	// Update the record fields with optimistic locking to prevent race conditions
 	// Only update if the Block field is still empty
-	var affected bool
-	var recordId string
+	var affectedRows int64
 	if record.Id == 0 {
 		// If the record ID is 0, it means batch insert, so using getId()
-		recordId = record.getId()
+		recordId := record.getId()
+		p, err := GetRecord(recordId, lang)
+		if err != nil {
+			return false, nil, err
+		} else if p == nil {
+			return false, nil, fmt.Errorf(i18n.Translate(lang, "object:the record: %s does not exist"), recordId)
+		}
+		// Only update if Block is still empty (optimistic locking)
+		affectedRows, err = adapter.engine.Table(&Record{}).Where("id = ? AND block = ?", p.Id, "").Update(data)
+		if err != nil {
+			return false, nil, err
+		}
 	} else {
-		recordId = record.getUniqueId()
+		// Use the record's actual ID for direct update with optimistic locking
+		affectedRows, err = adapter.engine.Table(&Record{}).Where("id = ? AND block = ?", record.Id, "").Update(data)
+		if err != nil {
+			return false, nil, err
+		}
 	}
-
-	p, err := GetRecord(recordId, lang)
-	if err != nil {
-		return false, nil, err
-	} else if p == nil {
-		return false, nil, fmt.Errorf(i18n.Translate(lang, "object:the record: %s does not exist"), recordId)
-	}
-
-	// Only update if Block is still empty (optimistic locking)
-	affectedRows, err := adapter.engine.Table(&Record{}).Where("id = ? AND block = ?", p.Id, "").Update(data)
-	if err != nil {
-		return false, nil, err
-	}
-	affected = affectedRows != 0
 
 	delete(data, "error_text")
 
 	// attach the name to the data for consistency
 	data["name"] = record.Name
 
-	return affected, data, err
+	return affectedRows != 0, data, nil
 }
 
 func CommitRecordSecond(record *Record, lang string) (bool, error) {
@@ -212,17 +212,8 @@ func CommitRecordSecond(record *Record, lang string) (bool, error) {
 	}
 
 	// Update the record fields with optimistic locking to prevent race conditions
-	// Only update if the Block2 field is still empty
-	recordId := record.getUniqueId()
-	p, err := GetRecord(recordId, lang)
-	if err != nil {
-		return false, err
-	} else if p == nil {
-		return false, fmt.Errorf(i18n.Translate(lang, "object:the record: %s does not exist"), recordId)
-	}
-
-	// Only update if Block2 is still empty (optimistic locking)
-	affectedRows, err := adapter.engine.Table(&Record{}).Where("id = ? AND block2 = ?", p.Id, "").Update(data)
+	// Only update if the Block2 field is still empty (using record's ID directly)
+	affectedRows, err := adapter.engine.Table(&Record{}).Where("id = ? AND block2 = ?", record.Id, "").Update(data)
 	if err != nil {
 		return false, err
 	}
