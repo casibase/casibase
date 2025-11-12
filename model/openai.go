@@ -340,7 +340,10 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 							}
 						}
 						if searchInfo != nil {
-							searchInfoJSON, _ := json.Marshal(searchInfo)
+							searchInfoJSON, marshalErr := json.Marshal(searchInfo)
+							if marshalErr != nil {
+								return nil, marshalErr
+							}
 							err = flushThink(string(searchInfoJSON), "search", writer, lang)
 							if err != nil {
 								return nil, err
