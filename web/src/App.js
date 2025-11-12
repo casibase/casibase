@@ -42,6 +42,7 @@ import i18next from "i18next";
 import {withTranslation} from "react-i18next";
 import LanguageSelect from "./LanguageSelect";
 import ThemeSelect from "./ThemeSelect";
+import OpenTour from "./common/OpenTour";
 import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
 import MessageListPage from "./MessageListPage";
@@ -503,6 +504,7 @@ class App extends Component {
               {i18next.t("account:Sign In")}
             </a>
           </div>
+          <OpenTour />
           <div className="select-box" style={{float: "right", margin: "0px", padding: "0px"}}>
             <ThemeSelect themeAlgorithm={this.state.themeAlgorithm} onChange={this.setLogoAndThemeAlgorithm} />
           </div>
@@ -515,6 +517,7 @@ class App extends Component {
       return (
         <React.Fragment>
           {this.renderRightDropdown()}
+          <OpenTour />
           <ThemeSelect className="select-box" themeAlgorithm={this.state.themeAlgorithm} onChange={this.setLogoAndThemeAlgorithm} />
           <LanguageSelect className="select-box" />
           {Setting.isLocalAdminUser(this.state.account) &&
