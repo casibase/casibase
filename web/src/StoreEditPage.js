@@ -200,6 +200,11 @@ class StoreEditPage extends React.Component {
     return false;
   }
 
+  shouldHideAIFields() {
+    // Hide AI fields only when store is default and hideChat is true
+    return this.state.store.isDefault && this.state.store.hideChat;
+  }
+
   renderStore() {
     return (
       <Card size="small" title={
@@ -229,32 +234,36 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Title"), i18next.t("general:Title - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.store.title} onChange={e => {
-              this.updateStoreField("title", e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Avatar"), i18next.t("general:Avatar - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <StoreAvatarUploader
-              store={this.state.store}
-              onUpdate={(newUrl) => {
-                this.updateStoreField("avatar", newUrl);
-              }}
-              onUploadComplete={(newUrl) => {
-                this.submitStoreEdit(false, undefined);
-              }}
-            />
-          </Col>
-        </Row>
+        {!this.shouldHideAIFields() && (
+          <>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Title"), i18next.t("general:Title - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.store.title} onChange={e => {
+                  this.updateStoreField("title", e.target.value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Avatar"), i18next.t("general:Avatar - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <StoreAvatarUploader
+                  store={this.state.store}
+                  onUpdate={(newUrl) => {
+                    this.updateStoreField("avatar", newUrl);
+                  }}
+                  onUploadComplete={(newUrl) => {
+                    this.submitStoreEdit(false, undefined);
+                  }}
+                />
+              </Col>
+            </Row>
+          </>
+        )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:Is default"), i18next.t("store:Is default - Tooltip"))} :
@@ -262,6 +271,16 @@ class StoreEditPage extends React.Component {
           <Col span={1}>
             <Switch checked={this.state.store.isDefault} onChange={checked => {
               this.updateStoreField("isDefault", checked);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("store:Hide chat"), i18next.t("store:Hide chat - Tooltip"))} :
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.store.hideChat} onChange={checked => {
+              this.updateStoreField("hideChat", checked);
             }} />
           </Col>
         </Row>
@@ -294,448 +313,452 @@ class StoreEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Storage subpath"), i18next.t("store:Storage subpath - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.store.storageSubpath} onChange={e => {
-              this.updateStoreField("storageSubpath", e.target.value);
-            }} />
-          </Col>
-        </Row>
-        {this.isAIStorageProvider(this.state.store.storageProvider) ? (
+        {!this.shouldHideAIFields() && (
           <>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("store:Vector store id"), i18next.t("store:Vector store id - Tooltip"))} :
+                {Setting.getLabel(i18next.t("store:Storage subpath"), i18next.t("store:Storage subpath - Tooltip"))} :
               </Col>
               <Col span={22} >
-                <Input value={this.state.store.vectorStoreId} onChange={e => {
-                  this.updateStoreField("vectorStoreId", e.target.value);
+                <Input value={this.state.store.storageSubpath} onChange={e => {
+                  this.updateStoreField("storageSubpath", e.target.value);
                 }} />
               </Col>
             </Row>
-          </>
-        ) : null}
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Image provider"), i18next.t("store:Image provider - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.imageProvider} onChange={(value => {this.updateStoreField("imageProvider", value);})}
-            >
-              <Option key="none" value="">
-                {i18next.t("general:empty")}
-              </Option>
-              {
-                this.state.casdoorStorageProviders.map((provider, index) =>
-                  this.renderProviderOption(provider, index)
-                )
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Split provider"), i18next.t("store:Split provider - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.splitProvider} onChange={(value => {this.updateStoreField("splitProvider", value);})}
-              options={[{name: "Default"}, {name: "Basic"}, {name: "QA"}, {name: "Markdown"}].map((provider) => Setting.getOption(provider.name, provider.name))
-              } />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Search provider"), i18next.t("store:Search provider - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.searchProvider} onChange={(value => {this.updateStoreField("searchProvider", value);})}
-              options={[{name: "Default"}, {name: "Hierarchy"}].map((provider) => Setting.getOption(provider.name, provider.name))
-              } />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Model provider"), i18next.t("store:Model provider - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.modelProvider} onChange={(value => {this.updateStoreField("modelProvider", value);})}
-            >
-              {
-                this.state.modelProviders.map((provider, index) =>
-                  this.renderProviderOption(provider, index)
-                )
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Embedding provider"), i18next.t("store:Embedding provider - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProvider} onChange={(value => {this.updateStoreField("embeddingProvider", value);})}
-            >
-              <Option key="none" value="">
-                {i18next.t("general:empty")}
-              </Option>
-              {
-                this.state.embeddingProviders.map((provider, index) =>
-                  this.renderProviderOption(provider, index)
-                )
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Agent provider"), i18next.t("store:Agent provider - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.agentProvider} onChange={(value => {this.updateStoreField("agentProvider", value);})}>
-              <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
-              {
-                this.state.agentProviders.map((provider, index) => this.renderProviderOption(provider, index))
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Builtin tools"), i18next.t("store:Builtin tools - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            {this.renderBuiltinTools()}
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Text-to-Speech provider"), i18next.t("store:Text-to-Speech provider - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.textToSpeechProvider} onChange={(value => {this.updateStoreField("textToSpeechProvider", value);})}
-            >
-              <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
-              <Option key="Browser Built-In" value="Browser Built-In">Browser Built-In</Option>
-              {
-                this.state.textToSpeechProviders.map((provider, index) => this.renderProviderOption(provider, index))
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Enable TTS streaming"), i18next.t("store:Enable TTS streaming - Tooltip"))} :
-          </Col>
-          <Col span={1}>
-            <Switch checked={this.state.store.enableTtsStreaming} onChange={checked => {
-              this.updateStoreField("enableTtsStreaming", checked);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Speech-to-Text provider"), i18next.t("store:Speech-to-Text provider - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.store.speechToTextProvider} onChange={(value => {this.updateStoreField("speechToTextProvider", value);})}>
-              <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
-              <Option key="Browser Built-In" value="Browser Built-In">Browser Built-In</Option>
-              {
-                this.state.speechToTextProviders.map((provider, index) => this.renderProviderOption(provider, index))
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Frequency"), i18next.t("store:Frequency - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <InputNumber min={0} value={this.state.store.frequency} onChange={value => {
-              this.updateStoreField("frequency", value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Memory limit"), i18next.t("store:Memory limit - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <InputNumber min={0} value={this.state.store.memoryLimit} onChange={value => {
-              this.updateStoreField("memoryLimit", value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Limit minutes"), i18next.t("store:Limit minutes - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <InputNumber min={0} value={this.state.store.limitMinutes} onChange={value => {
-              this.updateStoreField("limitMinutes", value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Welcome"), i18next.t("store:Welcome - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.store.welcome} onChange={e => {
-              this.updateStoreField("welcome", e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Welcome title"), i18next.t("store:Welcome title - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input
-              value={this.state.store.welcomeTitle} onChange={e => {
-                this.updateStoreField("welcomeTitle", e.target.value);
-              }}
-            />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Welcome text"), i18next.t("store:Welcome text - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input
-              value={this.state.store.welcomeText} onChange={e => {
-                this.updateStoreField("welcomeText", e.target.value);
-              }}
-            />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Prompt"), i18next.t("store:Prompt - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.store.prompt} onChange={(e) => {
-              this.updateStoreField("prompt", e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Example questions"), i18next.t("store:Example questions - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <ExampleQuestionTable table={this.state.store.exampleQuestions} onUpdateTable={(exampleQuestions) => {
-              this.updateStoreField("exampleQuestions", exampleQuestions);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Knowledge count"), i18next.t("store:Knowledge count - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <InputNumber min={0} max={100} value={this.state.store.knowledgeCount} onChange={value => {
-              this.updateStoreField("knowledgeCount", value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Suggestion count"), i18next.t("store:Suggestion count - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <InputNumber min={0} max={10} value={this.state.store.suggestionCount} onChange={value => {
-              this.updateStoreField("suggestionCount", value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Site setting"), i18next.t("general:Site setting - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Row style={{marginTop: "20px"}}>
+            {this.isAIStorageProvider(this.state.store.storageProvider) ? (
+              <>
+                <Row style={{marginTop: "20px"}} >
+                  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                    {Setting.getLabel(i18next.t("store:Vector store id"), i18next.t("store:Vector store id - Tooltip"))} :
+                  </Col>
+                  <Col span={22} >
+                    <Input value={this.state.store.vectorStoreId} onChange={e => {
+                      this.updateStoreField("vectorStoreId", e.target.value);
+                    }} />
+                  </Col>
+                </Row>
+              </>
+            ) : null}
+            <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("store:Theme color"), i18next.t("store:Theme color - Tooltip"))} :
+                {Setting.getLabel(i18next.t("store:Image provider"), i18next.t("store:Image provider - Tooltip"))} :
               </Col>
               <Col span={22} >
-                <input type="color" value={this.state.store.themeColor} onChange={(e) => {
-                  this.updateStoreField("themeColor", e.target.value);
+                <Select virtual={false} style={{width: "100%"}} value={this.state.store.imageProvider} onChange={(value => {this.updateStoreField("imageProvider", value);})}
+                >
+                  <Option key="none" value="">
+                    {i18next.t("general:empty")}
+                  </Option>
+                  {
+                    this.state.casdoorStorageProviders.map((provider, index) =>
+                      this.renderProviderOption(provider, index)
+                    )
+                  }
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Split provider"), i18next.t("store:Split provider - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: "100%"}} value={this.state.store.splitProvider} onChange={(value => {this.updateStoreField("splitProvider", value);})}
+                  options={[{name: "Default"}, {name: "Basic"}, {name: "QA"}, {name: "Markdown"}].map((provider) => Setting.getOption(provider.name, provider.name))
+                  } />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Search provider"), i18next.t("store:Search provider - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: "100%"}} value={this.state.store.searchProvider} onChange={(value => {this.updateStoreField("searchProvider", value);})}
+                  options={[{name: "Default"}, {name: "Hierarchy"}].map((provider) => Setting.getOption(provider.name, provider.name))
+                  } />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Model provider"), i18next.t("store:Model provider - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: "100%"}} value={this.state.store.modelProvider} onChange={(value => {this.updateStoreField("modelProvider", value);})}
+                >
+                  {
+                    this.state.modelProviders.map((provider, index) =>
+                      this.renderProviderOption(provider, index)
+                    )
+                  }
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Embedding provider"), i18next.t("store:Embedding provider - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProvider} onChange={(value => {this.updateStoreField("embeddingProvider", value);})}
+                >
+                  <Option key="none" value="">
+                    {i18next.t("general:empty")}
+                  </Option>
+                  {
+                    this.state.embeddingProviders.map((provider, index) =>
+                      this.renderProviderOption(provider, index)
+                    )
+                  }
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Agent provider"), i18next.t("store:Agent provider - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: "100%"}} value={this.state.store.agentProvider} onChange={(value => {this.updateStoreField("agentProvider", value);})}>
+                  <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
+                  {
+                    this.state.agentProviders.map((provider, index) => this.renderProviderOption(provider, index))
+                  }
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Builtin tools"), i18next.t("store:Builtin tools - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                {this.renderBuiltinTools()}
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Text-to-Speech provider"), i18next.t("store:Text-to-Speech provider - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: "100%"}} value={this.state.store.textToSpeechProvider} onChange={(value => {this.updateStoreField("textToSpeechProvider", value);})}
+                >
+                  <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
+                  <Option key="Browser Built-In" value="Browser Built-In">Browser Built-In</Option>
+                  {
+                    this.state.textToSpeechProviders.map((provider, index) => this.renderProviderOption(provider, index))
+                  }
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Enable TTS streaming"), i18next.t("store:Enable TTS streaming - Tooltip"))} :
+              </Col>
+              <Col span={1}>
+                <Switch checked={this.state.store.enableTtsStreaming} onChange={checked => {
+                  this.updateStoreField("enableTtsStreaming", checked);
                 }} />
               </Col>
             </Row>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("store:Navbar items"), i18next.t("store:Navbar items - Tooltip"))} :
+                {Setting.getLabel(i18next.t("store:Speech-to-Text provider"), i18next.t("store:Speech-to-Text provider - Tooltip"))} :
               </Col>
               <Col span={22} >
-                <NavItemTree
-                  disabled={!Setting.isAdminUser(this.props.account)}
-                  checkedKeys={this.state.store.navItems ?? ["all"]}
-                  defaultExpandedKeys={["all"]}
-                  onCheck={(checked) => {
-                    this.updateStoreField("navItems", checked);
+                <Select virtual={false} style={{width: "100%"}} value={this.state.store.speechToTextProvider} onChange={(value => {this.updateStoreField("speechToTextProvider", value);})}>
+                  <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
+                  <Option key="Browser Built-In" value="Browser Built-In">Browser Built-In</Option>
+                  {
+                    this.state.speechToTextProviders.map((provider, index) => this.renderProviderOption(provider, index))
+                  }
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Frequency"), i18next.t("store:Frequency - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <InputNumber min={0} value={this.state.store.frequency} onChange={value => {
+                  this.updateStoreField("frequency", value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Memory limit"), i18next.t("store:Memory limit - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <InputNumber min={0} value={this.state.store.memoryLimit} onChange={value => {
+                  this.updateStoreField("memoryLimit", value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Limit minutes"), i18next.t("store:Limit minutes - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <InputNumber min={0} value={this.state.store.limitMinutes} onChange={value => {
+                  this.updateStoreField("limitMinutes", value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Welcome"), i18next.t("store:Welcome - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.store.welcome} onChange={e => {
+                  this.updateStoreField("welcome", e.target.value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Welcome title"), i18next.t("store:Welcome title - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input
+                  value={this.state.store.welcomeTitle} onChange={e => {
+                    this.updateStoreField("welcomeTitle", e.target.value);
                   }}
                 />
               </Col>
             </Row>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("general:HTML title"), i18next.t("general:HTML title - Tooltip"))} :
+                {Setting.getLabel(i18next.t("store:Welcome text"), i18next.t("store:Welcome text - Tooltip"))} :
               </Col>
               <Col span={22} >
-                <Input value={this.state.store.htmlTitle} onChange={e => {
-                  this.updateStoreField("htmlTitle", e.target.value);
+                <Input
+                  value={this.state.store.welcomeText} onChange={e => {
+                    this.updateStoreField("welcomeText", e.target.value);
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Prompt"), i18next.t("store:Prompt - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.store.prompt} onChange={(e) => {
+                  this.updateStoreField("prompt", e.target.value);
                 }} />
               </Col>
             </Row>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("general:Favicon URL"), i18next.t("general:Favicon URL - Tooltip"))} :
+                {Setting.getLabel(i18next.t("store:Example questions"), i18next.t("store:Example questions - Tooltip"))} :
               </Col>
               <Col span={22} >
-                <Input prefix={<LinkOutlined />} value={this.state.store.faviconUrl} onChange={e => {
-                  this.updateStoreField("faviconUrl", e.target.value);
+                <ExampleQuestionTable table={this.state.store.exampleQuestions} onUpdateTable={(exampleQuestions) => {
+                  this.updateStoreField("exampleQuestions", exampleQuestions);
                 }} />
               </Col>
             </Row>
             <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
-                {i18next.t("general:Preview")}:
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Knowledge count"), i18next.t("store:Knowledge count - Tooltip"))} :
               </Col>
-              <Col span={23} >
-                <a target="_blank" rel="noreferrer" href={Setting.getFaviconUrl("", this.state.store.faviconUrl)}>
-                  <img src={Setting.getFaviconUrl("", this.state.store.faviconUrl)} alt={Setting.getFaviconUrl("", this.state.store.faviconUrl)} height={90} style={{marginBottom: "20px"}} />
-                </a>
+              <Col span={22} >
+                <InputNumber min={0} max={100} value={this.state.store.knowledgeCount} onChange={value => {
+                  this.updateStoreField("knowledgeCount", value);
+                }} />
               </Col>
             </Row>
-            <Col span={22} >
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("general:Logo URL"), i18next.t("general:Logo URL - Tooltip"))} :
-                </Col>
-                <Col span={22} >
-                  <Input prefix={<LinkOutlined />} value={this.state.store.logoUrl} onChange={e => {
-                    this.updateStoreField("logoUrl", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
-                  {i18next.t("general:Preview")}:
-                </Col>
-                <Col span={23} >
-                  <a target="_blank" rel="noreferrer" href={Setting.getLogo("", this.state.store.logoUrl)}>
-                    <img src={Setting.getLogo("", this.state.store.logoUrl)} alt={Setting.getLogo("", this.state.store.logoUrl)} height={90} style={{marginBottom: "20px"}} />
-                  </a>
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("general:Footer HTML"), i18next.t("general:Footer HTML - Tooltip"))} :
-                </Col>
-                <Col span={22} >
-                  <Popover placement="right" content={
-                    <div style={{width: "900px", height: "300px"}} >
-                      <CodeMirror
-                        value={this.state.store.footerHtml}
-                        options={{mode: "htmlmixed", theme: "material-darker"}}
-                        onBeforeChange={(editor, data, value) => {
-                          this.updateStoreField("footerHtml", value);
-                        }}
-                      />
-                    </div>
-                  } title={i18next.t("store:Footer HTML - Edit")} trigger="click">
-                    <Input value={this.state.store.footerHtml} style={{marginBottom: "10px"}} onChange={e => {
-                      this.updateStoreField("footerHtml", e.target.value);
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Suggestion count"), i18next.t("store:Suggestion count - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <InputNumber min={0} max={10} value={this.state.store.suggestionCount} onChange={value => {
+                  this.updateStoreField("suggestionCount", value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Site setting"), i18next.t("general:Site setting - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Row style={{marginTop: "20px"}}>
+                  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                    {Setting.getLabel(i18next.t("store:Theme color"), i18next.t("store:Theme color - Tooltip"))} :
+                  </Col>
+                  <Col span={22} >
+                    <input type="color" value={this.state.store.themeColor} onChange={(e) => {
+                      this.updateStoreField("themeColor", e.target.value);
                     }} />
-                  </Popover>
+                  </Col>
+                </Row>
+                <Row style={{marginTop: "20px"}} >
+                  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                    {Setting.getLabel(i18next.t("store:Navbar items"), i18next.t("store:Navbar items - Tooltip"))} :
+                  </Col>
+                  <Col span={22} >
+                    <NavItemTree
+                      disabled={!Setting.isAdminUser(this.props.account)}
+                      checkedKeys={this.state.store.navItems ?? ["all"]}
+                      defaultExpandedKeys={["all"]}
+                      onCheck={(checked) => {
+                        this.updateStoreField("navItems", checked);
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row style={{marginTop: "20px"}} >
+                  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                    {Setting.getLabel(i18next.t("general:HTML title"), i18next.t("general:HTML title - Tooltip"))} :
+                  </Col>
+                  <Col span={22} >
+                    <Input value={this.state.store.htmlTitle} onChange={e => {
+                      this.updateStoreField("htmlTitle", e.target.value);
+                    }} />
+                  </Col>
+                </Row>
+                <Row style={{marginTop: "20px"}} >
+                  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                    {Setting.getLabel(i18next.t("general:Favicon URL"), i18next.t("general:Favicon URL - Tooltip"))} :
+                  </Col>
+                  <Col span={22} >
+                    <Input prefix={<LinkOutlined />} value={this.state.store.faviconUrl} onChange={e => {
+                      this.updateStoreField("faviconUrl", e.target.value);
+                    }} />
+                  </Col>
+                </Row>
+                <Row style={{marginTop: "20px"}} >
+                  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
+                    {i18next.t("general:Preview")}:
+                  </Col>
+                  <Col span={23} >
+                    <a target="_blank" rel="noreferrer" href={Setting.getFaviconUrl("", this.state.store.faviconUrl)}>
+                      <img src={Setting.getFaviconUrl("", this.state.store.faviconUrl)} alt={Setting.getFaviconUrl("", this.state.store.faviconUrl)} height={90} style={{marginBottom: "20px"}} />
+                    </a>
+                  </Col>
+                </Row>
+                <Col span={22} >
+                  <Row style={{marginTop: "20px"}} >
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("general:Logo URL"), i18next.t("general:Logo URL - Tooltip"))} :
+                    </Col>
+                    <Col span={22} >
+                      <Input prefix={<LinkOutlined />} value={this.state.store.logoUrl} onChange={e => {
+                        this.updateStoreField("logoUrl", e.target.value);
+                      }} />
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}} >
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
+                      {i18next.t("general:Preview")}:
+                    </Col>
+                    <Col span={23} >
+                      <a target="_blank" rel="noreferrer" href={Setting.getLogo("", this.state.store.logoUrl)}>
+                        <img src={Setting.getLogo("", this.state.store.logoUrl)} alt={Setting.getLogo("", this.state.store.logoUrl)} height={90} style={{marginBottom: "20px"}} />
+                      </a>
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: "20px"}} >
+                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                      {Setting.getLabel(i18next.t("general:Footer HTML"), i18next.t("general:Footer HTML - Tooltip"))} :
+                    </Col>
+                    <Col span={22} >
+                      <Popover placement="right" content={
+                        <div style={{width: "900px", height: "300px"}} >
+                          <CodeMirror
+                            value={this.state.store.footerHtml}
+                            options={{mode: "htmlmixed", theme: "material-darker"}}
+                            onBeforeChange={(editor, data, value) => {
+                              this.updateStoreField("footerHtml", value);
+                            }}
+                          />
+                        </div>
+                      } title={i18next.t("store:Footer HTML - Edit")} trigger="click">
+                        <Input value={this.state.store.footerHtml} style={{marginBottom: "10px"}} onChange={e => {
+                          this.updateStoreField("footerHtml", e.target.value);
+                        }} />
+                      </Popover>
+                    </Col>
+                  </Row>
                 </Col>
-              </Row>
-            </Col>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Vector stores"), i18next.t("store:Vector stores - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.vectorStores} onChange={(value => {this.updateStoreField("vectorStores", value);})}>
-              {
-                this.state.stores?.filter(item => item.name !== this.state.store.name).map((item, index) => <Option key={item.name} value={item.name}>{`${item.displayName} (${item.name})`}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Child stores"), i18next.t("store:Child stores - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childStores} onChange={(value => {this.updateStoreField("childStores", value);})}>
-              {
-                this.state.stores?.filter(item => item.name !== this.state.store.name).map((item, index) => <Option key={item.name} value={item.name}>{`${item.displayName} (${item.name})`}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Child model providers"), i18next.t("store:Child model providers - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childModelProviders} onChange={(value => {this.updateStoreField("childModelProviders", value);})}>
-              {
-                this.state.modelProviders?.map((item, index) =>
-                  this.renderProviderOption(item, index)
-                )
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Forbidden words"), i18next.t("store:Forbidden words - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.forbiddenWords} onChange={(value => {this.updateStoreField("forbiddenWords", value);})}>
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Show auto read"), i18next.t("store:Show auto read - Tooltip"))} :
-          </Col>
-          <Col span={1}>
-            <Switch checked={this.state.store.showAutoRead} onChange={checked => {
-              this.updateStoreField("showAutoRead", checked);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Disable file upload"), i18next.t("store:Disable file upload - Tooltip"))} :
-          </Col>
-          <Col span={1}>
-            <Switch checked={this.state.store.disableFileUpload} onChange={checked => {
-              this.updateStoreField("disableFileUpload", checked);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:Hide thinking"), i18next.t("store:Hide thinking - Tooltip"))} :
-          </Col>
-          <Col span={1}>
-            <Switch checked={this.state.store.hideThinking} onChange={checked => {
-              this.updateStoreField("hideThinking", checked);
-            }} />
-          </Col>
-        </Row>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Vector stores"), i18next.t("store:Vector stores - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.vectorStores} onChange={(value => {this.updateStoreField("vectorStores", value);})}>
+                  {
+                    this.state.stores?.filter(item => item.name !== this.state.store.name).map((item, index) => <Option key={item.name} value={item.name}>{`${item.displayName} (${item.name})`}</Option>)
+                  }
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Child stores"), i18next.t("store:Child stores - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childStores} onChange={(value => {this.updateStoreField("childStores", value);})}>
+                  {
+                    this.state.stores?.filter(item => item.name !== this.state.store.name).map((item, index) => <Option key={item.name} value={item.name}>{`${item.displayName} (${item.name})`}</Option>)
+                  }
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Child model providers"), i18next.t("store:Child model providers - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childModelProviders} onChange={(value => {this.updateStoreField("childModelProviders", value);})}>
+                  {
+                    this.state.modelProviders?.map((item, index) =>
+                      this.renderProviderOption(item, index)
+                    )
+                  }
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Forbidden words"), i18next.t("store:Forbidden words - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.forbiddenWords} onChange={(value => {this.updateStoreField("forbiddenWords", value);})}>
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Show auto read"), i18next.t("store:Show auto read - Tooltip"))} :
+              </Col>
+              <Col span={1}>
+                <Switch checked={this.state.store.showAutoRead} onChange={checked => {
+                  this.updateStoreField("showAutoRead", checked);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Disable file upload"), i18next.t("store:Disable file upload - Tooltip"))} :
+              </Col>
+              <Col span={1}>
+                <Switch checked={this.state.store.disableFileUpload} onChange={checked => {
+                  this.updateStoreField("disableFileUpload", checked);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Hide thinking"), i18next.t("store:Hide thinking - Tooltip"))} :
+              </Col>
+              <Col span={1}>
+                <Switch checked={this.state.store.hideThinking} onChange={checked => {
+                  this.updateStoreField("hideThinking", checked);
+                }} />
+              </Col>
+            </Row>
+          </>
+        )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:File tree"), i18next.t("store:File tree - Tooltip"))} :

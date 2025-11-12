@@ -108,6 +108,12 @@ class StoreListPage extends BaseListPage {
     }
   }
 
+  shouldHideAIColumns() {
+    // Find default store and check if hideChat is true
+    const defaultStore = this.state.data?.find(store => store.isDefault);
+    return defaultStore && defaultStore.hideChat;
+  }
+
   newStore() {
     const randomName = Setting.getRandomName();
     return {
@@ -266,34 +272,38 @@ class StoreListPage extends BaseListPage {
           );
         },
       },
-      {
-        title: i18next.t("store:Chat count"),
-        dataIndex: "chatCount",
-        key: "chatCount",
-        width: "150px",
-        sorter: (a, b) => a.chatCount - b.chatCount,
-        render: (text, record, index) => {
-          return (
-            <Link to={`/stores/${record.owner}/${record.name}/chats`}>
-              {text}
-            </Link>
-          );
+      ...(this.shouldHideAIColumns() ? [] : [
+        {
+          title: i18next.t("store:Chat count"),
+          dataIndex: "chatCount",
+          key: "chatCount",
+          width: "150px",
+          sorter: (a, b) => a.chatCount - b.chatCount,
+          render: (text, record, index) => {
+            return (
+              <Link to={`/stores/${record.owner}/${record.name}/chats`}>
+                {text}
+              </Link>
+            );
+          },
         },
-      },
-      {
-        title: i18next.t("store:Message count"),
-        dataIndex: "messageCount",
-        key: "messageCount",
-        width: "150px",
-        sorter: (a, b) => a.messageCount - b.messageCount,
-        render: (text, record, index) => {
-          return (
-            <Link to={`/stores/${record.owner}/${record.name}/messages`}>
-              {text}
-            </Link>
-          );
+      ]),
+      ...(this.shouldHideAIColumns() ? [] : [
+        {
+          title: i18next.t("store:Message count"),
+          dataIndex: "messageCount",
+          key: "messageCount",
+          width: "150px",
+          sorter: (a, b) => a.messageCount - b.messageCount,
+          render: (text, record, index) => {
+            return (
+              <Link to={`/stores/${record.owner}/${record.name}/messages`}>
+                {text}
+              </Link>
+            );
+          },
         },
-      },
+      ]),
       {
         title: i18next.t("store:Storage provider"),
         dataIndex: "storageProvider",
@@ -315,79 +325,81 @@ class StoreListPage extends BaseListPage {
       //   width: "200px",
       //   sorter: (a, b) => a.splitProvider.localeCompare(b.splitProvider),
       // },
-      {
-        title: i18next.t("store:Image provider"),
-        dataIndex: "imageProvider",
-        key: "imageProvider",
-        width: "300px",
-        sorter: (a, b) => a.imageProvider.localeCompare(b.imageProvider),
-        ...this.getColumnSearchProps("imageProvider"),
-        render: (text, record, index) => {
-          return this.renderProviderInfo(text);
+      ...(this.shouldHideAIColumns() ? [] : [
+        {
+          title: i18next.t("store:Image provider"),
+          dataIndex: "imageProvider",
+          key: "imageProvider",
+          width: "300px",
+          sorter: (a, b) => a.imageProvider.localeCompare(b.imageProvider),
+          ...this.getColumnSearchProps("imageProvider"),
+          render: (text, record, index) => {
+            return this.renderProviderInfo(text);
+          },
         },
-      },
-      {
-        title: i18next.t("store:Model provider"),
-        dataIndex: "modelProvider",
-        key: "modelProvider",
-        width: "330px",
-        sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
-        ...this.getColumnSearchProps("modelProvider"),
-        render: (text, record, index) => {
-          return this.renderProviderInfo(text);
+        {
+          title: i18next.t("store:Model provider"),
+          dataIndex: "modelProvider",
+          key: "modelProvider",
+          width: "330px",
+          sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
+          ...this.getColumnSearchProps("modelProvider"),
+          render: (text, record, index) => {
+            return this.renderProviderInfo(text);
+          },
         },
-      },
-      {
-        title: i18next.t("store:Embedding provider"),
-        dataIndex: "embeddingProvider",
-        key: "embeddingProvider",
-        width: "300px",
-        sorter: (a, b) => a.embeddingProvider.localeCompare(b.embeddingProvider),
-        ...this.getColumnSearchProps("embeddingProvider"),
-        render: (text, record, index) => {
-          return this.renderProviderInfo(text);
+        {
+          title: i18next.t("store:Embedding provider"),
+          dataIndex: "embeddingProvider",
+          key: "embeddingProvider",
+          width: "300px",
+          sorter: (a, b) => a.embeddingProvider.localeCompare(b.embeddingProvider),
+          ...this.getColumnSearchProps("embeddingProvider"),
+          render: (text, record, index) => {
+            return this.renderProviderInfo(text);
+          },
         },
-      },
-      {
-        title: i18next.t("store:Text-to-Speech provider"),
-        dataIndex: "textToSpeechProvider",
-        key: "textToSpeechProvider",
-        width: "300px",
-        sorter: (a, b) => a.textToSpeechProvider.localeCompare(b.textToSpeechProvider),
-        ...this.getColumnSearchProps("textToSpeechProvider"),
-        render: (text, record, index) => {
-          return this.renderProviderInfo(text);
+        {
+          title: i18next.t("store:Text-to-Speech provider"),
+          dataIndex: "textToSpeechProvider",
+          key: "textToSpeechProvider",
+          width: "300px",
+          sorter: (a, b) => a.textToSpeechProvider.localeCompare(b.textToSpeechProvider),
+          ...this.getColumnSearchProps("textToSpeechProvider"),
+          render: (text, record, index) => {
+            return this.renderProviderInfo(text);
+          },
         },
-      },
-      {
-        title: i18next.t("store:Speech-to-Text provider"),
-        dataIndex: "speechToTextProvider",
-        key: "speechToTextProvider",
-        width: "200px",
-        sorter: (a, b) => a.speechToTextProvider.localeCompare(b.speechToTextProvider),
-        ...this.getColumnSearchProps("speechToTextProvider"),
-        render: (text) => {
-          return this.renderProviderInfo(text);
+        {
+          title: i18next.t("store:Speech-to-Text provider"),
+          dataIndex: "speechToTextProvider",
+          key: "speechToTextProvider",
+          width: "200px",
+          sorter: (a, b) => a.speechToTextProvider.localeCompare(b.speechToTextProvider),
+          ...this.getColumnSearchProps("speechToTextProvider"),
+          render: (text) => {
+            return this.renderProviderInfo(text);
+          },
         },
-      },
-      {
-        title: i18next.t("store:Agent provider"),
-        dataIndex: "agentProvider",
-        key: "agentProvider",
-        width: "250px",
-        sorter: (a, b) => a.agentProvider.localeCompare(b.agentProvider),
-        ...this.getColumnSearchProps("agentProvider"),
-        render: (text) => {
-          return this.renderProviderInfo(text);
+        {
+          title: i18next.t("store:Agent provider"),
+          dataIndex: "agentProvider",
+          key: "agentProvider",
+          width: "250px",
+          sorter: (a, b) => a.agentProvider.localeCompare(b.agentProvider),
+          ...this.getColumnSearchProps("agentProvider"),
+          render: (text) => {
+            return this.renderProviderInfo(text);
+          },
         },
-      },
-      {
-        title: i18next.t("store:Memory limit"),
-        dataIndex: "memoryLimit",
-        key: "memoryLimit",
-        width: "120px",
-        sorter: (a, b) => a.memoryLimit - b.memoryLimit,
-      },
+        {
+          title: i18next.t("store:Memory limit"),
+          dataIndex: "memoryLimit",
+          key: "memoryLimit",
+          width: "120px",
+          sorter: (a, b) => a.memoryLimit - b.memoryLimit,
+        },
+      ]),
       {
         title: i18next.t("general:State"),
         dataIndex: "state",
