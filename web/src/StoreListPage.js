@@ -35,6 +35,7 @@ class StoreListPage extends BaseListPage {
       ...this.state,
       generating: {},
       providers: {},
+      hideChat: this.getHideChatFromStorage(),
     };
   }
 
@@ -42,6 +43,22 @@ class StoreListPage extends BaseListPage {
     super.UNSAFE_componentWillMount();
     this.getAllProviders();
   }
+
+  getHideChatFromStorage() {
+    const saved = localStorage.getItem("hideChat");
+    if (saved === null || saved === undefined) {
+      return false;
+    }
+    return JSON.parse(saved) === true;
+  }
+
+  toggleHideChat = () => {
+    const newValue = !this.state.hideChat;
+    this.setState({
+      hideChat: newValue,
+    });
+    localStorage.setItem("hideChat", JSON.stringify(newValue));
+  };
 
   getAllProviders() {
     this.setState({loading: true});
@@ -434,7 +451,22 @@ class StoreListPage extends BaseListPage {
         },
       },
     ];
-    const filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
+    let filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
+
+    if (this.state.hideChat) {
+      filteredColumns = filteredColumns.filter(column =>
+        column.key !== "chatCount" &&
+        column.key !== "messageCount" &&
+        column.key !== "imageProvider" &&
+        column.key !== "modelProvider" &&
+        column.key !== "embeddingProvider" &&
+        column.key !== "textToSpeechProvider" &&
+        column.key !== "speechToTextProvider" &&
+        column.key !== "agentProvider" &&
+        column.key !== "memoryLimit"
+      );
+    }
+
     const paginationProps = {
       total: this.state.pagination.total,
       showQuickJumper: true,
@@ -463,6 +495,10 @@ class StoreListPage extends BaseListPage {
                   </>
                 )
               }
+              <span style={{marginLeft: 32}}>
+                {i18next.t("store:Hide chat")}:
+                <Switch checked={this.state.hideChat} onChange={this.toggleHideChat} style={{marginLeft: 8}} />
+              </span>
             </div>
           )}
           loading={this.state.loading}
