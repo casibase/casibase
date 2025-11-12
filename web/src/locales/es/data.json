@@ -16,7 +16,7 @@
   "application": {
     "Deploy": "Desplegar",
     "Deployment manifest": "Manifiesto de implementación",
-    "Deployment manifest - Tooltip": "Manifiesto de implementación de la aplicación, incluida la asignación de recursos y la estrategia de implementación",
+    "Deployment manifest - Tooltip": "Manifiesto de implementación de la aplicación, que incluye asignación de recursos y estrategia de implementación",
     "Edit Application": "Editar aplicación",
     "Failed": "Fallido",
     "Host": "Host",
@@ -859,7 +859,7 @@
     "Upload file": "Cargar archivo",
     "Upload folder": "Subir carpeta",
     "Vector store id": "Vector store id",
-    "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector store id - Tooltip": "El ID del almacén vectorial al que pertenecen los archivos",
     "Vector stores": "Almacenes de vectores",
     "Vector stores - Tooltip": "Configuraciones de almacenamiento de base de datos vectorial",
     "Welcome": "Indicador de bienvenida",
@@ -914,15 +914,15 @@
   },
   "template": {
     "Basic config": "Configuración básica",
-    "Basic config - Tooltip": "Basic config - Tooltip",
+    "Basic config - Tooltip": "Configurar los parámetros en el manifiesto de Kubernetes de la plantilla",
     "Edit Template": "Editar plantilla",
     "Enable basic config": "Habilitar configuración básica",
-    "Enable basic config - Tooltip": "Enable basic config - Tooltip",
+    "Enable basic config - Tooltip": "Habilitar entrada de parámetros del manifiesto de Kubernetes con plantilla (compatible con sintaxis de Go Template)",
     "Manifest": "Manifiestos",
     "Manifest - Tooltip": "Manifiestos de Kubernetes para la plantilla",
     "New Template": "Nueva plantilla",
     "Readme": "Léeme",
-    "Readme - Tooltip": "Readme - Tooltip"
+    "Readme - Tooltip": "La dirección URL del archivo README"
   },
   "theme": {
     "Compact": "Compacto",

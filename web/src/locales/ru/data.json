@@ -16,7 +16,7 @@
   "application": {
     "Deploy": "Развернуть",
     "Deployment manifest": "Манифест развертывания",
-    "Deployment manifest - Tooltip": "Deployment manifest - Tooltip",
+    "Deployment manifest - Tooltip": "Манифест развертывания приложения, включая распределение ресурсов и стратегию развертывания",
     "Edit Application": "Редактировать приложение",
     "Failed": "Сбой",
     "Host": "Хост",
@@ -859,7 +859,7 @@
     "Upload file": "Загрузить файл",
     "Upload folder": "Загрузить папку",
     "Vector store id": "Vector store id",
-    "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector store id - Tooltip": "Идентификатор векторного хранилища, к которому принадлежат файлы",
     "Vector stores": "Векторные хранилища",
     "Vector stores - Tooltip": "Настройки хранилища векторной базы данных",
     "Welcome": "Приветственная подсказка",
@@ -914,15 +914,15 @@
   },
   "template": {
     "Basic config": "Базовая конфигурация",
-    "Basic config - Tooltip": "Basic config - Tooltip",
+    "Basic config - Tooltip": "Установить параметры в манифесте Kubernetes шаблона",
     "Edit Template": "Редактировать шаблон",
     "Enable basic config": "Включить базовую конфигурацию",
-    "Enable basic config - Tooltip": "Enable basic config - Tooltip",
+    "Enable basic config - Tooltip": "Включить ввод параметров манифеста Kubernetes с шаблоном (поддерживает синтаксис Go Template)",
     "Manifest": "Манифесты",
     "Manifest - Tooltip": "Манифесты Kubernetes для шаблона",
     "New Template": "Новый шаблон",
     "Readme": "Readme",
-    "Readme - Tooltip": "Readme - Tooltip"
+    "Readme - Tooltip": "URL-адрес файла README"
   },
   "theme": {
     "Compact": "Компактный",

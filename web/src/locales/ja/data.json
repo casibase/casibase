@@ -16,7 +16,7 @@
   "application": {
     "Deploy": "デプロイ",
     "Deployment manifest": "デプロイメントマニフェスト",
-    "Deployment manifest - Tooltip": "Deployment manifest - Tooltip",
+    "Deployment manifest - Tooltip": "リソース割り当てとデプロイ戦略を含むアプリケーションデプロイメントマニフェスト",
     "Edit Application": "アプリケーションの編集",
     "Failed": "失敗",
     "Host": "ホスト",
@@ -859,7 +859,7 @@
     "Upload file": "ファイルをアップロード",
     "Upload folder": "フォルダをアップロード",
     "Vector store id": "Vector store id",
-    "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector store id - Tooltip": "ファイルが属するベクトルストアのID",
     "Vector stores": "ベクトルストア",
     "Vector stores - Tooltip": "ベクトルデータベースストレージ設定",
     "Welcome": "歓迎プロンプト",
@@ -914,15 +914,15 @@
   },
   "template": {
     "Basic config": "基本設定",
-    "Basic config - Tooltip": "Basic config - Tooltip",
+    "Basic config - Tooltip": "テンプレートのKubernetesマニフェストでパラメータを設定する",
     "Edit Template": "テンプレートの編集",
     "Enable basic config": "基本設定を有効にする",
-    "Enable basic config - Tooltip": "Enable basic config - Tooltip",
+    "Enable basic config - Tooltip": "テンプレートを使用したKubernetesマニフェストパラメータ入力を有効化（Go Template構文をサポート）",
     "Manifest": "マニフェスト",
     "Manifest - Tooltip": "テンプレートのKubernetesマニフェスト",
     "New Template": "新規テンプレート",
     "Readme": "Readme",
-    "Readme - Tooltip": "Readme - Tooltip"
+    "Readme - Tooltip": "READMEファイルのURLアドレス"
   },
   "theme": {
     "Compact": "コンパクト",

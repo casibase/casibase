@@ -859,7 +859,7 @@
     "Upload file": "Datei hochladen",
     "Upload folder": "Ordner hochladen",
     "Vector store id": "Vector store id",
-    "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector store id - Tooltip": "Die ID des Vektorspeichers, zu dem die Dateien gehören",
     "Vector stores": "Vektorspeicher",
     "Vector stores - Tooltip": "Vektordatenbankspeicherkonfigurationen",
     "Welcome": "Willkommensprompt",
@@ -914,15 +914,15 @@
   },
   "template": {
     "Basic config": "Grundkonfiguration",
-    "Basic config - Tooltip": "Basic config - Tooltip",
+    "Basic config - Tooltip": "Parameter im Kubernetes-Manifest der Vorlage festlegen",
     "Edit Template": "Vorlage bearbeiten",
     "Enable basic config": "Grundkonfiguration aktivieren",
-    "Enable basic config - Tooltip": "Enable basic config - Tooltip",
+    "Enable basic config - Tooltip": "Kubernetes-Manifest-Parametereingabe mit Vorlage aktivieren (unterstützt Go-Template-Syntax)",
     "Manifest": "Manifeste",
     "Manifest - Tooltip": "Kubernetes-Manifeste für die Vorlage",
     "New Template": "Neue Vorlage",
     "Readme": "Readme",
-    "Readme - Tooltip": "Readme - Tooltip"
+    "Readme - Tooltip": "Die URL-Adresse der README-Datei"
   },
   "theme": {
     "Compact": "Kompakt",

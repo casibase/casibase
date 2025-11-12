@@ -16,7 +16,7 @@
   "application": {
     "Deploy": "배포",
     "Deployment manifest": "배포 매니페스트",
-    "Deployment manifest - Tooltip": "Deployment manifest - Tooltip",
+    "Deployment manifest - Tooltip": "리소스 할당 및 배포 전략을 포함한 애플리케이션 배포 매니페스트",
     "Edit Application": "애플리케이션 편집",
     "Failed": "실패",
     "Host": "호스트",
@@ -914,15 +914,15 @@
   },
   "template": {
     "Basic config": "기본 설정",
-    "Basic config - Tooltip": "Basic config - Tooltip",
+    "Basic config - Tooltip": "템플릿의 Kubernetes 매니페스트에서 매개변수 설정",
     "Edit Template": "템플릿 편집",
     "Enable basic config": "기본 설정 활성화",
-    "Enable basic config - Tooltip": "Enable basic config - Tooltip",
+    "Enable basic config - Tooltip": "템플릿을 사용한 Kubernetes 매니페스트 매개변수 입력 활성화(Go Template 구문 지원)",
     "Manifest": "매니페스트",
     "Manifest - Tooltip": "템플릿용 Kubernetes 매니페스트",
     "New Template": "새 템플릿",
     "Readme": "Readme",
-    "Readme - Tooltip": "Readme - Tooltip"
+    "Readme - Tooltip": "README 파일의 URL 주소"
   },
   "theme": {
     "Compact": "컴팩트",

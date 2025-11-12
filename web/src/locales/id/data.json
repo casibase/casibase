@@ -16,7 +16,7 @@
   "application": {
     "Deploy": "Terapkan",
     "Deployment manifest": "Manifes deployment",
-    "Deployment manifest - Tooltip": "Deployment manifest - Tooltip",
+    "Deployment manifest - Tooltip": "Manifes deployment aplikasi, termasuk alokasi sumber daya dan strategi deployment",
     "Edit Application": "Edit Aplikasi",
     "Failed": "Gagal",
     "Host": "Host",
@@ -859,7 +859,7 @@
     "Upload file": "Unggah file",
     "Upload folder": "Unggah folder",
     "Vector store id": "Vector store id",
-    "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector store id - Tooltip": "ID penyimpanan vektor tempat file berada",
     "Vector stores": "Penyimpanan vektor",
     "Vector stores - Tooltip": "Konfigurasi penyimpanan database vektor",
     "Welcome": "Pemicu selamat datang",
@@ -914,15 +914,15 @@
   },
   "template": {
     "Basic config": "Konfigurasi dasar",
-    "Basic config - Tooltip": "Basic config - Tooltip",
+    "Basic config - Tooltip": "Mengatur parameter dalam manifes Kubernetes template",
     "Edit Template": "Edit Templat",
     "Enable basic config": "Aktifkan konfigurasi dasar",
-    "Enable basic config - Tooltip": "Enable basic config - Tooltip",
+    "Enable basic config - Tooltip": "Aktifkan input parameter manifes Kubernetes dengan template (mendukung sintaks Go Template)",
     "Manifest": "Manifes",
     "Manifest - Tooltip": "Manifes Kubernetes untuk templat",
     "New Template": "Templat Baru",
     "Readme": "Baca Saya",
-    "Readme - Tooltip": "Readme - Tooltip"
+    "Readme - Tooltip": "Alamat URL file README"
   },
   "theme": {
     "Compact": "Kompak",

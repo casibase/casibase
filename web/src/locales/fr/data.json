@@ -16,7 +16,7 @@
   "application": {
     "Deploy": "Déployer",
     "Deployment manifest": "Manifeste de déploiement",
-    "Deployment manifest - Tooltip": "Manifeste de déploiement de l'application, y compris l'allocation des ressources et la stratégie de déploiement",
+    "Deployment manifest - Tooltip": "Manifeste de déploiement d'application, y compris l'allocation de ressources et la stratégie de déploiement",
     "Edit Application": "Modifier l'application",
     "Failed": "Échec",
     "Host": "Hôte",
@@ -859,7 +859,7 @@
     "Upload file": "Télécharger un fichier",
     "Upload folder": "Téléverser un dossier",
     "Vector store id": "Vector store id",
-    "Vector store id - Tooltip": "Vector store id - Tooltip",
+    "Vector store id - Tooltip": "L'ID du magasin vectoriel auquel appartiennent les fichiers",
     "Vector stores": "Magasins de vecteurs",
     "Vector stores - Tooltip": "Configurations de stockage de base de données vectorielle",
     "Welcome": "Message de bienvenue",
@@ -914,15 +914,15 @@
   },
   "template": {
     "Basic config": "Configuration de base",
-    "Basic config - Tooltip": "Basic config - Tooltip",
+    "Basic config - Tooltip": "Définir les paramètres dans le manifeste Kubernetes du modèle",
     "Edit Template": "Modifier le modèle",
     "Enable basic config": "Activer la configuration de base",
-    "Enable basic config - Tooltip": "Enable basic config - Tooltip",
+    "Enable basic config - Tooltip": "Activer la saisie de paramètres du manifeste Kubernetes avec modèle (prend en charge la syntaxe Go Template)",
     "Manifest": "Manifestes",
     "Manifest - Tooltip": "Manifestes Kubernetes pour le modèle",
     "New Template": "Nouveau modèle",
     "Readme": "Lisez-moi",
-    "Readme - Tooltip": "Readme - Tooltip"
+    "Readme - Tooltip": "L'adresse URL du fichier README"
   },
   "theme": {
     "Compact": "Compact",
