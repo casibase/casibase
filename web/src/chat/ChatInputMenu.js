@@ -55,7 +55,7 @@ const ChatInputMenu = ({disabled, webSearchEnabled, onWebSearchChange, onFileUpl
       .catch(() => {
         setWebSearchSupported(false);
       });
-  }, [chat?.modelProvider, store?.modelProvider, webSearchEnabled, onWebSearchChange]);
+  }, [chat?.modelProvider, store?.modelProvider]);
 
   const menuItems = [
     {

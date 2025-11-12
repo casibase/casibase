@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, {useState} from "react";
+import React from "react";
 import {Button} from "antd";
 import {Sender} from "@ant-design/x";
 import {CloseOutlined, GlobalOutlined} from "@ant-design/icons";
@@ -37,8 +37,9 @@ const ChatInput = ({
   onVoiceInputStart,
   onVoiceInputEnd,
   isVoiceInput,
+  webSearchEnabled,
+  onWebSearchChange,
 }) => {
-  const [webSearchEnabled, setWebSearchEnabled] = useState(false);
 
   let storageThemeAlgorithm = [];
   try {
@@ -166,7 +167,7 @@ const ChatInput = ({
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setWebSearchEnabled(false);
+                  onWebSearchChange && onWebSearchChange(false);
                 }}
               />
             </div>
@@ -177,7 +178,7 @@ const ChatInput = ({
             <ChatInputMenu
               disabled={disableInput || messageError}
               webSearchEnabled={webSearchEnabled}
-              onWebSearchChange={setWebSearchEnabled}
+              onWebSearchChange={onWebSearchChange}
               onFileUpload={handleFileUploadClick}
               disableFileUpload={store?.disableFileUpload}
               store={store}
