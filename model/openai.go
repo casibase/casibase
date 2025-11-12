@@ -338,16 +338,17 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 								"pattern": v.Action.Pattern,
 								"id":      v.ID,
 							}
+						default:
+							// Unknown action type, skip
+							continue
 						}
-						if searchInfo != nil {
-							searchInfoJSON, marshalErr := json.Marshal(searchInfo)
-							if marshalErr != nil {
-								return nil, marshalErr
-							}
-							err = flushThink(string(searchInfoJSON), "search", writer, lang)
-							if err != nil {
-								return nil, err
-							}
+						searchInfoJSON, marshalErr := json.Marshal(searchInfo)
+						if marshalErr != nil {
+							return nil, marshalErr
+						}
+						err = flushThink(string(searchInfoJSON), "search", writer, lang)
+						if err != nil {
+							return nil, err
 						}
 					}
 				}
