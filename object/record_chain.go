@@ -155,14 +155,30 @@ func CommitRecord(record *Record, lang string) (bool, map[string]interface{}, er
 		data["error_text"] = ""
 	}
 
-	// Update the record fields to avoid concurrent update race conditions
+	// Update the record fields with optimistic locking to prevent race conditions
+	// Only update if the Block field is still empty
 	var affected bool
+	var recordId string
 	if record.Id == 0 {
 		// If the record ID is 0, it means batch insert, so using getId()
-		affected, err = UpdateRecordFields(record.getId(), data, lang)
+		recordId = record.getId()
 	} else {
-		affected, err = UpdateRecordFields(record.getUniqueId(), data, lang)
+		recordId = record.getUniqueId()
 	}
+
+	p, err := GetRecord(recordId, lang)
+	if err != nil {
+		return false, nil, err
+	} else if p == nil {
+		return false, nil, fmt.Errorf(i18n.Translate(lang, "object:the record: %s does not exist"), recordId)
+	}
+
+	// Only update if Block is still empty (optimistic locking)
+	affectedRows, err := adapter.engine.Table(&Record{}).Where("id = ? AND block = ?", p.Id, "").Update(data)
+	if err != nil {
+		return false, nil, err
+	}
+	affected = affectedRows != 0
 
 	delete(data, "error_text")
 
@@ -195,9 +211,22 @@ func CommitRecordSecond(record *Record, lang string) (bool, error) {
 		"block_hash2":  blockHash,
 	}
 
-	// Update the record fields to avoid concurrent update race conditions
-	affected, err := UpdateRecordFields(record.getUniqueId(), data, lang)
-	return affected, err
+	// Update the record fields with optimistic locking to prevent race conditions
+	// Only update if the Block2 field is still empty
+	recordId := record.getUniqueId()
+	p, err := GetRecord(recordId, lang)
+	if err != nil {
+		return false, err
+	} else if p == nil {
+		return false, fmt.Errorf(i18n.Translate(lang, "object:the record: %s does not exist"), recordId)
+	}
+
+	// Only update if Block2 is still empty (optimistic locking)
+	affectedRows, err := adapter.engine.Table(&Record{}).Where("id = ? AND block2 = ?", p.Id, "").Update(data)
+	if err != nil {
+		return false, err
+	}
+	return affectedRows != 0, nil
 }
 
 // CommitRecords commits multiple records to the blockchain.
