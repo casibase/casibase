@@ -351,7 +351,7 @@ export function getTag(text, type, state) {
 
   if (type === "Read") {
     return (
-      <Tooltip placement="top" title={"Read"}>
+      <Tooltip placement="top" title={i18next.t("store:Read")}>
         <Tag icon={icon} style={style} color={"success"}>
           {text}
         </Tag>
@@ -359,7 +359,7 @@ export function getTag(text, type, state) {
     );
   } else if (type === "Write") {
     return (
-      <Tooltip placement="top" title={"Write"}>
+      <Tooltip placement="top" title={i18next.t("store:Write")}>
         <Tag icon={icon} style={style} color={"processing"}>
           {text}
         </Tag>
@@ -367,7 +367,7 @@ export function getTag(text, type, state) {
     );
   } else if (type === "Admin") {
     return (
-      <Tooltip placement="top" title={"Admin"}>
+      <Tooltip placement="top" title={i18next.t("store:Admin")}>
         <Tag icon={icon} style={style} color={"error"}>
           {text}
         </Tag>

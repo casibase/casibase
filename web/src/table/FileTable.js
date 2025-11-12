@@ -227,7 +227,7 @@ class FileTable extends React.Component {
                 files.forEach((file, index) => {
                   fileKeys.push(file.key);
                 });
-                PermissionUtil.addPermission(this.props.account, this.props.store, null, fileKeys);
+                PermissionUtil.addPermission(this.props.account, this.props.store, true, null, fileKeys);
               }}>{i18next.t("store:Add Permission")}</Button>
             </div>
           );

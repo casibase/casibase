@@ -581,7 +581,7 @@ class FileTree extends React.Component {
                   <Tooltip title={isAdmin ? i18next.t("store:Add Permission") :
                     i18next.t("store:Apply for Permission")}>
                     <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
-                      PermissionUtil.addPermission(this.props.account, this.props.store, file);
+                      PermissionUtil.addPermission(this.props.account, this.props.store, isAdmin, file);
                       e.stopPropagation();
                     }} />
                   </Tooltip>
@@ -698,7 +698,7 @@ class FileTree extends React.Component {
                     <Tooltip title={isAdmin ? i18next.t("store:Add Permission") :
                       i18next.t("store:Apply for Permission")}>
                       <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
-                        PermissionUtil.addPermission(this.props.account, this.props.store, file);
+                        PermissionUtil.addPermission(this.props.account, this.props.store, isAdmin, file);
                         e.stopPropagation();
                       }} />
                     </Tooltip>
