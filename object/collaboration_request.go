@@ -26,8 +26,11 @@ type CollaborationRequest struct {
 	InitiatorDoctorName string    `xorm:"varchar(100) notnull" json:"initiatorDoctorName"`
 	InitiatorHospital   string    `xorm:"varchar(200) notnull" json:"initiatorHospital"`
 	PatientHashId       string    `xorm:"varchar(200) notnull index" json:"patientHashId"`
+	// 明文身份证号不入库，仅透传用于前端显示或临时计算
+	PatientIdentityNumber string    `xorm:"-" json:"patientIdentityNumber"`
 	PatientName         string    `xorm:"varchar(100)" json:"patientName"`
 	TargetHospitals     string    `xorm:"text notnull" json:"targetHospitals"` // JSON array of hospital names
+	TargetDoctors       string    `xorm:"text" json:"targetDoctors"` // JSON array of doctor IDs (owner/name format)
 	Description         string    `xorm:"text" json:"description"`
 	Status              string    `xorm:"varchar(20) notnull default 'active'" json:"status"` // active, completed, cancelled
 	CreatedTime         time.Time `xorm:"datetime notnull default CURRENT_TIMESTAMP" json:"createdTime"`
@@ -108,6 +111,37 @@ func GetActiveCollaborationRequestsByTargetHospital(hospitalName string) ([]*Col
 	requests := []*CollaborationRequest{}
 	// 使用LIKE查询，因为targetHospitals是JSON数组字符串
 	err := adapter.engine.Where("target_hospitals LIKE ? AND status = 'active'", "%\""+hospitalName+"\"%").OrderBy("created_time desc").Find(&requests)
+	return requests, err
+}
+
+// GetActiveCollaborationRequestsByTargetDoctor 根据目标医生ID获取活跃的协同诊疗请求
+func GetActiveCollaborationRequestsByTargetDoctor(doctorId string) ([]*CollaborationRequest, error) {
+	requests := []*CollaborationRequest{}
+	// 使用LIKE查询，因为targetDoctors是JSON数组字符串，格式为 "owner/name"
+	err := adapter.engine.Where("target_doctors LIKE ? AND status = 'active'", "%\""+doctorId+"\"%").OrderBy("created_time desc").Find(&requests)
+	return requests, err
+}
+
+// GetCollaborationRequestsByTargetDoctor 根据目标医生ID获取所有状态的协同诊疗请求（包括已关闭的）
+// 排除该医生自己发起的请求
+func GetCollaborationRequestsByTargetDoctor(doctorId string) ([]*CollaborationRequest, error) {
+	requests := []*CollaborationRequest{}
+	// 使用LIKE查询，因为targetDoctors是JSON数组字符串，格式为 "owner/name"
+	// 同时排除该医生自己发起的请求
+	err := adapter.engine.Where("target_doctors LIKE ? AND initiator_doctor_id != ?", "%\""+doctorId+"\"%", doctorId).OrderBy("created_time desc").Find(&requests)
+	return requests, err
+}
+
+// GetCollaborationRequestsByTargetHospital 根据目标医院获取所有状态的协同诊疗请求（包括已关闭的）
+// 排除该医院医生自己发起的请求（需要传入当前医生ID）
+func GetCollaborationRequestsByTargetHospital(hospitalName string, excludeDoctorId string) ([]*CollaborationRequest, error) {
+	requests := []*CollaborationRequest{}
+	// 使用LIKE查询，因为targetHospitals是JSON数组字符串
+	query := adapter.engine.Where("target_hospitals LIKE ?", "%\""+hospitalName+"\"%")
+	if excludeDoctorId != "" {
+		query = query.And("initiator_doctor_id != ?", excludeDoctorId)
+	}
+	err := query.OrderBy("created_time desc").Find(&requests)
 	return requests, err
 }
 

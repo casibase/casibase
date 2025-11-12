@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS collaboration_request (
     patient_hash_id VARCHAR(200) NOT NULL,
     patient_name VARCHAR(100),
     target_hospitals TEXT NOT NULL,
+    target_doctors TEXT,
     description TEXT,
     status VARCHAR(20) NOT NULL DEFAULT 'active',
     created_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -150,3 +150,13 @@ func DeleteDoctor(doctor *Doctor) (bool, error) {
 func (doctor *Doctor) getId() string {
 	return fmt.Sprintf("%s/%s", doctor.Owner, doctor.Name)
 }
+
+// GetDoctorsByHospitalName 根据医院名称获取医生列表
+func GetDoctorsByHospitalName(hospitalName string) ([]*Doctor, error) {
+	doctors := []*Doctor{}
+	err := adapter.engine.Where("hospital_name = ?", hospitalName).Desc("created_time").Find(&doctors)
+	if err != nil {
+		return doctors, err
+	}
+	return doctors, nil
+}

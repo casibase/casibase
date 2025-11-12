@@ -18,6 +18,7 @@ import { UserOutlined, HistoryOutlined, FileTextOutlined, MedicineBoxOutlined, S
 import ReactECharts from 'echarts-for-react';
 import * as Setting from "../Setting";
 import moment from 'moment';
+import sm3 from 'sm-crypto/src/sm3';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -28,7 +29,7 @@ class PythonSrPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      searchHashId: '',
+      searchIdentityNumber: '',
       patientRecords: [],
       hospitalOptions: [],
       isLoading: false,
@@ -36,9 +37,13 @@ class PythonSrPage extends React.Component {
       // 协同诊疗相关状态
       collaborationForm: {
         selectedHospitals: [],
+        selectedDoctors: [], // [{hospitalName: 'xxx', doctorId: 'owner/name', doctorName: 'xxx'}, ...]
         description: ''
       },
       isSubmittingCollaboration: false,
+      // 医院医生映射：{hospitalName: [doctors]}
+      hospitalDoctorsMap: {},
+      isLoadingDoctors: false,
 
       // 医生发起的协同诊疗请求
       myCollaborationRequests: [],
@@ -47,6 +52,12 @@ class PythonSrPage extends React.Component {
       // 针对本医院的协同诊疗请求
       hospitalCollaborationRequests: [],
       isLoadingHospitalRequests: false,
+      // 针对当前医生的协同诊疗请求
+      doctorCollaborationRequests: [],
+      isLoadingDoctorRequests: false,
+
+      // 当前查询患者的基本信息
+      currentPatientInfo: null,
 
       // 诊疗意见相关
       selectedRequest: null,
@@ -82,8 +93,11 @@ class PythonSrPage extends React.Component {
       }));
     } else {
       chartData = [
-        { value: 4, name: '广东省人民医院', itemStyle: { color: '#165DFF' } },
-        { value: 3, name: '中国医科大学附属第一医院', itemStyle: { color: '#36BFFA' } }
+        { value: 6, name: '广东省人民医院', itemStyle: { color: '#165DFF' } },
+        { value: 4, name: '中国医科大学附属第一医院', itemStyle: { color: '#36BFFA' } },
+        { value: 5, name: '中国医科大学附属第一医院互联网医院', itemStyle: { color: '#47D782' } },
+        { value: 2, name: '中国医科大学附属第一医院浑南院区', itemStyle: { color: '#F6BD16' } },
+        { value: 3, name: '江苏省人民医院', itemStyle: { color: '#FF6F61' } },
       ];
     }
 
@@ -139,13 +153,14 @@ class PythonSrPage extends React.Component {
 
   renderUserInfoCard = () => {
     const { account } = this.props;
-    const userTag = account?.tag || '';
+    const originalUserTag = account?.tag || "";
+    const normalizedUserTag = originalUserTag.toLowerCase();
 
     // 根据tag确定卡片标题
     let cardTitle = "医生信息";
     let buttonText = "编辑医生信息";
 
-    if (userTag === 'admin') {
+    if (normalizedUserTag === "admin") {
       cardTitle = "管理员信息";
       buttonText = "编辑管理员信息";
     }
@@ -162,7 +177,7 @@ class PythonSrPage extends React.Component {
       >
         {/* 用户基本信息 */}
         <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-          {userTag !== 'admin' && (
+          {normalizedUserTag !== "admin" && (
             <Avatar size={96} src={account?.avatar || "https://picsum.photos/id/237/100/100"} style={{ marginBottom: '12px' }} />
           )}
           <h4 style={{ fontSize: '20px', fontWeight: 500, margin: 0 }}>
@@ -175,7 +190,7 @@ class PythonSrPage extends React.Component {
 
         {/* 详细信息 */}
         <Space direction="vertical" style={{ width: '100%' }}>
-          {userTag === 'admin' ? (
+          {normalizedUserTag === "admin" ? (
             null
           ) : (
             <>
@@ -203,28 +218,59 @@ class PythonSrPage extends React.Component {
         >
           {buttonText}
         </Button>
+        {["doctor", "admin"].includes(normalizedUserTag) && (
+          <Button
+            style={{ width: "100%", marginTop: "12px" }}
+            onClick={() => this.props.history.push("/med-records")}
+          >
+            病例数据录入
+          </Button>
+        )}
       </Card>
     );
   }
 
+  // 进行s3哈希处理（sm3）
+  s3HashCorrelationId = (correlationId) => {
+    if (!correlationId) {
+      return '';
+    }
+    try {
+      return sm3(correlationId);
+    } catch (error) {
+      console.error('哈希身份证号码时发生错误:', error);
+      return '';
+    }
+  };
+
   // 搜索患者记录
   searchPatientRecords = async () => {
-    const { searchHashId } = this.state;
-    if (!searchHashId.trim()) {
-      message.warning('请输入患者HashID');
+    const { searchIdentityNumber } = this.state;
+    const trimmedIdentityNumber = (searchIdentityNumber || '').trim();
+
+    if (!trimmedIdentityNumber) {
+      message.warning('请输入患者身份证号');
+      return;
+    }
+
+    const hashedIdentity = this.s3HashCorrelationId(trimmedIdentityNumber);
+    if (!hashedIdentity) {
+      message.error('身份证号哈希失败，请检查后重试');
       return;
     }
 
     this.setState({
       isLoading: true,
       patientRecords: [],
-      hospitalOptions: []
+      hospitalOptions: [],
+      currentPatientInfo: null
     });
 
     try {
-      console.log('开始搜索患者就诊记录，HashID:', searchHashId);
+      console.log('开始搜索患者就诊记录，身份证号:', trimmedIdentityNumber);
+      console.log('对应的HashID:', hashedIdentity);
 
-      const response = await fetch(`${Setting.ServerUrl}/api/get-patient-by-hash-id?hashId=${encodeURIComponent(searchHashId)}`, {
+      const response = await fetch(`${Setting.ServerUrl}/api/get-patient-by-hash-id?hashId=${encodeURIComponent(hashedIdentity)}`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -257,9 +303,15 @@ class PythonSrPage extends React.Component {
           return;
         }
 
+        const patientInfo = this.derivePatientInfoFromRecords(records);
+
         this.setState({
           patientRecords: records,
-          hospitalOptions: hospitals
+          hospitalOptions: hospitals,
+          currentPatientInfo: {
+            identityNumber: trimmedIdentityNumber,
+            name: patientInfo?.patientName || ''
+          }
         });
 
         message.success(`找到 ${records.length} 条就诊记录，涉及 ${hospitals.length} 家医院`);
@@ -267,15 +319,35 @@ class PythonSrPage extends React.Component {
         console.error('API返回错误:', res);
         const errorMsg = res.msg || '查询失败';
         message.error(`查询失败: ${errorMsg}`);
-        this.setState({ patientRecords: [], hospitalOptions: [] });
+        this.setState({ patientRecords: [], hospitalOptions: [], currentPatientInfo: null });
       }
     } catch (error) {
       console.error('搜索患者记录时发生错误:', error);
       message.error('查询失败，请稍后重试');
-      this.setState({ patientRecords: [], hospitalOptions: [] });
+      this.setState({ patientRecords: [], hospitalOptions: [], currentPatientInfo: null });
     } finally {
       this.setState({ isLoading: false });
     }
+  }
+
+  // 从记录中提取患者基本信息
+  derivePatientInfoFromRecords = (records = []) => {
+    for (const record of records) {
+      const objectData = this.safeParseRecordObject(record?.object);
+      if (!objectData) {
+        continue;
+      }
+
+      const patientName = objectData.patientName || objectData.name || objectData.fullName || '';
+      if (patientName) {
+        return {
+          patientName
+        };
+      }
+    }
+    return {
+      patientName: ''
+    };
   }
 
   // 从记录中提取医院信息
@@ -293,12 +365,10 @@ class PythonSrPage extends React.Component {
           return;
         }
 
-        let cleanObject = record.object;
-        if (typeof cleanObject === 'string') {
-          cleanObject = cleanObject.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+        const objectData = this.safeParseRecordObject(record.object);
+        if (!objectData) {
+          return;
         }
-
-        const objectData = JSON.parse(cleanObject);
         validRecordCount++;
 
         const hospitalName = objectData.admHosName || objectData.section || objectData.hospitalName || objectData.hosName || objectData.admHos;
@@ -326,6 +396,51 @@ class PythonSrPage extends React.Component {
     return result;
   }
 
+  // 安全解析就诊记录的object字段
+  safeParseRecordObject = (objectStr) => {
+    if (!objectStr || typeof objectStr !== 'string') {
+      return null;
+    }
+
+    try {
+      const normalized = objectStr.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+      return JSON.parse(normalized);
+    } catch (error) {
+      console.error('解析就诊记录object字段失败:', error);
+      return null;
+    }
+  }
+
+  getDisplayPatientName = (request) => {
+    if (!request) {
+      return '未知患者';
+    }
+    const name = (request.patientName || '').trim();
+    return name || '未知患者';
+  }
+
+  getDisplayPatientIdentity = (request) => {
+    if (!request) {
+      return '未知';
+    }
+
+    const identity = (request.patientIdentityNumber || '').trim();
+    if (identity) {
+      return identity;
+    }
+
+    const hash = request.patientHashId || '';
+    if (!hash) {
+      return '未知';
+    }
+
+    if (hash.length <= 16) {
+      return hash;
+    }
+
+    return `${hash.substring(0, 16)}...`;
+  }
+
   // 获取医院颜色
   getHospitalColor = (hospitalName) => {
     const colors = ['#165DFF', '#36BFFA', '#0FC6C2', '#FF7D00', '#F53F3F', '#00B42A'];
@@ -333,30 +448,101 @@ class PythonSrPage extends React.Component {
     return colors[index];
   }
 
+  // 获取医院的医生列表
+  fetchDoctorsByHospital = async (hospitalName) => {
+    if (!hospitalName) {
+      return [];
+    }
+
+    // 如果已经加载过，直接返回
+    if (this.state.hospitalDoctorsMap[hospitalName]) {
+      return this.state.hospitalDoctorsMap[hospitalName];
+    }
+
+    this.setState({ isLoadingDoctors: true });
+
+    try {
+      const response = await fetch(`${Setting.ServerUrl}/api/get-doctors-by-hospital?hospitalName=${encodeURIComponent(hospitalName)}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP错误: ${response.status} ${response.statusText}`);
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('服务器返回的不是JSON:', text.substring(0, 200));
+        throw new Error('服务器返回格式错误，请检查API路由是否正确配置');
+      }
+
+      const res = await response.json();
+
+      if (res.status === 'ok') {
+        const doctors = res.data || [];
+        this.setState(prevState => ({
+          hospitalDoctorsMap: {
+            ...prevState.hospitalDoctorsMap,
+            [hospitalName]: doctors
+          }
+        }));
+        return doctors;
+      } else {
+        message.error(res.msg || '获取医生列表失败');
+        return [];
+      }
+    } catch (error) {
+      console.error('获取医生列表时发生错误:', error);
+      message.error('获取医生列表失败，请稍后重试');
+      return [];
+    } finally {
+      this.setState({ isLoadingDoctors: false });
+    }
+  }
+
   // 发起协同诊疗请求
   submitCollaborationRequest = async () => {
     const { account } = this.props;
-    const { searchHashId, collaborationForm } = this.state;
+    const { searchIdentityNumber, collaborationForm, currentPatientInfo, patientRecords } = this.state;
+    const trimmedIdentityNumber = (searchIdentityNumber || '').trim();
+    const patientHashId = this.s3HashCorrelationId(trimmedIdentityNumber);
 
-    if (!searchHashId.trim()) {
-      message.warning('请先搜索患者HashID');
+    if (!trimmedIdentityNumber) {
+      message.warning('请先输入患者身份证号');
       return;
     }
 
-    if (collaborationForm.selectedHospitals.length === 0) {
-      message.warning('请选择至少一家医院');
+    if (!patientHashId) {
+      message.error('身份证号哈希失败，请稍后重试');
+      return;
+    }
+
+    if (collaborationForm.selectedDoctors.length === 0) {
+      message.warning('请至少选择一位医生');
       return;
     }
 
     this.setState({ isSubmittingCollaboration: true });
 
     try {
+      const fallbackPatientInfo = this.derivePatientInfoFromRecords(patientRecords);
+
+      // 提取医院列表（去重）
+      const hospitals = [...new Set(collaborationForm.selectedDoctors.map(item => item.hospitalName))];
+      // 提取医生ID列表
+      const doctorIds = collaborationForm.selectedDoctors.map(item => item.doctorId);
+
       const requestData = {
         initiatorDoctorId: account?.id || account?.name || '',
         initiatorDoctorName: account?.displayName || account?.name || '未知医生',
         initiatorHospital: account?.affiliation || '未知医院',
-        patientHashId: searchHashId,
-        targetHospitals: JSON.stringify(collaborationForm.selectedHospitals),
+        patientHashId: patientHashId,
+        patientIdentityNumber: trimmedIdentityNumber,
+        patientName: (currentPatientInfo?.name || fallbackPatientInfo?.patientName || '').trim(),
+        targetHospitals: JSON.stringify(hospitals),
+        targetDoctors: JSON.stringify(doctorIds),
         description: collaborationForm.description || ''
       };
 
@@ -378,6 +564,7 @@ class PythonSrPage extends React.Component {
         this.setState({
           collaborationForm: {
             selectedHospitals: [],
+            selectedDoctors: [],
             description: ''
           }
         });
@@ -434,6 +621,7 @@ class PythonSrPage extends React.Component {
   fetchHospitalCollaborationRequests = async () => {
     const { account } = this.props;
     const hospitalName = account?.affiliation;
+    const currentDoctorId = account?.id || account?.name || '';
 
     if (!hospitalName) {
       return;
@@ -442,7 +630,7 @@ class PythonSrPage extends React.Component {
     this.setState({ isLoadingHospitalRequests: true });
 
     try {
-      const response = await fetch(`${Setting.ServerUrl}/api/get-collaboration-requests-by-hospital?hospitalName=${encodeURIComponent(hospitalName)}`, {
+      const response = await fetch(`${Setting.ServerUrl}/api/get-collaboration-requests-by-hospital?hospitalName=${encodeURIComponent(hospitalName)}&excludeDoctorId=${encodeURIComponent(currentDoctorId)}`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -462,6 +650,41 @@ class PythonSrPage extends React.Component {
       this.setState({ hospitalCollaborationRequests: [] });
     } finally {
       this.setState({ isLoadingHospitalRequests: false });
+    }
+  }
+
+  // 获取针对当前医生的协同诊疗请求
+  fetchDoctorCollaborationRequests = async () => {
+    const { account } = this.props;
+    const doctorId = account?.id || account?.name;
+
+    if (!doctorId) {
+      return;
+    }
+
+    this.setState({ isLoadingDoctorRequests: true });
+
+    try {
+      const response = await fetch(`${Setting.ServerUrl}/api/get-collaboration-requests-by-target-doctor?doctorId=${encodeURIComponent(doctorId)}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      const res = await response.json();
+
+      if (res.status === 'ok') {
+        const requests = res.data || [];
+        this.setState({ doctorCollaborationRequests: requests });
+        console.log('获取到针对当前医生的协同诊疗请求:', requests);
+      } else {
+        message.error(res.msg || '获取协同诊疗请求失败');
+        this.setState({ doctorCollaborationRequests: [] });
+      }
+    } catch (error) {
+      console.error('获取协同诊疗请求时发生错误:', error);
+      this.setState({ doctorCollaborationRequests: [] });
+    } finally {
+      this.setState({ isLoadingDoctorRequests: false });
     }
   }
 
@@ -492,6 +715,17 @@ class PythonSrPage extends React.Component {
   submitDiagnosisOpinion = async () => {
     const { account } = this.props;
     const { selectedRequest, diagnosisOpinion } = this.state;
+
+    if (!selectedRequest) {
+      message.error('请求信息不完整');
+      return;
+    }
+
+    // 检查请求状态
+    if (selectedRequest.status !== 'active') {
+      message.warning('该协同诊疗请求已关闭或已完成，无法提交新的诊疗意见');
+      return;
+    }
 
     if (!diagnosisOpinion.opinion.trim()) {
       message.warning('请填写诊疗意见');
@@ -548,6 +782,51 @@ class PythonSrPage extends React.Component {
     }
   }
 
+  // 关闭协同诊疗请求
+  closeCollaborationRequest = async (request) => {
+    if (!request || !request.requestId) {
+      message.error('请求信息不完整');
+      return;
+    }
+
+    Modal.confirm({
+      title: '确认关闭',
+      content: '确定要关闭这个协同诊疗请求吗？关闭后将无法再提交新的诊疗意见。',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        try {
+          const response = await fetch(`${Setting.ServerUrl}/api/update-collaboration-request-status`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+              requestId: request.requestId,
+              status: 'cancelled'
+            })
+          });
+
+          const res = await response.json();
+
+          if (res.status === 'ok') {
+            message.success('协同诊疗请求已关闭');
+            // 刷新请求列表
+            this.fetchMyCollaborationRequests();
+            this.fetchHospitalCollaborationRequests();
+            this.fetchDoctorCollaborationRequests();
+          } else {
+            message.error(res.msg || '关闭请求失败');
+          }
+        } catch (error) {
+          console.error('关闭协同诊疗请求时发生错误:', error);
+          message.error('关闭失败，请稍后重试');
+        }
+      }
+    });
+  }
+
   // 查看诊疗意见
   showOpinions = async (request) => {
     this.setState({
@@ -586,13 +865,14 @@ class PythonSrPage extends React.Component {
     if (userTag === 'doctor') {
       this.fetchMyCollaborationRequests();
       this.fetchHospitalCollaborationRequests();
+      this.fetchDoctorCollaborationRequests();
     }
   }
 
   render() {
     const { account } = this.props;
     const userTag = account?.tag || '';
-    const isDoctor = userTag === 'doctor';
+    const isDoctor = userTag === 'doctor' || userTag === 'admin';
 
     // 定义可选医院列表
     const availableHospitals = ['广东省人民医院', '中国医科大学附属第一医院', '中国医科大学附属第一医院互联网医院', '中国医科大学附属第一医院浑南院区', '江苏省人民医院'];
@@ -672,13 +952,13 @@ class PythonSrPage extends React.Component {
                     {/* 搜索栏 */}
                     <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
                       <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#86909C', marginBottom: '8px' }}>
-                        根据患者HashID查询就诊记录
+                        根据患者身份证号查询就诊记录
                       </label>
                       <Space.Compact style={{ width: '100%' }}>
                         <Input
-                          placeholder="请输入患者HashID"
-                          value={this.state.searchHashId}
-                          onChange={(e) => this.setState({ searchHashId: e.target.value })}
+                          placeholder="请输入患者身份证号"
+                          value={this.state.searchIdentityNumber}
+                          onChange={(e) => this.setState({ searchIdentityNumber: e.target.value })}
                           onPressEnter={this.searchPatientRecords}
                         />
                         <Button
@@ -732,35 +1012,145 @@ class PythonSrPage extends React.Component {
                         <Divider orientation="left">发起协同诊疗请求</Divider>
                         <div style={{ marginBottom: '16px' }}>
                           <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#86909C', marginBottom: '8px' }}>
-                            选择协作医院（可选择多家）
+                            选择协作医院及医生（先选择医院，再选择该医院的医生）
                           </label>
-                          <Space direction="vertical">
-                            {availableHospitals.map((hospital, index) => (
-                              <Checkbox
-                                key={index}
-                                checked={this.state.collaborationForm.selectedHospitals.includes(hospital)}
-                                onChange={(e) => {
-                                  const selectedHospitals = [...this.state.collaborationForm.selectedHospitals];
-                                  if (e.target.checked) {
-                                    selectedHospitals.push(hospital);
-                                  } else {
-                                    const index = selectedHospitals.indexOf(hospital);
-                                    if (index > -1) {
-                                      selectedHospitals.splice(index, 1);
-                                    }
-                                  }
-                                  this.setState({
-                                    collaborationForm: {
-                                      ...this.state.collaborationForm,
-                                      selectedHospitals
-                                    }
-                                  });
-                                }}
-                              >
-                                {hospital}
-                              </Checkbox>
-                            ))}
+                          <Space direction="vertical" style={{ width: '100%' }} size="middle">
+                            {availableHospitals.map((hospital, index) => {
+                              const isHospitalSelected = this.state.collaborationForm.selectedHospitals.includes(hospital);
+                              const hospitalDoctors = this.state.hospitalDoctorsMap[hospital] || [];
+                              const currentDoctorId = account?.id || account?.name || '';
+
+                              return (
+                                <Card key={index} size="small" style={{ border: isHospitalSelected ? '2px solid #165DFF' : '1px solid #d9d9d9' }}>
+                                  <div style={{ marginBottom: '8px' }}>
+                                    <Checkbox
+                                      checked={isHospitalSelected}
+                                      onChange={async (e) => {
+                                        const selectedHospitals = [...this.state.collaborationForm.selectedHospitals];
+                                        let selectedDoctors = [...this.state.collaborationForm.selectedDoctors];
+
+                                        if (e.target.checked) {
+                                          selectedHospitals.push(hospital);
+                                          // 加载该医院的医生列表
+                                          await this.fetchDoctorsByHospital(hospital);
+                                        } else {
+                                          const index = selectedHospitals.indexOf(hospital);
+                                          if (index > -1) {
+                                            selectedHospitals.splice(index, 1);
+                                          }
+                                          // 移除该医院的所有医生选择
+                                          selectedDoctors = selectedDoctors.filter(item => item.hospitalName !== hospital);
+                                        }
+
+                                        this.setState({
+                                          collaborationForm: {
+                                            ...this.state.collaborationForm,
+                                            selectedHospitals,
+                                            selectedDoctors
+                                          }
+                                        });
+                                      }}
+                                    >
+                                      <span style={{ fontWeight: 500, fontSize: '14px' }}>{hospital}</span>
+                                    </Checkbox>
+                                  </div>
+
+                                  {isHospitalSelected && (
+                                    <div style={{ marginLeft: '24px', marginTop: '8px', padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
+                                      {this.state.isLoadingDoctors && hospitalDoctors.length === 0 ? (
+                                        <div style={{ textAlign: 'center', padding: '8px' }}>
+                                          <Progress type="circle" size="small" />
+                                        </div>
+                                      ) : hospitalDoctors.length === 0 ? (
+                                        <div style={{ color: '#86909C', fontSize: '12px' }}>该医院暂无医生</div>
+                                      ) : (() => {
+                                        // 过滤掉当前医生自己
+                                        const availableDoctors = hospitalDoctors.filter(doctor => {
+                                          const doctorId = `${doctor.owner}/${doctor.name}`;
+                                          return doctorId !== currentDoctorId;
+                                        });
+
+                                        // 获取已选中的该医院的医生ID列表
+                                        const selectedDoctorIds = this.state.collaborationForm.selectedDoctors
+                                          .filter(item => item.hospitalName === hospital)
+                                          .map(item => item.doctorId);
+
+                                        return (
+                                          <Select
+                                            mode="multiple"
+                                            placeholder="请选择该医院的医生（可多选）"
+                                            value={selectedDoctorIds}
+                                            style={{ width: '100%' }}
+                                            onChange={(selectedIds) => {
+                                              // 先移除该医院的所有医生选择
+                                              let selectedDoctors = this.state.collaborationForm.selectedDoctors.filter(
+                                                item => item.hospitalName !== hospital
+                                              );
+
+                                              // 添加新选中的医生
+                                              selectedIds.forEach(doctorId => {
+                                                const doctor = availableDoctors.find(d => `${d.owner}/${d.name}` === doctorId);
+                                                if (doctor) {
+                                                  selectedDoctors.push({
+                                                    hospitalName: hospital,
+                                                    doctorId: doctorId,
+                                                    doctorName: doctor.displayName || doctor.name
+                                                  });
+                                                }
+                                              });
+
+                                              this.setState({
+                                                collaborationForm: {
+                                                  ...this.state.collaborationForm,
+                                                  selectedDoctors
+                                                }
+                                              });
+                                            }}
+                                            optionLabelProp="label"
+                                            showSearch
+                                            filterOption={(input, option) => {
+                                              const label = option?.label || '';
+                                              return label.toLowerCase().includes(input.toLowerCase());
+                                            }}
+                                          >
+                                            {availableDoctors.map((doctor) => {
+                                              const doctorId = `${doctor.owner}/${doctor.name}`;
+                                              const label = `${doctor.displayName || doctor.name}${doctor.department ? ` (${doctor.department})` : ''}`;
+                                              return (
+                                                <Option key={doctorId} value={doctorId} label={label}>
+                                                  <div>
+                                                    <span style={{ fontWeight: 500 }}>{doctor.displayName || doctor.name}</span>
+                                                    {doctor.department && (
+                                                      <span style={{ color: '#86909C', marginLeft: '8px' }}>({doctor.department})</span>
+                                                    )}
+                                                  </div>
+                                                </Option>
+                                              );
+                                            })}
+                                          </Select>
+                                        );
+                                      })()}
+                                    </div>
+                                  )}
+                                </Card>
+                              );
+                            })}
                           </Space>
+
+                          {this.state.collaborationForm.selectedDoctors.length > 0 && (
+                            <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#e6f7ff', borderRadius: '4px' }}>
+                              <div style={{ fontSize: '13px', color: '#0050b3', marginBottom: '8px', fontWeight: 500 }}>
+                                已选择 {this.state.collaborationForm.selectedDoctors.length} 位医生：
+                              </div>
+                              <Space wrap>
+                                {this.state.collaborationForm.selectedDoctors.map((item, idx) => (
+                                  <Tag key={idx} color="blue">
+                                    {item.hospitalName} - {item.doctorName}
+                                  </Tag>
+                                ))}
+                              </Space>
+                            </div>
+                          )}
                         </div>
 
                         <div style={{ marginBottom: '20px' }}>
@@ -789,7 +1179,7 @@ class PythonSrPage extends React.Component {
                             icon={<SendOutlined />}
                             loading={this.state.isSubmittingCollaboration}
                             onClick={this.submitCollaborationRequest}
-                            disabled={this.state.collaborationForm.selectedHospitals.length === 0}
+                            disabled={this.state.collaborationForm.selectedDoctors.length === 0}
                           >
                             发起协同诊疗请求并上链
                           </Button>
@@ -844,12 +1234,22 @@ class PythonSrPage extends React.Component {
                                   onClick={() => this.showOpinions(request)}
                                 >
                                   查看意见
-                                </Button>
-                              ]}
+                                </Button>,
+                                request.status === 'active' && (
+                                  <Button
+                                    type="link"
+                                    danger
+                                    icon={<CloseOutlined />}
+                                    onClick={() => this.closeCollaborationRequest(request)}
+                                  >
+                                    关闭请求
+                                  </Button>
+                                )
+                              ].filter(Boolean)}
                             >
                               <div style={{ marginBottom: '12px' }}>
-                                <Tag color={request.status === 'active' ? 'green' : 'default'} style={{ fontSize: '14px', padding: '4px 8px' }}>
-                                  {request.status === 'active' ? '进行中' : request.status === 'completed' ? '已完成' : '已取消'}
+                                <Tag color={request.status === 'active' ? 'green' : request.status === 'completed' ? 'blue' : 'default'} style={{ fontSize: '14px', padding: '4px 8px' }}>
+                                  {request.status === 'active' ? '进行中' : request.status === 'completed' ? '已完成' : request.status === 'cancelled' ? '已关闭' : '未知状态'}
                                 </Tag>
                               </div>
                               <div style={{ marginBottom: '8px' }}>
@@ -857,9 +1257,13 @@ class PythonSrPage extends React.Component {
                                 <div style={{ fontSize: '14px' }}>{moment(request.createdTime).format('YYYY-MM-DD HH:mm')}</div>
                               </div>
                               <div style={{ marginBottom: '8px' }}>
-                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>患者HashID</div>
+                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>患者姓名</div>
+                                <div style={{ fontSize: '14px' }}>{this.getDisplayPatientName(request)}</div>
+                              </div>
+                              <div style={{ marginBottom: '8px' }}>
+                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>患者身份证号</div>
                                 <div style={{ fontSize: '12px', fontFamily: 'monospace' }}>
-                                  {request.patientHashId.substring(0, 16)}...
+                                  {this.getDisplayPatientIdentity(request)}
                                 </div>
                               </div>
                               <div>
@@ -889,74 +1293,119 @@ class PythonSrPage extends React.Component {
                     }
                     extra={
                       <Button
-                        onClick={this.fetchHospitalCollaborationRequests}
-                        loading={this.state.isLoadingHospitalRequests}
+                        onClick={() => {
+                          this.fetchHospitalCollaborationRequests();
+                          this.fetchDoctorCollaborationRequests();
+                        }}
+                        loading={this.state.isLoadingHospitalRequests || this.state.isLoadingDoctorRequests}
                       >
                         刷新
                       </Button>
                     }
                   >
-                    {this.state.isLoadingHospitalRequests ? (
+                    {this.state.isLoadingHospitalRequests || this.state.isLoadingDoctorRequests ? (
                       <div style={{ textAlign: 'center', padding: '40px' }}>
                         <Progress type="circle" />
                       </div>
-                    ) : this.state.hospitalCollaborationRequests.length === 0 ? (
-                      <div style={{ textAlign: 'center', padding: '40px', color: '#86909C' }}>
-                        <div style={{ fontSize: '14px' }}>暂无待处理的协同诊疗请求</div>
-                      </div>
-                    ) : (
-                      <Row gutter={[16, 16]}>
-                        {this.state.hospitalCollaborationRequests.map((request, index) => (
-                          <Col xs={24} md={12} key={request.requestId}>
-                            <Card
-                              hoverable
-                              style={{ height: '100%' }}
-                              actions={[
-                                <Button
-                                  type="link"
-                                  icon={<EyeOutlined />}
-                                  onClick={() => this.showRequestDetails(request)}
+                    ) : (() => {
+                      // 合并医院和医生的请求，去重
+                      const allRequests = [...this.state.hospitalCollaborationRequests, ...this.state.doctorCollaborationRequests];
+                      const uniqueRequests = allRequests.filter((request, index, self) =>
+                        index === self.findIndex(r => r.requestId === request.requestId)
+                      );
+
+                      return uniqueRequests.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '40px', color: '#86909C' }}>
+                          <div style={{ fontSize: '14px' }}>暂无待处理的协同诊疗请求</div>
+                        </div>
+                      ) : (
+                        <Row gutter={[16, 16]}>
+                          {uniqueRequests.map((request, index) => {
+                            const targetDoctors = JSON.parse(request.targetDoctors || '[]');
+                            const currentDoctorId = account?.id || account?.name || '';
+                            const isTargetDoctor = targetDoctors.includes(currentDoctorId);
+                            const isActive = request.status === 'active';
+
+                            return (
+                              <Col xs={24} md={12} key={request.requestId}>
+                                <Card
+                                  hoverable
+                                  style={{ height: '100%' }}
+                                  actions={[
+                                    <Button
+                                      type="link"
+                                      icon={<EyeOutlined />}
+                                      onClick={() => this.showRequestDetails(request)}
+                                    >
+                                      查看详情
+                                    </Button>,
+                                    <Button
+                                      type="link"
+                                      icon={<EditOutlined />}
+                                      onClick={() => this.showOpinionForm(request)}
+                                      disabled={!isActive}
+                                    >
+                                      {isActive ? '填写意见' : '已关闭'}
+                                    </Button>
+                                  ]}
                                 >
-                                  查看详情
-                                </Button>,
-                                <Button
-                                  type="link"
-                                  icon={<EditOutlined />}
-                                  onClick={() => this.showOpinionForm(request)}
-                                >
-                                  填写意见
-                                </Button>
-                              ]}
-                            >
-                              <div style={{ marginBottom: '12px' }}>
-                                <Tag color="blue" style={{ fontSize: '14px', padding: '4px 8px' }}>
-                                  {request.initiatorDoctorName}
-                                </Tag>
-                                <Tag color="orange" style={{ fontSize: '14px', padding: '4px 8px' }}>
-                                  {request.initiatorHospital}
-                                </Tag>
-                              </div>
-                              <div style={{ marginBottom: '8px' }}>
-                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>发起时间</div>
-                                <div style={{ fontSize: '14px' }}>{moment(request.createdTime).format('YYYY-MM-DD HH:mm')}</div>
-                              </div>
-                              <div style={{ marginBottom: '8px' }}>
-                                <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>患者HashID</div>
-                                <div style={{ fontSize: '12px', fontFamily: 'monospace' }}>
-                                  {request.patientHashId.substring(0, 16)}...
-                                </div>
-                              </div>
-                              {request.description && (
-                                <div>
-                                  <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>说明</div>
-                                  <div style={{ fontSize: '12px' }}>{request.description}</div>
-                                </div>
-                              )}
-                            </Card>
-                          </Col>
-                        ))}
-                      </Row>
-                    )}
+                                  <div style={{ marginBottom: '12px' }}>
+                                    <Tag color="blue" style={{ fontSize: '14px', padding: '4px 8px' }}>
+                                      {request.initiatorDoctorName}
+                                    </Tag>
+                                    <Tag color="orange" style={{ fontSize: '14px', padding: '4px 8px' }}>
+                                      {request.initiatorHospital}
+                                    </Tag>
+                                    {isTargetDoctor && (
+                                      <Tag color="green" style={{ fontSize: '14px', padding: '4px 8px' }}>
+                                        指定医生
+                                      </Tag>
+                                    )}
+                                    {!isActive && (
+                                      <Tag color="default" style={{ fontSize: '14px', padding: '4px 8px' }}>
+                                        {request.status === 'cancelled' ? '已关闭' : request.status === 'completed' ? '已完成' : '未知状态'}
+                                      </Tag>
+                                    )}
+                                  </div>
+                                  <div style={{ marginBottom: '8px' }}>
+                                    <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>发起时间</div>
+                                    <div style={{ fontSize: '14px' }}>{moment(request.createdTime).format('YYYY-MM-DD HH:mm')}</div>
+                                  </div>
+                                  <div style={{ marginBottom: '8px' }}>
+                                    <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>患者姓名</div>
+                                    <div style={{ fontSize: '14px' }}>{this.getDisplayPatientName(request)}</div>
+                                  </div>
+                                  <div style={{ marginBottom: '8px' }}>
+                                    <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>患者身份证号</div>
+                                    <div style={{ fontSize: '12px', fontFamily: 'monospace' }}>
+                                      {this.getDisplayPatientIdentity(request)}
+                                    </div>
+                                  </div>
+                                  {targetDoctors.length > 0 && (
+                                    <div style={{ marginBottom: '8px' }}>
+                                      <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>指定医生</div>
+                                      <div style={{ fontSize: '12px' }}>
+                                        {targetDoctors.map((doctorId, idx) => (
+                                          <Tag key={idx} size="small" color="green" style={{ marginBottom: '2px' }}>
+                                            {doctorId}
+                                          </Tag>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                  {request.description && (
+                                    <div>
+                                      <div style={{ fontSize: '12px', color: '#86909C', marginBottom: '4px' }}>说明</div>
+                                      <div style={{ fontSize: '12px' }}>{request.description}</div>
+                                    </div>
+                                  )}
+                                </Card>
+                              </Col>
+                            );
+                          })}
+                        </Row>
+                      );
+                    })()}
                   </Card>
                 </>
               )}
@@ -980,13 +1429,29 @@ class PythonSrPage extends React.Component {
             <Descriptions column={1} size="small">
               <Descriptions.Item label="发起医生">{this.state.selectedRequest.initiatorDoctorName}</Descriptions.Item>
               <Descriptions.Item label="发起医院">{this.state.selectedRequest.initiatorHospital}</Descriptions.Item>
+              <Descriptions.Item label="患者姓名">{this.getDisplayPatientName(this.state.selectedRequest)}</Descriptions.Item>
+              <Descriptions.Item label="患者身份证号">
+                {this.getDisplayPatientIdentity(this.state.selectedRequest)}
+              </Descriptions.Item>
               <Descriptions.Item label="患者HashID">{this.state.selectedRequest.patientHashId}</Descriptions.Item>
               <Descriptions.Item label="发起时间">{moment(this.state.selectedRequest.createdTime).format('YYYY-MM-DD HH:mm:ss')}</Descriptions.Item>
+              <Descriptions.Item label="状态">
+                <Tag color={this.state.selectedRequest.status === 'active' ? 'green' : this.state.selectedRequest.status === 'completed' ? 'blue' : 'default'}>
+                  {this.state.selectedRequest.status === 'active' ? '进行中' : this.state.selectedRequest.status === 'completed' ? '已完成' : this.state.selectedRequest.status === 'cancelled' ? '已关闭' : '未知状态'}
+                </Tag>
+              </Descriptions.Item>
               <Descriptions.Item label="协作医院">
                 {JSON.parse(this.state.selectedRequest.targetHospitals || '[]').map((hospital, index) => (
                   <Tag key={index} color="blue" style={{ marginBottom: '4px' }}>{hospital}</Tag>
                 ))}
               </Descriptions.Item>
+              {this.state.selectedRequest.targetDoctors && (
+                <Descriptions.Item label="指定医生">
+                  {JSON.parse(this.state.selectedRequest.targetDoctors || '[]').map((doctorId, index) => (
+                    <Tag key={index} color="green" style={{ marginBottom: '4px' }}>{doctorId}</Tag>
+                  ))}
+                </Descriptions.Item>
+              )}
               <Descriptions.Item label="说明">
                 {this.state.selectedRequest.description || '无'}
               </Descriptions.Item>

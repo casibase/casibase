@@ -144,3 +144,26 @@ func (c *ApiController) DeleteDoctor() {
 	c.Data["json"] = wrapActionResponse(object.DeleteDoctor(&doctor))
 	c.ServeJSON()
 }
+
+// GetDoctorsByHospital
+// @Title GetDoctorsByHospital
+// @Tag Doctor API
+// @Description 根据医院名称获取医生列表
+// @Param   hospitalName     query    string  true        "hospital name"
+// @Success 200 {object} Response The Response object
+// @router /get-doctors-by-hospital [get]
+func (c *ApiController) GetDoctorsByHospital() {
+	hospitalName := c.Input().Get("hospitalName")
+	if hospitalName == "" {
+		c.ResponseError("hospitalName is required")
+		return
+	}
+
+	doctors, err := object.GetMaskedDoctors(object.GetDoctorsByHospitalName(hospitalName))
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(doctors)
+}

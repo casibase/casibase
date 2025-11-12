@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	// "strings"
 	"time"
 
 	"github.com/casibase/casibase/object"
@@ -38,6 +39,17 @@ func (c *ApiController) CreateCollaborationRequest() {
 		c.ResponseError(err.Error())
 		return
 	}
+
+	// // 若提供了 patientHashId，则尝试从 record 表解析最新一条对象信息，填充患者冗余字段
+	// if strings.TrimSpace(request.PatientHashId) != "" && strings.TrimSpace(request.PatientName) == "" {
+	// 	if brief, e := object.GetLatestPatientBriefByHashID(request.PatientHashId); e == nil && brief != nil {
+	// 		if request.PatientName == "" && brief.PatientName != "" {
+	// 			request.PatientName = brief.PatientName
+	// 		}
+	// 		// InitiatorHospital 已由发起方提供；此处不覆盖，仅在需要时可根据 section / unit 做兜底
+	// 		// 可按需扩展更多冗余字段
+	// 	}
+	// }
 
 	// 生成唯一的请求ID
 	request.RequestId = fmt.Sprintf("collab-%s", uuid.New().String())
@@ -115,8 +127,9 @@ func (c *ApiController) GetCollaborationRequestsByDoctor() {
 // GetCollaborationRequestsByHospital
 // @Title GetCollaborationRequestsByHospital
 // @Tag Collaboration API
-// @Description 获取针对某医院的协同诊疗请求
+// @Description 获取针对某医院的协同诊疗请求（包括已关闭的），排除当前医生自己发起的请求
 // @Param   hospitalName     query    string  true        "hospital name"
+// @Param   excludeDoctorId     query    string  false        "doctor id to exclude (current doctor id)"
 // @Success 200 {object} Response The Response object
 // @router /get-collaboration-requests-by-hospital [get]
 func (c *ApiController) GetCollaborationRequestsByHospital() {
@@ -126,7 +139,31 @@ func (c *ApiController) GetCollaborationRequestsByHospital() {
 		return
 	}
 
-	requests, err := object.GetActiveCollaborationRequestsByTargetHospital(hospitalName)
+	excludeDoctorId := c.Input().Get("excludeDoctorId")
+	requests, err := object.GetCollaborationRequestsByTargetHospital(hospitalName, excludeDoctorId)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(requests)
+}
+
+// GetCollaborationRequestsByTargetDoctor
+// @Title GetCollaborationRequestsByTargetDoctor
+// @Tag Collaboration API
+// @Description 获取针对某医生的协同诊疗请求（包括已关闭的）
+// @Param   doctorId     query    string  true        "doctor id"
+// @Success 200 {object} Response The Response object
+// @router /get-collaboration-requests-by-target-doctor [get]
+func (c *ApiController) GetCollaborationRequestsByTargetDoctor() {
+	doctorId := c.Input().Get("doctorId")
+	if doctorId == "" {
+		c.ResponseError("doctorId is required")
+		return
+	}
+
+	requests, err := object.GetCollaborationRequestsByTargetDoctor(doctorId)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

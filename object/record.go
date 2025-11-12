@@ -76,6 +76,17 @@ type Record struct {
 	Objcid        string `xorm:"varchar(500)" json:"objcid"`
 }
 
+// PatientBrief 为从 record.object 中解析出的关键患者信息（冗余解析）
+type PatientBrief struct {
+	PatientName      string `json:"patientName"`
+	Section          string `json:"section"`
+	Unit             string `json:"unit"`
+	ConsultationTime string `json:"consultationTime"`
+	Diagnosis        string `json:"diagnosis"`
+	LocalDBIndex     string `json:"localDBIndex"`
+	CorrelationId    string `json:"correlationId"`
+}
+
 
 
 type Response struct {
@@ -485,7 +496,16 @@ func AddRecords(records []*Record, syncEnabled bool, lang string) (bool, interfa
 				data[idx] = commitResults[i]
 			}
 		} else {
-			go ScanNeedCommitRecords()
+			// 优化：直接异步处理当前这批记录，而不是扫描所有记录
+			// 这样可以避免重复扫描和锁竞争
+			var needCommitRecords []*Record
+			for _, idx := range needCommitRecordsIdx {
+				needCommitRecords = append(needCommitRecords, records[idx])
+			}
+			go func() {
+				// 异步处理当前这批记录
+				CommitRecords(needCommitRecords, lang)
+			}()
 		}
 	}
 
@@ -568,13 +588,85 @@ func UploadObjectToIPFS (r *Record) (bool, error) {
 // GetPatientByHashID 根据患者HashID查询就诊记录
 func GetPatientByHashID(hashID string) ([]*Record, error) {
 	records := []*Record{}
-	
-	// 查询object字段包含指定HashID且requestUri为/api/add-outpatient的记录
-	// err := adapter.engine.Where("object LIKE ? AND request_uri = ?", "%"+hashID+"%", "/api/add-outpatient").Find(&records)
+
+	// 查询correlation_id为指定HashID的记录
 	err := adapter.engine.Where("correlation_id = ?", hashID).Find(&records)
+	// err := adapter.engine.Where("object LIKE ? AND request_uri = ?", "%"+hashID+"%", "/api/add-outpatient").Find(&records)
 	if err != nil {
 		return records, err
 	}
-	
+
 	return records, nil
+}
+
+// GetLatestPatientBriefByHashID 通过 hashID 查找最近一条记录并对 object 进行鲁棒解析
+func GetLatestPatientBriefByHashID(hashID string) (*PatientBrief, error) {
+	var record Record
+	// 优先按 id 或 created_time 倒序获取最近一条
+	existed, err := adapter.engine.Where("correlation_id = ?", hashID).Desc("id").Get(&record)
+	if err != nil {
+		return nil, err
+	}
+	if !existed {
+		return nil, nil
+	}
+	brief := parsePatientBriefFromObject(record.Object)
+	// 兜底：若 object 中没有 correlationId，则使用 record.CorrelationId
+	if brief.CorrelationId == "" {
+		brief.CorrelationId = record.CorrelationId
+	}
+	return brief, nil
+}
+
+// parsePatientBriefFromObject 对不规则 JSON 进行冗余解析，容忍字段名差异与类型差异
+func parsePatientBriefFromObject(obj string) *PatientBrief {
+	result := &PatientBrief{}
+	if strings.TrimSpace(obj) == "" {
+		return result
+	}
+	// 先尝试解析为 map
+	var m map[string]interface{}
+	if err := json.Unmarshal([]byte(obj), &m); err != nil {
+		// 非标准 JSON，直接返回空结果
+		return result
+	}
+	// 提取工具：支持多个别名、自动转为字符串并裁剪
+	extract := func(keys ...string) string {
+		for _, k := range keys {
+			if v, ok := m[k]; ok {
+				switch vv := v.(type) {
+				case string:
+					s := strings.TrimSpace(vv)
+					if s != "" {
+						return s
+					}
+				case float64:
+					s := strings.TrimSpace(fmt.Sprintf("%.0f", vv))
+					if s != "" && s != "0" {
+						return s
+					}
+				case bool:
+					if vv {
+						return "true"
+					}
+					return "false"
+				default:
+					b, _ := json.Marshal(vv)
+					s := strings.TrimSpace(string(b))
+					if s != "" && s != "null" && s != "{}" && s != "[]" {
+						return s
+					}
+				}
+			}
+		}
+		return ""
+	}
+	result.PatientName = extract("patientName", "name", "patient_name")
+	result.Section = extract("section", "dept", "department", "科室")
+	result.Unit = extract("unit", "clinic", "departmentUnit", "门诊")
+	result.ConsultationTime = extract("consultationTime", "visitTime", "time", "就诊时间")
+	result.Diagnosis = extract("diagnosis", "diag", "诊断")
+	result.LocalDBIndex = extract("localDBIndex", "index", "localIndex")
+	result.CorrelationId = extract("correlationId", "hashId", "identityHash")
+	return result
 }

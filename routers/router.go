@@ -283,6 +283,7 @@ func initAPI() {
 	beego.Router("/api/delete-hospital", &controllers.ApiController{}, "POST:DeleteHospital")
 
 	beego.Router("/api/get-doctors", &controllers.ApiController{}, "GET:GetDoctors")
+	beego.Router("/api/get-doctors-by-hospital", &controllers.ApiController{}, "GET:GetDoctorsByHospital")
 	beego.Router("/api/get-doctor", &controllers.ApiController{}, "GET:GetDoctor")
 	beego.Router("/api/update-doctor", &controllers.ApiController{}, "POST:UpdateDoctor")
 	beego.Router("/api/add-doctor", &controllers.ApiController{}, "POST:AddDoctor")
@@ -310,6 +311,7 @@ func initAPI() {
 	beego.Router("/api/create-collaboration-request", &controllers.ApiController{}, "POST:CreateCollaborationRequest")
 	beego.Router("/api/get-collaboration-requests-by-doctor", &controllers.ApiController{}, "GET:GetCollaborationRequestsByDoctor")
 	beego.Router("/api/get-collaboration-requests-by-hospital", &controllers.ApiController{}, "GET:GetCollaborationRequestsByHospital")
+	beego.Router("/api/get-collaboration-requests-by-target-doctor", &controllers.ApiController{}, "GET:GetCollaborationRequestsByTargetDoctor")
 	beego.Router("/api/get-collaboration-request", &controllers.ApiController{}, "GET:GetCollaborationRequest")
 	beego.Router("/api/update-collaboration-request-status", &controllers.ApiController{}, "POST:UpdateCollaborationRequestStatus")
 	beego.Router("/api/submit-diagnosis-opinion", &controllers.ApiController{}, "POST:SubmitDiagnosisOpinion")
