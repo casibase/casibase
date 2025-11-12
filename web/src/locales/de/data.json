@@ -754,7 +754,6 @@
     "Forbidden words - Tooltip": "Wörter, die in Chat-Nachrichten nicht erlaubt sind. Nachrichten mit diesen Wörtern werden abgelehnt.",
     "Frequency": "Frequenz",
     "Frequency - Tooltip": "KI-Modellanruf-Frequenzbegrenzung (Anzahl pro Minute)",
-    "Hide chat": "Hide chat",
     "Hide thinking": "Denken ausblenden",
     "Hide thinking - Tooltip": "Denken ausblenden",
     "History": "Verlauf",

@@ -754,7 +754,6 @@
     "Forbidden words - Tooltip": "채팅 메시지에서 허용되지 않는 단어입니다. 이러한 단어가 포함된 메시지는 거부됩니다.",
     "Frequency": "주파수",
     "Frequency - Tooltip": "AI 모델 호출 주파수 제한(회/분)",
-    "Hide chat": "Hide chat",
     "Hide thinking": "추론 숨기기",
     "Hide thinking - Tooltip": "추론 숨기기",
     "History": "히스토리",

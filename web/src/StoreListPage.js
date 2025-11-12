@@ -283,10 +283,7 @@ class StoreListPage extends BaseListPage {
           );
         },
       },
-      (this.state.hideChat ? {
-        title: i18next.t("store:Chat count"),
-        hidden: true,
-      } : {
+      {
         title: i18next.t("store:Chat count"),
         dataIndex: "chatCount",
         key: "chatCount",
@@ -299,11 +296,8 @@ class StoreListPage extends BaseListPage {
             </Link>
           );
         },
-      }),
-      (this.state.hideChat ? {
-        title: i18next.t("store:Message count"),
-        hidden: true,
-      } : {
+      },
+      {
         title: i18next.t("store:Message count"),
         dataIndex: "messageCount",
         key: "messageCount",
@@ -316,7 +310,7 @@ class StoreListPage extends BaseListPage {
             </Link>
           );
         },
-      }),
+      },
       {
         title: i18next.t("store:Storage provider"),
         dataIndex: "storageProvider",
@@ -338,10 +332,7 @@ class StoreListPage extends BaseListPage {
       //   width: "200px",
       //   sorter: (a, b) => a.splitProvider.localeCompare(b.splitProvider),
       // },
-      (this.state.hideChat ? {
-        title: i18next.t("store:Image provider"),
-        hidden: true,
-      } : {
+      {
         title: i18next.t("store:Image provider"),
         dataIndex: "imageProvider",
         key: "imageProvider",
@@ -351,11 +342,8 @@ class StoreListPage extends BaseListPage {
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
         },
-      }),
-      (this.state.hideChat ? {
-        title: i18next.t("store:Model provider"),
-        hidden: true,
-      } : {
+      },
+      {
         title: i18next.t("store:Model provider"),
         dataIndex: "modelProvider",
         key: "modelProvider",
@@ -365,11 +353,8 @@ class StoreListPage extends BaseListPage {
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
         },
-      }),
-      (this.state.hideChat ? {
-        title: i18next.t("store:Embedding provider"),
-        hidden: true,
-      } : {
+      },
+      {
         title: i18next.t("store:Embedding provider"),
         dataIndex: "embeddingProvider",
         key: "embeddingProvider",
@@ -379,11 +364,8 @@ class StoreListPage extends BaseListPage {
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
         },
-      }),
-      (this.state.hideChat ? {
-        title: i18next.t("store:Text-to-Speech provider"),
-        hidden: true,
-      } : {
+      },
+      {
         title: i18next.t("store:Text-to-Speech provider"),
         dataIndex: "textToSpeechProvider",
         key: "textToSpeechProvider",
@@ -393,11 +375,8 @@ class StoreListPage extends BaseListPage {
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
         },
-      }),
-      (this.state.hideChat ? {
-        title: i18next.t("store:Speech-to-Text provider"),
-        hidden: true,
-      } : {
+      },
+      {
         title: i18next.t("store:Speech-to-Text provider"),
         dataIndex: "speechToTextProvider",
         key: "speechToTextProvider",
@@ -407,11 +386,8 @@ class StoreListPage extends BaseListPage {
         render: (text) => {
           return this.renderProviderInfo(text);
         },
-      }),
-      (this.state.hideChat ? {
-        title: i18next.t("store:Agent provider"),
-        hidden: true,
-      } : {
+      },
+      {
         title: i18next.t("store:Agent provider"),
         dataIndex: "agentProvider",
         key: "agentProvider",
@@ -421,17 +397,14 @@ class StoreListPage extends BaseListPage {
         render: (text) => {
           return this.renderProviderInfo(text);
         },
-      }),
-      (this.state.hideChat ? {
-        title: i18next.t("store:Memory limit"),
-        hidden: true,
-      } : {
+      },
+      {
         title: i18next.t("store:Memory limit"),
         dataIndex: "memoryLimit",
         key: "memoryLimit",
         width: "120px",
         sorter: (a, b) => a.memoryLimit - b.memoryLimit,
-      }),
+      },
       {
         title: i18next.t("general:State"),
         dataIndex: "state",
@@ -478,7 +451,22 @@ class StoreListPage extends BaseListPage {
         },
       },
     ];
-    const filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
+    let filteredColumns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
+
+    if (this.state.hideChat) {
+      filteredColumns = filteredColumns.filter(column =>
+        column.key !== "chatCount" &&
+        column.key !== "messageCount" &&
+        column.key !== "imageProvider" &&
+        column.key !== "modelProvider" &&
+        column.key !== "embeddingProvider" &&
+        column.key !== "textToSpeechProvider" &&
+        column.key !== "speechToTextProvider" &&
+        column.key !== "agentProvider" &&
+        column.key !== "memoryLimit"
+      );
+    }
+
     const paginationProps = {
       total: this.state.pagination.total,
       showQuickJumper: true,
@@ -508,7 +496,7 @@ class StoreListPage extends BaseListPage {
                 )
               }
               <span style={{marginLeft: 32}}>
-                {i18next.t("store:Hide chat")}:
+                Hide chat:
                 <Switch checked={this.state.hideChat} onChange={this.toggleHideChat} style={{marginLeft: 8}} />
               </span>
             </div>

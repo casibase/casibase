@@ -754,7 +754,6 @@
     "Forbidden words - Tooltip": "チャットメッセージで許可されていない言葉。これらの言葉を含むメッセージは拒否されます。",
     "Frequency": "周波数",
     "Frequency - Tooltip": "AIモデル呼び出し周波数制限（回/分）",
-    "Hide chat": "Hide chat",
     "Hide thinking": "推論を非表示",
     "Hide thinking - Tooltip": "推論を非表示",
     "History": "履歴",

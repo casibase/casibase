@@ -797,7 +797,6 @@
     "Forbidden words - Tooltip": "聊天消息中不允许出现的词汇。包含这些词的消息将被拒绝。",
     "Frequency": "频率",
     "Frequency - Tooltip": "AI模型调用频率限制（次/分钟）",
-    "Hide chat": "隐藏聊天",
     "Hide thinking": "隐藏思维链",
     "Hide thinking - Tooltip": "隐藏思维链",
     "History": "历史",

@@ -754,7 +754,6 @@
     "Forbidden words - Tooltip": "Mots non autorisés dans les messages de chat. Les messages contenant ces mots seront rejetés.",
     "Frequency": "Fréquence",
     "Frequency - Tooltip": "Limite de fréquence d'appel du modèle IA (fois/minute)",
-    "Hide chat": "Hide chat",
     "Hide thinking": "Cacher le pensée",
     "Hide thinking - Tooltip": "Cacher le pensée - Tooltip",
     "History": "Historique",
