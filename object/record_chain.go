@@ -208,9 +208,6 @@ func CommitRecords(records []*Record, lang string) (int, []map[string]interface{
 
 	var data []map[string]interface{}
 	affected := 0
-	// Lock the mutex to prevent concurrent
-	scanNeedCommitRecordsMutex.Lock()
-	defer scanNeedCommitRecordsMutex.Unlock()
 
 	for _, record := range records {
 		// Get the record from the database to ensure it is up-to-date
