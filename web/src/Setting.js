@@ -177,6 +177,26 @@ export function isLocalAdminUser(account) {
   return account.isAdmin === true || isAdminUser(account);
 }
 
+export function isLocalAndStoreAdminUser(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+
+  if (account.homepage === "non-store-admin") {
+    return false;
+  }
+
+  if (!DisablePreviewMode && isAnonymousUser(account)) {
+    return true;
+  }
+
+  if (account.type === "chat-admin") {
+    return true;
+  }
+
+  return account.isAdmin === true || isAdminUser(account);
+}
+
 export function isAnonymousUser(account) {
   if (account === undefined || account === null) {
     return false;

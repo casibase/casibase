@@ -329,7 +329,7 @@ class FileTree extends React.Component {
   }
 
   isFileOk(file, action) {
-    if (this.props.account.isAdmin) {
+    if (this.props.account.isAdmin && this.props.account.homepage !== "non-store-admin") {
       return true;
     }
 
@@ -356,7 +356,7 @@ class FileTree extends React.Component {
   }
 
   isFileReadable(file) {
-    if (Setting.isLocalAdminUser(this.props.account)) {
+    if (Setting.isLocalAndStoreAdminUser(this.props.account)) {
       return true;
     }
 
@@ -364,7 +364,7 @@ class FileTree extends React.Component {
   }
 
   isFileWritable(file) {
-    if (Setting.isLocalAdminUser(this.props.account)) {
+    if (Setting.isLocalAndStoreAdminUser(this.props.account)) {
       return true;
     }
 
@@ -372,7 +372,7 @@ class FileTree extends React.Component {
   }
 
   isFileAdmin(file) {
-    if (Setting.isLocalAdminUser(this.props.account)) {
+    if (Setting.isLocalAndStoreAdminUser(this.props.account)) {
       return true;
     }
 
