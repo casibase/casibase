@@ -155,13 +155,29 @@ func CommitRecord(record *Record, lang string) (bool, map[string]interface{}, er
 		data["error_text"] = ""
 	}
 
-	// Update the record fields to avoid concurrent update race conditions
-	var affected bool
+	// Update the record fields with optimistic locking to prevent race conditions
+	// Only update if the Block field is still empty
+	var affectedRows int64
 	if record.Id == 0 {
 		// If the record ID is 0, it means batch insert, so using getId()
-		affected, err = UpdateRecordFields(record.getId(), data, lang)
+		recordId := record.getId()
+		p, err := GetRecord(recordId, lang)
+		if err != nil {
+			return false, nil, err
+		} else if p == nil {
+			return false, nil, fmt.Errorf(i18n.Translate(lang, "object:the record: %s does not exist"), recordId)
+		}
+		// Only update if Block is still empty (optimistic locking)
+		affectedRows, err = adapter.engine.Table(&Record{}).Where("id = ? AND block = ?", p.Id, "").Update(data)
+		if err != nil {
+			return false, nil, err
+		}
 	} else {
-		affected, err = UpdateRecordFields(record.getUniqueId(), data, lang)
+		// Use the record's actual ID for direct update with optimistic locking
+		affectedRows, err = adapter.engine.Table(&Record{}).Where("id = ? AND block = ?", record.Id, "").Update(data)
+		if err != nil {
+			return false, nil, err
+		}
 	}
 
 	delete(data, "error_text")
@@ -169,7 +185,7 @@ func CommitRecord(record *Record, lang string) (bool, map[string]interface{}, er
 	// attach the name to the data for consistency
 	data["name"] = record.Name
 
-	return affected, data, err
+	return affectedRows != 0, data, nil
 }
 
 func CommitRecordSecond(record *Record, lang string) (bool, error) {
@@ -195,9 +211,13 @@ func CommitRecordSecond(record *Record, lang string) (bool, error) {
 		"block_hash2":  blockHash,
 	}
 
-	// Update the record fields to avoid concurrent update race conditions
-	affected, err := UpdateRecordFields(record.getUniqueId(), data, lang)
-	return affected, err
+	// Update the record fields with optimistic locking to prevent race conditions
+	// Only update if the Block2 field is still empty (using record's ID directly)
+	affectedRows, err := adapter.engine.Table(&Record{}).Where("id = ? AND block2 = ?", record.Id, "").Update(data)
+	if err != nil {
+		return false, err
+	}
+	return affectedRows != 0, nil
 }
 
 // CommitRecords commits multiple records to the blockchain.
@@ -208,9 +228,6 @@ func CommitRecords(records []*Record, lang string) (int, []map[string]interface{
 
 	var data []map[string]interface{}
 	affected := 0
-	// Lock the mutex to prevent concurrent
-	scanNeedCommitRecordsMutex.Lock()
-	defer scanNeedCommitRecordsMutex.Unlock()
 
 	for _, record := range records {
 		// Get the record from the database to ensure it is up-to-date
