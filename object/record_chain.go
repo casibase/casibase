@@ -250,6 +250,128 @@ func CommitRecords(records []*Record, lang string) (int, []map[string]interface{
 	return affected, data
 }
 
+// CommitRecordsConcurrent commits multiple records to the blockchain concurrently with improved performance.
+func CommitRecordsConcurrent(records []*Record, lang string) (int, []map[string]interface{}) {
+	if len(records) == 0 {
+		return 0, nil
+	}
+
+	// Batch fetch all records from database to reduce query overhead
+	recordMap := make(map[string]*Record)
+	recordIds := make([]string, 0, len(records))
+	for _, record := range records {
+		recordIds = append(recordIds, record.getId())
+	}
+
+	// Fetch records in batch
+	for _, record := range records {
+		dbRecord, err := GetRecord(record.getId(), lang)
+		if err == nil && dbRecord != nil {
+			recordMap[record.getId()] = dbRecord
+		}
+	}
+
+	// Use worker pool for concurrent commits
+	numWorkers := 10
+	if len(records) < numWorkers {
+		numWorkers = len(records)
+	}
+
+	type job struct {
+		index  int
+		record *Record
+	}
+
+	type result struct {
+		index    int
+		affected bool
+		data     map[string]interface{}
+	}
+
+	jobs := make(chan job, len(records))
+	results := make(chan result, len(records))
+
+	// Start worker pool
+	var wg sync.WaitGroup
+	for w := 0; w < numWorkers; w++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for j := range jobs {
+				var res result
+				res.index = j.index
+
+				// Get the record from the pre-fetched map
+				dbRecord, exists := recordMap[j.record.getId()]
+				if !exists {
+					res.data = map[string]interface{}{
+						"name":       j.record.Name,
+						"error_text": "record not found in database",
+					}
+					results <- res
+					continue
+				}
+
+				// Check if already committed
+				if dbRecord.Block != "" {
+					res.data = map[string]interface{}{
+						"name":        dbRecord.Name,
+						"provider":    dbRecord.Provider,
+						"block":       dbRecord.Block,
+						"transaction": dbRecord.Transaction,
+						"block_hash":  dbRecord.BlockHash,
+					}
+					results <- res
+					continue
+				}
+
+				// Commit the record
+				recordAffected, commitResult, err := CommitRecord(dbRecord, lang)
+				if err != nil {
+					res.data = map[string]interface{}{
+						"name":       j.record.Name,
+						"error_text": err.Error(),
+					}
+				} else {
+					res.affected = recordAffected
+					res.data = commitResult
+				}
+				results <- res
+			}
+		}()
+	}
+
+	// Send jobs
+	for i, record := range records {
+		jobs <- job{index: i, record: record}
+	}
+	close(jobs)
+
+	// Wait for all workers to finish
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+
+	// Collect results in order
+	resultSlice := make([]result, len(records))
+	for res := range results {
+		resultSlice[res.index] = res
+	}
+
+	// Convert to output format
+	affected := 0
+	data := make([]map[string]interface{}, len(records))
+	for i, res := range resultSlice {
+		if res.affected {
+			affected++
+		}
+		data[i] = res.data
+	}
+
+	return affected, data
+}
+
 func QueryRecord(id string, lang string) (string, error) {
 	record, err := GetRecord(id, lang)
 	if err != nil {

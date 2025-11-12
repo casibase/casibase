@@ -371,7 +371,12 @@ func AddRecords(records []*Record, syncEnabled bool, lang string) (bool, interfa
 		return false, nil, err
 	}
 
-	batchSize := 150
+	// Optimize batch size based on record count
+	batchSize := 500
+	if len(validRecords) < 100 {
+		batchSize = len(validRecords)
+	}
+
 	for i := 0; i < len(validRecords); i += batchSize {
 		end := min(i+batchSize, len(validRecords))
 
@@ -396,7 +401,7 @@ func AddRecords(records []*Record, syncEnabled bool, lang string) (bool, interfa
 			for _, idx := range needCommitRecordsIdx {
 				needCommitRecords = append(needCommitRecords, records[idx])
 			}
-			_, commitResults := CommitRecords(needCommitRecords, lang)
+			_, commitResults := CommitRecordsConcurrent(needCommitRecords, lang)
 			for i, idx := range needCommitRecordsIdx {
 				data[idx] = commitResults[i]
 			}
