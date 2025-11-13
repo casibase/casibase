@@ -290,7 +290,7 @@ func (c *ApiController) GetMessageAnswer() {
 	message.ToolCalls = model.GetToolCallsFromWriter(writer.ToolString())
 	searchString := writer.SearchString()
 	if searchString != "" {
-		var searchResults []object.SearchResult
+		var searchResults []model.SearchResult
 		err := json.Unmarshal([]byte(searchString), &searchResults)
 		if err == nil {
 			message.SearchResults = searchResults

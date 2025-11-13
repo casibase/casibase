@@ -316,14 +316,22 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 				switch v := variant.Item.AsAny().(type) {
 				case responses.ResponseFunctionToolCall:
 					toolCalls = append(toolCalls, v)
-				case responses.ResponseFunctionWebSearch:
-					if v.Action.Type != "" {
-						switch v.Action.Type {
-						case "open_page":
-							//err = flushThink(v.Action.URL, "tool_call", writer, lang)
-							//if err != nil {
-							//	return nil, err
-							//}
+				case responses.ResponseOutputMessage:
+					if v.Status == "completed" {
+						for _, contentItem := range v.Content {
+							if contentItem.Type != "output_text" || len(contentItem.Annotations) == 0 {
+								continue
+							}
+							var searchResults []SearchResult
+							for idx, annotation := range contentItem.Annotations {
+								searchResults = append(searchResults, SearchResult{
+									Index: idx + 1,
+									URL:   annotation.URL,
+									Title: annotation.Title,
+								})
+							}
+							searchResultsJSON, _ := json.Marshal(searchResults)
+							flushDataThink(string(searchResultsJSON), "search", writer, lang)
 						}
 					}
 				}
