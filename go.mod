@@ -58,7 +58,7 @@ require (
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/tealeg/xlsx v1.0.5
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1116
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.1.17
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cvm v1.0.1116
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1074
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tbaas v1.0.1115
@@ -111,6 +111,7 @@ require (
 	github.com/monochromegane/go-gitignore v0.0.0-20200626010858-205db1a8cc00 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/supranational/blst v0.3.14 // indirect
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cbs v1.1.17 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/xlab/treeprint v1.2.0 // indirect
