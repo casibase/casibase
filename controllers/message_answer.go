@@ -325,6 +325,13 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
+	// Add transaction for message with price
+	err = object.AddTransactionForMessage(message)
+	if err != nil {
+		// Log the error but don't fail the request
+		fmt.Printf("Warning: failed to add transaction for message %s: %v\n", message.GetId(), err)
+	}
+
 	chat.TokenCount += message.TokenCount
 	chat.Price += message.Price
 	if chat.Currency == "" {
