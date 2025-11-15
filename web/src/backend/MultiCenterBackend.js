@@ -296,3 +296,10 @@ export function addMultiCenterDatasetRecordByIds(ids) {
     body: JSON.stringify(ids),
   }).then(res => res.json());
 }
+
+export function knnAnalyze(trainDatasetId, predictDatasetId) {
+  return fetch(`${Setting.ServerUrl}/api/multicenter/knn-analyze?trainDataSetId=${trainDatasetId}&predictDataSetId=${predictDatasetId}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}

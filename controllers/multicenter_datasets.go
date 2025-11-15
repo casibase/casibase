@@ -425,3 +425,39 @@ func (c *ApiController) AddMultiCenterDatasetRecordByIds() {
 	}
 	c.ResponseOk(records)
 }
+
+// /add-multicenter-dataset-records [post]
+func (c *ApiController) AddMultiCenterDatasetRecords() {
+	var records []object.MulticenterDatasetsRecords
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &records)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	addedRecords, err := object.AddMultiCenterDatasetRecordApi(records)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(addedRecords)
+}
+
+// /knn-analyze [get]
+func (c *ApiController) KnnAnalyze() {
+	
+	trainDataSetIdStr := c.Input().Get("trainDataSetId")
+	predictDataSetIdStr := c.Input().Get("predictDataSetId")
+	
+	fmt.Printf(trainDataSetIdStr,predictDataSetIdStr)
+	trainDataSetId := util.ParseInt(trainDataSetIdStr)
+	
+	predictDataSetId := util.ParseInt(predictDataSetIdStr)
+
+	result, err := object.KnnAnalyze(trainDataSetId, predictDataSetId)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(result)
+}

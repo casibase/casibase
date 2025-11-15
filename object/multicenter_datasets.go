@@ -30,6 +30,7 @@ import (
 	"math/rand"
 
 	"xorm.io/core"
+	"github.com/casibase/casibase/util"
 )
 
 var accessReqStatusMap = map[string]string{
@@ -180,6 +181,8 @@ func AddDataset(ds *MulticenterDatasets) (bool, error) {
 		// 错误：VisibleStatus字段不合法
 		return false, errors.New("可见性状态字段不合法")
 	}
+	// keyword设置为uuid
+	ds.Keyword = util.GenerateUUID()
 
     affected, err := adapter.engine.Insert(ds)
     if err != nil {
@@ -1235,6 +1238,14 @@ func AddMultiCenterDatasetRecordByIds(recordIds []int) (int, error) {
 
 }
 
+func AddMultiCenterDatasetRecordApi(MulticenterDatasetsRecordss []MulticenterDatasetsRecords) (int, error) {
+	affected, err := adapter.engine.Insert(&MulticenterDatasetsRecordss)
+	if err != nil {
+		return 0, fmt.Errorf("存入数据库失败: %v", err)
+	}
+	return int(affected), nil
+}
+
 func AddMultiCenterDatasetRecord(records []*Record) (int, error) {
 	var multiCenterRecords []MulticenterDatasetsRecords
 	for _, record := range records {
@@ -1376,7 +1387,16 @@ func CheckAndGetDatasetSource(isGranted bool, id int, user string) ([]*Multicent
 		if !canUse {
 			return nil, fmt.Errorf("数据授权错误: %v", err)
 		}
+
+		// 如果recordsMulti的行数超过topK则抽取前topK条返回
+		topKStr,_:=GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multicenter.record.topK","5")
+		topK,_:=strconv.Atoi(topKStr)
+		if topK>0 && len(recordsMulti) > topK {
+			recordsMulti = recordsMulti[0:topK]
+		}
 	}
+
+	
 	
 
 	return recordsMulti, nil
@@ -1391,5 +1411,53 @@ func GetMultiCenterAuditRecords()([]*Record, error){
 		return nil, err
 	}
 	return records, nil
+}
+
+func getMultiCenterDatasetRecordsByDatasetId(datasetId int) ([]*MulticenterDatasetsRecords, error) {
+	// 先找出keyword
+	dataset, err := GetDatasetById(datasetId)
+	if err != nil {
+		return nil, err
+	}
+	if dataset == nil {
+		return nil, fmt.Errorf("数据集不存在")
+	}
+	keyword := dataset.Keyword
+	unit := dataset.Unit
+	records, err := getMultiCenterDatasetsRecordsByKeywordAndUnit(keyword, unit)
+	if err != nil {
+		return nil, err
+	}
+	return records, nil
+}
+
+
+func KnnAnalyze(trainDataSetId, testDataSetId int) ([]int, error) { 
+	// 1. 获取训练集和测试集的record
+	trainRecords, err := getMultiCenterDatasetRecordsByDatasetId(trainDataSetId)
+	if err != nil {
+		return nil, err
+	}
+
+	// 2. 获取测试集的record
+	testRecords, err := getMultiCenterDatasetRecordsByDatasetId(testDataSetId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// 3. 提取特征向量和标签
+	fmt.Println("训练集记录数:", len(trainRecords))
+	fmt.Println("测试集记录数:", len(testRecords))
+	
+	// 模拟返回
+	predictedLabels := []int{}
+	for i := 0; i < len(testRecords); i++ {
+		// 随机生成一个标签作为预测结果
+		predictedLabel := rand.Intn(3) // 假设有3个类别，标签为0, 1, 2
+		predictedLabels = append(predictedLabels, predictedLabel)
+	}
+	return predictedLabels, nil
+	
 }
 	

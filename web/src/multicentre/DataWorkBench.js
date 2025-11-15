@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result, Spin, message, Modal, Tooltip } from "antd";
+import { Table, Tag, Button, Progress, Alert, Dropdown, Menu, Segmented, Result, Spin, message, Modal, Tooltip, Select, Collapse } from "antd";
 import * as MultiCenterBackend from "../backend/MultiCenterBackend";
 import { SwapOutlined } from '@ant-design/icons';
 import { Clock, Database, ShieldCheck, Link2, Image } from 'lucide-react';
@@ -56,6 +56,16 @@ export default function DataWorkBench(props) {
     const [previewOpen, setPreviewOpen] = useState(false);
     // 影像卡片超分状态与超分图片
     const [srMap, setSrMap] = useState({}); // { [id]: { url, done } }
+    // validation dataset for KNN analysis (when granted dataset has `target`)
+    const [validationDatasetId, setValidationDatasetId] = useState(null);
+    const [validationDatasetSourceResp, setValidationDatasetSourceResp] = useState(null);
+    const [validationDatasetLoading, setValidationDatasetLoading] = useState(false);
+    const [validationRows, setValidationRows] = useState([]);
+    const [validationColSet, setValidationColSet] = useState(new Set());
+    const [analysisRunning, setAnalysisRunning] = useState(false);
+    const [knnPredictions, setKnnPredictions] = useState(null);
+    const [knnResultRows, setKnnResultRows] = useState(null);
+    const [knnCollapseActiveKeys, setKnnCollapseActiveKeys] = useState([]);
     const handleMenuClick = ({ key }) => {
         // key is dataset id
         if (!key) return;
@@ -295,6 +305,51 @@ export default function DataWorkBench(props) {
             return null;
         } finally {
             setDatasetSourceLoading(false);
+        }
+    };
+
+    // fetch validation dataset (used as 验证集 for KNN). Keeps separate state so it won't overwrite main datasetSourceResp
+    const fetchValidationDataset = async (id) => {
+        if (!id) {
+            setValidationDatasetSourceResp(null);
+            setValidationRows([]);
+            setValidationColSet(new Set());
+            return null;
+        }
+        setValidationDatasetLoading(true);
+        try {
+            const resp = await MultiCenterBackend.checkAndGetDatasetSource(false, id);
+            if (resp) {
+                setValidationDatasetSourceResp(resp);
+                if (resp.status === 'ok' && resp.data) {
+                    const vrows = [];
+                    const vcolSet = new Set();
+                    (resp.data || []).forEach((rec, idx) => {
+                        let obj = {};
+                        if (rec.object) {
+                            try {
+                                obj = JSON.parse(rec.object);
+                            } catch (e) {
+                                obj = rec.object;
+                            }
+                        }
+                        vrows.push({ ...obj, _rowIndex: idx });
+                        Object.keys(obj || {}).forEach(k => vcolSet.add(k));
+                    });
+                    setValidationRows(vrows);
+                    setValidationColSet(vcolSet);
+                    return resp.data || null;
+                }
+                setValidationRows([]);
+                setValidationColSet(new Set());
+                return null;
+            }
+        } catch (e) {
+            console.error('fetchValidationDataset error', e);
+            message.error(e?.message || '获取验证集失败');
+            return null;
+        } finally {
+            setValidationDatasetLoading(false);
         }
     };
 
@@ -588,6 +643,8 @@ export default function DataWorkBench(props) {
                             <Button type="primary" onClick={() => { setDatasetSwitchVisible(true); setDatasetSwitchLocked(true); loadDatasetsForMenu(); }}>切换数据集</Button>
                         </div>
                     ) : (
+
+
                         <div>
                             <Result
                                 status="warning"
@@ -839,16 +896,197 @@ export default function DataWorkBench(props) {
                                                 }));
 
                                                 return (
-                                                    <div style={{ marginTop: 18, overflowX: 'auto' }}>
-                                                        <Table
-                                                            columns={colsWithCellStyle}
-                                                            dataSource={rows}
-                                                            pagination={false}
-                                                            bordered
-                                                            rowKey="_rowIndex"
-                                                            tableLayout="fixed" // 平均分配列宽
-                                                            style={{ width: '100%', minWidth: `${totalMinWidth}px` }}
-                                                        />
+                                                    <div>
+                                                        <div style={{ marginTop: 18, overflowX: 'auto' }}>
+                                                            <Table
+                                                                columns={colsWithCellStyle}
+                                                                dataSource={rows}
+                                                                pagination={false}
+                                                                bordered
+                                                                rowKey="_rowIndex"
+                                                                tableLayout="fixed" // 平均分配列宽
+                                                                style={{ width: '100%', minWidth: `${totalMinWidth}px` }}
+                                                            />
+                                                        </div>
+
+
+
+
+                                                        {/* 如果是授权的数据集（granted），在表格下方显示提示信息 */}
+                                                        {selectedContext && selectedContext.type === 'granted' ? (
+                                                            <div style={{ marginTop: 12, background: '#fff7e6', border: '1px solid #fae7bf', borderRadius: 8, padding: '10px 12px', color: '#d48806', fontSize: 14 }}>
+                                                                当前数据为授权使用范围，仅限科研分析用途。数据仅展示数据集部分内容，无法浏览全部数据。
+                                                            </div>
+                                                        ) : null}
+
+                                                        {/* 如果是授权的数据集并且包含 target，则显示 KNN 验证集选择与启动按钮 */}
+                                                        {selectedContext && selectedContext.type === 'granted' && colSet.has('target') ? (
+
+
+                                                            <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px dashed #f0f0f0' }}>
+                                                                <hr></hr>
+                                                                <div> 您选定的数据集将作为训练集，可选择您管理且与该数据集特征列一致的数据集作为预测集，开展预测推理科研分析。</div>
+                                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                                            <div style={{ color: '#444', fontWeight: 600 }}>分析算法：</div>
+                                                                            <Select value={'knn'} style={{ width: 160 }}>
+                                                                                <Select.Option value="knn">KNN</Select.Option>
+                                                                            </Select>
+                                                                        </div>
+
+                                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                                            <div style={{ color: '#444', fontWeight: 600 }}>预测集：</div>
+                                                                            <Select
+                                                                                showSearch
+                                                                                allowClear
+                                                                                placeholder="选择验证集（仅可选您管理的数据集）"
+                                                                                style={{ width: 320 }}
+                                                                                value={validationDatasetId}
+                                                                                onChange={async (val) => {
+                                                                                    setValidationDatasetId(val);
+                                                                                    if (val) {
+                                                                                        await fetchValidationDataset(val);
+                                                                                    } else {
+                                                                                        setValidationRows([]);
+                                                                                        setValidationColSet(new Set());
+                                                                                        setValidationDatasetSourceResp(null);
+                                                                                    }
+                                                                                }}
+                                                                            >
+                                                                                {(managedList || []).map((ds, idx) => {
+                                                                                    const id = String(ds.Id || ds.id || ds.DatasetId || ds.datasetId || `m-${idx}`);
+                                                                                    const name = ds.DatasetName || ds.datasetName || ds.name || (`数据集 ${id}`);
+                                                                                    return <Select.Option key={id} value={id}>{name} </Select.Option>;
+                                                                                })}
+                                                                            </Select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                                                        {
+                                                                            (() => {
+                                                                                const grantedCols = Array.from(colSet || []);
+                                                                                const requiredCols = grantedCols.filter(c => c !== 'target');
+                                                                                const validationHasTarget = validationColSet && validationColSet.has && validationColSet.has('target');
+                                                                                const validationHasAllRequired = requiredCols.every(c => validationColSet && validationColSet.has && validationColSet.has(c));
+                                                                                const startEnabled = (!!validationDatasetId) && !validationHasTarget && validationHasAllRequired && (validationRows && validationRows.length > 0) && !analysisRunning;
+
+                                                                                return (
+                                                                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                                                                        <Button type="primary" disabled={!startEnabled} loading={analysisRunning} onClick={async () => {
+                                                                                            if (!startEnabled) return;
+                                                                                            setAnalysisRunning(true);
+                                                                                            try {
+                                                                                                message.info('开始触发 KNN 分析计算');
+
+                                                                                                // 调用knnAnalyze
+                                                                                                const res = await MultiCenterBackend.knnAnalyze(selectedDatasetId, validationDatasetId);
+
+                                                                                                if (res && res.status === 'ok') {
+                                                                                                    // 返回的是数组，其为每行对应的预测集 target 预测标签结果，进行渲染。
+                                                                                                    const preds = Array.isArray(res.data) ? res.data : (res.data && res.data.predictions) || [];
+                                                                                                    setKnnPredictions(preds);
+                                                                                                    // 将预测结果合并到验证集行用于展示
+                                                                                                    const combined = (validationRows || []).map((r, idx) => ({ ...r, predicted_target: (preds && preds[idx] !== undefined) ? preds[idx] : '' }));
+                                                                                                    setKnnResultRows(combined);
+                                                                                                    // 自动展开预测结果面板（仅展开预测结果，不展开原始验证集）
+                                                                                                    setKnnCollapseActiveKeys(['prediction']);
+                                                                                                    message.success('KNN 分析完成，已在下方显示预测结果');
+
+                                                                                                } else {
+
+                                                                                                    message.error(`获取申请失败: ${res ? res.msg : '未知错误'}`);
+                                                                                                }
+
+
+                                                                                            } catch (e) {
+                                                                                                console.error(e);
+                                                                                                message.error('启动分析失败');
+                                                                                            } finally {
+                                                                                                setAnalysisRunning(false);
+                                                                                            }
+                                                                                        }}>开始分析计算</Button>
+                                                                                        <div style={{ marginTop: 6, color: startEnabled ? '#52c41a' : '#888', fontSize: 12, textAlign: 'right' }}>
+                                                                                            {startEnabled ? '已满足开始条件' : '请选择可用的验证集（无 target，且包含授权数据集的所有字段）'}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                );
+                                                                            })()
+                                                                        }
+                                                                    </div>
+                                                                </div>
+
+                                                                {(validationDatasetSourceResp && validationDatasetSourceResp.status === 'ok') || (knnResultRows && Array.isArray(knnResultRows) && knnResultRows.length > 0) ? (
+                                                                    <div style={{ marginTop: 12 }}>
+                                                                        <Collapse
+                                                                            activeKey={knnCollapseActiveKeys}
+                                                                            onChange={(keys) => setKnnCollapseActiveKeys(Array.isArray(keys) ? keys : [keys])}
+                                                                            style={{ maxHeight: 420, overflow: 'auto' }}
+                                                                        >
+                                                                            {validationDatasetSourceResp && validationDatasetSourceResp.status === 'ok' ? (
+                                                                                <Collapse.Panel header={`原始预测集 `} key="validation">
+                                                                                    <div style={{ maxHeight: 940, overflow: 'auto' }}>
+                                                                                        {(() => {
+                                                                                            const vDynamicCols = Array.from(validationColSet).map(k => ({ title: (columnsMap[k] || k), dataIndex: k, key: k, render: v => (v === null || typeof v === 'undefined') ? '' : String(v) }));
+                                                                                            vDynamicCols.sort((a, b) => a.title.localeCompare(b.title, 'zh-CN'));
+                                                                                            const vColsWithStyle = vDynamicCols.map(col => ({
+                                                                                                ...col,
+                                                                                                onHeaderCell: () => ({ style: { maxWidth: 200, whiteSpace: 'normal', wordBreak: 'break-word' } }),
+                                                                                                onCell: () => ({ style: { maxWidth: 200, whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' } })
+                                                                                            }));
+                                                                                            const preferredColWidth = 150;
+                                                                                            const vTotalMinWidth = vDynamicCols.length * preferredColWidth;
+                                                                                            return (
+                                                                                                <Table
+                                                                                                    columns={vColsWithStyle}
+                                                                                                    dataSource={validationRows}
+                                                                                                    pagination={false}
+                                                                                                    bordered
+                                                                                                    rowKey="_rowIndex"
+                                                                                                    tableLayout="fixed"
+                                                                                                    style={{ width: '100%', minWidth: `${vTotalMinWidth}px`, marginTop: 8 }}
+                                                                                                />
+                                                                                            );
+                                                                                        })()}
+                                                                                    </div>
+                                                                                </Collapse.Panel>
+                                                                            ) : null}
+
+                                                                            {knnResultRows && Array.isArray(knnResultRows) && knnResultRows.length > 0 ? (
+                                                                                <Collapse.Panel header={`预测结果`} key="prediction">
+                                                                                    <div style={{ maxHeight: 940, overflow: 'auto' }}>
+                                                                                        {(() => {
+                                                                                            const baseCols = Array.from(validationColSet).map(k => ({ title: (columnsMap[k] || k), dataIndex: k, key: k, render: v => (v === null || typeof v === 'undefined') ? '' : String(v) }));
+                                                                                            baseCols.sort((a, b) => a.title.localeCompare(b.title, 'zh-CN'));
+                                                                                            const colsWithStyle = baseCols.map(col => ({
+                                                                                                ...col,
+                                                                                                onHeaderCell: () => ({ style: { maxWidth: 200, whiteSpace: 'normal', wordBreak: 'break-word' } }),
+                                                                                                onCell: () => ({ style: { maxWidth: 200, whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' } })
+                                                                                            }));
+                                                                                            colsWithStyle.push({ title: '预测 target', dataIndex: 'predicted_target', key: 'predicted_target', onHeaderCell: () => ({ style: { maxWidth: 200 } }), onCell: () => ({ style: { maxWidth: 200, whiteSpace: 'normal' } }) });
+                                                                                            const pref = 150;
+                                                                                            const minW = Math.max((colsWithStyle.length * pref), 400);
+                                                                                            return (
+                                                                                                <Table
+                                                                                                    columns={colsWithStyle}
+                                                                                                    dataSource={knnResultRows}
+                                                                                                    pagination={false}
+                                                                                                    bordered
+                                                                                                    rowKey="_rowIndex"
+                                                                                                    tableLayout="fixed"
+                                                                                                    style={{ width: '100%', minWidth: `${minW}px`, marginTop: 8 }}
+                                                                                                />
+                                                                                            );
+                                                                                        })()}
+                                                                                    </div>
+                                                                                </Collapse.Panel>
+                                                                            ) : null}
+                                                                        </Collapse>
+                                                                    </div>
+                                                                ) : null}
+                                                            </div>
+                                                        ) : null}
                                                     </div>
                                                 );
                                             })()

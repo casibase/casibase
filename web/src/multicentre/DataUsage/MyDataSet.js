@@ -583,9 +583,9 @@ export default function MyDataSetPage() {
                         <Form.Item name="description" label="数据集描述">
                             <Input.TextArea placeholder="可选：填写数据集描述" rows={4} />
                         </Form.Item>
-                        <Form.Item name="keywords" label="数据集关键词" rules={[{ required: true, message: '请输入数据集关键词' }]}>
+                        {/* <Form.Item name="keywords" label="数据集关键词" rules={[{ required: true, message: '请输入数据集关键词' }]}>
                             <Input placeholder="请填写关键词" />
-                        </Form.Item>
+                        </Form.Item> */}
                         <Form.Item name="searchable" label="是否公开可搜索" valuePropName="checked">
                             <Switch checkedChildren="是" unCheckedChildren="否" />
                         </Form.Item>
@@ -716,7 +716,7 @@ export default function MyDataSetPage() {
                                     );
                                 })()}
                             </Descriptions.Item>
-                            <Descriptions.Item label="关键词">{(viewDataset.raw && (viewDataset.raw.Keyword || viewDataset.raw.keyword)) || '-'}</Descriptions.Item>
+                            {/* <Descriptions.Item label="关键词">{(viewDataset.raw && (viewDataset.raw.Keyword || viewDataset.raw.keyword)) || '-'}</Descriptions.Item> */}
                             <Descriptions.Item label="创建时间">{(viewDataset.raw && viewDataset.raw.createdAt) || viewDataset.createdTime || '-'}</Descriptions.Item>
                             <Descriptions.Item label="更新时间">{(viewDataset.raw && viewDataset.raw.updatedAt) || '-'}</Descriptions.Item>
                             <Descriptions.Item label="到期时间">{(viewDataset.raw && viewDataset.raw.ExpiredAt) || viewDataset.expiry || '-'}</Descriptions.Item>

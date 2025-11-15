@@ -851,7 +851,7 @@ export default function MyApplication() {
                                     <Descriptions.Item label="数据集名称">{selectedDataset.DatasetName || selectedDataset.datasetName || selectedDataset.DatasetId || selectedDataset.datasetId || '-'}</Descriptions.Item>
                                     <Descriptions.Item label="描述">{selectedDataset.Description || selectedDataset.description || '-'}</Descriptions.Item>
                                     <Descriptions.Item label="可见性">{((selectedDataset.VisibleStatus || selectedDataset.visibleStatus || '') || '').toUpperCase() === MULTICENTER_DATASET_VISIBLE_STATUS.PUBLIC ? '公开' : '非公开'}</Descriptions.Item>
-                                    <Descriptions.Item label="关键词">{(selectedDataset.Keyword || selectedDataset.keyword) || '-'}</Descriptions.Item>
+                                    {/* <Descriptions.Item label="关键词">{(selectedDataset.Keyword || selectedDataset.keyword) || '-'}</Descriptions.Item> */}
                                     <Descriptions.Item label="到期时间">{(selectedDataset.ExpiredAt || selectedDataset.expiredAt) || '-'}</Descriptions.Item>
                                     <Descriptions.Item label="所有者">{(selectedDataset.Owner || selectedDataset.owner) || '-'}</Descriptions.Item>
                                     <Descriptions.Item label="归口单位">{(selectedDataset.Unit || selectedDataset.unit) || '-'}</Descriptions.Item>
