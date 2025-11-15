@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React, { Component } from "react";
-import { Card, Row, Col, Typography, Statistic, Tag } from "antd";
+import { Card, Row, Col, Typography, Statistic, Tag, Button } from "antd";
 import { BarChartOutlined, PieChartOutlined } from '@ant-design/icons';
 import ReactEcharts from "echarts-for-react";
 import * as DashboardBackend from "../backend/DashboardBackend.js"
@@ -504,9 +504,41 @@ class DashboardPage extends Component {
           <Col span={24} lg={12}>
             <Card
               title={
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <PieChartOutlined style={{ color: themeStyles.primaryColor, fontSize: '20px' }} />
-                  <span>各家医院数据量占比</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <PieChartOutlined style={{ color: themeStyles.primaryColor, fontSize: '20px' }} />
+                    <span>各家医院数据量占比</span>
+                  </div>
+                  <Button
+                    type="default"
+                    size="small"
+                    onClick={() => window.open('https://zgcx.nhc.gov.cn/unit', '_blank', 'noopener,noreferrer')}
+                    style={{
+                      background: `linear-gradient(135deg, ${themeStyles.primaryColor} 0%, ${themeStyles.secondaryColor} 100%)`,
+                      color: '#fff',
+                      fontWeight: '500',
+                      fontSize: '14px',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '4px 16px',
+                      height: 'auto',
+                      boxShadow: '0 2px 8px rgba(102, 126, 234, 0.3)',
+                      transition: 'all 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => {
+                      const btn = e.currentTarget;
+                      btn.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
+                      btn.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      const btn = e.currentTarget;
+                      btn.style.boxShadow = '0 2px 8px rgba(102, 126, 234, 0.3)';
+                      btn.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    查询医院注册信息
+                  </Button>
                 </div>
               }
               bordered={false}
