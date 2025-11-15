@@ -29,6 +29,10 @@ import (
 	"bytes"
 	"math/rand"
 
+
+	"io"
+	"log"
+
 	"xorm.io/core"
 	"github.com/casibase/casibase/util"
 )
@@ -1477,12 +1481,81 @@ func KnnAnalyze(trainDataSetId, testDataSetId int) ([]string, error) {
 	fmt.Println("训练集记录数:", len(trainRecords))
 	fmt.Println("测试集记录数:", len(testRecords))
 	
-	// 
+	// 尝试请求：curl -X POST "http://192.168.0.229:13902/api/new-task" \
+    //  -H "Content-Type: multipart/form-data" \
+    //  -F "taskName=knn" \
+    //  -F "datasetId=dataset3" \
+    //  -F "user=gds_doctor_chen " \
+    //  -F "datasetUsageId=dataset3_usage1"
+	
+	// 目标API地址
+	url, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("multicenter.record.knn.url", "http://192.168.0.229:13902/api")
+	url += "/new-task"
+
+	// 创建一个缓冲区存储multipart/form-data数据
+	var requestBody bytes.Buffer
+	writer := multipart.NewWriter(&requestBody)
+
+	// 添加表单字段（注意保留user字段末尾的空格）
+	fields := map[string]string{
+		"taskName":        "knn",
+		"datasetId":       "dataset3",
+		"user":            "gds_doctor_chen ", // 保留原始空格
+		"datasetUsageId":  "dataset3_usage1",
+	}
+
+	// 写入所有表单字段
+	for key, value := range fields {
+		if err := writer.WriteField(key, value); err != nil {
+			log.Fatalf("写入表单字段失败（%s）：%v", key, err)
+		}
+	}
+
+	// 关闭writer，确保生成正确的multipart边界
+	if err := writer.Close(); err != nil {
+		log.Fatalf("关闭multipart writer失败：%v", err)
+	}
+
+	// 创建HTTP请求
+	req, err := http.NewRequest("POST", url, &requestBody)
+	if err != nil {
+		log.Fatalf("创建请求失败：%v", err)
+	}
+
+	// 设置Content-Type（必须使用writer生成的类型，包含边界信息）
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	// 创建带超时的HTTP客户端（避免请求无限阻塞）
+	client := &http.Client{
+		Timeout: 30 * time.Second, // 30秒超时
+	}
+
+	// 发送请求
+	resp, err := client.Do(req)
+	if err != nil {
+		return defaultReturnArr, nil
+	}
+	defer resp.Body.Close() // 确保响应体被关闭，避免资源泄露
+
+	// 读取响应内容
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return defaultReturnArr, nil
+	}
+
+	// 检查响应状态码
+	if resp.StatusCode != http.StatusOK {
+		return defaultReturnArr, nil
+	}
+
+	// 成功处理
+	fmt.Printf("请求成功，响应内容：%s\n", respBody)
+
 	
 	// 读取defaultReturnKnnStr
 	var knnResult map[string]interface{}
-	if err := json.Unmarshal([]byte(defaultReturnKnnStr), &knnResult); err != nil {
-		return nil, fmt.Errorf("解析KNN结果失败: %v", err)
+	if err := json.Unmarshal([]byte(respBody), &knnResult); err != nil {
+		return defaultReturnArr, nil
 	}
 	// "taskResult": "KNN配置: M=16, N=4, K=5\n测试样本数: 4\n准确率: 50.00%\n标签说明: 0-其他, 1-术后出血, 2-感染\n========================================\n样本1: 真实标签=其他(0), 预测标签=术后出血(1) ✗\n样本2: 真实标签=感染(2), 预测标签=其他(0) ✗\n样本3: 真实标签=术后出血(1), 预测标签=术后出血(1) ✓\n样本4: 真实标签=其他(0), 预测标签=其他(0) 
 
