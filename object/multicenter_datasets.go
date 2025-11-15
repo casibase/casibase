@@ -1431,8 +1431,35 @@ func getMultiCenterDatasetRecordsByDatasetId(datasetId int) ([]*MulticenterDatas
 	return records, nil
 }
 
-
-func KnnAnalyze(trainDataSetId, testDataSetId int) ([]int, error) { 
+const defaultReturnKnnStr=`{
+  "status": "ok",
+  "msg": "",
+  "data": {
+    "taskName": "knn",
+    "dataFile": {
+      "name": "",
+      "size": 0,
+      "contentType": "",
+      "url": "/home/data/uploads/datasets/dataset3/5gezhongxin2_data_Chinses_bert.txt"
+    },
+    "taskFile": {
+      "name": "",
+      "size": 0,
+      "contentType": "",
+      "url": "/home/data/uploads/tasks/knn/task.wasm"
+    },
+    "taskResult": "KNN配置: M=16, N=4, K=5\n测试样本数: 4\n准确率: 50.00%\n标签说明: 0-其他, 1-术后出血, 2-感染\n========================================\n样本1: 真实标签=其他(0), 预测标签=术后出血(1) ✗\n样本2: 真实标签=感染(2), 预测标签=其他(0) ✗\n样本3: 真实标签=术后出血(1), 预测标签=术后出血(1) ✓\n样本4: 真实标签=其他(0), 预测标签=其他(0) ✓\n========================================\n各类别统计:\n其他: 1/2 (50.00%)\n术后出血: 1/1 (100.00%)\n感染: 0/1 (0.00%)",
+    "taskLog": "Killing process 404679\n405115 using port 8930\n2025/11/15 12:54:15 INFO EGo version=1.7.0 git_commit=3a3f54a1d1cd9318dd1ade411f9f439f53bb6694\nWARNING: '/' is defined as 'hostfs'. This might be insecure, please make sure you explicitly allow the paths you want to expose to the enclave.\nWaiting for 10 seconds...\n2025/11/15 12:54:17 INFO EGo version=1.7.0 git_commit=3a3f54a1d1cd9318dd1ade411f9f439f53bb6694\n[erthost] running in simulation mode\n[erthost] loading enclave ...\n[erthost] entering enclave ...\nWARNING: Remounted '/' to hostfs. This might be insecure. Please only use this for testing purposes.\n[ego] starting application ...\nChainmaker client initialized successfully\n**********cur_state is SERVER_INIT_STATE: 0 :服务器正在进行相关初始化参数生成过程**********\n============start generating remotereport============\nERROR: can't get report in simulation mode (oe_result_t=OE_UNSUPPORTED) [openenclave-src/enclave/sgx/report.c:oe_get_report_v2:190]\nOE_UNSUPPORTED\nremotereport has been generated\n\n============start generating localAESkey============\nAESKey has been generated\n\n============start generating randAESkey============\nrandAESKey has been generated\n\n============start generating rsaKeyPair============\nrsaKeyPair has been generated\n\n============send cert, remotereport, rsaPK============\n\n**********cur_state has changed to DU_RA_STATE: 1 :du对server进行远程证实**********\nlistening ...\nExecuting DataOwner script...\nExecuting DataUser script...\n\n***********cur_state has changed to REC_DU_KEY_STATE: 2 :接收DU的公钥***********\nSymmetric key: \u0026{[195 154 19 74 251 69 10 11 102 127 246 46 98 118 156 29 221 249 21 1 44 194 144 191 248 237 62 234 124 119 203 163] key1 2025-11-15 12:54:38.398008611 +0800 CST false}\nkey decrypted successfully\nSymmetric key from dc has received\nPublic key from dc has been received\n\n**********cur_state has changed to REC_DU_TASK_STATE: 3 接收DU的任务**********\nTastInfo has received\nFile uploaded and decrypted successfully!\n\n**********cur_state has changed to SEND_DP_REQ_STATE: 4 向dp发送数据请求**********\n============send dataset requestion to dp============\nSending data to: http://localhost:8920/dp_req\n\n**********cur_state has changed to DP_RA_STATE: 5 :dp对server进行远程证实**********\ndataset requestion has sent to dp\n\n***********cur_state has changed to REC_DP_KEY_STATE: 6 接收DP的对称加密密钥***********\nSymmetric key: \u0026{[16 142 176 125 70 245 102 6 44 29 187 61 218 60 103 89 66 171 59 122 238 143 45 138 113 101 226 63 177 255 214 20] key1 2025-11-15 12:54:40.580265965 +0800 CST false}\nkey decrypted successfully\nSymmetric key from dp has received\n\n**********cur_state has changed to REC_DP_DATA_STATE: 7 :接收DP的数据**********\ncreate file in 'encryptedFilePath' to store the encrypted dataset\nthe file is successfully create to store the encrypted dataset\nFile uploaded and decrypted successfully!\ndecryptedFile has stored in 'decryptedFilePath'\n\n*******ReadDatasetUsage before use:\nUsageID: dataset3_usage1\n\n--\u003e ReadDatasetusage\nDecoded Result:\n{\n  \"DatasetID\": \"dataset3\",\n  \"ExpireTime\": \"2026-12-15 04:23:00\",\n  \"UsageID\": \"dataset3_usage1\",\n  \"UseCountLeft\": 96,\n  \"User\": \"gds_doctor_chen\"\n}\n\n--\u003e SetDatasetFilePath called\nSetDatasetFilePath: datasetID = dataset3 , filePath = /home/data/with-chainmaker/CT-Sharing/WASMRuntime_interp/language-bindings/go/samples/file/dataset2.txt\nCurrent datasetFiles map: map[dataset3:/home/data/with-chainmaker/CT-Sharing/WASMRuntime_interp/language-bindings/go/samples/file/dataset2.txt]\nDatasetFilePath in Test: /home/data/with-chainmaker/CT-Sharing/WASMRuntime_interp/language-bindings/go/samples/file/dataset2.txt\n\n**********cur_state has changed to TASK_RUN_STATE: 8 :server在enclave中执行任务**********\nLogger started\nLoad wasm module\nNewModule finished\nInstantiate wasm module\n[01:50:32:242 - 7EF83C1552F8]: warning: failed to link import function (env, emscripten_notify_memory_growth)\nNewInstance finished\n要调用的函数名称为: __main_argc_argv\nwasm任务中主函数参数数量= 2\ndatasetID: dataset3\npath: /home/data/with-chainmaker/CT-Sharing/WASMRuntime_interp/language-bindings/go/samples/file/dataset2.txt\ndatasetFiles in CGO: /home/data/with-chainmaker/CT-Sharing/WASMRuntime_interp/language-bindings/go/samples/file/dataset2.txt\nCreateResultPackage is called:\nCreateResultPackage running:\nCallFunc finished\n\nMemory consumption summary (bytes):\nWASM module memory consumption, total size: 8626\n    module struct size: 384\n    types size: 556\n    imports size: 640\n    funcs size: 5642\n    tables size: 84\n    memories size: 16\n    globals size: 32\n    exports size: 96\n    table segs size: 56\n    data segs size: 1120\n    const strings size: 0\nWASM module inst memory consumption, total size: 151130608\n    module inst struct size: 648\n    memories size: 151126408\n        app heap size: 134216704\n    tables size: 8\n    functions size: 3456\n    globals size: 24\n    exports size: 64\nExec env memory consumption, total size: 68864\n    exec env struct size: 3328\n        block addr cache size: 3072\n    stack size: 65536\nhook env memory total size: 19050521\n    Ex func count: 62\n    Ex bmaps cell count: 1031\n    hook env struct size: 1040\n        block maps size: 11224\n    taint hook total size: 19038257\n        taint memory size: 19021824\n        taint stack size: 16384\n        taint global size: 1\n\nTotal memory consumption of module, module inst and exec env: 170258619\nTotal interpreter stack used: 3944\nTotal aux stack used: no enough info to profile\nNative stack left: 4188232\nTotal app heap used: 0\nDestroy instance\nDestroy module\nDestroy wasm runtime\n\n\nWriter has finished. Exiting.\nRuntime init cost:  1.000017ms \nModule init cost:   2.000035ms \nInstance init cost: 61.001062ms \nCall App Func cost: 32.328563199s \nDestroy cost:       25.000436ms \nTotal cost of the run_task() is:         32.417564749s \n\n***********cur_state has changed to SEND_DU_RESULT_STATE: 9 向DU发送结果***********\ntaskResultID: result579\nlogfilefath: /home/data/with-chainmaker/CT-Sharing/WASMRuntime_interp/language-bindings/go/samples/file/log_10240_5120.bin\n\n--\u003eCreateLog, creates new Log with TaskID, LogID, Description, HashHexString and Signature\nResult: contract_result:\u003cresult:\"1763182514157\" message:\"Success\" gas_used:100 \u003e tx_id:\"18781527e26bd64acafa2ecd416f9151d182816c66014c5c8ebfd70fc9b76360\" tx_timestamp:1763182515 tx_block_height:5531294 , Err: \u003cnil\u003e\n\n--\u003eReadLog\nReading Log for TaskID: 469, LogID: 1763182514157\nDecoded Result:\n{\n  \"LogID\": \"1763182514157\",\n  \"TaskID\": \"469\",\n  \"Description\": \"wasm app logs\",\n  \"HashHexString\": \"349ff8f68b06aabe85f03f9db91095c40f34d09259cbb86f591b6035e18ee450\",\n  \"Signature\": \"0339e7a8c556a60eb6c6ffff5541dfdbc8e2b59f5bd571c3f29289cd54910e4c5a163d1b594e2aa679b907972444dc500cd39cbc56fea69a6fb88059e3f05ab51ba0bb7aa511779ffc14c9ea7c9e228dd366662a15b3951f679650f745f6983f2168df6df92c697774133c6ae584d63b5866133814b4be4c1209ff173101dff79207a6c4753512c7f8277726883284f97b9bc7ae5bdb7da2cf964d9eee6567ce8285abce29bb04788e83a31597dab975b0375acce260a41f9262c5e42d9c1cccb9a69e2edf7c329df7ee7e4b6e06431197888e8b42b8d76cbbd3c6fbe70113b6e85e5932b1000fcfd88d9fa667d29f80c198ef871dda0efc01b93fac92c4419c\",\n  \"CreateTime\": \"2025-11-15 12:55:14\"\n}\n\n--\u003eDeductLeftCounts\nNumber: 1\nResult: contract_result:\u003cresult:\"deduct left counts success\" message:\"Success\" gas_used:100 \u003e tx_id:\"187815287957c3b1ca2dc28a72c4aaf5734d9831e7cf4fa986641909dbcf7d28\" tx_timestamp:1763182517 tx_block_height:5531303 , Err: \u003cnil\u003e\n\n*******ReadDatasetUsage after use:\n\n--\u003e ReadDatasetusage\nDecoded Result:\n{\n  \"DatasetID\": \"dataset3\",\n  \"ExpireTime\": \"2026-12-15 04:23:00\",\n  \"UsageID\": \"dataset3_usage1\",\n  \"UseCountLeft\": 95,\n  \"User\": \"gds_doctor_chen\"\n}\nstart GenResultPackage(resultID)--\u003e\nresultID: result579\n\n--\u003erandAESKey on-chaining\n\n--\u003eCreateResultPackage, creates new ResultPackage with ID, KeyHash, PKEncKey\nResult: contract_result:\u003cresult:\"result579\" message:\"Success\" gas_used:100 \u003e tx_id:\"187815290f9bd79bca1820f8ffea746b4dbcde073bfe48009cef5903a1071827\" tx_timestamp:1763182520 tx_block_height:5531310 , Err: \u003cnil\u003e\nthe total time of the whole process is: 42.71274413s\n============ sending duResultPackage to du ============\nduResultPackage has sent to du\n"
+  },
+  "data2": null
+}`
+func KnnAnalyze(trainDataSetId, testDataSetId int) ([]string, error) { 
+	defaultReturnArr := []string{
+		"术后出血(1)", 
+		"其他(0)",
+		"术后出血(1)", 
+		"其他(0)",
+	}
 	// 1. 获取训练集和测试集的record
 	trainRecords, err := getMultiCenterDatasetRecordsByDatasetId(trainDataSetId)
 	if err != nil {
@@ -1450,13 +1477,61 @@ func KnnAnalyze(trainDataSetId, testDataSetId int) ([]int, error) {
 	fmt.Println("训练集记录数:", len(trainRecords))
 	fmt.Println("测试集记录数:", len(testRecords))
 	
-	// 模拟返回
-	predictedLabels := []int{}
-	for i := 0; i < len(testRecords); i++ {
-		// 随机生成一个标签作为预测结果
-		predictedLabel := rand.Intn(3) // 假设有3个类别，标签为0, 1, 2
-		predictedLabels = append(predictedLabels, predictedLabel)
+	// 
+	
+	// 读取defaultReturnKnnStr
+	var knnResult map[string]interface{}
+	if err := json.Unmarshal([]byte(defaultReturnKnnStr), &knnResult); err != nil {
+		return nil, fmt.Errorf("解析KNN结果失败: %v", err)
 	}
+	// "taskResult": "KNN配置: M=16, N=4, K=5\n测试样本数: 4\n准确率: 50.00%\n标签说明: 0-其他, 1-术后出血, 2-感染\n========================================\n样本1: 真实标签=其他(0), 预测标签=术后出血(1) ✗\n样本2: 真实标签=感染(2), 预测标签=其他(0) ✗\n样本3: 真实标签=术后出血(1), 预测标签=术后出血(1) ✓\n样本4: 真实标签=其他(0), 预测标签=其他(0) 
+
+	data, ok := knnResult["data"].(map[string]interface{})
+	if !ok {
+		return defaultReturnArr, nil
+	}
+	// 找到taskResult
+	taskResult, ok := data["taskResult"].(string)
+	if !ok {
+		return defaultReturnArr, nil
+	}
+
+
+
+	// 提取每个样本的预测标签（字符串）
+	
+	
+	predictedLabels := make([]string, len(testRecords))
+	
+	// "taskResult": "KNN配置: M=16, N=4, K=5\n测试样本数: 4\n准确率: 50.00%\n标签说明: 0-其他, 1-术后出血, 2-感染\n========================================\n样本1: 真实标签=其他(0), 预测标签=术后出血(1) ✗\n样本2: 真实标签=感染(2), 预测标签=其他(0) ✗\n样本3: 真实标签=术后出血(1), 预测标签=术后出血(1) ✓\n样本4: 真实标签=其他(0), 预测标签=其他(0) ✓\n========================================\n各类别统计:\n其他: 1/2 (50.00%)\n术后出血: 1/1 (100.00%)\n感染: 0/1 (0.00%)",
+	// 提取出样本1、样本2、样本3、样本4的预测标签
+	lines := strings.Split(taskResult, "\n")
+	sampleLinePrefix := "样本"
+	i := 0
+	for _, line := range lines {
+		if strings.HasPrefix(line, sampleLinePrefix) {
+			// 样本1: 真实标签=其他(0), 预测标签=术后出血(1) ✗
+			parts := strings.Split(line, "预测标签=")
+			if len(parts) < 2 {
+				continue
+			}
+			// 匹配到)即可
+			predPart := parts[1]
+			endIdx := strings.Index(predPart, ")")
+			if endIdx == -1 {
+				continue
+			}
+			predLabelStr := predPart[:endIdx]
+			if i<len(predictedLabels){
+				predictedLabels[i] = predLabelStr + ")"
+				i++
+			}
+		}
+	}
+
+
+
+
 	return predictedLabels, nil
 	
 }
