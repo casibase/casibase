@@ -57,8 +57,6 @@ func AddTransactionForMessage(message *Message) error {
 		State:              "Paid",
 	}
 
-	message.TransactionId = util.GetId(transaction.Owner, transaction.Name)
-
 	// Add transaction via Casdoor SDK
 	_, err := casdoorsdk.AddTransaction(transaction)
 	if err != nil {
@@ -72,6 +70,8 @@ func AddTransactionForMessage(message *Message) error {
 		return fmt.Errorf("failed to add transaction: %v", err)
 	}
 
+	message.TransactionId = util.GetId(transaction.Owner, transaction.Name)
+
 	return nil
 }
 
@@ -82,7 +82,7 @@ func retryFailedTransaction() error {
 	}
 
 	for _, message := range messages {
-		if message.TransactionId != "" && strings.HasPrefix(message.ErrorText, "failed to add transaction") {
+		if strings.HasPrefix(message.ErrorText, "failed to add transaction") {
 			err = AddTransactionForMessage(message)
 			if err != nil {
 				return err
