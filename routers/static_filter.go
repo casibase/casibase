@@ -22,6 +22,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 
 	"github.com/beego/beego/context"
@@ -78,7 +79,12 @@ func StaticFilter(ctx *context.Context) {
 		ctx.Output.Header(headerAllowHeaders, "Content-Type, Authorization")
 		ctx.Output.Header(headerAllowCredentials, "true")
 
-		urlPath = strings.TrimPrefix(urlPath, "/storage/")
+		if runtime.GOOS == "windows" {
+			urlPath = strings.TrimPrefix(urlPath, "/storage/")
+		} else {
+			urlPath = strings.TrimPrefix(urlPath, "/storage")
+		}
+
 		urlPath = strings.Replace(urlPath, "|", ":", 1)
 		makeGzipResponse(ctx.ResponseWriter, ctx.Request, urlPath)
 		return

@@ -412,6 +412,9 @@ class StoreListPage extends BaseListPage {
         width: "90px",
         sorter: (a, b) => a.state.localeCompare(b.state),
         ...this.getColumnSearchProps("state"),
+        render: (text) => {
+          return text === "Active" ? Setting.getDisplayTag(i18next.t("general:Active"), "green") : Setting.getDisplayTag(i18next.t("general:Inactive"), "red");
+        },
       },
       {
         title: i18next.t("general:Action"),
@@ -420,6 +423,30 @@ class StoreListPage extends BaseListPage {
         width: "350px",
         fixed: "right",
         render: (text, record, index) => {
+          if (this.state.hideChat) {
+            return (
+              <div>
+                <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}/view`)}>{i18next.t("general:View")}</Button>
+                {
+                  !Setting.isLocalAdminUser(this.props.account) ? null : (
+                    <React.Fragment>
+                      <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+                      <Popconfirm
+                        title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
+                        onConfirm={() => this.deleteStore(record)}
+                        okText={i18next.t("general:OK")}
+                        cancelText={i18next.t("general:Cancel")}
+                        disabled={record.isDefault}
+                      >
+                        <Button style={{marginBottom: "10px"}} type="primary" danger disabled={record.isDefault}>{i18next.t("general:Delete")}</Button>
+                      </Popconfirm>
+                    </React.Fragment>
+                  )
+                }
+              </div>
+            );
+          }
+
           return (
             <div>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}/view`)}>{i18next.t("general:View")}</Button>
@@ -428,7 +455,6 @@ class StoreListPage extends BaseListPage {
                 Setting.setStore(record.name);
                 window.open(`${window.location.origin}/${record.owner}/${record.name}/chat`, "_blank");
               }}>{i18next.t("store:Open Chat")}</Button>
-
               {
                 !Setting.isLocalAdminUser(this.props.account) ? null : (
                   <React.Fragment>
@@ -455,15 +481,8 @@ class StoreListPage extends BaseListPage {
 
     if (this.state.hideChat) {
       filteredColumns = filteredColumns.filter(column =>
-        column.key !== "chatCount" &&
-        column.key !== "messageCount" &&
-        column.key !== "imageProvider" &&
-        column.key !== "modelProvider" &&
-        column.key !== "embeddingProvider" &&
-        column.key !== "textToSpeechProvider" &&
-        column.key !== "speechToTextProvider" &&
-        column.key !== "agentProvider" &&
-        column.key !== "memoryLimit"
+        column.key !== "chatCount" && column.key !== "messageCount" && column.key !== "imageProvider" && column.key !== "modelProvider" && column.key !== "embeddingProvider" &&
+        column.key !== "textToSpeechProvider" && column.key !== "speechToTextProvider" && column.key !== "agentProvider" && column.key !== "memoryLimit"
       );
     }
 

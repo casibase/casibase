@@ -177,6 +177,26 @@ export function isLocalAdminUser(account) {
   return account.isAdmin === true || isAdminUser(account);
 }
 
+export function isLocalAndStoreAdminUser(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+
+  if (account.homepage === "non-store-admin") {
+    return false;
+  }
+
+  if (!DisablePreviewMode && isAnonymousUser(account)) {
+    return true;
+  }
+
+  if (account.type === "chat-admin") {
+    return true;
+  }
+
+  return account.isAdmin === true || isAdminUser(account);
+}
+
 export function isAnonymousUser(account) {
   if (account === undefined || account === null) {
     return false;
@@ -331,7 +351,7 @@ export function getTag(text, type, state) {
 
   if (type === "Read") {
     return (
-      <Tooltip placement="top" title={"Read"}>
+      <Tooltip placement="top" title={i18next.t("store:Read")}>
         <Tag icon={icon} style={style} color={"success"}>
           {text}
         </Tag>
@@ -339,7 +359,7 @@ export function getTag(text, type, state) {
     );
   } else if (type === "Write") {
     return (
-      <Tooltip placement="top" title={"Write"}>
+      <Tooltip placement="top" title={i18next.t("store:Write")}>
         <Tag icon={icon} style={style} color={"processing"}>
           {text}
         </Tag>
@@ -347,7 +367,7 @@ export function getTag(text, type, state) {
     );
   } else if (type === "Admin") {
     return (
-      <Tooltip placement="top" title={"Admin"}>
+      <Tooltip placement="top" title={i18next.t("store:Admin")}>
         <Tag icon={icon} style={style} color={"error"}>
           {text}
         </Tag>

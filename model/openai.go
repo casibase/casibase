@@ -29,6 +29,7 @@ import (
 	"github.com/openai/openai-go/v2/option"
 	"github.com/openai/openai-go/v2/packages/param"
 	"github.com/openai/openai-go/v2/responses"
+	"github.com/openai/openai-go/v2/shared"
 	"github.com/pkoukk/tiktoken-go"
 )
 
@@ -274,6 +275,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 			Model:        model,
 			Temperature:  param.NewOpt[float64](float64(temperature)),
 			TopP:         param.NewOpt[float64](float64(topP)),
+			Reasoning:    shared.ReasoningParam{Summary: "auto"},
 		}
 		if agentInfo != nil && agentInfo.AgentClients != nil {
 			agentTools, err := reverseMcpToolsToOpenAi(agentInfo.AgentClients.Tools)
@@ -298,6 +300,12 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 			flushThink := flushData.(func(string, string, io.Writer, string) error)
 			response := respStream.Current()
 			switch variant := response.AsAny().(type) {
+			case responses.ResponseReasoningSummaryTextDeltaEvent:
+				data := variant.Delta
+				err = flushThink(data, "reason", writer, lang)
+				if err != nil {
+					return nil, err
+				}
 			case responses.ResponseTextDeltaEvent:
 				data := variant.Delta
 				if isLeadingReturn && len(data) != 0 {
@@ -316,14 +324,22 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 				switch v := variant.Item.AsAny().(type) {
 				case responses.ResponseFunctionToolCall:
 					toolCalls = append(toolCalls, v)
-				case responses.ResponseFunctionWebSearch:
-					if v.Action.Type != "" {
-						switch v.Action.Type {
-						case "open_page":
-							//err = flushThink(v.Action.URL, "tool_call", writer, lang)
-							//if err != nil {
-							//	return nil, err
-							//}
+				case responses.ResponseOutputMessage:
+					if v.Status == "completed" {
+						for _, contentItem := range v.Content {
+							if contentItem.Type != "output_text" || len(contentItem.Annotations) == 0 {
+								continue
+							}
+							var searchResults []SearchResult
+							for idx, annotation := range contentItem.Annotations {
+								searchResults = append(searchResults, SearchResult{
+									Index: idx + 1,
+									URL:   annotation.URL,
+									Title: annotation.Title,
+								})
+							}
+							searchResultsJSON, _ := json.Marshal(searchResults)
+							flushDataThink(string(searchResultsJSON), "search", writer, lang)
 						}
 					}
 				}
