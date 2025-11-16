@@ -260,6 +260,8 @@
     "Copied to clipboard successfully": "已成功复制到剪贴板",
     "Copy": "复制",
     "Copy Link": "复制链接",
+    "Count": "计数",
+    "Count - Tooltip": "记录出现次数",
     "Created time": "创建时间",
     "Created time - Tooltip": "创建时间",
     "Data": "数据",

@@ -204,6 +204,8 @@
     "Copied to clipboard successfully": "Copié dans le presse-papiers avec succès",
     "Copy": "Copier",
     "Copy Link": "Copier le lien",
+    "Count": "Nombre",
+    "Count - Tooltip": "Nombre d'occurrences d'enregistrement",
     "Created time": "Date de création",
     "Created time - Tooltip": "Date de création",
     "Data": "Données",

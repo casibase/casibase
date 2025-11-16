@@ -204,6 +204,8 @@
     "Copied to clipboard successfully": "Copied to clipboard successfully",
     "Copy": "Copy",
     "Copy Link": "Copy Link",
+    "Count": "Contagem",
+    "Count - Tooltip": "Número de ocorrências de registro",
     "Created time": "Created time",
     "Created time - Tooltip": "Creation timestamp",
     "Data": "Data",

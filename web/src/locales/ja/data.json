@@ -204,6 +204,8 @@
     "Copied to clipboard successfully": "クリップボードに正常にコピーされました",
     "Copy": "コピー",
     "Copy Link": "リンクをコピー",
+    "Count": "カウント",
+    "Count - Tooltip": "レコード出現回数",
     "Created time": "作成時間",
     "Created time - Tooltip": "作成時間",
     "Data": "データ",

@@ -106,6 +106,7 @@ class RecordListPage extends BaseListPage {
       method: "POST",
       requestUri: "/api/get-account",
       action: "login",
+      count: 1,
       isTriggered: false,
     };
   }
@@ -397,6 +398,18 @@ class RecordListPage extends BaseListPage {
         width: "90px",
         sorter: true,
         ...this.getColumnSearchProps("section"),
+      },
+      {
+        title: i18next.t("general:Count"),
+        dataIndex: "count",
+        key: "count",
+        width: "90px",
+        sorter: true,
+        ...this.getColumnSearchProps("count"),
+        render: (text, record, index) => {
+          // Show 1 for zero values (backward compatibility)
+          return text === 0 || !text ? 1 : text;
+        },
       },
       {
         title: i18next.t("general:Response"),
