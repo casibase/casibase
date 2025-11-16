@@ -68,6 +68,8 @@ type Record struct {
 	Transaction2 string `xorm:"varchar(500)" json:"transaction2"`
 	// For cross-chain records
 
+	Count int `xorm:"int" json:"count"`
+
 	IsTriggered bool `json:"isTriggered"`
 	NeedCommit  bool `xorm:"index" json:"needCommit"`
 }
@@ -203,6 +205,11 @@ func prepareRecord(record *Record, providerFirst, providerSecond *Provider) (boo
 	record.Name = util.GenerateId()
 	record.Owner = record.Organization
 
+	// Set default count to 1 if not set
+	if record.Count == 0 {
+		record.Count = 1
+	}
+
 	return true, nil
 }
 
@@ -309,6 +316,7 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 		City:        city,
 		Object:      object,
 		Response:    fmt.Sprintf("{\"status\":\"%s\",\"msg\":\"%s\"}", resp.Status, resp.Msg),
+		Count:       1,
 		IsTriggered: false,
 	}
 	return &record, nil
@@ -329,6 +337,11 @@ func AddRecord(record *Record, lang string) (bool, interface{}, error) {
 	}
 
 	record.CreatedTime = util.GetCurrentTimeWithMilli()
+
+	// Set default count to 1 if not set
+	if record.Count == 0 {
+		record.Count = 1
+	}
 
 	affected, err := adapter.engine.Insert(record)
 	if err != nil {

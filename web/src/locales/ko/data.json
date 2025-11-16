@@ -204,6 +204,8 @@
     "Copied to clipboard successfully": "클립보드에 성공적으로 복사되었습니다",
     "Copy": "복사",
     "Copy Link": "링크 복사",
+    "Count": "개수",
+    "Count - Tooltip": "이 항목이 나타내는 실제 데이터 레코드 수",
     "Created time": "생성 시간",
     "Created time - Tooltip": "생성 시간",
     "Data": "데이터",

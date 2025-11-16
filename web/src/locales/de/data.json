@@ -204,6 +204,8 @@
     "Copied to clipboard successfully": "Erfolgreich in die Zwischenablage kopiert",
     "Copy": "Kopieren",
     "Copy Link": "Link kopieren",
+    "Count": "Anzahl",
+    "Count - Tooltip": "Anzahl der tatsächlichen Datensätze, die dieser Eintrag repräsentiert",
     "Created time": "Erstellungszeit",
     "Created time - Tooltip": "Erstellungszeit",
     "Data": "Daten",

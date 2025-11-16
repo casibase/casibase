@@ -204,6 +204,8 @@
     "Copied to clipboard successfully": "Copied to clipboard successfully",
     "Copy": "Copy",
     "Copy Link": "Copy Link",
+    "Count": "Kiraan",
+    "Count - Tooltip": "Bilangan rekod data sebenar yang diwakili oleh entri ini",
     "Created time": "Created time",
     "Created time - Tooltip": "Creation timestamp",
     "Data": "Data",

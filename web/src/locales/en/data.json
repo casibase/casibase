@@ -260,6 +260,8 @@
     "Copied to clipboard successfully": "Copied to clipboard successfully",
     "Copy": "Copy",
     "Copy Link": "Copy Link",
+    "Count": "Count",
+    "Count - Tooltip": "Number of actual data records represented by this entry",
     "Created time": "Created time",
     "Created time - Tooltip": "Creation timestamp",
     "Data": "Data",
