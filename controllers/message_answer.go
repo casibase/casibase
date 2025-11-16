@@ -326,10 +326,18 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 
 	// Add transaction for message with price
-	err = object.AddTransactionForMessage(message)
+	transaction, err := object.AddTransactionForMessage(message, c.Ctx.Input.Header("Origin"))
 	if err != nil {
-		// Log the error but don't fail the request
-		fmt.Printf("Warning: failed to add transaction for message %s: %v\n", message.GetId(), err)
+		message.FailedTransaction = append(message.FailedTransaction, transaction)
+		_, errUpdate := object.UpdateMessage(message.GetId(), message, false)
+
+		if errUpdate != nil {
+			c.ResponseErrorStream(message, err.Error())
+			return
+		}
+
+		c.ResponseErrorStream(message, err.Error())
+		return
 	}
 
 	chat.TokenCount += message.TokenCount
