@@ -25,7 +25,8 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
-// AddTransactionForMessage creates a transaction in Casdoor for a message with price
+// AddTransactionForMessage creates a transaction in Casdoor for a message with price,
+// sets the message's TransactionId, and updates the message with error details if transaction creation fails.
 func AddTransactionForMessage(message *Message, casibaseUrl string) error {
 	// Only create transaction if message has a price
 	if message.Price <= 0 {
