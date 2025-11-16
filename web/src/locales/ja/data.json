@@ -205,7 +205,7 @@
     "Copy": "コピー",
     "Copy Link": "リンクをコピー",
     "Count": "カウント",
-    "Count - Tooltip": "レコード出現回数",
+    "Count - Tooltip": "このエントリが表す実際のデータレコード数",
     "Created time": "作成時間",
     "Created time - Tooltip": "作成時間",
     "Data": "データ",
