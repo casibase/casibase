@@ -108,7 +108,7 @@ func retryFailedTransactionNoError() {
 
 func InitMessageTransactionRetry() {
 	cronJob := cron.New()
-	schedule := fmt.Sprintf("@every %ds", 300)
+	schedule := "@every 5m"
 	_, err := cronJob.AddFunc(schedule, retryFailedTransactionNoError)
 	if err != nil {
 		panic(err)
