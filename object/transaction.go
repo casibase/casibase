@@ -25,9 +25,11 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
+var CasibaseHost = ""
+
 // AddTransactionForMessage creates a transaction in Casdoor for a message with price,
 // sets the message's TransactionId, and updates the message with error details if transaction creation fails.
-func AddTransactionForMessage(message *Message, casibaseUrl string) error {
+func AddTransactionForMessage(message *Message) error {
 	// Only create transaction if message has a price
 	if message.Price <= 0 {
 		return nil
@@ -48,7 +50,7 @@ func AddTransactionForMessage(message *Message, casibaseUrl string) error {
 		Tag:                message.Chat,
 		Currency:           message.Currency,
 		Amount:             -message.Price,
-		ReturnUrl:          casibaseUrl,
+		ReturnUrl:          CasibaseHost,
 		User:               message.User,
 		Application:        conf.GetConfigString("casdoorApplication"),
 		Payment:            "Balance",
@@ -81,9 +83,15 @@ func retryFailedTransaction() error {
 
 	for _, message := range messages {
 		if message.TransactionId != "" && strings.HasPrefix(message.ErrorText, "failed to add transaction") {
-			err = AddTransactionForMessage(message, conf.GetConfigString("publicDomain"))
+			err = AddTransactionForMessage(message)
 			if err != nil {
 				return err
+			}
+
+			message.ErrorText = ""
+			_, err = UpdateMessage(message.GetId(), message, false)
+			if err != nil {
+				return fmt.Errorf("failed to update message: %v", err)
 			}
 		}
 	}
@@ -100,7 +108,7 @@ func retryFailedTransactionNoError() {
 
 func InitMessageTransactionRetry() {
 	cronJob := cron.New()
-	schedule := fmt.Sprintf("@every %ds", 3600)
+	schedule := fmt.Sprintf("@every %ds", 300)
 	_, err := cronJob.AddFunc(schedule, retryFailedTransactionNoError)
 	if err != nil {
 		panic(err)

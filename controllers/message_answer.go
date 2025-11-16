@@ -321,7 +321,7 @@ func (c *ApiController) GetMessageAnswer() {
 	message.VectorScores = vectorScores
 
 	// Add transaction for message with price
-	err = object.AddTransactionForMessage(message, c.Ctx.Input.Header("Origin"))
+	err = object.AddTransactionForMessage(message)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
