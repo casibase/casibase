@@ -82,7 +82,6 @@ func retryFailedTransaction() error {
 		}
 
 		_, err = UpdateMessage(message.GetId(), message, false)
-
 		if err != nil {
 			return err
 		}
