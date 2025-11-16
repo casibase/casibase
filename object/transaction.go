@@ -76,7 +76,7 @@ func AddTransactionForMessage(message *Message) error {
 }
 
 func retryFailedTransaction() error {
-	messages, err := GetGlobalMessages()
+	messages, err := GetGlobalFailMessages()
 	if err != nil {
 		return err
 	}
@@ -107,6 +107,7 @@ func retryFailedTransactionNoError() {
 }
 
 func InitMessageTransactionRetry() {
+	retryFailedTransaction()
 	cronJob := cron.New()
 	schedule := fmt.Sprintf("@every %ds", 300)
 	_, err := cronJob.AddFunc(schedule, retryFailedTransactionNoError)

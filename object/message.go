@@ -84,6 +84,16 @@ func GetGlobalMessages() ([]*Message, error) {
 	return messages, nil
 }
 
+func GetGlobalFailMessages() ([]*Message, error) {
+	messages := []*Message{}
+	err := adapter.engine.Where("error_text != ?", "").Asc("owner").Desc("created_time").Find(&messages)
+	if err != nil {
+		return messages, err
+	}
+
+	return messages, nil
+}
+
 func GetGlobalMessagesByStoreName(storeName string) ([]*Message, error) {
 	messages := []*Message{}
 	err := adapter.engine.Asc("owner").Asc("created_time").Find(&messages, &Message{Store: storeName})
