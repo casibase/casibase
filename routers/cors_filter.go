@@ -22,6 +22,7 @@ import (
 	"github.com/beego/beego/context"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/conf"
+	"github.com/casibase/casibase/object"
 )
 
 const (
@@ -70,6 +71,10 @@ func CorsFilter(ctx *context.Context) {
 		setCorsHeaders(ctx, origin)
 	} else {
 		ctx.ResponseWriter.WriteHeader(http.StatusForbidden)
+	}
+
+	if object.CasibaseHost == "" {
+		object.CasibaseHost = origin
 	}
 }
 

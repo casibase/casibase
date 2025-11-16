@@ -70,11 +70,23 @@ type Message struct {
 	Suggestions       []Suggestion         `json:"suggestions"`
 	ToolCalls         []model.ToolCall     `xorm:"mediumtext" json:"toolCalls"`
 	SearchResults     []model.SearchResult `xorm:"mediumtext" json:"searchResults"`
+
+	TransactionId string `xorm:"varchar(100)" json:"transactionId"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {
 	messages := []*Message{}
 	err := adapter.engine.Asc("owner").Desc("created_time").Find(&messages)
+	if err != nil {
+		return messages, err
+	}
+
+	return messages, nil
+}
+
+func GetGlobalFailMessages() ([]*Message, error) {
+	messages := []*Message{}
+	err := adapter.engine.Where("error_text != ?", "").Asc("owner").Desc("created_time").Find(&messages)
 	if err != nil {
 		return messages, err
 	}
