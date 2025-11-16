@@ -319,23 +319,16 @@ func (c *ApiController) GetMessageAnswer() {
 	message.Suggestions = textSuggestions
 
 	message.VectorScores = vectorScores
-	_, err = object.UpdateMessage(message.GetId(), message, false)
+
+	// Add transaction for message with price
+	err = object.AddTransactionForMessage(message, c.Ctx.Input.Header("Origin"))
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
-	// Add transaction for message with price
-	transaction, err := object.AddTransactionForMessage(message, c.Ctx.Input.Header("Origin"))
+	_, err = object.UpdateMessage(message.GetId(), message, false)
 	if err != nil {
-		message.FailedTransaction = append(message.FailedTransaction, transaction)
-		_, errUpdate := object.UpdateMessage(message.GetId(), message, false)
-
-		if errUpdate != nil {
-			c.ResponseErrorStream(message, err.Error())
-			return
-		}
-
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}

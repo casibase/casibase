@@ -21,7 +21,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
@@ -72,7 +71,7 @@ type Message struct {
 	ToolCalls         []model.ToolCall     `xorm:"mediumtext" json:"toolCalls"`
 	SearchResults     []model.SearchResult `xorm:"mediumtext" json:"searchResults"`
 
-	FailedTransaction []*casdoorsdk.Transaction `xorm:"mediumtext" json:"failedTransaction"`
+	TransactionId string `xorm:"varchar(100)" json:"transactionId"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {

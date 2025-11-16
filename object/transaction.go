@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/beego/beego/logs"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -25,10 +26,10 @@ import (
 )
 
 // AddTransactionForMessage creates a transaction in Casdoor for a message with price
-func AddTransactionForMessage(message *Message, casibaseUrl string) (*casdoorsdk.Transaction, error) {
+func AddTransactionForMessage(message *Message, casibaseUrl string) error {
 	// Only create transaction if message has a price
 	if message.Price <= 0 {
-		return nil, nil
+		return nil
 	}
 
 	// Create transaction object
@@ -53,13 +54,22 @@ func AddTransactionForMessage(message *Message, casibaseUrl string) (*casdoorsdk
 		State:              "Paid",
 	}
 
+	message.TransactionId = util.GetId(transaction.Owner, transaction.Name)
+
 	// Add transaction via Casdoor SDK
 	_, err := casdoorsdk.AddTransaction(transaction)
 	if err != nil {
-		return transaction, fmt.Errorf("failed to add transaction: %v", err)
+		message.ErrorText = fmt.Sprintf("failed to add transaction: %v", err)
+
+		_, err = UpdateMessage(message.GetId(), message, false)
+		if err != nil {
+			return fmt.Errorf("failed to update message: %v", err)
+		}
+
+		return fmt.Errorf("failed to add transaction: %v", err)
 	}
 
-	return transaction, nil
+	return nil
 }
 
 func retryFailedTransaction() error {
@@ -69,21 +79,11 @@ func retryFailedTransaction() error {
 	}
 
 	for _, message := range messages {
-		if len(message.FailedTransaction) == 0 {
-			continue
-		}
-		var failedTransactions []*casdoorsdk.Transaction
-		for _, failedTransaction := range message.FailedTransaction {
-
-			_, err = casdoorsdk.AddTransaction(failedTransaction)
+		if message.TransactionId != "" && strings.HasPrefix(message.ErrorText, "failed to add transaction") {
+			err = AddTransactionForMessage(message, conf.GetConfigString("publicDomain"))
 			if err != nil {
-				failedTransactions = append(failedTransactions, failedTransaction)
+				return err
 			}
-		}
-
-		_, err = UpdateMessage(message.GetId(), message, false)
-		if err != nil {
-			return err
 		}
 	}
 
