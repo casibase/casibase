@@ -28,7 +28,7 @@ import (
 var CasibaseHost = ""
 
 // AddTransactionForMessage creates a transaction in Casdoor for a message with price,
-// sets the message's TransactionId, and updates the message with error details if transaction creation fails.
+// sets the message's TransactionId, and if transaction creation fails, updates the message's ErrorText field in the database and returns an error to the caller.
 func AddTransactionForMessage(message *Message) error {
 	// Only create transaction if message has a price
 	if message.Price <= 0 {
