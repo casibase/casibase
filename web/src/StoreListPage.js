@@ -503,7 +503,7 @@ class StoreListPage extends BaseListPage {
               {
                 !Setting.isLocalAdminUser(this.props.account) ? null : (
                   <>
-                    <Button type="primary" size="small" onClick={this.addStore.bind(this)}>{i18next.t("general:Add")}</Button>
+                    <Button id="add-button" type="primary" size="small" onClick={this.addStore.bind(this)}>{i18next.t("general:Add")}</Button>
                     {this.state.selectedRowKeys.length > 0 && (
                       <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
                         <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
