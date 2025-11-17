@@ -37,7 +37,7 @@ func AddTransactionForMessage(message *Message) error {
 
 	// Create transaction object
 	transaction := &casdoorsdk.Transaction{
-		Owner:              message.Organization,
+		Owner:              conf.GetConfigString("casdoorOrganization"),
 		Name:               fmt.Sprintf("transaction_%s", util.GetRandomName()),
 		CreatedTime:        message.CreatedTime,
 		DisplayName:        message.Name,
