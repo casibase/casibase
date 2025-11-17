@@ -37,7 +37,7 @@ func AddTransactionForMessage(message *Message) error {
 
 	// Create transaction object
 	transaction := &casdoorsdk.Transaction{
-		Owner:              message.Organization,
+		Owner:              conf.GetConfigString("casdoorOrganization"),
 		Name:               fmt.Sprintf("transaction_%s", util.GetRandomName()),
 		CreatedTime:        message.CreatedTime,
 		DisplayName:        message.Name,
@@ -60,14 +60,14 @@ func AddTransactionForMessage(message *Message) error {
 	// Add transaction via Casdoor SDK
 	_, err := casdoorsdk.AddTransaction(transaction)
 	if err != nil {
-		message.ErrorText = fmt.Sprintf("failed to add transaction: %v", err)
+		message.ErrorText = fmt.Sprintf("failed to add transaction: %s", err.Error())
 
-		_, err = UpdateMessage(message.GetId(), message, false)
-		if err != nil {
-			return fmt.Errorf("failed to update message: %v", err)
+		_, errUpdate := UpdateMessage(message.GetId(), message, false)
+		if errUpdate != nil {
+			return fmt.Errorf("failed to update message: %s", errUpdate.Error())
 		}
 
-		return fmt.Errorf("failed to add transaction: %v", err)
+		return fmt.Errorf("failed to add transaction: %s", err.Error())
 	}
 
 	message.TransactionId = util.GetId(transaction.Owner, transaction.Name)
@@ -91,7 +91,7 @@ func retryFailedTransaction() error {
 			message.ErrorText = ""
 			_, err = UpdateMessage(message.GetId(), message, false)
 			if err != nil {
-				return fmt.Errorf("failed to update message: %v", err)
+				return fmt.Errorf("failed to update message: %s", err.Error())
 			}
 		}
 	}
