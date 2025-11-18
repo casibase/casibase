@@ -320,7 +320,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	message.VectorScores = vectorScores
 
-	// Refine price before persisting or creating transactions
+	// Normalize price precision before persisting or creating transactions
 	message.Price = model.AddPrices(message.Price, 0)
 
 	// Add transaction for message with price
