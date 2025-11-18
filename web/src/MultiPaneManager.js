@@ -385,6 +385,7 @@ const MultiPaneManager = ({
       isAlerted: false,
       isRegenerated,
       fileName,
+      modelProvider: chat?.modelProvider || panes[paneIndex]?.store?.modelProvider || modelProviders[0]?.name || "",
     };
 
     MessageBackend.addMessage(newMessage).then((res) => {
