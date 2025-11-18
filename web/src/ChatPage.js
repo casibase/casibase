@@ -244,12 +244,22 @@ class ChatPage extends BaseListPage {
       isRegenerated: isRegenerated,
       fileName: fileName,
       webSearchEnabled: webSearchEnabled,
+      modelProvider: this.state.chat?.modelProvider,
     };
 
     if (!this.state.chat) {
       const urlStoreName = this.state.storeName || this.getStore();
       if (urlStoreName) {
         message.store = urlStoreName;
+      }
+    }
+
+    if (!message.modelProvider) {
+      if (message.store) {
+        const store = this.state.stores?.find(store => store.name === message.store);
+        message.modelProvider = store?.modelProvider;
+      } else {
+        message.modelProvider = this.state.defaultStore?.modelProvider;
       }
     }
 

@@ -303,6 +303,7 @@ class ChatBox extends React.Component {
       createdTime: moment().format(),
       store: this.props.store?.name,
       webSearchEnabled: this.state.webSearchEnabled,
+      modelProvider: this.props.chat?.modelProvider || this.props.store?.modelProvider,
     };
     MessageBackend.addMessage(editedMessage)
       .then((res) => {
