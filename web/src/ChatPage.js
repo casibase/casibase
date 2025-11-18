@@ -254,7 +254,7 @@ class ChatPage extends BaseListPage {
       }
     }
 
-    if (!this.state.chat || !this.state.chat.modelProvider) {
+    if (!message.modelProvider) {
       if (message.store) {
         const store = this.state.stores?.find(store => store.name === message.store);
         message.modelProvider = store?.modelProvider;
