@@ -36,25 +36,23 @@ func AddTransactionForMessage(message *Message) error {
 	}
 
 	// Create transaction object
+	transactionName := fmt.Sprintf("transaction_%s", util.GetRandomName())
 	transaction := &casdoorsdk.Transaction{
-		Owner:              conf.GetConfigString("casdoorOrganization"),
-		Name:               fmt.Sprintf("transaction_%s", util.GetRandomName()),
-		CreatedTime:        message.CreatedTime,
-		DisplayName:        message.Name,
-		Provider:           "",
-		Category:           "User",
-		Type:               "Token Usage",
-		ProductName:        message.ModelProvider,
-		ProductDisplayName: fmt.Sprintf("AI Model: %s", message.ModelProvider),
-		Detail:             fmt.Sprintf("%d", message.TokenCount),
-		Tag:                message.Chat,
-		Currency:           message.Currency,
-		Amount:             -message.Price,
-		ReturnUrl:          CasibaseHost,
-		User:               message.User,
-		Application:        conf.GetConfigString("casdoorApplication"),
-		Payment:            "Balance",
-		State:              "Paid",
+		Owner:       conf.GetConfigString("casdoorOrganization"),
+		Name:        transactionName,
+		CreatedTime: message.CreatedTime,
+		DisplayName: transactionName,
+		Application: conf.GetConfigString("casdoorApplication"),
+		Domain:      CasibaseHost,
+		Category:    message.Chat,
+		Type:        message.Name,
+		Provider:    message.ModelProvider,
+		User:        message.User,
+		Tag:         "User",
+		Amount:      -message.Price,
+		Currency:    message.Currency,
+		Payment:     "",
+		State:       "Paid",
 	}
 
 	// Add transaction via Casdoor SDK
