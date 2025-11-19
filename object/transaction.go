@@ -36,12 +36,9 @@ func AddTransactionForMessage(message *Message) error {
 	}
 
 	// Create transaction object
-	transactionName := fmt.Sprintf("transaction_%s", util.GetRandomName())
 	transaction := &casdoorsdk.Transaction{
 		Owner:       conf.GetConfigString("casdoorOrganization"),
-		Name:        transactionName,
 		CreatedTime: message.CreatedTime,
-		DisplayName: transactionName,
 		Application: conf.GetConfigString("casdoorApplication"),
 		Domain:      CasibaseHost,
 		Category:    message.Chat,
@@ -55,8 +52,12 @@ func AddTransactionForMessage(message *Message) error {
 		State:       "Paid",
 	}
 
+	if IsAnonymousUserByUsername(message.User) {
+		transaction.Tag = "Organization"
+	}
+
 	// Add transaction via Casdoor SDK
-	_, err := casdoorsdk.AddTransaction(transaction)
+	_, transactionName, err := casdoorsdk.AddTransaction(transaction)
 	if err != nil {
 		message.ErrorText = fmt.Sprintf("failed to add transaction: %s", err.Error())
 
@@ -68,7 +69,7 @@ func AddTransactionForMessage(message *Message) error {
 		return fmt.Errorf("failed to add transaction: %s", err.Error())
 	}
 
-	message.TransactionId = util.GetId(transaction.Owner, transaction.Name)
+	message.TransactionId = util.GetId(transaction.Owner, transactionName)
 
 	return nil
 }

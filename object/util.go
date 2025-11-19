@@ -69,6 +69,10 @@ func isAdmin(user *casdoorsdk.User) bool {
 	return res
 }
 
+func IsAnonymousUserByUsername(username string) bool {
+	return strings.HasPrefix(username, "u-") && len(username) == 10
+}
+
 func isRetryableError(err error) bool {
 	if err == nil {
 		return false
