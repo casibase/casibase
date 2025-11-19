@@ -25,6 +25,7 @@ import * as MessageBackend from "./backend/MessageBackend";
 import ChatBox from "./ChatBox";
 import {renderText} from "./ChatMessageRender";
 import {DeleteOutlined} from "@ant-design/icons";
+import * as Provider from "./Provider";
 
 class ChatListPage extends BaseListPage {
   constructor(props) {
@@ -261,6 +262,21 @@ class ChatListPage extends BaseListPage {
               {text}
             </a>
           );
+        },
+      },
+      {
+        title: i18next.t("provider:Model provider"),
+        dataIndex: "modelProvider",
+        key: "modelProvider",
+        width: "150px",
+        align: "center",
+        sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
+        ...this.getColumnSearchProps("modelProvider"),
+        render: (text, record, index) => {
+          if (!text) {
+            return null;
+          }
+          return Provider.getProviderLogoWidget({type: text, category: "Model"});
         },
       },
       // {

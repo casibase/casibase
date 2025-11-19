@@ -342,6 +342,11 @@ func (c *ApiController) GetMessageAnswer() {
 		chat.Currency = message.Currency
 	}
 
+	// Update chat's ModelProvider if not set
+	if chat.ModelProvider == "" {
+		chat.ModelProvider = modelProvider.Name
+	}
+
 	if chat.NeedTitle && textTitle != "" {
 		chat.DisplayName = textTitle
 		chat.NeedTitle = false
@@ -414,23 +419,24 @@ func (c *ApiController) GetAnswer() {
 		casdoorOrganization := conf.GetConfigString("casdoorOrganization")
 		currentTime := util.GetCurrentTime()
 		chat = &object.Chat{
-			Owner:        "admin",
-			Name:         chatName,
-			CreatedTime:  currentTime,
-			UpdatedTime:  currentTime,
-			Organization: casdoorOrganization,
-			DisplayName:  chatName,
-			Store:        "",
-			Category:     category,
-			Type:         "AI",
-			User:         userName,
-			User1:        "",
-			User2:        "",
-			Users:        []string{},
-			ClientIp:     c.getClientIp(),
-			UserAgent:    c.getUserAgent(),
-			MessageCount: 0,
-			IsHidden:     strings.HasPrefix(chatName, "chat_provider_"),
+			Owner:         "admin",
+			Name:          chatName,
+			CreatedTime:   currentTime,
+			UpdatedTime:   currentTime,
+			Organization:  casdoorOrganization,
+			DisplayName:   chatName,
+			Store:         "",
+			ModelProvider: provider,
+			Category:      category,
+			Type:          "AI",
+			User:          userName,
+			User1:         "",
+			User2:         "",
+			Users:         []string{},
+			ClientIp:      c.getClientIp(),
+			UserAgent:     c.getUserAgent(),
+			MessageCount:  0,
+			IsHidden:      strings.HasPrefix(chatName, "chat_provider_"),
 		}
 
 		chat.ClientIpDesc = util.GetDescFromIP(chat.ClientIp)
@@ -471,16 +477,17 @@ func (c *ApiController) GetAnswer() {
 	}
 
 	answerMessage := &object.Message{
-		Owner:        "admin",
-		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
-		CreatedTime:  util.GetCurrentTimeEx(chat.CreatedTime),
-		Organization: chat.Organization,
-		Store:        chat.Store,
-		User:         userName,
-		Chat:         chat.Name,
-		ReplyTo:      questionMessage.Name,
-		Author:       "AI",
-		Text:         answer,
+		Owner:         "admin",
+		Name:          fmt.Sprintf("message_%s", util.GetRandomName()),
+		CreatedTime:   util.GetCurrentTimeEx(chat.CreatedTime),
+		Organization:  chat.Organization,
+		Store:         chat.Store,
+		User:          userName,
+		Chat:          chat.Name,
+		ReplyTo:       questionMessage.Name,
+		Author:        "AI",
+		Text:          answer,
+		ModelProvider: provider,
 	}
 
 	answerMessage.TokenCount = modelResult.TotalTokenCount

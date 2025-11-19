@@ -20,6 +20,7 @@ import i18next from "i18next";
 import ChatBox from "./ChatBox";
 import {renderText} from "./ChatMessageRender";
 import * as MessageBackend from "./backend/MessageBackend";
+import * as Provider from "./Provider";
 
 const {Option} = Select;
 
@@ -148,6 +149,23 @@ class ChatEditPage extends React.Component {
             <Input value={this.state.chat.store} onChange={e => {
               this.updateChatField("store", e.target.value);
             }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("provider:Model provider"), i18next.t("provider:Model provider - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
+              {this.state.chat.modelProvider && (
+                <div style={{width: "36px", height: "36px"}}>
+                  {Provider.getProviderLogoWidget({type: this.state.chat.modelProvider, category: "Model"})}
+                </div>
+              )}
+              <Input value={this.state.chat.modelProvider} onChange={e => {
+                this.updateChatField("modelProvider", e.target.value);
+              }} />
+            </div>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

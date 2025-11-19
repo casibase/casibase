@@ -323,6 +323,15 @@ func (c *ApiController) AddMessage() {
 			return
 		}
 		if chat != nil && chat.Type == "AI" {
+			modelProvider := chat.ModelProvider
+			if modelProvider == "" {
+				// Fallback to store's model provider if chat doesn't have one
+				storeId := util.GetId(chat.Owner, chat.Store)
+				store, storeErr := object.GetStore(storeId)
+				if storeErr == nil && store != nil {
+					modelProvider = store.ModelProvider
+				}
+			}
 			answerMessage := &object.Message{
 				Owner:         message.Owner,
 				Name:          fmt.Sprintf("message_%s", util.GetRandomName()),
@@ -336,7 +345,7 @@ func (c *ApiController) AddMessage() {
 				Text:          "",
 				FileName:      message.FileName,
 				VectorScores:  []object.VectorScore{},
-				ModelProvider: message.ModelProvider,
+				ModelProvider: modelProvider,
 			}
 			_, err = object.AddMessage(answerMessage)
 			if err != nil {

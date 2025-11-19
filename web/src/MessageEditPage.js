@@ -18,6 +18,7 @@ import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
 import * as ChatBackend from "./backend/ChatBackend";
+import * as Provider from "./Provider";
 
 const {TextArea} = Input;
 
@@ -194,6 +195,23 @@ class MessageEditPage extends React.Component {
                   : []
               }
             />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={2}>
+            {Setting.getLabel(i18next.t("provider:Model provider"), i18next.t("provider:Model provider - Tooltip"))} :
+          </Col>
+          <Col span={22}>
+            <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
+              {this.state.message.modelProvider && (
+                <div style={{width: "36px", height: "36px"}}>
+                  {Provider.getProviderLogoWidget({type: this.state.message.modelProvider, category: "Model"})}
+                </div>
+              )}
+              <Input value={this.state.message.modelProvider} onChange={e => {
+                this.updateMessageField("modelProvider", e.target.value);
+              }} />
+            </div>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}}>

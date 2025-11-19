@@ -24,6 +24,7 @@ import i18next from "i18next";
 import * as Conf from "./Conf";
 import {DeleteOutlined} from "@ant-design/icons";
 import VectorTooltip from "./VectorTooltip";
+import * as Provider from "./Provider";
 
 class MessageListPage extends BaseListPage {
   constructor(props) {
@@ -235,6 +236,21 @@ class MessageListPage extends BaseListPage {
               {text}
             </a>
           );
+        },
+      },
+      {
+        title: i18next.t("provider:Model provider"),
+        dataIndex: "modelProvider",
+        key: "modelProvider",
+        width: "150px",
+        align: "center",
+        sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
+        ...this.getColumnSearchProps("modelProvider"),
+        render: (text, record, index) => {
+          if (!text) {
+            return null;
+          }
+          return Provider.getProviderLogoWidget({type: text, category: "Model"});
         },
       },
       {
