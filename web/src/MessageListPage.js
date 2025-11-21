@@ -19,16 +19,42 @@ import BaseListPage from "./BaseListPage";
 import {ThemeDefault} from "./Conf";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
 import moment from "moment";
 import i18next from "i18next";
 import * as Conf from "./Conf";
 import {DeleteOutlined} from "@ant-design/icons";
 import VectorTooltip from "./VectorTooltip";
-import * as Provider from "./Provider";
 
 class MessageListPage extends BaseListPage {
   constructor(props) {
     super(props);
+    this.state = {
+      ...this.state,
+      providers: [],
+      providerMap: {},
+    };
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
+    this.getProviders();
+  }
+
+  getProviders() {
+    ProviderBackend.getProviders("admin")
+      .then((res) => {
+        if (res.status === "ok") {
+          const providerMap = {};
+          res.data.forEach(provider => {
+            providerMap[provider.name] = provider;
+          });
+          this.setState({
+            providers: res.data,
+            providerMap: providerMap,
+          });
+        }
+      });
   }
 
   newMessage() {
@@ -239,18 +265,34 @@ class MessageListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("provider:Model provider"),
+        title: i18next.t("general:Model"),
         dataIndex: "modelProvider",
         key: "modelProvider",
         width: "150px",
         align: "center",
-        sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
+        sorter: (a, b) => {
+          if (!a.modelProvider) {
+            return -1;
+          }
+          if (!b.modelProvider) {
+            return 1;
+          }
+          return a.modelProvider.localeCompare(b.modelProvider);
+        },
         ...this.getColumnSearchProps("modelProvider"),
         render: (text, record, index) => {
           if (!text) {
             return null;
           }
-          return Provider.getProviderLogoWidget({type: text, category: "Model"});
+          const provider = this.state.providerMap[text];
+          if (!provider) {
+            return text;
+          }
+          return (
+            <a target="_blank" rel="noreferrer" href={`/providers/${text}`}>
+              <img width={36} height={36} src={Setting.getProviderLogoURL({category: provider.category, type: provider.type})} alt={provider.type} title={provider.type} />
+            </a>
+          );
         },
       },
       {

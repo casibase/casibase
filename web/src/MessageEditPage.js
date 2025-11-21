@@ -18,9 +18,10 @@ import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
 import * as ChatBackend from "./backend/ChatBackend";
-import * as Provider from "./Provider";
+import * as ProviderBackend from "./backend/ProviderBackend";
 
 const {TextArea} = Input;
+const {Option} = Select;
 
 class MessageEditPage extends React.Component {
   constructor(props) {
@@ -33,6 +34,8 @@ class MessageEditPage extends React.Component {
       chats: [],
       // users: [],
       chat: null,
+      provider: null,
+      providers: [],
     };
   }
 
@@ -40,6 +43,32 @@ class MessageEditPage extends React.Component {
     this.getMessage();
     this.getMessages();
     this.getChats();
+    this.getProviders();
+  }
+
+  getProviders() {
+    ProviderBackend.getProviders("admin")
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            providers: res.data.filter(p => p.category === "Model"),
+          });
+        }
+      });
+  }
+
+  getProvider(providerName) {
+    if (!providerName) {
+      return;
+    }
+    ProviderBackend.getProvider("admin", providerName)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            provider: res.data,
+          });
+        }
+      });
   }
 
   getChats() {
@@ -75,6 +104,7 @@ class MessageEditPage extends React.Component {
           this.setState({
             message: res.data,
           });
+          this.getProvider(res.data.modelProvider);
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
@@ -202,16 +232,28 @@ class MessageEditPage extends React.Component {
             {Setting.getLabel(i18next.t("provider:Model provider"), i18next.t("provider:Model provider - Tooltip"))} :
           </Col>
           <Col span={22}>
-            <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
-              {this.state.message.modelProvider && (
-                <div style={{width: "36px", height: "36px"}}>
-                  {Provider.getProviderLogoWidget({type: this.state.message.modelProvider, category: "Model"})}
-                </div>
-              )}
-              <Input value={this.state.message.modelProvider} onChange={e => {
-                this.updateMessageField("modelProvider", e.target.value);
-              }} />
-            </div>
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              value={this.state.message.modelProvider}
+              onChange={(value) => {
+                this.updateMessageField("modelProvider", value);
+                this.getProvider(value);
+              }}
+              showSearch
+              filterOption={(input, option) =>
+                option.children[1].toLowerCase().includes(input.toLowerCase())
+              }
+            >
+              {
+                this.state.providers.map((provider, index) => (
+                  <Option key={index} value={provider.name}>
+                    <img width={20} height={20} style={{marginBottom: "3px", marginRight: "10px"}} src={Setting.getProviderLogoURL({category: provider.category, type: provider.type})} alt={provider.type} />
+                    {provider.name}
+                  </Option>
+                ))
+              }
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}}>
