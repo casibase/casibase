@@ -18,6 +18,7 @@ import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
 import * as ChatBackend from "./backend/ChatBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
 
 const {TextArea} = Input;
 
@@ -32,6 +33,7 @@ class MessageEditPage extends React.Component {
       chats: [],
       // users: [],
       chat: null,
+      provider: null,
     };
   }
 
@@ -39,6 +41,20 @@ class MessageEditPage extends React.Component {
     this.getMessage();
     this.getMessages();
     this.getChats();
+  }
+
+  getProvider(providerName) {
+    if (!providerName) {
+      return;
+    }
+    ProviderBackend.getProvider("admin", providerName)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            provider: res.data,
+          });
+        }
+      });
   }
 
   getChats() {
@@ -74,6 +90,7 @@ class MessageEditPage extends React.Component {
           this.setState({
             message: res.data,
           });
+          this.getProvider(res.data.modelProvider);
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
@@ -202,11 +219,12 @@ class MessageEditPage extends React.Component {
           </Col>
           <Col span={22}>
             <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
-              {this.state.message.modelProvider && (
-                <img width={36} height={36} src={Setting.getProviderLogoURL({category: "Model", type: this.state.message.modelProvider})} alt={this.state.message.modelProvider} />
+              {this.state.message.modelProvider && this.state.provider && (
+                <img width={36} height={36} src={Setting.getProviderLogoURL({category: this.state.provider.category, type: this.state.provider.type})} alt={this.state.provider.type} />
               )}
               <Input value={this.state.message.modelProvider} onChange={e => {
                 this.updateMessageField("modelProvider", e.target.value);
+                this.getProvider(e.target.value);
               }} />
             </div>
           </Col>

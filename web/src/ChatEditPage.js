@@ -15,6 +15,7 @@
 import React from "react";
 import {Button, Card, Col, Input, Row, Select, Switch} from "antd";
 import * as ChatBackend from "./backend/ChatBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import ChatBox from "./ChatBox";
@@ -31,6 +32,7 @@ class ChatEditPage extends React.Component {
       chatName: props.match.params.chatName,
       chat: null,
       messages: null,
+      provider: null,
       // users: [],
     };
   }
@@ -41,6 +43,20 @@ class ChatEditPage extends React.Component {
     // this.getUser();
   }
 
+  getProvider(providerName) {
+    if (!providerName) {
+      return;
+    }
+    ProviderBackend.getProvider("admin", providerName)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            provider: res.data,
+          });
+        }
+      });
+  }
+
   getChat() {
     ChatBackend.getChat("admin", this.state.chatName)
       .then((res) => {
@@ -48,6 +64,7 @@ class ChatEditPage extends React.Component {
           this.setState({
             chat: res.data,
           });
+          this.getProvider(res.data.modelProvider);
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
@@ -156,11 +173,12 @@ class ChatEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
-              {this.state.chat.modelProvider && (
-                <img width={36} height={36} src={Setting.getProviderLogoURL({category: "Model", type: this.state.chat.modelProvider})} alt={this.state.chat.modelProvider} />
+              {this.state.chat.modelProvider && this.state.provider && (
+                <img width={36} height={36} src={Setting.getProviderLogoURL({category: this.state.provider.category, type: this.state.provider.type})} alt={this.state.provider.type} />
               )}
               <Input value={this.state.chat.modelProvider} onChange={e => {
                 this.updateChatField("modelProvider", e.target.value);
+                this.getProvider(e.target.value);
               }} />
             </div>
           </Col>
