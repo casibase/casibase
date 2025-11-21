@@ -271,8 +271,12 @@ class ChatListPage extends BaseListPage {
         width: "150px",
         align: "center",
         sorter: (a, b) => {
-          if (!a.modelProvider) {return -1;}
-          if (!b.modelProvider) {return 1;}
+          if (!a.modelProvider) {
+            return -1;
+          }
+          if (!b.modelProvider) {
+            return 1;
+          }
           return a.modelProvider.localeCompare(b.modelProvider);
         },
         ...this.getColumnSearchProps("modelProvider"),
