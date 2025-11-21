@@ -17,7 +17,7 @@ import {Tooltip} from "antd";
 import * as Setting from "./Setting";
 
 export function getProviderUrl(provider) {
-  if (!Setting.getOtherProviderInfo()[provider.category]) {
+  if (!provider || !Setting.getOtherProviderInfo()[provider.category]) {
     return "";
   }
 
@@ -75,7 +75,7 @@ function ProviderLogo({provider, width = 36, height = 36}) {
 }
 
 export function getProviderLogoWidget(provider) {
-  if (provider === undefined) {
+  if (!provider) {
     return null;
   }
 

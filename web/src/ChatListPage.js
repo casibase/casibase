@@ -270,7 +270,11 @@ class ChatListPage extends BaseListPage {
         key: "modelProvider",
         width: "150px",
         align: "center",
-        sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
+        sorter: (a, b) => {
+          if (!a.modelProvider) {return -1;}
+          if (!b.modelProvider) {return 1;}
+          return a.modelProvider.localeCompare(b.modelProvider);
+        },
         ...this.getColumnSearchProps("modelProvider"),
         render: (text, record, index) => {
           if (!text) {
