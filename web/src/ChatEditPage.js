@@ -33,6 +33,7 @@ class ChatEditPage extends React.Component {
       chat: null,
       messages: null,
       provider: null,
+      providers: [],
       // users: [],
     };
   }
@@ -40,7 +41,19 @@ class ChatEditPage extends React.Component {
   UNSAFE_componentWillMount() {
     this.getChat();
     this.getMessages(this.state.chatName);
+    this.getProviders();
     // this.getUser();
+  }
+
+  getProviders() {
+    ProviderBackend.getProviders("admin")
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            providers: res.data.filter(p => p.category === "Model"),
+          });
+        }
+      });
   }
 
   getProvider(providerName) {
@@ -172,15 +185,28 @@ class ChatEditPage extends React.Component {
             {Setting.getLabel(i18next.t("provider:Model provider"), i18next.t("provider:Model provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
-              {this.state.chat.modelProvider && this.state.provider && (
-                <img width={36} height={36} src={Setting.getProviderLogoURL({category: this.state.provider.category, type: this.state.provider.type})} alt={this.state.provider.type} />
-              )}
-              <Input value={this.state.chat.modelProvider} onChange={e => {
-                this.updateChatField("modelProvider", e.target.value);
-                this.getProvider(e.target.value);
-              }} />
-            </div>
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              value={this.state.chat.modelProvider}
+              onChange={(value) => {
+                this.updateChatField("modelProvider", value);
+                this.getProvider(value);
+              }}
+              showSearch
+              filterOption={(input, option) =>
+                option.children[1].toLowerCase().includes(input.toLowerCase())
+              }
+            >
+              {
+                this.state.providers.map((provider, index) => (
+                  <Option key={index} value={provider.name}>
+                    <img width={20} height={20} style={{marginBottom: "3px", marginRight: "10px"}} src={Setting.getProviderLogoURL({category: provider.category, type: provider.type})} alt={provider.type} />
+                    {provider.name}
+                  </Option>
+                ))
+              }
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

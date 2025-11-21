@@ -265,7 +265,7 @@ class MessageListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("provider:Model provider"),
+        title: i18next.t("general:Model"),
         dataIndex: "modelProvider",
         key: "modelProvider",
         width: "150px",
@@ -288,7 +288,11 @@ class MessageListPage extends BaseListPage {
           if (!provider) {
             return text;
           }
-          return <img width={36} height={36} src={Setting.getProviderLogoURL({category: provider.category, type: provider.type})} alt={provider.type} />;
+          return (
+            <a target="_blank" rel="noreferrer" href={`/providers/${text}`}>
+              <img width={36} height={36} src={Setting.getProviderLogoURL({category: provider.category, type: provider.type})} alt={provider.type} title={provider.type} />
+            </a>
+          );
         },
       },
       {
