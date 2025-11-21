@@ -123,18 +123,18 @@
     "Please add a model provider first": "Sila tambah pembekal model dahulu",
     "Please add an embedding provider first": "Sila tambah pembekal embedding dahulu",
     "Question message: [%s] doesn't exist": "Mesej soalan: [%s] tidak wujud",
-    "SendErrorEmail() error, the receiver user: ": "Ralat SendErrorEmail(), pengguna penerima: ",
-    "The agent provider: %s is expected to be ": "Pembekal ejen: %s dijangka menjadi ",
+    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() error, the receiver user: ",
+    "The agent provider: %s is expected to be ": "The agent provider: %s is expected to be ",
     "The chat: %s is not found": "Sembang: %s tidak dijumpai",
     "The default video provider should not be empty": "Pembekal video lalai tidak boleh kosong",
     "The embedding provider for store: %s is not found": "Pembekal embedding untuk stor: %s tidak dijumpai",
-    "The embedding provider: %s is expected to be ": "Pembekal embedding: %s dijangka menjadi ",
+    "The embedding provider: %s is expected to be ": "The embedding provider: %s is expected to be ",
     "The embedding provider: %s is not found": "Pembekal embedding: %s tidak dijumpai",
     "The embedding provider: %s's client secret should not be empty": "Rahsia klien pembekal embedding: %s tidak boleh kosong",
     "The image provider for store: %s should not be empty": "Pembekal imej untuk stor: %s tidak boleh kosong",
     "The message: %s is not found": "Mesej: %s tidak dijumpai",
     "The model provider for store: %s is not found": "Pembekal model untuk stor: %s tidak dijumpai",
-    "The model provider: %s is expected to be ": "Pembekal model: %s dijangka menjadi ",
+    "The model provider: %s is expected to be ": "The model provider: %s is expected to be ",
     "The model provider: %s is not found": "Pembekal model: %s tidak dijumpai",
     "The model provider: %s's client secret should not be empty": "Rahsia klien pembekal model: %s tidak boleh kosong",
     "The provider is not found": "Pembekal tidak dijumpai",
@@ -242,9 +242,6 @@
     "VMware API error, code = %d, message = %s": "Ralat API VMware, kod = %d, mesej = %s",
     "unsupported provider type: %s": "jenis pembekal tidak disokong: %s"
   },
-  "provider": {
-    "Provider not found": "Pembekal tidak dijumpai"
-  },
   "resource": {
     "Invalid file data format": "Format data fail tidak sah",
     "Missing required parameters": "Parameter yang diperlukan hilang"
@@ -253,14 +250,8 @@
     "storage provider name: [%s] doesn't exist": "nama pembekal penyimpanan: [%s] tidak wujud"
   },
   "store": {
+    "Cannot delete the default store": "无法删除默认存储库",
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "memandangkan mesti ada satu stor lalai dalam Casibase, anda tidak boleh menetapkan stor ini kepada bukan lalai. Anda boleh terus menetapkan stor lain sebagai lalai"
-  },
-  "scan": {
-    "Scan not found": "Imbasan tidak ditemui",
-    "Asset not found": "Aset tidak ditemui",
-    "Provider not found": "Pembekal tidak ditemui",
-    "Scan provider not supported": "Pembekal imbasan tidak disokong",
-    "Failed to start scan": "Gagal memulakan imbasan"
   },
   "stt": {
     "API error: %s": "Ralat API: %s",

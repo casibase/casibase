@@ -242,9 +242,6 @@
     "VMware API error, code = %d, message = %s": "VMware API error, code = %d, message = %s",
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
-  "provider": {
-    "Provider not found": "Provider not found"
-  },
   "resource": {
     "Invalid file data format": "Invalid file data format",
     "Missing required parameters": "必須パラメータが不足しています"
@@ -253,14 +250,8 @@
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] doesn't exist"
   },
   "store": {
+    "Cannot delete the default store": "无法删除默认存储库",
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
-  },
-  "scan": {
-    "Scan not found": "スキャンが見つかりません",
-    "Asset not found": "アセットが見つかりません",
-    "Provider not found": "プロバイダーが見つかりません",
-    "Scan provider not supported": "スキャンプロバイダーはサポートされていません",
-    "Failed to start scan": "スキャンの開始に失敗しました"
   },
   "stt": {
     "API error: %s": "API error: %s",
