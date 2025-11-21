@@ -109,7 +109,7 @@ class BaseListPage extends React.Component {
           ref={node => {
             this.searchInput = node;
           }}
-          placeholder={`Search ${dataIndex}`}
+          placeholder={i18next.t("general:Search {field}", {field: dataIndex})}
           value={selectedKeys[0]}
           onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
@@ -124,10 +124,10 @@ class BaseListPage extends React.Component {
             size="small"
             style={{width: 90}}
           >
-              Search
+            {i18next.t("general:Search")}
           </Button>
           <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{width: 90}}>
-              Reset
+            {i18next.t("general:Reset")}
           </Button>
           <Button
             type="link"
@@ -140,7 +140,7 @@ class BaseListPage extends React.Component {
               });
             }}
           >
-              Filter
+            {i18next.t("general:Filter")}
           </Button>
         </Space>
       </div>
@@ -171,8 +171,8 @@ class BaseListPage extends React.Component {
   getColumnFilterProps = dataIndex => ({
     filterMultiple: false,
     filters: [
-      {text: "ON", value: true},
-      {text: "OFF", value: false},
+      {text: i18next.t("general:ON"), value: true},
+      {text: i18next.t("general:OFF"), value: false},
     ],
     onFilter: (value, record) => record[dataIndex] === value,
   });
