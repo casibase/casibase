@@ -24,7 +24,6 @@ import i18next from "i18next";
 import * as Conf from "./Conf";
 import {DeleteOutlined} from "@ant-design/icons";
 import VectorTooltip from "./VectorTooltip";
-import * as Provider from "./Provider";
 
 class MessageListPage extends BaseListPage {
   constructor(props) {
@@ -258,7 +257,7 @@ class MessageListPage extends BaseListPage {
           if (!text) {
             return null;
           }
-          return Provider.getProviderLogoWidget({type: text, category: "Model"});
+          return <img width={36} height={36} src={Setting.getProviderLogoURL({category: "Model", type: text})} alt={text} />;
         },
       },
       {

@@ -20,7 +20,6 @@ import i18next from "i18next";
 import ChatBox from "./ChatBox";
 import {renderText} from "./ChatMessageRender";
 import * as MessageBackend from "./backend/MessageBackend";
-import * as Provider from "./Provider";
 
 const {Option} = Select;
 
@@ -158,9 +157,7 @@ class ChatEditPage extends React.Component {
           <Col span={22} >
             <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
               {this.state.chat.modelProvider && (
-                <div style={{width: "36px", height: "36px"}}>
-                  {Provider.getProviderLogoWidget({type: this.state.chat.modelProvider, category: "Model"})}
-                </div>
+                <img width={36} height={36} src={Setting.getProviderLogoURL({category: "Model", type: this.state.chat.modelProvider})} alt={this.state.chat.modelProvider} />
               )}
               <Input value={this.state.chat.modelProvider} onChange={e => {
                 this.updateChatField("modelProvider", e.target.value);

@@ -25,7 +25,6 @@ import * as MessageBackend from "./backend/MessageBackend";
 import ChatBox from "./ChatBox";
 import {renderText} from "./ChatMessageRender";
 import {DeleteOutlined} from "@ant-design/icons";
-import * as Provider from "./Provider";
 
 class ChatListPage extends BaseListPage {
   constructor(props) {
@@ -284,7 +283,7 @@ class ChatListPage extends BaseListPage {
           if (!text) {
             return null;
           }
-          return Provider.getProviderLogoWidget({type: text, category: "Model"});
+          return <img width={36} height={36} src={Setting.getProviderLogoURL({category: "Model", type: text})} alt={text} />;
         },
       },
       // {

@@ -18,7 +18,6 @@ import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
 import * as ChatBackend from "./backend/ChatBackend";
-import * as Provider from "./Provider";
 
 const {TextArea} = Input;
 
@@ -204,9 +203,7 @@ class MessageEditPage extends React.Component {
           <Col span={22}>
             <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
               {this.state.message.modelProvider && (
-                <div style={{width: "36px", height: "36px"}}>
-                  {Provider.getProviderLogoWidget({type: this.state.message.modelProvider, category: "Model"})}
-                </div>
+                <img width={36} height={36} src={Setting.getProviderLogoURL({category: "Model", type: this.state.message.modelProvider})} alt={this.state.message.modelProvider} />
               )}
               <Input value={this.state.message.modelProvider} onChange={e => {
                 this.updateMessageField("modelProvider", e.target.value);
