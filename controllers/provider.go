@@ -56,6 +56,19 @@ func (c *ApiController) GetProviders() {
 	user := c.GetSessionUser()
 	storeName := c.Input().Get("store")
 
+	// Apply store isolation based on user's Homepage field
+	if user != nil && user.Homepage != "" {
+		// If user is bound to a store, enforce they can only access that store
+		if storeName == "" || storeName == "All" {
+			// Force the store to be their bound store
+			storeName = user.Homepage
+		} else if storeName != user.Homepage {
+			// User is trying to access a different store, reject
+			c.ResponseError(c.T("controllers:You can only access data from your assigned store"))
+			return
+		}
+	}
+
 	if limit == "" || page == "" {
 		providers, err := object.GetProviders(owner)
 		if err != nil {
