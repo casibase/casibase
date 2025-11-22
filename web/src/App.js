@@ -1027,6 +1027,27 @@ class App extends Component {
     );
   }
 
+  getAntdLocale() {
+    return {
+      Table: {
+        filterConfirm: i18next.t("general:OK"),
+        filterReset: i18next.t("general:Reset"),
+        filterEmptyText: i18next.t("general:No data"),
+        filterSearchPlaceholder: i18next.t("general:Search"),
+        emptyText: i18next.t("general:No data"),
+        selectAll: i18next.t("general:Select all"),
+        selectInvert: i18next.t("general:Invert selection"),
+        selectionAll: i18next.t("general:Select all data"),
+        sortTitle: i18next.t("general:Sort"),
+        expand: i18next.t("general:Expand row"),
+        collapse: i18next.t("general:Collapse row"),
+        triggerDesc: i18next.t("general:Click to sort descending"),
+        triggerAsc: i18next.t("general:Click to sort ascending"),
+        cancelSort: i18next.t("general:Click to cancel sorting"),
+      },
+    };
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -1034,14 +1055,16 @@ class App extends Component {
           <title>{Setting.getHtmlTitle(this.state.store?.htmlTitle)}</title>
           <link rel="icon" href={Setting.getFaviconUrl(this.state.themeAlgorithm, this.state.store?.faviconUrl)} />
         </Helmet>
-        <ConfigProvider theme={{
-          token: {
-            colorPrimary: this.state.themeData.colorPrimary,
-            colorInfo: this.state.themeData.colorPrimary,
-            borderRadius: this.state.themeData.borderRadius,
-          },
-          algorithm: Setting.getAlgorithm(this.state.themeAlgorithm),
-        }}>
+        <ConfigProvider
+          locale={this.getAntdLocale()}
+          theme={{
+            token: {
+              colorPrimary: this.state.themeData.colorPrimary,
+              colorInfo: this.state.themeData.colorPrimary,
+              borderRadius: this.state.themeData.borderRadius,
+            },
+            algorithm: Setting.getAlgorithm(this.state.themeAlgorithm),
+          }}>
           <StyleProvider hashPriority="high" transformers={[legacyLogicalPropertiesTransformer]}>
             {
               this.renderPage()
