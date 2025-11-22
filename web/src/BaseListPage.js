@@ -109,7 +109,7 @@ class BaseListPage extends React.Component {
           ref={node => {
             this.searchInput = node;
           }}
-          placeholder={i18next.t("general:Search {field}", {field: dataIndex})}
+          placeholder={dataIndex}
           value={selectedKeys[0]}
           onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
