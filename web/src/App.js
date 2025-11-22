@@ -519,6 +519,7 @@ class App extends Component {
           <LanguageSelect className="select-box" />
           {Setting.isLocalAdminUser(this.state.account) &&
                 <StoreSelect
+                  account={this.state.account}
                   className="store-select"
                   withAll={true}
                   style={{display: Setting.isMobile() ? "none" : "flex"}}
