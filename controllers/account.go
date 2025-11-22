@@ -375,12 +375,12 @@ func (c *ApiController) GetAccount() {
 			return
 		}
 
-		if user != nil {
-			// Update the claims with fresh user data from Casdoor
-			claims.User = *user
-			// Preserve the access token from the session
-			c.SetSessionClaims(claims)
-		}
+		// Update the claims with fresh user data from Casdoor
+		// Preserve the access token and other claims fields
+		accessToken := claims.AccessToken
+		claims.User = *user
+		claims.AccessToken = accessToken
+		c.SetSessionClaims(claims)
 	}
 
 	isSafePassword, err := c.isSafePassword()
