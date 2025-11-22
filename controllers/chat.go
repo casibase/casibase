@@ -99,17 +99,10 @@ func (c *ApiController) GetChats() {
 	}
 
 	// Apply store isolation based on user's Homepage field
-	sessionUser := c.GetSessionUser()
-	if sessionUser != nil && sessionUser.Homepage != "" {
-		// If user is bound to a store, enforce they can only access that store
-		if storeName == "" || storeName == "All" {
-			// Force the store to be their bound store
-			storeName = sessionUser.Homepage
-		} else if storeName != sessionUser.Homepage {
-			// User is trying to access a different store, reject
-			c.ResponseError(c.T("controllers:You can only access data from your assigned store"))
-			return
-		}
+	var ok bool
+	storeName, ok = c.EnforceStoreIsolation(storeName)
+	if !ok {
+		return
 	}
 
 	var chats []*object.Chat

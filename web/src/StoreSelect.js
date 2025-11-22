@@ -67,7 +67,8 @@ function StoreSelect(props) {
             // User is not bound, use normal behavior
             const selectedValueExist = res.data.filter(store => store.name === value).length > 0;
             if (Setting.getStore() === undefined || !selectedValueExist) {
-              handleOnChange(getStoreItems().length > 0 ? getStoreItems()[0].value : "");
+              const storeItems = getStoreItems();
+              handleOnChange(storeItems.length > 0 ? storeItems[0].value : "");
             }
           }
           setInitialized(true);

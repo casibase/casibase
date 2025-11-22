@@ -96,22 +96,7 @@ func (c *ApiController) GetStores() {
 	}
 
 	// Apply store isolation based on user's Homepage field
-	user := c.GetSessionUser()
-	if user != nil && user.Homepage != "" {
-		// Check if Homepage matches any store name
-		var filteredStores []*object.Store
-		for _, store := range stores {
-			if store.Name == user.Homepage {
-				filteredStores = append(filteredStores, store)
-				break
-			}
-		}
-		// If Homepage matches a store, only return that store
-		if len(filteredStores) > 0 {
-			stores = filteredStores
-		}
-		// If Homepage doesn't match any store, return all stores (no isolation)
-	}
+	stores = FilterStoresByHomepage(stores, c.GetSessionUser())
 
 	c.ResponseOk(stores)
 }
@@ -333,22 +318,7 @@ func (c *ApiController) GetStoreNames() {
 	}
 
 	// Apply store isolation based on user's Homepage field
-	user := c.GetSessionUser()
-	if user != nil && user.Homepage != "" {
-		// Check if Homepage matches any store name
-		var filteredStores []*object.Store
-		for _, store := range storeNames {
-			if store.Name == user.Homepage {
-				filteredStores = append(filteredStores, store)
-				break
-			}
-		}
-		// If Homepage matches a store, only return that store
-		if len(filteredStores) > 0 {
-			storeNames = filteredStores
-		}
-		// If Homepage doesn't match any store, return all stores (no isolation)
-	}
+	storeNames = FilterStoresByHomepage(storeNames, c.GetSessionUser())
 
 	c.ResponseOk(storeNames)
 }
