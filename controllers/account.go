@@ -331,12 +331,8 @@ func (c *ApiController) isSafePassword() (bool, error) {
 		return true, nil
 	}
 
-	user, err := casdoorsdk.GetUser(claims.User.Name)
-	if err != nil {
-		return false, err
-	}
-
-	if user.Password == "#NeedToModify#" {
+	// Use the user data from claims which has been updated with fresh data from Casdoor in GetAccount()
+	if claims.User.Password == "#NeedToModify#" {
 		return false, nil
 	} else {
 		return true, nil
