@@ -376,10 +376,14 @@ func (c *ApiController) GetAccount() {
 		}
 
 		// Update the claims with fresh user data from Casdoor
-		// Preserve the access token and other claims fields
+		// Preserve the claims fields (AccessToken, Type, IsAdmin, etc.) that are set during login
 		accessToken := claims.AccessToken
+		claimType := claims.Type
+		isAdmin := claims.IsAdmin
 		claims.User = *user
 		claims.AccessToken = accessToken
+		claims.Type = claimType
+		claims.IsAdmin = isAdmin
 		c.SetSessionClaims(claims)
 	}
 
