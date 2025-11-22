@@ -436,9 +436,9 @@ class StoreListPage extends BaseListPage {
                         onConfirm={() => this.deleteStore(record)}
                         okText={i18next.t("general:OK")}
                         cancelText={i18next.t("general:Cancel")}
-                        disabled={record.isDefault}
+                        disabled={record.isDefault || Setting.isUserBoundToStore(this.props.account)}
                       >
-                        <Button style={{marginBottom: "10px"}} type="primary" danger disabled={record.isDefault}>{i18next.t("general:Delete")}</Button>
+                        <Button style={{marginBottom: "10px"}} type="primary" danger disabled={record.isDefault || Setting.isUserBoundToStore(this.props.account)}>{i18next.t("general:Delete")}</Button>
                       </Popconfirm>
                     </React.Fragment>
                   )
@@ -465,9 +465,9 @@ class StoreListPage extends BaseListPage {
                       onConfirm={() => this.deleteStore(record)}
                       okText={i18next.t("general:OK")}
                       cancelText={i18next.t("general:Cancel")}
-                      disabled={record.isDefault}
+                      disabled={record.isDefault || Setting.isUserBoundToStore(this.props.account)}
                     >
-                      <Button style={{marginBottom: "10px"}} type="primary" danger disabled={record.isDefault}>{i18next.t("general:Delete")}</Button>
+                      <Button style={{marginBottom: "10px"}} type="primary" danger disabled={record.isDefault || Setting.isUserBoundToStore(this.props.account)}>{i18next.t("general:Delete")}</Button>
                     </Popconfirm>
                   </React.Fragment>
                 )
@@ -503,7 +503,7 @@ class StoreListPage extends BaseListPage {
               {
                 !Setting.isLocalAdminUser(this.props.account) ? null : (
                   <>
-                    <Button type="primary" size="small" onClick={this.addStore.bind(this)}>{i18next.t("general:Add")}</Button>
+                    <Button type="primary" size="small" onClick={this.addStore.bind(this)} disabled={Setting.isUserBoundToStore(this.props.account)}>{i18next.t("general:Add")}</Button>
                     {this.state.selectedRowKeys.length > 0 && (
                       <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
                         <Button type="primary" danger size="small" icon={<DeleteOutlined />} style={{marginLeft: 8}}>
