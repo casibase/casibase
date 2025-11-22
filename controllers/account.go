@@ -371,6 +371,22 @@ func (c *ApiController) GetAccount() {
 
 	claims := c.GetSessionClaims()
 
+	// Fetch fresh user data from Casdoor in real-time for non-anonymous users
+	if claims.User.Type != "anonymous-user" {
+		user, err := casdoorsdk.GetUser(claims.User.Name)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		if user != nil {
+			// Update the claims with fresh user data from Casdoor
+			claims.User = *user
+			// Preserve the access token from the session
+			c.SetSessionClaims(claims)
+		}
+	}
+
 	isSafePassword, err := c.isSafePassword()
 	if err != nil {
 		c.ResponseError(err.Error())
