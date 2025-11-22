@@ -1055,7 +1055,7 @@ class App extends Component {
           <title>{Setting.getHtmlTitle(this.state.store?.htmlTitle)}</title>
           <link rel="icon" href={Setting.getFaviconUrl(this.state.themeAlgorithm, this.state.store?.faviconUrl)} />
         </Helmet>
-        <ConfigProvider 
+        <ConfigProvider
           locale={this.getAntdLocale()}
           theme={{
             token: {
