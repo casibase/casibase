@@ -54,6 +54,13 @@ func (c *ApiController) GetVectors() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 
+	// Apply store isolation based on user's Homepage field
+	var ok bool
+	storeName, ok = c.EnforceStoreIsolation(storeName)
+	if !ok {
+		return
+	}
+
 	if limit == "" || page == "" {
 		vectors, err := object.GetVectors(owner)
 		if err != nil {

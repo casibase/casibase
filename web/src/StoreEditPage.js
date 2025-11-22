@@ -216,7 +216,7 @@ class StoreEditPage extends React.Component {
           <Col span={22} >
             <Input value={this.state.store.name} onChange={e => {
               this.updateStoreField("name", e.target.value);
-            }} />
+            }} disabled={Setting.isUserBoundToStore(this.props.account)} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

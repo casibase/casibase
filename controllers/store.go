@@ -95,6 +95,9 @@ func (c *ApiController) GetStores() {
 		return
 	}
 
+	// Apply store isolation based on user's Homepage field
+	stores = FilterStoresByHomepage(stores, c.GetSessionUser())
+
 	c.ResponseOk(stores)
 }
 
@@ -313,6 +316,9 @@ func (c *ApiController) GetStoreNames() {
 		c.ResponseError(err.Error())
 		return
 	}
+
+	// Apply store isolation based on user's Homepage field
+	storeNames = FilterStoresByHomepage(storeNames, c.GetSessionUser())
 
 	c.ResponseOk(storeNames)
 }

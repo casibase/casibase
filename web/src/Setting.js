@@ -211,6 +211,15 @@ export function isChatUser(account) {
   return account.type === "chat-user";
 }
 
+export function isUserBoundToStore(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+  // User is bound if homepage field is not empty
+  // The actual store name validation is done on the backend
+  return account.homepage !== undefined && account.homepage !== null && account.homepage !== "";
+}
+
 export function deepCopy(obj) {
   if (obj === null) {
     return null;

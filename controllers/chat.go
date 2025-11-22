@@ -98,6 +98,13 @@ func (c *ApiController) GetChats() {
 		return
 	}
 
+	// Apply store isolation based on user's Homepage field
+	var ok bool
+	storeName, ok = c.EnforceStoreIsolation(storeName)
+	if !ok {
+		return
+	}
+
 	var chats []*object.Chat
 	var err error
 	if field == "user" {
