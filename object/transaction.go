@@ -35,7 +35,7 @@ func createTransactionFromMessage(message *Message) *casdoorsdk.Transaction {
 		CreatedTime: message.CreatedTime,
 		Application: conf.GetConfigString("casdoorApplication"),
 		Domain:      CasibaseHost,
-		Category:    "",
+		Category:    "Casibase Chat",
 		Type:        message.Chat,
 		Subtype:     message.Name,
 		Provider:    message.ModelProvider,
