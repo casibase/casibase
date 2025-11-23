@@ -54,6 +54,26 @@ func createTransactionFromMessage(message *Message) *casdoorsdk.Transaction {
 	return transaction
 }
 
+// ValidateTransactionForMessage validates a transaction in dry run mode before committing it.
+// This checks if the user has sufficient balance without actually creating the transaction.
+func ValidateTransactionForMessage(message *Message) error {
+	// Only validate transaction if message has a price
+	if message.Price <= 0 {
+		return nil
+	}
+
+	// Create transaction object
+	transaction := createTransactionFromMessage(message)
+
+	// Validate transaction via Casdoor SDK with dry run mode
+	_, _, err := casdoorsdk.AddTransactionWithDryRun(transaction, true)
+	if err != nil {
+		return fmt.Errorf("failed to validate transaction: %s", err.Error())
+	}
+
+	return nil
+}
+
 // AddTransactionForMessage creates a transaction in Casdoor for a message with price,
 // sets the message's TransactionId, and if transaction creation fails, updates the message's ErrorText field in the database and returns an error to the caller.
 func AddTransactionForMessage(message *Message) error {
