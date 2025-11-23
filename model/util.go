@@ -191,6 +191,41 @@ func getHistoryMessages(recentMessages []*RawMessage, model string, leftTokens i
 	return res, nil
 }
 
+// EstimateTokenCountAndPrice estimates the token count and price for a question before AI generation.
+// This is used for dry run validation to check if user has sufficient balance.
+// Returns estimated prompt tokens, estimated total tokens (prompt + estimated response), and estimated price.
+func EstimateTokenCountAndPrice(prompt string, question string, recentMessages []*RawMessage, knowledgeMessages []*RawMessage, model string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, currency string) (int, int, float64, string, error) {
+	// Generate messages to get the actual prompt that will be sent
+	messages, err := OpenaiGenerateMessages(prompt, question, recentMessages, knowledgeMessages, model, 100000, "en")
+	if err != nil {
+		return 0, 0, 0, "", err
+	}
+
+	// Calculate prompt token count for all messages
+	promptTokens := 0
+	for _, msg := range messages {
+		tokenCount, err := GetTokenSize(model, msg.Text)
+		if err != nil {
+			// Fallback to a rough estimate: 1 token per 4 characters
+			tokenCount = len(msg.Text) / 4
+		}
+		promptTokens += tokenCount
+	}
+
+	// Estimate response tokens: use a conservative estimate
+	// Typically AI responses are 200-2000 tokens, we'll use 1000 as a safe upper bound
+	estimatedResponseTokens := 1000
+
+	// Calculate estimated price
+	inputPrice := getPrice(promptTokens, inputPricePerThousandTokens)
+	outputPrice := getPrice(estimatedResponseTokens, outputPricePerThousandTokens)
+	estimatedTotalPrice := AddPrices(inputPrice, outputPrice)
+
+	totalTokens := promptTokens + estimatedResponseTokens
+
+	return promptTokens, totalTokens, estimatedTotalPrice, currency, nil
+}
+
 func OpenaiGenerateMessages(prompt string, question string, recentMessages []*RawMessage, knowledgeMessages []*RawMessage, model string, maxTokens int, lang string) ([]*RawMessage, error) {
 	queryMessage := &RawMessage{
 		Text:   question,

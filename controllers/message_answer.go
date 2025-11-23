@@ -230,6 +230,45 @@ func (c *ApiController) GetMessageAnswer() {
 			return
 		}
 	}
+
+	// Estimate token count and price for dry run transaction validation
+	// This checks if user has sufficient balance before generating AI answer
+	if modelProvider.Type != "Dummy" {
+		_, _, estimatedPrice, estimatedCurrency, err := model.EstimateTokenCountAndPrice(
+			prompt,
+			question,
+			history,
+			knowledge,
+			modelProvider.SubType,
+			modelProvider.InputPricePerThousandTokens,
+			modelProvider.OutputPricePerThousandTokens,
+			modelProvider.Currency,
+		)
+		if err != nil {
+			c.ResponseErrorStream(message, fmt.Sprintf("failed to estimate token count: %s", err.Error()))
+			return
+		}
+
+		// Create a temporary message with estimated price for dry run validation
+		tempMessage := &object.Message{
+			Owner:         message.Owner,
+			CreatedTime:   message.CreatedTime,
+			Chat:          message.Chat,
+			Name:          message.Name,
+			ModelProvider: modelProvider.Name,
+			User:          message.User,
+			Price:         estimatedPrice,
+			Currency:      estimatedCurrency,
+		}
+
+		// Validate transaction in dry run mode before AI generation
+		err = object.ValidateTransactionForMessage(tempMessage)
+		if err != nil {
+			c.ResponseErrorStream(message, err.Error())
+			return
+		}
+	}
+
 	var modelResult *model.ModelResult
 	if agentClients != nil {
 		messages := &model.AgentMessages{
