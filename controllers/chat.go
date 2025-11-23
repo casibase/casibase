@@ -141,6 +141,20 @@ func (c *ApiController) GetChat() {
 		return
 	}
 
+	if chat == nil {
+		c.ResponseError("Chat not found")
+		return
+	}
+
+	// Check if user has permission to view this chat
+	if !c.IsAdmin() {
+		username := c.GetSessionUsername()
+		if username != chat.User {
+			c.ResponseError(c.T("auth:Unauthorized operation"))
+			return
+		}
+	}
+
 	c.ResponseOk(chat)
 }
 

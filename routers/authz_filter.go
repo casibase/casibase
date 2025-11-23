@@ -77,6 +77,7 @@ func permissionFilter(ctx *context.Context) {
 		"delete-welcome-message", "get-message-answer", "get-answer",
 		"get-storage-providers", "get-store", "get-providers", "get-global-stores",
 		"update-chat", "add-chat", "delete-chat", "update-message", "add-message",
+		"get-chat", "get-message",
 	}
 
 	for _, exemptPath := range exemptedPaths {
