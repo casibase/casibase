@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/casibase/casibase/agent"
@@ -231,19 +232,14 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	// Estimate token count and price for dry run transaction validation
+	// Perform dry run query to estimate token count and price before AI generation
 	// This checks if user has sufficient balance before generating AI answer
-	if modelProvider.Type != "Dummy" {
-		_, _, estimatedPrice, estimatedCurrency, err := model.EstimateTokenCountAndPrice(
-			prompt,
-			question,
-			history,
-			knowledge,
-			modelProvider.SubType,
-			modelProvider.InputPricePerThousandTokens,
-			modelProvider.OutputPricePerThousandTokens,
-			modelProvider.Currency,
-		)
+	if modelProvider.Type != "Dummy" && !isReasonModel(modelProvider.SubType) && agentClients == nil {
+		// Prefix question with dry run marker to trigger estimation without actual AI call
+		dryRunQuestion := "$CasibaseDryRun$" + question
+		
+		// Use io.Discard as writer since we don't need the output for dry run
+		dryRunResult, err := modelProviderObj.QueryText(dryRunQuestion, io.Discard, history, prompt, knowledge, nil, c.GetAcceptLanguage())
 		if err != nil {
 			c.ResponseErrorStream(message, fmt.Sprintf("failed to estimate token count: %s", err.Error()))
 			return
@@ -257,8 +253,8 @@ func (c *ApiController) GetMessageAnswer() {
 			Name:          message.Name,
 			ModelProvider: modelProvider.Name,
 			User:          message.User,
-			Price:         estimatedPrice,
-			Currency:      estimatedCurrency,
+			Price:         dryRunResult.TotalPrice,
+			Currency:      dryRunResult.Currency,
 		}
 
 		// Validate transaction in dry run mode before AI generation

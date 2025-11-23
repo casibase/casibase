@@ -191,55 +191,6 @@ func getHistoryMessages(recentMessages []*RawMessage, model string, leftTokens i
 	return res, nil
 }
 
-const (
-	// estimateMaxTokensForGeneration is a high upper bound for max tokens when estimating prompt size
-	// This is used to avoid truncating the prompt during estimation
-	estimateMaxTokensForGeneration = 100000
-
-	// estimateDefaultLanguage is the default language used for estimation
-	estimateDefaultLanguage = "en"
-
-	// estimateFallbackCharsPerToken is a rough heuristic used when tokenizer fails
-	// Based on empirical observations that English text typically has ~4 characters per token
-	estimateFallbackCharsPerToken = 4
-
-	// estimatedResponseTokens is a conservative estimate for AI response length
-	// Typically AI responses range from 200-2000 tokens, using 1000 as a safe upper bound
-	// This ensures we check for sufficient balance even if the response is longer than average
-	estimatedResponseTokens = 1000
-)
-
-// EstimateTokenCountAndPrice estimates the token count and price for a question before AI generation.
-// This is used for dry run validation to check if user has sufficient balance.
-// Returns estimated prompt tokens, estimated total tokens (prompt + estimated response), and estimated price.
-func EstimateTokenCountAndPrice(prompt string, question string, recentMessages []*RawMessage, knowledgeMessages []*RawMessage, model string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, currency string) (int, int, float64, string, error) {
-	// Generate messages to get the actual prompt that will be sent
-	messages, err := OpenaiGenerateMessages(prompt, question, recentMessages, knowledgeMessages, model, estimateMaxTokensForGeneration, estimateDefaultLanguage)
-	if err != nil {
-		return 0, 0, 0, "", err
-	}
-
-	// Calculate prompt token count for all messages
-	promptTokens := 0
-	for _, msg := range messages {
-		tokenCount, err := GetTokenSize(model, msg.Text)
-		if err != nil {
-			// Fallback to a rough estimate using the heuristic
-			tokenCount = len(msg.Text) / estimateFallbackCharsPerToken
-		}
-		promptTokens += tokenCount
-	}
-
-	// Calculate estimated price using conservative response token estimate
-	inputPrice := getPrice(promptTokens, inputPricePerThousandTokens)
-	outputPrice := getPrice(estimatedResponseTokens, outputPricePerThousandTokens)
-	estimatedTotalPrice := AddPrices(inputPrice, outputPrice)
-
-	totalTokens := promptTokens + estimatedResponseTokens
-
-	return promptTokens, totalTokens, estimatedTotalPrice, currency, nil
-}
-
 func OpenaiGenerateMessages(prompt string, question string, recentMessages []*RawMessage, knowledgeMessages []*RawMessage, model string, maxTokens int, lang string) ([]*RawMessage, error) {
 	queryMessage := &RawMessage{
 		Text:   question,
