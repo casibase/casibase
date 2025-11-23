@@ -17,7 +17,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"strings"
 
 	"github.com/casibase/casibase/agent"
@@ -27,6 +26,16 @@ import (
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
+
+// dryRunWriter is a dummy writer that implements both io.Writer and http.Flusher
+// It discards all writes and is used for dry run queries that need a Flusher
+type dryRunWriter struct{}
+
+func (w *dryRunWriter) Write(p []byte) (n int, err error) {
+	return len(p), nil
+}
+
+func (w *dryRunWriter) Flush() {}
 
 // shouldPerformDryRun determines if a dry run estimation should be performed
 // before generating the actual AI answer. Dry run is skipped for:
@@ -247,8 +256,9 @@ func (c *ApiController) GetMessageAnswer() {
 		// Prefix question with dry run marker to trigger estimation without actual AI call
 		dryRunQuestion := model.DryRunPrefix + question
 		
-		// Use io.Discard as writer since we don't need the output for dry run
-		dryRunResult, err := modelProviderObj.QueryText(dryRunQuestion, io.Discard, history, prompt, knowledge, nil, c.GetAcceptLanguage())
+		// Use dryRunWriter which implements both io.Writer and http.Flusher
+		// Some model providers require http.Flusher even for dry run
+		dryRunResult, err := modelProviderObj.QueryText(dryRunQuestion, &dryRunWriter{}, history, prompt, knowledge, nil, c.GetAcceptLanguage())
 		if err != nil {
 			c.ResponseErrorStream(message, fmt.Sprintf("failed to estimate token count: %s", err.Error()))
 			return
