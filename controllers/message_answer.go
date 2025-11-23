@@ -150,11 +150,14 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	// Perform dry run to validate user has sufficient balance before expensive operations
-	err = validateTransactionBeforeAIGeneration(message, chat, store, question, modelProvider, modelProviderObj, c.GetAcceptLanguage(), c.ResponseErrorStream)
-	if err != nil {
-		return
-	}
+	// NOTE: Dry run validation is temporarily disabled to prevent duplicate transactions
+	// until Casdoor backend is updated with the dry run fix (commit d3f3f76).
+	// The Casdoor fix ensures dry run mode doesn't create actual transactions in the database.
+	// TODO: Re-enable this validation once Casdoor is updated:
+	// err = validateTransactionBeforeAIGeneration(message, chat, store, question, modelProvider, modelProviderObj, c.GetAcceptLanguage(), c.ResponseErrorStream)
+	// if err != nil {
+	// 	return
+	// }
 
 	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2, c.GetAcceptLanguage())
 	if err != nil {
