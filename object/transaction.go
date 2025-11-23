@@ -27,15 +27,9 @@ import (
 
 var CasibaseHost = ""
 
-// ValidateTransactionForMessage validates a transaction in dry run mode before committing it.
-// This checks if the user has sufficient balance without actually creating the transaction.
-func ValidateTransactionForMessage(message *Message) error {
-	// Only validate transaction if message has a price
-	if message.Price <= 0 {
-		return nil
-	}
-
-	// Create transaction object
+// createTransactionFromMessage creates a transaction object from a message.
+// This is a helper function to reduce code duplication.
+func createTransactionFromMessage(message *Message) *casdoorsdk.Transaction {
 	transaction := &casdoorsdk.Transaction{
 		Owner:       conf.GetConfigString("casdoorOrganization"),
 		CreatedTime: message.CreatedTime,
@@ -56,6 +50,20 @@ func ValidateTransactionForMessage(message *Message) error {
 	if IsAnonymousUserByUsername(message.User) {
 		transaction.Tag = "Organization"
 	}
+
+	return transaction
+}
+
+// ValidateTransactionForMessage validates a transaction in dry run mode before committing it.
+// This checks if the user has sufficient balance without actually creating the transaction.
+func ValidateTransactionForMessage(message *Message) error {
+	// Only validate transaction if message has a price
+	if message.Price <= 0 {
+		return nil
+	}
+
+	// Create transaction object
+	transaction := createTransactionFromMessage(message)
 
 	// Validate transaction via Casdoor SDK with dry run mode
 	_, _, err := casdoorsdk.AddTransactionWithDryRun(transaction, true)
@@ -75,26 +83,7 @@ func AddTransactionForMessage(message *Message) error {
 	}
 
 	// Create transaction object
-	transaction := &casdoorsdk.Transaction{
-		Owner:       conf.GetConfigString("casdoorOrganization"),
-		CreatedTime: message.CreatedTime,
-		Application: conf.GetConfigString("casdoorApplication"),
-		Domain:      CasibaseHost,
-		Category:    "",
-		Type:        message.Chat,
-		Subtype:     message.Name,
-		Provider:    message.ModelProvider,
-		User:        message.User,
-		Tag:         "User",
-		Amount:      -message.Price,
-		Currency:    message.Currency,
-		Payment:     "",
-		State:       "Paid",
-	}
-
-	if IsAnonymousUserByUsername(message.User) {
-		transaction.Tag = "Organization"
-	}
+	transaction := createTransactionFromMessage(message)
 
 	// Add transaction via Casdoor SDK
 	_, transactionName, err := casdoorsdk.AddTransaction(transaction)
