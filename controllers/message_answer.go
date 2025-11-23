@@ -150,12 +150,6 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	// Perform dry run to validate user has sufficient balance before expensive operations
-	err = validateTransactionBeforeAIGeneration(message, chat, store, question, modelProvider, modelProviderObj, c.GetAcceptLanguage(), c.ResponseErrorStream)
-	if err != nil {
-		return
-	}
-
 	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
