@@ -27,15 +27,9 @@ import (
 
 var CasibaseHost = ""
 
-// AddTransactionForMessage creates a transaction in Casdoor for a message with price,
-// sets the message's TransactionId, and if transaction creation fails, updates the message's ErrorText field in the database and returns an error to the caller.
-func AddTransactionForMessage(message *Message) error {
-	// Only create transaction if message has a price
-	if message.Price <= 0 {
-		return nil
-	}
-
-	// Create transaction object
+// createTransactionFromMessage creates a transaction object from a message.
+// This is a helper function to reduce code duplication.
+func createTransactionFromMessage(message *Message) *casdoorsdk.Transaction {
 	transaction := &casdoorsdk.Transaction{
 		Owner:       conf.GetConfigString("casdoorOrganization"),
 		CreatedTime: message.CreatedTime,
@@ -56,6 +50,40 @@ func AddTransactionForMessage(message *Message) error {
 	if IsAnonymousUserByUsername(message.User) {
 		transaction.Tag = "Organization"
 	}
+
+	return transaction
+}
+
+// ValidateTransactionForMessage validates a transaction in dry run mode before committing it.
+// This checks if the user has sufficient balance without actually creating the transaction.
+func ValidateTransactionForMessage(message *Message) error {
+	// Only validate transaction if message has a price
+	if message.Price <= 0 {
+		return nil
+	}
+
+	// Create transaction object
+	transaction := createTransactionFromMessage(message)
+
+	// Validate transaction via Casdoor SDK with dry run mode
+	_, _, err := casdoorsdk.AddTransactionWithDryRun(transaction, true)
+	if err != nil {
+		return fmt.Errorf("failed to validate transaction: %s", err.Error())
+	}
+
+	return nil
+}
+
+// AddTransactionForMessage creates a transaction in Casdoor for a message with price,
+// sets the message's TransactionId, and if transaction creation fails, updates the message's ErrorText field in the database and returns an error to the caller.
+func AddTransactionForMessage(message *Message) error {
+	// Only create transaction if message has a price
+	if message.Price <= 0 {
+		return nil
+	}
+
+	// Create transaction object
+	transaction := createTransactionFromMessage(message)
 
 	// Add transaction via Casdoor SDK
 	_, transactionName, err := casdoorsdk.AddTransaction(transaction)
