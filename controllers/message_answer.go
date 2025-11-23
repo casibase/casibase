@@ -325,6 +325,11 @@ func (c *ApiController) GetMessageAnswer() {
 	message.Price = model.AddPrices(message.Price, 0)
 
 	// Add transaction for message with price
+	// Note: We don't validate balance before AI generation because the Casdoor SDK's
+	// AddTransactionWithDryRun(transaction, true) creates actual transactions even in dry run mode,
+	// which would result in duplicate transactions. If transaction creation fails here due to
+	// insufficient balance, the error is reported but the AI-generated content is already streamed
+	// to the user, so no work is lost.
 	err = object.AddTransactionForMessage(message)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
