@@ -64,10 +64,13 @@ func InitAuthConfig() {
 // Signin
 // @Title Signin
 // @Tag Account API
-// @Description sign in
-// @Param code  query string true "code of account"
-// @Param state query string true "state of account"
-// @Success 200 {casdoorsdk} casdoorsdk.Claims The Response object
+// @Description Authenticate user with OAuth2 authorization code and return JWT claims. This endpoint exchanges the OAuth2 authorization code for an access token and creates a new user session. Requires valid OAuth2 code and state from Casdoor authentication flow.
+// @Param   code     query    string  true    "OAuth2 authorization code from Casdoor authentication, e.g., 'abc123def456'"
+// @Param   state    query    string  true    "OAuth2 state parameter for CSRF protection, e.g., 'random-state-string'"
+// @Success 200 {object} casdoorsdk.Claims "Successfully authenticated and returns JWT claims with user information and access token"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid or expired authorization code"
+// @Failure 401 {object} controllers.Response "Unauthorized: Authentication failed"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to process authentication"
 // @router /signin [post]
 func (c *ApiController) Signin() {
 	code := c.Input().Get("code")
@@ -120,8 +123,10 @@ func (c *ApiController) Signin() {
 // Signout
 // @Title Signout
 // @Tag Account API
-// @Description sign out
-// @Success 200 {object} controllers.Response The Response object
+// @Description Sign out the current user by clearing session data and invalidating the session ID. Requires an active user session.
+// @Success 200 {object} controllers.Response "Successfully signed out"
+// @Failure 401 {object} controllers.Response "Unauthorized: No active session"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to clear session"
 // @router /signout [post]
 func (c *ApiController) Signout() {
 	user := c.GetSessionUser()
@@ -342,8 +347,10 @@ func (c *ApiController) isSafePassword() (bool, error) {
 // GetAccount
 // @Title GetAccount
 // @Tag Account API
-// @Description get account
-// @Success 200 {casdoorsdk} casdoorsdk.Claims The Response object
+// @Description Get current user account information including user profile, roles, and permissions. Returns user claims from the active session. If no user is signed in and preview mode is enabled, creates an anonymous user session automatically.
+// @Success 200 {object} casdoorsdk.Claims "Successfully returns current user account information with JWT claims"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required (when preview mode is disabled)"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to retrieve account information"
 // @router /get-account [get]
 func (c *ApiController) GetAccount() {
 	disablePreviewMode, _ := beego.AppConfig.Bool("disablePreviewMode")

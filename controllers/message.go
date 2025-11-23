@@ -26,8 +26,17 @@ import (
 // GetGlobalMessages
 // @Title GetGlobalMessages
 // @Tag Message API
-// @Description get global messages
-// @Success 200 {array} object.Message The Response object
+// @Description Get all global messages with optional pagination, filtering and sorting. When pageSize and p parameters are provided, returns paginated results. Supports filtering by field/value pairs, sorting, and store filtering. Used for admin message management and moderation.
+// @Param   pageSize     query    string  false   "Number of items per page for pagination, e.g., '10'"
+// @Param   p            query    string  false   "Page number for pagination, e.g., '1'"
+// @Param   field        query    string  false   "Field name for filtering, e.g., 'author'"
+// @Param   value        query    string  false   "Value for field filtering, e.g., 'AI'"
+// @Param   sortField    query    string  false   "Field name for sorting, e.g., 'createdTime'"
+// @Param   sortOrder    query    string  false   "Sort order: 'ascend' or 'descend'"
+// @Param   store        query    string  false   "Filter by store name"
+// @Success 200 {array} object.Message "Successfully returns array of message objects with optional pagination info"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to retrieve messages"
 // @router /get-global-messages [get]
 func (c *ApiController) GetGlobalMessages() {
 	owner := "admin"
@@ -67,10 +76,15 @@ func (c *ApiController) GetGlobalMessages() {
 // GetMessages
 // @Title GetMessages
 // @Tag Message API
-// @Description get Messages
-// @Param user query string true "The user of message"
-// @Param chat query string true "The chat of message"
-// @Success 200 {array} object.Message The Response object
+// @Description Get messages for a specific user and chat conversation with user isolation enforcement. Non-admin users can only view their own messages. Admin users can view all messages or filter by selectedUser. Returns all messages in a chat conversation including both user and AI responses.
+// @Param   user         query    string  false   "User ID in format 'owner/name', e.g., 'admin/user1' (optional for admins)"
+// @Param   chat         query    string  false   "Chat ID to filter messages by specific conversation, e.g., 'chat-123abc'"
+// @Param   selectedUser query    string  false   "Selected user for admin to view specific user's messages, e.g., 'admin/user1'"
+// @Success 200 {array} object.Message "Successfully returns array of message objects in chronological order"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid parameters"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Cannot view other users' messages"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to retrieve messages"
 // @router /get-Messages [get]
 func (c *ApiController) GetMessages() {
 	user := c.Input().Get("user")
@@ -110,11 +124,17 @@ func (c *ApiController) GetMessages() {
 }
 
 // GetMessage
+// GetMessage
 // @Title GetMessage
 // @Tag Message API
-// @Description get message
-// @Param id query string true "The id of message"
-// @Success 200 {object} object.Message The Response object
+// @Description Get detailed information of a specific message including text content, author (User/AI), tokens used, vector scores, error details, and metadata. Returns complete message object with all associated data.
+// @Param   id    query    string  true    "Message ID in format 'owner/name', e.g., 'admin/message-123abc'"
+// @Success 200 {object} object.Message "Successfully returns message object with all details including text, author, tokens, vector scores, etc."
+// @Failure 400 {object} controllers.Response "Bad request: Invalid message ID format"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions to access this message"
+// @Failure 404 {object} controllers.Response "Not found: Message does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to retrieve message"
 // @router /get-message [get]
 func (c *ApiController) GetMessage() {
 	id := c.Input().Get("id")
@@ -131,10 +151,16 @@ func (c *ApiController) GetMessage() {
 // UpdateMessage
 // @Title UpdateMessage
 // @Tag Message API
-// @Description update message
-// @Param id query string true "The id (owner/name) of the message"
-// @Param body body object.Message true "The details of the message"
-// @Success 200 {object} controllers.Response The Response object
+// @Description Update an existing message's content and metadata including text, author, tokens, vector scores, error information, and notification settings. Users can only update their own messages. Supports email notification if NeedNotify flag is set. Use isHitOnly parameter for updating only hit/feedback fields without full update.
+// @Param   id         query    string          true    "Message ID in format 'owner/name', e.g., 'admin/message-123abc'"
+// @Param   isHitOnly  query    string          false   "Update only hit/feedback fields when set to 'true', e.g., 'true'"
+// @Param   body       body     object.Message  true    "Complete message object with updated fields including text, author, tokenCount, vectorScores, errorText, needNotify, etc."
+// @Success 200 {object} controllers.Response "Successfully updated message, returns success status"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid message data or malformed JSON"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Cannot update other users' messages or insufficient permissions"
+// @Failure 404 {object} controllers.Response "Not found: Message does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to update message or send email notification"
 // @router /update-message [post]
 func (c *ApiController) UpdateMessage() {
 	id := c.Input().Get("id")
@@ -174,9 +200,14 @@ func (c *ApiController) UpdateMessage() {
 // AddMessage
 // @Title AddMessage
 // @Tag Message API
-// @Description add message
-// @Param body body object.Message true "The details of the message"
-// @Success 200 {object} object.Chat The Response object
+// @Description Create a new message in a chat conversation. For user messages, automatically generates AI response using configured model provider. Supports RAG (Retrieval Augmented Generation) with vector search, tool calls, streaming responses, and various model capabilities. Users can only create messages for themselves. Returns updated chat object with new messages.
+// @Param   body    body    object.Message    true    "Message object with required fields: owner, user, chat, author ('User'/'AI'), text content, and optional fields: replyTo, store, vectorScores, etc."
+// @Success 200 {object} object.Chat "Successfully created message and generated AI response (if applicable), returns updated chat object with messages"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid message data, missing required fields, chat not found, store not found, or malformed JSON"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Cannot create messages for other users, insufficient permissions, or rate limit exceeded"
+// @Failure 404 {object} controllers.Response "Not found: Chat, store, or provider does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to create message, generate AI response, or perform vector search"
 // @router /add-message [post]
 func (c *ApiController) AddMessage() {
 	var message object.Message
@@ -361,9 +392,14 @@ func (c *ApiController) AddMessage() {
 // DeleteMessage
 // @Title DeleteMessage
 // @Tag Message API
-// @Description delete message
-// @Param body body object.Message true "The details of the message"
-// @Success 200 {object} controllers.Response The Response object
+// @Description Delete an existing message from a chat conversation. This operation is irreversible and removes the message and its metadata. Note: Consider using this carefully as it may break conversation context for AI responses.
+// @Param   body    body    object.Message    true    "Message object to delete, must include at least owner and name fields"
+// @Success 200 {object} controllers.Response "Successfully deleted message, returns success status"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid message data or malformed JSON"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions to delete message"
+// @Failure 404 {object} controllers.Response "Not found: Message does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to delete message"
 // @router /delete-message [post]
 func (c *ApiController) DeleteMessage() {
 	var message object.Message
@@ -382,6 +418,18 @@ func (c *ApiController) DeleteMessage() {
 	c.ResponseOk(success)
 }
 
+// DeleteWelcomeMessage
+// @Title DeleteWelcomeMessage
+// @Tag Message API
+// @Description Delete a welcome message for anonymous or authenticated users. For anonymous users, verifies ownership using client IP and user agent hash. For authenticated users, verifies user ownership. Used to dismiss welcome/onboarding messages in chat interfaces.
+// @Param   body    body    object.Message    true    "Message object to delete, must include at least owner and name fields"
+// @Success 200 {object} controllers.Response "Successfully deleted welcome message, returns success status"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid message data or malformed JSON"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required for non-anonymous users"
+// @Failure 403 {object} controllers.Response "Forbidden: No permission to delete this welcome message (user mismatch or client verification failed)"
+// @Failure 404 {object} controllers.Response "Not found: Message does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to delete welcome message"
+// @router /delete-welcome-message [post]
 func (c *ApiController) DeleteWelcomeMessage() {
 	var message *object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)

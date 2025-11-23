@@ -30,9 +30,14 @@ import (
 // GetMessageAnswer
 // @Title GetMessageAnswer
 // @Tag Message API
-// @Description get message answer
-// @Param id query string true "The id of message"
-// @Success 200 {stream} string "An event stream of message answers in JSON format"
+// @Description Stream AI-generated response for a message using Server-Sent Events (SSE). Generates AI answer with RAG (Retrieval Augmented Generation) using vector search, model context, and conversation history. Supports streaming responses for real-time chat experience. Message must be an AI message with empty text waiting for response. Performs vector similarity search, retrieves relevant context, and generates response using configured LLM provider.
+// @Param   id    query    string  true    "Message ID in format 'owner/name' for the AI message awaiting response, e.g., 'admin/message-123abc'"
+// @Success 200 {string} string "Event stream (text/event-stream) with JSON chunks containing AI response text, tokens, vector scores, and completion status"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid message ID, message is not an AI message, text is not empty, replyTo is missing, or content filtered by provider"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions or rate limit exceeded"
+// @Failure 404 {object} controllers.Response "Not found: Message, chat, store, or provider does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to generate response, vector search failed, or LLM API error"
 // @router /get-message-answer [get]
 func (c *ApiController) GetMessageAnswer() {
 	id := c.Input().Get("id")

@@ -1,20 +1,14 @@
 swagger: "2.0"
-info:
-  title: Casibase RESTful API
-  description: Swagger Docs of Casibase Backend API
-  version: 1.70.0
-  contact:
-    email: admin@casibase.org
+info: {}
 basePath: /api
-schemes:
-- https
-- http
 paths:
   /activate-file:
     post:
       tags:
-      - File API
-      description: activate file
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        activate file
+        <br>
       operationId: ApiController.ActivateFile
       parameters:
       - in: query
@@ -32,11 +26,33 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /add-Graph:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add Graph
+        <br>
+      operationId: ApiController.AddGraph
+      parameters:
+      - in: body
+        name: body
+        description: The details of the Graph
+        required: true
+        schema:
+          $ref: '#/definitions/object.Graph'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /add-application:
     post:
       tags:
-      - Application API
-      description: add application
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add application
+        <br>
       operationId: ApiController.AddApplication
       parameters:
       - in: body
@@ -53,8 +69,10 @@ paths:
   /add-article:
     post:
       tags:
-      - Article API
-      description: add article
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add article
+        <br>
       operationId: ApiController.AddArticle
       parameters:
       - in: body
@@ -68,29 +86,90 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
-  /add-chat:
+  /add-asset:
     post:
       tags:
-      - Chat API
-      description: add chat
-      operationId: ApiController.AddChat
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add an asset
+        <br>
+      operationId: ApiController.AddAsset
       parameters:
       - in: body
         name: body
-        description: The details of the chat
+        description: The details of the asset
         required: true
         schema:
-          $ref: '#/definitions/object.Chat'
+          $ref: '#/definitions/object.Asset'
       responses:
         "200":
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /add-caase:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add a caase
+        <br>
+      operationId: ApiController.AddCaase
+      parameters:
+      - in: body
+        name: body
+        description: The details of the caase
+        required: true
+        schema:
+          $ref: '#/definitions/object.Caase'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-chat:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Create a new chat conversation with specified configuration. Automatically sets creation time, client IP, user agent, and uses default store if not specified. Users can only create chats for themselves. Tracks client metadata for analytics and security.
+        <br>
+      operationId: ApiController.AddChat
+      parameters:
+      - in: body
+        name: body
+        description: 'Chat object with required fields: user, name, type (single/group),
+          and optional fields: displayName, category, modelProvider, store, temperature,
+          etc.'
+        required: true
+        schema:
+          $ref: '#/definitions/object.Chat'
+      responses:
+        "200":
+          description: '"Successfully created chat, returns success status and chat
+            ID"'
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid chat data,
+            missing required fields, default store not found, or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Cannot create chat
+            for other users or insufficient permissions"'
+        "409":
+          description: '{object} controllers.Response "Conflict: Chat with same ID
+            already exists"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to create chat"'
   /add-connection:
     post:
       tags:
-      - Connection API
-      description: add connection
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add connection
+        <br>
       operationId: ApiController.AddConnection
       parameters:
       - in: body
@@ -104,11 +183,33 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/Response'
+  /add-consultation:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add a consultation
+        <br>
+      operationId: ApiController.AddConsultation
+      parameters:
+      - in: body
+        name: body
+        description: The details of the consultation
+        required: true
+        schema:
+          $ref: '#/definitions/object.Consultation'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /add-container:
     post:
       tags:
-      - Container API
-      description: add a container
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add a container
+        <br>
       operationId: ApiController.AddContainer
       parameters:
       - in: body
@@ -122,12 +223,475 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /add-doctor:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add a doctor
+        <br>
+      operationId: ApiController.AddDoctor
+      parameters:
+      - in: body
+        name: body
+        description: The details of the doctor
+        required: true
+        schema:
+          $ref: '#/definitions/object.Doctor'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /add-file:
     post:
       tags:
-      - File API
-      description: add file
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add file object
+        <br>
       operationId: ApiController.AddFile
+      parameters:
+      - in: body
+        name: body
+        description: The details of the file object
+        required: true
+        schema:
+          $ref: '#/definitions/object.File'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-form:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add form
+        <br>
+      operationId: ApiController.AddForm
+      parameters:
+      - in: body
+        name: body
+        description: The details of the form
+        required: true
+        schema:
+          $ref: '#/definitions/object.Form'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-hospital:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add a hospital
+        <br>
+      operationId: ApiController.AddHospital
+      parameters:
+      - in: body
+        name: body
+        description: The details of the hospital
+        required: true
+        schema:
+          $ref: '#/definitions/object.Hospital'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-image:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add a image
+        <br>
+      operationId: ApiController.AddImage
+      parameters:
+      - in: body
+        name: body
+        description: The details of the image
+        required: true
+        schema:
+          $ref: '#/definitions/object.Image'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-machine:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add a machine
+        <br>
+      operationId: ApiController.AddMachine
+      parameters:
+      - in: body
+        name: body
+        description: The details of the machine
+        required: true
+        schema:
+          $ref: '#/definitions/object.Machine'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-message:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Create a new message in a chat conversation. For user messages, automatically generates AI response using configured model provider. Supports RAG (Retrieval Augmented Generation) with vector search, tool calls, streaming responses, and various model capabilities. Users can only create messages for themselves. Returns updated chat object with new messages.
+        <br>
+      operationId: ApiController.AddMessage
+      parameters:
+      - in: body
+        name: body
+        description: 'Message object with required fields: owner, user, chat, author
+          (''User''/''AI''), text content, and optional fields: replyTo, store, vectorScores,
+          etc.'
+        required: true
+        schema:
+          $ref: '#/definitions/object.Message'
+      responses:
+        "200":
+          description: '"Successfully created message and generated AI response (if
+            applicable), returns updated chat object with messages"'
+          schema:
+            $ref: '#/definitions/object.Chat'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid message
+            data, missing required fields, chat not found, store not found, or malformed
+            JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Cannot create messages
+            for other users, insufficient permissions, or rate limit exceeded"'
+        "404":
+          description: '{object} controllers.Response "Not found: Chat, store, or
+            provider does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to create message, generate AI response, or perform vector search"'
+  /add-node:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add a node
+        <br>
+      operationId: ApiController.AddNode
+      parameters:
+      - in: body
+        name: body
+        description: The details of the node
+        required: true
+        schema:
+          $ref: '#/definitions/object.Node'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-node-tunnel:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add node tunnel session
+        <br>
+      operationId: ApiController.AddNodeTunnel
+      parameters:
+      - in: query
+        name: nodeId
+        description: The id of node
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/Response'
+  /add-patient:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add a patient
+        <br>
+      operationId: ApiController.AddPatient
+      parameters:
+      - in: body
+        name: body
+        description: The details of the patient
+        required: true
+        schema:
+          $ref: '#/definitions/object.Patient'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-permission:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add permission
+        <br>
+      operationId: ApiController.AddPermission
+      parameters:
+      - in: body
+        name: body
+        description: The details of the permission
+        required: true
+        schema:
+          $ref: '#/definitions/casdoorsdk.Permission'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-pod:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add a pod
+        <br>
+      operationId: ApiController.AddPod
+      parameters:
+      - in: body
+        name: body
+        description: The details of the pod
+        required: true
+        schema:
+          $ref: '#/definitions/object.Pod'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-provider:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Create a new AI provider configuration for LLM models, embedding services, TTS, STT, or MCP tools. Provider owner is automatically set to 'admin'. Configure API credentials, endpoints, model parameters, and service capabilities. Requires appropriate permissions.
+        <br>
+      operationId: ApiController.AddProvider
+      parameters:
+      - in: body
+        name: body
+        description: 'Provider object with required fields: name, type, category,
+          clientId/clientSecret (for API auth), host, models, etc.'
+        required: true
+        schema:
+          $ref: '#/definitions/object.Provider'
+      responses:
+        "200":
+          description: '"Successfully created provider, returns success status and
+            provider ID"'
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid provider
+            data, missing required fields, or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to create provider"'
+        "409":
+          description: '{object} controllers.Response "Conflict: Provider with same
+            ID already exists"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to create provider"'
+  /add-record:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add a record
+        <br>
+      operationId: ApiController.AddRecord
+      parameters:
+      - in: body
+        name: body
+        description: The details of the record
+        required: true
+        schema:
+          $ref: '#/definitions/object.Record'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-records:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add multiple records
+        <br>
+      operationId: ApiController.AddRecords
+      parameters:
+      - in: body
+        name: body
+        description: The details of the records
+        required: true
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/object.Record'
+      - in: query
+        name: sync
+        description: Set to 'true' or '1' to enable synchronous processing
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-scan:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add a scan
+        <br>
+      operationId: ApiController.AddScan
+      parameters:
+      - in: body
+        name: body
+        description: The details of the scan
+        required: true
+        schema:
+          $ref: '#/definitions/object.Scan'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-session:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Add session for one user in one application. If there are other existing sessions, join the session into the list.
+        <br>
+      operationId: ApiController.AddSession
+      parameters:
+      - in: query
+        name: id
+        description: The id(organization/application/user) of session
+        required: true
+        type: string
+      - in: query
+        name: sessionId
+        description: sessionId to be added
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              type: string
+  /add-store:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Create a new store with specified configuration. The store is a knowledge base that stores vectors for semantic search. When creating a default store, automatically unsets other default stores. Requires appropriate permissions.
+        <br>
+      operationId: ApiController.AddStore
+      parameters:
+      - in: body
+        name: body
+        description: 'Store object with required fields: owner, name, displayName,
+          provider, embedding model configuration, etc.'
+        required: true
+        schema:
+          $ref: '#/definitions/object.Store'
+      responses:
+        "200":
+          description: '"Successfully created store, returns success status and store
+            ID"'
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid store
+            data, missing required fields, or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to create store"'
+        "409":
+          description: '{object} controllers.Response "Conflict: Store with same ID
+            already exists"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to create store"'
+  /add-task:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add task
+        <br>
+      operationId: ApiController.AddTask
+      parameters:
+      - in: body
+        name: body
+        description: The details of the task
+        required: true
+        schema:
+          $ref: '#/definitions/object.Task'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-template:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add template
+        <br>
+      operationId: ApiController.AddTemplate
+      parameters:
+      - in: body
+        name: body
+        description: The details of the template
+        required: true
+        schema:
+          $ref: '#/definitions/object.Template'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-tree-file:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add tree file
+        <br>
+      operationId: ApiController.AddTreeFile
       parameters:
       - in: query
         name: store
@@ -154,264 +718,13 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
-  /add-form:
-    post:
-      tags:
-      - Form API
-      description: add form
-      operationId: ApiController.AddForm
-      parameters:
-      - in: body
-        name: body
-        description: The details of the form
-        required: true
-        schema:
-          $ref: '#/definitions/object.Form'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /add-image:
-    post:
-      tags:
-      - Image API
-      description: add a image
-      operationId: ApiController.AddImage
-      parameters:
-      - in: body
-        name: body
-        description: The details of the image
-        required: true
-        schema:
-          $ref: '#/definitions/object.Image'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /add-machine:
-    post:
-      tags:
-      - Machine API
-      description: add a machine
-      operationId: ApiController.AddMachine
-      parameters:
-      - in: body
-        name: body
-        description: The details of the machine
-        required: true
-        schema:
-          $ref: '#/definitions/object.Machine'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /add-message:
-    post:
-      tags:
-      - Message API
-      description: add message
-      operationId: ApiController.AddMessage
-      parameters:
-      - in: body
-        name: body
-        description: The details of the message
-        required: true
-        schema:
-          $ref: '#/definitions/object.Message'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/object.Chat'
-  /add-node:
-    post:
-      tags:
-      - Node API
-      description: add a node
-      operationId: ApiController.AddNode
-      parameters:
-      - in: body
-        name: body
-        description: The details of the node
-        required: true
-        schema:
-          $ref: '#/definitions/object.Node'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /add-node-tunnel:
-    get:
-      tags:
-      - Connection API
-      description: add node tunnel session
-      operationId: ApiController.AddNodeTunnel
-      parameters:
-      - in: query
-        name: nodeId
-        description: The id of node
-        required: true
-        type: string
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/Response'
-  /add-permission:
-    post:
-      tags:
-      - Permission API
-      description: add permission
-      operationId: ApiController.AddPermission
-      parameters:
-      - in: body
-        name: body
-        description: The details of the permission
-        required: true
-        schema:
-          $ref: '#/definitions/casdoorsdk.Permission'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /add-pod:
-    post:
-      tags:
-      - Pod API
-      description: add a pod
-      operationId: ApiController.AddPod
-      parameters:
-      - in: body
-        name: body
-        description: The details of the pod
-        required: true
-        schema:
-          $ref: '#/definitions/object.Pod'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /add-provider:
-    post:
-      tags:
-      - Provider API
-      description: add provider
-      operationId: ApiController.AddProvider
-      parameters:
-      - in: body
-        name: body
-        description: The details of the provider
-        required: true
-        schema:
-          $ref: '#/definitions/object.Provider'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /add-record:
-    post:
-      tags:
-      - Record API
-      description: add a record
-      operationId: ApiController.AddRecord
-      parameters:
-      - in: body
-        name: body
-        description: The details of the record
-        required: true
-        schema:
-          $ref: '#/definitions/object.Record'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /add-records:
-    post:
-      tags:
-      - Record API
-      description: add multiple records
-      operationId: ApiController.AddRecords
-      parameters:
-      - in: body
-        name: body
-        description: The details of the record
-        required: true
-        schema:
-          type: array
-          items:
-            $ref: '#/definitions/object.Record'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /add-store:
-    post:
-      tags:
-      - Store API
-      description: add store
-      operationId: ApiController.AddStore
-      parameters:
-      - in: body
-        name: body
-        description: The details of the store
-        required: true
-        schema:
-          $ref: '#/definitions/object.Store'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /add-task:
-    post:
-      tags:
-      - Task API
-      description: add task
-      operationId: ApiController.AddTask
-      parameters:
-      - in: body
-        name: body
-        description: The details of the task
-        required: true
-        schema:
-          $ref: '#/definitions/object.Task'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /add-template:
-    post:
-      tags:
-      - Template API
-      description: add template
-      operationId: ApiController.AddTemplate
-      parameters:
-      - in: body
-        name: body
-        description: The details of the template
-        required: true
-        schema:
-          $ref: '#/definitions/object.Template'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
   /add-vector:
     post:
       tags:
-      - Vector API
-      description: add vector
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add vector
+        <br>
       operationId: ApiController.AddVector
       parameters:
       - in: body
@@ -428,8 +741,10 @@ paths:
   /add-video:
     post:
       tags:
-      - Video API
-      description: add video
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add video
+        <br>
       operationId: ApiController.AddVideo
       parameters:
       - in: body
@@ -446,8 +761,10 @@ paths:
   /add-workflow:
     post:
       tags:
-      - Workflow API
-      description: add workflow
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        add workflow
+        <br>
       operationId: ApiController.AddWorkflow
       parameters:
       - in: body
@@ -464,8 +781,10 @@ paths:
   /api/chat/completions:
     post:
       tags:
-      - OpenAI Compatible API
-      description: OpenAI compatible chat completions API
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        OpenAI compatible chat completions API
+        <br>
       operationId: ApiController.ChatCompletions
       parameters:
       - in: body
@@ -479,11 +798,28 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/openai.ChatCompletionResponse'
+  /api/wecom-bot/callback/{botId}:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        verify WeChat work bot callback URL
+        <br>
+      operationId: ApiController.WecomBotVerifyUrl
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        handle WeChat work bot messages
+        <br>
+      operationId: ApiController.WecomBotHandleMessage
   /commit-record:
     post:
       tags:
-      - Record API
-      description: commit a record
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        commit a record
+        <br>
       operationId: ApiController.CommitRecord
       parameters:
       - in: body
@@ -500,8 +836,10 @@ paths:
   /commit-record-second:
     post:
       tags:
-      - Record API
-      description: commit a record
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        commit a record
+        <br>
       operationId: ApiController.CommitRecordSecond
       parameters:
       - in: body
@@ -515,11 +853,33 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /delete-Graph:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete Graph
+        <br>
+      operationId: ApiController.DeleteGraph
+      parameters:
+      - in: body
+        name: body
+        description: The details of the Graph
+        required: true
+        schema:
+          $ref: '#/definitions/object.Graph'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /delete-all-vectors:
     post:
       tags:
-      - Vector API
-      description: delete all vectors
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete all vectors
+        <br>
       operationId: ApiController.DeleteAllVectors
       responses:
         "200":
@@ -529,8 +889,10 @@ paths:
   /delete-application:
     post:
       tags:
-      - Application API
-      description: delete application
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete application
+        <br>
       operationId: ApiController.DeleteApplication
       parameters:
       - in: body
@@ -547,8 +909,10 @@ paths:
   /delete-article:
     post:
       tags:
-      - Article API
-      description: delete article
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete article
+        <br>
       operationId: ApiController.DeleteArticle
       parameters:
       - in: body
@@ -562,29 +926,88 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
-  /delete-chat:
+  /delete-asset:
     post:
       tags:
-      - Chat API
-      description: delete chat
-      operationId: ApiController.DeleteChat
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete an asset
+        <br>
+      operationId: ApiController.DeleteAsset
       parameters:
       - in: body
         name: body
-        description: The details of the chat
+        description: The details of the asset
         required: true
         schema:
-          $ref: '#/definitions/object.Chat'
+          $ref: '#/definitions/object.Asset'
       responses:
         "200":
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /delete-caase:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete a caase
+        <br>
+      operationId: ApiController.DeleteCaase
+      parameters:
+      - in: body
+        name: body
+        description: The details of the caase
+        required: true
+        schema:
+          $ref: '#/definitions/object.Caase'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-chat:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Delete an existing chat conversation and all associated messages. This operation is irreversible and removes all chat history, messages, and metadata. Users can only delete their own chats. Requires user ownership verification.
+        <br>
+      operationId: ApiController.DeleteChat
+      parameters:
+      - in: body
+        name: body
+        description: Chat object to delete, must include at least owner, name, and
+          user fields for ownership verification
+        required: true
+        schema:
+          $ref: '#/definitions/object.Chat'
+      responses:
+        "200":
+          description: '"Successfully deleted chat and associated messages, returns
+            success status"'
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid chat data
+            or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Cannot delete other
+            users'' chats or insufficient permissions"'
+        "404":
+          description: '{object} controllers.Response "Not found: Chat does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to delete chat or messages"'
   /delete-connection:
     post:
       tags:
-      - Connection API
-      description: delete connection
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete connection
+        <br>
       operationId: ApiController.DeleteConnection
       parameters:
       - in: query
@@ -597,11 +1020,33 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/Response'
+  /delete-consultation:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete a consultation
+        <br>
+      operationId: ApiController.DeleteConsultation
+      parameters:
+      - in: body
+        name: body
+        description: The details of the consultation
+        required: true
+        schema:
+          $ref: '#/definitions/object.Consultation'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /delete-container:
     post:
       tags:
-      - Container API
-      description: delete a container
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete a container
+        <br>
       operationId: ApiController.DeleteContainer
       parameters:
       - in: body
@@ -615,12 +1060,422 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /delete-doctor:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete a doctor
+        <br>
+      operationId: ApiController.DeleteDoctor
+      parameters:
+      - in: body
+        name: body
+        description: The details of the doctor
+        required: true
+        schema:
+          $ref: '#/definitions/object.Doctor'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /delete-file:
     post:
       tags:
-      - File API
-      description: delete file
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete file object
+        <br>
       operationId: ApiController.DeleteFile
+      parameters:
+      - in: body
+        name: body
+        description: The details of the file object
+        required: true
+        schema:
+          $ref: '#/definitions/object.File'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-form:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete form
+        <br>
+      operationId: ApiController.DeleteForm
+      parameters:
+      - in: body
+        name: body
+        description: The details of the form
+        required: true
+        schema:
+          $ref: '#/definitions/object.Form'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-hospital:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete a hospital
+        <br>
+      operationId: ApiController.DeleteHospital
+      parameters:
+      - in: body
+        name: body
+        description: The details of the hospital
+        required: true
+        schema:
+          $ref: '#/definitions/object.Hospital'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-image:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete a image
+        <br>
+      operationId: ApiController.DeleteImage
+      parameters:
+      - in: body
+        name: body
+        description: The details of the image
+        required: true
+        schema:
+          $ref: '#/definitions/object.Image'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-machine:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete a machine
+        <br>
+      operationId: ApiController.DeleteMachine
+      parameters:
+      - in: body
+        name: body
+        description: The details of the machine
+        required: true
+        schema:
+          $ref: '#/definitions/object.Machine'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-message:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Delete an existing message from a chat conversation. This operation is irreversible and removes the message and its metadata. Note: Consider using this carefully as it may break conversation context for AI responses.
+        <br>
+      operationId: ApiController.DeleteMessage
+      parameters:
+      - in: body
+        name: body
+        description: Message object to delete, must include at least owner and name
+          fields
+        required: true
+        schema:
+          $ref: '#/definitions/object.Message'
+      responses:
+        "200":
+          description: '"Successfully deleted message, returns success status"'
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid message
+            data or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to delete message"'
+        "404":
+          description: '{object} controllers.Response "Not found: Message does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to delete message"'
+  /delete-node:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete a node
+        <br>
+      operationId: ApiController.DeleteNode
+      parameters:
+      - in: body
+        name: body
+        description: The details of the node
+        required: true
+        schema:
+          $ref: '#/definitions/object.Node'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-patient:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete a patient
+        <br>
+      operationId: ApiController.DeletePatient
+      parameters:
+      - in: body
+        name: body
+        description: The details of the patient
+        required: true
+        schema:
+          $ref: '#/definitions/object.Patient'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-permission:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete permission
+        <br>
+      operationId: ApiController.DeletePermission
+      parameters:
+      - in: body
+        name: body
+        description: The details of the permission
+        required: true
+        schema:
+          $ref: '#/definitions/casdoorsdk.Permission'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-pod:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete a pod
+        <br>
+      operationId: ApiController.DeletePod
+      parameters:
+      - in: body
+        name: body
+        description: The details of the pod
+        required: true
+        schema:
+          $ref: '#/definitions/object.Pod'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-provider:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Delete an existing AI provider configuration. This removes the provider from the system and any stores or chats using it will need to be reconfigured. Ensure no active services depend on this provider before deletion. Requires appropriate permissions.
+        <br>
+      operationId: ApiController.DeleteProvider
+      parameters:
+      - in: body
+        name: body
+        description: Provider object to delete, must include at least owner and name
+          fields
+        required: true
+        schema:
+          $ref: '#/definitions/object.Provider'
+      responses:
+        "200":
+          description: '"Successfully deleted provider, returns success status"'
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid provider
+            data or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to delete provider"'
+        "404":
+          description: '{object} controllers.Response "Not found: Provider does not
+            exist"'
+        "409":
+          description: '{object} controllers.Response "Conflict: Provider is in use
+            by stores or chats"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to delete provider"'
+  /delete-record:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete a record
+        <br>
+      operationId: ApiController.DeleteRecord
+      parameters:
+      - in: body
+        name: body
+        description: The details of the record
+        required: true
+        schema:
+          $ref: '#/definitions/object.Record'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-scan:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete a scan
+        <br>
+      operationId: ApiController.DeleteScan
+      parameters:
+      - in: body
+        name: body
+        description: The details of the scan
+        required: true
+        schema:
+          $ref: '#/definitions/object.Scan'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-session:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Delete session for one user in one application.
+        <br>
+      operationId: ApiController.DeleteSession
+      parameters:
+      - in: query
+        name: id
+        description: The id(organization/application/user) of session
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              type: string
+  /delete-store:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Delete an existing store and all its associated data. Cannot delete the default store - another store must be set as default first. This operation also removes all vectors and files associated with the store. Requires appropriate permissions.
+        <br>
+      operationId: ApiController.DeleteStore
+      parameters:
+      - in: body
+        name: body
+        description: Store object to delete, must include at least owner and name
+          fields
+        required: true
+        schema:
+          $ref: '#/definitions/object.Store'
+      responses:
+        "200":
+          description: '"Successfully deleted store, returns success status"'
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Cannot delete
+            default store, invalid store data, or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to delete store"'
+        "404":
+          description: '{object} controllers.Response "Not found: Store does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to delete store"'
+  /delete-task:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete task
+        <br>
+      operationId: ApiController.DeleteTask
+      parameters:
+      - in: body
+        name: body
+        description: The details of the task
+        required: true
+        schema:
+          $ref: '#/definitions/object.Task'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-template:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete template
+        <br>
+      operationId: ApiController.DeleteTemplate
+      parameters:
+      - in: body
+        name: body
+        description: The details of the template
+        required: true
+        schema:
+          $ref: '#/definitions/object.Template'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-tree-file:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete tree file
+        <br>
+      operationId: ApiController.DeleteTreeFile
       parameters:
       - in: query
         name: store
@@ -642,227 +1497,13 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
-  /delete-form:
-    post:
-      tags:
-      - Form API
-      description: delete form
-      operationId: ApiController.DeleteForm
-      parameters:
-      - in: body
-        name: body
-        description: The details of the form
-        required: true
-        schema:
-          $ref: '#/definitions/object.Form'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-image:
-    post:
-      tags:
-      - Image API
-      description: delete a image
-      operationId: ApiController.DeleteImage
-      parameters:
-      - in: body
-        name: body
-        description: The details of the image
-        required: true
-        schema:
-          $ref: '#/definitions/object.Image'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-machine:
-    post:
-      tags:
-      - Machine API
-      description: delete a machine
-      operationId: ApiController.DeleteMachine
-      parameters:
-      - in: body
-        name: body
-        description: The details of the machine
-        required: true
-        schema:
-          $ref: '#/definitions/object.Machine'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-message:
-    post:
-      tags:
-      - Message API
-      description: delete message
-      operationId: ApiController.DeleteMessage
-      parameters:
-      - in: body
-        name: body
-        description: The details of the message
-        required: true
-        schema:
-          $ref: '#/definitions/object.Message'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-node:
-    post:
-      tags:
-      - Node API
-      description: delete a node
-      operationId: ApiController.DeleteNode
-      parameters:
-      - in: body
-        name: body
-        description: The details of the node
-        required: true
-        schema:
-          $ref: '#/definitions/object.Node'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-permission:
-    post:
-      tags:
-      - Permission API
-      description: delete permission
-      operationId: ApiController.DeletePermission
-      parameters:
-      - in: body
-        name: body
-        description: The details of the permission
-        required: true
-        schema:
-          $ref: '#/definitions/casdoorsdk.Permission'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-pod:
-    post:
-      tags:
-      - Pod API
-      description: delete a pod
-      operationId: ApiController.DeletePod
-      parameters:
-      - in: body
-        name: body
-        description: The details of the pod
-        required: true
-        schema:
-          $ref: '#/definitions/object.Pod'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-provider:
-    post:
-      tags:
-      - Provider API
-      description: delete provider
-      operationId: ApiController.DeleteProvider
-      parameters:
-      - in: body
-        name: body
-        description: The details of the provider
-        required: true
-        schema:
-          $ref: '#/definitions/object.Provider'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-record:
-    post:
-      tags:
-      - Record API
-      description: delete a record
-      operationId: ApiController.DeleteRecord
-      parameters:
-      - in: body
-        name: body
-        description: The details of the record
-        required: true
-        schema:
-          $ref: '#/definitions/object.Record'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-store:
-    post:
-      tags:
-      - Store API
-      description: delete store
-      operationId: ApiController.DeleteStore
-      parameters:
-      - in: body
-        name: body
-        description: The details of the store
-        required: true
-        schema:
-          $ref: '#/definitions/object.Store'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-task:
-    post:
-      tags:
-      - Task API
-      description: delete task
-      operationId: ApiController.DeleteTask
-      parameters:
-      - in: body
-        name: body
-        description: The details of the task
-        required: true
-        schema:
-          $ref: '#/definitions/object.Task'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-template:
-    post:
-      tags:
-      - Template API
-      description: delete template
-      operationId: ApiController.DeleteTemplate
-      parameters:
-      - in: body
-        name: body
-        description: The details of the template
-        required: true
-        schema:
-          $ref: '#/definitions/object.Template'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
   /delete-vector:
     post:
       tags:
-      - Vector API
-      description: delete vector
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete vector
+        <br>
       operationId: ApiController.DeleteVector
       parameters:
       - in: body
@@ -879,8 +1520,10 @@ paths:
   /delete-video:
     post:
       tags:
-      - Video API
-      description: delete video
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete video
+        <br>
       operationId: ApiController.DeleteVideo
       parameters:
       - in: body
@@ -894,11 +1537,49 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /delete-welcome-message:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Delete a welcome message for anonymous or authenticated users. For anonymous users, verifies ownership using client IP and user agent hash. For authenticated users, verifies user ownership. Used to dismiss welcome/onboarding messages in chat interfaces.
+        <br>
+      operationId: ApiController.DeleteWelcomeMessage
+      parameters:
+      - in: body
+        name: body
+        description: Message object to delete, must include at least owner and name
+          fields
+        required: true
+        schema:
+          $ref: '#/definitions/object.Message'
+      responses:
+        "200":
+          description: '"Successfully deleted welcome message, returns success status"'
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid message
+            data or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required
+            for non-anonymous users"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: No permission to
+            delete this welcome message (user mismatch or client verification failed)"'
+        "404":
+          description: '{object} controllers.Response "Not found: Message does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to delete welcome message"'
   /delete-workflow:
     post:
       tags:
-      - Workflow API
-      description: delete workflow
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        delete workflow
+        <br>
       operationId: ApiController.DeleteWorkflow
       parameters:
       - in: body
@@ -915,16 +1596,18 @@ paths:
   /deploy-application:
     post:
       tags:
-      - Application API
-      description: deploy application synchronously
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        deploy application synchronously
+        <br>
       operationId: ApiController.DeployApplication
       parameters:
       - in: body
         name: body
-        description: The deployment request details
+        description: The details of the application
         required: true
         schema:
-          $ref: '#/definitions/ApplicationDeploymentRequest'
+          $ref: '#/definitions/object.Application'
       responses:
         "200":
           description: The Response object
@@ -933,8 +1616,10 @@ paths:
   /generate-text-to-speech-audio:
     post:
       tags:
-      - TTS API
-      description: convert text to speech
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        convert text to speech
+        <br>
       operationId: ApiController.GenerateTextToSpeechAudio
       parameters:
       - in: controllers.TextToSpeechRequest
@@ -953,8 +1638,10 @@ paths:
   /generate-text-to-speech-audio-stream:
     get:
       tags:
-      - TTS API
-      description: convert text to speech with streaming
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        convert text to speech with streaming
+        <br>
       operationId: ApiController.GenerateTextToSpeechAudioStream
       parameters:
       - in: query
@@ -969,45 +1656,95 @@ paths:
         type: string
       responses:
         "200":
-          description: '{stream} string "An event stream of audio chunks in base64 format"'
-  /get-Messages:
+          description: '{stream} string "An event stream of audio chunks in base64
+            format"'
+  /get-Graph:
     get:
       tags:
-      - Message API
-      description: get Messages
-      operationId: ApiController.GetMessages
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get Graph
+        <br>
+      operationId: ApiController.GetGraph
       parameters:
       - in: query
-        name: user
-        description: The user of message
-        required: true
-        type: string
-      - in: query
-        name: chat
-        description: The chat of message
+        name: id
+        description: The id (owner/name) of Graph
         required: true
         type: string
       responses:
         "200":
           description: The Response object
           schema:
+            $ref: '#/definitions/object.Graph'
+  /get-Messages:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get messages for a specific user and chat conversation with user isolation enforcement. Non-admin users can only view their own messages. Admin users can view all messages or filter by selectedUser. Returns all messages in a chat conversation including both user and AI responses.
+        <br>
+      operationId: ApiController.GetMessages
+      parameters:
+      - in: query
+        name: user
+        description: User ID in format 'owner/name', e.g., 'admin/user1' (optional
+          for admins)
+        type: string
+      - in: query
+        name: chat
+        description: Chat ID to filter messages by specific conversation, e.g., 'chat-123abc'
+        type: string
+      - in: query
+        name: selectedUser
+        description: Selected user for admin to view specific user's messages, e.g.,
+          'admin/user1'
+        type: string
+      responses:
+        "200":
+          description: '"Successfully returns array of message objects in chronological
+            order"'
+          schema:
             type: array
             items:
               $ref: '#/definitions/object.Message'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid parameters"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Cannot view other
+            users'' messages"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve messages"'
   /get-account:
     get:
       tags:
-      - Account API
-      description: get account
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get current user account information including user profile, roles, and permissions. Returns user claims from the active session. If no user is signed in and preview mode is enabled, creates an anonymous user session automatically.
+        <br>
       operationId: ApiController.GetAccount
       responses:
         "200":
-          description: '{casdoorsdk} casdoorsdk.Claims The Response object'
+          description: '"Successfully returns current user account information with
+            JWT claims"'
+          schema:
+            $ref: '#/definitions/casdoorsdk.Claims'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required
+            (when preview mode is disabled)"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve account information"'
   /get-active-file:
     get:
       tags:
-      - File API
-      description: get active file
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get active file
+        <br>
       operationId: ApiController.GetActiveFile
       parameters:
       - in: query
@@ -1021,8 +1758,10 @@ paths:
   /get-activities:
     get:
       tags:
-      - Activity API
-      description: get activities
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get activities
+        <br>
       operationId: ApiController.GetActivities
       parameters:
       - in: query
@@ -1040,8 +1779,10 @@ paths:
   /get-answer:
     get:
       tags:
-      - Message API
-      description: get answer
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get answer
+        <br>
       operationId: ApiController.GetAnswer
       parameters:
       - in: query
@@ -1070,8 +1811,10 @@ paths:
   /get-application:
     get:
       tags:
-      - Application API
-      description: get application
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get application
+        <br>
       operationId: ApiController.GetApplication
       parameters:
       - in: query
@@ -1084,28 +1827,13 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/object.Application'
-  /get-application-status:
-    get:
-      tags:
-      - Application API
-      description: get application deployment status
-      operationId: ApiController.GetApplicationStatus
-      parameters:
-      - in: query
-        name: id
-        description: The id (owner/name) of the application
-        required: true
-        type: string
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/object.DeploymentStatus'
   /get-applications:
     get:
       tags:
-      - Application API
-      description: get applications
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get applications
+        <br>
       operationId: ApiController.GetApplications
       parameters:
       - in: query
@@ -1123,8 +1851,10 @@ paths:
   /get-article:
     get:
       tags:
-      - Article API
-      description: get article
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get article
+        <br>
       operationId: ApiController.GetArticle
       parameters:
       - in: query
@@ -1140,8 +1870,10 @@ paths:
   /get-articles:
     get:
       tags:
-      - Article API
-      description: get articles
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get articles
+        <br>
       operationId: ApiController.GetArticles
       parameters:
       - in: query
@@ -1156,57 +1888,185 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Article'
+  /get-asset:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get asset
+        <br>
+      operationId: ApiController.GetAsset
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the asset
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Asset'
+  /get-assets:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all assets
+        <br>
+      operationId: ApiController.GetAssets
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Asset'
+  /get-caase:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get caase
+        <br>
+      operationId: ApiController.GetCaase
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the caase
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Caase'
+  /get-caases:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all caases
+        <br>
+      operationId: ApiController.GetCaases
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        required: true
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Caase'
   /get-chat:
     get:
       tags:
-      - Chat API
-      description: get chat
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get detailed information of a specific chat conversation including messages, model provider, store configuration, and metadata. Returns complete chat object with all associated data.
+        <br>
       operationId: ApiController.GetChat
       parameters:
       - in: query
         name: id
-        description: The id of chat
+        description: Chat ID in format 'owner/name', e.g., 'admin/chat-123abc'
         required: true
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns chat object with all details"'
           schema:
             $ref: '#/definitions/object.Chat'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid chat ID
+            format"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to access this chat"'
+        "404":
+          description: '{object} controllers.Response "Not found: Chat does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve chat"'
   /get-chats:
     get:
       tags:
-      - Chat API
-      description: get chats
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get chat conversations for a specific user with filtering and time range support. Enforces user isolation - non-admin users can only view their own chats. Admin users can view all chats or filter by selectedUser. Supports store filtering and time range filtering.
+        <br>
       operationId: ApiController.GetChats
       parameters:
       - in: query
         name: user
-        description: The user of chat
-        required: true
+        description: User ID in format 'owner/name', e.g., 'admin/user1' (optional
+          for admins)
         type: string
       - in: query
         name: field
-        description: The field of chat
-        required: true
+        description: Field name for filtering, e.g., 'store'
         type: string
       - in: query
         name: value
-        description: The value of chat
-        required: true
+        description: Value for field filtering, e.g., 'store-built-in'
+        type: string
+      - in: query
+        name: selectedUser
+        description: Selected user for admin to view specific user's chats, e.g.,
+          'admin/user1'
+        type: string
+      - in: query
+        name: store
+        description: Filter by store name
+        type: string
+      - in: query
+        name: startTime
+        description: Filter by start time (ISO 8601 format), e.g., '2024-01-01T00:00:00Z'
+        type: string
+      - in: query
+        name: endTime
+        description: Filter by end time (ISO 8601 format), e.g., '2024-12-31T23:59:59Z'
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns array of chat objects"'
           schema:
             type: array
             items:
               $ref: '#/definitions/object.Chat'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid parameters"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Cannot view other
+            users'' chats"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve chats"'
   /get-connection:
     get:
       tags:
-      - Connection API
-      description: get connection
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get connection
+        <br>
       operationId: ApiController.GetConnection
       parameters:
       - in: query
@@ -1222,8 +2082,10 @@ paths:
   /get-connections:
     get:
       tags:
-      - Connection API
-      description: get all connections
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all connections
+        <br>
       operationId: ApiController.GetConnections
       parameters:
       - in: query
@@ -1241,11 +2103,56 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/object.Connection'
+  /get-consultation:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get consultation
+        <br>
+      operationId: ApiController.GetConsultation
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the consultation
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Consultation'
+  /get-consultations:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all consultations
+        <br>
+      operationId: ApiController.GetConsultations
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        required: true
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Consultation'
   /get-container:
     get:
       tags:
-      - Container API
-      description: get container
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get container
+        <br>
       operationId: ApiController.GetContainer
       parameters:
       - in: query
@@ -1261,8 +2168,10 @@ paths:
   /get-containers:
     get:
       tags:
-      - Container API
-      description: get all containers
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all containers
+        <br>
       operationId: ApiController.GetContainers
       parameters:
       - in: query
@@ -1280,11 +2189,96 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/object.Container'
+  /get-doctor:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get doctor
+        <br>
+      operationId: ApiController.GetDoctor
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the doctor
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Doctor'
+  /get-doctors:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all doctors
+        <br>
+      operationId: ApiController.GetDoctors
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        required: true
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Doctor'
+  /get-file:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get file object
+        <br>
+      operationId: ApiController.GetFileMy
+      parameters:
+      - in: query
+        name: id
+        description: The id (owner/name) of the file object
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.File'
+  /get-files:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get file objects
+        <br>
+      operationId: ApiController.GetFiles
+      parameters:
+      - in: query
+        name: owner
+        description: The owner of the file object
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.File'
   /get-form:
     get:
       tags:
-      - Form API
-      description: get form
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get form
+        <br>
       operationId: ApiController.GetForm
       parameters:
       - in: query
@@ -1300,8 +2294,10 @@ paths:
   /get-form-data:
     get:
       tags:
-      - Form API
-      description: get forms
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get forms
+        <br>
       operationId: ApiController.GetFormData
       parameters:
       - in: query
@@ -1319,8 +2315,10 @@ paths:
   /get-forms:
     get:
       tags:
-      - Form API
-      description: get forms
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get forms
+        <br>
       operationId: ApiController.GetForms
       parameters:
       - in: query
@@ -1338,8 +2336,10 @@ paths:
   /get-global-articles:
     get:
       tags:
-      - Article API
-      description: get global articles
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get global articles
+        <br>
       operationId: ApiController.GetGlobalArticles
       responses:
         "200":
@@ -1351,21 +2351,75 @@ paths:
   /get-global-chats:
     get:
       tags:
-      - Chat API
-      description: get global chats
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get all global chat conversations with optional pagination, filtering and sorting. When pageSize and p parameters are provided, returns paginated results. Supports filtering by field/value pairs and sorting by specified fields. Used for admin chat management.
+        <br>
       operationId: ApiController.GetGlobalChats
+      parameters:
+      - in: query
+        name: pageSize
+        description: Number of items per page for pagination, e.g., '10'
+        type: string
+      - in: query
+        name: p
+        description: Page number for pagination, e.g., '1'
+        type: string
+      - in: query
+        name: field
+        description: Field name for filtering, e.g., 'user'
+        type: string
+      - in: query
+        name: value
+        description: Value for field filtering, e.g., 'admin/user1'
+        type: string
+      - in: query
+        name: sortField
+        description: Field name for sorting, e.g., 'createdTime'
+        type: string
+      - in: query
+        name: sortOrder
+        description: 'Sort order: ''ascend'' or ''descend'''
+        type: string
+      - in: query
+        name: store
+        description: Filter by store name
+        type: string
+      responses:
+        "200":
+          description: '"Successfully returns array of chat objects with optional
+            pagination info"'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.Chat'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve chats"'
+  /get-global-files:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get global file objects
+        <br>
+      operationId: ApiController.GetGlobalFiles
       responses:
         "200":
           description: The Response object
           schema:
             type: array
             items:
-              $ref: '#/definitions/object.Chat'
+              $ref: '#/definitions/object.File'
   /get-global-forms:
     get:
       tags:
-      - Form API
-      description: get global forms
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get global forms
+        <br>
       operationId: ApiController.GetGlobalForms
       responses:
         "200":
@@ -1374,50 +2428,153 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Form'
-  /get-global-messages:
+  /get-global-graphs:
     get:
       tags:
-      - Message API
-      description: get global messages
-      operationId: ApiController.GetGlobalMessages
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get global graphs
+        <br>
+      operationId: ApiController.GetGlobalGraphs
       responses:
         "200":
           description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.Graph'
+  /get-global-messages:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get all global messages with optional pagination, filtering and sorting. When pageSize and p parameters are provided, returns paginated results. Supports filtering by field/value pairs, sorting, and store filtering. Used for admin message management and moderation.
+        <br>
+      operationId: ApiController.GetGlobalMessages
+      parameters:
+      - in: query
+        name: pageSize
+        description: Number of items per page for pagination, e.g., '10'
+        type: string
+      - in: query
+        name: p
+        description: Page number for pagination, e.g., '1'
+        type: string
+      - in: query
+        name: field
+        description: Field name for filtering, e.g., 'author'
+        type: string
+      - in: query
+        name: value
+        description: Value for field filtering, e.g., 'AI'
+        type: string
+      - in: query
+        name: sortField
+        description: Field name for sorting, e.g., 'createdTime'
+        type: string
+      - in: query
+        name: sortOrder
+        description: 'Sort order: ''ascend'' or ''descend'''
+        type: string
+      - in: query
+        name: store
+        description: Filter by store name
+        type: string
+      responses:
+        "200":
+          description: '"Successfully returns array of message objects with optional
+            pagination info"'
           schema:
             type: array
             items:
               $ref: '#/definitions/object.Message'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve messages"'
   /get-global-providers:
     get:
       tags:
-      - Provider API
-      description: get global providers
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get all global AI providers (LLM, embedding, TTS, STT, etc.) available in the system. Returns providers with sensitive credentials masked for security. Providers include OpenAI, Azure, Anthropic, and other AI service configurations.
+        <br>
       operationId: ApiController.GetGlobalProviders
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns array of provider objects with masked
+            credentials"'
           schema:
             type: array
             items:
               $ref: '#/definitions/object.Provider'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve providers"'
   /get-global-stores:
     get:
       tags:
-      - Store API
-      description: get global stores
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get all global stores with optional pagination and filtering. When pageSize and p parameters are provided, returns paginated results with admin permission check. Supports filtering by name, field, value and sorting. Requires admin privileges for paginated access.
+        <br>
       operationId: ApiController.GetGlobalStores
+      parameters:
+      - in: query
+        name: name
+        description: Filter by store name
+        type: string
+      - in: query
+        name: pageSize
+        description: Number of items per page for pagination, e.g., '10'
+        type: string
+      - in: query
+        name: p
+        description: Page number for pagination, e.g., '1'
+        type: string
+      - in: query
+        name: field
+        description: Field name for filtering, e.g., 'owner'
+        type: string
+      - in: query
+        name: value
+        description: Value for field filtering, e.g., 'admin'
+        type: string
+      - in: query
+        name: sortField
+        description: Field name for sorting, e.g., 'createdTime'
+        type: string
+      - in: query
+        name: sortOrder
+        description: 'Sort order: ''ascend'' or ''descend'''
+        type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns array of store objects with optional
+            pagination info"'
           schema:
             type: array
             items:
               $ref: '#/definitions/object.Store'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Admin login required
+            for paginated access"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient admin
+            permissions"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve stores"'
   /get-global-tasks:
     get:
       tags:
-      - Task API
-      description: get global tasks
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get global tasks
+        <br>
       operationId: ApiController.GetGlobalTasks
       responses:
         "200":
@@ -1429,8 +2586,10 @@ paths:
   /get-global-vectors:
     get:
       tags:
-      - Vector API
-      description: get global vectors
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get global vectors
+        <br>
       operationId: ApiController.GetGlobalVectors
       responses:
         "200":
@@ -1442,8 +2601,10 @@ paths:
   /get-global-videos:
     get:
       tags:
-      - Video API
-      description: get global videos
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get global videos
+        <br>
       operationId: ApiController.GetGlobalVideos
       responses:
         "200":
@@ -1455,8 +2616,10 @@ paths:
   /get-global-workflows:
     get:
       tags:
-      - Workflow API
-      description: get global workflows
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get global workflows
+        <br>
       operationId: ApiController.GetGlobalWorkflows
       responses:
         "200":
@@ -1465,11 +2628,77 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Workflow'
+  /get-graphs:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get graphs
+        <br>
+      operationId: ApiController.GetGraphs
+      parameters:
+      - in: query
+        name: owner
+        description: The owner of Graph
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.Graph'
+  /get-hospital:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get hospital
+        <br>
+      operationId: ApiController.GetHospital
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the hospital
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Hospital'
+  /get-hospitals:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all hospitals
+        <br>
+      operationId: ApiController.GetHospitals
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        required: true
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Hospital'
   /get-image:
     get:
       tags:
-      - Image API
-      description: get image
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get image
+        <br>
       operationId: ApiController.GetImage
       parameters:
       - in: query
@@ -1485,8 +2714,10 @@ paths:
   /get-images:
     get:
       tags:
-      - Image API
-      description: get all images
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all images
+        <br>
       operationId: ApiController.GetImages
       parameters:
       - in: query
@@ -1507,8 +2738,10 @@ paths:
   /get-k8s-status:
     get:
       tags:
-      - Deployment API
-      description: get kubernetes cluster status
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get kubernetes cluster status
+        <br>
       operationId: ApiController.GetK8sStatus
       responses:
         "200":
@@ -1518,8 +2751,10 @@ paths:
   /get-machine:
     get:
       tags:
-      - Machine API
-      description: get machine
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get machine
+        <br>
       operationId: ApiController.GetMachine
       parameters:
       - in: query
@@ -1535,8 +2770,10 @@ paths:
   /get-machines:
     get:
       tags:
-      - Machine API
-      description: get all machines
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all machines
+        <br>
       operationId: ApiController.GetMachines
       parameters:
       - in: query
@@ -1557,40 +2794,79 @@ paths:
   /get-message:
     get:
       tags:
-      - Message API
-      description: get message
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get detailed information of a specific message including text content, author (User/AI), tokens used, vector scores, error details, and metadata. Returns complete message object with all associated data.
+        <br>
       operationId: ApiController.GetMessage
       parameters:
       - in: query
         name: id
-        description: The id of message
+        description: Message ID in format 'owner/name', e.g., 'admin/message-123abc'
         required: true
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns message object with all details including
+            text, author, tokens, vector scores, etc."'
           schema:
             $ref: '#/definitions/object.Message'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid message
+            ID format"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to access this message"'
+        "404":
+          description: '{object} controllers.Response "Not found: Message does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve message"'
   /get-message-answer:
     get:
       tags:
-      - Message API
-      description: get message answer
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Stream AI-generated response for a message using Server-Sent Events (SSE). Generates AI answer with RAG (Retrieval Augmented Generation) using vector search, model context, and conversation history. Supports streaming responses for real-time chat experience. Message must be an AI message with empty text waiting for response. Performs vector similarity search, retrieves relevant context, and generates response using configured LLM provider.
+        <br>
       operationId: ApiController.GetMessageAnswer
       parameters:
       - in: query
         name: id
-        description: The id of message
+        description: Message ID in format 'owner/name' for the AI message awaiting
+          response, e.g., 'admin/message-123abc'
         required: true
         type: string
       responses:
         "200":
-          description: '{stream} string "An event stream of message answers in JSON format"'
+          description: '{string} string "Event stream (text/event-stream) with JSON
+            chunks containing AI response text, tokens, vector scores, and completion
+            status"'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid message
+            ID, message is not an AI message, text is not empty, replyTo is missing,
+            or content filtered by provider"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            or rate limit exceeded"'
+        "404":
+          description: '{object} controllers.Response "Not found: Message, chat, store,
+            or provider does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to generate response, vector search failed, or LLM API error"'
   /get-node:
     get:
       tags:
-      - Node API
-      description: get node
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get node
+        <br>
       operationId: ApiController.GetNode
       parameters:
       - in: query
@@ -1606,8 +2882,10 @@ paths:
   /get-node-tunnel:
     get:
       tags:
-      - Connection API
-      description: get node tunnel session
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get node tunnel session
+        <br>
       operationId: ApiController.GetNodeTunnel
       parameters:
       - in: query
@@ -1648,8 +2926,10 @@ paths:
   /get-nodes:
     get:
       tags:
-      - Node API
-      description: get all nodes
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all nodes
+        <br>
       operationId: ApiController.GetNodes
       parameters:
       - in: query
@@ -1667,11 +2947,56 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/object.Node'
+  /get-patient:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get patient
+        <br>
+      operationId: ApiController.GetPatient
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the patient
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Patient'
+  /get-patients:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all patients
+        <br>
+      operationId: ApiController.GetPatients
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        required: true
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Patient'
   /get-permission:
     get:
       tags:
-      - Permission API
-      description: get permission
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get permission
+        <br>
       operationId: ApiController.GetPermission
       parameters:
       - in: query
@@ -1687,8 +3012,10 @@ paths:
   /get-permissions:
     get:
       tags:
-      - Permission API
-      description: get permissions
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get permissions
+        <br>
       operationId: ApiController.GetPermissions
       responses:
         "200":
@@ -1700,8 +3027,10 @@ paths:
   /get-pod:
     get:
       tags:
-      - Pod API
-      description: get pod
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get pod
+        <br>
       operationId: ApiController.GetPod
       parameters:
       - in: query
@@ -1717,8 +3046,10 @@ paths:
   /get-pods:
     get:
       tags:
-      - Pod API
-      description: get all pods
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all pods
+        <br>
       operationId: ApiController.GetPods
       parameters:
       - in: query
@@ -1739,8 +3070,10 @@ paths:
   /get-prometheus-info:
     get:
       tags:
-      - System API
-      description: get Prometheus Info
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get Prometheus Info
+        <br>
       operationId: ApiController.GetPrometheusInfo
       responses:
         "200":
@@ -1750,38 +3083,98 @@ paths:
   /get-provider:
     get:
       tags:
-      - Provider API
-      description: get provider
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get detailed information of a specific AI provider including configuration, API endpoints, and capabilities. Returns provider with masked credentials for security. Provider types include LLM models, embedding services, TTS, STT, and MCP tool providers.
+        <br>
       operationId: ApiController.GetProvider
       parameters:
       - in: query
         name: id
-        description: The id of provider
+        description: Provider ID in format 'owner/name', e.g., 'admin/provider-openai-gpt4'
         required: true
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns provider object with masked sensitive
+            credentials"'
           schema:
             $ref: '#/definitions/object.Provider'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid provider
+            ID format"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to access this provider"'
+        "404":
+          description: '{object} controllers.Response "Not found: Provider does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve provider"'
   /get-providers:
     get:
       tags:
-      - Provider API
-      description: get providers
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get providers for admin owner with optional pagination, filtering and store isolation. When pageSize and p parameters are provided, returns paginated results with admin permission check. Store isolation is enforced based on user's homepage field. Returns providers with masked credentials.
+        <br>
       operationId: ApiController.GetProviders
+      parameters:
+      - in: query
+        name: pageSize
+        description: Number of items per page for pagination, e.g., '10'
+        type: string
+      - in: query
+        name: p
+        description: Page number for pagination, e.g., '1'
+        type: string
+      - in: query
+        name: field
+        description: Field name for filtering, e.g., 'type'
+        type: string
+      - in: query
+        name: value
+        description: Value for field filtering, e.g., 'OpenAI'
+        type: string
+      - in: query
+        name: sortField
+        description: Field name for sorting, e.g., 'createdTime'
+        type: string
+      - in: query
+        name: sortOrder
+        description: 'Sort order: ''ascend'' or ''descend'''
+        type: string
+      - in: query
+        name: store
+        description: Filter by store name for store isolation
+        type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns array of provider objects with masked
+            credentials and optional pagination info"'
           schema:
             type: array
             items:
               $ref: '#/definitions/object.Provider'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Admin login required
+            for paginated access"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            or store isolation violation"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve providers"'
   /get-range-usages:
     get:
       tags:
-      - Usage API
-      description: get range usages
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get range usages
+        <br>
       operationId: ApiController.GetRangeUsages
       parameters:
       - in: query
@@ -1799,8 +3192,10 @@ paths:
   /get-record:
     get:
       tags:
-      - Record API
-      description: get record
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get record
+        <br>
       operationId: ApiController.GetRecord
       parameters:
       - in: query
@@ -1816,8 +3211,10 @@ paths:
   /get-records:
     get:
       tags:
-      - Record API
-      description: get all records
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all records
+        <br>
       operationId: ApiController.GetRecords
       parameters:
       - in: query
@@ -1835,11 +3232,100 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/object.Record'
+  /get-scan:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get scan
+        <br>
+      operationId: ApiController.GetScan
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the scan
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Scan'
+  /get-scans:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get all scans
+        <br>
+      operationId: ApiController.GetScans
+      parameters:
+      - in: query
+        name: pageSize
+        description: The size of each page
+        type: string
+      - in: query
+        name: p
+        description: The number of the page
+        type: string
+      - in: query
+        name: asset
+        description: Filter by asset name
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Scan'
+  /get-session:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get session for one user in one application.
+        <br>
+      operationId: ApiController.GetSingleSession
+      parameters:
+      - in: query
+        name: id
+        description: The id(organization/user) of session
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              type: string
+  /get-sessions:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get organization user sessions.
+        <br>
+      operationId: ApiController.GetSessions
+      parameters:
+      - in: query
+        name: owner
+        description: The organization name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              type: string
   /get-storage-providers:
     get:
       tags:
-      - Storage Provider API
-      description: get storage providers
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get storage providers
+        <br>
       operationId: ApiController.GetStorageProviders
       responses:
         "200":
@@ -1851,44 +3337,104 @@ paths:
   /get-store:
     get:
       tags:
-      - Store API
-      description: get store
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get detailed information of a specific store including configuration, statistics, and settings. Populates store data with origin and language-specific information. Special handling for default store with ID 'admin/_casibase_default_store_'.
+        <br>
       operationId: ApiController.GetStore
       parameters:
       - in: query
         name: id
-        description: The id (owner/name) of the store
+        description: Store ID in format 'owner/name', e.g., 'admin/store-built-in'
+          or 'admin/_casibase_default_store_' for default store
         required: true
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns store object with all configuration
+            and statistics"'
           schema:
             $ref: '#/definitions/object.Store'
-  /get-stores:
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid store
+            ID format"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to access this store"'
+        "404":
+          description: '{object} controllers.Response "Not found: Store does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve or populate store data"'
+  /get-store-names:
     get:
       tags:
-      - Store API
-      description: get stores
-      operationId: ApiController.GetStores
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get a lightweight list of stores with only name and display name fields for the specified owner. Returns minimal store data optimized for dropdown lists and selection UIs. Store isolation is applied based on user's homepage field.
+        <br>
+      operationId: ApiController.GetStoreNames
       parameters:
       - in: query
         name: owner
-        description: The owner of the store
+        description: Owner of the stores, typically 'admin', e.g., 'admin'
         required: true
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns array of store objects with only name
+            and displayName fields"'
           schema:
             type: array
             items:
               $ref: '#/definitions/object.Store'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid owner
+            parameter"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve store names"'
+  /get-stores:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get all stores for a specific owner with store isolation applied based on user's homepage field. Returns stores filtered by the user's access permissions.
+        <br>
+      operationId: ApiController.GetStores
+      parameters:
+      - in: query
+        name: owner
+        description: Owner of the stores, typically 'admin', e.g., 'admin'
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '"Successfully returns array of store objects accessible to
+            the user"'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.Store'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid owner
+            parameter"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve stores"'
   /get-system-info:
     get:
       tags:
-      - System API
-      description: get system info like CPU and memory usage
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get system info like CPU and memory usage
+        <br>
       operationId: ApiController.GetSystemInfo
       responses:
         "200":
@@ -1898,8 +3444,10 @@ paths:
   /get-task:
     get:
       tags:
-      - Task API
-      description: get task
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get task
+        <br>
       operationId: ApiController.GetTask
       parameters:
       - in: query
@@ -1915,8 +3463,10 @@ paths:
   /get-tasks:
     get:
       tags:
-      - Task API
-      description: get tasks
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get tasks
+        <br>
       operationId: ApiController.GetTasks
       parameters:
       - in: query
@@ -1934,8 +3484,10 @@ paths:
   /get-template:
     get:
       tags:
-      - Template API
-      description: get template
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get template
+        <br>
       operationId: ApiController.GetTemplate
       parameters:
       - in: query
@@ -1951,8 +3503,10 @@ paths:
   /get-templates:
     get:
       tags:
-      - Template API
-      description: get templates
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get templates
+        <br>
       operationId: ApiController.GetTemplates
       parameters:
       - in: query
@@ -1970,8 +3524,10 @@ paths:
   /get-usages:
     get:
       tags:
-      - Usage API
-      description: get userTableInfos
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get userTableInfos
+        <br>
       operationId: ApiController.GetUserTableInfos
       responses:
         "200":
@@ -1983,8 +3539,10 @@ paths:
   /get-users:
     get:
       tags:
-      - Usage API
-      description: get users
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get users
+        <br>
       operationId: ApiController.GetUsers
       responses:
         "200":
@@ -1996,8 +3554,10 @@ paths:
   /get-vectors:
     get:
       tags:
-      - Vector API
-      description: get vectors
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get vectors
+        <br>
       operationId: ApiController.GetVectors
       responses:
         "200":
@@ -2009,8 +3569,10 @@ paths:
   /get-version-info:
     get:
       tags:
-      - System API
-      description: get version info like Casdoor release version and commit ID
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get version info like Casdoor release version and commit ID
+        <br>
       operationId: ApiController.GetVersionInfo
       responses:
         "200":
@@ -2020,8 +3582,10 @@ paths:
   /get-video:
     get:
       tags:
-      - Video API
-      description: get video
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get video
+        <br>
       operationId: ApiController.GetVideo
       parameters:
       - in: query
@@ -2037,8 +3601,10 @@ paths:
   /get-videos:
     get:
       tags:
-      - Video API
-      description: get videos
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get videos
+        <br>
       operationId: ApiController.GetVideos
       parameters:
       - in: query
@@ -2056,8 +3622,10 @@ paths:
   /get-workflow:
     get:
       tags:
-      - Workflow API
-      description: get workflow
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get workflow
+        <br>
       operationId: ApiController.GetWorkflow
       parameters:
       - in: query
@@ -2073,8 +3641,10 @@ paths:
   /get-workflows:
     get:
       tags:
-      - Workflow API
-      description: get workflows
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get workflows
+        <br>
       operationId: ApiController.GetWorkflows
       parameters:
       - in: query
@@ -2092,19 +3662,89 @@ paths:
   /health:
     get:
       tags:
-      - System API
-      description: check if the system is live
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        check if the system is live
+        <br>
       operationId: ApiController.Health
       responses:
         "200":
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /install-patch:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        install an OS patch by patch ID (KB number or title) asynchronously
+        <br>
+      operationId: ApiController.InstallPatch
+      parameters:
+      - in: query
+        name: provider
+        description: The provider ID (owner/name)
+        required: true
+        type: string
+      - in: query
+        name: patchId
+        description: The patch ID (KB number or title)
+        required: true
+        type: string
+      - in: query
+        name: scan
+        description: The scan ID (owner/name) for async execution
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /is-session-duplicated:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Check if there are other different sessions for one user in one application.
+        <br>
+      operationId: ApiController.IsSessionDuplicated
+      parameters:
+      - in: query
+        name: id
+        description: The id(organization/application/user) of session
+        required: true
+        type: string
+      - in: query
+        name: sessionId
+        description: sessionId to be checked
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              type: string
+  /metrics:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        get Prometheus metrics
+        <br>
+      operationId: ApiController.GetMetrics
+      responses:
+        "200":
+          description: '{string} string The Response metrics in Prometheus format'
   /process-speech-to-text:
     post:
       tags:
-      - STT API
-      description: convert speech to text
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        convert speech to text
+        <br>
       operationId: ApiController.ProcessSpeechToText
       parameters:
       - in: formData
@@ -2125,8 +3765,10 @@ paths:
   /query-record:
     get:
       tags:
-      - Record API
-      description: query record
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        query record
+        <br>
       operationId: ApiController.QueryRecord
       parameters:
       - in: query
@@ -2142,8 +3784,10 @@ paths:
   /query-record-second:
     get:
       tags:
-      - Record API
-      description: query record
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        query record
+        <br>
       operationId: ApiController.QueryRecordSecond
       parameters:
       - in: query
@@ -2159,34 +3803,136 @@ paths:
   /refresh-mcp-tools:
     post:
       tags:
-      - Provider API
-      description: refresh Mcp tools
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Refresh and reload Model Context Protocol (MCP) tools from the specified provider. MCP providers expose external tools and functions that can be used by AI models. This operation fetches the latest tool definitions and capabilities from the MCP server. Requires appropriate permissions.
+        <br>
       operationId: ApiController.RefreshMcpTools
       parameters:
       - in: body
         name: body
-        description: The details of the provider
+        description: Provider object with owner and name to identify which MCP provider
+          to refresh
         required: true
         schema:
           $ref: '#/definitions/object.Provider'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully refreshed MCP tools, returns updated provider
+            object with refreshed tool list"'
           schema:
-            $ref: '#/definitions/controllers.Response'
+            $ref: '#/definitions/object.Provider'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid provider
+            data, not an MCP provider, or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to refresh MCP tools"'
+        "404":
+          description: '{object} controllers.Response "Not found: Provider does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to connect to MCP server or refresh tools"'
   /refresh-store-vectors:
     post:
       tags:
-      - Store API
-      description: refresh store vectors
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Refresh and regenerate all vectors in the specified store by re-embedding all documents. This is useful after changing embedding models or updating store configuration. The operation may take significant time for large stores. Requires appropriate permissions.
+        <br>
       operationId: ApiController.RefreshStoreVectors
       parameters:
       - in: body
         name: body
-        description: The details of the store
+        description: Store object with owner and name to identify which store's vectors
+          to refresh
         required: true
         schema:
           $ref: '#/definitions/object.Store'
+      responses:
+        "200":
+          description: '"Successfully refreshed vectors, returns success status"'
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid store
+            data or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to refresh store vectors"'
+        "404":
+          description: '{object} controllers.Response "Not found: Store does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to refresh vectors or embedding service unavailable"'
+  /scan-asset:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        unified API for scanning assets (combines test-scan and start-scan functionality)
+        <br>
+      operationId: ApiController.ScanAsset
+      parameters:
+      - in: query
+        name: provider
+        description: The provider ID (owner/name)
+        required: true
+        type: string
+      - in: query
+        name: scan
+        description: The scan ID (owner/name) for saving results
+        type: string
+      - in: query
+        name: targetMode
+        description: 'Target mode: ''Manual Input'' or ''Asset'''
+        required: true
+        type: string
+      - in: query
+        name: target
+        description: Manual input target (IP address or network range)
+        type: string
+      - in: query
+        name: asset
+        description: Asset ID (owner/name) for Asset mode
+        type: string
+      - in: query
+        name: command
+        description: Scan command with optional %s placeholder for target
+        type: string
+      - in: query
+        name: saveToScan
+        description: Whether to save results to scan object (true/false)
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /scan-assets:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        scan assets from a cloud provider
+        <br>
+      operationId: ApiController.ScanAssets
+      parameters:
+      - in: query
+        name: owner
+        description: The owner
+        required: true
+        type: string
+      - in: query
+        name: provider
+        description: The provider name
+        required: true
+        type: string
       responses:
         "200":
           description: The Response object
@@ -2195,39 +3941,63 @@ paths:
   /signin:
     post:
       tags:
-      - Account API
-      description: sign in
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Authenticate user with OAuth2 authorization code and return JWT claims. This endpoint exchanges the OAuth2 authorization code for an access token and creates a new user session. Requires valid OAuth2 code and state from Casdoor authentication flow.
+        <br>
       operationId: ApiController.Signin
       parameters:
       - in: query
         name: code
-        description: code of account
+        description: OAuth2 authorization code from Casdoor authentication, e.g.,
+          'abc123def456'
         required: true
         type: string
       - in: query
         name: state
-        description: state of account
+        description: OAuth2 state parameter for CSRF protection, e.g., 'random-state-string'
         required: true
         type: string
       responses:
         "200":
-          description: '{casdoorsdk} casdoorsdk.Claims The Response object'
+          description: '"Successfully authenticated and returns JWT claims with user
+            information and access token"'
+          schema:
+            $ref: '#/definitions/casdoorsdk.Claims'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid or expired
+            authorization code"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Authentication
+            failed"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to process authentication"'
   /signout:
     post:
       tags:
-      - Account API
-      description: sign out
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Sign out the current user by clearing session data and invalidating the session ID. Requires an active user session.
+        <br>
       operationId: ApiController.Signout
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully signed out"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: No active session"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to clear session"'
   /start-connection:
     post:
       tags:
-      - Connection API
-      description: start connection
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        start connection
+        <br>
       operationId: ApiController.StartConnection
       parameters:
       - in: query
@@ -2243,8 +4013,10 @@ paths:
   /stop-connection:
     post:
       tags:
-      - Connection API
-      description: stop connection
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        stop connection
+        <br>
       operationId: ApiController.StopConnection
       parameters:
       - in: query
@@ -2260,16 +4032,43 @@ paths:
   /undeploy-application:
     post:
       tags:
-      - Application API
-      description: undeploy application synchronously
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        undeploy application synchronously
+        <br>
       operationId: ApiController.UndeployApplication
       parameters:
       - in: body
         name: body
-        description: The deployment request details
+        description: The details of the application
         required: true
         schema:
-          $ref: '#/definitions/ApplicationDeploymentRequest'
+          $ref: '#/definitions/object.Application'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /update-Graph:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update Graph
+        <br>
+      operationId: ApiController.UpdateGraph
+      parameters:
+      - in: query
+        name: id
+        description: The id (owner/name) of the Graph
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the Graph
+        required: true
+        schema:
+          $ref: '#/definitions/object.Graph'
       responses:
         "200":
           description: The Response object
@@ -2278,8 +4077,10 @@ paths:
   /update-application:
     post:
       tags:
-      - Application API
-      description: update application
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update application
+        <br>
       operationId: ApiController.UpdateApplication
       parameters:
       - in: query
@@ -2301,8 +4102,10 @@ paths:
   /update-article:
     post:
       tags:
-      - Article API
-      description: update article
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update article
+        <br>
       operationId: ApiController.UpdateArticle
       parameters:
       - in: query
@@ -2321,34 +4124,102 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
-  /update-chat:
+  /update-asset:
     post:
       tags:
-      - Chat API
-      description: update Chat
-      operationId: ApiController.UpdateChat
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update asset
+        <br>
+      operationId: ApiController.UpdateAsset
       parameters:
       - in: query
         name: id
-        description: The id (owner/name) of the chat
+        description: The id ( owner/name ) of the asset
         required: true
         type: string
       - in: body
         name: body
-        description: The details of the chat
+        description: The details of the asset
         required: true
         schema:
-          $ref: '#/definitions/object.Chat'
+          $ref: '#/definitions/object.Asset'
       responses:
         "200":
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /update-caase:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update caase
+        <br>
+      operationId: ApiController.UpdateCaase
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the caase
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the caase
+        required: true
+        schema:
+          $ref: '#/definitions/object.Caase'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /update-chat:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Update an existing chat conversation's configuration including model provider, temperature, message history, and other settings. Users can only update their own chats. In demo mode, only ModelProvider can be updated. Requires user ownership verification.
+        <br>
+      operationId: ApiController.UpdateChat
+      parameters:
+      - in: query
+        name: id
+        description: Chat ID in format 'owner/name', e.g., 'admin/chat-123abc'
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Complete chat object with updated fields including name, displayName,
+          type, category, modelProvider, store, temperature, etc.
+        required: true
+        schema:
+          $ref: '#/definitions/object.Chat'
+      responses:
+        "200":
+          description: '"Successfully updated chat, returns success status"'
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid chat data
+            or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Cannot update other
+            users'' chats or insufficient permissions"'
+        "404":
+          description: '{object} controllers.Response "Not found: Chat does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to update chat"'
   /update-connection:
     post:
       tags:
-      - Connection API
-      description: update connection
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update connection
+        <br>
       operationId: ApiController.UpdateConnection
       parameters:
       - in: query
@@ -2367,11 +4238,38 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/Response'
+  /update-consultation:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update consultation
+        <br>
+      operationId: ApiController.UpdateConsultation
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the consultation
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the consultation
+        required: true
+        schema:
+          $ref: '#/definitions/object.Consultation'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /update-container:
     post:
       tags:
-      - Container API
-      description: update container
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update container
+        <br>
       operationId: ApiController.UpdateContainer
       parameters:
       - in: query
@@ -2390,26 +4288,48 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
-  /update-file:
+  /update-doctor:
     post:
       tags:
-      - File API
-      description: update file
-      operationId: ApiController.UpdateFile
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update doctor
+        <br>
+      operationId: ApiController.UpdateDoctor
       parameters:
       - in: query
-        name: storeId
-        description: The store id of the file
-        required: true
-        type: string
-      - in: query
-        name: key
-        description: The key of the file
+        name: id
+        description: The id ( owner/name ) of the doctor
         required: true
         type: string
       - in: body
         name: body
-        description: The details of the File
+        description: The details of the doctor
+        required: true
+        schema:
+          $ref: '#/definitions/object.Doctor'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /update-file:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update file object
+        <br>
+      operationId: ApiController.UpdateFile
+      parameters:
+      - in: query
+        name: id
+        description: The id (owner/name) of the file object
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the file object
         required: true
         schema:
           $ref: '#/definitions/object.File'
@@ -2421,8 +4341,10 @@ paths:
   /update-form:
     post:
       tags:
-      - Form API
-      description: update form
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update form
+        <br>
       operationId: ApiController.UpdateForm
       parameters:
       - in: query
@@ -2441,11 +4363,38 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /update-hospital:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update hospital
+        <br>
+      operationId: ApiController.UpdateHospital
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the hospital
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the hospital
+        required: true
+        schema:
+          $ref: '#/definitions/object.Hospital'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /update-image:
     post:
       tags:
-      - Image API
-      description: update image
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update image
+        <br>
       operationId: ApiController.UpdateImage
       parameters:
       - in: query
@@ -2467,8 +4416,10 @@ paths:
   /update-machine:
     post:
       tags:
-      - Machine API
-      description: update machine
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update machine
+        <br>
       operationId: ApiController.UpdateMachine
       parameters:
       - in: query
@@ -2490,31 +4441,54 @@ paths:
   /update-message:
     post:
       tags:
-      - Message API
-      description: update message
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Update an existing message's content and metadata including text, author, tokens, vector scores, error information, and notification settings. Users can only update their own messages. Supports email notification if NeedNotify flag is set. Use isHitOnly parameter for updating only hit/feedback fields without full update.
+        <br>
       operationId: ApiController.UpdateMessage
       parameters:
       - in: query
         name: id
-        description: The id (owner/name) of the message
+        description: Message ID in format 'owner/name', e.g., 'admin/message-123abc'
         required: true
+        type: string
+      - in: query
+        name: isHitOnly
+        description: Update only hit/feedback fields when set to 'true', e.g., 'true'
         type: string
       - in: body
         name: body
-        description: The details of the message
+        description: Complete message object with updated fields including text, author,
+          tokenCount, vectorScores, errorText, needNotify, etc.
         required: true
         schema:
           $ref: '#/definitions/object.Message'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully updated message, returns success status"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid message
+            data or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Cannot update other
+            users'' messages or insufficient permissions"'
+        "404":
+          description: '{object} controllers.Response "Not found: Message does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to update message or send email notification"'
   /update-node:
     post:
       tags:
-      - Node API
-      description: update node
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update node
+        <br>
       operationId: ApiController.UpdateNode
       parameters:
       - in: query
@@ -2533,11 +4507,38 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /update-patient:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update patient
+        <br>
+      operationId: ApiController.UpdatePatient
+      parameters:
+      - in: query
+        name: id
+        description: The id ( owner/name ) of the patient
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the patient
+        required: true
+        schema:
+          $ref: '#/definitions/object.Patient'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /update-permission:
     post:
       tags:
-      - Permission API
-      description: update permission
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update permission
+        <br>
       operationId: ApiController.UpdatePermission
       parameters:
       - in: body
@@ -2554,8 +4555,10 @@ paths:
   /update-pod:
     post:
       tags:
-      - Pod API
-      description: update pod
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update pod
+        <br>
       operationId: ApiController.UpdatePod
       parameters:
       - in: query
@@ -2577,31 +4580,50 @@ paths:
   /update-provider:
     post:
       tags:
-      - Provider API
-      description: update provider
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Update an existing AI provider's configuration including API keys, endpoints, model settings, and capabilities. Use this to modify provider credentials, change model parameters, or update service configurations. Requires appropriate permissions.
+        <br>
       operationId: ApiController.UpdateProvider
       parameters:
       - in: query
         name: id
-        description: The id (owner/name) of the provider
+        description: Provider ID in format 'owner/name', e.g., 'admin/provider-openai-gpt4'
         required: true
         type: string
       - in: body
         name: body
-        description: The details of the provider
+        description: Complete provider object with updated fields including type,
+          clientId, clientSecret, host, models, etc.
         required: true
         schema:
           $ref: '#/definitions/object.Provider'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully updated provider, returns success status"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid provider
+            data, missing required fields, or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to update provider"'
+        "404":
+          description: '{object} controllers.Response "Not found: Provider does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to update provider"'
   /update-record:
     post:
       tags:
-      - Record API
-      description: update record
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update record
+        <br>
       operationId: ApiController.UpdateRecord
       parameters:
       - in: query
@@ -2620,34 +4642,98 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
-  /update-store:
+  /update-scan:
     post:
       tags:
-      - Store API
-      description: update store
-      operationId: ApiController.UpdateStore
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update scan
+        <br>
+      operationId: ApiController.UpdateScan
       parameters:
       - in: query
         name: id
-        description: The id (owner/name) of the store
+        description: The id ( owner/name ) of the scan
         required: true
         type: string
       - in: body
         name: body
-        description: The details of the store
+        description: The details of the scan
         required: true
         schema:
-          $ref: '#/definitions/object.Store'
+          $ref: '#/definitions/object.Scan'
       responses:
         "200":
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /update-session:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Update session for one user in one application.
+        <br>
+      operationId: ApiController.UpdateSession
+      parameters:
+      - in: query
+        name: id
+        description: The id(organization/application/user) of session
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              type: string
+  /update-store:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Update an existing store's configuration and settings. Handles default store logic: prevents removing default status from the only default store, and automatically unsets other stores when setting a new default. Requires appropriate permissions.
+        <br>
+      operationId: ApiController.UpdateStore
+      parameters:
+      - in: query
+        name: id
+        description: Store ID in format 'owner/name', e.g., 'admin/store-built-in'
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Complete store object with updated fields including name, displayName,
+          provider, embedding model, etc.
+        required: true
+        schema:
+          $ref: '#/definitions/object.Store'
+      responses:
+        "200":
+          description: '"Successfully updated store, returns success status"'
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid store
+            data, cannot unset default store, or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to update store"'
+        "404":
+          description: '{object} controllers.Response "Not found: Store does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to update store"'
   /update-task:
     post:
       tags:
-      - Task API
-      description: update task
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update task
+        <br>
       operationId: ApiController.UpdateTask
       parameters:
       - in: query
@@ -2669,8 +4755,10 @@ paths:
   /update-template:
     post:
       tags:
-      - Template API
-      description: update template
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update template
+        <br>
       operationId: ApiController.UpdateTemplate
       parameters:
       - in: query
@@ -2689,11 +4777,43 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /update-tree-file:
+    post:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update tree file
+        <br>
+      operationId: ApiController.UpdateTreeFile
+      parameters:
+      - in: query
+        name: storeId
+        description: The store id of the file
+        required: true
+        type: string
+      - in: query
+        name: key
+        description: The key of the file
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The details of the Tree File
+        required: true
+        schema:
+          $ref: '#/definitions/object.TreeFile'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /update-vector:
     post:
       tags:
-      - Vector API
-      description: update vector
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update vector
+        <br>
       operationId: ApiController.UpdateVector
       parameters:
       - in: query
@@ -2715,8 +4835,10 @@ paths:
   /update-video:
     post:
       tags:
-      - Video API
-      description: update video
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update video
+        <br>
       operationId: ApiController.UpdateVideo
       parameters:
       - in: query
@@ -2738,8 +4860,10 @@ paths:
   /update-workflow:
     post:
       tags:
-      - Workflow API
-      description: update workflow
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        update workflow
+        <br>
       operationId: ApiController.UpdateWorkflow
       parameters:
       - in: query
@@ -2761,8 +4885,10 @@ paths:
   /upload-file:
     post:
       tags:
-      - File API
-      description: upload file to casdoor storage
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        upload file to casdoor storage
+        <br>
       operationId: ApiController.UploadFile
       parameters:
       - in: formData
@@ -2788,8 +4914,10 @@ paths:
   /upload-video:
     post:
       tags:
-      - Video API
-      description: upload video
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        upload video
+        <br>
       operationId: ApiController.UploadVideo
       parameters:
       - in: formData
@@ -2803,14 +4931,11 @@ paths:
           schema:
             type: string
 definitions:
-  199312.File:
-    title: File
+  345824.TreeFile:
+    title: TreeFile
     type: object
-  202307.Properties:
+  349715.Properties:
     title: Properties
-    type: object
-  ApplicationDeploymentRequest:
-    title: ApplicationDeploymentRequest
     type: object
   Response:
     title: Response
@@ -2825,6 +4950,9 @@ definitions:
         type: string
       tools:
         type: string
+  casdoorsdk.Claims:
+    title: Claims
+    type: object
   casdoorsdk.Permission:
     title: Permission
     type: object
@@ -2833,13 +4961,9 @@ definitions:
     type: object
     properties:
       data:
-        additionalProperties:
-          description: support string, struct or []struct
-          type: string
+        $ref: '#/definitions/controllers.interface'
       data2:
-        additionalProperties:
-          description: support string, struct or []struct
-          type: string
+        $ref: '#/definitions/controllers.interface'
       msg:
         type: string
       status:
@@ -2847,9 +4971,34 @@ definitions:
   controllers.SpeechToTextResponse:
     title: SpeechToTextResponse
     type: object
-  object:
-    title: object
+  controllers.interface:
+    title: interface
     type: object
+  model.SearchResult:
+    title: SearchResult
+    type: object
+    properties:
+      icon:
+        type: string
+      index:
+        type: integer
+        format: int64
+      site_name:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+  model.ToolCall:
+    title: ToolCall
+    type: object
+    properties:
+      arguments:
+        type: string
+      content:
+        type: string
+      name:
+        type: string
   object.Activity:
     title: Activity
     type: object
@@ -2864,25 +5013,100 @@ definitions:
     title: Application
     type: object
     properties:
+      basicConfigOptions:
+        type: array
+        items:
+          $ref: '#/definitions/object.applicationConfigOption'
       createdTime:
         type: string
       description:
         type: string
+      details:
+        $ref: '#/definitions/object.ApplicationView'
       displayName:
+        type: string
+      manifest:
+        description: Deployment manifest
         type: string
       name:
         type: string
       namespace:
+        description: Kubernetes namespace (auto-generated)
         type: string
       owner:
         type: string
       parameters:
         type: string
       status:
+        description: Running, Pending, Failed, Not Deployed
         type: string
       template:
+        description: Reference to Template.Name
         type: string
       updatedTime:
+        type: string
+      url:
+        description: Available service URL
+        type: string
+  object.ApplicationEvent:
+    title: ApplicationEvent
+    type: object
+    properties:
+      count:
+        description: Event occurrence count
+        type: integer
+        format: int64
+      firstTime:
+        description: First occurrence time
+        type: string
+      involvedObject:
+        description: Related object
+        type: string
+      lastTime:
+        description: Last occurrence time
+        type: string
+      message:
+        description: Event message
+        type: string
+      name:
+        description: Event name
+        type: string
+      reason:
+        description: Event reason
+        type: string
+      source:
+        description: Event source
+        type: string
+      type:
+        description: 'Event type: Normal, Warning'
+        type: string
+  object.ApplicationView:
+    title: ApplicationView
+    type: object
+    properties:
+      createdTime:
+        type: string
+      credentials:
+        type: array
+        items:
+          $ref: '#/definitions/object.EnvVariable'
+      deployments:
+        type: array
+        items:
+          $ref: '#/definitions/object.DeploymentDetail'
+      events:
+        type: array
+        items:
+          $ref: '#/definitions/object.ApplicationEvent'
+      metrics:
+        $ref: '#/definitions/object.ResourceMetrics'
+      namespace:
+        type: string
+      services:
+        type: array
+        items:
+          $ref: '#/definitions/object.ServiceDetail'
+      status:
         type: string
   object.Article:
     title: Article
@@ -2904,11 +5128,45 @@ definitions:
         type: string
       owner:
         type: string
-      provider:
-        type: string
       text:
         type: string
       type:
+        type: string
+      workflow:
+        type: string
+  object.Asset:
+    title: Asset
+    type: object
+    properties:
+      createdTime:
+        type: string
+      displayName:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      password:
+        type: string
+      properties:
+        type: string
+      provider:
+        type: string
+      region:
+        type: string
+      state:
+        type: string
+      tag:
+        type: string
+      type:
+        type: string
+      updatedTime:
+        type: string
+      username:
+        type: string
+      zone:
         type: string
   object.Block:
     title: Block
@@ -2924,6 +5182,48 @@ definitions:
         type: string
       type:
         type: string
+  object.Caase:
+    title: Caase
+    type: object
+    properties:
+      createdTime:
+        type: string
+      diagnosis:
+        type: string
+      diagnosisDate:
+        type: string
+      displayName:
+        type: string
+      doctorName:
+        type: string
+      followUp:
+        type: string
+      hisInterfaceInfo:
+        type: string
+      hospitalName:
+        type: string
+      integratedCareOrganizationId:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      patientName:
+        type: string
+      prescription:
+        type: string
+      primaryCarePhysician:
+        type: string
+      specialistAllianceId:
+        type: string
+      symptoms:
+        type: string
+      type:
+        type: string
+      updatedTime:
+        type: string
+      variation:
+        type: boolean
   object.Chat:
     title: Chat
     type: object
@@ -3039,6 +5339,30 @@ definitions:
       width:
         type: integer
         format: int64
+  object.Consultation:
+    title: Consultation
+    type: object
+    properties:
+      createdTime:
+        type: string
+      displayName:
+        type: string
+      doctorNames:
+        type: array
+        items:
+          type: string
+      expiredTime:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      patientName:
+        type: string
+      state:
+        type: string
+      updatedTime:
+        type: string
   object.Container:
     title: Container
     type: object
@@ -3071,34 +5395,110 @@ definitions:
         type: string
       status:
         type: string
-  object.DeploymentStatus:
-    title: DeploymentStatus
+  object.ContainerDetail:
+    title: ContainerDetail
     type: object
+    properties:
+      image:
+        type: string
+      name:
+        type: string
+      resources:
+        $ref: '#/definitions/object.ResourceRequests'
+  object.DeploymentDetail:
+    title: DeploymentDetail
+    type: object
+    properties:
+      containers:
+        type: array
+        items:
+          $ref: '#/definitions/object.ContainerDetail'
+      createdTime:
+        type: string
+      name:
+        type: string
+      readyReplicas:
+        type: integer
+        format: int32
+      replicas:
+        type: integer
+        format: int32
+      status:
+        type: string
+  object.Doctor:
+    title: Doctor
+    type: object
+    properties:
+      accessLevel:
+        type: string
+      createdTime:
+        type: string
+      department:
+        type: string
+      displayName:
+        type: string
+      gender:
+        type: string
+      hospitalName:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      updatedTime:
+        type: string
+  object.EnvVariable:
+    title: EnvVariable
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+  object.ExampleQuestion:
+    title: ExampleQuestion
+    type: object
+    properties:
+      image:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
   object.File:
     title: File
     type: object
     properties:
-      children:
-        type: array
-        items:
-          $ref: '#/definitions/object.File'
       createdTime:
         type: string
-      isLeaf:
-        type: boolean
-      key:
+      displayName:
+        type: string
+      filename:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      path:
         type: string
       size:
         type: integer
         format: int64
-      title:
+      status:
         type: string
-      url:
+      storageProvider:
         type: string
+      store:
+        type: string
+      tokenCount:
+        type: integer
+        format: int64
   object.Form:
     title: Form
     type: object
     properties:
+      category:
+        type: string
       createdTime:
         type: string
       displayName:
@@ -3112,6 +5512,8 @@ definitions:
       owner:
         type: string
       position:
+        type: string
+      tag:
         type: string
       type:
         type: string
@@ -3127,6 +5529,8 @@ definitions:
         type: string
       type:
         type: string
+      visible:
+        type: boolean
       width:
         type: string
   object.GaugeVecInfo:
@@ -3140,6 +5544,35 @@ definitions:
       throughput:
         type: number
         format: double
+  object.Graph:
+    title: Graph
+    type: object
+    properties:
+      category:
+        type: string
+      createdTime:
+        type: string
+      density:
+        type: integer
+        format: int64
+      displayName:
+        type: string
+      endTime:
+        type: string
+      errorText:
+        type: string
+      layout:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      startTime:
+        type: string
+      store:
+        type: string
+      text:
+        type: string
   object.HistogramVecInfo:
     title: HistogramVecInfo
     type: object
@@ -3152,6 +5585,22 @@ definitions:
       method:
         type: string
       name:
+        type: string
+  object.Hospital:
+    title: Hospital
+    type: object
+    properties:
+      address:
+        type: string
+      createdTime:
+        type: string
+      displayName:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      updatedTime:
         type: string
   object.Image:
     title: Image
@@ -3370,6 +5819,10 @@ definitions:
         type: string
       replyTo:
         type: string
+      searchResults:
+        type: array
+        items:
+          $ref: '#/definitions/model.SearchResult'
       store:
         type: string
       suggestions:
@@ -3384,12 +5837,20 @@ definitions:
       tokenCount:
         type: integer
         format: int64
+      toolCalls:
+        type: array
+        items:
+          $ref: '#/definitions/model.ToolCall'
+      transactionId:
+        type: string
       user:
         type: string
       vectorScores:
         type: array
         items:
           $ref: '#/definitions/object.VectorScore'
+      webSearchEnabled:
+        type: boolean
   object.Node:
     title: Node
     type: object
@@ -3477,6 +5938,36 @@ definitions:
         type: string
       url:
         type: string
+  object.Patient:
+    title: Patient
+    type: object
+    properties:
+      address:
+        type: string
+      allergies:
+        type: string
+      bloodType:
+        type: string
+      createdTime:
+        type: string
+      displayName:
+        type: string
+      email:
+        type: string
+      gender:
+        type: string
+      hospitalName:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      owners:
+        type: array
+        items:
+          type: string
+      updatedTime:
+        type: string
   object.Pod:
     title: Pod
     type: object
@@ -3514,21 +6005,14 @@ definitions:
       totalThroughput:
         type: number
         format: double
-  object.Prompt:
-    title: Prompt
-    type: object
-    properties:
-      image:
-        type: string
-      text:
-        type: string
-      title:
-        type: string
   object.Provider:
     title: Provider
     type: object
     properties:
       apiVersion:
+        type: string
+      asset:
+        description: Selected asset for scan
         type: string
       browserUrl:
         type: string
@@ -3556,6 +6040,9 @@ definitions:
         type: string
       enableThinking:
         type: boolean
+      errorText:
+        description: Error message for the job execution
+        type: string
       flavor:
         type: string
       frequencyPenalty:
@@ -3565,6 +6052,8 @@ definitions:
         type: number
         format: double
       isDefault:
+        type: boolean
+      isRemote:
         type: boolean
       mcpTools:
         type: array
@@ -3586,7 +6075,16 @@ definitions:
         type: string
       providerUrl:
         type: string
+      rawText:
+        description: Raw result from scan (for Scan category providers)
+        type: string
       region:
+        type: string
+      resultSummary:
+        description: Short summary of scan results
+        type: string
+      runner:
+        description: Hostname about who runs the scan job
         type: string
       signCert:
         type: string
@@ -3595,6 +6093,12 @@ definitions:
       state:
         type: string
       subType:
+        type: string
+      target:
+        description: Manual input target (IP address or network range)
+        type: string
+      targetMode:
+        description: '"Manual Input" or "Asset"'
         type: string
       temperature:
         type: number
@@ -3633,7 +6137,12 @@ definitions:
         type: string
       clientIp:
         type: string
+      count:
+        type: integer
+        format: int64
       createdTime:
+        type: string
+      errorText:
         type: string
       id:
         type: integer
@@ -3657,6 +6166,8 @@ definitions:
       provider:
         type: string
       provider2:
+        type: string
+      query:
         type: string
       region:
         type: string
@@ -3703,6 +6214,72 @@ definitions:
         type: string
       remoteAppName:
         type: string
+  object.ResourceMetrics:
+    title: ResourceMetrics
+    type: object
+    properties:
+      cpuPercentage:
+        description: CPU usage percentage (0-100)
+        type: number
+        format: double
+      cpuUsage:
+        description: CPU usage (e.g., "120m" for 120 millicores)
+        type: string
+      memoryPercentage:
+        description: Memory usage percentage (0-100)
+        type: number
+        format: double
+      memoryUsage:
+        description: Memory usage (e.g., "256Mi" for 256 mebibyte)
+        type: string
+      podCount:
+        description: Number of active pods
+        type: integer
+        format: int64
+  object.ResourceRequests:
+    title: ResourceRequests
+    type: object
+    properties:
+      cpu:
+        type: string
+      memory:
+        type: string
+  object.Scan:
+    title: Scan
+    type: object
+    properties:
+      asset:
+        type: string
+      command:
+        type: string
+      createdTime:
+        type: string
+      displayName:
+        type: string
+      errorText:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      provider:
+        type: string
+      rawResult:
+        type: string
+      result:
+        type: string
+      resultSummary:
+        type: string
+      runner:
+        type: string
+      state:
+        type: string
+      target:
+        type: string
+      targetMode:
+        type: string
+      updatedTime:
+        type: string
   object.Service:
     title: Service
     type: object
@@ -3728,6 +6305,44 @@ definitions:
         type: string
       subStatus:
         type: string
+  object.ServiceDetail:
+    title: ServiceDetail
+    type: object
+    properties:
+      clusterIP:
+        type: string
+      createdTime:
+        type: string
+      externalHost:
+        type: string
+      externalIP:
+        type: string
+      internalHost:
+        type: string
+      name:
+        type: string
+      ports:
+        type: array
+        items:
+          $ref: '#/definitions/object.ServicePort'
+      type:
+        type: string
+  object.ServicePort:
+    title: ServicePort
+    type: object
+    properties:
+      name:
+        type: string
+      nodePort:
+        type: integer
+        format: int32
+      port:
+        type: integer
+        format: int32
+      protocol:
+        type: string
+      url:
+        type: string
   object.Store:
     title: Store
     type: object
@@ -3736,6 +6351,10 @@ definitions:
         type: string
       avatar:
         type: string
+      builtinTools:
+        type: array
+        items:
+          type: string
       chatCount:
         type: integer
         format: int64
@@ -3757,11 +6376,27 @@ definitions:
         type: string
       enableTtsStreaming:
         type: boolean
+      exampleQuestions:
+        type: array
+        items:
+          $ref: '#/definitions/object.ExampleQuestion'
+      faviconUrl:
+        type: string
       fileTree:
-        $ref: '#/definitions/object.File'
+        $ref: '#/definitions/object.TreeFile'
+      footerHtml:
+        type: string
+      forbiddenWords:
+        type: array
+        items:
+          type: string
       frequency:
         type: integer
         format: int64
+      hideThinking:
+        type: boolean
+      htmlTitle:
+        type: string
       imageProvider:
         type: string
       isDefault:
@@ -3772,6 +6407,8 @@ definitions:
       limitMinutes:
         type: integer
         format: int64
+      logoUrl:
+        type: string
       memoryLimit:
         type: integer
         format: int64
@@ -3782,16 +6419,16 @@ definitions:
         type: string
       name:
         type: string
+      navItems:
+        type: array
+        items:
+          type: string
       owner:
         type: string
       prompt:
         type: string
-      prompts:
-        type: array
-        items:
-          $ref: '#/definitions/object.Prompt'
       propertiesMap:
-        $ref: '#/definitions/202307.Properties'
+        $ref: '#/definitions/349715.Properties'
       searchProvider:
         type: string
       showAutoRead:
@@ -3815,6 +6452,12 @@ definitions:
         type: string
       title:
         type: string
+      vectorStoreId:
+        type: string
+      vectorStores:
+        type: array
+        items:
+          type: string
       welcome:
         type: string
       welcomeText:
@@ -3879,12 +6522,18 @@ definitions:
     title: Template
     type: object
     properties:
+      basicConfigOptions:
+        type: array
+        items:
+          $ref: '#/definitions/object.templateConfigOption'
       createdTime:
         type: string
       description:
         type: string
       displayName:
         type: string
+      enableBasicConfig:
+        type: boolean
       icon:
         type: string
       manifest:
@@ -3893,9 +6542,32 @@ definitions:
         type: string
       owner:
         type: string
+      readme:
+        type: string
       updatedTime:
         type: string
       version:
+        type: string
+  object.TreeFile:
+    title: TreeFile
+    type: object
+    properties:
+      children:
+        type: array
+        items:
+          $ref: '#/definitions/object.TreeFile'
+      createdTime:
+        type: string
+      isLeaf:
+        type: boolean
+      key:
+        type: string
+      size:
+        type: integer
+        format: int64
+      title:
+        type: string
+      url:
         type: string
   object.Usage:
     title: Usage
@@ -4108,6 +6780,33 @@ definitions:
         type: string
       text2:
         type: string
+  object.applicationConfigOption:
+    title: applicationConfigOption
+    type: object
+    properties:
+      parameter:
+        type: string
+      setting:
+        type: string
+  object.templateConfigOption:
+    title: templateConfigOption
+    type: object
+    properties:
+      default:
+        type: string
+      description:
+        type: string
+      options:
+        type: array
+        items:
+          type: string
+      parameter:
+        type: string
+      required:
+        type: boolean
+      type:
+        description: string, number, boolean, option
+        type: string
   openai.ChatCompletionRequest:
     title: ChatCompletionRequest
     type: object
@@ -4126,10 +6825,25 @@ definitions:
         items:
           type: number
           format: double
+      diskTotal:
+        type: integer
+        format: int64
+      diskUsed:
+        type: integer
+        format: int64
       memoryTotal:
         type: integer
         format: int64
       memoryUsed:
+        type: integer
+        format: int64
+      networkRecv:
+        type: integer
+        format: int64
+      networkSent:
+        type: integer
+        format: int64
+      networkTotal:
         type: integer
         format: int64
   util.VersionInfo:
@@ -4143,8 +6857,3 @@ definitions:
         format: int64
       version:
         type: string
-securityDefinitions:
-  AccessToken:
-    type: apiKey
-    name: Authorization
-    in: header
