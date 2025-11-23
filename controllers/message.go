@@ -125,6 +125,20 @@ func (c *ApiController) GetMessage() {
 		return
 	}
 
+	if message == nil {
+		c.ResponseError("Message not found")
+		return
+	}
+
+	// Check if user has permission to view this message
+	if !c.IsAdmin() {
+		username := c.GetSessionUsername()
+		if username != message.User {
+			c.ResponseError(c.T("auth:Unauthorized operation"))
+			return
+		}
+	}
+
 	c.ResponseOk(message)
 }
 
