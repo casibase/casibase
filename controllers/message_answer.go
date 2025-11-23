@@ -169,6 +169,48 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
+	// Perform dry run query to estimate token count and price before AI generation
+	// This checks if user has sufficient balance before generating AI answer
+	// We do this early to avoid expensive operations like GetNearestKnowledge if user has no balance
+	if shouldPerformDryRun(modelProvider.Type, modelProvider.SubType, false) {
+		// Get recent messages for context in estimation
+		history, err := object.GetRecentRawMessages(chat.Name, message.CreatedTime, store.MemoryLimit)
+		if err != nil {
+			c.ResponseErrorStream(message, err.Error())
+			return
+		}
+
+		// Prefix question with dry run marker to trigger estimation without actual AI call
+		dryRunQuestion := model.DryRunPrefix + question
+
+		// Use dryRunWriter which implements both io.Writer and http.Flusher
+		// Some model providers require http.Flusher even for dry run
+		dryRunResult, err := modelProviderObj.QueryText(dryRunQuestion, &dryRunWriter{}, history, store.Prompt, nil, nil, c.GetAcceptLanguage())
+		if err != nil {
+			c.ResponseErrorStream(message, fmt.Sprintf("failed to estimate token count: %s", err.Error()))
+			return
+		}
+
+		// Create a temporary message with estimated price for dry run validation
+		tempMessage := &object.Message{
+			Owner:         message.Owner,
+			CreatedTime:   message.CreatedTime,
+			Chat:          message.Chat,
+			Name:          message.Name,
+			ModelProvider: modelProvider.Name,
+			User:          message.User,
+			Price:         dryRunResult.TotalPrice,
+			Currency:      dryRunResult.Currency,
+		}
+
+		// Validate transaction in dry run mode before AI generation
+		err = object.ValidateTransactionForMessage(tempMessage)
+		if err != nil {
+			c.ResponseErrorStream(message, err.Error())
+			return
+		}
+	}
+
 	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
@@ -244,40 +286,6 @@ func (c *ApiController) GetMessageAnswer() {
 		} else {
 			question, err = getQuestionWithCarriers(question, store.SuggestionCount, chat.NeedTitle)
 		}
-		if err != nil {
-			c.ResponseErrorStream(message, err.Error())
-			return
-		}
-	}
-
-	// Perform dry run query to estimate token count and price before AI generation
-	// This checks if user has sufficient balance before generating AI answer
-	if shouldPerformDryRun(modelProvider.Type, modelProvider.SubType, agentClients != nil) {
-		// Prefix question with dry run marker to trigger estimation without actual AI call
-		dryRunQuestion := model.DryRunPrefix + question
-		
-		// Use dryRunWriter which implements both io.Writer and http.Flusher
-		// Some model providers require http.Flusher even for dry run
-		dryRunResult, err := modelProviderObj.QueryText(dryRunQuestion, &dryRunWriter{}, history, prompt, knowledge, nil, c.GetAcceptLanguage())
-		if err != nil {
-			c.ResponseErrorStream(message, fmt.Sprintf("failed to estimate token count: %s", err.Error()))
-			return
-		}
-
-		// Create a temporary message with estimated price for dry run validation
-		tempMessage := &object.Message{
-			Owner:         message.Owner,
-			CreatedTime:   message.CreatedTime,
-			Chat:          message.Chat,
-			Name:          message.Name,
-			ModelProvider: modelProvider.Name,
-			User:          message.User,
-			Price:         dryRunResult.TotalPrice,
-			Currency:      dryRunResult.Currency,
-		}
-
-		// Validate transaction in dry run mode before AI generation
-		err = object.ValidateTransactionForMessage(tempMessage)
 		if err != nil {
 			c.ResponseErrorStream(message, err.Error())
 			return
