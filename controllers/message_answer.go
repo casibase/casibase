@@ -28,6 +28,15 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
+// shouldPerformDryRun determines if a dry run estimation should be performed
+// before generating the actual AI answer. Dry run is skipped for:
+// - Dummy providers (no real AI calls)
+// - Reason models (they have different execution paths)
+// - Queries with agent clients (agent-based workflows)
+func shouldPerformDryRun(providerType string, modelSubType string, hasAgentClients bool) bool {
+	return providerType != "Dummy" && !isReasonModel(modelSubType) && !hasAgentClients
+}
+
 // GetMessageAnswer
 // @Title GetMessageAnswer
 // @Tag Message API
@@ -234,9 +243,9 @@ func (c *ApiController) GetMessageAnswer() {
 
 	// Perform dry run query to estimate token count and price before AI generation
 	// This checks if user has sufficient balance before generating AI answer
-	if modelProvider.Type != "Dummy" && !isReasonModel(modelProvider.SubType) && agentClients == nil {
+	if shouldPerformDryRun(modelProvider.Type, modelProvider.SubType, agentClients != nil) {
 		// Prefix question with dry run marker to trigger estimation without actual AI call
-		dryRunQuestion := "$CasibaseDryRun$" + question
+		dryRunQuestion := model.DryRunPrefix + question
 		
 		// Use io.Discard as writer since we don't need the output for dry run
 		dryRunResult, err := modelProviderObj.QueryText(dryRunQuestion, io.Discard, history, prompt, knowledge, nil, c.GetAcceptLanguage())
