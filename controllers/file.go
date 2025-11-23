@@ -25,8 +25,17 @@ import (
 // GetGlobalFiles
 // @Title GetGlobalFiles
 // @Tag File API
-// @Description get global file objects
-// @Success 200 {array} object.File The Response object
+// @Description Get all global file metadata with optional pagination, filtering and sorting. Files represent documents, images, videos, and other content stored in stores for RAG and knowledge base. When pageSize and p parameters are provided, returns paginated results with admin permission check. Supports filtering and sorting by various fields.
+// @Param   pageSize     query    string  false   "Number of items per page for pagination, e.g., '10'"
+// @Param   p            query    string  false   "Page number for pagination, e.g., '1'"
+// @Param   field        query    string  false   "Field name for filtering, e.g., 'type'"
+// @Param   value        query    string  false   "Value for field filtering, e.g., 'pdf'"
+// @Param   sortField    query    string  false   "Field name for sorting, e.g., 'createdTime'"
+// @Param   sortOrder    query    string  false   "Sort order: 'ascend' or 'descend'"
+// @Success 200 {array} object.File "Successfully returns array of file metadata objects with optional pagination info"
+// @Failure 401 {object} controllers.Response "Unauthorized: Admin login required for paginated access"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient admin permissions"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to retrieve files"
 // @router /get-global-files [get]
 func (c *ApiController) GetGlobalFiles() {
 	limit := c.Input().Get("pageSize")
@@ -70,9 +79,13 @@ func (c *ApiController) GetGlobalFiles() {
 // GetFiles
 // @Title GetFiles
 // @Tag File API
-// @Description get file objects
-// @Param owner query string true "The owner of the file object"
-// @Success 200 {array} object.File The Response object
+// @Description Get file metadata for a specific owner with optional store filtering. Returns file objects representing documents, images, videos, and other content stored in knowledge bases. Use store parameter to filter files by specific store.
+// @Param   owner    query    string  true    "Owner of the files, typically 'admin', e.g., 'admin'"
+// @Param   store    query    string  false   "Filter by store name to get files from specific store, e.g., 'store-built-in'"
+// @Success 200 {array} object.File "Successfully returns array of file metadata objects"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid owner parameter"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to retrieve files"
 // @router /get-files [get]
 func (c *ApiController) GetFiles() {
 	owner := c.Input().Get("owner")
@@ -96,9 +109,14 @@ func (c *ApiController) GetFiles() {
 // GetFileMy
 // @Title GetFileMy
 // @Tag File API
-// @Description get file object
-// @Param id query string true "The id (owner/name) of the file object"
-// @Success 200 {object} object.File The Response object
+// @Description Get detailed metadata of a specific file including filename, size, type, upload time, processing status, vector embeddings, and storage location. Files represent documents and content stored in knowledge bases for semantic search and RAG.
+// @Param   id    query    string  true    "File ID in format 'owner/name', e.g., 'admin/file-123abc'"
+// @Success 200 {object} object.File "Successfully returns file metadata object with all details"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid file ID format"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions to access this file"
+// @Failure 404 {object} controllers.Response "Not found: File does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to retrieve file"
 // @router /get-file [get]
 func (c *ApiController) GetFileMy() {
 	id := c.Input().Get("id")
@@ -115,10 +133,15 @@ func (c *ApiController) GetFileMy() {
 // UpdateFile
 // @Title UpdateFile
 // @Tag File API
-// @Description update file object
-// @Param id   query string       true "The id (owner/name) of the file object"
-// @Param body body  object.File true "The details of the file object"
-// @Success 200 {object} controllers.Response The Response object
+// @Description Update file metadata including filename, display name, description, tags, processing status, and store association. Does not update file content - use upload endpoints to replace file content. Requires appropriate permissions.
+// @Param   id      query    string        true    "File ID in format 'owner/name', e.g., 'admin/file-123abc'"
+// @Param   body    body     object.File   true    "File metadata object with updated fields including name, displayName, description, tags, store, etc."
+// @Success 200 {object} controllers.Response "Successfully updated file metadata, returns success status"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid file data or malformed JSON"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions to update file"
+// @Failure 404 {object} controllers.Response "Not found: File does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to update file"
 // @router /update-file [post]
 func (c *ApiController) UpdateFile() {
 	id := c.Input().Get("id")
@@ -142,9 +165,14 @@ func (c *ApiController) UpdateFile() {
 // AddFile
 // @Title AddFile
 // @Tag File API
-// @Description add file object
-// @Param body body object.File true "The details of the file object"
-// @Success 200 {object} controllers.Response The Response object
+// @Description Create new file metadata record for uploaded content. This registers file in the system for vector embedding and knowledge base indexing. File content should be uploaded separately via upload endpoint. Automatically triggers vector generation for RAG if store is configured. Requires appropriate permissions.
+// @Param   body    body    object.File    true    "File metadata object with required fields: owner, name, filename, fileType, size, store, and optional fields: displayName, description, tags, etc."
+// @Success 200 {object} controllers.Response "Successfully created file record, returns success status and file ID"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid file data, missing required fields, or malformed JSON"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions to create file"
+// @Failure 409 {object} controllers.Response "Conflict: File with same ID already exists"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to create file or generate vectors"
 // @router /add-file [post]
 func (c *ApiController) AddFile() {
 	var file object.File
@@ -166,9 +194,14 @@ func (c *ApiController) AddFile() {
 // DeleteFile
 // @Title DeleteFile
 // @Tag File API
-// @Description delete file object
-// @Param body body object.File true "The details of the file object"
-// @Success 200 {object} controllers.Response The Response object
+// @Description Delete file metadata and associated data including vectors, embeddings, and storage content. This operation is irreversible and removes the file from knowledge base and search index. Requires appropriate permissions.
+// @Param   body    body    object.File    true    "File object to delete, must include at least owner and name fields"
+// @Success 200 {object} controllers.Response "Successfully deleted file and associated data, returns success status"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid file data or malformed JSON"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions to delete file"
+// @Failure 404 {object} controllers.Response "Not found: File does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to delete file or clean up storage"
 // @router /delete-file [post]
 func (c *ApiController) DeleteFile() {
 	var file object.File

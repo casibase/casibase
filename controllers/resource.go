@@ -25,11 +25,14 @@ import (
 // UploadFile
 // @Title UploadFile
 // @Tag File API
-// @Description upload file to casdoor storage
-// @Param file formData string true "The base64 encoded file data"
-// @Param type formData string true "The file type/extension"
-// @Param name formData string true "The file name"
-// @Success 200 {object} controllers.Response The Response object
+// @Description Upload file content to Casdoor storage provider. Accepts base64 encoded file data and stores it in user-specific directory. File is uploaded to configured storage provider (local, S3, OSS, etc.). Returns the URL of uploaded file. Requires user authentication.
+// @Param   file    formData    string  true    "Base64 encoded file data with data URI scheme, e.g., 'data:image/png;base64,iVBORw0KGgo...'"
+// @Param   type    formData    string  true    "File type/extension without dot, e.g., 'pdf', 'png', 'docx'"
+// @Param   name    formData    string  true    "Original filename with extension, e.g., 'document.pdf'"
+// @Success 200 {string} string "Successfully uploaded file, returns storage URL string"
+// @Failure 400 {object} controllers.Response "Bad request: Missing required parameters, invalid file data format, or file too large"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to decode file data or upload to storage"
 // @router /upload-file [post]
 func (c *ApiController) UploadFile() {
 	userName, ok := c.RequireSignedIn()

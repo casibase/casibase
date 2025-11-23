@@ -63,10 +63,13 @@ func addFileToCache(key string, filename string, bs []byte) error {
 // ActivateFile
 // @Title ActivateFile
 // @Tag File API
-// @Description activate file
-// @Param key query string true "The key of the file"
-// @Param filename query string true "The name of the file"
-// @Success 200 {object} controllers.Response The Response object
+// @Description Activate a cached file by mapping its cache key to filename prefix. Used for file caching mechanism to improve performance when repeatedly accessing files. Copies file to application path if not present. Requires user authentication.
+// @Param   key       query    string  true    "Cache key identifying the file in cache directory, e.g., 'abc123def456'"
+// @Param   filename  query    string  true    "Filename with extension to determine prefix, e.g., 'document.pdf'"
+// @Success 200 {object} controllers.Response "Successfully activated file cache, returns true on success or false if prefix not determined"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid key or filename"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to activate file cache"
 // @router /activate-file [post]
 func (c *ApiController) ActivateFile() {
 	_, ok := c.RequireSignedIn()
@@ -97,9 +100,11 @@ func (c *ApiController) ActivateFile() {
 // GetActiveFile
 // @Title GetActiveFile
 // @Tag File API
-// @Description get active file
-// @Param prefix query string true "The prefix of the file"
-// @Success 200 {string} string "get active file"
+// @Description Get the cache path for an active file by its prefix. Returns the cached file path if the file has been activated, or empty string if not found in cache. Used to check if a file is cached and get its cache location.
+// @Param   prefix    query    string  true    "File prefix to look up in cache map, e.g., 'document'"
+// @Success 200 {string} string "Successfully returns cache path string (e.g., 'cache/abc123') or empty string if not cached"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid prefix parameter"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to retrieve cache information"
 // @router /get-active-file [get]
 func (c *ApiController) GetActiveFile() {
 	prefix := c.Input().Get("prefix")

@@ -26,9 +26,18 @@ import (
 // GetApplications
 // @Title GetApplications
 // @Tag Application API
-// @Description get applications
-// @Param owner query string true "The owner of applications"
-// @Success 200 {array} object.Application The Response object
+// @Description Get applications for a specific owner with optional pagination, filtering and sorting. Applications represent deployable services, containers, or workflows managed by Casibase. When pageSize and p parameters are provided, returns paginated results. Supports filtering and sorting by various fields.
+// @Param   owner        query    string  true    "Owner of the applications, typically 'admin', e.g., 'admin'"
+// @Param   pageSize     query    string  false   "Number of items per page for pagination, e.g., '10'"
+// @Param   p            query    string  false   "Page number for pagination, e.g., '1'"
+// @Param   field        query    string  false   "Field name for filtering, e.g., 'status'"
+// @Param   value        query    string  false   "Value for field filtering, e.g., 'running'"
+// @Param   sortField    query    string  false   "Field name for sorting, e.g., 'createdTime'"
+// @Param   sortOrder    query    string  false   "Sort order: 'ascend' or 'descend'"
+// @Success 200 {array} object.Application "Successfully returns array of application objects with deployment details, optional pagination info"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid owner parameter"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to retrieve applications"
 // @router /get-applications [get]
 func (c *ApiController) GetApplications() {
 	owner := c.Input().Get("owner")
@@ -70,9 +79,14 @@ func (c *ApiController) GetApplications() {
 // GetApplication
 // @Title GetApplication
 // @Tag Application API
-// @Description get application
-// @Param id query string true "The id of application"
-// @Success 200 {object} object.Application The Response object
+// @Description Get detailed information of a specific application including deployment status, configuration, template, namespace, resource usage, and runtime details. Applications can be containers, services, or workflows managed by Casibase.
+// @Param   id    query    string  true    "Application ID in format 'owner/name', e.g., 'admin/app-web-service'"
+// @Success 200 {object} object.Application "Successfully returns application object with all deployment and configuration details"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid application ID format"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions to access this application"
+// @Failure 404 {object} controllers.Response "Not found: Application does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to retrieve application"
 // @router /get-application [get]
 func (c *ApiController) GetApplication() {
 	id := c.Input().Get("id")
@@ -93,10 +107,15 @@ func (c *ApiController) GetApplication() {
 // UpdateApplication
 // @Title UpdateApplication
 // @Tag Application API
-// @Description update application
-// @Param id query string true "The id (owner/name) of the application"
-// @Param body body object.Application true "The details of the application"
-// @Success 200 {object} controllers.Response The Response object
+// @Description Update an existing application's configuration including template, namespace, environment variables, resource limits, and deployment settings. Does not trigger redeployment - use deploy endpoint for that. Requires appropriate permissions.
+// @Param   id      query    string               true    "Application ID in format 'owner/name', e.g., 'admin/app-web-service'"
+// @Param   body    body     object.Application   true    "Application object with updated fields including name, displayName, template, namespace, configuration, environment, resources, etc."
+// @Success 200 {object} controllers.Response "Successfully updated application, returns success status"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid application data or malformed JSON"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions to update application"
+// @Failure 404 {object} controllers.Response "Not found: Application does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to update application"
 // @router /update-application [post]
 func (c *ApiController) UpdateApplication() {
 	id := c.Input().Get("id")
@@ -120,9 +139,15 @@ func (c *ApiController) UpdateApplication() {
 // AddApplication
 // @Title AddApplication
 // @Tag Application API
-// @Description add application
-// @Param body body object.Application true "The details of the application"
-// @Success 200 {object} controllers.Response The Response object
+// @Description Create a new application from a template. Applications represent deployable services, containers, or workflows. Template must exist before creating application. After creation, use deploy endpoint to start the application. Requires appropriate permissions.
+// @Param   body    body    object.Application    true    "Application object with required fields: owner, name, template, and optional fields: displayName, namespace, configuration, environment, resources, etc."
+// @Success 200 {object} controllers.Response "Successfully created application, returns success status and application ID"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid application data, missing template parameter, template not found, or malformed JSON"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions to create application"
+// @Failure 404 {object} controllers.Response "Not found: Template does not exist"
+// @Failure 409 {object} controllers.Response "Conflict: Application with same ID already exists"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to create application"
 // @router /add-application [post]
 func (c *ApiController) AddApplication() {
 	var application object.Application
@@ -161,9 +186,14 @@ func (c *ApiController) AddApplication() {
 // DeleteApplication
 // @Title DeleteApplication
 // @Tag Application API
-// @Description delete application
-// @Param body body object.Application true "The details of the application"
-// @Success 200 {object} controllers.Response The Response object
+// @Description Delete an existing application and clean up associated resources. If application is deployed, it will be undeployed first. This operation removes containers, services, and configuration. Requires appropriate permissions.
+// @Param   body    body    object.Application    true    "Application object to delete, must include at least owner and name fields"
+// @Success 200 {object} controllers.Response "Successfully deleted application and cleaned up resources, returns success status"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid application data or malformed JSON"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions to delete application"
+// @Failure 404 {object} controllers.Response "Not found: Application does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to delete application or undeploy resources"
 // @router /delete-application [post]
 func (c *ApiController) DeleteApplication() {
 	var application object.Application
@@ -185,9 +215,15 @@ func (c *ApiController) DeleteApplication() {
 // DeployApplication
 // @Title DeployApplication
 // @Tag Application API
-// @Description deploy application synchronously
-// @Param body body object.Application true "The details of the application"
-// @Success 200 {object} controllers.Response The Response object
+// @Description Deploy application synchronously and wait for completion. Updates application configuration first, then deploys to target environment (Docker, Kubernetes, etc.). This operation starts containers, services, and configures networking. Returns updated application with deployment status. Requires appropriate permissions.
+// @Param   id      query    string               true    "Application ID in format 'owner/name', e.g., 'admin/app-web-service'"
+// @Param   body    body     object.Application   true    "Application object with configuration for deployment including template, namespace, environment, resources, etc."
+// @Success 200 {object} object.Application "Successfully deployed application, returns updated application object with deployment status"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid application data, application not found, or malformed JSON"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions to deploy application"
+// @Failure 404 {object} controllers.Response "Not found: Application or template does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to update or deploy application, deployment failed, or infrastructure error"
 // @router /deploy-application [post]
 func (c *ApiController) DeployApplication() {
 	id := c.Input().Get("id")
@@ -239,9 +275,14 @@ func (c *ApiController) DeployApplication() {
 // UndeployApplication
 // @Title UndeployApplication
 // @Tag Application API
-// @Description undeploy application synchronously
-// @Param body body object.Application true "The details of the application"
-// @Success 200 {object} controllers.Response The Response object
+// @Description Undeploy application synchronously and wait for completion. Stops containers, removes services, and cleans up resources in the target environment (Docker, Kubernetes, etc.). Application configuration remains in database for future redeployment. Requires appropriate permissions.
+// @Param   id    query    string  true    "Application ID in format 'owner/name', e.g., 'admin/app-web-service'"
+// @Success 200 {object} controllers.Response "Successfully undeployed application and cleaned up resources, returns success status"
+// @Failure 400 {object} controllers.Response "Bad request: Invalid application ID format or application not found"
+// @Failure 401 {object} controllers.Response "Unauthorized: Login required"
+// @Failure 403 {object} controllers.Response "Forbidden: Insufficient permissions to undeploy application"
+// @Failure 404 {object} controllers.Response "Not found: Application does not exist"
+// @Failure 500 {object} controllers.Response "Internal server error: Failed to undeploy application or clean up resources"
 // @router /undeploy-application [post]
 func (c *ApiController) UndeployApplication() {
 	id := c.Input().Get("id")

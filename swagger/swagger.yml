@@ -7,25 +7,34 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        activate file
+        Activate a cached file by mapping its cache key to filename prefix. Used for file caching mechanism to improve performance when repeatedly accessing files. Copies file to application path if not present. Requires user authentication.
         <br>
       operationId: ApiController.ActivateFile
       parameters:
       - in: query
         name: key
-        description: The key of the file
+        description: Cache key identifying the file in cache directory, e.g., 'abc123def456'
         required: true
         type: string
       - in: query
         name: filename
-        description: The name of the file
+        description: Filename with extension to determine prefix, e.g., 'document.pdf'
         required: true
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully activated file cache, returns true on success
+            or false if prefix not determined"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid key or
+            filename"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to activate file cache"'
   /add-Graph:
     post:
       tags:
@@ -51,21 +60,41 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        add application
+        Create a new application from a template. Applications represent deployable services, containers, or workflows. Template must exist before creating application. After creation, use deploy endpoint to start the application. Requires appropriate permissions.
         <br>
       operationId: ApiController.AddApplication
       parameters:
       - in: body
         name: body
-        description: The details of the application
+        description: 'Application object with required fields: owner, name, template,
+          and optional fields: displayName, namespace, configuration, environment,
+          resources, etc.'
         required: true
         schema:
           $ref: '#/definitions/object.Application'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully created application, returns success status
+            and application ID"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid application
+            data, missing template parameter, template not found, or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to create application"'
+        "404":
+          description: '{object} controllers.Response "Not found: Template does not
+            exist"'
+        "409":
+          description: '{object} controllers.Response "Conflict: Application with
+            same ID already exists"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to create application"'
   /add-article:
     post:
       tags:
@@ -248,21 +277,38 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        add file object
+        Create new file metadata record for uploaded content. This registers file in the system for vector embedding and knowledge base indexing. File content should be uploaded separately via upload endpoint. Automatically triggers vector generation for RAG if store is configured. Requires appropriate permissions.
         <br>
       operationId: ApiController.AddFile
       parameters:
       - in: body
         name: body
-        description: The details of the file object
+        description: 'File metadata object with required fields: owner, name, filename,
+          fileType, size, store, and optional fields: displayName, description, tags,
+          etc.'
         required: true
         schema:
           $ref: '#/definitions/object.File'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully created file record, returns success status
+            and file ID"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid file data,
+            missing required fields, or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to create file"'
+        "409":
+          description: '{object} controllers.Response "Conflict: File with same ID
+            already exists"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to create file or generate vectors"'
   /add-form:
     post:
       tags:
@@ -669,21 +715,38 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        add template
+        Create a new template with reusable configuration for applications, workflows, agents, or other resources. Templates allow quick creation of preconfigured instances with consistent settings. Requires appropriate permissions.
         <br>
       operationId: ApiController.AddTemplate
       parameters:
       - in: body
         name: body
-        description: The details of the template
+        description: 'Template object with required fields: owner, name, type, and
+          optional fields: displayName, configuration, parameters, description, tags,
+          etc.'
         required: true
         schema:
           $ref: '#/definitions/object.Template'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully created template, returns success status and
+            template ID"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid template
+            data, missing required fields, or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to create template"'
+        "409":
+          description: '{object} controllers.Response "Conflict: Template with same
+            ID already exists"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to create template"'
   /add-tree-file:
     post:
       tags:
@@ -723,21 +786,41 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        add vector
+        Create new vector embedding for text content or file chunk. Automatically generates embedding using configured embedding provider (OpenAI, Azure, etc.) if not provided. Vectors are stored for semantic search and RAG functionality. Uses default embedding provider if not specified. Requires appropriate permissions.
         <br>
       operationId: ApiController.AddVector
       parameters:
       - in: body
         name: body
-        description: The details of the vector
+        description: 'Vector object with required fields: owner, name, text (content
+          to embed), store, and optional fields: file, dataType, provider, embedding
+          data, etc.'
         required: true
         schema:
           $ref: '#/definitions/object.Vector'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully created vector embedding, returns success status
+            and vector ID"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid vector
+            data, missing required fields, or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to create vector"'
+        "404":
+          description: '{object} controllers.Response "Not found: Embedding provider
+            not configured"'
+        "409":
+          description: '{object} controllers.Response "Conflict: Vector with same
+            ID already exists"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to create vector or generate embedding"'
   /add-video:
     post:
       tags:
@@ -878,34 +961,59 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        delete all vectors
+        Delete all vector embeddings for admin owner. This operation is irreversible and removes all vectors from semantic search index. Use with extreme caution as it will break all RAG functionality until vectors are regenerated. Requires admin permissions.
         <br>
       operationId: ApiController.DeleteAllVectors
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully deleted all vectors, returns true if all deletions
+            succeeded, false if any failed"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Admin login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient admin
+            permissions"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to delete some or all vectors"'
   /delete-application:
     post:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        delete application
+        Delete an existing application and clean up associated resources. If application is deployed, it will be undeployed first. This operation removes containers, services, and configuration. Requires appropriate permissions.
         <br>
       operationId: ApiController.DeleteApplication
       parameters:
       - in: body
         name: body
-        description: The details of the application
+        description: Application object to delete, must include at least owner and
+          name fields
         required: true
         schema:
           $ref: '#/definitions/object.Application'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully deleted application and cleaned up resources,
+            returns success status"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid application
+            data or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to delete application"'
+        "404":
+          description: '{object} controllers.Response "Not found: Application does
+            not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to delete application or undeploy resources"'
   /delete-article:
     post:
       tags:
@@ -1085,21 +1193,35 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        delete file object
+        Delete file metadata and associated data including vectors, embeddings, and storage content. This operation is irreversible and removes the file from knowledge base and search index. Requires appropriate permissions.
         <br>
       operationId: ApiController.DeleteFile
       parameters:
       - in: body
         name: body
-        description: The details of the file object
+        description: File object to delete, must include at least owner and name fields
         required: true
         schema:
           $ref: '#/definitions/object.File'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully deleted file and associated data, returns success
+            status"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid file data
+            or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to delete file"'
+        "404":
+          description: '{object} controllers.Response "Not found: File does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to delete file or clean up storage"'
   /delete-form:
     post:
       tags:
@@ -1453,21 +1575,36 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        delete template
+        Delete an existing template. This removes the template configuration but does not affect instances created from it. Requires appropriate permissions.
         <br>
       operationId: ApiController.DeleteTemplate
       parameters:
       - in: body
         name: body
-        description: The details of the template
+        description: Template object to delete, must include at least owner and name
+          fields
         required: true
         schema:
           $ref: '#/definitions/object.Template'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully deleted template, returns success status"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid template
+            data or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to delete template"'
+        "404":
+          description: '{object} controllers.Response "Not found: Template does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to delete template"'
   /delete-tree-file:
     post:
       tags:
@@ -1502,21 +1639,36 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        delete vector
+        Delete a vector embedding from the system. This removes the vector from semantic search index and frees up storage. Deleting vectors may affect RAG quality if they contain important context. Requires appropriate permissions.
         <br>
       operationId: ApiController.DeleteVector
       parameters:
       - in: body
         name: body
-        description: The details of the vector
+        description: Vector object to delete, must include at least owner and name
+          fields
         required: true
         schema:
           $ref: '#/definitions/object.Vector'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully deleted vector, returns success status"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid vector
+            data or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to delete vector"'
+        "404":
+          description: '{object} controllers.Response "Not found: Vector does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to delete vector"'
   /delete-video:
     post:
       tags:
@@ -1598,21 +1750,43 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        deploy application synchronously
+        Deploy application synchronously and wait for completion. Updates application configuration first, then deploys to target environment (Docker, Kubernetes, etc.). This operation starts containers, services, and configures networking. Returns updated application with deployment status. Requires appropriate permissions.
         <br>
       operationId: ApiController.DeployApplication
       parameters:
+      - in: query
+        name: id
+        description: Application ID in format 'owner/name', e.g., 'admin/app-web-service'
+        required: true
+        type: string
       - in: body
         name: body
-        description: The details of the application
+        description: Application object with configuration for deployment including
+          template, namespace, environment, resources, etc.
         required: true
         schema:
           $ref: '#/definitions/object.Application'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully deployed application, returns updated application
+            object with deployment status"'
           schema:
-            $ref: '#/definitions/controllers.Response'
+            $ref: '#/definitions/object.Application'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid application
+            data, application not found, or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to deploy application"'
+        "404":
+          description: '{object} controllers.Response "Not found: Application or template
+            does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to update or deploy application, deployment failed, or infrastructure
+            error"'
   /generate-text-to-speech-audio:
     post:
       tags:
@@ -1743,18 +1917,25 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        get active file
+        Get the cache path for an active file by its prefix. Returns the cached file path if the file has been activated, or empty string if not found in cache. Used to check if a file is cached and get its cache location.
         <br>
       operationId: ApiController.GetActiveFile
       parameters:
       - in: query
         name: prefix
-        description: The prefix of the file
+        description: File prefix to look up in cache map, e.g., 'document'
         required: true
         type: string
       responses:
         "200":
-          description: '{string} string "get active file"'
+          description: '{string} string "Successfully returns cache path string (e.g.,
+            ''cache/abc123'') or empty string if not cached"'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid prefix
+            parameter"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve cache information"'
   /get-activities:
     get:
       tags:
@@ -1813,41 +1994,89 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        get application
+        Get detailed information of a specific application including deployment status, configuration, template, namespace, resource usage, and runtime details. Applications can be containers, services, or workflows managed by Casibase.
         <br>
       operationId: ApiController.GetApplication
       parameters:
       - in: query
         name: id
-        description: The id of application
+        description: Application ID in format 'owner/name', e.g., 'admin/app-web-service'
         required: true
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns application object with all deployment
+            and configuration details"'
           schema:
             $ref: '#/definitions/object.Application'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid application
+            ID format"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to access this application"'
+        "404":
+          description: '{object} controllers.Response "Not found: Application does
+            not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve application"'
   /get-applications:
     get:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        get applications
+        Get applications for a specific owner with optional pagination, filtering and sorting. Applications represent deployable services, containers, or workflows managed by Casibase. When pageSize and p parameters are provided, returns paginated results. Supports filtering and sorting by various fields.
         <br>
       operationId: ApiController.GetApplications
       parameters:
       - in: query
         name: owner
-        description: The owner of applications
+        description: Owner of the applications, typically 'admin', e.g., 'admin'
         required: true
+        type: string
+      - in: query
+        name: pageSize
+        description: Number of items per page for pagination, e.g., '10'
+        type: string
+      - in: query
+        name: p
+        description: Page number for pagination, e.g., '1'
+        type: string
+      - in: query
+        name: field
+        description: Field name for filtering, e.g., 'status'
+        type: string
+      - in: query
+        name: value
+        description: Value for field filtering, e.g., 'running'
+        type: string
+      - in: query
+        name: sortField
+        description: Field name for sorting, e.g., 'createdTime'
+        type: string
+      - in: query
+        name: sortOrder
+        description: 'Sort order: ''ascend'' or ''descend'''
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns array of application objects with deployment
+            details, optional pagination info"'
           schema:
             type: array
             items:
               $ref: '#/definitions/object.Application'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid owner
+            parameter"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve applications"'
   /get-article:
     get:
       tags:
@@ -2237,41 +2466,67 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        get file object
+        Get detailed metadata of a specific file including filename, size, type, upload time, processing status, vector embeddings, and storage location. Files represent documents and content stored in knowledge bases for semantic search and RAG.
         <br>
       operationId: ApiController.GetFileMy
       parameters:
       - in: query
         name: id
-        description: The id (owner/name) of the file object
+        description: File ID in format 'owner/name', e.g., 'admin/file-123abc'
         required: true
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns file metadata object with all details"'
           schema:
             $ref: '#/definitions/object.File'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid file ID
+            format"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to access this file"'
+        "404":
+          description: '{object} controllers.Response "Not found: File does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve file"'
   /get-files:
     get:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        get file objects
+        Get file metadata for a specific owner with optional store filtering. Returns file objects representing documents, images, videos, and other content stored in knowledge bases. Use store parameter to filter files by specific store.
         <br>
       operationId: ApiController.GetFiles
       parameters:
       - in: query
         name: owner
-        description: The owner of the file object
+        description: Owner of the files, typically 'admin', e.g., 'admin'
         required: true
+        type: string
+      - in: query
+        name: store
+        description: Filter by store name to get files from specific store, e.g.,
+          'store-built-in'
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns array of file metadata objects"'
           schema:
             type: array
             items:
               $ref: '#/definitions/object.File'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid owner
+            parameter"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve files"'
   /get-form:
     get:
       tags:
@@ -2403,16 +2658,51 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        get global file objects
+        Get all global file metadata with optional pagination, filtering and sorting. Files represent documents, images, videos, and other content stored in stores for RAG and knowledge base. When pageSize and p parameters are provided, returns paginated results with admin permission check. Supports filtering and sorting by various fields.
         <br>
       operationId: ApiController.GetGlobalFiles
+      parameters:
+      - in: query
+        name: pageSize
+        description: Number of items per page for pagination, e.g., '10'
+        type: string
+      - in: query
+        name: p
+        description: Page number for pagination, e.g., '1'
+        type: string
+      - in: query
+        name: field
+        description: Field name for filtering, e.g., 'type'
+        type: string
+      - in: query
+        name: value
+        description: Value for field filtering, e.g., 'pdf'
+        type: string
+      - in: query
+        name: sortField
+        description: Field name for sorting, e.g., 'createdTime'
+        type: string
+      - in: query
+        name: sortOrder
+        description: 'Sort order: ''ascend'' or ''descend'''
+        type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns array of file metadata objects with
+            optional pagination info"'
           schema:
             type: array
             items:
               $ref: '#/definitions/object.File'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Admin login required
+            for paginated access"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient admin
+            permissions"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve files"'
   /get-global-forms:
     get:
       tags:
@@ -2588,16 +2878,22 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        get global vectors
+        Get all global vector embeddings stored in the system. Vectors represent semantic embeddings of text chunks, files, and documents used for RAG (Retrieval Augmented Generation) and similarity search. Each vector contains embedding data, text content, and metadata.
         <br>
       operationId: ApiController.GetGlobalVectors
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns array of vector objects with embeddings
+            and metadata"'
           schema:
             type: array
             items:
               $ref: '#/definitions/object.Vector'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve vectors"'
   /get-global-videos:
     get:
       tags:
@@ -3486,41 +3782,89 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        get template
+        Get detailed information of a specific template including configuration, parameters, and metadata. Templates provide reusable configurations for creating applications, workflows, agents, and other resources with predefined settings.
         <br>
       operationId: ApiController.GetTemplate
       parameters:
       - in: query
         name: id
-        description: The id of template
+        description: Template ID in format 'owner/name', e.g., 'admin/template-workflow-basic'
         required: true
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns template object with all configuration
+            and metadata"'
           schema:
             $ref: '#/definitions/object.Template'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid template
+            ID format"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to access this template"'
+        "404":
+          description: '{object} controllers.Response "Not found: Template does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve template"'
   /get-templates:
     get:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        get templates
+        Get templates for a specific owner with optional pagination, filtering and sorting. Templates define reusable configurations for applications, workflows, and agents. When pageSize and p parameters are provided, returns paginated results. Supports filtering and sorting by various fields.
         <br>
       operationId: ApiController.GetTemplates
       parameters:
       - in: query
         name: owner
-        description: The owner of templates
+        description: Owner of the templates, typically 'admin', e.g., 'admin'
         required: true
+        type: string
+      - in: query
+        name: pageSize
+        description: Number of items per page for pagination, e.g., '10'
+        type: string
+      - in: query
+        name: p
+        description: Page number for pagination, e.g., '1'
+        type: string
+      - in: query
+        name: field
+        description: Field name for filtering, e.g., 'type'
+        type: string
+      - in: query
+        name: value
+        description: Value for field filtering, e.g., 'workflow'
+        type: string
+      - in: query
+        name: sortField
+        description: Field name for sorting, e.g., 'createdTime'
+        type: string
+      - in: query
+        name: sortOrder
+        description: 'Sort order: ''ascend'' or ''descend'''
         type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns array of template objects with optional
+            pagination info"'
           schema:
             type: array
             items:
               $ref: '#/definitions/object.Template'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid owner
+            parameter"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve templates"'
   /get-usages:
     get:
       tags:
@@ -3551,21 +3895,93 @@ paths:
             type: array
             items:
               type: string
+  /get-vector:
+    get:
+      tags:
+      - github.com/casibase/casibase/controllersApiController
+      description: |-
+        Get detailed information of a specific vector embedding including embedding data, text content, file reference, data type, and metadata. Vectors represent semantic embeddings used for similarity search and RAG.
+        <br>
+      operationId: ApiController.GetVector
+      parameters:
+      - in: query
+        name: id
+        description: Vector ID in format 'owner/name', e.g., 'admin/vector-123abc'
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '"Successfully returns vector object with embedding data and
+            metadata"'
+          schema:
+            $ref: '#/definitions/object.Vector'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid vector
+            ID format"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to access this vector"'
+        "404":
+          description: '{object} controllers.Response "Not found: Vector does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve vector"'
   /get-vectors:
     get:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        get vectors
+        Get vector embeddings for admin owner with optional pagination, filtering and store isolation. When pageSize and p parameters are provided, returns paginated results. Store isolation is enforced based on user's homepage field. Vectors are used for semantic search and RAG functionality.
         <br>
       operationId: ApiController.GetVectors
+      parameters:
+      - in: query
+        name: store
+        description: Filter by store name for store isolation
+        type: string
+      - in: query
+        name: pageSize
+        description: Number of items per page for pagination, e.g., '10'
+        type: string
+      - in: query
+        name: p
+        description: Page number for pagination, e.g., '1'
+        type: string
+      - in: query
+        name: field
+        description: Field name for filtering, e.g., 'dataType'
+        type: string
+      - in: query
+        name: value
+        description: Value for field filtering, e.g., 'text'
+        type: string
+      - in: query
+        name: sortField
+        description: Field name for sorting, e.g., 'createdTime'
+        type: string
+      - in: query
+        name: sortOrder
+        description: 'Sort order: ''ascend'' or ''descend'''
+        type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully returns array of vector objects with optional
+            pagination info"'
           schema:
             type: array
             items:
               $ref: '#/definitions/object.Vector'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Store isolation
+            violation"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to retrieve vectors"'
   /get-version-info:
     get:
       tags:
@@ -4034,21 +4450,35 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        undeploy application synchronously
+        Undeploy application synchronously and wait for completion. Stops containers, removes services, and cleans up resources in the target environment (Docker, Kubernetes, etc.). Application configuration remains in database for future redeployment. Requires appropriate permissions.
         <br>
       operationId: ApiController.UndeployApplication
       parameters:
-      - in: body
-        name: body
-        description: The details of the application
+      - in: query
+        name: id
+        description: Application ID in format 'owner/name', e.g., 'admin/app-web-service'
         required: true
-        schema:
-          $ref: '#/definitions/object.Application'
+        type: string
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully undeployed application and cleaned up resources,
+            returns success status"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid application
+            ID format or application not found"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to undeploy application"'
+        "404":
+          description: '{object} controllers.Response "Not found: Application does
+            not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to undeploy application or clean up resources"'
   /update-Graph:
     post:
       tags:
@@ -4079,26 +4509,41 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        update application
+        Update an existing application's configuration including template, namespace, environment variables, resource limits, and deployment settings. Does not trigger redeployment - use deploy endpoint for that. Requires appropriate permissions.
         <br>
       operationId: ApiController.UpdateApplication
       parameters:
       - in: query
         name: id
-        description: The id (owner/name) of the application
+        description: Application ID in format 'owner/name', e.g., 'admin/app-web-service'
         required: true
         type: string
       - in: body
         name: body
-        description: The details of the application
+        description: Application object with updated fields including name, displayName,
+          template, namespace, configuration, environment, resources, etc.
         required: true
         schema:
           $ref: '#/definitions/object.Application'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully updated application, returns success status"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid application
+            data or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to update application"'
+        "404":
+          description: '{object} controllers.Response "Not found: Application does
+            not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to update application"'
   /update-article:
     post:
       tags:
@@ -4318,26 +4763,40 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        update file object
+        Update file metadata including filename, display name, description, tags, processing status, and store association. Does not update file content - use upload endpoints to replace file content. Requires appropriate permissions.
         <br>
       operationId: ApiController.UpdateFile
       parameters:
       - in: query
         name: id
-        description: The id (owner/name) of the file object
+        description: File ID in format 'owner/name', e.g., 'admin/file-123abc'
         required: true
         type: string
       - in: body
         name: body
-        description: The details of the file object
+        description: File metadata object with updated fields including name, displayName,
+          description, tags, store, etc.
         required: true
         schema:
           $ref: '#/definitions/object.File'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully updated file metadata, returns success status"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid file data
+            or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to update file"'
+        "404":
+          description: '{object} controllers.Response "Not found: File does not exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to update file"'
   /update-form:
     post:
       tags:
@@ -4757,26 +5216,41 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        update template
+        Update an existing template's configuration, parameters, and metadata. Templates define reusable settings that can be applied when creating new instances of applications, workflows, or agents. Requires appropriate permissions.
         <br>
       operationId: ApiController.UpdateTemplate
       parameters:
       - in: query
         name: id
-        description: The id (owner/name) of the template
+        description: Template ID in format 'owner/name', e.g., 'admin/template-workflow-basic'
         required: true
         type: string
       - in: body
         name: body
-        description: The details of the template
+        description: Template object with updated fields including name, displayName,
+          type, configuration, parameters, etc.
         required: true
         schema:
           $ref: '#/definitions/object.Template'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully updated template, returns success status"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid template
+            data or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to update template"'
+        "404":
+          description: '{object} controllers.Response "Not found: Template does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to update template"'
   /update-tree-file:
     post:
       tags:
@@ -4812,26 +5286,41 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        update vector
+        Update vector embedding metadata including text content, file reference, data type, and store association. Can regenerate embedding if text content changes. Used to maintain vector index for semantic search. Requires appropriate permissions.
         <br>
       operationId: ApiController.UpdateVector
       parameters:
       - in: query
         name: id
-        description: The id (owner/name) of the vector
+        description: Vector ID in format 'owner/name', e.g., 'admin/vector-123abc'
         required: true
         type: string
       - in: body
         name: body
-        description: The details of the vector
+        description: Vector object with updated fields including text, file, dataType,
+          store, provider, etc.
         required: true
         schema:
           $ref: '#/definitions/object.Vector'
       responses:
         "200":
-          description: The Response object
+          description: '"Successfully updated vector, returns success status"'
           schema:
             $ref: '#/definitions/controllers.Response'
+        "400":
+          description: '{object} controllers.Response "Bad request: Invalid vector
+            data or malformed JSON"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "403":
+          description: '{object} controllers.Response "Forbidden: Insufficient permissions
+            to update vector"'
+        "404":
+          description: '{object} controllers.Response "Not found: Vector does not
+            exist"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to update vector or regenerate embedding"'
   /update-video:
     post:
       tags:
@@ -4887,30 +5376,37 @@ paths:
       tags:
       - github.com/casibase/casibase/controllersApiController
       description: |-
-        upload file to casdoor storage
+        Upload file content to Casdoor storage provider. Accepts base64 encoded file data and stores it in user-specific directory. File is uploaded to configured storage provider (local, S3, OSS, etc.). Returns the URL of uploaded file. Requires user authentication.
         <br>
       operationId: ApiController.UploadFile
       parameters:
       - in: formData
         name: file
-        description: The base64 encoded file data
+        description: Base64 encoded file data with data URI scheme, e.g., 'data:image/png;base64,iVBORw0KGgo...'
         required: true
         type: string
       - in: formData
         name: type
-        description: The file type/extension
+        description: File type/extension without dot, e.g., 'pdf', 'png', 'docx'
         required: true
         type: string
       - in: formData
         name: name
-        description: The file name
+        description: Original filename with extension, e.g., 'document.pdf'
         required: true
         type: string
       responses:
         "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
+          description: '{string} string "Successfully uploaded file, returns storage
+            URL string"'
+        "400":
+          description: '{object} controllers.Response "Bad request: Missing required
+            parameters, invalid file data format, or file too large"'
+        "401":
+          description: '{object} controllers.Response "Unauthorized: Login required"'
+        "500":
+          description: '{object} controllers.Response "Internal server error: Failed
+            to decode file data or upload to storage"'
   /upload-video:
     post:
       tags:
