@@ -14,22 +14,24 @@
 
 package object
 
-import "fmt"
-
-// CloudParser defines the interface for cloud resource scanning
-type CloudParser interface {
-	// ScanAssets scans all resources from the cloud provider and returns them as Asset objects
-	ScanAssets(owner string, provider *Provider) ([]*Asset, error)
+// CvmInstanceDetail holds detailed information for a CVM instance
+type CvmInstanceDetail struct {
+	InstanceId         string
+	InstanceType       string
+	ImageId            string
+	OSName             string
+	Cpu                int64
+	Memory             int64
+	PublicIp           string
+	PrivateIp          string
+	InstanceChargeType string
+	Status             string
 }
 
-// NewCloudParser creates a new CloudParser instance based on the provider type
-func NewCloudParser(providerType string) (CloudParser, error) {
-	switch providerType {
-	case "Aliyun":
-		return &AlibabaCloudParser{}, nil
-	case "Tencent Cloud":
-		return &TencentCloudParser{}, nil
-	default:
-		return nil, fmt.Errorf("unsupported provider type: %s", providerType)
-	}
+// VpcDetailTencent holds detailed information for a VPC
+type VpcDetailTencent struct {
+	VpcId       string
+	CidrBlock   string
+	IsDefault   bool
+	Description string
 }
