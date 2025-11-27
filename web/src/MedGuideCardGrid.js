@@ -26,7 +26,9 @@ const GROUPS = [
         bg: "#f6fbf8",
         buttons: [
             { title: "数据总览", icon: "📊", desc: "全局展示平台内数据分布、趋势与共享情况。", route: "/dashboard" },
-            { title: "专病知识图谱", icon: "🧠", desc: "构建专病知识结构，助力智能诊疗与科研分析。", route: "https://rws.neusoft.com:10100/medkb/#/login" },
+            // { title: "专病知识图谱", icon: "🧠", desc: "构建专病知识结构，助力智能诊疗与科研分析。", route: "https://rws.neusoft.com:10100/medkb/#/login" },
+            { title: "医疗知识平台", icon: "🧠", desc: "构建医疗知识服务平台，助力医疗知识传播与学习分析。", route: "https://rws.neusoft.com:10100/medkb/#/login" },
+            { title: "专病知识图谱", icon: "📚", desc: "构建专病知识结构，助力智能诊疗与科研分析。", route: "https://10-80-95-91-7474-p.jsph.org.cn:4434/browser" },
             { title: "区块链浏览器", icon: "🌐", desc: "可视化浏览链上数据，支持多条件筛选与溯源。", route: "http://192.168.0.228:9996/chain1/home" },
         ],
     },
@@ -37,7 +39,7 @@ const GROUPS = [
         bg: "#f9f7f3",
         buttons: [
             { title: "医疗数据归档", icon: "📄", desc: "将医疗数据高效上链，数据不可篡改可追溯。", route: "/ipfs-archive", introRoute: "/introduce/medical-record-chain" },
-            { title: "数据操作上链", icon: "🔗", desc: "各类数据操作全流程长脸，提升数据可信。", route: "/records" },
+            { title: "数据操作上链", icon: "🔗", desc: "各类数据操作全流程上链，提升数据可信。", route: "/records" },
             // { title: "区块链浏览器", icon: "🌐", desc: "可视化浏览链上数据，支持多条件筛选与溯源。", route: "/forms/区块链浏览器/data" },
             // { title: "病例数据", icon: "🗒", desc: "可视化病例数据上传，支持批量导入", route: "/med-records" },
             { title: "查询与审计", icon: "🔍", desc: "查看患者的上链数据明细，支持检索与追溯。", route: "/ipfs-search", introRoute: "/introduce/patient-chain-data" },
@@ -95,7 +97,7 @@ const MedGuideCardGrid = (props) => {
                 return canViewTrustFederation;
             }
             // 专病知识图谱 - 不是 user 标签
-            if (button.title === "专病知识图谱") {
+            if (button.title === "专病知识图谱" || button.title === "医疗知识平台") {
                 const canViewKnowledgeGraph = userTag !== 'user';
                 return canViewKnowledgeGraph;
             }

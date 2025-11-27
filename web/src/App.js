@@ -796,12 +796,23 @@ class App extends Component {
         Setting.getItem(<Link to="/dashboard">{i18next.t("leftSideMedMenu:Dashboard")}</Link>, "/dashboard"),
         // Setting.getItem(<Link to="/forms/专病库知识图谱/data">{i18next.t("leftSideMedMenu:knowledge graph")}</Link>, "/forms/专病库知识图谱/data"),
 
-        // 专病知识图谱 - 仅对非 user 标签用户可见
+        // // 专病知识图谱 - 仅对非 user 标签用户可见
+        // ...(userTag !== 'user' ? [Setting.getItem(
+        //   <a target="_blank" rel="noreferrer" href="https://rws.neusoft.com:10100/medkb/#/login">
+        //     {i18next.t("leftSideMedMenu:knowledge graph")}
+        //     {Setting.renderExternalLink()}
+        //   </a>, "/knowledge-graph"),
+        // ] : []),
         ...(userTag !== 'user' ? [Setting.getItem(
           <a target="_blank" rel="noreferrer" href="https://rws.neusoft.com:10100/medkb/#/login">
-            {i18next.t("leftSideMedMenu:knowledge graph")}
+            {"医疗知识平台"}
             {Setting.renderExternalLink()}
-          </a>, "/knowledge-graph"),
+          </a>, "/knowledge-graph"), Setting.getItem(
+            <a target="_blank" rel="noreferrer" href="https://10-80-95-91-7474-p.jsph.org.cn:4434/browser">
+              {i18next.t("leftSideMedMenu:knowledge graph")}
+              {Setting.renderExternalLink()}
+            </a>, "/knowledge-graph2"),
+
         ] : []),
         ...(isUserTagNotUserAndDoctor ? [Setting.getItem(
           <a target="_blank" rel="noreferrer" href="http://192.168.0.228:9996/chain1/home">
