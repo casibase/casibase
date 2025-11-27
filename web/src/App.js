@@ -846,10 +846,10 @@ class App extends Component {
 
         // 联邦学习 - 仅对非 user 标签用户可见
         ...(userTag !== 'user' ? [Setting.getItem(
-          <a target="_blank" rel="noreferrer" href="http://172.25.77.152">
+          <a target="_blank" rel="noreferrer" href="https://2642d044.r9.vip.cpolar.cn/">
             {i18next.t("leftSideMedMenu:Federated Learning")}
             {Setting.renderExternalLink()}
-          </a>, "http://172.25.77.152/")] : []),
+          </a>, "https://2642d044.r9.vip.cpolar.cn/")] : []),
         Setting.getItem(<Link to="/forms/密文计算/data">{i18next.t("leftSideMedMenu:Encrypted Computation")}</Link>, "/forms/密文计算/data"),
         // Setting.getItem(<Link to="/forms/SM9-IPFE/data">{i18next.t("leftSideMedMenu:Privacy-Preserving Inference")}</Link>, "/forms/SM9-IPFE/data"),
 
