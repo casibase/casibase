@@ -130,6 +130,10 @@ import MedicalRecordChainIntro from "./introduce/MedicalRecordChainIntro"
 import withPagePermission from "./component/PagePermissionGuard";
 import BugFixTaskPage from "./BugFixTaskPage";
 
+import MedKnoeladgeGraph from "./frame/MedKnowledgeGraph";
+import MedKnowledgePage from "./frame/MedKnowledgePage";
+import FedPage from "./frame/FedPage";
+
 
 
 
@@ -349,6 +353,18 @@ class App extends Component {
     //   // 将/forms/专病库知识图谱/data 转为 编码后的uri
     //   this.setState({ selectedMenuKey: "/forms/专病库知识图谱/data" });
     // } 
+    else if (uri.includes(encodeURIComponent("/integration/fed"))) {
+      // 将/integration/fed 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/integration/fed" });
+    }
+    else if (uri.includes(encodeURIComponent("/integration/graph"))) {
+      // 将/integration/graph 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/integration/graph" });
+    }
+    else if (uri.includes(encodeURIComponent("/integration/page"))) {
+      // 将/integration/page 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/integration/page" });
+    }
     else {
       this.setState({ selectedMenuKey: "null" });
     }
@@ -803,16 +819,18 @@ class App extends Component {
         //     {Setting.renderExternalLink()}
         //   </a>, "/knowledge-graph"),
         // ] : []),
-        ...(userTag !== 'user' ? [Setting.getItem(
-          <a target="_blank" rel="noreferrer" href="https://rws.neusoft.com:10100/medkb/#/login">
-            {"医疗知识平台"}
-            {Setting.renderExternalLink()}
-          </a>, "/knowledge-graph"), Setting.getItem(
-            <a target="_blank" rel="noreferrer" href="https://10-80-95-91-7474-p.jsph.org.cn:4434/browser">
-              {i18next.t("leftSideMedMenu:knowledge graph")}
-              {Setting.renderExternalLink()}
-            </a>, "/knowledge-graph2"),
-
+        ...(userTag !== 'user' ? [
+          // Setting.getItem(
+          // <a target="_blank" rel="noreferrer" href="https://rws.neusoft.com:10100/medkb/#/login">
+          //   {"医疗知识平台"}
+          //   {Setting.renderExternalLink()}
+          // </a>, "/knowledge-graph"), Setting.getItem(
+          //   <a target="_blank" rel="noreferrer" href="https://10-80-95-91-7474-p.jsph.org.cn:4434/browser">
+          //     {i18next.t("leftSideMedMenu:knowledge graph")}
+          //     {Setting.renderExternalLink()}
+          //   </a>, "/knowledge-graph2"),
+          Setting.getItem(<Link to="/integration/page">{"医疗知识平台"}</Link>, "/integration/page"),
+          Setting.getItem(<Link to="/integration/graph">{i18next.t("leftSideMedMenu:knowledge graph")}</Link>, "/integration/graph"),
         ] : []),
         ...(isUserTagNotUserAndDoctor ? [Setting.getItem(
           <a target="_blank" rel="noreferrer" href="http://192.168.0.228:9996/chain1/home">
@@ -845,11 +863,14 @@ class App extends Component {
         Setting.getItem(<Link to="/forms/受控使用/data">{i18next.t("leftSideMedMenu:Controlled Usage")}</Link>, "/forms/受控使用/data"),
 
         // 联邦学习 - 仅对非 user 标签用户可见
-        ...(userTag !== 'user' ? [Setting.getItem(
-          <a target="_blank" rel="noreferrer" href="https://2642d044.r9.vip.cpolar.cn/">
-            {i18next.t("leftSideMedMenu:Federated Learning")}
-            {Setting.renderExternalLink()}
-          </a>, "https://2642d044.r9.vip.cpolar.cn/")] : []),
+        ...(userTag !== 'user' ? [
+          // Setting.getItem(
+          // <a target="_blank" rel="noreferrer" href="https://2642d044.r9.vip.cpolar.cn/">
+          //   {i18next.t("leftSideMedMenu:Federated Learning")}
+          //   {Setting.renderExternalLink()}
+          // </a>, "https://2642d044.r9.vip.cpolar.cn/")
+          Setting.getItem(<Link to="/integration/fed">{i18next.t("leftSideMedMenu:Federated Learning")}</Link>, "/integration/fed"),
+        ] : []),
         Setting.getItem(<Link to="/forms/密文计算/data">{i18next.t("leftSideMedMenu:Encrypted Computation")}</Link>, "/forms/密文计算/data"),
         // Setting.getItem(<Link to="/forms/SM9-IPFE/data">{i18next.t("leftSideMedMenu:Privacy-Preserving Inference")}</Link>, "/forms/SM9-IPFE/data"),
 
@@ -1226,6 +1247,10 @@ class App extends Component {
         <Route exact path="/introduce/medical-record-chain" render={(props) => this.renderSigninIfNotSignedIn(<MedicalRecordChainIntro account={this.state.account} {...props} />)} />
         <Route exact path="/lion" render={(props) => this.renderSigninIfNotSignedIn(<DynamicConfigPage account={this.state.account} {...props} />)} />
         <Route exact path="/bugfix" render={(props) => this.renderSigninIfNotSignedIn(<BugFixTaskPage account={this.state.account} {...props} />)} />
+
+        <Route exact path="/integration/graph" render={(props) => this.renderSigninIfNotSignedIn(<MedKnoeladgeGraph account={this.state.account} {...props} />)} />
+        <Route exact path="/integration/page" render={(props) => this.renderSigninIfNotSignedIn(<MedKnowledgePage account={this.state.account} {...props} />)} />
+        <Route exact path="/integration/fed" render={(props) => this.renderSigninIfNotSignedIn(<FedPage account={this.state.account} {...props} />)} />
 
         <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
       </Switch>
