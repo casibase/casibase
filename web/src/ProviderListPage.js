@@ -89,13 +89,7 @@ class ProviderListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
-          this.setState({
-            data: Setting.prependRow(this.state.data, newProvider),
-            pagination: {
-              ...this.state.pagination,
-              total: this.state.pagination.total + 1,
-            },
-          });
+          this.props.history.push(`/providers/${newProvider.name}`);
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
