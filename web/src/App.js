@@ -865,10 +865,10 @@ class App extends Component {
         // 联邦学习 - 仅对非 user 标签用户可见
         ...(userTag !== 'user' ? [
           // Setting.getItem(
-          // <a target="_blank" rel="noreferrer" href="https://2642d044.r9.vip.cpolar.cn/">
+          // <a target="_blank" rel="noreferrer" href="https://30b44636.r3.cpolar.top/">
           //   {i18next.t("leftSideMedMenu:Federated Learning")}
           //   {Setting.renderExternalLink()}
-          // </a>, "https://2642d044.r9.vip.cpolar.cn/")
+          // </a>, "https://30b44636.r3.cpolar.top/")
           Setting.getItem(<Link to="/integration/fed">{i18next.t("leftSideMedMenu:Federated Learning")}</Link>, "/integration/fed"),
         ] : []),
         Setting.getItem(<Link to="/forms/密文计算/data">{i18next.t("leftSideMedMenu:Encrypted Computation")}</Link>, "/forms/密文计算/data"),

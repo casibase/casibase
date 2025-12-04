@@ -24,7 +24,7 @@ class FedPage extends React.Component {
 
     render() {
         return (
-            <iframe id="iframe" title={"iframe"} src={`https://2642d044.r9.vip.cpolar.cn/`} width="100%" height={window.innerHeight - 195} frameBorder="no" />
+            <iframe id="iframe" title={"iframe"} src={`https://30b44636.r3.cpolar.top/`} width="100%" height={window.innerHeight - 195} frameBorder="no" />
         );
     }
 }
