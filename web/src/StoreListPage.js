@@ -171,12 +171,9 @@ class StoreListPage extends BaseListPage {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
           window.dispatchEvent(new Event("storesChanged"));
-          this.setState({
-            data: Setting.prependRow(this.state.data, newStore),
-            pagination: {
-              ...this.state.pagination,
-              total: this.state.pagination.total + 1,
-            },
+          this.props.history.push({
+            pathname: `/stores/${newStore.owner}/${newStore.name}`,
+            state: {isNewStore: true},
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);

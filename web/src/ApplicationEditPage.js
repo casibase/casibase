@@ -36,6 +36,7 @@ class ApplicationEditPage extends React.Component {
       application: null,
       templates: [],
       deploying: false,
+      isNewApplication: props.location?.state?.isNewApplication || false,
     };
   }
 
@@ -151,6 +152,7 @@ class ApplicationEditPage extends React.Component {
           {i18next.t("application:Edit Application")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitApplicationEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitApplicationEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewApplication && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelApplicationEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       } style={(Setting.isMobile()) ? {margin: "5px"} : {}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -297,6 +299,7 @@ class ApplicationEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               applicationName: this.state.application.name,
+              isNewApplication: false,
             });
 
             if (exitAfterSave) {
@@ -318,6 +321,25 @@ class ApplicationEditPage extends React.Component {
       });
   }
 
+  cancelApplicationEdit() {
+    if (this.state.isNewApplication) {
+      ApplicationBackend.deleteApplication(this.state.application)
+        .then((res) => {
+          if (res.status === "ok") {
+            Setting.showMessage("success", i18next.t("general:Cancelled successfully"));
+            this.props.history.push("/applications");
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${res.msg}`);
+          }
+        })
+        .catch(error => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${error}`);
+        });
+    } else {
+      this.props.history.push("/applications");
+    }
+  }
+
   render() {
     return (
       <div>
@@ -327,6 +349,7 @@ class ApplicationEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitApplicationEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitApplicationEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewApplication && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelApplicationEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       </div>
     );

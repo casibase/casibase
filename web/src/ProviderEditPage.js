@@ -44,6 +44,7 @@ class ProviderEditPage extends React.Component {
       originalProvider: null,
       refreshButtonLoading: false,
       isAdmin: props.account?.isAdmin || props.account?.owner === "admin",
+      isNewProvider: props.location?.state?.isNewProvider || false,
     };
   }
 
@@ -267,6 +268,7 @@ class ProviderEditPage extends React.Component {
           {isRemote ? i18next.t("general:View") : i18next.t("provider:Edit Provider")}&nbsp;&nbsp;&nbsp;&nbsp;
           {!isRemote && <Button onClick={() => this.submitProviderEdit(false)}>{i18next.t("general:Save")}</Button>}
           {!isRemote && <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitProviderEdit(true)}>{i18next.t("general:Save & Exit")}</Button>}
+          {!isRemote && this.state.isNewProvider && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelProviderEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -1258,6 +1260,7 @@ class ProviderEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               providerName: this.state.provider.name,
+              isNewProvider: false,
             });
 
             if (exitAfterSave) {
@@ -1278,6 +1281,25 @@ class ProviderEditPage extends React.Component {
       });
   }
 
+  cancelProviderEdit() {
+    if (this.state.isNewProvider) {
+      ProviderBackend.deleteProvider(this.state.provider)
+        .then((res) => {
+          if (res.status === "ok") {
+            Setting.showMessage("success", i18next.t("general:Cancelled successfully"));
+            this.props.history.push("/providers");
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${res.msg}`);
+          }
+        })
+        .catch(error => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${error}`);
+        });
+    } else {
+      this.props.history.push("/providers");
+    }
+  }
+
   render() {
     const isRemote = this.state.provider?.isRemote;
     return (
@@ -1289,6 +1311,7 @@ class ProviderEditPage extends React.Component {
           <div style={{marginTop: "20px", marginLeft: "40px"}}>
             <Button size="large" onClick={() => this.submitProviderEdit(false)}>{i18next.t("general:Save")}</Button>
             <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitProviderEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+            {this.state.isNewProvider && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelProviderEdit()}>{i18next.t("general:Cancel")}</Button>}
           </div>
         )}
       </div>
