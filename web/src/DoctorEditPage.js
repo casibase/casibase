@@ -28,7 +28,7 @@ class DoctorEditPage extends React.Component {
       doctorName: props.match.params.doctorName,
       doctor: null,
       hospitals: [],
-      mode: props.location.mode !== undefined ? props.location.mode : "edit",
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 
@@ -232,7 +232,7 @@ class DoctorEditPage extends React.Component {
             } else {
               this.props.history.push(`/doctors/${encodeURIComponent(this.state.doctor.name)}`);
             }
-          // this.getDoctor(true);
+            // this.getDoctor(true);
           } else {
             Setting.showMessage("error", i18next.t("general:Failed to save"));
             this.updateDoctorField("name", this.state.doctorName);

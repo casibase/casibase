@@ -40,6 +40,7 @@ class TaskEditPage extends React.Component {
       task: null,
       chatPageObj: null,
       loading: false,
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location?.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 
@@ -134,6 +135,7 @@ class TaskEditPage extends React.Component {
           {i18next.t("task:Edit Task")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitTaskEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitTaskEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteTask()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -337,7 +339,7 @@ class TaskEditPage extends React.Component {
             {Setting.getLabel(i18next.t("task:Question"), i18next.t("task:Question - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <TextArea disabled={true} autoSize={{minRows: 1, maxRows: 15}} value={(this.state.task.type !== "Labeling") ? this.getProjectText() : this.getQuestion()} onChange={(e) => {}} />
+            <TextArea disabled={true} autoSize={{minRows: 1, maxRows: 15}} value={(this.state.task.type !== "Labeling") ? this.getProjectText() : this.getQuestion()} onChange={(e) => { }} />
           </Col>
         </Row>
         {
@@ -426,6 +428,20 @@ class TaskEditPage extends React.Component {
       });
   }
 
+  deleteTask() {
+    TaskBackend.deleteTask(this.state.task)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.props.history.push("/tasks");
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      });
+  }
+
   render() {
     return (
       <div>
@@ -435,6 +451,7 @@ class TaskEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitTaskEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitTaskEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.deleteTask()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       </div>
     );

@@ -31,7 +31,7 @@ class NodeEditPage extends React.Component {
       nodeName: props.match.params.nodeName,
       node: null,
       organizations: [],
-      mode: props.location.mode !== undefined ? props.location.mode : "edit",
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location.mode !== undefined ? props.location.mode : "edit"),
     };
 
     this.timer = null;

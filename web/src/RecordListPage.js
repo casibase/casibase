@@ -116,7 +116,7 @@ class RecordListPage extends BaseListPage {
     RecordBackend.addRecord(newRecord)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/records/${newRecord.owner}/${newRecord.id}`, mode: "add"});
+          this.props.history.push(`/records/${newRecord.owner}/${newRecord.id}`, {mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);

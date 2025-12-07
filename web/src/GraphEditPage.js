@@ -42,6 +42,7 @@ class GraphEditPage extends React.Component {
       filteredChats: [],
       tempStartTime: null,
       tempEndTime: null,
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location?.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 
@@ -149,6 +150,7 @@ class GraphEditPage extends React.Component {
           {i18next.t("graph:Edit Graph")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitGraphEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitGraphEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteGraph()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -391,6 +393,20 @@ class GraphEditPage extends React.Component {
       });
   }
 
+  deleteGraph() {
+    GraphBackend.deleteGraph(this.state.graph)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.props.history.push("/graphs");
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      });
+  }
+
   render() {
     return (
       <div>
@@ -403,6 +419,7 @@ class GraphEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitGraphEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitGraphEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.deleteGraph()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       </div>
     );

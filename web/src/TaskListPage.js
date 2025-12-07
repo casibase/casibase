@@ -51,13 +51,8 @@ class TaskListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
-          this.setState({
-            data: Setting.prependRow(this.state.data, newTask),
-            pagination: {
-              ...this.state.pagination,
-              total: this.state.pagination.total + 1,
-            },
-          });
+          // 跳转到编辑页，带 mode 参数
+          this.props.history.push(`/tasks/${newTask.name}`, {mode: "add"});
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }

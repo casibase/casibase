@@ -35,7 +35,7 @@ class RecordEditPage extends React.Component {
       recordName: props.match.params.recordName,
       record: null,
       blockchainProviders: [],
-      mode: props.location.mode !== undefined ? props.location.mode : "edit",
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 

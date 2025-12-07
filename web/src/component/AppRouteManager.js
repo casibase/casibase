@@ -521,17 +521,30 @@ export const DynamicRouteComponent = ({appType, match, location, ...props}) => {
   useEffect(() => {
     const componentLoader = routeManager.getRouteComponent(appType, location.pathname);
 
-    componentLoader()
-      .then(module => {
-        setComponent(() => module.default);
-        setLoading(false);
-      });
+    if (componentLoader && typeof componentLoader === "function") {
+      componentLoader()
+        .then(module => {
+          setComponent(() => module.default);
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
   }, [appType, location.pathname]);
 
   if (loading) {
     return (
       <div style={{padding: "20px", textAlign: "center"}}>
         <Spin size="large" />
+      </div>
+    );
+  }
+
+  if (!Component) {
+    return (
+      <div style={{padding: "20px", textAlign: "center"}}>
+        <h2>Page not found</h2>
+        <p>The requested page does not exist.</p>
       </div>
     );
   }

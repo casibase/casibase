@@ -128,7 +128,7 @@ class StoreListPage extends BaseListPage {
   newStore() {
     const randomName = Setting.getRandomName();
     return {
-      owner: "admin",
+      owner: this.props.account.name,
       name: `store_${randomName}`,
       displayName: `New Store - ${randomName}`,
       createdTime: moment().format(),
@@ -169,15 +169,10 @@ class StoreListPage extends BaseListPage {
     StoreBackend.addStore(newStore)
       .then((res) => {
         if (res.status === "ok") {
+          // Navigate to edit page with mode parameter
+          this.props.history.push(`/stores/${newStore.owner}/${newStore.name}`, {mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
           window.dispatchEvent(new Event("storesChanged"));
-          this.setState({
-            data: Setting.prependRow(this.state.data, newStore),
-            pagination: {
-              ...this.state.pagination,
-              total: this.state.pagination.total + 1,
-            },
-          });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
@@ -450,7 +445,7 @@ class StoreListPage extends BaseListPage {
           return (
             <div>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}/view`)}>{i18next.t("general:View")}</Button>
-              <Button style={{marginBottom: "10px", marginRight: "10px"}} icon={<CopyOutlined />} onClick={() => {copy(`${window.location.origin}/${record.owner}/${record.name}/chat`);Setting.showMessage("success", i18next.t("general:Successfully copied"));}}>{i18next.t("general:Copy Link")}</Button>
+              <Button style={{marginBottom: "10px", marginRight: "10px"}} icon={<CopyOutlined />} onClick={() => {copy(`${window.location.origin}/${record.owner}/${record.name}/chat`); Setting.showMessage("success", i18next.t("general:Successfully copied"));}}>{i18next.t("general:Copy Link")}</Button>
               <Button style={{marginBottom: "10px", marginRight: "10px"}} onClick={() => {
                 Setting.setStore(record.name);
                 window.open(`${window.location.origin}/${record.owner}/${record.name}/chat`, "_blank");

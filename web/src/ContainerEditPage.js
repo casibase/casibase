@@ -28,7 +28,7 @@ class ContainerEditPage extends React.Component {
       containerOwner: props.match.params.organizationName,
       containerName: props.match.params.containerName,
       container: null,
-      mode: props.location.mode !== undefined ? props.location.mode : "edit",
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 

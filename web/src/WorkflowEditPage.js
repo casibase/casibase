@@ -35,6 +35,7 @@ class WorkflowEditPage extends React.Component {
       workflow: null,
       chatPageObj: null,
       loading: false,
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location?.mode !== undefined ? props.location.mode : "edit"),
     };
 
     this.questionTemplatesOptions = [
@@ -105,6 +106,7 @@ class WorkflowEditPage extends React.Component {
           {i18next.t("workflow:Edit Workflow")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitWorkflowEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitWorkflowEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteWorkflow()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -300,6 +302,20 @@ class WorkflowEditPage extends React.Component {
       });
   }
 
+  deleteWorkflow() {
+    WorkflowBackend.deleteWorkflow(this.state.workflow)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.props.history.push("/workflows");
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      });
+  }
+
   render() {
     return (
       <div>
@@ -309,6 +325,7 @@ class WorkflowEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitWorkflowEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitWorkflowEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.deleteWorkflow()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       </div>
     );

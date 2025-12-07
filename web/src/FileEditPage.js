@@ -27,6 +27,7 @@ class FileEditPage extends React.Component {
       classes: props,
       fileName: props.match.params.fileName,
       file: null,
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location?.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 
@@ -71,6 +72,7 @@ class FileEditPage extends React.Component {
           {i18next.t("file:Edit File")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitFileEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitFileEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteFile()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -201,6 +203,20 @@ class FileEditPage extends React.Component {
       });
   }
 
+  deleteFile() {
+    FileBackend.deleteFile(this.state.file)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.props.history.push("/files");
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
+      });
+  }
+
   render() {
     return (
       <div>
@@ -210,6 +226,7 @@ class FileEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitFileEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitFileEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.deleteFile()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       </div>
     );

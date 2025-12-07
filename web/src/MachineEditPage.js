@@ -28,7 +28,7 @@ class MachineEditPage extends React.Component {
       machineOwner: props.match.params.organizationName,
       machineName: props.match.params.machineName,
       machine: null,
-      mode: props.location.mode !== undefined ? props.location.mode : "edit",
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 

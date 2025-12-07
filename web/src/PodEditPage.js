@@ -28,7 +28,7 @@ class PodEditPage extends React.Component {
       podOwner: props.match.params.organizationName,
       podName: props.match.params.podName,
       pod: null,
-      mode: props.location.mode !== undefined ? props.location.mode : "edit",
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 

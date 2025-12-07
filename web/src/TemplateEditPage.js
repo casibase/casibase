@@ -35,6 +35,7 @@ class TemplateEditPage extends React.Component {
       templateName: props.match.params.templateName,
       template: null,
       defaultStore: null,
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location?.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 
@@ -96,6 +97,7 @@ class TemplateEditPage extends React.Component {
           {i18next.t("template:Edit Template")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitTemplateEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitTemplateEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} onClick={() => this.deleteTemplate()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -240,6 +242,20 @@ class TemplateEditPage extends React.Component {
       });
   }
 
+  deleteTemplate() {
+    TemplateBackend.deleteTemplate(this.state.template)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.props.history.push("/templates");
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      });
+  }
+
   render() {
     return (
       <div>
@@ -249,6 +265,7 @@ class TemplateEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitTemplateEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitTemplateEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.deleteTemplate()}>{i18next.t("general:Cancel")}</Button> : null}
         </div>
       </div>
     );

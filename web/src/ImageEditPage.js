@@ -26,7 +26,7 @@ class ImageEditPage extends React.Component {
       imageOwner: props.match.params.organizationName,
       imageName: props.match.params.imageName,
       image: null,
-      mode: props.location.mode !== undefined ? props.location.mode : "edit",
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 

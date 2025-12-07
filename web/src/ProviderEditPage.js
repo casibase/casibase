@@ -44,6 +44,7 @@ class ProviderEditPage extends React.Component {
       originalProvider: null,
       refreshButtonLoading: false,
       isAdmin: props.account?.isAdmin || props.account?.owner === "admin",
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 
@@ -267,6 +268,7 @@ class ProviderEditPage extends React.Component {
           {isRemote ? i18next.t("general:View") : i18next.t("provider:Edit Provider")}&nbsp;&nbsp;&nbsp;&nbsp;
           {!isRemote && <Button onClick={() => this.submitProviderEdit(false)}>{i18next.t("general:Save")}</Button>}
           {!isRemote && <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitProviderEdit(true)}>{i18next.t("general:Save & Exit")}</Button>}
+          {!isRemote && this.state.mode === "add" && <Button style={{marginLeft: "20px"}} onClick={() => this.deleteProvider()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -450,7 +452,7 @@ class ProviderEditPage extends React.Component {
             >
               {
                 Setting.getProviderTypeOptions(this.state.provider.category)
-                // .sort((a, b) => a.name.localeCompare(b.name))
+                  // .sort((a, b) => a.name.localeCompare(b.name))
                   .map((item, index) => <Option key={index} value={item.name}>
                     <img width={20} height={20} style={{marginBottom: "3px", marginRight: "10px"}} src={Setting.getProviderLogoURL({category: this.state.provider.category, type: item.name})} alt={item.name} />
                     {item.name}
@@ -521,16 +523,16 @@ class ProviderEditPage extends React.Component {
         }
         {
           !(this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") &&
-          this.state.provider.category !== "Scan" &&
-          (
-            ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") ||
-              (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") ||
-              (this.state.provider.category === "Storage" && this.state.provider.type !== "OpenAI File System")) ||
-            (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
-            (this.state.provider.category === "Blockchain" && !["ChainMaker", "Ethereum"].includes(this.state.provider.type)) ||
-            ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
-            (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent", "Blockchain"].includes(this.state.provider.category)))
-          ) ? (
+            this.state.provider.category !== "Scan" &&
+            (
+              ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") ||
+                (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") ||
+                (this.state.provider.category === "Storage" && this.state.provider.type !== "OpenAI File System")) ||
+              (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
+              (this.state.provider.category === "Blockchain" && !["ChainMaker", "Ethereum"].includes(this.state.provider.type)) ||
+              ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
+              (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent", "Blockchain"].includes(this.state.provider.category)))
+            ) ? (
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {this.getClientIdLabel(this.state.provider)} :
@@ -556,7 +558,7 @@ class ProviderEditPage extends React.Component {
                   })}>
                     {
                       Setting.getCompatibleProviderOptions(this.state.provider.category)
-                      // .sort((a, b) => a.name.localeCompare(b.name))
+                        // .sort((a, b) => a.name.localeCompare(b.name))
                         .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
                     }
                   </Select>
@@ -1278,6 +1280,20 @@ class ProviderEditPage extends React.Component {
       });
   }
 
+  deleteProvider() {
+    ProviderBackend.deleteProvider(this.state.provider)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.props.history.push("/providers");
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      });
+  }
+
   render() {
     const isRemote = this.state.provider?.isRemote;
     return (
@@ -1289,6 +1305,7 @@ class ProviderEditPage extends React.Component {
           <div style={{marginTop: "20px", marginLeft: "40px"}}>
             <Button size="large" onClick={() => this.submitProviderEdit(false)}>{i18next.t("general:Save")}</Button>
             <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitProviderEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+            {this.state.mode === "add" ? <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.deleteProvider()}>{i18next.t("general:Cancel")}</Button> : null}
           </div>
         )}
       </div>

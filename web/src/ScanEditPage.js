@@ -26,7 +26,7 @@ class ScanEditPage extends React.Component {
       classes: props,
       scanName: props.match.params.scanName,
       scan: null,
-      mode: props.location.mode !== undefined ? props.location.mode : "edit",
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 

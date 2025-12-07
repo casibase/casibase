@@ -54,7 +54,7 @@ class ImageListPage extends BaseListPage {
     ImageBackend.addImage(newImage)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/images/${newImage.owner}/${newImage.name}`, mode: "add"});
+          this.props.history.push(`/images/${newImage.owner}/${newImage.name}`, {mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
@@ -113,7 +113,7 @@ class ImageListPage extends BaseListPage {
     MachineBackend.addMachine(newMachine)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/machines/${newMachine.owner}/${newMachine.name}`, mode: "add"});
+          this.props.history.push(`/machines/${newMachine.owner}/${newMachine.name}`, {mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);

@@ -142,7 +142,7 @@ class ScanListPage extends BaseListPage {
     ScanBackend.addScan(newScan)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/scans/${newScan.name}`, mode: "add"});
+          this.props.history.push(`/scans/${newScan.name}`, {mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);

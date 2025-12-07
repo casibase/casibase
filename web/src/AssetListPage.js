@@ -91,7 +91,7 @@ class AssetListPage extends BaseListPage {
     AssetBackend.addAsset(newAsset)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/assets/${newAsset.name}`, mode: "add"});
+          this.props.history.push(`/assets/${newAsset.name}`, {mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);

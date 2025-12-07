@@ -45,7 +45,7 @@ class ConsultationListPage extends BaseListPage {
     ConsultationBackend.addConsultation(newConsultation)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/consultations/${newConsultation.name}`, mode: "add"});
+          this.props.history.push(`/consultations/${newConsultation.name}`, {mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);

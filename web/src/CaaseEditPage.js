@@ -31,7 +31,7 @@ class CaaseEditPage extends React.Component {
       patients: [],
       doctors: [],
       hospitals: [],
-      mode: props.location.mode !== undefined ? props.location.mode : "edit",
+      mode: props.location?.state?.mode !== undefined ? props.location.state.mode : (props.location.mode !== undefined ? props.location.mode : "edit"),
     };
   }
 

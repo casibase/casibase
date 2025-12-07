@@ -79,11 +79,11 @@ const WindowContent = ({appType, account, history, match, location, isDesktopMod
 const Window = ({title, isMaximized, onClose, onMaximize, onMinimize, onFocus, appType, appConfig, account, history, match, location, onRouteChange, windowHistory, onGoBack, onGoForward}) => {
   const windowHistoryObj = {
     ...history,
-    push: (path) => {
-      onRouteChange(path);
+    push: (path, state) => {
+      onRouteChange(path, state);
     },
-    replace: (path) => {
-      onRouteChange(path);
+    replace: (path, state) => {
+      onRouteChange(path, state);
     },
     goBack: () => onGoBack(),
     goForward: () => onGoForward(),
@@ -96,8 +96,8 @@ const Window = ({title, isMaximized, onClose, onMaximize, onMinimize, onFocus, a
     createHref: (location) => {
       return typeof location === "string" ? location : location.pathname;
     },
-    block: () => () => {},
-    listen: () => () => {},
+    block: () => () => { },
+    listen: () => () => { },
   };
 
   const canGoBack = windowHistory && windowHistory.currentIndex > 0;
@@ -531,7 +531,7 @@ const OsDesktop = (props) => {
     return {};
   };
 
-  const updateWindowRoute = (id, newRoute) => {
+  const updateWindowRoute = (id, newRoute, newState = null) => {
     const currentWindow = windows.find(window => window.id === id);
 
     const newHistory = {
@@ -552,7 +552,7 @@ const OsDesktop = (props) => {
       pathname: newRoute,
       search: "",
       hash: "",
-      state: null,
+      state: newState,
     };
 
     setWindows(prevWindows => prevWindows.map(window =>
@@ -819,7 +819,7 @@ const OsDesktop = (props) => {
                   onMaximize={() => toggleMaximize(window.id)}
                   onMinimize={() => minimizeWindow(window.id)}
                   onFocus={() => focusWindow(window.id)}
-                  onRouteChange={(newRoute) => updateWindowRoute(window.id, newRoute)}
+                  onRouteChange={(newRoute, newState) => updateWindowRoute(window.id, newRoute, newState)}
                   onGoBack={() => goBack(window.id)}
                   onGoForward={() => goForward(window.id)}
                 />
