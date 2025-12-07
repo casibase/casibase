@@ -29,6 +29,7 @@ class MessageEditPage extends React.Component {
     this.state = {
       classes: props,
       messageName: props.match.params.messageName,
+      isNewMessage: props.location?.state?.isNewMessage || false,
       messages: [],
       message: null,
       chats: [],
@@ -148,6 +149,7 @@ class MessageEditPage extends React.Component {
           {i18next.t("message:Edit Message")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitMessageEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitMessageEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewMessage && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelMessageEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       } style={(Setting.isMobile()) ? {margin: "5px"} : {}} type="inner">
         {/* <Row style={{marginTop: "10px"}} >*/}
@@ -367,6 +369,7 @@ class MessageEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               messageName: this.state.message.name,
+              isNewMessage: false,
             });
             if (exitAfterSave) {
               this.props.history.push("/messages");
@@ -393,10 +396,30 @@ class MessageEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitMessageEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitMessageEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewMessage && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelMessageEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       </div>
     );
   }
+  cancelMessageEdit() {
+    if (this.state.isNewMessage) {
+      MessageBackend.deleteMessage(this.state.message)
+        .then((res) => {
+          if (res.status === "ok") {
+            Setting.showMessage("success", i18next.t("general:Cancelled successfully"));
+            this.props.history.push("/messages");
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${res.msg}`);
+          }
+        })
+        .catch(error => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${error}`);
+        });
+    } else {
+      this.props.history.push("/messages");
+    }
+  }
+
 }
 
 export default MessageEditPage;

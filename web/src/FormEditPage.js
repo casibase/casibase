@@ -37,6 +37,7 @@ class FormEditPage extends React.Component {
     this.state = {
       classes: props,
       formName: props.match.params.formName,
+      isNewForm: props.location?.state?.isNewForm || false,
       form: null,
       formCount: "key",
     };
@@ -83,6 +84,7 @@ class FormEditPage extends React.Component {
           {i18next.t("form:Edit Form")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitFormEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitFormEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewForm && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelFormEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -284,6 +286,7 @@ class FormEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               formName: this.state.form.name,
+              isNewForm: false,
             });
             if (exitAfterSave) {
               this.props.history.push("/forms");
@@ -312,10 +315,30 @@ class FormEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitFormEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitFormEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewForm && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelFormEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       </div>
     );
   }
+  cancelFormEdit() {
+    if (this.state.isNewForm) {
+      FormBackend.deleteForm(this.state.form)
+        .then((res) => {
+          if (res.status === "ok") {
+            Setting.showMessage("success", i18next.t("general:Cancelled successfully"));
+            this.props.history.push("/forms");
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${res.msg}`);
+          }
+        })
+        .catch(error => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${error}`);
+        });
+    } else {
+      this.props.history.push("/forms");
+    }
+  }
+
 }
 
 export default FormEditPage;

@@ -70,12 +70,9 @@ class WorkflowListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
-          this.setState({
-            data: Setting.prependRow(this.state.data, newWorkflow),
-            pagination: {
-              ...this.state.pagination,
-              total: this.state.pagination.total + 1,
-            },
+          this.props.history.push({
+            pathname: `/workflows/${newWorkflow.name}`,
+            state: {isNewWorkflow: true},
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);

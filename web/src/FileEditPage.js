@@ -26,6 +26,7 @@ class FileEditPage extends React.Component {
     this.state = {
       classes: props,
       fileName: props.match.params.fileName,
+      isNewFile: props.location?.state?.isNewFile || false,
       file: null,
     };
   }
@@ -71,6 +72,7 @@ class FileEditPage extends React.Component {
           {i18next.t("file:Edit File")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitFileEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitFileEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewFile && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelFileEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -181,6 +183,7 @@ class FileEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               fileName: this.state.file.name,
+              isNewFile: false,
             });
 
             if (exitAfterSave) {
@@ -210,10 +213,30 @@ class FileEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitFileEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitFileEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewFile && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelFileEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       </div>
     );
   }
+  cancelFileEdit() {
+    if (this.state.isNewFile) {
+      FileBackend.deleteFile(this.state.file)
+        .then((res) => {
+          if (res.status === "ok") {
+            Setting.showMessage("success", i18next.t("general:Cancelled successfully"));
+            this.props.history.push("/files");
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${res.msg}`);
+          }
+        })
+        .catch(error => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${error}`);
+        });
+    } else {
+      this.props.history.push("/files");
+    }
+  }
+
 }
 
 export default FileEditPage;

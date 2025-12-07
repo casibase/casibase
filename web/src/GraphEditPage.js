@@ -36,6 +36,7 @@ class GraphEditPage extends React.Component {
     this.state = {
       classes: props,
       graphName: props.match.params.graphName,
+      isNewGraph: props.location?.state?.isNewGraph || false,
       graph: null,
       graphCount: "key",
       stores: [],
@@ -149,6 +150,7 @@ class GraphEditPage extends React.Component {
           {i18next.t("graph:Edit Graph")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitGraphEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitGraphEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewGraph && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelGraphEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -372,6 +374,7 @@ class GraphEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               graphName: this.state.graph.name,
+              isNewGraph: false,
             });
             if (exitAfterSave) {
               this.props.history.push("/graphs");
@@ -403,10 +406,30 @@ class GraphEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitGraphEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitGraphEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewGraph && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelGraphEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       </div>
     );
   }
+  cancelGraphEdit() {
+    if (this.state.isNewGraph) {
+      GraphBackend.deleteGraph(this.state.graph)
+        .then((res) => {
+          if (res.status === "ok") {
+            Setting.showMessage("success", i18next.t("general:Cancelled successfully"));
+            this.props.history.push("/graphs");
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${res.msg}`);
+          }
+        })
+        .catch(error => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${error}`);
+        });
+    } else {
+      this.props.history.push("/graphs");
+    }
+  }
+
 }
 
 export default GraphEditPage;
