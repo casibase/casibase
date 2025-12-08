@@ -92,9 +92,9 @@ type Store struct {
 	LogoUrl             string            `xorm:"varchar(200)" json:"logoUrl"`
 	FooterHtml          string            `xorm:"mediumtext" json:"footerHtml"`
 	NavItems            []string          `xorm:"text" json:"navItems"`
-	VectorStores        []string          `xorm:"varchar(500)" json:"vectorStores"`
-	ChildStores         []string          `xorm:"varchar(500)" json:"childStores"`
-	ChildModelProviders []string          `xorm:"varchar(500)" json:"childModelProviders"`
+	VectorStores        []string          `xorm:"mediumtext" json:"vectorStores"`
+	ChildStores         []string          `xorm:"mediumtext" json:"childStores"`
+	ChildModelProviders []string          `xorm:"mediumtext" json:"childModelProviders"`
 	ForbiddenWords      []string          `xorm:"text" json:"forbiddenWords"`
 	ShowAutoRead        bool              `json:"showAutoRead"`
 	DisableFileUpload   bool              `json:"disableFileUpload"`
