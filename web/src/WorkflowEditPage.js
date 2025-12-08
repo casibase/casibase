@@ -31,6 +31,7 @@ class WorkflowEditPage extends React.Component {
     this.state = {
       classes: props,
       workflowName: props.match.params.workflowName,
+      isNewWorkflow: props.location?.state?.isNewWorkflow || false,
       modelProviders: [],
       workflow: null,
       chatPageObj: null,
@@ -105,6 +106,7 @@ class WorkflowEditPage extends React.Component {
           {i18next.t("workflow:Edit Workflow")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitWorkflowEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitWorkflowEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewWorkflow && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelWorkflowEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -280,6 +282,7 @@ class WorkflowEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               workflowName: this.state.workflow.name,
+              isNewWorkflow: false,
             });
             if (exitAfterSave) {
               this.props.history.push("/workflows");
@@ -309,10 +312,30 @@ class WorkflowEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitWorkflowEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitWorkflowEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewWorkflow && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelWorkflowEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       </div>
     );
   }
+  cancelWorkflowEdit() {
+    if (this.state.isNewWorkflow) {
+      WorkflowBackend.deleteWorkflow(this.state.workflow)
+        .then((res) => {
+          if (res.status === "ok") {
+            Setting.showMessage("success", i18next.t("general:Cancelled successfully"));
+            this.props.history.push("/workflows");
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${res.msg}`);
+          }
+        })
+        .catch(error => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${error}`);
+        });
+    } else {
+      this.props.history.push("/workflows");
+    }
+  }
+
 }
 
 export default WorkflowEditPage;

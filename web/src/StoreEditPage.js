@@ -51,6 +51,7 @@ class StoreEditPage extends React.Component {
       enableTtsStreaming: false,
       store: null,
       themeColor: ThemeDefault.colorPrimary,
+      isNewStore: props.location?.state?.isNewStore || false,
     };
   }
 
@@ -207,6 +208,7 @@ class StoreEditPage extends React.Component {
           {i18next.t("store:Edit Store")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitStoreEdit(false, undefined)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitStoreEdit(true, undefined)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewStore && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelStoreEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -768,6 +770,7 @@ class StoreEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               storeName: this.state.store.name,
+              isNewStore: false,
             });
             window.dispatchEvent(new Event("storesChanged"));
             if (exitAfterSave) {
@@ -788,6 +791,26 @@ class StoreEditPage extends React.Component {
       });
   }
 
+  cancelStoreEdit() {
+    if (this.state.isNewStore) {
+      StoreBackend.deleteStore(this.state.store)
+        .then((res) => {
+          if (res.status === "ok") {
+            Setting.showMessage("success", i18next.t("general:Cancelled successfully"));
+            window.dispatchEvent(new Event("storesChanged"));
+            this.props.history.push("/stores");
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${res.msg}`);
+          }
+        })
+        .catch(error => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${error}`);
+        });
+    } else {
+      this.props.history.push("/stores");
+    }
+  }
+
   render() {
     return (
       <div>
@@ -797,6 +820,7 @@ class StoreEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitStoreEdit(false, undefined)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitStoreEdit(true, undefined)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewStore && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelStoreEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       </div>
     );

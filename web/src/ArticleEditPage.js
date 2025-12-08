@@ -34,6 +34,7 @@ class ArticleEditPage extends React.Component {
       article: null,
       chatPageObj: null,
       loading: false,
+      isNewArticle: props.location?.state?.isNewArticle || false,
     };
 
     this.articleTableRef = React.createRef();
@@ -337,6 +338,7 @@ class ArticleEditPage extends React.Component {
           {i18next.t("article:Edit Article")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitArticleEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitArticleEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewArticle && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelArticleEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -434,6 +436,7 @@ class ArticleEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               articleName: this.state.article.name,
+              isNewArticle: false,
             });
             if (exitAfterSave) {
               this.props.history.push("/articles");
@@ -453,6 +456,25 @@ class ArticleEditPage extends React.Component {
       });
   }
 
+  cancelArticleEdit() {
+    if (this.state.isNewArticle) {
+      ArticleBackend.deleteArticle(this.state.article)
+        .then((res) => {
+          if (res.status === "ok") {
+            Setting.showMessage("success", i18next.t("general:Cancelled successfully"));
+            this.props.history.push("/articles");
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${res.msg}`);
+          }
+        })
+        .catch(error => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${error}`);
+        });
+    } else {
+      this.props.history.push("/articles");
+    }
+  }
+
   render() {
     return (
       <div>
@@ -462,6 +484,7 @@ class ArticleEditPage extends React.Component {
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitArticleEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitArticleEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {this.state.isNewArticle && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelArticleEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       </div>
     );

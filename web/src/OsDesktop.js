@@ -80,16 +80,27 @@ const Window = ({title, isMaximized, onClose, onMaximize, onMinimize, onFocus, a
   const windowHistoryObj = {
     ...history,
     push: (path) => {
-      onRouteChange(path);
+      // Handle both string and object (with pathname and state)
+      if (typeof path === "string") {
+        onRouteChange(path, null);
+      } else {
+        onRouteChange(path.pathname, path.state || null);
+      }
     },
     replace: (path) => {
-      onRouteChange(path);
+      // Handle both string and object (with pathname and state)
+      if (typeof path === "string") {
+        onRouteChange(path, null);
+      } else {
+        onRouteChange(path.pathname, path.state || null);
+      }
     },
     goBack: () => onGoBack(),
     goForward: () => onGoForward(),
     location: {
       ...history.location,
       pathname: location.pathname || "/",
+      state: location.state || null,
     },
     length: windowHistory ? windowHistory.entries.length : 1,
     action: "PUSH",
@@ -531,7 +542,7 @@ const OsDesktop = (props) => {
     return {};
   };
 
-  const updateWindowRoute = (id, newRoute) => {
+  const updateWindowRoute = (id, newRoute, newState = null) => {
     const currentWindow = windows.find(window => window.id === id);
 
     const newHistory = {
@@ -552,7 +563,7 @@ const OsDesktop = (props) => {
       pathname: newRoute,
       search: "",
       hash: "",
-      state: null,
+      state: newState,
     };
 
     setWindows(prevWindows => prevWindows.map(window =>
@@ -819,7 +830,7 @@ const OsDesktop = (props) => {
                   onMaximize={() => toggleMaximize(window.id)}
                   onMinimize={() => minimizeWindow(window.id)}
                   onFocus={() => focusWindow(window.id)}
-                  onRouteChange={(newRoute) => updateWindowRoute(window.id, newRoute)}
+                  onRouteChange={(newRoute, newState) => updateWindowRoute(window.id, newRoute, newState)}
                   onGoBack={() => goBack(window.id)}
                   onGoForward={() => goForward(window.id)}
                 />
