@@ -614,7 +614,7 @@
     "AES key": "AES 키",
     "AES key - Tooltip": "보안 통신을 위한 AES 암호화 키",
     "API key": "API 키",
-    "API key - Tooltip": "모델 API 키(관리자만 가능)",
+    "API key - Tooltip": "제공자 인증을 위한 API 키 또는 비밀",
     "API version": "API 버전",
     "API version - Tooltip": "Azure API 버전",
     "Action": "Action",

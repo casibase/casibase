@@ -614,7 +614,7 @@
     "AES key": "Ключ AES",
     "AES key - Tooltip": "Ключ шифрования AES для безопасной связи",
     "API key": "Ключ API",
-    "API key - Tooltip": "Ключ API модели (виден только администратору)",
+    "API key - Tooltip": "Ключ API или секрет для аутентификации провайдера",
     "API version": "Версия API",
     "API version - Tooltip": "Версия API Azure",
     "Action": "Action",

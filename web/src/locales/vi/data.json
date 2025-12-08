@@ -614,7 +614,7 @@
     "AES key": "AES key",
     "AES key - Tooltip": "Khóa mã hóa AES cho truyền thông an toàn",
     "API key": "API key",
-    "API key - Tooltip": "Model API key (admin-only)",
+    "API key - Tooltip": "Khóa API hoặc bí mật để xác thực nhà cung cấp",
     "API version": "API version",
     "API version - Tooltip": "Azure API version",
     "Action": "Action",
