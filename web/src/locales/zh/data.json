@@ -676,7 +676,7 @@
     "AES key": "AES密钥",
     "AES key - Tooltip": "用于安全通信的AES加密密钥",
     "API key": "API密钥",
-    "API key - Tooltip": "模型API密钥（仅管理员可见）",
+    "API key - Tooltip": "用于身份验证的API密钥",
     "API version": "API版本",
     "API version - Tooltip": "Azure API版本",
     "Action": "操作",

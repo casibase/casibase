@@ -614,7 +614,7 @@
     "AES key": "AES key",
     "AES key - Tooltip": "Chiave di crittografia AES per comunicazioni sicure",
     "API key": "API key",
-    "API key - Tooltip": "Model API key (admin-only)",
+    "API key - Tooltip": "API key per l'autenticazione",
     "API version": "API version",
     "API version - Tooltip": "Azure API version",
     "Action": "Action",

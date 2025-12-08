@@ -141,7 +141,7 @@ class ProviderEditPage extends React.Component {
         return Setting.getLabel(i18next.t("provider:Token"), i18next.t("provider:Token - Tooltip"));
       }
     }
-    return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret - Tooltip"));
+    return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
   }
 
   getContractNameLabel(provider) {
@@ -674,7 +674,7 @@ class ProviderEditPage extends React.Component {
                   {this.getClientSecretLabel(this.state.provider)} :
                 </Col>
                 <Col span={22} >
-                  <Input disabled={isRemote} value={this.state.provider.clientSecret} onChange={e => {
+                  <Input.Password disabled={isRemote} value={this.state.provider.clientSecret} onChange={e => {
                     this.updateProviderField("clientSecret", e.target.value);
                   }} />
                 </Col>
