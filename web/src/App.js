@@ -355,6 +355,18 @@ class App extends Component {
       // 将/forms/受控使用/data 转为 编码后的uri
       this.setState({ selectedMenuKey: "/forms/受控使用/data" });
     }
+    else if (uri.includes(encodeURIComponent("/integration/fed"))) {
+      // 将/integration/fed 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/integration/fed" });
+    }
+    else if (uri.includes(encodeURIComponent("/integration/graph"))) {
+      // 将/integration/graph 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/integration/graph" });
+    }
+    else if (uri.includes(encodeURIComponent("/integration/page"))) {
+      // 将/integration/page 转为 编码后的uri
+      this.setState({ selectedMenuKey: "/integration/page" });
+    }
     // else if (uri.includes(encodeURIComponent("/forms/专病库知识图谱/data"))) {
     //   // 将/forms/专病库知识图谱/data 转为 编码后的uri
     //   this.setState({ selectedMenuKey: "/forms/专病库知识图谱/data" });
