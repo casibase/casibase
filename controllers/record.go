@@ -339,6 +339,60 @@ func (c *ApiController) GetPatientByHashID() {
 	c.ResponseOk(records)
 }
 
+
+// SearchDiseaseKnowledge
+// @Title SearchDiseaseKnowledge
+// @Tag Record API
+// @Description 查询专病医学概念知识（从record表的object字段中解析三元组）
+// @Param   diseaseName     query    string  true        "专病医学概念名称"
+// @Success 200 {object} []object.Record The Response object
+// @router /search-disease-knowledge [get]
+func (c *ApiController) SearchDiseaseKnowledge() {
+	diseaseName := c.Input().Get("diseaseName")
+	if diseaseName == "" {
+		c.ResponseError("diseaseName参数不能为空")
+		return
+	}
+
+	fmt.Printf("开始查询专病医学概念知识: %s\n", diseaseName)
+
+	records, err := object.SearchDiseaseKnowledge(diseaseName)
+	if err != nil {
+		fmt.Printf("查询专病知识失败: %v\n", err)
+		c.ResponseError(fmt.Sprintf("查询失败: %v", err))
+		return
+	}
+
+	fmt.Printf("查询到 %d 条知识记录\n", len(records))
+
+	// 不隐藏object内容，因为需要解析三元组数据
+	c.ResponseOk(records)
+}
+
+// GetRelationTypeShareCounts
+// @Title GetRelationTypeShareCounts
+// @Tag Record API
+// @Description 获取关系类型的共享次数统计
+// @Param   diseaseName     query    string  true        "专病医学概念名称"
+// @Success 200 {object} map[string]int The Response object
+// @router /get-relation-type-share-counts [get]
+func (c *ApiController) GetRelationTypeShareCounts() {
+	diseaseName := c.Input().Get("diseaseName")
+	if diseaseName == "" {
+		c.ResponseError("diseaseName参数不能为空")
+		return
+	}
+
+	counts, err := object.GetRelationTypeShareCounts(diseaseName)
+	if err != nil {
+		c.ResponseError(fmt.Sprintf("获取共享次数统计失败: %v", err))
+		return
+	}
+
+	c.ResponseOk(counts)
+}
+
+
 // CreateAuthorizationRequest
 // @Title CreateAuthorizationRequest
 // @Tag Authorization Request API
