@@ -108,7 +108,13 @@
     "User2 - Tooltip": "Destinatario",
     "Web search": "Ricerca web",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Il tuo testo chat coinvolge contenuti sensibili. Questa chat è stata terminata forzatamente.",
-    "click to stop...": "clicca per fermare..."
+    "click to stop...": "clicca per fermare...",
+    "Knowledge Base Sources": "Fonti della base di conoscenza",
+    "Knowledge Sources": "Fonti di conoscenza",
+    "Sources": "Fonti",
+    "Search Sources": "Fonti di ricerca",
+    "Score": "Punteggio",
+    "Source": "Fonte"
   },
   "connection": {
     "History": "Cronologia",

@@ -108,7 +108,13 @@
     "User2 - Tooltip": "Recipient",
     "Web search": "Web araması",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Your chat text involves sensitive content. This chat has been forcibly terminated.",
-    "click to stop...": "click to stop..."
+    "click to stop...": "click to stop...",
+    "Knowledge Base Sources": "Bilgi Tabanı Kaynakları",
+    "Knowledge Sources": "Bilgi Kaynakları",
+    "Sources": "Kaynaklar",
+    "Search Sources": "Arama Kaynakları",
+    "Score": "Puan",
+    "Source": "Kaynak"
   },
   "connection": {
     "History": "History",

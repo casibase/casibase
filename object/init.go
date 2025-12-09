@@ -70,7 +70,7 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		WelcomeText:          "I'm here to help answer your questions",
 		Prompt:               "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems.",
 		ExampleQuestions:     []ExampleQuestion{},
-		KnowledgeCount:       5,
+		KnowledgeCount:       10,
 		SuggestionCount:      3,
 		ThemeColor:           "#5734d3",
 		ChildStores:          []string{},

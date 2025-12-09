@@ -108,7 +108,13 @@
     "User2 - Tooltip": "Penerima percakapan",
     "Web search": "Pencarian web",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Teks percakapan Anda mengandung konten sensitif. Percakapan ini telah ditangguhkan secara paksa.",
-    "click to stop...": "klik untuk menghentikan..."
+    "click to stop...": "klik untuk menghentikan...",
+    "Knowledge Base Sources": "Sumber Basis Pengetahuan",
+    "Knowledge Sources": "Sumber Pengetahuan",
+    "Sources": "Sumber",
+    "Search Sources": "Sumber Pencarian",
+    "Score": "Skor",
+    "Source": "Sumber"
   },
   "connection": {
     "History": "Riwayat",

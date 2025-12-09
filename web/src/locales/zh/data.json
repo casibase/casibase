@@ -164,7 +164,13 @@
     "User2 - Tooltip": "聊天接收者",
     "Web search": "网络搜索",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "您的聊天信息涉及敏感内容。此会话已被强制终止。",
-    "click to stop...": "点击停止..."
+    "click to stop...": "点击停止...",
+    "Knowledge Base Sources": "知识库来源",
+    "Knowledge Sources": "知识来源",
+    "Sources": "来源",
+    "Search Sources": "搜索来源",
+    "Score": "得分",
+    "Source": "来源"
   },
   "connection": {
     "History": "历史",

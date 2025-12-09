@@ -108,7 +108,13 @@
     "User2 - Tooltip": "Получатель чата",
     "Web search": "Веб-поиск",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Ваш чат содержит контент, который может быть чувствительным. Этот чат был принудительно завершен.",
-    "click to stop...": "Нажмите, чтобы остановить..."
+    "click to stop...": "Нажмите, чтобы остановить...",
+    "Knowledge Base Sources": "Источники базы знаний",
+    "Knowledge Sources": "Источники знаний",
+    "Sources": "Источники",
+    "Search Sources": "Источники поиска",
+    "Score": "Оценка",
+    "Source": "Источник"
   },
   "connection": {
     "History": "История",

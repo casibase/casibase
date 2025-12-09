@@ -108,7 +108,13 @@
     "User2 - Tooltip": "채팅 수신자",
     "Web search": "웹 검색",
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "채팅 내용에 민감한 정보가 포함되어 있습니다. 이 대화가 강제 종료되었습니다.",
-    "click to stop...": "클릭하여 중지..."
+    "click to stop...": "클릭하여 중지...",
+    "Knowledge Base Sources": "지식 베이스 소스",
+    "Knowledge Sources": "지식 소스",
+    "Sources": "소스",
+    "Search Sources": "검색 소스",
+    "Score": "점수",
+    "Source": "소스"
   },
   "connection": {
     "History": "히스토리",
