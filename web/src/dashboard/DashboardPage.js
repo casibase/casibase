@@ -2280,6 +2280,8 @@ class DashboardPage extends Component {
             </Card>
           </Col>
 
+
+
           <Col span={24}>
             <Card
               title={
