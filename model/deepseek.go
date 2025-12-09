@@ -44,6 +44,7 @@ https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 | Model          | sub-type             | Input Price per 1K characters    | Output Price per 1K characters |
 |----------------|----------------------|----------------------------------|--------------------------------|
 |    deepseek    |     deepseek-chat    | 0.001 yuan/1,000 tokens          | 0.002 yuan/1,000 tokens         |
+|    deepseek    |     deepseek-v3.2    | 0.001 yuan/1,000 tokens          | 0.004 yuan/1,000 tokens         |
 `
 }
 
@@ -52,6 +53,7 @@ func (p *DeepSeekProvider) calculatePrice(modelResult *ModelResult, lang string)
 	priceTable := map[string][2]float64{
 		"deepseek-chat":     {0.001, 0.002},
 		"deepseek-reasoner": {0.002, 0.004},
+		"deepseek-v3.2":     {0.001, 0.004},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
@@ -73,7 +75,7 @@ func (p *DeepSeekProvider) QueryText(question string, writer io.Writer, history 
 	var localType string
 	if p.subType == "deepseek-reasoner" {
 		localType = "Custom-think"
-	} else if p.subType == "deepseek-chat" {
+	} else if p.subType == "deepseek-chat" || p.subType == "deepseek-v3.2" {
 		localType = "Custom"
 	}
 	localProvider, err := NewLocalModelProvider(localType, "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")

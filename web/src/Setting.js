@@ -1622,6 +1622,7 @@ export function getModelSubTypeOptions(type) {
       {id: "qwen3-32b", name: "qwen3-32b"},
       {id: "deepseek-r1", name: "deepseek-r1"},
       {id: "deepseek-v3", name: "deepseek-v3"},
+      {id: "deepseek-v3.2", name: "deepseek-v3.2"},
       {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
       {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
       {id: "deepseek-r1-distill-qwen-14b ", name: "deepseek-r1-distill-qwen-14b "},
@@ -1648,6 +1649,7 @@ export function getModelSubTypeOptions(type) {
       {id: "doubao-1-5-thinking-pro", name: "doubao-1-5-thinking-pro"},
       {id: "doubao-1-5-thinking-vision-pro", name: "doubao-1-5-thinking-vision-pro"},
       {id: "deepseek-v3.1", name: "deepseek-v3.1"},
+      {id: "deepseek-v3.2", name: "deepseek-v3.2"},
       {id: "deepseek-r1", name: "deepseek-r1"},
       {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
       {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
@@ -1683,6 +1685,7 @@ export function getModelSubTypeOptions(type) {
     return [
       {id: "deepseek-chat", name: "deepseek-chat"},
       {id: "deepseek-reasoner", name: "deepseek-reasoner"},
+      {id: "deepseek-v3.2", name: "deepseek-v3.2"},
     ];
   } else if (type === "StepFun") {
     return [

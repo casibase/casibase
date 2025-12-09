@@ -58,6 +58,7 @@ https://help.aliyun.com/zh/model-studio/billing-for-model-studio
 | Qwen3-32B           | qwen3-32b            			| 0.002yuan/1,000 tokens            | 0.02yuan/1,000 tokens         |
 | DeepSeek-R1         | deepseek-r1                     | 0.002yuan/1,000 tokens           | 0.008yuan/1,000 tokens         |
 | DeepSeek-V3         | deepseek-v3                     | 0.001yuan/1,000 tokens           | 0.004yuan/1,000 tokens         |
+| DeepSeek-V3.2       | deepseek-v3.2                   | 0.001yuan/1,000 tokens           | 0.004yuan/1,000 tokens         |
 | DeepSeek-R1-Distill | deepseek-r1-distill-qwen-1.5b   | 0.000yuan/1,000 tokens           | 0.000yuan/1,000 tokens         |
 | DeepSeek-R1-Distill | deepseek-r1-distill-qwen-7b     | 0.0005yuan/1,000 tokens          | 0.001yuan/1,000 tokens         |
 | DeepSeek-R1-Distill | deepseek-r1-distill-qwen-14b    | 0.001yuan/1,000 tokens           | 0.003yuan/1,000 tokens         |
@@ -79,6 +80,7 @@ func (p *AlibabacloudModelProvider) calculatePrice(modelResult *ModelResult, lan
 		"qwen3-32b":                     {0.002, 0.02},
 		"deepseek-r1":                   {0.002, 0.008},
 		"deepseek-v3":                   {0.001, 0.004},
+		"deepseek-v3.2":                 {0.001, 0.004},
 		"deepseek-r1-distill-qwen-1.5b": {0.000, 0.000},
 		"deepseek-r1-distill-qwen-7b":   {0.001, 0.003},
 		"deepseek-r1-distill-qwen-14b ": {0.002, 0.006},
