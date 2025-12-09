@@ -47,9 +47,7 @@ export function isLocalhost() {
 export function initCasdoorSdk(config) {
   const hostname = window.location.hostname;
   console.log("Hostname2:", hostname, config);
-  if (hostname.includes("36.112.40.10")) {
-    config.serverUrl = "http://36.112.40.10:41205";
-  }
+
   // 👇测试外网用，请勿放开
   // if (hostname.includes("192.168.0.229")) {
   //   config.serverUrl = "https://door.casdoor.com";
