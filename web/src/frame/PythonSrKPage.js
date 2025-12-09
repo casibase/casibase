@@ -1547,6 +1547,7 @@ class PythonSrKPage extends React.Component {
                                     </Card>
 
                                     {/* 待我处理的协同诊疗请求 */}
+
                                     <Card
                                         title={
                                             <Space>
