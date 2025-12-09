@@ -33,13 +33,17 @@ func RecordMessage(ctx *context.Context) {
 func AfterRecordMessage(ctx *context.Context) {
 	record, err := object.NewRecord(ctx)
 	if err != nil {
-		logs.Error("AfterRecordMessage() error: %s\n", err.Error())
+		logs.Error("AfterRecordMessage() error: %s", err.Error())
 		return
 	}
 
 	userId := ctx.Input.Params()["recordUserId"]
 	if userId != "" {
-		record.Organization, record.User = util.GetOwnerAndNameFromId(userId)
+		organization, user, err := util.GetOwnerAndNameFromIdWithError(userId)
+		if err != nil {
+			panic(err)
+		}
+		record.Organization, record.User = organization, user
 	}
 
 	object.AddRecord(record, "en")

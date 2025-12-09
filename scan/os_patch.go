@@ -1,0 +1,495 @@
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//	http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package scan
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"os/exec"
+	"regexp"
+	"strings"
+	"time"
+)
+
+// WindowsPatch represents a Windows update patch
+type WindowsPatch struct {
+	Title                string `json:"title"`
+	KB                   string `json:"kb"`
+	Size                 string `json:"size"`
+	Status               string `json:"status"`
+	Description          string `json:"description"`
+	RebootRequired       bool   `json:"rebootRequired"`
+	InstalledOn          string `json:"installedOn,omitempty"`
+	LastSearchTime       string `json:"lastSearchTime,omitempty"`
+	Categories           string `json:"categories,omitempty"`
+	IsInstalled          bool   `json:"isInstalled"`
+	IsDownloaded         bool   `json:"isDownloaded"`
+	IsMandatory          bool   `json:"isMandatory"`
+	AutoSelectOnWebSites bool   `json:"autoSelectOnWebSites"`
+}
+
+// InstallProgress represents the installation progress of a patch
+type InstallProgress struct {
+	PatchId         string `json:"patchId"`
+	Status          string `json:"status"`
+	PercentComplete int    `json:"percentComplete"`
+	IsComplete      bool   `json:"isComplete"`
+	RebootRequired  bool   `json:"rebootRequired"`
+	Error           string `json:"error,omitempty"`
+	StartTime       string `json:"startTime"`
+	EndTime         string `json:"endTime,omitempty"`
+}
+
+// OsPatchScanProvider provides Windows Update functionality using PSWindowsUpdate
+type OsPatchScanProvider struct {
+	// Optional configuration can be added here in the future
+}
+
+// NewOsPatchScanProvider creates a new OsPatchScanProvider instance
+func NewOsPatchScanProvider(clientId string) (*OsPatchScanProvider, error) {
+	return &OsPatchScanProvider{}, nil
+}
+
+// Scan implements the ScanProvider interface for OS patch scanning
+// The command parameter specifies the scan type: "available", "installed", "all", or "install:<patchId>"
+// The target parameter is not used for OS patch scanning as it scans the local system
+func (p *OsPatchScanProvider) Scan(target string, command string) (string, error) {
+	command = strings.TrimSpace(command)
+	commandLower := strings.ToLower(command)
+
+	// Check if this is an install command
+	if strings.HasPrefix(commandLower, "install:") {
+		// Extract patch ID from command
+		patchId := strings.TrimSpace(command[8:]) // Remove "install:" prefix
+		if patchId == "" {
+			return "", fmt.Errorf("%s patch ID is required for install command", getHostnamePrefix())
+		}
+
+		// Install the patch
+		progress, err := p.InstallPatch(patchId)
+		if err != nil {
+			return "", err
+		}
+
+		// Convert progress to JSON string
+		result, err := json.Marshal(progress)
+		if err != nil {
+			return "", fmt.Errorf("%s failed to marshal install progress: %v", getHostnamePrefix(), err)
+		}
+
+		return string(result), nil
+	}
+
+	var patches []*WindowsPatch
+	var err error
+
+	if commandLower == "installed" {
+		patches, err = p.ListInstalledPatches()
+	} else if commandLower == "all" {
+		// Get both available and installed patches
+		availablePatches, err1 := p.ListAvailablePatches()
+		installedPatches, err2 := p.ListInstalledPatches()
+
+		if err1 != nil {
+			return "", fmt.Errorf("%s failed to list available patches: %v", getHostnamePrefix(), err1)
+		}
+		if err2 != nil {
+			return "", fmt.Errorf("%s failed to list installed patches: %v", getHostnamePrefix(), err2)
+		}
+
+		// Combine patches: available first, then installed
+		patches = append(availablePatches, installedPatches...)
+	} else {
+		// Default to available patches
+		patches, err = p.ListAvailablePatches()
+	}
+
+	if err != nil {
+		return "", err
+	}
+
+	// Convert patches to JSON string
+	result, err := json.Marshal(patches)
+	if err != nil {
+		return "", fmt.Errorf("%s failed to marshal patches: %v", getHostnamePrefix(), err)
+	}
+
+	return string(result), nil
+}
+
+// ParseResult implements the ScanProvider interface for OS patch scanning
+// For OS patches, the raw result is already in JSON format, so this just returns it as-is
+func (p *OsPatchScanProvider) ParseResult(rawResult string) (string, error) {
+	return rawResult, nil
+}
+
+// validatePatchId validates and sanitizes a patch ID to prevent command injection
+// If the patch ID looks like a KB number, it validates it as such
+// Otherwise, it validates it as a title
+// Returns the sanitized patch ID and whether it's a KB number
+func validatePatchId(patchId string) (string, bool, error) {
+	if patchId == "" {
+		return "", false, fmt.Errorf("%s patch ID is required", getHostnamePrefix())
+	}
+
+	// Check if it looks like a KB number (digits or KB followed by digits)
+	kbPattern := regexp.MustCompile(`^(?:KB)?([0-9]+)$`)
+	if matches := kbPattern.FindStringSubmatch(strings.ToUpper(patchId)); len(matches) > 1 {
+		// It's a KB number - return just the digits
+		return matches[1], true, nil
+	}
+
+	// It's a title - validate it doesn't contain dangerous characters
+	// Allow alphanumeric, spaces, and common punctuation (but not path separators or command injection chars)
+	titlePattern := regexp.MustCompile(`^[a-zA-Z0-9\s\-_.,()]+$`)
+	if !titlePattern.MatchString(patchId) {
+		return "", false, fmt.Errorf("%s invalid patch ID format: contains unsafe characters", getHostnamePrefix())
+	}
+
+	return patchId, false, nil
+}
+
+// runPowerShell executes a PowerShell command and returns the output
+// The output encoding is forced to UTF-8 to handle non-English Windows systems correctly
+func (p *OsPatchScanProvider) runPowerShell(command string) (string, error) {
+	// Wrap the command to set output encoding to UTF-8
+	// This ensures proper handling of non-ASCII characters on systems with different default encodings
+	wrappedCommand := fmt.Sprintf("[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; %s", command)
+
+	cmd := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", wrappedCommand)
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	err := cmd.Run()
+	if err != nil {
+		return "", fmt.Errorf("%s powershell command failed: %v, stderr: %s", getHostnamePrefix(), err, stderr.String())
+	}
+
+	return stdout.String(), nil
+}
+
+// extractJSON extracts JSON content from PowerShell output by removing non-JSON lines
+// This handles cases where PowerShell commands output interactive prompts or other text before JSON
+func extractJSON(output string) string {
+	output = strings.TrimSpace(output)
+	if output == "" {
+		return ""
+	}
+
+	lines := strings.Split(output, "\n")
+	var jsonLines []string
+	inJSON := false
+
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		// Start of JSON array or object
+		if !inJSON && (strings.HasPrefix(line, "[") || strings.HasPrefix(line, "{")) {
+			inJSON = true
+		}
+		// Collect JSON lines
+		if inJSON {
+			jsonLines = append(jsonLines, line)
+		}
+	}
+
+	return strings.Join(jsonLines, "\n")
+}
+
+// ListAvailablePatches returns all available Windows OS patches that can be installed
+// This queries the Windows Update online service to find patches that are available but not yet installed
+func (p *OsPatchScanProvider) ListAvailablePatches() ([]*WindowsPatch, error) {
+	// Use Get-WindowsUpdate to query Windows Update online service for available patches
+	// This searches for updates that are available to install but not yet installed
+	psCommand := `
+		$ErrorActionPreference = 'Stop';
+		$ProgressPreference = 'Continue';
+		Import-Module PSWindowsUpdate -Force;
+		$updates = Get-WindowsUpdate -MicrosoftUpdate;
+		if ($null -eq $updates) {
+			Write-Output '[]'
+		} else {
+			$updates | Select-Object @{Name='Title';Expression={$_.Title}},
+				@{Name='KB';Expression={
+					if ($_.KB -ne $null) { "KB$($_.KB)" }
+					elseif ($_.Title -match 'KB[0-9]+') { $matches[0] }
+					else { '' }
+				}},
+				@{Name='Size';Expression={
+					if ($_.Size -gt 0) { 
+						$sizeMB = [math]::Round($_.Size / 1MB, 2)
+						"$sizeMB MB"
+					}
+					else { 'N/A' }
+				}},
+				@{Name='Status';Expression={
+					if ($_.IsDownloaded) { 'Downloaded' }
+					else { 'Available' }
+				}},
+				@{Name='Description';Expression={$_.Description}},
+				@{Name='RebootRequired';Expression={$_.RebootRequired}},
+				@{Name='Categories';Expression={
+					if ($_.Categories -ne $null) { ($_.Categories | ForEach-Object { $_.Name }) -join ', ' }
+					else { '' }
+				}},
+				@{Name='IsInstalled';Expression={$false}},
+				@{Name='IsDownloaded';Expression={$_.IsDownloaded}},
+				@{Name='IsMandatory';Expression={$_.IsMandatory}},
+				@{Name='AutoSelectOnWebSites';Expression={$_.AutoSelectOnWebSites}} | 
+			ConvertTo-Json
+		}
+	`
+
+	fmt.Printf("%s [OS Patch] Executing PowerShell command:\n%s\n", getHostnamePrefix(), psCommand)
+	output, err := p.runPowerShell(psCommand)
+	if err != nil {
+		return nil, fmt.Errorf("%s failed to list patches: %v", getHostnamePrefix(), err)
+	}
+	fmt.Printf("%s [OS Patch] PowerShell output:\n%s\n", getHostnamePrefix(), output)
+
+	// Extract JSON from output, removing any non-JSON lines (e.g., interactive prompts)
+	output = extractJSON(output)
+
+	// Parse JSON output
+	var patches []*WindowsPatch
+	output = strings.TrimSpace(output)
+	if output == "" || output == "null" {
+		return []*WindowsPatch{}, nil
+	}
+
+	// Handle both single object and array of objects
+	if strings.HasPrefix(output, "[") {
+		err = json.Unmarshal([]byte(output), &patches)
+	} else {
+		var patch WindowsPatch
+		err = json.Unmarshal([]byte(output), &patch)
+		if err == nil {
+			patches = []*WindowsPatch{&patch}
+		}
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("%s failed to parse patches JSON: %v", getHostnamePrefix(), err)
+	}
+
+	return patches, nil
+}
+
+// ListInstalledPatches returns all recently installed patches, including those with "Pending restart" status
+// This uses Get-WUHistory to read from local cache without querying Windows Update online service
+func (p *OsPatchScanProvider) ListInstalledPatches() ([]*WindowsPatch, error) {
+	// Use Get-WUHistory to get update history from local cache
+	// This is fast and does not require querying Windows Update online service
+	psCommand := `
+		$ErrorActionPreference = 'Stop';
+		$ProgressPreference = 'Continue';
+		Import-Module PSWindowsUpdate -Force;
+		$history = Get-WUHistory -Last 50 -ErrorAction SilentlyContinue;
+		$rebootPending = $null;
+		try { $rebootPending = Get-WURebootStatus -ErrorAction Stop } catch { $rebootPending = $null };
+		$isRebootRequired = if ($null -ne $rebootPending) { $rebootPending.IsRebootRequired } else { $false };
+		if ($null -eq $history) {
+			Write-Output '[]'
+		} else {
+			$history | Select-Object @{Name='Title';Expression={$_.Title}},
+				@{Name='KB';Expression={
+					if ($_.Title -match 'KB[0-9]+') { $matches[0] }
+					else { '' }
+				}},
+				@{Name='Size';Expression={'N/A'}},
+				@{Name='Status';Expression={
+					if ($isRebootRequired) { 'Pending Restart' }
+					else { $_.Result }
+				}},
+				@{Name='Description';Expression={$_.Description}},
+				@{Name='RebootRequired';Expression={$isRebootRequired}},
+				@{Name='InstalledOn';Expression={$_.Date.ToString('o')}},
+				@{Name='IsInstalled';Expression={$true}},
+				@{Name='IsDownloaded';Expression={$true}},
+				@{Name='IsMandatory';Expression={$false}},
+				@{Name='AutoSelectOnWebSites';Expression={$false}} | 
+			ConvertTo-Json
+		}
+	`
+
+	fmt.Printf("%s [OS Patch] Executing PowerShell command:\n%s\n", getHostnamePrefix(), psCommand)
+	output, err := p.runPowerShell(psCommand)
+	if err != nil {
+		return nil, fmt.Errorf("%s failed to list installed patches: %v", getHostnamePrefix(), err)
+	}
+	fmt.Printf("%s [OS Patch] PowerShell output:\n%s\n", getHostnamePrefix(), output)
+
+	// Extract JSON from output, removing any non-JSON lines (e.g., interactive prompts)
+	output = extractJSON(output)
+
+	// Parse JSON output
+	var patches []*WindowsPatch
+	output = strings.TrimSpace(output)
+	if output == "" || output == "null" {
+		return []*WindowsPatch{}, nil
+	}
+
+	// Handle both single object and array of objects
+	if strings.HasPrefix(output, "[") {
+		err = json.Unmarshal([]byte(output), &patches)
+	} else {
+		var patch WindowsPatch
+		err = json.Unmarshal([]byte(output), &patch)
+		if err == nil {
+			patches = []*WindowsPatch{&patch}
+		}
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("%s failed to parse installed patches JSON: %v", getHostnamePrefix(), err)
+	}
+
+	return patches, nil
+}
+
+// InstallPatch installs a specific patch by patch ID (KB number or title)
+func (p *OsPatchScanProvider) InstallPatch(patchId string) (*InstallProgress, error) {
+	// Validate and sanitize patch ID to prevent command injection
+	sanitizedPatchId, isKB, err := validatePatchId(patchId)
+	if err != nil {
+		return nil, err
+	}
+
+	progress := &InstallProgress{
+		PatchId:         patchId,
+		Status:          "Starting",
+		PercentComplete: 0,
+		IsComplete:      false,
+		StartTime:       time.Now().Format(time.RFC3339),
+	}
+
+	var psCommand string
+	if isKB {
+		// Install by KB number
+		psCommand = fmt.Sprintf(`
+		$ErrorActionPreference = 'Stop';
+		$ProgressPreference = 'Continue';
+		Import-Module PSWindowsUpdate -Force;
+		$result = Install-WindowsUpdate -KBArticleID '%s' -AcceptAll -IgnoreReboot -Confirm:$false -Verbose;
+		if ($result) {
+			$result | Select-Object @{Name='Status';Expression={$_.Result}},
+				@{Name='RebootRequired';Expression={$_.RebootRequired}},
+				@{Name='KB';Expression={$_.KB}} | 
+			ConvertTo-Json
+		} else {
+			@{Status='NotFound'; RebootRequired=$false; KB='%s'} | ConvertTo-Json
+		}
+	`, sanitizedPatchId, sanitizedPatchId)
+	} else {
+		// Install by title - escape for PowerShell
+		// Escape single quotes, backticks, and dollar signs which are special in PowerShell
+		escapedTitle := strings.ReplaceAll(sanitizedPatchId, "`", "``")
+		escapedTitle = strings.ReplaceAll(escapedTitle, "'", "''")
+		escapedTitle = strings.ReplaceAll(escapedTitle, "$", "`$")
+		psCommand = fmt.Sprintf(`
+		$ErrorActionPreference = 'Stop';
+		$ProgressPreference = 'Continue';
+		Import-Module PSWindowsUpdate -Force;
+		$updates = Get-WindowsUpdate -MicrosoftUpdate | Where-Object { $_.Title -eq '%s' };
+		if ($updates) {
+			$result = $updates | Install-WindowsUpdate -AcceptAll -IgnoreReboot -Confirm:$false -Verbose;
+			if ($result) {
+				$result | Select-Object @{Name='Status';Expression={$_.Result}},
+					@{Name='RebootRequired';Expression={$_.RebootRequired}},
+					@{Name='Title';Expression={$_.Title}} | 
+				ConvertTo-Json
+			} else {
+				@{Status='NotFound'; RebootRequired=$false; Title='%s'} | ConvertTo-Json
+			}
+		} else {
+			@{Status='NotFound'; RebootRequired=$false; Title='%s'} | ConvertTo-Json
+		}
+	`, escapedTitle, escapedTitle, escapedTitle)
+	}
+
+	fmt.Printf("%s [OS Patch] Executing PowerShell command:\n%s\n", getHostnamePrefix(), psCommand)
+	output, err := p.runPowerShell(psCommand)
+	if err != nil {
+		progress.Status = "Failed"
+		progress.Error = err.Error()
+		progress.IsComplete = true
+		progress.EndTime = time.Now().Format(time.RFC3339)
+		return progress, fmt.Errorf("%s failed to install patch: %v", getHostnamePrefix(), err)
+	}
+	fmt.Printf("%s [OS Patch] PowerShell output:\n%s\n", getHostnamePrefix(), output)
+
+	// Parse the result
+	var result map[string]interface{}
+	output = strings.TrimSpace(output)
+	if output != "" && output != "null" {
+		err = json.Unmarshal([]byte(output), &result)
+		if err != nil {
+			progress.Status = "Failed"
+			progress.Error = fmt.Sprintf("%s failed to parse result: %v", getHostnamePrefix(), err)
+			progress.IsComplete = true
+			progress.EndTime = time.Now().Format(time.RFC3339)
+			return progress, fmt.Errorf("%s failed to parse install result: %v", getHostnamePrefix(), err)
+		}
+
+		if status, ok := result["Status"].(string); ok {
+			progress.Status = status
+		}
+		if reboot, ok := result["RebootRequired"].(bool); ok {
+			progress.RebootRequired = reboot
+		}
+	}
+
+	progress.PercentComplete = 100
+	progress.IsComplete = true
+	progress.EndTime = time.Now().Format(time.RFC3339)
+
+	return progress, nil
+}
+
+// GetResultSummary generates a short summary of the scan result
+func (p *OsPatchScanProvider) GetResultSummary(result string) string {
+	if result == "" {
+		return ""
+	}
+
+	// Parse the JSON result
+	var patches []*WindowsPatch
+	err := json.Unmarshal([]byte(result), &patches)
+	if err != nil {
+		// Log the error but return empty string instead of failing
+		fmt.Printf("%s [OS Patch] Unable to parse patch results for summary: %v\n", getHostnamePrefix(), err)
+		return ""
+	}
+
+	// Count available and installed patches
+	availableCount := 0
+	installedCount := 0
+	for _, patch := range patches {
+		if patch.IsInstalled {
+			installedCount++
+		} else {
+			availableCount++
+		}
+	}
+
+	if availableCount > 0 {
+		return fmt.Sprintf("%d available patches found", availableCount)
+	} else if installedCount > 0 {
+		return fmt.Sprintf("%d patches installed", installedCount)
+	}
+
+	return "No patches found"
+}

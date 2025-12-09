@@ -133,7 +133,7 @@ func (c *ApiController) AddApplication() {
 	}
 
 	if application.Template == "" {
-		c.ResponseError("Missing required parameters")
+		c.ResponseError(c.T("application:Missing required parameters"))
 		return
 	}
 
@@ -145,7 +145,7 @@ func (c *ApiController) AddApplication() {
 	}
 
 	if template == nil {
-		c.ResponseError("The Template not found")
+		c.ResponseError(c.T("application:The Template not found"))
 		return
 	}
 
@@ -216,7 +216,7 @@ func (c *ApiController) DeployApplication() {
 		return
 	}
 	if !success {
-		c.ResponseError("Failed to update application")
+		c.ResponseError(c.T("application:Failed to update application"))
 		return
 	}
 
@@ -257,7 +257,11 @@ func (c *ApiController) UndeployApplication() {
 		return
 	}
 
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 
 	// Undeploy the application synchronously and wait for completion
 	success, err := object.UndeployApplicationSync(owner, name, application.Namespace, c.GetAcceptLanguage())

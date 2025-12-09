@@ -19,6 +19,7 @@ import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import * as Conf from "./Conf";
 import * as MessageBackend from "./backend/MessageBackend";
@@ -32,9 +33,32 @@ class ChatListPage extends BaseListPage {
     this.state = {
       ...this.state,
       messagesMap: {},
+      providers: [],
+      providerMap: {},
       filterSingleChat: Setting.getBoolValue("filterSingleChat", false),
       maximizeMessages: this.getMaximizeMessagesFromStorage(),
     };
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
+    this.getProviders();
+  }
+
+  getProviders() {
+    ProviderBackend.getProviders("admin")
+      .then((res) => {
+        if (res.status === "ok") {
+          const providerMap = {};
+          res.data.forEach(provider => {
+            providerMap[provider.name] = provider;
+          });
+          this.setState({
+            providers: res.data,
+            providerMap: providerMap,
+          });
+        }
+      });
   }
 
   getMaximizeMessagesFromStorage() {
@@ -97,12 +121,9 @@ class ChatListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
-          this.setState({
-            data: Setting.prependRow(this.state.data, newChat),
-            pagination: {
-              ...this.state.pagination,
-              total: this.state.pagination.total + 1,
-            },
+          this.props.history.push({
+            pathname: `/chats/${newChat.name}`,
+            state: {isNewChat: true},
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
@@ -259,6 +280,37 @@ class ChatListPage extends BaseListPage {
           return (
             <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${Conf.AuthConfig.organizationName}/${text}`)}>
               {text}
+            </a>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Model"),
+        dataIndex: "modelProvider",
+        key: "modelProvider",
+        width: "150px",
+        align: "center",
+        sorter: (a, b) => {
+          if (!a.modelProvider) {
+            return -1;
+          }
+          if (!b.modelProvider) {
+            return 1;
+          }
+          return a.modelProvider.localeCompare(b.modelProvider);
+        },
+        ...this.getColumnSearchProps("modelProvider"),
+        render: (text, record, index) => {
+          if (!text) {
+            return null;
+          }
+          const provider = this.state.providerMap[text];
+          if (!provider) {
+            return text;
+          }
+          return (
+            <a target="_blank" rel="noreferrer" href={`/providers/${text}`}>
+              <img width={36} height={36} src={Setting.getProviderLogoURL({category: provider.category, type: provider.type})} alt={provider.type} title={provider.type} />
             </a>
           );
         },
@@ -422,7 +474,7 @@ class ChatListPage extends BaseListPage {
         ...this.getColumnFilterProps("isDeleted"),
         render: (text, record, index) => {
           return (
-            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+            <Switch disabled checkedChildren={i18next.t("general:ON")} unCheckedChildren={i18next.t("general:OFF")} checked={text} />
           );
         },
       },

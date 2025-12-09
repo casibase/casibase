@@ -86,7 +86,7 @@ func (c *ApiController) GetMessages() {
 	}
 
 	if !c.IsAdmin() && user != selectedUser && selectedUser != "" {
-		c.ResponseError("You can only view your own messages")
+		c.ResponseError(c.T("controllers:You can only view your own messages"))
 		return
 	}
 
@@ -123,6 +123,20 @@ func (c *ApiController) GetMessage() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	if message == nil {
+		c.ResponseError("Message not found")
+		return
+	}
+
+	// Check if user has permission to view this message
+	if !c.IsAdmin() {
+		username := c.GetSessionUsername()
+		if username != message.User {
+			c.ResponseError(c.T("auth:Unauthorized operation"))
+			return
+		}
 	}
 
 	c.ResponseOk(message)
@@ -323,6 +337,15 @@ func (c *ApiController) AddMessage() {
 			return
 		}
 		if chat != nil && chat.Type == "AI" {
+			modelProvider := chat.ModelProvider
+			if modelProvider == "" {
+				// Fallback to store's model provider if chat doesn't have one
+				storeId := util.GetId(chat.Owner, chat.Store)
+				store, storeErr := object.GetStore(storeId)
+				if storeErr == nil && store != nil {
+					modelProvider = store.ModelProvider
+				}
+			}
 			answerMessage := &object.Message{
 				Owner:         message.Owner,
 				Name:          fmt.Sprintf("message_%s", util.GetRandomName()),
@@ -336,7 +359,7 @@ func (c *ApiController) AddMessage() {
 				Text:          "",
 				FileName:      message.FileName,
 				VectorScores:  []object.VectorScore{},
-				ModelProvider: message.ModelProvider,
+				ModelProvider: modelProvider,
 			}
 			_, err = object.AddMessage(answerMessage)
 			if err != nil {
@@ -390,7 +413,7 @@ func (c *ApiController) DeleteWelcomeMessage() {
 
 	user := c.GetSessionUsername()
 	if user != "" && user != message.User {
-		c.ResponseError("No permission")
+		c.ResponseError(c.T("controllers:No permission"))
 		return
 	}
 
@@ -400,13 +423,13 @@ func (c *ApiController) DeleteWelcomeMessage() {
 		hash := getContentHash(fmt.Sprintf("%s|%s", clientIp, userAgent))
 		username := fmt.Sprintf("u-%s", hash)
 		if username != message.User {
-			c.ResponseError("No permission")
+			c.ResponseError(c.T("controllers:No permission"))
 			return
 		}
 	}
 
 	if message.Author != "AI" || message.ReplyTo != "Welcome" {
-		c.ResponseError("No permission")
+		c.ResponseError(c.T("controllers:No permission"))
 		return
 	}
 

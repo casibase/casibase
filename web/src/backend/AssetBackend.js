@@ -79,3 +79,31 @@ export function scanAssets(owner, provider) {
     },
   }).then(res => res.json());
 }
+
+export function scanAsset(provider, scan, targetMode, target, asset, command, saveToScan) {
+  let url = `${Setting.ServerUrl}/api/scan-asset?provider=${encodeURIComponent(provider)}&targetMode=${encodeURIComponent(targetMode)}`;
+
+  if (scan) {
+    url += `&scan=${encodeURIComponent(scan)}`;
+  }
+  if (target) {
+    url += `&target=${encodeURIComponent(target)}`;
+  }
+  if (asset) {
+    url += `&asset=${encodeURIComponent(asset)}`;
+  }
+  if (command) {
+    url += `&command=${encodeURIComponent(command)}`;
+  }
+  if (saveToScan !== undefined) {
+    url += `&saveToScan=${saveToScan}`;
+  }
+
+  return fetch(url, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}

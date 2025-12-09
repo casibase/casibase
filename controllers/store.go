@@ -95,6 +95,9 @@ func (c *ApiController) GetStores() {
 		return
 	}
 
+	// Apply store isolation based on user's Homepage field
+	stores = FilterStoresByHomepage(stores, c.GetSessionUser())
+
 	c.ResponseOk(stores)
 }
 
@@ -158,7 +161,7 @@ func (c *ApiController) UpdateStore() {
 	}
 
 	if oldStore.IsDefault && !store.IsDefault {
-		c.ResponseError("given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default")
+		c.ResponseError(c.T("store:given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"))
 		return
 	}
 
@@ -261,6 +264,11 @@ func (c *ApiController) DeleteStore() {
 		return
 	}
 
+	if store.IsDefault {
+		c.ResponseError(c.T("store:Cannot delete the default store"))
+		return
+	}
+
 	success, err := object.DeleteStore(&store)
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -308,6 +316,9 @@ func (c *ApiController) GetStoreNames() {
 		c.ResponseError(err.Error())
 		return
 	}
+
+	// Apply store isolation based on user's Homepage field
+	storeNames = FilterStoresByHomepage(storeNames, c.GetSessionUser())
 
 	c.ResponseOk(storeNames)
 }

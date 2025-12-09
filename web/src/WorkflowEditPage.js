@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Mentions, Popover, Row} from "antd";
+import { Button, Card, Col, Input, Mentions, Popover, Row } from "antd";
 import * as WorkflowBackend from "./backend/WorkflowBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -31,6 +31,7 @@ class WorkflowEditPage extends React.Component {
     this.state = {
       classes: props,
       workflowName: props.match.params.workflowName,
+      isNewWorkflow: props.location?.state?.isNewWorkflow || false,
       modelProviders: [],
       workflow: null,
       chatPageObj: null,
@@ -38,10 +39,10 @@ class WorkflowEditPage extends React.Component {
     };
 
     this.questionTemplatesOptions = [
-      {value: "{{text}}", label: i18next.t("general:Text")},
-      {value: "{{text2}}", label: i18next.t("general:Text2")},
-      {value: "{{message}}", label: i18next.t("general:Message")},
-      {value: "{{language}}", label: i18next.t("general:Language")},
+      { value: "{{text}}", label: i18next.t("general:Text") },
+      { value: "{{text2}}", label: i18next.t("general:Text2") },
+      { value: "{{message}}", label: i18next.t("general:Message") },
+      { value: "{{language}}", label: i18next.t("general:Language") },
     ];
   }
 
@@ -132,10 +133,10 @@ class WorkflowEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
           </Col>
           <Col span={10} >
-            <div style={{height: "500px"}}>
+            <div style={{ height: "500px" }}>
               <CodeMirror
                 value={this.state.workflow.text}
-                options={{mode: "xml", theme: "material-darker"}}
+                options={{ mode: "xml", theme: "material-darker" }}
                 onBeforeChange={(editor, data, value) => {
                   this.updateWorkflowField("text", value);
                 }}
@@ -209,26 +210,26 @@ class WorkflowEditPage extends React.Component {
             </div>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Template"), i18next.t("general:Template - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Popover placement="top" trigger="click"
               content={
-                <Row gutter={[16, 8]} style={{width: "1000px"}}>
+                <Row gutter={[16, 8]} style={{ width: "1000px" }}>
                   <Col span={12}>
-                    <div style={{marginBottom: "8px"}}>
+                    <div style={{ marginBottom: "8px" }}>
                       {i18next.t("general:Template")}:
                     </div>
                     <Mentions rows={25} prefix={"#"} options={this.questionTemplatesOptions} value={this.state.workflow.questionTemplate} onChange={(value) => this.updateWorkflowField("questionTemplate", value)} />
                   </Col>
                   <Col span={12}>
-                    <div style={{marginBottom: "8px"}}>
+                    <div style={{ marginBottom: "8px" }}>
                       {i18next.t("general:Preview")}:
                     </div>
-                    <div style={{height: "600px", borderRadius: "4px"}}>
-                      <CodeMirror value={this.renderQuestionTemplate()} options={{mode: "markdown", theme: "material-darker", readOnly: true}} editorDidMount={(editor) => {
+                    <div style={{ height: "600px", borderRadius: "4px" }}>
+                      <CodeMirror value={this.renderQuestionTemplate()} options={{ mode: "markdown", theme: "material-darker", readOnly: true }} editorDidMount={(editor) => {
                         if (window.ResizeObserver) {
                           const resizeObserver = new ResizeObserver(() => {
                             editor.refresh();
@@ -246,8 +247,8 @@ class WorkflowEditPage extends React.Component {
             </Popover>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{ marginTop: "20px" }} >
+          <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Response"), i18next.t("general:Response - Tooltip"))} :
           </Col>
           <Col span={22} >
@@ -280,6 +281,7 @@ class WorkflowEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               workflowName: this.state.workflow.name,
+              isNewWorkflow: false,
             });
             if (exitAfterSave) {
               this.props.history.push("/workflows");
@@ -313,6 +315,25 @@ class WorkflowEditPage extends React.Component {
       </div>
     );
   }
+  cancelWorkflowEdit() {
+    if (this.state.isNewWorkflow) {
+      WorkflowBackend.deleteWorkflow(this.state.workflow)
+        .then((res) => {
+          if (res.status === "ok") {
+            Setting.showMessage("success", i18next.t("general:Cancelled successfully"));
+            this.props.history.push("/workflows");
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${res.msg}`);
+          }
+        })
+        .catch(error => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${error}`);
+        });
+    } else {
+      this.props.history.push("/workflows");
+    }
+  }
+
 }
 
 export default WorkflowEditPage;

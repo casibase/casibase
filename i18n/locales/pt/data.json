@@ -1,0 +1,292 @@
+{
+  "account": {
+    "The default store is not found": "O armazenamento padrão não foi encontrado",
+    "The store: %s is not found": "O armazenamento: %s não foi encontrado"
+  },
+  "agent": {
+    "the agent provider type: %s is not supported": "o tipo de provedor de agente: %s não é suportado"
+  },
+  "application": {
+    "Failed to update application": "Falha ao atualizar aplicação",
+    "Missing required parameters": "Parâmetros obrigatórios ausentes",
+    "The Template not found": "O template não foi encontrado"
+  },
+  "audio": {
+    "complete slice upload failed: %s": "falha no upload completo de fatia: %s",
+    "get progress failed: %s": "falha ao obter progresso: %s",
+    "get result failed: %s": "falha ao obter resultado: %s",
+    "init slice upload failed: %s": "falha ao inicializar upload de fatia: %s",
+    "perform slice upload failed: %s": "falha ao executar upload de fatia: %s",
+    "worker upload failed: %s": "falha no upload do worker: %s"
+  },
+  "auth": {
+    "Please sign in first": "Por favor, faça login primeiro",
+    "Unauthorized operation": "Operação não autorizada",
+    "this operation requires admin privilege": "esta operação requer privilégios de administrador"
+  },
+  "blockchain": {
+    "The default blockchain provider is not found": "O provedor blockchain padrão não foi encontrado",
+    "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "A URL do provedor blockchain padrão não pode estar vazia. O valor padrão é: 'http://localhost:13900'"
+  },
+  "bpmn": {
+    "Error parsing BPMN file: %v": "Erro ao analisar arquivo BPMN: %v"
+  },
+  "chain": {
+    "ChainTencentChainmakerClient.Client.Invoke() error: %v": "Erro em ChainTencentChainmakerClient.Client.Invoke(): %v",
+    "ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v": "Erro em ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract(): %v",
+    "TencentCloudSDKError, code = %d, message = %s": "Erro TencentCloudSDK, código = %d, mensagem = %s",
+    "TencentCloudSDKError: %v": "Erro TencentCloudSDK: %v",
+    "chainmakerEndpoint is not configured": "chainmakerEndpoint não está configurado",
+    "event log value is not string: %v": "valor do log de evento não é string: %v",
+    "failed to connect to Ethereum RPC: %v": "falha ao conectar ao RPC Ethereum: %v",
+    "failed to create string type: %v": "falha ao criar tipo string: %v",
+    "failed to create tuple type: %v": "falha ao criar tipo tupla: %v",
+    "failed to estimate gas: %v": "falha ao estimar gás: %v",
+    "failed to get chain ID: %v": "falha ao obter ID da cadeia: %v",
+    "failed to get pending nonce: %v": "falha ao obter nonce pendente: %v",
+    "failed to get transaction receipt: %v": "falha ao obter recibo da transação: %v",
+    "failed to pack arguments: %v": "falha ao empacotar argumentos: %v",
+    "failed to pack function data: %v": "falha ao empacotar dados da função: %v",
+    "failed to parse private key: %v": "falha ao analisar chave privada: %v",
+    "failed to send transaction: %v": "falha ao enviar transação: %v",
+    "failed to sign transaction: %v": "falha ao assinar transação: %v",
+    "failed to suggest gas price: %v": "falha ao sugerir preço do gás: %v",
+    "failed to unmarshal JSON: %v": "falha ao desserializar JSON: %v",
+    "failed to unpack event log: %v": "falha ao desempacotar log de evento: %v",
+    "marshal normalized data error: %v": "erro ao serializar dados normalizados: %v",
+    "newChainTencentChainmakerClient() error: %v": "erro em newChainTencentChainmakerClient(): %v",
+    "not enough string events found in transaction logs, expected at least 3, got %d": "eventos de string insuficientes encontrados nos logs de transação, esperado pelo menos 3, obtido %d",
+    "parse json data error: %v": "erro ao analisar dados json: %v",
+    "transaction failed to be mined: %v": "falha na mineração da transação: %v",
+    "transaction failed with status: %d, reason: %s": "transação falhou com status: %d, motivo: %s"
+  },
+  "chat": {
+    "The default store is not found": "O armazenamento padrão não foi encontrado"
+  },
+  "controllers": {
+    "No permission": "Sem permissão",
+    "No records to add": "Nenhum registro para adicionar",
+    "No sessions to delete": "Nenhuma sessão para excluir",
+    "You can only view your own chats": "Você só pode visualizar seus próprios chats",
+    "You can only view your own messages": "Você só pode visualizar suas próprias mensagens"
+  },
+  "embedding": {
+    "calculatePrice() error: unknown model type: %s": "erro em calculatePrice(): tipo de modelo desconhecido: %s",
+    "error unmarshaling response JSON: %v": "erro ao desserializar JSON de resposta: %v",
+    "failed to calculate price: %v": "falha ao calcular preço: %v",
+    "failed to create client: %v": "falha ao criar cliente: %v",
+    "failed to create request: %v": "falha ao criar solicitação: %v",
+    "failed to get valid response, status code: %d": "falha ao obter resposta válida, código de status: %d",
+    "failed to load word2vec model: %v": "falha ao carregar modelo word2vec: %v",
+    "failed to marshal payload: %v": "falha ao serializar payload: %v",
+    "failed to open model file: %v": "falha ao abrir arquivo do modelo: %v",
+    "failed to read header: %v": "falha ao ler cabeçalho: %v",
+    "failed to read response body: %v": "falha ao ler corpo da resposta: %v",
+    "failed to read vector: %v": "falha ao ler vetor: %v",
+    "failed to read word: %v": "falha ao ler palavra: %v",
+    "failed to unmarshal response: %v": "falha ao desserializar resposta: %v",
+    "input text is empty": "texto de entrada está vazio",
+    "no embedding provider specified": "nenhum provedor de embedding especificado",
+    "no embedding vector found in response": "nenhum vetor de embedding encontrado na resposta",
+    "no embeddings found in the response": "nenhum embedding encontrado na resposta",
+    "none of the tokens were found in the vocabulary": "nenhum dos tokens foi encontrado no vocabulário",
+    "request failed with status code %d: %s": "solicitação falhou com código de status %d: %s",
+    "text can not be empty.": "o texto não pode estar vazio.",
+    "text cannot be empty": "o texto não pode estar vazio"
+  },
+  "message_answer": {
+    "object.GetNearestKnowledge() error, %s": "erro em object.GetNearestKnowledge(), %s"
+  },
+  "model": {
+    "QueryText() error: unknown model type: %s": "erro em QueryText(): tipo de modelo desconhecido: %s",
+    "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "A contagem de tokens: [%d] excede a contagem máxima de tokens do modelo: [%s]: [%d]",
+    "calculatePrice() error: unknown model type: %s": "erro em calculatePrice(): tipo de modelo desconhecido: %s",
+    "calculatePrice() error: video generation pricing requires duration information": "erro em calculatePrice(): precificação de geração de vídeo requer informações de duração",
+    "cannot calculate tokens": "não é possível calcular tokens",
+    "error getting chat completion: %v": "erro ao obter conclusão do chat: %v",
+    "exceed max tokens": "excede tokens máximos",
+    "failed to calculate price: %v": "falha ao calcular preço: %v",
+    "failed to marshal content: %v": "falha ao serializar conteúdo: %v",
+    "failed to marshal error content: %v": "falha ao serializar conteúdo de erro: %v",
+    "failed to marshal tool response: %v": "falha ao serializar resposta da ferramenta: %v",
+    "failed to parse tool arguments: %v": "falha ao analisar argumentos da ferramenta: %v",
+    "failed to write response: %v": "falha ao escrever resposta: %v",
+    "no generations returned": "nenhuma geração retornada",
+    "the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "a contagem de tokens: [%d] excede a contagem máxima de tokens do modelo: [%s]: [%d]",
+    "unsupported model: %s": "modelo não suportado: %s",
+    "writer does not implement http.Flusher": "writer não implementa http.Flusher"
+  },
+  "object": {
+    "Cannot generate word cloud, the dict file: [%s] does not exist": "Não é possível gerar nuvem de palavras, o arquivo dict: [%s] não existe",
+    "Casdoor application: [%s] doesn't exist": "Aplicação Casdoor: [%s] não existe",
+    "Casdoor organization: [%s] doesn't exist": "Organização Casdoor: [%s] não existe",
+    "Please add a model provider first": "Por favor, adicione um provedor de modelo primeiro",
+    "Please add an embedding provider first": "Por favor, adicione um provedor de embedding primeiro",
+    "Question message: [%s] doesn't exist": "Mensagem de pergunta: [%s] não existe",
+    "SendErrorEmail() error, the receiver user: ": "Erro em SendErrorEmail(), usuário receptor: ",
+    "The agent provider: %s is expected to be ": "O provedor de agente: %s espera-se que seja ",
+    "The chat: %s is not found": "O chat: %s não foi encontrado",
+    "The default video provider should not be empty": "O provedor de vídeo padrão não deve estar vazio",
+    "The embedding provider for store: %s is not found": "O provedor de embedding para armazenamento: %s não foi encontrado",
+    "The embedding provider: %s is expected to be ": "O provedor de embedding: %s espera-se que seja ",
+    "The embedding provider: %s is not found": "O provedor de embedding: %s não foi encontrado",
+    "The embedding provider: %s's client secret should not be empty": "O segredo do cliente do provedor de embedding: %s não deve estar vazio",
+    "The image provider for store: %s should not be empty": "O provedor de imagem para armazenamento: %s não deve estar vazio",
+    "The message: %s is not found": "A mensagem: %s não foi encontrada",
+    "The model provider for store: %s is not found": "O provedor de modelo para armazenamento: %s não foi encontrado",
+    "The model provider: %s is expected to be ": "O provedor de modelo: %s espera-se que seja ",
+    "The model provider: %s is not found": "O provedor de modelo: %s não foi encontrado",
+    "The model provider: %s's client secret should not be empty": "O segredo do cliente do provedor de modelo: %s não deve estar vazio",
+    "The provider is not found": "O provedor não foi encontrado",
+    "The provider: %s does not exist": "O provedor: %s não existe",
+    "The provider: %s is not found": "O provedor: %s não foi encontrado",
+    "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v": "O provedor de embedding do armazenamento: [%s] deve ser igual ao provedor de embedding do vetor: [%s], vetor = %v",
+    "The store: %s is not found": "O armazenamento: %s não foi encontrado",
+    "The text-to-speech provider for store: %s is not found": "O provedor de texto para fala para armazenamento: %s não foi encontrado",
+    "deployment failed, and could not retrieve failure details: %v": "implantação falhou e não foi possível recuperar detalhes da falha: %v",
+    "deployment failed: %s": "implantação falhou: %s",
+    "empty provider key": "chave de provedor vazia",
+    "failed to connect to kubernetes cluster: %v": "falha ao conectar ao cluster kubernetes: %v",
+    "failed to convert result to yaml: %v": "falha ao converter resultado para yaml: %v",
+    "failed to create discovery client: %v": "falha ao criar cliente de descoberta: %v",
+    "failed to create dynamic client: %v": "falha ao criar cliente dinâmico: %v",
+    "failed to create kubernetes clientSet: %v": "falha ao criar clientSet kubernetes: %v",
+    "failed to create namespace: %v": "falha ao criar namespace: %v",
+    "failed to create resource %s/%s: %v": "falha ao criar recurso %s/%s: %v",
+    "failed to create root directory: %v": "falha ao criar diretório raiz: %v",
+    "failed to decode YAML: %v": "falha ao decodificar YAML: %v",
+    "failed to delete namespace: %v": "falha ao excluir namespace: %v",
+    "failed to deploy application": "falha ao implantar aplicação",
+    "failed to deploy manifest: %v": "falha ao implantar manifesto: %v",
+    "failed to deploy resource: %v": "falha ao implantar recurso: %v",
+    "failed to generate manifest: %v": "falha ao gerar manifesto: %v",
+    "failed to get API group resources: %v": "falha ao obter recursos do grupo API: %v",
+    "failed to get REST mapping for %s: %v": "falha ao obter mapeamento REST para %s: %v",
+    "failed to get default Kubernetes provider: %v": "falha ao obter provedor Kubernetes padrão: %v",
+    "failed to get existing resource %s/%s: %v": "falha ao obter recurso existente %s/%s: %v",
+    "failed to get namespace: %v": "falha ao obter namespace: %v",
+    "failed to get pod metrics: %v": "falha ao obter métricas do pod: %v",
+    "failed to get providers: %v": "falha ao obter provedores: %v",
+    "failed to get record with id '%s': %w": "falha ao obter registro com id '%s': %w",
+    "failed to initialize cache manager: %v": "falha ao inicializar gerenciador de cache: %v",
+    "failed to initialize k8s client: %v": "falha ao inicializar cliente k8s: %v",
+    "failed to list pods in namespace %s: %w": "falha ao listar pods no namespace %s: %w",
+    "failed to marshal kustomization: %v": "falha ao serializar kustomization: %v",
+    "failed to parse kubeconfig from provider: %v": "falha ao analisar kubeconfig do provedor: %v",
+    "failed to parse kubeconfig: %v": "falha ao analisar kubeconfig: %v",
+    "failed to parse record identifier '%s': neither a valid owner/[id|name] format": "falha ao analisar identificador de registro '%s': não é um formato owner/[id|name] válido",
+    "failed to parse record: name %s, field %s, error: %v": "falha ao analisar registro: nome %s, campo %s, erro: %v",
+    "failed to parse server URL: %v": "falha ao analisar URL do servidor: %v",
+    "failed to start cache manager: %v": "falha ao iniciar gerenciador de cache: %v",
+    "failed to start undeployment": "falha ao iniciar desimplantação",
+    "failed to update error text for record %s: %s": "falha ao atualizar texto de erro para registro %s: %s",
+    "failed to update resource %s/%s: %v": "falha ao atualizar recurso %s/%s: %v",
+    "failed to write kustomization.yaml: %v": "falha ao escrever kustomization.yaml: %v",
+    "failed to write patch file: %v": "falha ao escrever arquivo de patch: %v",
+    "failed to write resource file: %v": "falha ao escrever arquivo de recurso: %v",
+    "getExtFromMimeType() error: unknown MimeType: %s": "erro em getExtFromMimeType(): MimeType desconhecido: %s",
+    "invalid range type: %s": "tipo de intervalo inválido: %s",
+    "k8s client is not connected to the cluster": "cliente k8s não está conectado ao cluster",
+    "k8s client not connected": "cliente k8s não conectado",
+    "k8s client not connected to cluster": "cliente k8s não conectado ao cluster",
+    "k8s client not initialized": "cliente k8s não inicializado",
+    "kubeconfig content is empty": "conteúdo do kubeconfig está vazio",
+    "kustomize run failed: %v": "execução do kustomize falhou: %v",
+    "metrics client not available": "cliente de métricas não disponível",
+    "namespace %s is terminating and all resources have been cleaned up": "namespace %s está terminando e todos os recursos foram limpos",
+    "namespace cannot be empty": "namespace não pode estar vazio",
+    "no Kubernetes provider found": "nenhum provedor Kubernetes encontrado",
+    "no accessible URL found for application": "nenhuma URL acessível encontrada para aplicação",
+    "no qVector found": "nenhum qVector encontrado",
+    "parseBase64Image() error: invalid image format": "erro em parseBase64Image(): formato de imagem inválido",
+    "provider kubeconfig content is empty": "conteúdo kubeconfig do provedor está vazio",
+    "queryVectorSafe() error, %s": "erro em queryVectorSafe(), %s",
+    "server address not found": "endereço do servidor não encontrado",
+    "the STT provider type: %s is not supported": "o tipo de provedor STT: %s não é suportado",
+    "the TTS provider type: %s is not supported": "o tipo de provedor TTS: %s não é suportado",
+    "the agent provider type: %s is not supported": "o tipo de provedor de agente: %s não é suportado",
+    "the blockchain provider: %s is not found": "o provedor blockchain: %s não foi encontrado",
+    "the embedding provider type: %s is not supported": "o tipo de provedor de embedding: %s não é suportado",
+    "the form: %s is not found": "o formulário: %s não foi encontrado",
+    "the model provider type: %s is not supported": "o tipo de provedor de modelo: %s não é suportado",
+    "the record: %s does not exist": "o registro: %s não existe",
+    "the record: %s has already been committed, blockId = %s": "o registro: %s já foi confirmado, blockId = %s",
+    "the record: %s's block ID should not be empty": "o ID do bloco do registro: %s não deve estar vazio",
+    "the scan provider type: %s is not supported": "o tipo de provedor de varredura: %s não é suportado",
+    "the storage provider type: %s is not supported": "o tipo de provedor de armazenamento: %s não é suportado",
+    "there is no active blockchain provider": "não há provedor blockchain ativo",
+    "unable to extract host": "não é possível extrair host",
+    "undeployment timeout: application did not undeploy within 10 minutes": "timeout de desimplantação: aplicação não desimplantou em 10 minutos"
+  },
+  "openai": {
+    "Invalid API key format. Expected 'Bearer API_KEY'": "Formato de chave API inválido. Esperado 'Bearer API_KEY'",
+    "No user message found in the request": "Nenhuma mensagem de usuário encontrada na solicitação"
+  },
+  "pkgdocker": {
+    "Container %s not found": "Container %s não encontrado"
+  },
+  "pkgimage": {
+    "unsupported provider type: %s": "tipo de provedor não suportado: %s"
+  },
+  "pkgkubernets": {
+    "Pod %s not found": "Pod %s não encontrado"
+  },
+  "pkgmachine": {
+    "Domain: [%s]'s state has been successfully updated to: [%s]": "O estado do domínio: [%s] foi atualizado com sucesso para: [%s]",
+    "Instance not found: %s": "Instância não encontrada: %s",
+    "Instance: [%s] is not found": "Instância: [%s] não foi encontrada",
+    "Instance: [%s]'s state has been successfully updated to: [%s]": "O estado da instância: [%s] foi atualizado com sucesso para: [%s]",
+    "Not implemented": "Não implementado",
+    "Tencent Cloud API error: %s": "Erro na API Tencent Cloud: %s",
+    "Unsupported state: %s": "Estado não suportado: %s",
+    "VMware API error, code = %d, message = %s": "Erro na API VMware, código = %d, mensagem = %s",
+    "unsupported provider type: %s": "tipo de provedor não suportado: %s"
+  },
+  "provider": {
+    "Provider not found": "Provedor não encontrado"
+  },
+  "resource": {
+    "Invalid file data format": "Formato de dados de arquivo inválido",
+    "Missing required parameters": "Parâmetros obrigatórios ausentes"
+  },
+  "storage": {
+    "storage provider name: [%s] doesn't exist": "nome do provedor de armazenamento: [%s] não existe"
+  },
+  "store": {
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "dado que deve haver um armazenamento padrão no Casibase, você não pode definir este armazenamento como não padrão. Você pode definir diretamente outro armazenamento como padrão"
+  },
+  "scan": {
+    "Scan not found": "Varredura não encontrada",
+    "Asset not found": "Ativo não encontrado",
+    "Provider not found": "Provedor não encontrado",
+    "Scan provider not supported": "Provedor de varredura não suportado",
+    "Failed to start scan": "Falha ao iniciar a varredura"
+  },
+  "stt": {
+    "API error: %s": "Erro de API: %s",
+    "Missing required parameter: storeId": "Parâmetro obrigatório ausente: storeId",
+    "speech recognition API error: %v": "erro na API de reconhecimento de fala: %v",
+    "speech recognition timed out after %v seconds": "reconhecimento de fala expirou após %v segundos"
+  },
+  "tts": {
+    "The audio data is nil": "Os dados de áudio são nulos",
+    "calculatePrice() error: unknown model type: %s": "erro em calculatePrice(): tipo de modelo desconhecido: %s",
+    "error creating synthesizer: %v": "erro ao criar sintetizador: %v",
+    "error finishing task: %v": "erro ao finalizar tarefa: %v",
+    "error running task: %v": "erro ao executar tarefa: %v",
+    "error sending text: %v": "erro ao enviar texto: %v",
+    "output error: %v": "erro de saída: %v",
+    "writer does not implement http.Flusher": "writer não implementa http.Flusher"
+  },
+  "txt": {
+    ".docx file is empty": "arquivo .docx está vazio",
+    "GetTextFromMarkitdown() error, failed to open file: %v": "Erro em GetTextFromMarkitdown(), falha ao abrir arquivo: %v",
+    "GetTextFromMarkitdown() error, markitdown does not exist": "Erro em GetTextFromMarkitdown(), markitdown não existe",
+    "GetTextFromMarkitdown() error, markitdown failed to run: %v: %s": "Erro em GetTextFromMarkitdown(), markitdown falhou ao executar: %v: %s",
+    "unsupported file type: %s": "tipo de arquivo não suportado: %s"
+  },
+  "video": {
+    "The video can only be updated when there are no remarks and the state is \"Draft\"": "O vídeo só pode ser atualizado quando não houver observações e o estado for \"Rascunho\"",
+    "UploadVideo() error, videoId should not be empty": "Erro em UploadVideo(), videoId não deve estar vazio"
+  }
+}

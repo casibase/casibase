@@ -24,6 +24,7 @@ import McpToolsTable from "./table/McpToolsTable";
 import ModelTestWidget from "./common/TestModelWidget";
 import TtsTestWidget from "./common/TestTtsWidget";
 import EmbedTestWidget from "./common/TestEmbedWidget";
+import TestScanWidget from "./common/TestScanWidget";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -43,6 +44,7 @@ class ProviderEditPage extends React.Component {
       originalProvider: null,
       refreshButtonLoading: false,
       isAdmin: props.account?.isAdmin || props.account?.owner === "admin",
+      isNewProvider: props.location?.state?.isNewProvider || false,
     };
   }
 
@@ -266,6 +268,7 @@ class ProviderEditPage extends React.Component {
           {isRemote ? i18next.t("general:View") : i18next.t("provider:Edit Provider")}&nbsp;&nbsp;&nbsp;&nbsp;
           {!isRemote && <Button onClick={() => this.submitProviderEdit(false)}>{i18next.t("general:Save")}</Button>}
           {!isRemote && <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitProviderEdit(true)}>{i18next.t("general:Save & Exit")}</Button>}
+          {!isRemote && this.state.isNewProvider && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelProviderEdit()}>{i18next.t("general:Cancel")}</Button>}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -319,6 +322,9 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Bot") {
                 this.updateProviderField("type", "Tencent");
                 this.updateProviderField("subType", "WeCom Bot");
+              } else if (value === "Scan") {
+                this.updateProviderField("type", "Nmap");
+                this.updateProviderField("subType", "Default");
               }
             })}>
               {
@@ -334,6 +340,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
                   {id: "Speech-to-Text", name: "Speech-to-Text"},
                   {id: "Bot", name: "Bot"},
+                  {id: "Scan", name: "Scan"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
@@ -516,6 +523,7 @@ class ProviderEditPage extends React.Component {
         }
         {
           !(this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") &&
+          this.state.provider.category !== "Scan" &&
           (
             ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") ||
               (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") ||
@@ -658,6 +666,7 @@ class ProviderEditPage extends React.Component {
             (this.state.provider.category === "Storage" && this.state.provider.type !== "OpenAI File System") ||
             (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") ||
             (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker") ||
+            this.state.provider.category === "Scan" ||
             this.state.provider.type === "Dummy"
           ) ? null : (
               <Row style={{marginTop: "20px"}} >
@@ -747,7 +756,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) || (this.state.provider.category === "Blockchain" && this.state.provider.type === "Ethereum") || (this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") ? null : (
+          ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text", "Scan"].includes(this.state.provider.category) || (this.state.provider.category === "Blockchain" && this.state.provider.type === "Ethereum") || (this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {this.getRegionLabel(this.state.provider)} :
@@ -1089,6 +1098,12 @@ class ProviderEditPage extends React.Component {
           account={this.props.account}
           onUpdateProvider={this.updateProviderField.bind(this)}
         />
+        <TestScanWidget
+          provider={this.state.provider}
+          originalProvider={this.state.originalProvider}
+          account={this.props.account}
+          onUpdateProvider={this.updateProviderField.bind(this)}
+        />
         {
           this.state.provider.category === "Model" ? (
             <Row style={{marginTop: "20px"}} >
@@ -1125,6 +1140,36 @@ class ProviderEditPage extends React.Component {
                 />
               </Col>
             </Row>
+          ) : null
+        }
+        {
+          this.state.provider.category === "Scan" ? (
+            <>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("scan:Result summary"), i18next.t("scan:Result summary - Tooltip"))} :
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.resultSummary} disabled />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("scan:Runner"), i18next.t("scan:Runner - Tooltip"))} :
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.runner} disabled />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("scan:Error"), i18next.t("scan:Error - Tooltip"))} :
+                </Col>
+                <Col span={22} >
+                  <Input.TextArea value={this.state.provider.errorText} disabled rows={4} />
+                </Col>
+              </Row>
+            </>
           ) : null
         }
         <Row style={{marginTop: "20px"}} >
@@ -1215,6 +1260,7 @@ class ProviderEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               providerName: this.state.provider.name,
+              isNewProvider: false,
             });
 
             if (exitAfterSave) {
@@ -1235,6 +1281,25 @@ class ProviderEditPage extends React.Component {
       });
   }
 
+  cancelProviderEdit() {
+    if (this.state.isNewProvider) {
+      ProviderBackend.deleteProvider(this.state.provider)
+        .then((res) => {
+          if (res.status === "ok") {
+            Setting.showMessage("success", i18next.t("general:Cancelled successfully"));
+            this.props.history.push("/providers");
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${res.msg}`);
+          }
+        })
+        .catch(error => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${error}`);
+        });
+    } else {
+      this.props.history.push("/providers");
+    }
+  }
+
   render() {
     const isRemote = this.state.provider?.isRemote;
     return (
@@ -1246,6 +1311,7 @@ class ProviderEditPage extends React.Component {
           <div style={{marginTop: "20px", marginLeft: "40px"}}>
             <Button size="large" onClick={() => this.submitProviderEdit(false)}>{i18next.t("general:Save")}</Button>
             <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitProviderEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+            {this.state.isNewProvider && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelProviderEdit()}>{i18next.t("general:Cancel")}</Button>}
           </div>
         )}
       </div>

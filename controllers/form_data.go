@@ -56,13 +56,13 @@ func (c *ApiController) GetFormData() {
 
 	blockchainProvider, err := object.GetActiveBlockchainProvider("admin")
 	if blockchainProvider == nil {
-		c.ResponseError("The default blockchain provider is not found")
+		c.ResponseError(c.T("blockchain:The default blockchain provider is not found"))
 		return
 	}
 
 	chainserverUrl := blockchainProvider.ProviderUrl
 	if chainserverUrl == "" {
-		c.ResponseError("The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'")
+		c.ResponseError(c.T("blockchain:The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'"))
 	}
 
 	url := fmt.Sprintf("%s/api/get-form-data?pageSize=%s&p=%s", chainserverUrl, limitStr, pageStr)

@@ -43,7 +43,10 @@ func TestUpdateMessagesForOrg(t *testing.T) {
 		message.ReplyTo = strings.TrimPrefix(message.ReplyTo, "admin/")
 
 		if strings.Contains(message.Author, "/") {
-			_, author := util.GetOwnerAndNameFromId(message.Author)
+			_, author, err := util.GetOwnerAndNameFromIdWithError(message.Author)
+			if err != nil {
+				return err
+			}
 			message.Author = author
 		}
 

@@ -232,11 +232,13 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		if strings.HasPrefix(question, "$CasibaseDryRun$") {
-			if GetOpenAiMaxTokens(p.subType) > modelResult.TotalTokenCount {
-				return modelResult, nil
-			} else {
-				return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
-			}
+			return modelResult, nil
+
+			//if GetOpenAiMaxTokens(p.subType) > modelResult.TotalTokenCount {
+			//	return modelResult, nil
+			//} else {
+			//	return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
+			//}
 		}
 
 		req := ChatCompletionRequest(model, messages, temperature, topP, frequencyPenalty, presencePenalty)
@@ -335,11 +337,6 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 				answerData.WriteString(data)
 			}
-		}
-
-		err = handleToolCalls(toolCalls, flushData, writer, lang)
-		if err != nil {
-			return nil, err
 		}
 
 		if agentInfo != nil && agentInfo.AgentMessages != nil {

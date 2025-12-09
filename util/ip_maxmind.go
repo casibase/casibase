@@ -41,7 +41,7 @@ func InitMaxmindDb() error {
 	if cityErr != nil {
 		maxmindCityDB, cityErr = geoip2.Open(filepath.Join(frontendBaseDir, "..", "data", "GeoLite2-City.mmdb"))
 		if cityErr != nil {
-			logs.Warn("InitMaxmindDb() open \"GeoLite2-City.mmdb\" warning: %v\n", cityErr)
+			logs.Warn("InitMaxmindDb() open \"GeoLite2-City.mmdb\" warning: %v", cityErr)
 		}
 	}
 
@@ -50,7 +50,7 @@ func InitMaxmindDb() error {
 	if asnErr != nil {
 		maxmindASNDB, asnErr = geoip2.Open(filepath.Join(frontendBaseDir, "..", "data", "GeoLite2-ASN.mmdb"))
 		if asnErr != nil {
-			logs.Warn("InitMaxmindDb() open \"GeoLite2-ASN.mmdb\" warning: %v\n", asnErr)
+			logs.Warn("InitMaxmindDb() open \"GeoLite2-ASN.mmdb\" warning: %v", asnErr)
 		}
 	}
 

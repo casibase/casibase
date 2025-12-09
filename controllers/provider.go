@@ -56,6 +56,13 @@ func (c *ApiController) GetProviders() {
 	user := c.GetSessionUser()
 	storeName := c.Input().Get("store")
 
+	// Apply store isolation based on user's Homepage field
+	var ok bool
+	storeName, ok = c.EnforceStoreIsolation(storeName)
+	if !ok {
+		return
+	}
+
 	if limit == "" || page == "" {
 		providers, err := object.GetProviders(owner)
 		if err != nil {

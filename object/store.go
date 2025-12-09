@@ -48,7 +48,7 @@ type UsageInfo struct {
 	StartTime  time.Time `xorm:"created" json:"startTime"`
 }
 
-type Prompt struct {
+type ExampleQuestion struct {
 	Title string `json:"title"`
 	Text  string `json:"text"`
 	Image string `json:"image"`
@@ -74,33 +74,33 @@ type Store struct {
 	VectorStoreId        string   `xorm:"varchar(100)" json:"vectorStoreId"`
 	BuiltinTools         []string `xorm:"varchar(500)" json:"builtinTools"`
 
-	MemoryLimit         int      `json:"memoryLimit"`
-	Frequency           int      `json:"frequency"`
-	LimitMinutes        int      `json:"limitMinutes"`
-	KnowledgeCount      int      `json:"knowledgeCount"`
-	SuggestionCount     int      `json:"suggestionCount"`
-	Welcome             string   `xorm:"varchar(100)" json:"welcome"`
-	WelcomeTitle        string   `xorm:"varchar(100)" json:"welcomeTitle"`
-	WelcomeText         string   `xorm:"varchar(100)" json:"welcomeText"`
-	Prompt              string   `xorm:"mediumtext" json:"prompt"`
-	Prompts             []Prompt `xorm:"mediumtext" json:"prompts"`
-	ThemeColor          string   `xorm:"varchar(100)" json:"themeColor"`
-	Avatar              string   `xorm:"varchar(200)" json:"avatar"`
-	Title               string   `xorm:"varchar(100)" json:"title"`
-	HtmlTitle           string   `xorm:"varchar(100)" json:"htmlTitle"`
-	FaviconUrl          string   `xorm:"varchar(200)" json:"faviconUrl"`
-	LogoUrl             string   `xorm:"varchar(200)" json:"logoUrl"`
-	FooterHtml          string   `xorm:"mediumtext" json:"footerHtml"`
-	NavItems            []string `xorm:"text" json:"navItems"`
-	VectorStores        []string `xorm:"varchar(500)" json:"vectorStores"`
-	ChildStores         []string `xorm:"varchar(500)" json:"childStores"`
-	ChildModelProviders []string `xorm:"varchar(500)" json:"childModelProviders"`
-	ForbiddenWords      []string `xorm:"text" json:"forbiddenWords"`
-	ShowAutoRead        bool     `json:"showAutoRead"`
-	DisableFileUpload   bool     `json:"disableFileUpload"`
-	HideThinking        bool     `json:"hideThinking"`
-	IsDefault           bool     `json:"isDefault"`
-	State               string   `xorm:"varchar(100)" json:"state"`
+	MemoryLimit         int               `json:"memoryLimit"`
+	Frequency           int               `json:"frequency"`
+	LimitMinutes        int               `json:"limitMinutes"`
+	KnowledgeCount      int               `json:"knowledgeCount"`
+	SuggestionCount     int               `json:"suggestionCount"`
+	Welcome             string            `xorm:"varchar(100)" json:"welcome"`
+	WelcomeTitle        string            `xorm:"varchar(100)" json:"welcomeTitle"`
+	WelcomeText         string            `xorm:"varchar(100)" json:"welcomeText"`
+	Prompt              string            `xorm:"mediumtext" json:"prompt"`
+	ExampleQuestions    []ExampleQuestion `xorm:"mediumtext" json:"exampleQuestions"`
+	ThemeColor          string            `xorm:"varchar(100)" json:"themeColor"`
+	Avatar              string            `xorm:"varchar(200)" json:"avatar"`
+	Title               string            `xorm:"varchar(100)" json:"title"`
+	HtmlTitle           string            `xorm:"varchar(100)" json:"htmlTitle"`
+	FaviconUrl          string            `xorm:"varchar(200)" json:"faviconUrl"`
+	LogoUrl             string            `xorm:"varchar(200)" json:"logoUrl"`
+	FooterHtml          string            `xorm:"mediumtext" json:"footerHtml"`
+	NavItems            []string          `xorm:"text" json:"navItems"`
+	VectorStores        []string          `xorm:"mediumtext" json:"vectorStores"`
+	ChildStores         []string          `xorm:"mediumtext" json:"childStores"`
+	ChildModelProviders []string          `xorm:"mediumtext" json:"childModelProviders"`
+	ForbiddenWords      []string          `xorm:"text" json:"forbiddenWords"`
+	ShowAutoRead        bool              `json:"showAutoRead"`
+	DisableFileUpload   bool              `json:"disableFileUpload"`
+	HideThinking        bool              `json:"hideThinking"`
+	IsDefault           bool              `json:"isDefault"`
+	State               string            `xorm:"varchar(100)" json:"state"`
 
 	ChatCount    int `xorm:"-" json:"chatCount"`
 	MessageCount int `xorm:"-" json:"messageCount"`
@@ -169,13 +169,19 @@ func getStore(owner string, name string) (*Store, error) {
 }
 
 func GetStore(id string) (*Store, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getStore(owner, name)
 }
 
 func UpdateStore(id string, store *Store) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getStore(owner, name)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
+	_, err = getStore(owner, name)
 	if err != nil {
 		return false, err
 	}

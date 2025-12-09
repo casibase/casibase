@@ -74,7 +74,10 @@ func GetPaginationTemplates(owner string, offset, limit int, field, value, sortF
 }
 
 func GetTemplate(id string) (*Template, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getTemplate(owner, name)
 }
 
@@ -93,9 +96,12 @@ func getTemplate(owner, name string) (*Template, error) {
 }
 
 func UpdateTemplate(id string, template *Template) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	template.UpdatedTime = util.GetCurrentTime()
-	_, err := getTemplate(owner, name)
+	_, err = getTemplate(owner, name)
 	if err != nil {
 		return false, err
 	}

@@ -1,10 +1,15 @@
 {
   "account": {
-    "The default store is not found": "The default store is not found",
-    "The store: %s is not found": "The store: %s is not found"
+    "The default store is not found": "Penyimpanan default tidak ditemukan",
+    "The store: %s is not found": "Penyimpanan: %s tidak ditemukan"
   },
   "agent": {
-    "the agent provider type: %s is not supported": "the agent provider type: %s is not supported"
+    "the agent provider type: %s is not supported": "Jenis penyedia agen: %s tidak didukung"
+  },
+  "application": {
+    "Failed to update application": "Gagal memperbarui aplikasi",
+    "Missing required parameters": "Parameter yang diperlukan hilang",
+    "The Template not found": "Template tidak ditemukan"
   },
   "audio": {
     "complete slice upload failed: %s": "complete slice upload failed: %s",
@@ -14,8 +19,17 @@
     "perform slice upload failed: %s": "perform slice upload failed: %s",
     "worker upload failed: %s": "worker upload failed: %s"
   },
+  "auth": {
+    "Please sign in first": "Silakan masuk terlebih dahulu",
+    "Unauthorized operation": "Operasi tidak sah",
+    "this operation requires admin privilege": "Operasi ini memerlukan hak admin"
+  },
+  "blockchain": {
+    "The default blockchain provider is not found": "The default blockchain provider is not found",
+    "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'"
+  },
   "bpmn": {
-    "Error parsing BPMN file: %v": "Error parsing BPMN file: %v"
+    "Error parsing BPMN file: %v": "Kesalahan mengurai file BPMN: %v"
   },
   "chain": {
     "ChainTencentChainmakerClient.Client.Invoke() error: %v": "ChainTencentChainmakerClient.Client.Invoke() error: %v",
@@ -46,6 +60,16 @@
     "transaction failed to be mined: %v": "transaction failed to be mined: %v",
     "transaction failed with status: %d, reason: %s": "transaction failed with status: %d, reason: %s"
   },
+  "chat": {
+    "The default store is not found": "Penyimpanan default tidak ditemukan"
+  },
+  "controllers": {
+    "No permission": "Tidak ada izin",
+    "No records to add": "Tidak ada catatan untuk ditambahkan",
+    "No sessions to delete": "Tidak ada sesi untuk dihapus",
+    "You can only view your own chats": "Anda hanya dapat melihat obrolan Anda sendiri",
+    "You can only view your own messages": "Anda hanya dapat melihat pesan Anda sendiri"
+  },
   "embedding": {
     "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
     "error unmarshaling response JSON: %v": "error unmarshaling response JSON: %v",
@@ -61,14 +85,14 @@
     "failed to read vector: %v": "failed to read vector: %v",
     "failed to read word: %v": "failed to read word: %v",
     "failed to unmarshal response: %v": "failed to unmarshal response: %v",
-    "input text is empty": "input text is empty",
+    "input text is empty": "teks input kosong",
     "no embedding provider specified": "no embedding provider specified",
     "no embedding vector found in response": "no embedding vector found in response",
     "no embeddings found in the response": "no embeddings found in the response",
     "none of the tokens were found in the vocabulary": "none of the tokens were found in the vocabulary",
     "request failed with status code %d: %s": "request failed with status code %d: %s",
-    "text can not be empty.": "text can not be empty.",
-    "text cannot be empty": "text cannot be empty"
+    "text can not be empty.": "teks tidak boleh kosong.",
+    "text cannot be empty": "teks tidak boleh kosong"
   },
   "message_answer": {
     "object.GetNearestKnowledge() error, %s": "object.GetNearestKnowledge() error, %s"
@@ -82,6 +106,8 @@
     "error getting chat completion: %v": "error getting chat completion: %v",
     "exceed max tokens": "exceed max tokens",
     "failed to calculate price: %v": "failed to calculate price: %v",
+    "failed to marshal content: %v": "failed to marshal content: %v",
+    "failed to marshal error content: %v": "failed to marshal error content: %v",
     "failed to marshal tool response: %v": "failed to marshal tool response: %v",
     "failed to parse tool arguments: %v": "failed to parse tool arguments: %v",
     "failed to write response: %v": "failed to write response: %v",
@@ -115,7 +141,7 @@
     "The provider: %s does not exist": "The provider: %s does not exist",
     "The provider: %s is not found": "The provider: %s is not found",
     "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v": "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v",
-    "The store: %s is not found": "The store: %s is not found",
+    "The store: %s is not found": "Penyimpanan: %s tidak ditemukan",
     "The text-to-speech provider for store: %s is not found": "The text-to-speech provider for store: %s is not found",
     "deployment failed, and could not retrieve failure details: %v": "deployment failed, and could not retrieve failure details: %v",
     "deployment failed: %s": "deployment failed: %s",
@@ -171,7 +197,6 @@
     "namespace cannot be empty": "namespace cannot be empty",
     "no Kubernetes provider found": "no Kubernetes provider found",
     "no accessible URL found for application": "no accessible URL found for application",
-    "no knowledge vectors found": "no knowledge vectors found",
     "no qVector found": "no qVector found",
     "parseBase64Image() error: invalid image format": "parseBase64Image() error: invalid image format",
     "provider kubeconfig content is empty": "provider kubeconfig content is empty",
@@ -179,7 +204,7 @@
     "server address not found": "server address not found",
     "the STT provider type: %s is not supported": "the STT provider type: %s is not supported",
     "the TTS provider type: %s is not supported": "the TTS provider type: %s is not supported",
-    "the agent provider type: %s is not supported": "the agent provider type: %s is not supported",
+    "the agent provider type: %s is not supported": "Jenis penyedia agen: %s tidak didukung",
     "the blockchain provider: %s is not found": "the blockchain provider: %s is not found",
     "the embedding provider type: %s is not supported": "the embedding provider type: %s is not supported",
     "the form: %s is not found": "the form: %s is not found",
@@ -187,10 +212,15 @@
     "the record: %s does not exist": "the record: %s does not exist",
     "the record: %s has already been committed, blockId = %s": "the record: %s has already been committed, blockId = %s",
     "the record: %s's block ID should not be empty": "the record: %s's block ID should not be empty",
+    "the scan provider type: %s is not supported": "the scan provider type: %s is not supported",
     "the storage provider type: %s is not supported": "the storage provider type: %s is not supported",
     "there is no active blockchain provider": "there is no active blockchain provider",
     "unable to extract host": "unable to extract host",
     "undeployment timeout: application did not undeploy within 10 minutes": "undeployment timeout: application did not undeploy within 10 minutes"
+  },
+  "openai": {
+    "Invalid API key format. Expected 'Bearer API_KEY'": "Invalid API key format. Expected 'Bearer API_KEY'",
+    "No user message found in the request": "No user message found in the request"
   },
   "pkgdocker": {
     "Container %s not found": "Container %s not found"
@@ -212,15 +242,34 @@
     "VMware API error, code = %d, message = %s": "VMware API error, code = %d, message = %s",
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
+  "provider": {
+    "Provider not found": "Provider not found"
+  },
+  "resource": {
+    "Invalid file data format": "Invalid file data format",
+    "Missing required parameters": "Parameter yang diperlukan hilang"
+  },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] doesn't exist"
   },
+  "store": {
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
+  },
+  "scan": {
+    "Scan not found": "Pemindaian tidak ditemukan",
+    "Asset not found": "Aset tidak ditemukan",
+    "Provider not found": "Penyedia tidak ditemukan",
+    "Scan provider not supported": "Penyedia pemindaian tidak didukung",
+    "Failed to start scan": "Gagal memulai pemindaian"
+  },
   "stt": {
     "API error: %s": "API error: %s",
+    "Missing required parameter: storeId": "Missing required parameter: storeId",
     "speech recognition API error: %v": "speech recognition API error: %v",
     "speech recognition timed out after %v seconds": "speech recognition timed out after %v seconds"
   },
   "tts": {
+    "The audio data is nil": "The audio data is nil",
     "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
     "error creating synthesizer: %v": "error creating synthesizer: %v",
     "error finishing task: %v": "error finishing task: %v",
@@ -235,5 +284,9 @@
     "GetTextFromMarkitdown() error, markitdown does not exist": "GetTextFromMarkitdown() error, markitdown does not exist",
     "GetTextFromMarkitdown() error, markitdown failed to run: %v: %s": "GetTextFromMarkitdown() error, markitdown failed to run: %v: %s",
     "unsupported file type: %s": "unsupported file type: %s"
+  },
+  "video": {
+    "The video can only be updated when there are no remarks and the state is \"Draft\"": "The video can only be updated when there are no remarks and the state is \"Draft\"",
+    "UploadVideo() error, videoId should not be empty": "UploadVideo() error, videoId should not be empty"
   }
 }

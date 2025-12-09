@@ -67,15 +67,24 @@ func StaticFilter(ctx *context.Context) {
 	}
 
 	if strings.HasPrefix(urlPath, "/storage") {
-		ctx.Output.Header("Access-Control-Allow-Origin", "*")
-		ctx.Output.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE")
-		ctx.Output.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		// Check if user is authenticated
+		user := GetSessionUser(ctx)
+		if user == nil {
+			responseError(ctx, "auth:Unauthorized operation")
+			return
+		}
+
+		ctx.Output.Header(headerAllowOrigin, "*")
+		ctx.Output.Header(headerAllowMethods, "POST, GET, OPTIONS, DELETE")
+		ctx.Output.Header(headerAllowHeaders, "Content-Type, Authorization")
+		ctx.Output.Header(headerAllowCredentials, "true")
 
 		if runtime.GOOS == "windows" {
 			urlPath = strings.TrimPrefix(urlPath, "/storage/")
 		} else {
 			urlPath = strings.TrimPrefix(urlPath, "/storage")
 		}
+
 		urlPath = strings.Replace(urlPath, "|", ":", 1)
 		makeGzipResponse(ctx.ResponseWriter, ctx.Request, urlPath)
 		return

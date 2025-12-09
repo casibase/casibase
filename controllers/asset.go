@@ -46,6 +46,7 @@ func (c *ApiController) GetAssets() {
 			return
 		}
 
+		assets = object.GetMaskedAssets(assets, true)
 		c.ResponseOk(assets)
 	} else {
 		limit := util.ParseInt(limit)
@@ -62,6 +63,7 @@ func (c *ApiController) GetAssets() {
 			return
 		}
 
+		assets = object.GetMaskedAssets(assets, true)
 		c.ResponseOk(assets, paginator.Nums())
 	}
 }
@@ -82,7 +84,7 @@ func (c *ApiController) GetAsset() {
 		return
 	}
 
-	c.ResponseOk(asset)
+	c.ResponseOk(object.GetMaskedAsset(asset, true))
 }
 
 // UpdateAsset
@@ -140,6 +142,37 @@ func (c *ApiController) DeleteAsset() {
 	}
 
 	c.ResponseOk(object.DeleteAsset(&asset))
+}
+
+// ScanAsset
+// @Title ScanAsset
+// @Tag Asset API
+// @Description unified API for scanning assets (combines test-scan and start-scan functionality)
+// @Param provider query string true "The provider ID (owner/name)"
+// @Param scan query string false "The scan ID (owner/name) for saving results"
+// @Param targetMode query string true "Target mode: 'Manual Input' or 'Asset'"
+// @Param target query string false "Manual input target (IP address or network range)"
+// @Param asset query string false "Asset ID (owner/name) for Asset mode"
+// @Param command query string false "Scan command with optional %s placeholder for target"
+// @Param saveToScan query string false "Whether to save results to scan object (true/false)"
+// @Success 200 {object} controllers.Response The Response object
+// @router /scan-asset [post]
+func (c *ApiController) ScanAsset() {
+	provider := c.Input().Get("provider")
+	scan := c.Input().Get("scan")
+	targetMode := c.Input().Get("targetMode")
+	target := c.Input().Get("target")
+	asset := c.Input().Get("asset")
+	command := c.Input().Get("command")
+	saveToScan := c.Input().Get("saveToScan") == "true"
+
+	scanResult, err := object.ScanAsset(provider, scan, targetMode, target, asset, command, saveToScan, c.GetAcceptLanguage())
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(scanResult)
 }
 
 // ScanAssets

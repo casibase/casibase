@@ -61,7 +61,7 @@ func (c *ApiController) AddNodeTunnel() {
 
 	user := c.GetSessionUser()
 	if user == nil {
-		c.ResponseError("please sign in first")
+		c.ResponseError(c.T("auth:Please sign in first"))
 		return
 	}
 
@@ -100,7 +100,7 @@ func (c *ApiController) GetNodeTunnel() {
 	ctx := c.Ctx
 	ws, err := UpGrader.Upgrade(ctx.ResponseWriter, ctx.Request, nil)
 	if err != nil {
-		c.ResponseError("WebSocket upgrade failed:", err)
+		c.ResponseError(err.Error())
 		return
 	}
 
@@ -225,7 +225,7 @@ func (c *ApiController) TunnelMonitor() {
 	ctx := c.Ctx
 	ws, err := UpGrader.Upgrade(ctx.ResponseWriter, ctx.Request, nil)
 	if err != nil {
-		c.ResponseError("WebSocket upgrade failed:", err)
+		c.ResponseError(err.Error())
 		return
 	}
 	connectionId := c.Input().Get("connectionId")

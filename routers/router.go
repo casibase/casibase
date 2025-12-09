@@ -26,7 +26,6 @@ package routers
 import (
 	"github.com/beego/beego"
 	"github.com/casibase/casibase/controllers"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func init() {
@@ -201,7 +200,16 @@ func initAPI() {
 	beego.Router("/api/update-asset", &controllers.ApiController{}, "POST:UpdateAsset")
 	beego.Router("/api/add-asset", &controllers.ApiController{}, "POST:AddAsset")
 	beego.Router("/api/delete-asset", &controllers.ApiController{}, "POST:DeleteAsset")
+	beego.Router("/api/scan-asset", &controllers.ApiController{}, "POST:ScanAsset")
 	beego.Router("/api/scan-assets", &controllers.ApiController{}, "POST:ScanAssets")
+
+	beego.Router("/api/get-scans", &controllers.ApiController{}, "GET:GetScans")
+	beego.Router("/api/get-scan", &controllers.ApiController{}, "GET:GetScan")
+	beego.Router("/api/update-scan", &controllers.ApiController{}, "POST:UpdateScan")
+	beego.Router("/api/add-scan", &controllers.ApiController{}, "POST:AddScan")
+	beego.Router("/api/delete-scan", &controllers.ApiController{}, "POST:DeleteScan")
+
+	beego.Router("/api/install-patch", &controllers.ApiController{}, "POST:InstallPatch")
 
 	beego.Router("/api/get-images", &controllers.ApiController{}, "GET:GetImages")
 	beego.Router("/api/get-image", &controllers.ApiController{}, "GET:GetImage")
@@ -322,7 +330,7 @@ func initAPI() {
 	beego.Router("/api/get-version-info", &controllers.ApiController{}, "GET:GetVersionInfo")
 	beego.Router("/api/health", &controllers.ApiController{}, "GET:Health")
 	beego.Router("/api/get-prometheus-info", &controllers.ApiController{}, "GET:GetPrometheusInfo")
-	beego.Handler("/api/metrics", promhttp.Handler())
+	beego.Router("/api/metrics", &controllers.ApiController{}, "GET:GetMetrics")
 
 	beego.Router("/api/chat/completions", &controllers.ApiController{}, "POST:ChatCompletions")
 

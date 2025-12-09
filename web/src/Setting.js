@@ -183,6 +183,26 @@ export function isLocalAdminUser(account) {
   return account.isAdmin === true || isAdminUser(account);
 }
 
+export function isLocalAndStoreAdminUser(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+
+  if (account.homepage === "non-store-admin") {
+    return false;
+  }
+
+  if (!DisablePreviewMode && isAnonymousUser(account)) {
+    return true;
+  }
+
+  if (account.type === "chat-admin") {
+    return true;
+  }
+
+  return account.isAdmin === true || isAdminUser(account);
+}
+
 export function isAnonymousUser(account) {
   if (account === undefined || account === null) {
     return false;
@@ -195,6 +215,15 @@ export function isChatUser(account) {
     return false;
   }
   return account.type === "chat-user";
+}
+
+export function isUserBoundToStore(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+  // User is bound if homepage field is not empty
+  // The actual store name validation is done on the backend
+  return account.homepage !== undefined && account.homepage !== null && account.homepage !== "";
 }
 
 export function deepCopy(obj) {
@@ -337,7 +366,7 @@ export function getTag(text, type, state) {
 
   if (type === "Read") {
     return (
-      <Tooltip placement="top" title={"Read"}>
+      <Tooltip placement="top" title={i18next.t("store:Read")}>
         <Tag icon={icon} style={style} color={"success"}>
           {text}
         </Tag>
@@ -345,7 +374,7 @@ export function getTag(text, type, state) {
     );
   } else if (type === "Write") {
     return (
-      <Tooltip placement="top" title={"Write"}>
+      <Tooltip placement="top" title={i18next.t("store:Write")}>
         <Tag icon={icon} style={style} color={"processing"}>
           {text}
         </Tag>
@@ -353,7 +382,7 @@ export function getTag(text, type, state) {
     );
   } else if (type === "Admin") {
     return (
-      <Tooltip placement="top" title={"Admin"}>
+      <Tooltip placement="top" title={i18next.t("store:Admin")}>
         <Tag icon={icon} style={style} color={"error"}>
           {text}
         </Tag>
@@ -1021,9 +1050,50 @@ export function getOtherProviderInfo() {
         url: "https://cloud.tencent.com/",
       },
     },
+    "Scan": {
+      "Nmap": {
+        logo: `${StaticBaseUrl}/img/social_nmap.png`,
+        url: "https://nmap.org/",
+      },
+      "OS Patch": {
+        // Note: social_windows.png should be added to the img/ directory
+        logo: `${StaticBaseUrl}/img/social_windows.png`,
+        url: "https://learn.microsoft.com/en-us/windows/deployment/update/",
+      },
+      "Nuclei": {
+        logo: `${StaticBaseUrl}/img/social_nuclei.png`,
+        url: "https://github.com/projectdiscovery/nuclei",
+      },
+      "ZAP": {
+        logo: `${StaticBaseUrl}/img/social_zap.png`,
+        url: "https://github.com/zaproxy/zaproxy",
+      },
+      "Subfinder": {
+        logo: `${StaticBaseUrl}/img/social_subfinder.png`,
+        url: "https://github.com/projectdiscovery/subfinder",
+      },
+      "httpx": {
+        logo: `${StaticBaseUrl}/img/social_httpx.png`,
+        url: "https://github.com/projectdiscovery/httpx",
+      },
+    },
   };
 
   return res;
+}
+
+export function getAssetTypeIcons() {
+  return {
+    "VPC": `${StaticBaseUrl}/img/cloud/vpc.png`,
+    "VSwitch": `${StaticBaseUrl}/img/cloud/vswitch.png`,
+    "Network Interface": `${StaticBaseUrl}/img/cloud/network.png`,
+    "Security Group": `${StaticBaseUrl}/img/cloud/securitygroup.png`,
+    "Virtual Machine": `${StaticBaseUrl}/img/cloud/vm.png`,
+    "Disk": `${StaticBaseUrl}/img/cloud/disk.png`,
+    "Snapshot": `${StaticBaseUrl}/img/cloud/snapshot.png`,
+    "Image": `${StaticBaseUrl}/img/cloud/image.png`,
+    "Snapshot Policy": `${StaticBaseUrl}/img/cloud/policy.png`,
+  };
 }
 
 export function getItem(label, key, icon, children, type) {
@@ -1105,6 +1175,29 @@ export function getProviderLogoURL(provider) {
   }
 
   return otherProviderInfo[provider.category][provider.type].logo;
+}
+
+export function isProviderSupportWebSearch(provider) {
+  if (!provider || provider.category !== "Model") {
+    return false;
+  }
+
+  if (provider.type === "OpenAI") {
+    return true;
+  }
+
+  if (provider.type === "Alibaba Cloud") {
+    // Not all Alibaba Cloud models support web search
+    const unsupportedModels = [""];
+
+    if (!provider.subType) {
+      return true; // Default to true for Alibaba Cloud if subType is not specified
+    }
+
+    return !unsupportedModels.includes(provider.subType);
+  }
+
+  return false;
 }
 
 export function getProviderTypeOptions(category) {

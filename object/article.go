@@ -102,7 +102,10 @@ func getArticle(owner string, name string) (*Article, error) {
 }
 
 func GetArticle(id string) (*Article, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getArticle(owner, name)
 }
 
@@ -123,8 +126,11 @@ func GetPaginationArticles(owner string, offset, limit int, field, value, sortFi
 }
 
 func UpdateArticle(id string, article *Article) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getArticle(owner, name)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
+	_, err = getArticle(owner, name)
 	if err != nil {
 		return false, err
 	}

@@ -15,33 +15,81 @@
 import React from "react";
 import {Button, Card, Col, Input, Row} from "antd";
 import * as AssetBackend from "./backend/AssetBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
+import * as ScanBackend from "./backend/ScanBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-
-const {TextArea} = Input;
+import {JsonCodeMirrorEditor} from "./common/JsonCodeMirrorWidget";
+import ScanTable from "./common/ScanTable";
 
 class AssetEditPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      assetOwner: props.match.params.organizationName,
       assetName: props.match.params.assetName,
       asset: null,
+      providers: [],
+      scans: [],
+      loadingScans: false,
       mode: props.location.mode !== undefined ? props.location.mode : "edit",
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getAsset();
+    this.getProviders();
+    this.getScans();
+  }
+
+  getProviders() {
+    ProviderBackend.getProviders(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            providers: res.data || [],
+          });
+        } else {
+          Setting.showMessage("error", res.msg);
+        }
+      });
+  }
+
+  getScans() {
+    this.setState({loadingScans: true});
+    ScanBackend.getScansByAsset("admin", this.state.assetName)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            scans: res.data || [],
+            loadingScans: false,
+          });
+        } else {
+          this.setState({
+            scans: [],
+            loadingScans: false,
+          });
+        }
+      })
+      .catch(() => {
+        this.setState({
+          scans: [],
+          loadingScans: false,
+        });
+      });
   }
 
   getAsset() {
     AssetBackend.getAsset("admin", this.state.assetName)
       .then((res) => {
         if (res.status === "ok") {
+          const asset = res.data;
+          // Format JSON properties with 2-space indentation
+          if (asset.properties) {
+            asset.properties = Setting.formatJsonString(asset.properties);
+          }
           this.setState({
-            asset: res.data,
+            asset: asset,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -75,7 +123,7 @@ class AssetEditPage extends React.Component {
           if (exitAfterSave) {
             this.props.history.push("/assets");
           } else {
-            this.props.history.push(`/assets/${this.state.asset.owner}/${this.state.asset.name}`);
+            this.props.history.push(`/assets/${this.state.asset.name}`);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
@@ -100,7 +148,29 @@ class AssetEditPage extends React.Component {
       });
   }
 
+  getProviderLogo(providerName) {
+    const provider = this.state.providers.find(p => p.name === providerName);
+    if (!provider) {
+      return null;
+    }
+
+    const otherProviderInfo = Setting.getOtherProviderInfo();
+    if (!otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {
+      return null;
+    }
+
+    return otherProviderInfo[provider.category][provider.type].logo;
+  }
+
+  getTypeIcon(typeName) {
+    const typeIcons = Setting.getAssetTypeIcons();
+    return typeIcons[typeName] || null;
+  }
+
   renderAsset() {
+    const providerLogo = this.getProviderLogo(this.state.asset.provider);
+    const typeIcon = this.getTypeIcon(this.state.asset.type);
+
     return (
       <Card size="small" title={
         <div>
@@ -141,23 +211,39 @@ class AssetEditPage extends React.Component {
             {Setting.getLabel(i18next.t("asset:Provider"), i18next.t("asset:Provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.asset.provider} disabled />
+            <Input
+              value={this.state.asset.provider}
+              disabled
+              prefix={
+                providerLogo ?
+                  <img src={providerLogo} alt={this.state.asset.provider} style={{width: "16px", height: "16px"}} /> :
+                  null
+              }
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("asset:Resource ID"), i18next.t("asset:Resource ID - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:ID"), i18next.t("general:ID - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.asset.resourceId} disabled />
+            <Input value={this.state.asset.id} disabled />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("asset:Resource type"), i18next.t("asset:Resource type - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Type"), i18next.t("general:Type - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.asset.resourceType} disabled />
+            <Input
+              value={this.state.asset.type}
+              disabled
+              prefix={
+                typeIcon ?
+                  <img src={typeIcon} alt={this.state.asset.type} style={{width: "16px", height: "16px"}} /> :
+                  null
+              }
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -194,17 +280,42 @@ class AssetEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        {this.state.asset.type === "Virtual Machine" ? (
+          <>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Username"), i18next.t("general:Username - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.asset.username} onChange={e => {
+                  this.updateAssetField("username", e.target.value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Password"), i18next.t("general:Password - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input.Password value={this.state.asset.password} onChange={e => {
+                  this.updateAssetField("password", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          </>
+        ) : null}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("asset:Properties"), i18next.t("asset:Properties - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <TextArea
-              autoSize={{minRows: 5, maxRows: 20}}
-              value={this.state.asset.properties}
-              onChange={e => {
-                this.updateAssetField("properties", e.target.value);
+            <JsonCodeMirrorEditor
+              value={this.state.asset.properties || ""}
+              onChange={(editor, data, value) => {
+                this.updateAssetField("properties", value);
               }}
+              editable={true}
+              height="500px"
             />
           </Col>
         </Row>
@@ -218,6 +329,21 @@ class AssetEditPage extends React.Component {
         {
           this.state.asset !== null ? this.renderAsset() : null
         }
+        {this.state.asset !== null && (
+          <Card size="small" title={i18next.t("scan:Related Scans")} style={{marginTop: "20px", marginLeft: "5px"}} type="inner">
+            {this.state.loadingScans ? (
+              <div style={{textAlign: "center", padding: "40px"}}>
+                {i18next.t("general:Loading")}...
+              </div>
+            ) : this.state.scans.length > 0 ? (
+              <ScanTable scans={this.state.scans} providers={this.state.providers} showAsset={false} />
+            ) : (
+              <div style={{textAlign: "center", padding: "40px", color: "#999"}}>
+                {i18next.t("scan:No scans found for this asset")}
+              </div>
+            )}
+          </Card>
+        )}
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitAssetEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitAssetEdit(true)}>{i18next.t("general:Save & Exit")}</Button>

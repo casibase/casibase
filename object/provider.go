@@ -23,6 +23,7 @@ import (
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/model"
+	"github.com/casibase/casibase/scan"
 	"github.com/casibase/casibase/storage"
 	"github.com/casibase/casibase/stt"
 	"github.com/casibase/casibase/tts"
@@ -51,6 +52,7 @@ type Provider struct {
 	McpTools           []*agent.McpTools `xorm:"text" json:"mcpTools"`
 	Text               string            `xorm:"mediumtext" json:"text"`
 	ConfigText         string            `xorm:"mediumtext" json:"configText"`
+	RawText            string            `xorm:"mediumtext" json:"rawText"` // Raw result from scan (for Scan category providers)
 
 	EnableThinking   bool    `json:"enableThinking"`
 	Temperature      float32 `xorm:"float" json:"temperature"`
@@ -72,6 +74,14 @@ type Provider struct {
 	Network        string `xorm:"varchar(100)" json:"network"`
 	Chain          string `xorm:"varchar(100)" json:"chain"`
 	TestContent    string `xorm:"varchar(100)" json:"testContent"`
+
+	// New fields for unified scan widget (for Scan category providers)
+	TargetMode    string `xorm:"varchar(100)" json:"targetMode"`    // "Manual Input" or "Asset"
+	Target        string `xorm:"varchar(500)" json:"target"`        // Manual input target (IP address or network range)
+	Asset         string `xorm:"varchar(200)" json:"asset"`         // Selected asset for scan
+	Runner        string `xorm:"varchar(100)" json:"runner"`        // Hostname about who runs the scan job
+	ErrorText     string `xorm:"mediumtext" json:"errorText"`       // Error message for the job execution
+	ResultSummary string `xorm:"varchar(500)" json:"resultSummary"` // Short summary of scan results
 
 	IsDefault  bool   `json:"isDefault"`
 	IsRemote   bool   `json:"isRemote"`
@@ -196,12 +206,18 @@ func getProvider(owner string, name string) (*Provider, error) {
 }
 
 func GetProvider(id string) (*Provider, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getProvider(owner, name)
 }
 
 func UpdateProvider(id string, provider *Provider) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	providerDb, err := getProvider(owner, name)
 	if err != nil {
 		return false, err
@@ -362,6 +378,19 @@ func (p *Provider) GetSpeechToTextProvider(lang string) (stt.SpeechToTextProvide
 
 	if pProvider == nil {
 		return nil, fmt.Errorf(i18n.Translate(lang, "object:the STT provider type: %s is not supported"), p.Type)
+	}
+
+	return pProvider, nil
+}
+
+func (p *Provider) GetScanProvider(lang string) (scan.ScanProvider, error) {
+	pProvider, err := scan.GetScanProvider(p.Type, p.ClientId, lang)
+	if err != nil {
+		return nil, err
+	}
+
+	if pProvider == nil {
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:the scan provider type: %s is not supported"), p.Type)
 	}
 
 	return pProvider, nil

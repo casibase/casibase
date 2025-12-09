@@ -225,7 +225,7 @@ class ChatPage extends BaseListPage {
     };
   }
 
-  newMessage(text, fileName, isHidden, isRegenerated) {
+  newMessage(text, fileName, isHidden, isRegenerated, webSearchEnabled = false) {
     const randomName = Setting.getRandomName();
     const message = {
       owner: "admin",
@@ -243,12 +243,23 @@ class ChatPage extends BaseListPage {
       isAlerted: false,
       isRegenerated: isRegenerated,
       fileName: fileName,
+      webSearchEnabled: webSearchEnabled,
+      modelProvider: this.state.chat?.modelProvider,
     };
 
     if (!this.state.chat) {
       const urlStoreName = this.state.storeName || this.getStore();
       if (urlStoreName) {
         message.store = urlStoreName;
+      }
+    }
+
+    if (!message.modelProvider) {
+      if (message.store) {
+        const store = this.state.stores?.find(store => store.name === message.store);
+        message.modelProvider = store?.modelProvider;
+      } else {
+        message.modelProvider = this.state.defaultStore?.modelProvider;
       }
     }
 
@@ -278,8 +289,8 @@ class ChatPage extends BaseListPage {
     }
   };
 
-  sendMessage(text, fileName, isHidden, isRegenerated) {
-    const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
+  sendMessage(text, fileName, isHidden, isRegenerated, webSearchEnabled = false) {
+    const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated, webSearchEnabled);
     MessageBackend.addMessage(newMessage)
       .then((res) => {
         if (res.status === "ok") {
@@ -358,7 +369,8 @@ class ChatPage extends BaseListPage {
               if (jsonData.text === "") {
                 jsonData.text = "\n";
               }
-              const lastMessage2 = Setting.deepCopy(lastMessage);
+              const currentMessage = res.data[res.data.length - 1];
+              const lastMessage2 = Setting.deepCopy(currentMessage);
               text += jsonData.text;
               const parsedResult = mssageCarrier.parseAnswerWithCarriers(text);
               this.updateChatDisplayName(parsedResult.title, chat);
@@ -367,11 +379,7 @@ class ChatPage extends BaseListPage {
               }
               lastMessage2.text = parsedResult.finalAnswer;
 
-              // Preserve reasoning if it exists
-              if (res.data[res.data.length - 1].reasonText) {
-                lastMessage2.reasonText = res.data[res.data.length - 1].reasonText;
-                lastMessage2.reasonHtml = res.data[res.data.length - 1].reasonHtml;
-              }
+              lastMessage2.isReasoningPhase = false;
 
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
@@ -397,11 +405,53 @@ class ChatPage extends BaseListPage {
 
               reasonText += jsonData.text;
 
-              const lastMessage2 = Setting.deepCopy(lastMessage);
+              const currentMessage = res.data[res.data.length - 1];
+              const lastMessage2 = Setting.deepCopy(currentMessage);
               lastMessage2.reasonText = reasonText;
-              lastMessage2.isReasoningPhase = true;
+              if (!lastMessage2.toolCalls || lastMessage2.toolCalls.length === 0) {
+                lastMessage2.isReasoningPhase = true;
+              }
 
-              lastMessage2.text = "";
+              if (text) {
+                lastMessage2.text = text;
+              }
+              res.data[res.data.length - 1] = lastMessage2;
+
+              this.setState({
+                messages: res.data,
+              });
+            }, (data) => {
+              // onTool callback
+              if (!chat || (this.state.chat.name !== chat.name)) {
+                return;
+              }
+              const jsonData = JSON.parse(data);
+
+              const currentMessage = res.data[res.data.length - 1];
+              const toolCalls = currentMessage.toolCalls || [];
+              toolCalls.push({
+                name: jsonData.name,
+                arguments: jsonData.arguments,
+                content: jsonData.content,
+              });
+
+              const lastMessage2 = Setting.deepCopy(currentMessage);
+              lastMessage2.toolCalls = toolCalls;
+              res.data[res.data.length - 1] = lastMessage2;
+
+              this.setState({
+                messages: res.data,
+              });
+            }, (data) => {
+              // onSearch callback
+              if (!chat || (this.state.chat.name !== chat.name)) {
+                return;
+              }
+              const searchResults = JSON.parse(data);
+
+              const currentMessage = res.data[res.data.length - 1];
+              const lastMessage2 = Setting.deepCopy(currentMessage);
+              lastMessage2.searchResults = searchResults;
               res.data[res.data.length - 1] = lastMessage2;
 
               this.setState({
@@ -433,6 +483,16 @@ class ChatPage extends BaseListPage {
               if (res.data[res.data.length - 1].reasonText) {
                 lastMessage2.reasonText = res.data[res.data.length - 1].reasonText;
                 lastMessage2.reasonHtml = res.data[res.data.length - 1].reasonHtml;
+              }
+
+              // Preserve tool calls when finalizing the message
+              if (res.data[res.data.length - 1].toolCalls) {
+                lastMessage2.toolCalls = res.data[res.data.length - 1].toolCalls;
+              }
+
+              // Preserve search results when finalizing the message
+              if (res.data[res.data.length - 1].searchResults) {
+                lastMessage2.searchResults = res.data[res.data.length - 1].searchResults;
               }
 
               // We're no longer in reasoning phase
@@ -756,14 +816,15 @@ class ChatPage extends BaseListPage {
                 loading={this.state.messageLoading}
                 messages={this.state.messages}
                 messageError={this.state.messageError}
-                sendMessage={(text, fileName, regenerate = false) => {
-                  this.sendMessage(text, fileName, false, regenerate);
+                sendMessage={(text, fileName, isHidden = false, regenerate = false, webSearchEnabled = false) => {
+                  this.sendMessage(text, fileName, isHidden, regenerate, webSearchEnabled);
                 }}
                 onMessageEdit={this.handleMessageEdit}
                 onCancelMessage={this.cancelMessage}
                 account={this.props.account}
                 name={this.state.chat?.name}
                 displayName={this.state.chat?.displayName}
+                chat={this.state.chat}
                 store={this.state.chat ?
                   this.state.stores?.find(store => store.name === this.state.chat.store) :
                   this.state.stores?.find(store => store.name === this.state.storeName) ||

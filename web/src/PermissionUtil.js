@@ -17,7 +17,7 @@ import * as Setting from "./Setting";
 import moment from "moment";
 import i18next from "i18next";
 
-export function addPermission(account, store, file = null, fileKeys = null) {
+export function addPermission(account, store, isAdmin, file = null, fileKeys = null) {
   const randomName = Setting.getRandomName();
   const newPermission = {
     owner: account.owner,
@@ -27,7 +27,7 @@ export function addPermission(account, store, file = null, fileKeys = null) {
     users: [],
     roles: [],
     domains: [store.name],
-    model: "Default",
+    model: "casbin/user-model-built-in",
     resourceType: "TreeNode",
     resources: (file !== null) ? [file.key] : fileKeys,
     actions: ["Read"],
@@ -39,7 +39,7 @@ export function addPermission(account, store, file = null, fileKeys = null) {
     state: "Pending",
   };
 
-  if (Setting.isLocalAdminUser(account)) {
+  if (isAdmin) {
     newPermission.approver = account.name;
     newPermission.approveTime = moment().format();
     newPermission.state = "Approved";

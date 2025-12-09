@@ -329,7 +329,7 @@ class FileTree extends React.Component {
   }
 
   isFileOk(file, action) {
-    if (this.props.account.isAdmin) {
+    if (this.props.account.isAdmin && this.props.account.homepage !== "non-store-admin") {
       return true;
     }
 
@@ -356,7 +356,7 @@ class FileTree extends React.Component {
   }
 
   isFileReadable(file) {
-    if (Setting.isLocalAdminUser(this.props.account)) {
+    if (Setting.isLocalAndStoreAdminUser(this.props.account)) {
       return true;
     }
 
@@ -364,7 +364,7 @@ class FileTree extends React.Component {
   }
 
   isFileWritable(file) {
-    if (Setting.isLocalAdminUser(this.props.account)) {
+    if (Setting.isLocalAndStoreAdminUser(this.props.account)) {
       return true;
     }
 
@@ -372,7 +372,7 @@ class FileTree extends React.Component {
   }
 
   isFileAdmin(file) {
-    if (Setting.isLocalAdminUser(this.props.account)) {
+    if (Setting.isLocalAndStoreAdminUser(this.props.account)) {
       return true;
     }
 
@@ -418,7 +418,10 @@ class FileTree extends React.Component {
                 loading: true,
               });
 
-              fetch(url, {method: "GET"})
+              fetch(url, {
+                method: "GET",
+                credentials: "include",
+              })
                 .then(res => res.text())
                 .then(res => {
                   this.setState({
@@ -578,7 +581,7 @@ class FileTree extends React.Component {
                   <Tooltip title={isAdmin ? i18next.t("store:Add Permission") :
                     i18next.t("store:Apply for Permission")}>
                     <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
-                      PermissionUtil.addPermission(this.props.account, this.props.store, file);
+                      PermissionUtil.addPermission(this.props.account, this.props.store, isAdmin, file);
                       e.stopPropagation();
                     }} />
                   </Tooltip>
@@ -695,7 +698,7 @@ class FileTree extends React.Component {
                     <Tooltip title={isAdmin ? i18next.t("store:Add Permission") :
                       i18next.t("store:Apply for Permission")}>
                       <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
-                        PermissionUtil.addPermission(this.props.account, this.props.store, file);
+                        PermissionUtil.addPermission(this.props.account, this.props.store, isAdmin, file);
                         e.stopPropagation();
                       }} />
                     </Tooltip>

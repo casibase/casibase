@@ -54,7 +54,7 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 		return
 	}
 	if audioData == nil {
-		c.ResponseError("The audio data is nil")
+		c.ResponseError(c.T("tts:The audio data is nil"))
 		return
 	}
 
@@ -97,6 +97,6 @@ func (c *ApiController) GenerateTextToSpeechAudioStream() {
 
 	err = object.UpdateChatStats(chat, ttsResult)
 	if err != nil {
-		logs.Error("Error updating chat: %s\n", err.Error())
+		logs.Error("Error updating chat: %s", err.Error())
 	}
 }

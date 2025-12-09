@@ -84,7 +84,8 @@ func Translate(language string, errorText string) string {
 	if langMap[language] == nil {
 		file, err := f.ReadFile(fmt.Sprintf("locales/%s/data.json", language))
 		if err != nil {
-			return fmt.Sprintf("Translate error: the language \"%s\" is not supported, err = %s", language, err.Error())
+			return Translate("en", errorText)
+			// return fmt.Sprintf("Translate error: the language \"%s\" is not supported, err = %s", language, err.Error())
 		}
 
 		data := I18nData{}

@@ -34,6 +34,14 @@ type RawMessage struct {
 	ToolCallID     string
 }
 
+type SearchResult struct {
+	Icon     string `json:"icon,omitempty"`
+	SiteName string `json:"site_name,omitempty"`
+	Index    int    `json:"index"`
+	Title    string `json:"title"`
+	URL      string `json:"url"`
+}
+
 func reverseMessages(arr []*RawMessage) []*RawMessage {
 	for i, j := 0, len(arr)-1; i < j; i, j = i+1, j-1 {
 		arr[i], arr[j] = arr[j], arr[i]

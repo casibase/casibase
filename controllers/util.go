@@ -94,7 +94,7 @@ func (c *ApiController) GetAcceptLanguage() string {
 func (c *ApiController) RequireSignedIn() (string, bool) {
 	userId := c.GetSessionUsername()
 	if userId == "" {
-		c.ResponseError("Please sign in first")
+		c.ResponseError(c.T("auth:Please sign in first"))
 		return "", false
 	}
 	return userId, true
@@ -103,7 +103,7 @@ func (c *ApiController) RequireSignedIn() (string, bool) {
 func (c *ApiController) RequireSignedInUser() (*casdoorsdk.User, bool) {
 	user := c.GetSessionUser()
 	if user == nil {
-		c.ResponseError("Please sign in first")
+		c.ResponseError(c.T("auth:Please sign in first"))
 		return nil, false
 	}
 	return user, true
@@ -124,7 +124,7 @@ func (c *ApiController) RequireAdmin() bool {
 	}
 
 	if !c.IsAdmin() {
-		c.ResponseError("this operation requires admin privilege")
+		c.ResponseError(c.T("auth:this operation requires admin privilege"))
 		return false
 	}
 
@@ -142,11 +142,24 @@ func (c *ApiController) IsAdmin() bool {
 }
 
 func DenyRequest(ctx *context.Context) {
-	responseError(ctx, "Unauthorized operation")
+	responseError(ctx, "auth:Unauthorized operation")
 }
 
 func responseError(ctx *context.Context, error string, data ...interface{}) {
-	resp := Response{Status: "error", Msg: error}
+	// Get language from Accept-Language header
+	language := ctx.Request.Header.Get("Accept-Language")
+	if len(language) > 2 {
+		language = language[0:2]
+	}
+	language = conf.GetLanguage(language)
+
+	// Translate error message if it contains namespace prefix
+	translatedError := error
+	if strings.Contains(error, ":") {
+		translatedError = i18n.Translate(language, error)
+	}
+
+	resp := Response{Status: "error", Msg: translatedError}
 	switch len(data) {
 	case 2:
 		resp.Data2 = data[1]
@@ -220,7 +233,7 @@ func (c *ApiController) IsCurrentUser(usernameInput string) bool {
 	}
 
 	if !c.IsAdmin() && username != usernameInput {
-		c.ResponseError("Unauthorized operation")
+		c.ResponseError(c.T("auth:Unauthorized operation"))
 		return false
 	}
 	return true

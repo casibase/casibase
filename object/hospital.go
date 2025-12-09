@@ -76,7 +76,10 @@ func getHospital(owner string, name string) (*Hospital, error) {
 }
 
 func GetHospital(id string) (*Hospital, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getHospital(owner, name)
 }
 
@@ -109,7 +112,10 @@ func GetMaskedHospitals(hospitals []*Hospital, errs ...error) ([]*Hospital, erro
 }
 
 func UpdateHospital(id string, hospital *Hospital) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	p, err := getHospital(owner, name)
 	if err != nil {
 		return false, err

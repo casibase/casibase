@@ -85,13 +85,19 @@ func getChat(owner, name string) (*Chat, error) {
 }
 
 func GetChat(id string) (*Chat, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getChat(owner, name)
 }
 
 func UpdateChat(id string, chat *Chat) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getChat(owner, name)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
+	_, err = getChat(owner, name)
 	if err != nil {
 		return false, err
 	}

@@ -112,6 +112,19 @@ Casibase contains 2 parts:
 | Hunyuan      | hunyuan-embedding                                                                                                | [Hunyuan](https://hunyuan.tencent.com/)                              |
 | Jina         | jina-embeddings-v2-base-zh, jina-embeddings-v2-base-en, jina-embeddings-v2-base-de, jina-embeddings-v2-base-code | [Jina](https://jina.ai/)                                             |
 
+**Speech-to-Text Model**
+
+| Model | Sub Type               | Link                                          |
+|-------|------------------------|-----------------------------------------------|
+| Qwen  | paraformer-realtime-v1 | [Qwen](https://www.aliyun.com/product/tongyi) |
+
+
+**Text-to-Speech Model**
+
+| Model | Sub Type     | Link                                          |
+|-------|--------------|-----------------------------------------------|
+| Qwen  | cosyvoice-v1 | [Qwen](https://www.aliyun.com/product/tongyi) |
+
 ## Documentation
 
 <https://casibase.org>

@@ -194,6 +194,9 @@ func (c *ApiController) AddRecord() {
 	if record.UserAgent == "" {
 		record.UserAgent = c.getUserAgent()
 	}
+	if record.Count == 0 {
+		record.Count = 1
+	}
 
 	c.Data["json"] = wrapActionResponse2(object.AddRecord(&record, c.GetAcceptLanguage()))
 	c.ServeJSON()
@@ -225,7 +228,7 @@ func (c *ApiController) AddRecords() {
 
 
 	if len(records) == 0 {
-		c.ResponseError("No records to add")
+		c.ResponseError(c.T("controllers:No records to add"))
 		return
 	}
 
@@ -238,6 +241,9 @@ func (c *ApiController) AddRecords() {
 		}
 		if records[i].UserAgent == "" {
 			records[i].UserAgent = userAgent
+		}
+		if records[i].Count == 0 {
+			records[i].Count = 1
 		}
 	}
 

@@ -13,52 +13,52 @@
 // limitations under the License.
 
 import React from "react";
-import ImageWithFallback from "./ChatPromptsIcon";
+import ImageWithFallback from "./ChatExampleQuestionIcon";
 import * as Setting from "./Setting";
 import {Button} from "antd";
 import i18next from "i18next";
 
-class ChatPrompts extends React.Component {
+class ChatExampleQuestions extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      prompts: [],
+      exampleQuestions: [],
     };
   }
 
   componentDidMount() {
-    this.selectPrompts();
+    this.selectExampleQuestions();
   }
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      this.state.prompts !== nextState.prompts ||
-      JSON.stringify(this.props.prompts) !== JSON.stringify(nextProps.prompts)
+      this.state.exampleQuestions !== nextState.exampleQuestions ||
+      JSON.stringify(this.props.exampleQuestions) !== JSON.stringify(nextProps.exampleQuestions)
     );
   }
 
   componentDidUpdate(prevProps) {
-    if (JSON.stringify(prevProps.prompts) !== JSON.stringify(this.props.prompts)) {
-      this.selectPrompts();
+    if (JSON.stringify(prevProps.exampleQuestions) !== JSON.stringify(this.props.exampleQuestions)) {
+      this.selectExampleQuestions();
     }
   }
 
-  selectPrompts = () => {
+  selectExampleQuestions = () => {
     const limit = Setting.isMobile() ? 4 : 8;
-    if (this.props.prompts.length <= limit) {
+    if (this.props.exampleQuestions.length <= limit) {
       this.setState({
-        prompts: this.props.prompts,
+        exampleQuestions: this.props.exampleQuestions,
       });
-    } else if (this.props.prompts.length > limit) {
+    } else if (this.props.exampleQuestions.length > limit) {
       this.setState({
-        prompts: this.props.prompts.sort(() => 0.5 - Math.random()).slice(0, limit),
+        exampleQuestions: this.props.exampleQuestions.sort(() => 0.5 - Math.random()).slice(0, limit),
       });
     }
   };
 
   render = () => {
-    const groupedPrompts = [];
-    for (let i = 0; i < this.state.prompts.length; i += 4) {
-      groupedPrompts.push(this.state.prompts.slice(i, i + 4));
+    const groupedExampleQuestions = [];
+    for (let i = 0; i < this.state.exampleQuestions.length; i += 4) {
+      groupedExampleQuestions.push(this.state.exampleQuestions.slice(i, i + 4));
     }
     const limit = Setting.isMobile() ? 4 : 8;
     const direction = Setting.isMobile() ? "column" : "row";
@@ -79,7 +79,7 @@ class ChatPrompts extends React.Component {
         justifyContent: "center",
       }}>
         {
-          groupedPrompts.map((group, index) => (
+          groupedExampleQuestions.map((group, index) => (
             <div key={index} style={{
               display: "flex",
               flexDirection: direction,
@@ -88,7 +88,7 @@ class ChatPrompts extends React.Component {
               margin: "10px",
             }}>
               {
-                group.map((prompt, index) => (
+                group.map((exampleQuestion, index) => (
                   <div key={index} style={{
                     padding: "10px",
                     position: "relative",
@@ -102,7 +102,7 @@ class ChatPrompts extends React.Component {
                     display: "flex",
                     flexDirection: "column",
                   }} onClick={() => {
-                    this.props.sendMessage(prompt.text, "");
+                    this.props.sendMessage(exampleQuestion.text, "");
                   }}
                   onMouseEnter={
                     (e) => {
@@ -121,7 +121,7 @@ class ChatPrompts extends React.Component {
                       top: "10px",
                       left: "10px",
                     }}>
-                      <ImageWithFallback src={prompt.image} />
+                      <ImageWithFallback src={exampleQuestion.image} />
                     </div>
                     <p
                       style={{
@@ -133,7 +133,7 @@ class ChatPrompts extends React.Component {
                         fontSize: fontSize,
                         lineHeight: "1.5em",
                         height: "3em",
-                      }}>{prompt.title}</p>
+                      }}>{exampleQuestion.title}</p>
                   </div>
                 ))
               }
@@ -141,7 +141,7 @@ class ChatPrompts extends React.Component {
           ))
         }
         {
-          this.props.prompts.length <= limit ? null : (
+          this.props.exampleQuestions.length <= limit ? null : (
             <div style={{
               display: "flex",
               flexDirection: "row",
@@ -151,7 +151,7 @@ class ChatPrompts extends React.Component {
               height: "40px",
               width: "100%",
             }}>
-              <Button type="primary" onClick={this.selectPrompts}>{i18next.t("store:Refresh")}</Button>
+              <Button type="primary" onClick={this.selectExampleQuestions}>{i18next.t("store:Refresh")}</Button>
             </div>
           )
         }
@@ -160,4 +160,4 @@ class ChatPrompts extends React.Component {
   };
 }
 
-export default ChatPrompts;
+export default ChatExampleQuestions;

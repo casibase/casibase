@@ -28,14 +28,45 @@ type Asset struct {
 	UpdatedTime string `xorm:"varchar(100)" json:"updatedTime"`
 	DisplayName string `xorm:"varchar(200)" json:"displayName"`
 
-	Provider     string `xorm:"varchar(100)" json:"provider"`
-	ResourceId   string `xorm:"varchar(200)" json:"resourceId"`
-	ResourceType string `xorm:"varchar(100)" json:"resourceType"`
-	Region       string `xorm:"varchar(100)" json:"region"`
-	Zone         string `xorm:"varchar(100)" json:"zone"`
-	State        string `xorm:"varchar(100)" json:"state"`
-	Tag          string `xorm:"varchar(500)" json:"tag"`
-	Properties   string `xorm:"mediumtext" json:"properties"`
+	Provider   string `xorm:"varchar(100)" json:"provider"`
+	Id         string `xorm:"varchar(200)" json:"id"`
+	Type       string `xorm:"varchar(100)" json:"type"`
+	Region     string `xorm:"varchar(100)" json:"region"`
+	Zone       string `xorm:"varchar(100)" json:"zone"`
+	State      string `xorm:"varchar(100)" json:"state"`
+	Tag        string `xorm:"varchar(500)" json:"tag"`
+	Username   string `xorm:"varchar(100)" json:"username"`
+	Password   string `xorm:"varchar(200)" json:"password"`
+	Properties string `xorm:"mediumtext" json:"properties"`
+}
+
+func GetMaskedAsset(asset *Asset, isMaskEnabled bool) *Asset {
+	if !isMaskEnabled {
+		return asset
+	}
+
+	if asset == nil {
+		return nil
+	}
+
+	// Create a copy to avoid modifying the original
+	maskedAsset := *asset
+	if maskedAsset.Password != "" {
+		maskedAsset.Password = "***"
+	}
+
+	return &maskedAsset
+}
+
+func GetMaskedAssets(assets []*Asset, isMaskEnabled bool) []*Asset {
+	if !isMaskEnabled {
+		return assets
+	}
+
+	for i := range assets {
+		assets[i] = GetMaskedAsset(assets[i], isMaskEnabled)
+	}
+	return assets
 }
 
 func GetAssetCount(owner, field, value string) (int64, error) {
@@ -82,15 +113,27 @@ func getAsset(owner string, name string) (*Asset, error) {
 }
 
 func GetAsset(id string) (*Asset, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getAsset(owner, name)
 }
 
 func UpdateAsset(id string, asset *Asset) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	if _, err := getAsset(owner, name); err != nil {
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
 		return false, err
 	}
+	assetDb, err := getAsset(owner, name)
+	if err != nil {
+		return false, err
+	}
+	if assetDb == nil {
+		return false, nil
+	}
+
+	asset.processAssetParams(assetDb)
 
 	affected, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(asset)
 	if err != nil {
@@ -136,6 +179,28 @@ func deleteAssets(owner string) (bool, error) {
 	return affected != 0, nil
 }
 
+func (a *Asset) processAssetParams(assetDb *Asset) {
+	if a.Password == "***" {
+		a.Password = assetDb.Password
+	}
+}
+
 func (asset *Asset) GetId() string {
 	return fmt.Sprintf("%s/%s", asset.Owner, asset.Name)
+}
+
+func (asset *Asset) GetScanTarget() (string, error) {
+	if asset.Type == "Virtual Machine" {
+		publicIp, err := util.GetFieldFromJsonString(asset.Properties, "publicIp")
+		if err != nil {
+			return "", fmt.Errorf("failed to parse publicIp from properties: %v", err)
+		}
+		if publicIp != "" {
+			return publicIp, nil
+		}
+		// Fallback to asset.Id if publicIp is not available
+		return asset.Id, nil
+	}
+	// For non-Virtual Machine types, use asset.Id
+	return asset.Id, nil
 }

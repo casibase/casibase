@@ -109,6 +109,7 @@ class RecordListPage extends BaseListPage {
       method: "POST",
       requestUri: "/api/get-account",
       action: "login",
+      count: 1,
       isTriggered: false,
     };
   }
@@ -538,7 +539,7 @@ class RecordListPage extends BaseListPage {
           }
 
           return (
-            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+            <Switch disabled checkedChildren={i18next.t("general:ON")} unCheckedChildren={i18next.t("general:OFF")} checked={text} />
           );
         },
       },

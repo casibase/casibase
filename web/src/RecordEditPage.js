@@ -77,7 +77,7 @@ class RecordEditPage extends React.Component {
   }
 
   parseRecordField(key, value) {
-    if ([""].includes(key)) {
+    if (["count"].includes(key)) {
       value = Setting.myParseInt(value);
     }
     return value;

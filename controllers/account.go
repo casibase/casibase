@@ -160,23 +160,24 @@ func (c *ApiController) addInitialChat(organization string, userName string, sto
 
 	currentTime := util.GetCurrentTime()
 	chat := &object.Chat{
-		Owner:        "admin",
-		Name:         fmt.Sprintf("chat_%s", util.GetRandomName()),
-		CreatedTime:  currentTime,
-		UpdatedTime:  currentTime,
-		Organization: organization,
-		DisplayName:  fmt.Sprintf("New Chat - %d", 1),
-		Store:        store.Name,
-		Category:     "Default Category",
-		Type:         "AI",
-		User:         userName,
-		User1:        "",
-		User2:        "",
-		Users:        []string{},
-		ClientIp:     c.getClientIp(),
-		UserAgent:    c.getUserAgent(),
-		MessageCount: 0,
-		NeedTitle:    true,
+		Owner:         "admin",
+		Name:          fmt.Sprintf("chat_%s", util.GetRandomName()),
+		CreatedTime:   currentTime,
+		UpdatedTime:   currentTime,
+		Organization:  organization,
+		DisplayName:   fmt.Sprintf("New Chat - %d", 1),
+		Store:         store.Name,
+		ModelProvider: store.ModelProvider,
+		Category:      "Default Category",
+		Type:          "AI",
+		User:          userName,
+		User1:         "",
+		User2:         "",
+		Users:         []string{},
+		ClientIp:      c.getClientIp(),
+		UserAgent:     c.getUserAgent(),
+		MessageCount:  0,
+		NeedTitle:     true,
 	}
 
 	if store.Welcome != "Hello" {
@@ -330,12 +331,8 @@ func (c *ApiController) isSafePassword() (bool, error) {
 		return true, nil
 	}
 
-	user, err := casdoorsdk.GetUser(claims.User.Name)
-	if err != nil {
-		return false, err
-	}
-
-	if user.Password == "#NeedToModify#" {
+	// Use the user data from claims which has been updated with fresh data from Casdoor in GetAccount()
+	if claims.User.Password == "#NeedToModify#" {
 		return false, nil
 	} else {
 		return true, nil
@@ -369,6 +366,20 @@ func (c *ApiController) GetAccount() {
 	}
 
 	claims := c.GetSessionClaims()
+
+	// Fetch fresh user data from Casdoor in real-time for non-anonymous users
+	if claims.User.Type != "anonymous-user" {
+		user, err := casdoorsdk.GetUser(claims.User.Name)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		// Update the session with fresh user data from Casdoor
+		// Only update the User field, preserving all other claims fields (AccessToken, Type, IsAdmin, etc.)
+		claims.User = *user
+		c.SetSessionClaims(claims)
+	}
 
 	isSafePassword, err := c.isSafePassword()
 	if err != nil {

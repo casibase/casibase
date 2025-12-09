@@ -36,7 +36,14 @@ type Graph struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
+	Category    string `xorm:"varchar(100)" json:"category"`
+	Layout      string `xorm:"varchar(100)" json:"layout"`
+	Density     int    `xorm:"int" json:"density"`
+	Store       string `xorm:"varchar(100)" json:"store"`
+	StartTime   string `xorm:"varchar(100)" json:"startTime"`
+	EndTime     string `xorm:"varchar(100)" json:"endTime"`
 	Text        string `xorm:"mediumtext" json:"text"`
+	ErrorText   string `xorm:"mediumtext" json:"errorText"`
 }
 
 func GetMaskedGraph(graph *Graph, isMaskEnabled bool) *Graph {
@@ -97,13 +104,19 @@ func getGraph(owner string, name string) (*Graph, error) {
 }
 
 func GetGraph(id string) (*Graph, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getGraph(owner, name)
 }
 
 func UpdateGraph(id string, graph *Graph) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getGraph(owner, name)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
+	_, err = getGraph(owner, name)
 	if err != nil {
 		return false, err
 	}

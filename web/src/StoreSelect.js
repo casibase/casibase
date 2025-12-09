@@ -19,7 +19,7 @@ import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 
 function StoreSelect(props) {
-  const {style, onSelect, withAll, className, disabled} = props;
+  const {style, onSelect, withAll, className, disabled, account} = props;
   const [stores, setStores] = React.useState([]);
   const [value, setValue] = React.useState(Setting.getStore());
   const [initialized, setInitialized] = React.useState(false);
@@ -57,9 +57,19 @@ function StoreSelect(props) {
       .then((res) => {
         if (res.status === "ok") {
           setStores(res.data);
-          const selectedValueExist = res.data.filter(store => store.name === value).length > 0;
-          if (Setting.getStore() === undefined || !selectedValueExist) {
-            handleOnChange(getStoreItems().length > 0 ? getStoreItems()[0].value : "");
+
+          // Check if user has Homepage binding to a store
+          const userBoundStore = getUserBoundStore(res.data);
+          if (userBoundStore) {
+            // User is bound to a specific store, force select it
+            handleOnChange(userBoundStore);
+          } else {
+            // User is not bound, use normal behavior
+            const selectedValueExist = res.data.filter(store => store.name === value).length > 0;
+            if (Setting.getStore() === undefined || !selectedValueExist) {
+              const storeItems = getStoreItems();
+              handleOnChange(storeItems.length > 0 ? storeItems[0].value : "");
+            }
           }
           setInitialized(true);
         }
@@ -69,6 +79,22 @@ function StoreSelect(props) {
   const handleOnChange = (value) => {
     setValue(value);
     Setting.setStore(value);
+  };
+
+  const getUserBoundStore = (storeList) => {
+    // Check if user's Homepage field matches any store name
+    if (account && account.homepage && storeList) {
+      const matchingStore = storeList.find(store => store.name === account.homepage);
+      if (matchingStore) {
+        return matchingStore.name;
+      }
+    }
+    return null;
+  };
+
+  const isUserBoundToStore = () => {
+    // User is bound if Homepage matches a store in the list
+    return getUserBoundStore(stores) !== null;
   };
 
   const getStoreItems = () => {
@@ -101,7 +127,7 @@ function StoreSelect(props) {
       style={style}
       onSelect={onSelect}
       className={className}
-      disabled={disabled}
+      disabled={disabled || isUserBoundToStore()}
     >
     </Select>
   );

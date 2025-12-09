@@ -55,6 +55,8 @@ import MachineListPage from "./MachineListPage";
 import MachineEditPage from "./MachineEditPage";
 import AssetListPage from "./AssetListPage";
 import AssetEditPage from "./AssetEditPage";
+import ScanListPage from "./ScanListPage";
+import ScanEditPage from "./ScanEditPage";
 import ImageListPage from "./ImageListPage";
 import ImageEditPage from "./ImageEditPage";
 import ContainerListPage from "./ContainerListPage";
@@ -1195,7 +1197,9 @@ class App extends Component {
         <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)} />
         <Route exact path="/machines/:organizationName/:machineName" render={(props) => this.renderSigninIfNotSignedIn(<MachineEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/assets" render={(props) => this.renderSigninIfNotSignedIn(<AssetListPage account={this.state.account} {...props} />)} />
-        <Route exact path="/assets/:organizationName/:assetName" render={(props) => this.renderSigninIfNotSignedIn(<AssetEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/assets/:assetName" render={(props) => this.renderSigninIfNotSignedIn(<AssetEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/scans" render={(props) => this.renderSigninIfNotSignedIn(<ScanListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/scans/:scanName" render={(props) => this.renderSigninIfNotSignedIn(<ScanEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/images" render={(props) => this.renderSigninIfNotSignedIn(<ImageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/images/:organizationName/:imageName" render={(props) => this.renderSigninIfNotSignedIn(<ImageEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/containers" render={(props) => this.renderSigninIfNotSignedIn(<ContainerListPage account={this.state.account} {...props} />)} />
@@ -1469,6 +1473,27 @@ class App extends Component {
     );
   }
 
+  getAntdLocale() {
+    return {
+      Table: {
+        filterConfirm: i18next.t("general:OK"),
+        filterReset: i18next.t("general:Reset"),
+        filterEmptyText: i18next.t("general:No data"),
+        filterSearchPlaceholder: i18next.t("general:Search"),
+        emptyText: i18next.t("general:No data"),
+        selectAll: i18next.t("general:Select all"),
+        selectInvert: i18next.t("general:Invert selection"),
+        selectionAll: i18next.t("general:Select all data"),
+        sortTitle: i18next.t("general:Sort"),
+        expand: i18next.t("general:Expand row"),
+        collapse: i18next.t("general:Collapse row"),
+        triggerDesc: i18next.t("general:Click to sort descending"),
+        triggerAsc: i18next.t("general:Click to sort ascending"),
+        cancelSort: i18next.t("general:Click to cancel sorting"),
+      },
+    };
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -1478,14 +1503,16 @@ class App extends Component {
           <title>{Setting.getHtmlTitle(this.state.store?.htmlTitle)}</title>
           <link rel="icon" href={Setting.getFaviconUrl(this.state.themeAlgorithm, this.state.store?.faviconUrl)} />
         </Helmet>
-        <ConfigProvider theme={{
-          token: {
-            colorPrimary: this.state.themeData.colorPrimary,
-            colorInfo: this.state.themeData.colorPrimary,
-            borderRadius: this.state.themeData.borderRadius,
-          },
-          algorithm: Setting.getAlgorithm(this.state.themeAlgorithm),
-        }}>
+        <ConfigProvider
+          locale={this.getAntdLocale()}
+          theme={{
+            token: {
+              colorPrimary: this.state.themeData.colorPrimary,
+              colorInfo: this.state.themeData.colorPrimary,
+              borderRadius: this.state.themeData.borderRadius,
+            },
+            algorithm: Setting.getAlgorithm(this.state.themeAlgorithm),
+          }}>
           <StyleProvider hashPriority="high" transformers={[legacyLogicalPropertiesTransformer]}>
             {
               this.renderPage()

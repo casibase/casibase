@@ -1,0 +1,292 @@
+{
+  "account": {
+    "The default store is not found": "Không tìm thấy kho lưu trữ mặc định",
+    "The store: %s is not found": "Không tìm thấy kho lưu trữ: %s"
+  },
+  "agent": {
+    "the agent provider type: %s is not supported": "loại nhà cung cấp tác nhân: %s không được hỗ trợ"
+  },
+  "application": {
+    "Failed to update application": "Không thể cập nhật ứng dụng",
+    "Missing required parameters": "Thiếu các tham số bắt buộc",
+    "The Template not found": "Không tìm thấy mẫu"
+  },
+  "audio": {
+    "complete slice upload failed: %s": "tải lên phần hoàn chỉnh thất bại: %s",
+    "get progress failed: %s": "lấy tiến độ thất bại: %s",
+    "get result failed: %s": "lấy kết quả thất bại: %s",
+    "init slice upload failed: %s": "khởi tạo tải lên phần thất bại: %s",
+    "perform slice upload failed: %s": "thực hiện tải lên phần thất bại: %s",
+    "worker upload failed: %s": "tải lên worker thất bại: %s"
+  },
+  "auth": {
+    "Please sign in first": "Vui lòng đăng nhập trước",
+    "Unauthorized operation": "Thao tác không được phép",
+    "this operation requires admin privilege": "thao tác này yêu cầu quyền quản trị viên"
+  },
+  "blockchain": {
+    "The default blockchain provider is not found": "Không tìm thấy nhà cung cấp blockchain mặc định",
+    "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "URL nhà cung cấp blockchain mặc định không được để trống. Giá trị mặc định là: 'http://localhost:13900'"
+  },
+  "bpmn": {
+    "Error parsing BPMN file: %v": "Lỗi phân tích tệp BPMN: %v"
+  },
+  "chain": {
+    "ChainTencentChainmakerClient.Client.Invoke() error: %v": "Lỗi ChainTencentChainmakerClient.Client.Invoke(): %v",
+    "ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v": "Lỗi ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract(): %v",
+    "TencentCloudSDKError, code = %d, message = %s": "Lỗi TencentCloudSDK, mã = %d, thông báo = %s",
+    "TencentCloudSDKError: %v": "Lỗi TencentCloudSDK: %v",
+    "chainmakerEndpoint is not configured": "chainmakerEndpoint chưa được cấu hình",
+    "event log value is not string: %v": "giá trị nhật ký sự kiện không phải là chuỗi: %v",
+    "failed to connect to Ethereum RPC: %v": "không thể kết nối với Ethereum RPC: %v",
+    "failed to create string type: %v": "không thể tạo kiểu chuỗi: %v",
+    "failed to create tuple type: %v": "không thể tạo kiểu tuple: %v",
+    "failed to estimate gas: %v": "không thể ước tính gas: %v",
+    "failed to get chain ID: %v": "không thể lấy ID chuỗi: %v",
+    "failed to get pending nonce: %v": "không thể lấy nonce đang chờ: %v",
+    "failed to get transaction receipt: %v": "không thể lấy biên lai giao dịch: %v",
+    "failed to pack arguments: %v": "không thể đóng gói đối số: %v",
+    "failed to pack function data: %v": "không thể đóng gói dữ liệu hàm: %v",
+    "failed to parse private key: %v": "không thể phân tích khóa riêng: %v",
+    "failed to send transaction: %v": "không thể gửi giao dịch: %v",
+    "failed to sign transaction: %v": "không thể ký giao dịch: %v",
+    "failed to suggest gas price: %v": "không thể đề xuất giá gas: %v",
+    "failed to unmarshal JSON: %v": "không thể giải mã JSON: %v",
+    "failed to unpack event log: %v": "không thể giải nén nhật ký sự kiện: %v",
+    "marshal normalized data error: %v": "lỗi marshal dữ liệu chuẩn hóa: %v",
+    "newChainTencentChainmakerClient() error: %v": "lỗi newChainTencentChainmakerClient(): %v",
+    "not enough string events found in transaction logs, expected at least 3, got %d": "không tìm thấy đủ sự kiện chuỗi trong nhật ký giao dịch, mong đợi ít nhất 3, nhận được %d",
+    "parse json data error: %v": "lỗi phân tích dữ liệu json: %v",
+    "transaction failed to be mined: %v": "giao dịch không được đào: %v",
+    "transaction failed with status: %d, reason: %s": "giao dịch thất bại với trạng thái: %d, lý do: %s"
+  },
+  "chat": {
+    "The default store is not found": "Không tìm thấy kho lưu trữ mặc định"
+  },
+  "controllers": {
+    "No permission": "Không có quyền",
+    "No records to add": "Không có bản ghi để thêm",
+    "No sessions to delete": "Không có phiên để xóa",
+    "You can only view your own chats": "Bạn chỉ có thể xem các cuộc trò chuyện của mình",
+    "You can only view your own messages": "Bạn chỉ có thể xem tin nhắn của mình"
+  },
+  "embedding": {
+    "calculatePrice() error: unknown model type: %s": "lỗi calculatePrice(): loại mô hình không xác định: %s",
+    "error unmarshaling response JSON: %v": "lỗi giải mã JSON phản hồi: %v",
+    "failed to calculate price: %v": "không thể tính giá: %v",
+    "failed to create client: %v": "không thể tạo client: %v",
+    "failed to create request: %v": "không thể tạo yêu cầu: %v",
+    "failed to get valid response, status code: %d": "không thể nhận phản hồi hợp lệ, mã trạng thái: %d",
+    "failed to load word2vec model: %v": "không thể tải mô hình word2vec: %v",
+    "failed to marshal payload: %v": "không thể marshal payload: %v",
+    "failed to open model file: %v": "không thể mở tệp mô hình: %v",
+    "failed to read header: %v": "không thể đọc header: %v",
+    "failed to read response body: %v": "không thể đọc nội dung phản hồi: %v",
+    "failed to read vector: %v": "không thể đọc vector: %v",
+    "failed to read word: %v": "không thể đọc từ: %v",
+    "failed to unmarshal response: %v": "không thể giải mã phản hồi: %v",
+    "input text is empty": "văn bản đầu vào trống",
+    "no embedding provider specified": "không chỉ định nhà cung cấp embedding",
+    "no embedding vector found in response": "không tìm thấy vector embedding trong phản hồi",
+    "no embeddings found in the response": "không tìm thấy embeddings trong phản hồi",
+    "none of the tokens were found in the vocabulary": "không có token nào được tìm thấy trong từ vựng",
+    "request failed with status code %d: %s": "yêu cầu thất bại với mã trạng thái %d: %s",
+    "text can not be empty.": "văn bản không được để trống.",
+    "text cannot be empty": "văn bản không được để trống"
+  },
+  "message_answer": {
+    "object.GetNearestKnowledge() error, %s": "lỗi object.GetNearestKnowledge(), %s"
+  },
+  "model": {
+    "QueryText() error: unknown model type: %s": "lỗi QueryText(): loại mô hình không xác định: %s",
+    "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "Số lượng token: [%d] vượt quá số lượng token tối đa của mô hình: [%s]: [%d]",
+    "calculatePrice() error: unknown model type: %s": "lỗi calculatePrice(): loại mô hình không xác định: %s",
+    "calculatePrice() error: video generation pricing requires duration information": "lỗi calculatePrice(): định giá tạo video yêu cầu thông tin thời lượng",
+    "cannot calculate tokens": "không thể tính toán tokens",
+    "error getting chat completion: %v": "lỗi lấy hoàn thành chat: %v",
+    "exceed max tokens": "vượt quá số token tối đa",
+    "failed to calculate price: %v": "không thể tính giá: %v",
+    "failed to marshal content: %v": "không thể marshal nội dung: %v",
+    "failed to marshal error content: %v": "không thể marshal nội dung lỗi: %v",
+    "failed to marshal tool response: %v": "không thể marshal phản hồi công cụ: %v",
+    "failed to parse tool arguments: %v": "không thể phân tích đối số công cụ: %v",
+    "failed to write response: %v": "không thể ghi phản hồi: %v",
+    "no generations returned": "không có thế hệ nào được trả về",
+    "the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "số lượng token: [%d] vượt quá số lượng token tối đa của mô hình: [%s]: [%d]",
+    "unsupported model: %s": "mô hình không được hỗ trợ: %s",
+    "writer does not implement http.Flusher": "writer không triển khai http.Flusher"
+  },
+  "object": {
+    "Cannot generate word cloud, the dict file: [%s] does not exist": "Không thể tạo word cloud, tệp dict: [%s] không tồn tại",
+    "Casdoor application: [%s] doesn't exist": "Ứng dụng Casdoor: [%s] không tồn tại",
+    "Casdoor organization: [%s] doesn't exist": "Tổ chức Casdoor: [%s] không tồn tại",
+    "Please add a model provider first": "Vui lòng thêm nhà cung cấp mô hình trước",
+    "Please add an embedding provider first": "Vui lòng thêm nhà cung cấp embedding trước",
+    "Question message: [%s] doesn't exist": "Tin nhắn câu hỏi: [%s] không tồn tại",
+    "SendErrorEmail() error, the receiver user: ": "Lỗi SendErrorEmail(), người dùng nhận: ",
+    "The agent provider: %s is expected to be ": "Nhà cung cấp tác nhân: %s được mong đợi là ",
+    "The chat: %s is not found": "Cuộc trò chuyện: %s không được tìm thấy",
+    "The default video provider should not be empty": "Nhà cung cấp video mặc định không được để trống",
+    "The embedding provider for store: %s is not found": "Nhà cung cấp embedding cho kho lưu trữ: %s không được tìm thấy",
+    "The embedding provider: %s is expected to be ": "Nhà cung cấp embedding: %s được mong đợi là ",
+    "The embedding provider: %s is not found": "Nhà cung cấp embedding: %s không được tìm thấy",
+    "The embedding provider: %s's client secret should not be empty": "Client secret của nhà cung cấp embedding: %s không được để trống",
+    "The image provider for store: %s should not be empty": "Nhà cung cấp hình ảnh cho kho lưu trữ: %s không được để trống",
+    "The message: %s is not found": "Tin nhắn: %s không được tìm thấy",
+    "The model provider for store: %s is not found": "Nhà cung cấp mô hình cho kho lưu trữ: %s không được tìm thấy",
+    "The model provider: %s is expected to be ": "Nhà cung cấp mô hình: %s được mong đợi là ",
+    "The model provider: %s is not found": "Nhà cung cấp mô hình: %s không được tìm thấy",
+    "The model provider: %s's client secret should not be empty": "Client secret của nhà cung cấp mô hình: %s không được để trống",
+    "The provider is not found": "Nhà cung cấp không được tìm thấy",
+    "The provider: %s does not exist": "Nhà cung cấp: %s không tồn tại",
+    "The provider: %s is not found": "Nhà cung cấp: %s không được tìm thấy",
+    "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v": "Nhà cung cấp embedding của kho lưu trữ: [%s] phải bằng nhà cung cấp embedding của vector: [%s], vector = %v",
+    "The store: %s is not found": "Kho lưu trữ: %s không được tìm thấy",
+    "The text-to-speech provider for store: %s is not found": "Nhà cung cấp chuyển văn bản thành giọng nói cho kho lưu trữ: %s không được tìm thấy",
+    "deployment failed, and could not retrieve failure details: %v": "triển khai thất bại và không thể lấy chi tiết lỗi: %v",
+    "deployment failed: %s": "triển khai thất bại: %s",
+    "empty provider key": "khóa nhà cung cấp trống",
+    "failed to connect to kubernetes cluster: %v": "không thể kết nối với cụm kubernetes: %v",
+    "failed to convert result to yaml: %v": "không thể chuyển đổi kết quả sang yaml: %v",
+    "failed to create discovery client: %v": "không thể tạo client khám phá: %v",
+    "failed to create dynamic client: %v": "không thể tạo client động: %v",
+    "failed to create kubernetes clientSet: %v": "không thể tạo clientSet kubernetes: %v",
+    "failed to create namespace: %v": "không thể tạo namespace: %v",
+    "failed to create resource %s/%s: %v": "không thể tạo tài nguyên %s/%s: %v",
+    "failed to create root directory: %v": "không thể tạo thư mục gốc: %v",
+    "failed to decode YAML: %v": "không thể giải mã YAML: %v",
+    "failed to delete namespace: %v": "không thể xóa namespace: %v",
+    "failed to deploy application": "không thể triển khai ứng dụng",
+    "failed to deploy manifest: %v": "không thể triển khai manifest: %v",
+    "failed to deploy resource: %v": "không thể triển khai tài nguyên: %v",
+    "failed to generate manifest: %v": "không thể tạo manifest: %v",
+    "failed to get API group resources: %v": "không thể lấy tài nguyên nhóm API: %v",
+    "failed to get REST mapping for %s: %v": "không thể lấy ánh xạ REST cho %s: %v",
+    "failed to get default Kubernetes provider: %v": "không thể lấy nhà cung cấp Kubernetes mặc định: %v",
+    "failed to get existing resource %s/%s: %v": "không thể lấy tài nguyên hiện có %s/%s: %v",
+    "failed to get namespace: %v": "không thể lấy namespace: %v",
+    "failed to get pod metrics: %v": "không thể lấy số liệu pod: %v",
+    "failed to get providers: %v": "không thể lấy nhà cung cấp: %v",
+    "failed to get record with id '%s': %w": "không thể lấy bản ghi với id '%s': %w",
+    "failed to initialize cache manager: %v": "không thể khởi tạo trình quản lý bộ nhớ cache: %v",
+    "failed to initialize k8s client: %v": "không thể khởi tạo client k8s: %v",
+    "failed to list pods in namespace %s: %w": "không thể liệt kê pods trong namespace %s: %w",
+    "failed to marshal kustomization: %v": "không thể marshal kustomization: %v",
+    "failed to parse kubeconfig from provider: %v": "không thể phân tích kubeconfig từ nhà cung cấp: %v",
+    "failed to parse kubeconfig: %v": "không thể phân tích kubeconfig: %v",
+    "failed to parse record identifier '%s': neither a valid owner/[id|name] format": "không thể phân tích định danh bản ghi '%s': không phải là định dạng owner/[id|name] hợp lệ",
+    "failed to parse record: name %s, field %s, error: %v": "không thể phân tích bản ghi: tên %s, trường %s, lỗi: %v",
+    "failed to parse server URL: %v": "không thể phân tích URL máy chủ: %v",
+    "failed to start cache manager: %v": "không thể khởi động trình quản lý bộ nhớ cache: %v",
+    "failed to start undeployment": "không thể bắt đầu hủy triển khai",
+    "failed to update error text for record %s: %s": "không thể cập nhật văn bản lỗi cho bản ghi %s: %s",
+    "failed to update resource %s/%s: %v": "không thể cập nhật tài nguyên %s/%s: %v",
+    "failed to write kustomization.yaml: %v": "không thể ghi kustomization.yaml: %v",
+    "failed to write patch file: %v": "không thể ghi tệp patch: %v",
+    "failed to write resource file: %v": "không thể ghi tệp tài nguyên: %v",
+    "getExtFromMimeType() error: unknown MimeType: %s": "lỗi getExtFromMimeType(): MimeType không xác định: %s",
+    "invalid range type: %s": "loại phạm vi không hợp lệ: %s",
+    "k8s client is not connected to the cluster": "client k8s không được kết nối với cụm",
+    "k8s client not connected": "client k8s chưa kết nối",
+    "k8s client not connected to cluster": "client k8s chưa kết nối với cụm",
+    "k8s client not initialized": "client k8s chưa được khởi tạo",
+    "kubeconfig content is empty": "nội dung kubeconfig trống",
+    "kustomize run failed: %v": "chạy kustomize thất bại: %v",
+    "metrics client not available": "client số liệu không khả dụng",
+    "namespace %s is terminating and all resources have been cleaned up": "namespace %s đang kết thúc và tất cả tài nguyên đã được dọn dẹp",
+    "namespace cannot be empty": "namespace không được để trống",
+    "no Kubernetes provider found": "không tìm thấy nhà cung cấp Kubernetes",
+    "no accessible URL found for application": "không tìm thấy URL có thể truy cập cho ứng dụng",
+    "no qVector found": "không tìm thấy qVector",
+    "parseBase64Image() error: invalid image format": "lỗi parseBase64Image(): định dạng hình ảnh không hợp lệ",
+    "provider kubeconfig content is empty": "nội dung kubeconfig của nhà cung cấp trống",
+    "queryVectorSafe() error, %s": "lỗi queryVectorSafe(), %s",
+    "server address not found": "không tìm thấy địa chỉ máy chủ",
+    "the STT provider type: %s is not supported": "loại nhà cung cấp STT: %s không được hỗ trợ",
+    "the TTS provider type: %s is not supported": "loại nhà cung cấp TTS: %s không được hỗ trợ",
+    "the agent provider type: %s is not supported": "loại nhà cung cấp tác nhân: %s không được hỗ trợ",
+    "the blockchain provider: %s is not found": "nhà cung cấp blockchain: %s không được tìm thấy",
+    "the embedding provider type: %s is not supported": "loại nhà cung cấp embedding: %s không được hỗ trợ",
+    "the form: %s is not found": "biểu mẫu: %s không được tìm thấy",
+    "the model provider type: %s is not supported": "loại nhà cung cấp mô hình: %s không được hỗ trợ",
+    "the record: %s does not exist": "bản ghi: %s không tồn tại",
+    "the record: %s has already been committed, blockId = %s": "bản ghi: %s đã được cam kết, blockId = %s",
+    "the record: %s's block ID should not be empty": "ID khối của bản ghi: %s không được để trống",
+    "the scan provider type: %s is not supported": "loại nhà cung cấp quét: %s không được hỗ trợ",
+    "the storage provider type: %s is not supported": "loại nhà cung cấp lưu trữ: %s không được hỗ trợ",
+    "there is no active blockchain provider": "không có nhà cung cấp blockchain đang hoạt động",
+    "unable to extract host": "không thể trích xuất host",
+    "undeployment timeout: application did not undeploy within 10 minutes": "hết thời gian hủy triển khai: ứng dụng không hủy triển khai trong vòng 10 phút"
+  },
+  "openai": {
+    "Invalid API key format. Expected 'Bearer API_KEY'": "Định dạng khóa API không hợp lệ. Mong đợi 'Bearer API_KEY'",
+    "No user message found in the request": "Không tìm thấy tin nhắn người dùng trong yêu cầu"
+  },
+  "pkgdocker": {
+    "Container %s not found": "Không tìm thấy container %s"
+  },
+  "pkgimage": {
+    "unsupported provider type: %s": "loại nhà cung cấp không được hỗ trợ: %s"
+  },
+  "pkgkubernets": {
+    "Pod %s not found": "Không tìm thấy pod %s"
+  },
+  "pkgmachine": {
+    "Domain: [%s]'s state has been successfully updated to: [%s]": "Trạng thái của domain: [%s] đã được cập nhật thành công thành: [%s]",
+    "Instance not found: %s": "Không tìm thấy instance: %s",
+    "Instance: [%s] is not found": "Instance: [%s] không được tìm thấy",
+    "Instance: [%s]'s state has been successfully updated to: [%s]": "Trạng thái của instance: [%s] đã được cập nhật thành công thành: [%s]",
+    "Not implemented": "Chưa được triển khai",
+    "Tencent Cloud API error: %s": "Lỗi API Tencent Cloud: %s",
+    "Unsupported state: %s": "Trạng thái không được hỗ trợ: %s",
+    "VMware API error, code = %d, message = %s": "Lỗi API VMware, mã = %d, thông báo = %s",
+    "unsupported provider type: %s": "loại nhà cung cấp không được hỗ trợ: %s"
+  },
+  "provider": {
+    "Provider not found": "Không tìm thấy nhà cung cấp"
+  },
+  "resource": {
+    "Invalid file data format": "Định dạng dữ liệu tệp không hợp lệ",
+    "Missing required parameters": "Thiếu các tham số bắt buộc"
+  },
+  "storage": {
+    "storage provider name: [%s] doesn't exist": "tên nhà cung cấp lưu trữ: [%s] không tồn tại"
+  },
+  "store": {
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "do phải có một kho lưu trữ mặc định trong Casibase, bạn không thể đặt kho lưu trữ này thành không mặc định. Bạn có thể trực tiếp đặt kho lưu trữ khác làm mặc định"
+  },
+  "scan": {
+    "Scan not found": "Không tìm thấy quét",
+    "Asset not found": "Không tìm thấy tài sản",
+    "Provider not found": "Không tìm thấy nhà cung cấp",
+    "Scan provider not supported": "Nhà cung cấp quét không được hỗ trợ",
+    "Failed to start scan": "Không thể bắt đầu quét"
+  },
+  "stt": {
+    "API error: %s": "Lỗi API: %s",
+    "Missing required parameter: storeId": "Thiếu tham số bắt buộc: storeId",
+    "speech recognition API error: %v": "lỗi API nhận dạng giọng nói: %v",
+    "speech recognition timed out after %v seconds": "nhận dạng giọng nói hết thời gian sau %v giây"
+  },
+  "tts": {
+    "The audio data is nil": "Dữ liệu âm thanh là nil",
+    "calculatePrice() error: unknown model type: %s": "lỗi calculatePrice(): loại mô hình không xác định: %s",
+    "error creating synthesizer: %v": "lỗi tạo bộ tổng hợp: %v",
+    "error finishing task: %v": "lỗi hoàn thành nhiệm vụ: %v",
+    "error running task: %v": "lỗi chạy nhiệm vụ: %v",
+    "error sending text: %v": "lỗi gửi văn bản: %v",
+    "output error: %v": "lỗi đầu ra: %v",
+    "writer does not implement http.Flusher": "writer không triển khai http.Flusher"
+  },
+  "txt": {
+    ".docx file is empty": "tệp .docx trống",
+    "GetTextFromMarkitdown() error, failed to open file: %v": "Lỗi GetTextFromMarkitdown(), không thể mở tệp: %v",
+    "GetTextFromMarkitdown() error, markitdown does not exist": "Lỗi GetTextFromMarkitdown(), markitdown không tồn tại",
+    "GetTextFromMarkitdown() error, markitdown failed to run: %v: %s": "Lỗi GetTextFromMarkitdown(), markitdown không chạy được: %v: %s",
+    "unsupported file type: %s": "loại tệp không được hỗ trợ: %s"
+  },
+  "video": {
+    "The video can only be updated when there are no remarks and the state is \"Draft\"": "Video chỉ có thể được cập nhật khi không có nhận xét và trạng thái là \"Nháp\"",
+    "UploadVideo() error, videoId should not be empty": "Lỗi UploadVideo(), videoId không được để trống"
+  }
+}

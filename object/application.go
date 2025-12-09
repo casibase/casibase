@@ -88,14 +88,20 @@ func getApplication(owner, name string) (*Application, error) {
 }
 
 func GetApplication(id string) (*Application, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getApplication(owner, name)
 }
 
 func UpdateApplication(id string, application *Application, lang string) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	application.UpdatedTime = util.GetCurrentTime()
-	_, err := getApplication(owner, name)
+	_, err = getApplication(owner, name)
 	if err != nil {
 		return false, err
 	}

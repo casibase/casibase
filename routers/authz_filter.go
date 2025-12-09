@@ -252,6 +252,7 @@ func permissionFilter(ctx *context.Context) {
 		"delete-welcome-message", "get-message-answer", "get-answer",
 		"get-storage-providers", "get-store", "get-providers", "get-global-stores",
 		"update-chat", "add-chat", "delete-chat", "update-message", "add-message",
+		"get-chat", "get-message",
 	}
 
 	for _, exemptPath := range exemptedPaths {
@@ -262,7 +263,7 @@ func permissionFilter(ctx *context.Context) {
 
 	isAdmin := user != nil && (user.IsAdmin || user.Type == "chat-admin")
 	if !isAdmin {
-		responseError(ctx, "this operation requires admin privilege")
+		responseError(ctx, "auth:this operation requires admin privilege")
 		return
 	}
 }

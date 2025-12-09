@@ -1,10 +1,15 @@
 {
   "account": {
-    "The default store is not found": "The default store is not found",
-    "The store: %s is not found": "The store: %s is not found"
+    "The default store is not found": "No se encontró el almacén predeterminado",
+    "The store: %s is not found": "El almacén: %s no se encontró"
   },
   "agent": {
-    "the agent provider type: %s is not supported": "the agent provider type: %s is not supported"
+    "the agent provider type: %s is not supported": "El tipo de proveedor de agente: %s no es compatible"
+  },
+  "application": {
+    "Failed to update application": "Error al actualizar la aplicación",
+    "Missing required parameters": "Faltan parámetros requeridos",
+    "The Template not found": "La plantilla no se encontró"
   },
   "audio": {
     "complete slice upload failed: %s": "complete slice upload failed: %s",
@@ -14,17 +19,26 @@
     "perform slice upload failed: %s": "perform slice upload failed: %s",
     "worker upload failed: %s": "worker upload failed: %s"
   },
+  "auth": {
+    "Please sign in first": "Por favor, inicie sesión primero",
+    "Unauthorized operation": "Operación no autorizada",
+    "this operation requires admin privilege": "Esta operación requiere privilegios de administrador"
+  },
+  "blockchain": {
+    "The default blockchain provider is not found": "No se encontró el proveedor de blockchain predeterminado",
+    "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "La URL del proveedor de blockchain predeterminado no puede estar vacía. El valor predeterminado es: 'http://localhost:13900'"
+  },
   "bpmn": {
-    "Error parsing BPMN file: %v": "Error parsing BPMN file: %v"
+    "Error parsing BPMN file: %v": "Error al analizar el archivo BPMN: %v"
   },
   "chain": {
-    "ChainTencentChainmakerClient.Client.Invoke() error: %v": "ChainTencentChainmakerClient.Client.Invoke() error: %v",
+    "ChainTencentChainmakerClient.Client.Invoke() error: %v": "Error de ChainTencentChainmakerClient.Client.Invoke(): %v",
     "ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v": "ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v",
-    "TencentCloudSDKError, code = %d, message = %s": "TencentCloudSDKError, code = %d, message = %s",
+    "TencentCloudSDKError, code = %d, message = %s": "TencentCloudSDKError, código = %d, mensaje = %s",
     "TencentCloudSDKError: %v": "TencentCloudSDKError: %v",
-    "chainmakerEndpoint is not configured": "chainmakerEndpoint is not configured",
+    "chainmakerEndpoint is not configured": "chainmakerEndpoint no está configurado",
     "event log value is not string: %v": "event log value is not string: %v",
-    "failed to connect to Ethereum RPC: %v": "failed to connect to Ethereum RPC: %v",
+    "failed to connect to Ethereum RPC: %v": "Error al conectar con Ethereum RPC: %v",
     "failed to create string type: %v": "failed to create string type: %v",
     "failed to create tuple type: %v": "failed to create tuple type: %v",
     "failed to estimate gas: %v": "failed to estimate gas: %v",
@@ -46,11 +60,21 @@
     "transaction failed to be mined: %v": "transaction failed to be mined: %v",
     "transaction failed with status: %d, reason: %s": "transaction failed with status: %d, reason: %s"
   },
+  "chat": {
+    "The default store is not found": "No se encontró el almacén predeterminado"
+  },
+  "controllers": {
+    "No permission": "Sin permiso",
+    "No records to add": "No hay registros para agregar",
+    "No sessions to delete": "No hay sesiones para eliminar",
+    "You can only view your own chats": "Solo puede ver sus propios chats",
+    "You can only view your own messages": "Solo puede ver sus propios mensajes"
+  },
   "embedding": {
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
-    "error unmarshaling response JSON: %v": "error unmarshaling response JSON: %v",
+    "calculatePrice() error: unknown model type: %s": "Error de calculatePrice(): tipo de modelo desconocido: %s",
+    "error unmarshaling response JSON: %v": "Error al deserializar la respuesta JSON: %v",
     "failed to calculate price: %v": "failed to calculate price: %v",
-    "failed to create client: %v": "failed to create client: %v",
+    "failed to create client: %v": "Error al crear el cliente: %v",
     "failed to create request: %v": "failed to create request: %v",
     "failed to get valid response, status code: %d": "failed to get valid response, status code: %d",
     "failed to load word2vec model: %v": "failed to load word2vec model: %v",
@@ -61,14 +85,14 @@
     "failed to read vector: %v": "failed to read vector: %v",
     "failed to read word: %v": "failed to read word: %v",
     "failed to unmarshal response: %v": "failed to unmarshal response: %v",
-    "input text is empty": "input text is empty",
-    "no embedding provider specified": "no embedding provider specified",
+    "input text is empty": "el texto de entrada está vacío",
+    "no embedding provider specified": "no se especificó un proveedor de incrustación",
     "no embedding vector found in response": "no embedding vector found in response",
     "no embeddings found in the response": "no embeddings found in the response",
     "none of the tokens were found in the vocabulary": "none of the tokens were found in the vocabulary",
     "request failed with status code %d: %s": "request failed with status code %d: %s",
-    "text can not be empty.": "text can not be empty.",
-    "text cannot be empty": "text cannot be empty"
+    "text can not be empty.": "el texto no puede estar vacío.",
+    "text cannot be empty": "el texto no puede estar vacío"
   },
   "message_answer": {
     "object.GetNearestKnowledge() error, %s": "object.GetNearestKnowledge() error, %s"
@@ -76,12 +100,14 @@
   "model": {
     "QueryText() error: unknown model type: %s": "QueryText() error: unknown model type: %s",
     "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]",
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
+    "calculatePrice() error: unknown model type: %s": "Error de calculatePrice(): tipo de modelo desconocido: %s",
     "calculatePrice() error: video generation pricing requires duration information": "calculatePrice() error: video generation pricing requires duration information",
     "cannot calculate tokens": "cannot calculate tokens",
     "error getting chat completion: %v": "error getting chat completion: %v",
     "exceed max tokens": "exceed max tokens",
     "failed to calculate price: %v": "failed to calculate price: %v",
+    "failed to marshal content: %v": "failed to marshal content: %v",
+    "failed to marshal error content: %v": "failed to marshal error content: %v",
     "failed to marshal tool response: %v": "failed to marshal tool response: %v",
     "failed to parse tool arguments: %v": "failed to parse tool arguments: %v",
     "failed to write response: %v": "failed to write response: %v",
@@ -115,7 +141,7 @@
     "The provider: %s does not exist": "The provider: %s does not exist",
     "The provider: %s is not found": "The provider: %s is not found",
     "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v": "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v",
-    "The store: %s is not found": "The store: %s is not found",
+    "The store: %s is not found": "El almacén: %s no se encontró",
     "The text-to-speech provider for store: %s is not found": "The text-to-speech provider for store: %s is not found",
     "deployment failed, and could not retrieve failure details: %v": "deployment failed, and could not retrieve failure details: %v",
     "deployment failed: %s": "deployment failed: %s",
@@ -171,7 +197,6 @@
     "namespace cannot be empty": "namespace cannot be empty",
     "no Kubernetes provider found": "no Kubernetes provider found",
     "no accessible URL found for application": "no accessible URL found for application",
-    "no knowledge vectors found": "no knowledge vectors found",
     "no qVector found": "no qVector found",
     "parseBase64Image() error: invalid image format": "parseBase64Image() error: invalid image format",
     "provider kubeconfig content is empty": "provider kubeconfig content is empty",
@@ -179,7 +204,7 @@
     "server address not found": "server address not found",
     "the STT provider type: %s is not supported": "the STT provider type: %s is not supported",
     "the TTS provider type: %s is not supported": "the TTS provider type: %s is not supported",
-    "the agent provider type: %s is not supported": "the agent provider type: %s is not supported",
+    "the agent provider type: %s is not supported": "El tipo de proveedor de agente: %s no es compatible",
     "the blockchain provider: %s is not found": "the blockchain provider: %s is not found",
     "the embedding provider type: %s is not supported": "the embedding provider type: %s is not supported",
     "the form: %s is not found": "the form: %s is not found",
@@ -187,10 +212,15 @@
     "the record: %s does not exist": "the record: %s does not exist",
     "the record: %s has already been committed, blockId = %s": "the record: %s has already been committed, blockId = %s",
     "the record: %s's block ID should not be empty": "the record: %s's block ID should not be empty",
+    "the scan provider type: %s is not supported": "the scan provider type: %s is not supported",
     "the storage provider type: %s is not supported": "the storage provider type: %s is not supported",
     "there is no active blockchain provider": "there is no active blockchain provider",
     "unable to extract host": "unable to extract host",
     "undeployment timeout: application did not undeploy within 10 minutes": "undeployment timeout: application did not undeploy within 10 minutes"
+  },
+  "openai": {
+    "Invalid API key format. Expected 'Bearer API_KEY'": "Invalid API key format. Expected 'Bearer API_KEY'",
+    "No user message found in the request": "No user message found in the request"
   },
   "pkgdocker": {
     "Container %s not found": "Container %s not found"
@@ -212,16 +242,35 @@
     "VMware API error, code = %d, message = %s": "VMware API error, code = %d, message = %s",
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
+  "provider": {
+    "Provider not found": "Provider not found"
+  },
+  "resource": {
+    "Invalid file data format": "Invalid file data format",
+    "Missing required parameters": "Faltan parámetros requeridos"
+  },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] doesn't exist"
   },
+  "store": {
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
+  },
+  "scan": {
+    "Scan not found": "Escaneo no encontrado",
+    "Asset not found": "Activo no encontrado",
+    "Provider not found": "Proveedor no encontrado",
+    "Scan provider not supported": "Proveedor de escaneo no compatible",
+    "Failed to start scan": "Error al iniciar el escaneo"
+  },
   "stt": {
     "API error: %s": "API error: %s",
+    "Missing required parameter: storeId": "Missing required parameter: storeId",
     "speech recognition API error: %v": "speech recognition API error: %v",
     "speech recognition timed out after %v seconds": "speech recognition timed out after %v seconds"
   },
   "tts": {
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
+    "The audio data is nil": "The audio data is nil",
+    "calculatePrice() error: unknown model type: %s": "Error de calculatePrice(): tipo de modelo desconocido: %s",
     "error creating synthesizer: %v": "error creating synthesizer: %v",
     "error finishing task: %v": "error finishing task: %v",
     "error running task: %v": "error running task: %v",
@@ -235,5 +284,9 @@
     "GetTextFromMarkitdown() error, markitdown does not exist": "GetTextFromMarkitdown() error, markitdown does not exist",
     "GetTextFromMarkitdown() error, markitdown failed to run: %v: %s": "GetTextFromMarkitdown() error, markitdown failed to run: %v: %s",
     "unsupported file type: %s": "unsupported file type: %s"
+  },
+  "video": {
+    "The video can only be updated when there are no remarks and the state is \"Draft\"": "The video can only be updated when there are no remarks and the state is \"Draft\"",
+    "UploadVideo() error, videoId should not be empty": "UploadVideo() error, videoId should not be empty"
   }
 }

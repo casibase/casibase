@@ -29,6 +29,7 @@ import (
 	"github.com/openai/openai-go/v2/option"
 	"github.com/openai/openai-go/v2/packages/param"
 	"github.com/openai/openai-go/v2/responses"
+	"github.com/openai/openai-go/v2/shared"
 	"github.com/pkoukk/tiktoken-go"
 )
 
@@ -210,7 +211,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 	var flushData interface{}
 
 	client = GetOpenAiClientFromToken(p.secretKey)
-	flushData = flushDataOpenai
+	flushData = flushDataThink
 
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
@@ -274,13 +275,18 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 			Model:        model,
 			Temperature:  param.NewOpt[float64](float64(temperature)),
 			TopP:         param.NewOpt[float64](float64(topP)),
+			Reasoning:    shared.ReasoningParam{Summary: "auto"},
 		}
 		if agentInfo != nil && agentInfo.AgentClients != nil {
-			tools, err := reverseMcpToolsToOpenAi(agentInfo.AgentClients.Tools)
+			agentTools, err := reverseMcpToolsToOpenAi(agentInfo.AgentClients.Tools)
 			if err != nil {
 				return nil, err
 			}
-			req.Tools = tools
+			if agentInfo.AgentClients.WebSearchEnabled {
+				agentTools = append(agentTools, responses.ToolParamOfWebSearchPreview(responses.WebSearchToolTypeWebSearchPreview))
+			}
+
+			req.Tools = agentTools
 			req.ToolChoice = responses.ResponseNewParamsToolChoiceUnion{
 				OfToolChoiceMode: param.NewOpt(responses.ToolChoiceOptionsAuto),
 			}
@@ -291,9 +297,15 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 
 		isLeadingReturn := true
 		for respStream.Next() {
-			flushStandard := flushData.(func(string, io.Writer, string) error)
+			flushThink := flushData.(func(string, string, io.Writer, string) error)
 			response := respStream.Current()
 			switch variant := response.AsAny().(type) {
+			case responses.ResponseReasoningSummaryTextDeltaEvent:
+				data := variant.Delta
+				err = flushThink(data, "reason", writer, lang)
+				if err != nil {
+					return nil, err
+				}
 			case responses.ResponseTextDeltaEvent:
 				data := variant.Delta
 				if isLeadingReturn && len(data) != 0 {
@@ -304,7 +316,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 					}
 				}
 
-				err = flushStandard(data, writer, lang)
+				err = flushThink(data, "message", writer, lang)
 				if err != nil {
 					return nil, err
 				}
@@ -312,6 +324,24 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 				switch v := variant.Item.AsAny().(type) {
 				case responses.ResponseFunctionToolCall:
 					toolCalls = append(toolCalls, v)
+				case responses.ResponseOutputMessage:
+					if v.Status == "completed" {
+						for _, contentItem := range v.Content {
+							if contentItem.Type != "output_text" || len(contentItem.Annotations) == 0 {
+								continue
+							}
+							var searchResults []SearchResult
+							for idx, annotation := range contentItem.Annotations {
+								searchResults = append(searchResults, SearchResult{
+									Index: idx + 1,
+									URL:   annotation.URL,
+									Title: annotation.Title,
+								})
+							}
+							searchResultsJSON, _ := json.Marshal(searchResults)
+							flushDataThink(string(searchResultsJSON), "search", writer, lang)
+						}
+					}
 				}
 			case responses.ResponseCompletedEvent:
 				modelResult.ResponseTokenCount = int(variant.Response.Usage.OutputTokens)
@@ -322,11 +352,6 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 		}
 		if respStream.Err() != nil {
 			return nil, respStream.Err()
-		}
-
-		err = handleMcpToolCalls(toolCalls, flushData, writer, lang)
-		if err != nil {
-			return nil, err
 		}
 
 		if agentInfo != nil && agentInfo.AgentMessages != nil {
@@ -655,20 +680,4 @@ func reverseMcpToolsToOpenAi(tools []*protocol.Tool) ([]responses.ToolUnionParam
 		})
 	}
 	return openaiTools, nil
-}
-
-func handleMcpToolCalls(toolCalls []responses.ResponseFunctionToolCall, flushData interface{}, writer io.Writer, lang string) error {
-	if toolCalls == nil {
-		return nil
-	}
-
-	if flushThink, ok := flushData.(func(string, string, io.Writer, string) error); ok {
-		for _, toolCall := range toolCalls {
-			err := flushThink("\n"+"Call result from "+toolCall.Name+"\n", "reason", writer, lang)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
 }

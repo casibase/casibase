@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import React from "react";
-import FileTreePage from "./FileTreePage";
 import {Redirect} from "react-router-dom";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
@@ -72,7 +71,7 @@ class HomePage extends React.Component {
           return <UsagePage account={this.props.account} />;
         }
 
-        return <FileTreePage account={this.props.account} storeName={this.state.store.name} />;
+        return <ChatPage account={this.props.account} />;
       }
     }
   }

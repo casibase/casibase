@@ -17,10 +17,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/beego/beego"
 	"github.com/beego/beego/logs"
-	"github.com/beego/beego/plugins/cors"
 	_ "github.com/beego/beego/session/redis"
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/object"
@@ -42,22 +42,20 @@ func main() {
 	object.InitCleanupChats()
 	object.InitStoreCount()
 	object.InitCommitRecordsTask()
-
-	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "X-Requested-With", "Content-Type", "Accept"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-	}))
+	object.InitScanJobProcessor()
+	object.InitMessageTransactionRetry()
 
 	beego.SetStaticPath("/swagger", "swagger")
-	beego.InsertFilter("*", beego.BeforeRouter, routers.StaticFilter)
+	beego.InsertFilter("*", beego.BeforeRouter, routers.CorsFilter)
+	beego.InsertFilter("*", beego.BeforeRouter, routers.HstsFilter)
+	beego.InsertFilter("*", beego.BeforeRouter, routers.CacheControlFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.AutoSigninFilter)
+	beego.InsertFilter("*", beego.BeforeRouter, routers.StaticFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.AuthzFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.PrometheusFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.RecordMessage)
 	beego.InsertFilter("*", beego.AfterExec, routers.AfterRecordMessage, false)
+	beego.InsertFilter("*", beego.AfterExec, routers.SecureCookieFilter, false)
 
 	beego.BConfig.WebConfig.Session.SessionOn = true
 	beego.BConfig.WebConfig.Session.SessionName = "casibase_session_id"
@@ -69,6 +67,10 @@ func main() {
 		beego.BConfig.WebConfig.Session.SessionProviderConfig = conf.GetConfigString("redisEndpoint")
 	}
 	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
+
+	// Set session cookie security attributes
+	// SameSite=Lax provides CSRF protection while maintaining compatibility
+	beego.BConfig.WebConfig.Session.SessionCookieSameSite = http.SameSiteLaxMode
 
 	var logAdapter string
 	logConfigMap := make(map[string]interface{})

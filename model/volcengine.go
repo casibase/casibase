@@ -65,6 +65,7 @@ https://www.volcengine.com/docs/82379/1099320
 | doubao-1-5-thinking-pro        | 0.0040                          | 0.0160                           |
 | doubao-1-5-thinking-vision-pro | 0.0030                          | 0.0090                           |
 | deepseek-v3.1                  | 0.0040                          | 0.0120                           |
+| deepseek-v3.2                  | 0.0040                          | 0.0120                           |
 | deepseek-r1                    | 0.0040                          | 0.0160                           |
 | deepseek-r1-distill-qwen-32b   | 0.0015                          | 0.0060                           |
 | deepseek-r1-distill-qwen-7b    | 0.0006                          | 0.0024                           |
@@ -109,6 +110,7 @@ func (p *VolcengineModelProvider) calculatePrice(modelResult *ModelResult, lang 
 		"doubao-1-5-thinking-pro":        {0.0040, 0.0160},
 		"doubao-1-5-thinking-vision-pro": {0.0030, 0.0090},
 		"deepseek-v3.1":                  {0.0040, 0.0120},
+		"deepseek-v3.2":                  {0.0040, 0.0120},
 		"deepseek-r1":                    {0.0040, 0.0160},
 		"deepseek-r1-distill-qwen-32b":   {0.0015, 0.0060},
 		"deepseek-r1-distill-qwen-7b":    {0.0006, 0.0024},
@@ -211,7 +213,7 @@ func (p *VolcengineModelProvider) QueryText(question string, writer io.Writer, h
 
 	stream, err := client.CreateChatCompletionStream(ctx, request)
 	if err != nil {
-		logs.Error("stream chat error: %v\n", err)
+		logs.Error("stream chat error: %v", err)
 		return nil, err
 	}
 	defer stream.Close()

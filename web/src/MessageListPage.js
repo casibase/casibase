@@ -19,6 +19,7 @@ import BaseListPage from "./BaseListPage";
 import {ThemeDefault} from "./Conf";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
 import moment from "moment";
 import i18next from "i18next";
 import * as Conf from "./Conf";
@@ -28,6 +29,32 @@ import VectorTooltip from "./VectorTooltip";
 class MessageListPage extends BaseListPage {
   constructor(props) {
     super(props);
+    this.state = {
+      ...this.state,
+      providers: [],
+      providerMap: {},
+    };
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
+    this.getProviders();
+  }
+
+  getProviders() {
+    ProviderBackend.getProviders("admin")
+      .then((res) => {
+        if (res.status === "ok") {
+          const providerMap = {};
+          res.data.forEach(provider => {
+            providerMap[provider.name] = provider;
+          });
+          this.setState({
+            providers: res.data,
+            providerMap: providerMap,
+          });
+        }
+      });
   }
 
   newMessage() {
@@ -55,12 +82,9 @@ class MessageListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
-          this.setState({
-            data: Setting.prependRow(this.state.data, newMessage),
-            pagination: {
-              ...this.state.pagination,
-              total: this.state.pagination.total + 1,
-            },
+          this.props.history.push({
+            pathname: `/messages/${newMessage.name}`,
+            state: {isNewMessage: true},
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
@@ -238,6 +262,37 @@ class MessageListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("general:Model"),
+        dataIndex: "modelProvider",
+        key: "modelProvider",
+        width: "150px",
+        align: "center",
+        sorter: (a, b) => {
+          if (!a.modelProvider) {
+            return -1;
+          }
+          if (!b.modelProvider) {
+            return 1;
+          }
+          return a.modelProvider.localeCompare(b.modelProvider);
+        },
+        ...this.getColumnSearchProps("modelProvider"),
+        render: (text, record, index) => {
+          if (!text) {
+            return null;
+          }
+          const provider = this.state.providerMap[text];
+          if (!provider) {
+            return text;
+          }
+          return (
+            <a target="_blank" rel="noreferrer" href={`/providers/${text}`}>
+              <img width={36} height={36} src={Setting.getProviderLogoURL({category: provider.category, type: provider.type})} alt={provider.type} title={provider.type} />
+            </a>
+          );
+        },
+      },
+      {
         title: i18next.t("chat:Token count"),
         dataIndex: "tokenCount",
         key: "tokenCount",
@@ -360,7 +415,7 @@ class MessageListPage extends BaseListPage {
         ...this.getColumnFilterProps("isDeleted"),
         render: (text, record, index) => {
           return (
-            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+            <Switch disabled checkedChildren={i18next.t("general:ON")} unCheckedChildren={i18next.t("general:OFF")} checked={text} />
           );
         },
       },
@@ -373,7 +428,7 @@ class MessageListPage extends BaseListPage {
         ...this.getColumnFilterProps("isAlerted"),
         render: (text, record, index) => {
           return (
-            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+            <Switch disabled checkedChildren={i18next.t("general:ON")} unCheckedChildren={i18next.t("general:OFF")} checked={text} />
           );
         },
       },

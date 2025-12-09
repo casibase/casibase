@@ -117,7 +117,10 @@ class ApplicationStorePage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           message.success(i18next.t("general:Successfully added"));
-          this.props.history.push(`/applications/${newApplication.name}`);
+          this.props.history.push({
+            pathname: `/applications/${newApplication.name}`,
+            state: {isNewApplication: true},
+          });
         } else {
           message.error(`${i18next.t("general:Failed to add")}: ${res.msg}`);
         }

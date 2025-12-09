@@ -20,9 +20,12 @@ import moment from "moment";
 import * as Setting from "./Setting";
 import * as AssetBackend from "./backend/AssetBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
+import * as ScanBackend from "./backend/ScanBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
+import {JsonCodeMirrorPopover} from "./common/JsonCodeMirrorWidget";
+import {ScanDetailPopover} from "./common/ScanDetailPopover";
 
 const {Option} = Select;
 
@@ -32,13 +35,18 @@ class AssetListPage extends BaseListPage {
     this.state = {
       ...this.state,
       providers: [],
+      allProviders: [],
       selectedProvider: "",
       scanning: false,
+      allScans: [],
+      loadingScans: false,
     };
   }
 
   componentDidMount() {
     this.getProviders();
+    this.loadAllScans();
+    this.loadAllProviders();
   }
 
   getProviders() {
@@ -66,12 +74,14 @@ class AssetListPage extends BaseListPage {
       updatedTime: moment().format(),
       displayName: `New Asset - ${Setting.getRandomName()}`,
       provider: "",
-      resourceId: "",
-      resourceType: "ECS Instance",
+      id: "",
+      type: "Virtual Machine",
       region: "",
       zone: "",
       state: "Active",
       tag: "",
+      username: "",
+      password: "",
       properties: "{}",
     };
   }
@@ -81,7 +91,7 @@ class AssetListPage extends BaseListPage {
     AssetBackend.addAsset(newAsset)
       .then((res) => {
         if (res.status === "ok") {
-          this.props.history.push({pathname: `/assets/${newAsset.owner}/${newAsset.name}`, mode: "add"});
+          this.props.history.push({pathname: `/assets/${newAsset.name}`, mode: "add"});
           Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
@@ -143,14 +153,63 @@ class AssetListPage extends BaseListPage {
       return null;
     }
 
-    const logoMap = {
-      "Aliyun": "https://cdn.casbin.org/img/social_aliyun.png",
-      "AWS": "https://cdn.casbin.org/img/social_aws.png",
-      "Azure": "https://cdn.casbin.org/img/social_azure.png",
-      "GCP": "https://cdn.casbin.org/img/social_gcp.png",
-    };
+    const otherProviderInfo = Setting.getOtherProviderInfo();
+    if (!otherProviderInfo[provider.category] || !otherProviderInfo[provider.category][provider.type]) {
+      return null;
+    }
 
-    return logoMap[provider.type] || null;
+    return otherProviderInfo[provider.category][provider.type].logo;
+  }
+
+  getTypeIcon(typeName) {
+    const typeIcons = Setting.getAssetTypeIcons();
+    return typeIcons[typeName] || null;
+  }
+
+  loadAllScans() {
+    this.setState({loadingScans: true});
+    ScanBackend.getScans("admin")
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            allScans: res.data || [],
+            loadingScans: false,
+          });
+        } else {
+          this.setState({
+            allScans: [],
+            loadingScans: false,
+          });
+        }
+      })
+      .catch(() => {
+        this.setState({
+          allScans: [],
+          loadingScans: false,
+        });
+      });
+  }
+
+  getScansForAsset(assetName) {
+    return this.state.allScans.filter(scan => scan.asset === assetName);
+  }
+
+  loadAllProviders() {
+    ProviderBackend.getProviders(this.props.account.owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            allProviders: res.data || [],
+          });
+        }
+      });
+  }
+
+  getProviderForScan(scanProviderName) {
+    if (!scanProviderName) {
+      return null;
+    }
+    return this.state.allProviders.find(provider => provider.name === scanProviderName);
   }
 
   renderTable(assets) {
@@ -164,7 +223,7 @@ class AssetListPage extends BaseListPage {
         ...this.getColumnSearchProps("owner"),
         render: (text, record, index) => {
           return (
-            <Link to={`/assets/${text}/${record.name}`}>{text}</Link>
+            <Link to={`/assets/${record.name}`}>{text}</Link>
           );
         },
       },
@@ -177,7 +236,7 @@ class AssetListPage extends BaseListPage {
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
-            <Link to={`/assets/${record.owner}/${text}`}>{text}</Link>
+            <Link to={`/assets/${text}`}>{text}</Link>
           );
         },
       },
@@ -209,28 +268,39 @@ class AssetListPage extends BaseListPage {
         render: (text, record, index) => {
           const logo = this.getProviderLogo(text);
           return (
+            <Link to={`/providers/${text}`}>
+              <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                {logo && <img src={logo} alt={text} style={{width: "20px", height: "20px"}} />}
+                <span>{text}</span>
+              </div>
+            </Link>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Type"),
+        dataIndex: "type",
+        key: "type",
+        width: "150px",
+        sorter: true,
+        ...this.getColumnSearchProps("type"),
+        render: (text, record, index) => {
+          const icon = this.getTypeIcon(text);
+          return (
             <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-              {logo && <img src={logo} alt={text} style={{width: "20px", height: "20px"}} />}
+              {icon && <img src={icon} alt={text} style={{width: "20px", height: "20px"}} />}
               <span>{text}</span>
             </div>
           );
         },
       },
       {
-        title: i18next.t("asset:Resource type"),
-        dataIndex: "resourceType",
-        key: "resourceType",
-        width: "150px",
-        sorter: true,
-        ...this.getColumnSearchProps("resourceType"),
-      },
-      {
-        title: i18next.t("asset:Resource ID"),
-        dataIndex: "resourceId",
-        key: "resourceId",
+        title: i18next.t("general:ID"),
+        dataIndex: "id",
+        key: "id",
         width: "200px",
         sorter: true,
-        ...this.getColumnSearchProps("resourceId"),
+        ...this.getColumnSearchProps("id"),
         render: (text, record, index) => {
           return (
             <Tooltip title={text}>
@@ -264,6 +334,51 @@ class AssetListPage extends BaseListPage {
         ...this.getColumnSearchProps("state"),
       },
       {
+        title: i18next.t("asset:Properties"),
+        dataIndex: "properties",
+        key: "properties",
+        width: "200px",
+        render: (text, record, index) => {
+          return (
+            <JsonCodeMirrorPopover
+              text={text}
+              placement="right"
+              maxDisplayLength={30}
+              width="600px"
+              height="500px"
+            />
+          );
+        },
+      },
+      {
+        title: i18next.t("scan:Scans"),
+        dataIndex: "name",
+        key: "scans",
+        width: "200px",
+        fixed: "right",
+        render: (text, record, index) => {
+          const scans = this.getScansForAsset(record.name);
+          if (scans.length === 0) {
+            return <span style={{color: "#999"}}>-</span>;
+          }
+          return (
+            <div style={{display: "flex", flexWrap: "wrap", gap: "4px"}}>
+              {scans.map((scan) => {
+                const provider = this.getProviderForScan(scan.provider);
+                return (
+                  <ScanDetailPopover
+                    key={scan.name}
+                    scan={scan}
+                    provider={provider}
+                    placement="left"
+                  />
+                );
+              })}
+            </div>
+          );
+        },
+      },
+      {
         title: i18next.t("general:Action"),
         dataIndex: "",
         key: "op",
@@ -272,7 +387,7 @@ class AssetListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/assets/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/assets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <PopconfirmModal
                 title={i18next.t("general:Sure to delete") + `: ${record.name} ?`}
                 onConfirm={() => this.deleteAsset(index)}

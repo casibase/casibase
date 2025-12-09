@@ -89,12 +89,9 @@ class ProviderListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
-          this.setState({
-            data: Setting.prependRow(this.state.data, newProvider),
-            pagination: {
-              ...this.state.pagination,
-              total: this.state.pagination.total + 1,
-            },
+          this.props.history.push({
+            pathname: `/providers/${newProvider.name}`,
+            state: {isNewProvider: true},
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
@@ -265,7 +262,7 @@ class ProviderListPage extends BaseListPage {
         // ...this.getColumnSearchProps("isDefault"),
         render: (text, record, index) => {
           return (
-            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+            <Switch disabled checkedChildren={i18next.t("general:ON")} unCheckedChildren={i18next.t("general:OFF")} checked={text} />
           );
         },
       },
@@ -277,7 +274,7 @@ class ProviderListPage extends BaseListPage {
         sorter: (a, b) => a.isRemote - b.isRemote,
         render: (text, record, index) => {
           return (
-            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+            <Switch disabled checkedChildren={i18next.t("general:ON")} unCheckedChildren={i18next.t("general:OFF")} checked={text} />
           );
         },
       },

@@ -18,7 +18,7 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import copy from "copy-to-clipboard";
 import moment from "moment";
-import ChatPrompts from "./ChatPrompts";
+import ChatExampleQuestions from "./ChatExampleQuestions";
 import MessageList from "./chat/MessageList";
 import ChatInput from "./chat/ChatInput";
 import WelcomeHeader from "./chat/WelcomeHeader";
@@ -41,6 +41,7 @@ class ChatBox extends React.Component {
       isLoadingTTS: false,
       isVoiceInput: false,
       rerenderErrorMessage: false,
+      webSearchEnabled: false,
     };
     this.synth = window.speechSynthesis;
     this.cursorPosition = undefined;
@@ -49,6 +50,10 @@ class ChatBox extends React.Component {
     this.ttsHelper = new TtsHelper(this);
     this.sttHelper = new SpeechToTextHelper(this);
   }
+
+  setWebSearchEnabled = (enabled) => {
+    this.setState({webSearchEnabled: enabled});
+  };
 
   componentDidMount() {
     window.addEventListener("beforeunload", () => {
@@ -113,7 +118,7 @@ class ChatBox extends React.Component {
     inputElement?.addEventListener("click", updateCursorPosition);
   }
 
-  handleSend = (innerHtml) => {
+  handleSend = (innerHtml, webSearchEnabled = false) => {
     // abort because the remaining recognition results are useless
     this.sttHelper.stopRecognition();
 
@@ -139,7 +144,7 @@ class ChatBox extends React.Component {
       this.copyFileName = null;
     }
 
-    this.props.sendMessage(newValue, fileName);
+    this.props.sendMessage(newValue, fileName, false, false, webSearchEnabled);
     this.setState({value: "", files: []});
   };
 
@@ -297,6 +302,8 @@ class ChatBox extends React.Component {
       ...message,
       createdTime: moment().format(),
       store: this.props.store?.name,
+      webSearchEnabled: this.state.webSearchEnabled,
+      modelProvider: this.props.chat?.modelProvider || this.props.store?.modelProvider,
     };
     MessageBackend.addMessage(editedMessage)
       .then((res) => {
@@ -323,9 +330,9 @@ class ChatBox extends React.Component {
       messages = [];
     }
 
-    let prompts = this.props.store?.prompts;
-    if (!prompts) {
-      prompts = [];
+    let exampleQuestions = this.props.store?.exampleQuestions;
+    if (!exampleQuestions) {
+      exampleQuestions = [];
     }
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -352,7 +359,7 @@ class ChatBox extends React.Component {
             isReading={this.state.isReading}
             isLoadingTTS={this.state.isLoadingTTS}
             readingMessage={this.state.readingMessage}
-            sendMessage={this.props.sendMessage}
+            sendMessage={(text, fileName = "") => this.props.sendMessage(text, fileName, false, false, this.state.webSearchEnabled)}
             files={this.state.files}
             hideThinking={this.props.store?.hideThinking !== false}
           />
@@ -361,6 +368,7 @@ class ChatBox extends React.Component {
             <ChatInput
               value={this.state.value}
               store={this.props.store}
+              chat={this.props.chat}
               files={this.state.files}
               onFileChange={(files) => this.setState({files})}
               onChange={(value) => this.setState({value})}
@@ -372,14 +380,16 @@ class ChatBox extends React.Component {
               onVoiceInputStart={this.startVoiceInput}
               onVoiceInputEnd={this.stopVoiceInput}
               isVoiceInput={this.state.isVoiceInput}
+              webSearchEnabled={this.state.webSearchEnabled}
+              onWebSearchChange={this.setWebSearchEnabled}
             />
           )}
         </Card>
 
         {messages.length === 0 ? (
-          <ChatPrompts
-            sendMessage={this.props.sendMessage}
-            prompts={prompts}
+          <ChatExampleQuestions
+            sendMessage={(text, fileName = "") => this.props.sendMessage(text, fileName, false, false, this.state.webSearchEnabled)}
+            exampleQuestions={exampleQuestions}
           />
         ) : null}
       </Layout>

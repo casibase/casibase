@@ -135,7 +135,10 @@ func getNode(owner string, name string) (*Node, error) {
 }
 
 func GetNode(id string) (*Node, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return nil, err
+	}
 	return getNode(owner, name)
 }
 
@@ -171,7 +174,10 @@ func GetMaskedNodes(nodes []*Node, errs ...error) ([]*Node, error) {
 }
 
 func UpdateNode(id string, node *Node) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
+	if err != nil {
+		return false, err
+	}
 	p, err := getNode(owner, name)
 	if err != nil {
 		return false, err

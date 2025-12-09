@@ -51,6 +51,7 @@ class StoreEditPage extends React.Component {
       enableTtsStreaming: false,
       store: null,
       themeColor: ThemeDefault.colorPrimary,
+      isNewStore: props.location?.state?.isNewStore || false,
     };
   }
 
@@ -216,7 +217,7 @@ class StoreEditPage extends React.Component {
           <Col span={22} >
             <Input value={this.state.store.name} onChange={e => {
               this.updateStoreField("name", e.target.value);
-            }} />
+            }} disabled={Setting.isUserBoundToStore(this.props.account)} />
           </Col>
         </Row>
         <Row style={{ marginTop: "20px" }} >
@@ -528,8 +529,8 @@ class StoreEditPage extends React.Component {
             {Setting.getLabel(i18next.t("store:Prompts"), i18next.t("store:Prompts - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <PromptTable prompts={this.state.store.prompts} onUpdatePrompts={(prompts) => {
-              this.updateStoreField("prompts", prompts);
+            <ExampleQuestionTable table={this.state.store.exampleQuestions} onUpdateTable={(exampleQuestions) => {
+              this.updateStoreField("exampleQuestions", exampleQuestions);
             }} />
           </Col>
         </Row>
@@ -768,6 +769,7 @@ class StoreEditPage extends React.Component {
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               storeName: this.state.store.name,
+              isNewStore: false,
             });
             window.dispatchEvent(new Event("storesChanged"));
             if (exitAfterSave) {
@@ -786,6 +788,26 @@ class StoreEditPage extends React.Component {
       .catch(error => {
         Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
       });
+  }
+
+  cancelStoreEdit() {
+    if (this.state.isNewStore) {
+      StoreBackend.deleteStore(this.state.store)
+        .then((res) => {
+          if (res.status === "ok") {
+            Setting.showMessage("success", i18next.t("general:Cancelled successfully"));
+            window.dispatchEvent(new Event("storesChanged"));
+            this.props.history.push("/stores");
+          } else {
+            Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${res.msg}`);
+          }
+        })
+        .catch(error => {
+          Setting.showMessage("error", `${i18next.t("general:Failed to cancel")}: ${error}`);
+        });
+    } else {
+      this.props.history.push("/stores");
+    }
   }
 
   render() {
