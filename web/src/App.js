@@ -896,6 +896,7 @@ class App extends Component {
       // 应用场景
       res.push(Setting.getItem(<Link style={{ color: textColor }} to="/workflows">{i18next.t("leftSideMedMenu:Application Scenarios")}</Link>, "/workflows", <ReconciliationTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/sr">{i18next.t("leftSideMedMenu:Super Resolution")}</Link>, "/sr"),
+        Setting.getItem(<Link to="/sr-k">{i18next.t("leftSideMedMenu:Super Resolution Triple")}</Link>, "/sr-k"),
         Setting.getItem(<Link to="/workflows">{i18next.t("leftSideMedMenu:Workflows")}</Link>, "/workflows"),
         // Setting.getItem(<Link to="/vectors">{i18next.t("leftSideMedMenu:Multi Center Cure")}</Link>, "/vectors"),
         Setting.getItem(<Link to="/multi-center">{i18next.t("leftSideMedMenu:Multi Center Cure")}</Link>, "/multi-center"),
