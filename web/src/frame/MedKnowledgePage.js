@@ -29,4 +29,5 @@ class MedKnowledgePage extends React.Component {
     }
 }
 
+// medknowledgepage.js
 export default MedKnowledgePage;
