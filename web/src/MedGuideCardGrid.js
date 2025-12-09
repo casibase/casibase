@@ -75,7 +75,7 @@ const GROUPS = [
         ],
     },
 ];
-// 路由已合并到GROUPS配置中
+// 路由已合并到GROUPS配置中。
 
 
 const MedGuideCardGrid = (props) => {
