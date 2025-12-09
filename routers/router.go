@@ -251,6 +251,8 @@ func initAPI() {
 	beego.Router("/api/get-record", &controllers.ApiController{}, "GET:GetRecord")
 	beego.Router("/api/get-records-by-action", &controllers.ApiController{}, "GET:GetRecordsByAction")
 	beego.Router("/api/get-patient-by-hash-id", &controllers.ApiController{}, "GET:GetPatientByHashID")
+	beego.Router("/api/search-disease-knowledge", &controllers.ApiController{}, "GET:SearchDiseaseKnowledge")
+	beego.Router("/api/get-relation-type-share-counts", &controllers.ApiController{}, "GET:GetRelationTypeShareCounts")
 	beego.Router("/api/create-authorization-request", &controllers.ApiController{}, "POST:CreateAuthorizationRequest")
 	beego.Router("/api/get-patient-authorization-requests", &controllers.ApiController{}, "GET:GetPatientAuthorizationRequests")
 	beego.Router("/api/process-authorization-request", &controllers.ApiController{}, "POST:ProcessAuthorizationRequest")
