@@ -14,7 +14,7 @@ const dataSetsIds = ["MCTest1", "MCTest2", "MCTest3"];
 const projectList = [
     {
         title: "病例分析研究",
-        partner: "医大一院",
+        partner: "医大一院等",
         status: "项目进行中",
         statusType: "processing",
         percent: 65,
