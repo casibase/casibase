@@ -57,11 +57,12 @@ class RecordListPage extends BaseListPage {
   }
 
   getEnableDecodingFromStorage() {
-    const saved = localStorage.getItem("enableDecoding");
-    if (saved === null || saved === undefined) {
-      return false;
-    }
-    return JSON.parse(saved) === true;
+    // const saved = localStorage.getItem("enableDecoding");
+    // if (saved === null || saved === undefined) {
+    //   return false;
+    // }
+    // return JSON.parse(saved) === true;
+    return true
   }
 
   toggleEnableCrossChain = () => {
@@ -109,7 +110,6 @@ class RecordListPage extends BaseListPage {
       method: "POST",
       requestUri: "/api/get-account",
       action: "login",
-      count: 1,
       isTriggered: false,
     };
   }
@@ -433,7 +433,7 @@ class RecordListPage extends BaseListPage {
         key: "object",
         width: "200px",
         sorter: true,
-        hidden: true,
+        // hidden: true,
         ...this.getColumnSearchProps("object"),
         render: (text, record, index) => {
           if (!text || text === "") {
@@ -444,13 +444,13 @@ class RecordListPage extends BaseListPage {
             );
           }
 
-          if (!this.state.enableDecoding) {
-            return (
-              <div style={{ maxWidth: "200px" }}>
-                ***
-              </div>
-            );
-          }
+          // if (!this.state.enableDecoding) {
+          //   return (
+          //     <div style={{ maxWidth: "200px" }}>
+          //       ***
+          //     </div>
+          //   );
+          // }
 
           let formattedText;
           let isValidJson = false;
@@ -505,17 +505,17 @@ class RecordListPage extends BaseListPage {
           );
         },
       },
-      {
-        title: i18next.t("general:objcid"),
-        dataIndex: "objcid",
-        key: "objcid",
-        width: "260px",
-        sorter: true,
-        ...this.getColumnSearchProps("objcid"),
-        render: (text, record, index) => {
-          return text || "";
-        },
-      },
+      // {
+      //   title: i18next.t("general:objcid"),
+      //   dataIndex: "objcid",
+      //   key: "objcid",
+      //   width: "260px",
+      //   sorter: true,
+      //   ...this.getColumnSearchProps("objcid"),
+      //   render: (text, record, index) => {
+      //     return text || "";
+      //   },
+      // },
       {
         title: i18next.t("message:Error text"),
         dataIndex: "errorText",
@@ -539,7 +539,7 @@ class RecordListPage extends BaseListPage {
           }
 
           return (
-            <Switch disabled checkedChildren={i18next.t("general:ON")} unCheckedChildren={i18next.t("general:OFF")} checked={text} />
+            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
           );
         },
       },
