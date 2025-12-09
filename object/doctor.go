@@ -160,9 +160,13 @@ func (doctor *Doctor) getId() string {
 // GetDoctorsByHospitalName 根据医院名称获取医生列表
 func GetDoctorsByHospitalName(hospitalName string) ([]*Doctor, error) {
 	doctors := []*Doctor{}
-	err := adapter.engine.Where("hospital_name = ?", hospitalName).Desc("created_time").Find(&doctors)
+	// 使用 LIKE 匹配，以兼容数据库中可能存在的尾部空格
+	// 显式设置 Limit 防止默认限制
+	err := adapter.engine.Where("hospital_name LIKE ?", "%"+hospitalName+"%").Desc("created_time").Limit(1000).Find(&doctors)
 	if err != nil {
 		return doctors, err
 	}
+	fmt.Printf("GetDoctorsByHospitalName: hospitalName=%s, count=%d\n", hospitalName, len(doctors))
 	return doctors, nil
 }
+
