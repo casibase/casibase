@@ -66,6 +66,7 @@ type SequenceFlow struct {
 	SourceRef           string   `xml:"sourceRef,attr"`
 	TargetRef           string   `xml:"targetRef,attr"`
 	ConditionExpression string   `xml:"conditionExpression,omitempty"`
+	Weight              float64
 }
 
 type PathNode struct {
@@ -160,6 +161,7 @@ func ParseBPMN(bpmnText string, lang string) (map[string]Task, map[string][]Sequ
 					SourceRef:           sourceRef,
 					TargetRef:           targetRef,
 					ConditionExpression: flowElement.Name,
+					Weight:              weight,
 				}
 				sequenceFlows[sourceRef] = append(sequenceFlows[sourceRef], seqFlow)
 			case "exclusiveGateway", "parallelGateway":
