@@ -335,6 +335,8 @@ class App extends Component {
       this.setState({ selectedMenuKey: "/multi-center" });
     } else if (uri.includes("/multi-center/audit-log")) {
       this.setState({ selectedMenuKey: "/multi-center" });
+    } else if (uri.includes("/sr-k")) {
+      this.setState({ selectedMenuKey: "/sr-k" });
     }
     // else if (uri.includes(encodeURIComponent("/forms/区块链浏览器/data"))) {
     //   // 将/forms/区块链浏览器/data 转为 编码后的uri
