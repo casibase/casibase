@@ -540,6 +540,7 @@ class RecordEditPage extends React.Component {
             <React.Fragment>
               {/* <Button size="large" onClick={() => this.submitRecordEdit(false)}>{i18next.t("general:Save")}</Button>
               <Button style={{ marginLeft: "20px" }} type="primary" size="large" onClick={() => this.submitRecordEdit(true)}>{i18next.t("general:Save & Exit")}</Button> */}
+
             </React.Fragment>
           ) : (
             <Button type="primary" size="large" onClick={() => this.props.history.push("/records")}>{i18next.t("general:Exit")}</Button>
