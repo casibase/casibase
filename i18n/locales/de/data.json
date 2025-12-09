@@ -87,9 +87,9 @@
     "failed to unmarshal response: %v": "failed to unmarshal response: %v",
     "input text is empty": "Eingabetext ist leer",
     "no embedding provider specified": "kein Embedding-Anbieter angegeben",
-    "no embedding vector found in response": "no embedding vector found in response",
-    "no embeddings found in the response": "no embeddings found in the response",
-    "none of the tokens were found in the vocabulary": "none of the tokens were found in the vocabulary",
+    "no embedding vector found in response": "kein Einbettungsvektor in der Antwort gefunden",
+    "no embeddings found in the response": "keine Einbettungen in der Antwort gefunden",
+    "none of the tokens were found in the vocabulary": "keines der Token wurde im Vokabular gefunden",
     "request failed with status code %d: %s": "request failed with status code %d: %s",
     "text can not be empty.": "Text darf nicht leer sein.",
     "text cannot be empty": "Text darf nicht leer sein"
@@ -101,32 +101,32 @@
     "QueryText() error: unknown model type: %s": "QueryText() error: unknown model type: %s",
     "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]",
     "calculatePrice() error: unknown model type: %s": "calculatePrice() Fehler: unbekannter Modelltyp: %s",
-    "calculatePrice() error: video generation pricing requires duration information": "calculatePrice() error: video generation pricing requires duration information",
-    "cannot calculate tokens": "cannot calculate tokens",
+    "calculatePrice() error: video generation pricing requires duration information": "calculatePrice() Fehler: Videogenerierungspreisgestaltung erfordert Dauerinformationen",
+    "cannot calculate tokens": "Token können nicht berechnet werden",
     "error getting chat completion: %v": "error getting chat completion: %v",
-    "exceed max tokens": "exceed max tokens",
+    "exceed max tokens": "maximale Token-Anzahl überschritten",
     "failed to calculate price: %v": "failed to calculate price: %v",
     "failed to marshal content: %v": "failed to marshal content: %v",
     "failed to marshal error content: %v": "failed to marshal error content: %v",
     "failed to marshal tool response: %v": "failed to marshal tool response: %v",
     "failed to parse tool arguments: %v": "failed to parse tool arguments: %v",
     "failed to write response: %v": "failed to write response: %v",
-    "no generations returned": "no generations returned",
+    "no generations returned": "keine Generierungen zurückgegeben",
     "the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]",
     "unsupported model: %s": "unsupported model: %s",
-    "writer does not implement http.Flusher": "writer does not implement http.Flusher"
+    "writer does not implement http.Flusher": "Writer implementiert http.Flusher nicht"
   },
   "object": {
     "Cannot generate word cloud, the dict file: [%s] does not exist": "Cannot generate word cloud, the dict file: [%s] does not exist",
     "Casdoor application: [%s] doesn't exist": "Casdoor application: [%s] doesn't exist",
     "Casdoor organization: [%s] doesn't exist": "Casdoor organization: [%s] doesn't exist",
-    "Please add a model provider first": "Please add a model provider first",
-    "Please add an embedding provider first": "Please add an embedding provider first",
+    "Please add a model provider first": "Bitte fügen Sie zuerst einen Modellanbieter hinzu",
+    "Please add an embedding provider first": "Bitte fügen Sie zuerst einen Einbettungsanbieter hinzu",
     "Question message: [%s] doesn't exist": "Question message: [%s] doesn't exist",
-    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() error, the receiver user: ",
+    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() Fehler, Empfängerbenutzer:",
     "The agent provider: %s is expected to be ": "The agent provider: %s is expected to be ",
     "The chat: %s is not found": "The chat: %s is not found",
-    "The default video provider should not be empty": "The default video provider should not be empty",
+    "The default video provider should not be empty": "Der Standard-Videoanbieter sollte nicht leer sein",
     "The embedding provider for store: %s is not found": "The embedding provider for store: %s is not found",
     "The embedding provider: %s is expected to be ": "The embedding provider: %s is expected to be ",
     "The embedding provider: %s is not found": "The embedding provider: %s is not found",
@@ -137,7 +137,7 @@
     "The model provider: %s is expected to be ": "The model provider: %s is expected to be ",
     "The model provider: %s is not found": "The model provider: %s is not found",
     "The model provider: %s's client secret should not be empty": "The model provider: %s's client secret should not be empty",
-    "The provider is not found": "The provider is not found",
+    "The provider is not found": "Der Anbieter wurde nicht gefunden",
     "The provider: %s does not exist": "The provider: %s does not exist",
     "The provider: %s is not found": "The provider: %s is not found",
     "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v": "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v",
@@ -145,7 +145,7 @@
     "The text-to-speech provider for store: %s is not found": "The text-to-speech provider for store: %s is not found",
     "deployment failed, and could not retrieve failure details: %v": "deployment failed, and could not retrieve failure details: %v",
     "deployment failed: %s": "deployment failed: %s",
-    "empty provider key": "empty provider key",
+    "empty provider key": "leerer Anbieterschlüssel",
     "failed to connect to kubernetes cluster: %v": "failed to connect to kubernetes cluster: %v",
     "failed to convert result to yaml: %v": "failed to convert result to yaml: %v",
     "failed to create discovery client: %v": "failed to create discovery client: %v",
@@ -156,7 +156,7 @@
     "failed to create root directory: %v": "failed to create root directory: %v",
     "failed to decode YAML: %v": "failed to decode YAML: %v",
     "failed to delete namespace: %v": "failed to delete namespace: %v",
-    "failed to deploy application": "failed to deploy application",
+    "failed to deploy application": "Anwendung konnte nicht bereitgestellt werden",
     "failed to deploy manifest: %v": "failed to deploy manifest: %v",
     "failed to deploy resource: %v": "failed to deploy resource: %v",
     "failed to generate manifest: %v": "failed to generate manifest: %v",
@@ -178,7 +178,7 @@
     "failed to parse record: name %s, field %s, error: %v": "failed to parse record: name %s, field %s, error: %v",
     "failed to parse server URL: %v": "failed to parse server URL: %v",
     "failed to start cache manager: %v": "failed to start cache manager: %v",
-    "failed to start undeployment": "failed to start undeployment",
+    "failed to start undeployment": "Bereitstellungsaufhebung konnte nicht gestartet werden",
     "failed to update error text for record %s: %s": "failed to update error text for record %s: %s",
     "failed to update resource %s/%s: %v": "failed to update resource %s/%s: %v",
     "failed to write kustomization.yaml: %v": "failed to write kustomization.yaml: %v",
@@ -186,22 +186,22 @@
     "failed to write resource file: %v": "failed to write resource file: %v",
     "getExtFromMimeType() error: unknown MimeType: %s": "getExtFromMimeType() error: unknown MimeType: %s",
     "invalid range type: %s": "invalid range type: %s",
-    "k8s client is not connected to the cluster": "k8s client is not connected to the cluster",
-    "k8s client not connected": "k8s client not connected",
-    "k8s client not connected to cluster": "k8s client not connected to cluster",
-    "k8s client not initialized": "k8s client not initialized",
-    "kubeconfig content is empty": "kubeconfig content is empty",
+    "k8s client is not connected to the cluster": "k8s-Client ist nicht mit dem Cluster verbunden",
+    "k8s client not connected": "k8s-Client nicht verbunden",
+    "k8s client not connected to cluster": "k8s-Client nicht mit Cluster verbunden",
+    "k8s client not initialized": "k8s-Client nicht initialisiert",
+    "kubeconfig content is empty": "kubeconfig-Inhalt ist leer",
     "kustomize run failed: %v": "kustomize run failed: %v",
-    "metrics client not available": "metrics client not available",
+    "metrics client not available": "Metrik-Client nicht verfügbar",
     "namespace %s is terminating and all resources have been cleaned up": "namespace %s is terminating and all resources have been cleaned up",
-    "namespace cannot be empty": "namespace cannot be empty",
-    "no Kubernetes provider found": "no Kubernetes provider found",
-    "no accessible URL found for application": "no accessible URL found for application",
-    "no qVector found": "no qVector found",
-    "parseBase64Image() error: invalid image format": "parseBase64Image() error: invalid image format",
-    "provider kubeconfig content is empty": "provider kubeconfig content is empty",
+    "namespace cannot be empty": "Namespace darf nicht leer sein",
+    "no Kubernetes provider found": "kein Kubernetes-Anbieter gefunden",
+    "no accessible URL found for application": "keine zugängliche URL für Anwendung gefunden",
+    "no qVector found": "kein qVector gefunden",
+    "parseBase64Image() error: invalid image format": "parseBase64Image() Fehler: ungültiges Bildformat",
+    "provider kubeconfig content is empty": "Anbieter-kubeconfig-Inhalt ist leer",
     "queryVectorSafe() error, %s": "queryVectorSafe() error, %s",
-    "server address not found": "server address not found",
+    "server address not found": "Serveradresse nicht gefunden",
     "the STT provider type: %s is not supported": "the STT provider type: %s is not supported",
     "the TTS provider type: %s is not supported": "the TTS provider type: %s is not supported",
     "the agent provider type: %s is not supported": "Der Agenten-Anbietertyp: %s wird nicht unterstützt",
@@ -214,13 +214,13 @@
     "the record: %s's block ID should not be empty": "the record: %s's block ID should not be empty",
     "the scan provider type: %s is not supported": "the scan provider type: %s is not supported",
     "the storage provider type: %s is not supported": "the storage provider type: %s is not supported",
-    "there is no active blockchain provider": "there is no active blockchain provider",
-    "unable to extract host": "unable to extract host",
-    "undeployment timeout: application did not undeploy within 10 minutes": "undeployment timeout: application did not undeploy within 10 minutes"
+    "there is no active blockchain provider": "es gibt keinen aktiven Blockchain-Anbieter",
+    "unable to extract host": "Host konnte nicht extrahiert werden",
+    "undeployment timeout: application did not undeploy within 10 minutes": "Timeout bei Bereitstellungsaufhebung: Anwendung wurde nicht innerhalb von 10 Minuten aufgehoben"
   },
   "openai": {
-    "Invalid API key format. Expected 'Bearer API_KEY'": "Invalid API key format. Expected 'Bearer API_KEY'",
-    "No user message found in the request": "No user message found in the request"
+    "Invalid API key format. Expected 'Bearer API_KEY'": "Ungültiges API-Schlüsselformat. Erwartet 'Bearer API_KEY'",
+    "No user message found in the request": "Keine Benutzernachricht in der Anfrage gefunden"
   },
   "pkgdocker": {
     "Container %s not found": "Container %s not found"
@@ -236,24 +236,24 @@
     "Instance not found: %s": "Instance not found: %s",
     "Instance: [%s] is not found": "Instance: [%s] is not found",
     "Instance: [%s]'s state has been successfully updated to: [%s]": "Instance: [%s]'s state has been successfully updated to: [%s]",
-    "Not implemented": "Not implemented",
+    "Not implemented": "Nicht implementiert",
     "Tencent Cloud API error: %s": "Tencent Cloud API error: %s",
     "Unsupported state: %s": "Unsupported state: %s",
     "VMware API error, code = %d, message = %s": "VMware API error, code = %d, message = %s",
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
   "provider": {
-    "Provider not found": "Provider not found"
+    "Provider not found": "Anbieter nicht gefunden"
   },
   "resource": {
-    "Invalid file data format": "Invalid file data format",
+    "Invalid file data format": "Ungültiges Dateidatenformat",
     "Missing required parameters": "Erforderliche Parameter fehlen"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] doesn't exist"
   },
   "store": {
-    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "Da es in Casibase einen Standardspeicher geben muss, können Sie diesen Speicher nicht als Nicht-Standard festlegen. Sie können direkt einen anderen Speicher als Standard festlegen"
   },
   "scan": {
     "Scan not found": "Scan nicht gefunden",
@@ -264,29 +264,29 @@
   },
   "stt": {
     "API error: %s": "API error: %s",
-    "Missing required parameter: storeId": "Missing required parameter: storeId",
+    "Missing required parameter: storeId": "Erforderlicher Parameter fehlt: storeId",
     "speech recognition API error: %v": "speech recognition API error: %v",
     "speech recognition timed out after %v seconds": "speech recognition timed out after %v seconds"
   },
   "tts": {
-    "The audio data is nil": "The audio data is nil",
+    "The audio data is nil": "Die Audiodaten sind nil",
     "calculatePrice() error: unknown model type: %s": "calculatePrice() Fehler: unbekannter Modelltyp: %s",
     "error creating synthesizer: %v": "error creating synthesizer: %v",
     "error finishing task: %v": "error finishing task: %v",
     "error running task: %v": "error running task: %v",
     "error sending text: %v": "error sending text: %v",
     "output error: %v": "output error: %v",
-    "writer does not implement http.Flusher": "writer does not implement http.Flusher"
+    "writer does not implement http.Flusher": "Writer implementiert http.Flusher nicht"
   },
   "txt": {
-    ".docx file is empty": ".docx file is empty",
+    ".docx file is empty": ".docx-Datei ist leer",
     "GetTextFromMarkitdown() error, failed to open file: %v": "GetTextFromMarkitdown() error, failed to open file: %v",
-    "GetTextFromMarkitdown() error, markitdown does not exist": "GetTextFromMarkitdown() error, markitdown does not exist",
+    "GetTextFromMarkitdown() error, markitdown does not exist": "GetTextFromMarkitdown() Fehler, markitdown existiert nicht",
     "GetTextFromMarkitdown() error, markitdown failed to run: %v: %s": "GetTextFromMarkitdown() error, markitdown failed to run: %v: %s",
     "unsupported file type: %s": "unsupported file type: %s"
   },
   "video": {
-    "The video can only be updated when there are no remarks and the state is \"Draft\"": "The video can only be updated when there are no remarks and the state is \"Draft\"",
-    "UploadVideo() error, videoId should not be empty": "UploadVideo() error, videoId should not be empty"
+    "The video can only be updated when there are no remarks and the state is \"Draft\"": "Das Video kann nur aktualisiert werden, wenn es keine Bemerkungen gibt und der Status \"Entwurf\" ist",
+    "UploadVideo() error, videoId should not be empty": "UploadVideo() Fehler, videoId sollte nicht leer sein"
   }
 }
