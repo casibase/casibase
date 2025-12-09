@@ -26,15 +26,21 @@ type CollaborationRequest struct {
 	InitiatorDoctorName string    `xorm:"varchar(100) notnull" json:"initiatorDoctorName"`
 	InitiatorHospital   string    `xorm:"varchar(200) notnull" json:"initiatorHospital"`
 	PatientHashId       string    `xorm:"varchar(200) notnull index" json:"patientHashId"`
+	// 知识上链场景可能为空
 	// 明文身份证号不入库，仅透传用于前端显示或临时计算
 	PatientIdentityNumber string    `xorm:"-" json:"patientIdentityNumber"`
 	PatientName         string    `xorm:"varchar(100)" json:"patientName"`
 	TargetHospitals     string    `xorm:"text notnull" json:"targetHospitals"` // JSON array of hospital names
 	TargetDoctors       string    `xorm:"text" json:"targetDoctors"` // JSON array of doctor IDs (owner/name format)
 	Description         string    `xorm:"text" json:"description"`
+	PdfFileUrl          string    `xorm:"varchar(500)" json:"pdfFileUrl"` // 患者信息PDF文件URL
 	Status              string    `xorm:"varchar(20) notnull default 'active'" json:"status"` // active, completed, cancelled
 	CreatedTime         time.Time `xorm:"datetime notnull default CURRENT_TIMESTAMP" json:"createdTime"`
 	UpdatedTime         time.Time `xorm:"datetime notnull default CURRENT_TIMESTAMP" json:"updatedTime"`
+
+	// 知识上链相关字段
+	DiseaseName         string    `xorm:"varchar(200)" json:"diseaseName"` // 专病医学概念名称
+	RelationTypes       string    `xorm:"text" json:"relationTypes"` // JSON array of relation types
 }
 
 // GetCollaborationRequests 获取协同诊疗请求列表
