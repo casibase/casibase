@@ -29,4 +29,5 @@ class MedKnowledgeGraph extends React.Component {
     }
 }
 
+// medknowledgegraph.js
 export default MedKnowledgeGraph;
