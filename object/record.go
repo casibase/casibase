@@ -252,6 +252,47 @@ func GetRecordsByAction( action string) ([]*Record, error) {
 	return records, nil
 }
 
+
+// SearchDiseaseKnowledge 查询专病医学概念知识
+// 从record表的object字段中解析三元组，查找head字段匹配指定专病名称的记录
+func SearchDiseaseKnowledge(diseaseName string) ([]*Record, error) {
+	records := []*Record{}
+	// 查询action为add-knowledge-triple的记录
+	err := adapter.engine.Desc("id").Where("action = ?", "add-knowledge-triple").Find(&records)
+	if err != nil {
+		return records, err
+	}
+
+	// 过滤：解析object字段，查找head字段匹配的记录
+	filteredRecords := []*Record{}
+	for _, record := range records {
+		if record.Object == "" {
+			continue
+		}
+
+		// 解析object字段（JSON格式）
+		var objectData map[string]interface{}
+		err := json.Unmarshal([]byte(record.Object), &objectData)
+		if err != nil {
+			// 如果解析失败，尝试处理转义字符
+			normalized := strings.ReplaceAll(record.Object, "\\\"", "\"")
+			normalized = strings.ReplaceAll(normalized, "\\\\", "\\")
+			err = json.Unmarshal([]byte(normalized), &objectData)
+			if err != nil {
+				continue
+			}
+		}
+
+		// 检查head字段是否匹配
+		if head, ok := objectData["head"].(string); ok {
+			if head == diseaseName || strings.Contains(head, diseaseName) {
+				filteredRecords = append(filteredRecords, record)
+			}
+		}
+	}
+
+	return filteredRecords, nil
+}
 func GetRecordsByIds(ids []int) ([]*Record, error) {
 	records := []*Record{}
 	err := adapter.engine.In("id", ids).Find(&records)
