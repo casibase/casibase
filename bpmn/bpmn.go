@@ -397,6 +397,243 @@ func ComparePaths(standardPath, actualPath *PathNode, variance *int, mandatoryTa
 	}
 }
 
+
+// ParseResult represents intermediate parsed data for structure comparison
+type ParseResult struct {
+	Tasks             map[string]Task
+	SequenceFlows     map[string][]SequenceFlow
+	ExclusiveGateways map[string]bool
+	ParallelGateways  map[string]bool
+	TimerEvents       map[string]int
+	StartEvents       []string
+}
+
+// Connection records logical connections for comparison
+type Connection struct {
+	SourceName string
+	TargetName string
+}
+
+// VarianceResult collects comparison details
+type VarianceResult struct {
+	VarianceCount int
+	VarianceScore float64
+	Details       []string
+}
+
+// BPMNParser parses BPMN XML text into simplified structures for structure comparison
+type BPMNParser struct{}
+
+// NewBPMNParser constructs a parser instance
+func NewBPMNParser() *BPMNParser {
+	return &BPMNParser{}
+}
+
+// Parse consumes BPMN XML content and returns ParseResult
+func (p *BPMNParser) Parse(bpmnText string) (*ParseResult, error) {
+	var definitions Definitions
+	if err := xml.Unmarshal([]byte(bpmnText), &definitions); err != nil {
+		return nil, fmt.Errorf("error parsing BPMN content: %w", err)
+	}
+
+	result := &ParseResult{
+		Tasks:             make(map[string]Task),
+		SequenceFlows:     make(map[string][]SequenceFlow),
+		ExclusiveGateways: make(map[string]bool),
+		ParallelGateways:  make(map[string]bool),
+		TimerEvents:       make(map[string]int),
+		StartEvents:       []string{},
+	}
+
+	for _, process := range definitions.Processes {
+		p.parseProcess(process, result)
+	}
+
+	return result, nil
+}
+
+func (p *BPMNParser) parseProcess(process Process, result *ParseResult) {
+	for _, flowElement := range process.FlowElements {
+		switch flowElement.XMLName.Local {
+		case "task":
+			result.Tasks[flowElement.ID] = Task{ID: flowElement.ID, Name: flowElement.Name}
+		case "startEvent", "endEvent", "intermediateCatchEvent", "intermediateThrowEvent":
+			defaultName := "Event"
+			if flowElement.Name != "" {
+				defaultName = flowElement.Name
+			}
+			result.Tasks[flowElement.ID] = Task{ID: flowElement.ID, Name: defaultName}
+			if flowElement.XMLName.Local == "startEvent" {
+				result.StartEvents = append(result.StartEvents, flowElement.ID)
+			}
+		case "sequenceFlow":
+			weight := 1.0
+			if flowElement.ExtensionElements != nil && flowElement.ExtensionElements.Weight != nil {
+				weight = flowElement.ExtensionElements.Weight.Value
+			}
+			seqFlow := SequenceFlow{
+				ID:                  flowElement.ID,
+				SourceRef:           flowElement.SourceRef,
+				TargetRef:           flowElement.TargetRef,
+				ConditionExpression: flowElement.Name,
+				Weight:              weight,
+			}
+			result.SequenceFlows[flowElement.SourceRef] = append(result.SequenceFlows[flowElement.SourceRef], seqFlow)
+		case "exclusiveGateway", "parallelGateway", "inclusiveGateway":
+			result.Tasks[flowElement.ID] = Task{ID: flowElement.ID, Name: flowElement.XMLName.Local}
+			if flowElement.XMLName.Local == "exclusiveGateway" {
+				result.ExclusiveGateways[flowElement.ID] = true
+			} else if flowElement.XMLName.Local == "parallelGateway" {
+				result.ParallelGateways[flowElement.ID] = true
+			}
+		case "timerEventDefinition":
+			var days int
+			fmt.Sscanf(flowElement.Name, "P%dD", &days)
+			result.TimerEvents[flowElement.ID] = days
+		}
+	}
+}
+
+// ExtractTaskNames returns task name set excluding gateways/events
+func ExtractTaskNames(tasks map[string]Task) map[string]bool {
+	taskNames := make(map[string]bool)
+	for _, task := range tasks {
+		if !strings.HasSuffix(task.Name, "Gateway") &&
+			task.Name != "startEvent" &&
+			task.Name != "endEvent" &&
+			task.Name != "Event" {
+			taskNames[task.Name] = true
+		}
+	}
+	return taskNames
+}
+
+// ExtractConnections builds logical connections from flows
+func ExtractConnections(tasks map[string]Task, sequenceFlows map[string][]SequenceFlow) map[Connection]bool {
+	connections := make(map[Connection]bool)
+	for sourceID, flows := range sequenceFlows {
+		sourceTask, ok := tasks[sourceID]
+		if !ok {
+			continue
+		}
+		for _, flow := range flows {
+			targetTask, ok := tasks[flow.TargetRef]
+			if !ok {
+				continue
+			}
+			conn := Connection{
+				SourceName: sourceTask.Name,
+				TargetName: targetTask.Name,
+			}
+			connections[conn] = true
+		}
+	}
+	return connections
+}
+
+// StructureComparator compares BPMN structures
+type StructureComparator struct{}
+
+// NewStructureComparator constructs a StructureComparator
+func NewStructureComparator() *StructureComparator {
+	return &StructureComparator{}
+}
+
+// CompareStructures compares tasks and flows of two BPMN processes
+func (sc *StructureComparator) CompareStructures(
+	standardTasks map[string]Task,
+	standardFlows map[string][]SequenceFlow,
+	actualTasks map[string]Task,
+	actualFlows map[string][]SequenceFlow,
+) *VarianceResult {
+	result := &VarianceResult{
+		VarianceCount: 0,
+		VarianceScore: 0.0,
+		Details:       []string{},
+	}
+
+	standardTaskNames := ExtractTaskNames(standardTasks)
+	actualTaskNames := ExtractTaskNames(actualTasks)
+
+	for taskName := range standardTaskNames {
+		if !actualTaskNames[taskName] {
+			result.VarianceCount++
+			result.VarianceScore += 1.0
+			detail := fmt.Sprintf("差异#%d: 文件2中缺失任务: %s", result.VarianceCount, taskName)
+			result.Details = append(result.Details, detail)
+		}
+	}
+
+	for taskName := range actualTaskNames {
+		if !standardTaskNames[taskName] {
+			result.VarianceCount++
+			result.VarianceScore += 1.0
+			detail := fmt.Sprintf("差异#%d: 文件2中额外任务: %s", result.VarianceCount, taskName)
+			result.Details = append(result.Details, detail)
+		}
+	}
+
+	totalFlows1 := 0
+	for _, flows := range standardFlows {
+		totalFlows1 += len(flows)
+	}
+	totalFlows2 := 0
+	for _, flows := range actualFlows {
+		totalFlows2 += len(flows)
+	}
+
+	if totalFlows1 != totalFlows2 {
+		info := fmt.Sprintf("[信息] 流数量差异: 文件1有%d个流，文件2有%d个流", totalFlows1, totalFlows2)
+		result.Details = append(result.Details, info)
+	}
+
+	standardConnections := ExtractConnections(standardTasks, standardFlows)
+	actualConnections := ExtractConnections(actualTasks, actualFlows)
+
+	for conn := range standardConnections {
+		if !actualConnections[conn] {
+			result.VarianceCount++
+			result.VarianceScore += 0.8
+			detail := fmt.Sprintf("差异#%d: 文件2中缺失连接: %s -> %s",
+				result.VarianceCount, conn.SourceName, conn.TargetName)
+			result.Details = append(result.Details, detail)
+		}
+	}
+
+	for conn := range actualConnections {
+		if !standardConnections[conn] {
+			result.VarianceCount++
+			result.VarianceScore += 0.8
+			detail := fmt.Sprintf("差异#%d: 文件2中额外连接: %s -> %s",
+				result.VarianceCount, conn.SourceName, conn.TargetName)
+			result.Details = append(result.Details, detail)
+		}
+	}
+
+	return result
+}
+
+func formatVarianceResult(v *VarianceResult) string {
+	if v == nil {
+		return "无差异信息"
+	}
+
+	var builder strings.Builder
+	builder.WriteString(fmt.Sprintf("差异数量: %d\n", v.VarianceCount))
+	builder.WriteString(fmt.Sprintf("差异得分: %.2f\n", v.VarianceScore))
+
+	if len(v.Details) == 0 {
+		builder.WriteString("详细信息: 无\n")
+		return builder.String()
+	}
+
+	builder.WriteString("详细信息:\n")
+	for idx, detail := range v.Details {
+		builder.WriteString(fmt.Sprintf("- %d. %s\n", idx+1, detail))
+	}
+
+	return builder.String()
+}
 func ComparePath(standardBpmnText string, unknownBpmnText string, lang string) string {
 	standardTasks, standardSequenceFlows, standardExclusiveGateways, standardParallelGateways, standardTimerEvents, standardStartEvents, err := ParseBPMN(standardBpmnText, lang)
 	if err != nil {
