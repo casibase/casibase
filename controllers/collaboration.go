@@ -1079,7 +1079,7 @@ func (c *ApiController) UploadCollaborationPdf() {
 
 	// 构造访问 URL
 	// 使用 API 接口访问，避免静态资源映射问题
-	origin := conf.GetConfigString("origin") // 获取配置的域名
+	origin := conf.GetConfigString("origin") // 获取配置的域名。
 	fileUrl := fmt.Sprintf("%s/api/get-collaboration-pdf?name=%s", origin, newFilename)
 	
 	// 如果 origin 为空，直接返回相对路径
