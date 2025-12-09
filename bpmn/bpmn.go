@@ -44,11 +44,20 @@ type Task struct {
 }
 
 type FlowElement struct {
-	XMLName   xml.Name
-	ID        string `xml:"id,attr"`
-	Name      string `xml:"name,attr,omitempty"`
-	SourceRef string `xml:"sourceRef,attr,omitempty"`
-	TargetRef string `xml:"targetRef,attr,omitempty"`
+	XMLName           xml.Name
+	ID                string               `xml:"id,attr"`
+	Name              string               `xml:"name,attr,omitempty"`
+	SourceRef         string               `xml:"sourceRef,attr,omitempty"`
+	TargetRef         string               `xml:"targetRef,attr,omitempty"`
+	ExtensionElements *ExtensionElements   `xml:"extensionElements,omitempty"`
+}
+
+type ExtensionElements struct {
+	Weight *WeightElement `xml:"weight,omitempty"`
+}
+
+type WeightElement struct {
+	Value float64 `xml:"value,attr"`
 }
 
 type SequenceFlow struct {
