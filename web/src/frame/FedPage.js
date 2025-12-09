@@ -29,4 +29,5 @@ class FedPage extends React.Component {
     }
 }
 
+// 可信联邦
 export default FedPage;
