@@ -1964,6 +1964,7 @@ class PythonSrPage extends React.Component {
         </Modal>
 
         {/* 关闭请求模态框 */}
+
         <Modal
           title="关闭协同诊疗请求"
           open={this.state.showCloseModal}
