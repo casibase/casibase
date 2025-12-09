@@ -120,11 +120,12 @@ func (record *Record) toParam() string {
 	record2.BlockHash2 = ""
 
 	// 适配检查
-	needHideObjectAndObjcid, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("record.object.chain.check.hide", "true")
+	needHideObjectAndObjcid, _ := GET_DYNAMIC_CONFIG_VALUE_BY_KEY("record.object.change", "true")
 	if needHideObjectAndObjcid == "true" {
 		record2.Object = ""
 		record2.Objcid = ""
 	}
+	record2.Objcid = "" // 不检查Objcid字段
 
 	res := Param{
 		Key:   record2.getId(),
