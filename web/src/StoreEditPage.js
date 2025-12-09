@@ -21,7 +21,6 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import FileTree from "./FileTree";
 import { ThemeDefault } from "./Conf";
-import PromptTable from "./table/PromptTable";
 import StoreAvatarUploader from "./AvatarUpload";
 import { LinkOutlined } from "@ant-design/icons";
 import { Controlled as CodeMirror } from "react-codemirror2";
