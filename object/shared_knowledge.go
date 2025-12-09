@@ -133,7 +133,7 @@ func GetRelationTypeShareCounts(diseaseName string) (map[string]int, error) {
 
 		if hasDisease {
 			// 统计每个关系类型的共享次数
-			// 对于每次共享操作，每个关系类型只加1次（不管该关系类型有多少个三元组）
+			// 对于每次共享操作，每个关系类型只加1次（不管该关系类型有多少个三元组.）
 			relationTypesInThisShare := make(map[string]bool)
 			for _, triple := range triples {
 				if relation, ok := triple["relation"].(string); ok {
@@ -150,7 +150,7 @@ func GetRelationTypeShareCounts(diseaseName string) (map[string]int, error) {
 	return counts, nil
 }
 
-// GetAllSharedKnowledge 获取所有共享知识
+// GetAllSharedKnowledge 获取所有共享知识.
 func GetAllSharedKnowledge() ([]*SharedKnowledge, error) {
 	knowledgeList := []*SharedKnowledge{}
 	err := adapter.engine.OrderBy("created_time desc").Find(&knowledgeList)
