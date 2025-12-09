@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import { Card, Button, Checkbox, Select, Input, Progress, Tabs, Avatar, Space, Row, Col, Statistic, message, Form, DatePicker, InputNumber, Modal, Tag, Descriptions, Divider, Table } from "antd";
-import { UserOutlined, HistoryOutlined, FileTextOutlined, MedicineBoxOutlined, SearchOutlined, SendOutlined, CheckOutlined, CloseOutlined, EyeOutlined, EditOutlined } from "@ant-design/icons";
+import { Card, Button, Checkbox, Select, Input, Progress, Tabs, Avatar, Space, Row, Col, Statistic, message, Form, DatePicker, InputNumber, Modal, Tag, Descriptions, Divider, Table, Collapse, Upload } from "antd";
+import { UserOutlined, HistoryOutlined, FileTextOutlined, MedicineBoxOutlined, SearchOutlined, SendOutlined, CheckOutlined, CloseOutlined, EyeOutlined, EditOutlined, UploadOutlined, FilePdfOutlined, DeleteOutlined } from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
 import * as Setting from "../Setting";
 import moment from 'moment';
@@ -23,6 +23,7 @@ import sm3 from 'sm-crypto/src/sm3';
 const { Option } = Select;
 const { TextArea } = Input;
 const { TabPane } = Tabs;
+const { Panel } = Collapse;
 
 class PythonSrPage extends React.Component {
   constructor(props) {
@@ -38,9 +39,12 @@ class PythonSrPage extends React.Component {
       collaborationForm: {
         selectedHospitals: [],
         selectedDoctors: [], // [{hospitalName: 'xxx', doctorId: 'owner/name', doctorName: 'xxx'}, ...]
-        description: ''
+        description: '',
+        pdfFile: null, // 上传的PDF文件
+        pdfFileUrl: null // PDF文件的URL（上传后返回）
       },
       isSubmittingCollaboration: false,
+      isUploadingPdf: false,
       // 医院医生映射：{hospitalName: [doctors]}
       hospitalDoctorsMap: {},
       isLoadingDoctors: false,
@@ -75,6 +79,20 @@ class PythonSrPage extends React.Component {
       showOpinionsModal: false,
       diagnosisOpinions: [],
       isLoadingOpinions: false,
+
+      // 关闭请求相关
+      showCloseModal: false,
+      isClosingRequest: false,
+      requestToClose: null,
+      closeOpinion: {
+        opinion: '',
+        diagnosis: '',
+        treatmentSuggestion: ''
+      },
+
+      // 当前请求对应的就诊记录详情
+      selectedRequestRecords: [],
+      isLoadingRequestRecords: false,
     };
     this.chartRef = React.createRef();
     this.formRef = React.createRef();
@@ -228,6 +246,17 @@ class PythonSrPage extends React.Component {
         )}
       </Card>
     );
+  }
+
+  // 获取PDF下载链接
+  getPdfDownloadUrl = (url) => {
+    if (!url) return '';
+    // 如果是旧的静态链接，转换为API下载链接
+    if (url.includes('/files/collaboration_pdf/')) {
+      const fileName = url.split('/files/collaboration_pdf/').pop();
+      return `${Setting.ServerUrl}/api/get-collaboration-pdf?name=${fileName}`;
+    }
+    return url;
   }
 
   // 进行s3哈希处理（sm3）
@@ -482,6 +511,7 @@ class PythonSrPage extends React.Component {
 
       if (res.status === 'ok') {
         const doctors = res.data || [];
+        console.log(`获取到 ${hospitalName} 的医生列表:`, doctors);
         this.setState(prevState => ({
           hospitalDoctorsMap: {
             ...prevState.hospitalDoctorsMap,
@@ -500,6 +530,57 @@ class PythonSrPage extends React.Component {
     } finally {
       this.setState({ isLoadingDoctors: false });
     }
+  }
+
+  // 上传PDF文件
+  uploadPdfFile = async (file) => {
+    this.setState({ isUploadingPdf: true });
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch(`${Setting.ServerUrl}/api/upload-collaboration-pdf`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      });
+
+      const res = await response.json();
+
+      if (res.status === 'ok') {
+        const pdfUrl = res.data?.url || res.data?.fileUrl || '';
+        this.setState({
+          collaborationForm: {
+            ...this.state.collaborationForm,
+            pdfFile: file,
+            pdfFileUrl: pdfUrl
+          }
+        });
+        message.success('PDF文件上传成功');
+        return pdfUrl;
+      } else {
+        message.error(res.msg || 'PDF文件上传失败');
+        return null;
+      }
+    } catch (error) {
+      console.error('上传PDF文件时发生错误:', error);
+      message.error('上传失败，请稍后重试');
+      return null;
+    } finally {
+      this.setState({ isUploadingPdf: false });
+    }
+  }
+
+  // 删除PDF文件
+  removePdfFile = () => {
+    this.setState({
+      collaborationForm: {
+        ...this.state.collaborationForm,
+        pdfFile: null,
+        pdfFileUrl: null
+      }
+    });
   }
 
   // 发起协同诊疗请求
@@ -524,9 +605,31 @@ class PythonSrPage extends React.Component {
       return;
     }
 
+    // 验证：不能选择自己
+    const currentDoctorIdRaw = account?.id || account?.name || '';
+    const currentDoctorId = currentDoctorIdRaw.includes('/')
+      ? currentDoctorIdRaw
+      : `${account?.owner || 'casibase'}/${currentDoctorIdRaw}`;
+
+    const selectedDoctorIds = collaborationForm.selectedDoctors.map(item => item.doctorId);
+    if (selectedDoctorIds.includes(currentDoctorId)) {
+      message.warning('不能向自己发起协同诊疗请求，请重新选择其他医生');
+      return;
+    }
+
     this.setState({ isSubmittingCollaboration: true });
 
     try {
+      // 如果有PDF文件但还没有上传URL，先上传PDF
+      let pdfFileUrl = collaborationForm.pdfFileUrl;
+      if (collaborationForm.pdfFile && !pdfFileUrl) {
+        pdfFileUrl = await this.uploadPdfFile(collaborationForm.pdfFile);
+        if (!pdfFileUrl) {
+          this.setState({ isSubmittingCollaboration: false });
+          return;
+        }
+      }
+
       const fallbackPatientInfo = this.derivePatientInfoFromRecords(patientRecords);
 
       // 提取医院列表（去重）
@@ -543,7 +646,8 @@ class PythonSrPage extends React.Component {
         patientName: (currentPatientInfo?.name || fallbackPatientInfo?.patientName || '').trim(),
         targetHospitals: JSON.stringify(hospitals),
         targetDoctors: JSON.stringify(doctorIds),
-        description: collaborationForm.description || ''
+        description: collaborationForm.description || '',
+        pdfFileUrl: pdfFileUrl || ''
       };
 
       console.log('发送协同诊疗请求:', requestData);
@@ -565,7 +669,9 @@ class PythonSrPage extends React.Component {
           collaborationForm: {
             selectedHospitals: [],
             selectedDoctors: [],
-            description: ''
+            description: '',
+            pdfFile: null,
+            pdfFileUrl: null
           }
         });
         if (this.formRef.current) {
@@ -689,11 +795,37 @@ class PythonSrPage extends React.Component {
   }
 
   // 显示请求详情
-  showRequestDetails = (request) => {
+  showRequestDetails = async (request) => {
     this.setState({
       selectedRequest: request,
-      showRequestModal: true
+      showRequestModal: true,
+      selectedRequestRecords: [],
+      isLoadingRequestRecords: true
     });
+
+    // 查询该患者对应的就诊记录
+    if (request && request.patientHashId) {
+      try {
+        const response = await fetch(`${Setting.ServerUrl}/api/get-patient-by-hash-id?hashId=${encodeURIComponent(request.patientHashId)}`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const res = await response.json();
+          if (res.status === 'ok') {
+            const records = res.data || [];
+            this.setState({ selectedRequestRecords: records });
+          }
+        }
+      } catch (error) {
+        console.error('获取就诊记录详情时发生错误:', error);
+      } finally {
+        this.setState({ isLoadingRequestRecords: false });
+      }
+    } else {
+      this.setState({ isLoadingRequestRecords: false });
+    }
   }
 
   // 显示诊疗意见填写界面
@@ -782,49 +914,96 @@ class PythonSrPage extends React.Component {
     }
   }
 
-  // 关闭协同诊疗请求
-  closeCollaborationRequest = async (request) => {
+  // 关闭协同诊疗请求（弹出模态框）
+  closeCollaborationRequest = (request) => {
     if (!request || !request.requestId) {
       message.error('请求信息不完整');
       return;
     }
 
-    Modal.confirm({
-      title: '确认关闭',
-      content: '确定要关闭这个协同诊疗请求吗？关闭后将无法再提交新的诊疗意见。',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: async () => {
-        try {
-          const response = await fetch(`${Setting.ServerUrl}/api/update-collaboration-request-status`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-              requestId: request.requestId,
-              status: 'cancelled'
-            })
-          });
-
-          const res = await response.json();
-
-          if (res.status === 'ok') {
-            message.success('协同诊疗请求已关闭');
-            // 刷新请求列表
-            this.fetchMyCollaborationRequests();
-            this.fetchHospitalCollaborationRequests();
-            this.fetchDoctorCollaborationRequests();
-          } else {
-            message.error(res.msg || '关闭请求失败');
-          }
-        } catch (error) {
-          console.error('关闭协同诊疗请求时发生错误:', error);
-          message.error('关闭失败，请稍后重试');
-        }
+    this.setState({
+      requestToClose: request,
+      showCloseModal: true,
+      closeOpinion: {
+        opinion: '',
+        diagnosis: '',
+        treatmentSuggestion: ''
       }
     });
+  }
+
+  // 提交关闭请求（包含最终意见）
+  submitCloseRequest = async () => {
+    const { account } = this.props;
+    const { requestToClose, closeOpinion } = this.state;
+
+    if (!requestToClose) {
+      message.error('请求信息不完整');
+      return;
+    }
+
+    if (!closeOpinion.opinion.trim()) {
+      message.warning('请填写最终诊疗意见');
+      return;
+    }
+
+    this.setState({ isClosingRequest: true });
+
+    try {
+      // 1. 提交最终诊疗意见
+      const opinionData = {
+        collaborationReqId: requestToClose.requestId,
+        doctorId: account?.id || account?.name || '',
+        doctorName: account?.displayName || account?.name || '未知医生',
+        hospitalName: account?.affiliation || '未知医院',
+        department: account?.department || '',
+        opinion: `[最终意见] ${closeOpinion.opinion}`,
+        diagnosis: closeOpinion.diagnosis,
+        treatmentSuggestion: closeOpinion.treatmentSuggestion
+      };
+
+      const opinionResponse = await fetch(`${Setting.ServerUrl}/api/submit-diagnosis-opinion`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(opinionData)
+      });
+
+      const opinionRes = await opinionResponse.json();
+      if (opinionRes.status !== 'ok') {
+        throw new Error(opinionRes.msg || '提交最终意见失败');
+      }
+
+      // 2. 更新请求状态为已完成（completed）
+      const statusResponse = await fetch(`${Setting.ServerUrl}/api/update-collaboration-request-status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          requestId: requestToClose.requestId,
+          status: 'completed'
+        })
+      });
+
+      const statusRes = await statusResponse.json();
+      if (statusRes.status !== 'ok') {
+        throw new Error(statusRes.msg || '更新请求状态失败');
+      }
+
+      message.success('协同诊疗请求已完成并关闭');
+      this.setState({ showCloseModal: false });
+
+      // 刷新请求列表
+      this.fetchMyCollaborationRequests();
+      this.fetchHospitalCollaborationRequests();
+      this.fetchDoctorCollaborationRequests();
+
+    } catch (error) {
+      console.error('关闭协同诊疗请求时发生错误:', error);
+      message.error(`关闭失败: ${error.message}`);
+    } finally {
+      this.setState({ isClosingRequest: false });
+    }
   }
 
   // 查看诊疗意见
@@ -875,7 +1054,7 @@ class PythonSrPage extends React.Component {
     const isDoctor = userTag === 'doctor' || userTag === 'admin';
 
     // 定义可选医院列表
-    const availableHospitals = ['广东省人民医院', '中国医科大学附属第一医院', '中国医科大学附属第一医院互联网医院', '中国医科大学附属第一医院浑南院区', '江苏省人民医院'];
+    const availableHospitals = ['广东省人民医院', '中国医科大学附属第一医院', '江苏省人民医院'];
 
     return (
       <div style={{ padding: '24px', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
@@ -976,32 +1155,52 @@ class PythonSrPage extends React.Component {
                     {this.state.patientRecords.length > 0 && (
                       <div style={{ marginBottom: '24px' }}>
                         <Divider orientation="left">患者就诊记录（{this.state.patientRecords.length}条）</Divider>
-                        <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                          <Space direction="vertical" style={{ width: '100%' }} size="middle">
-                            {this.state.patientRecords.slice(0, 5).map((record, index) => {
-                              try {
-                                const recordData = JSON.parse(record.object || '{}');
-                                return (
-                                  <Card key={record.id} size="small" hoverable>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <Space>
-                                        <MedicineBoxOutlined style={{ color: '#165DFF' }} />
-                                        <span style={{ fontWeight: 500 }}>
-                                          {recordData.section || recordData.admHosName || '未知医院'}
-                                        </span>
-                                        <span style={{ color: '#86909C', fontSize: '12px' }}>
-                                          {recordData.consultationTime ? moment(recordData.consultationTime).format('YYYY-MM-DD') : '未知时间'}
-                                        </span>
-                                      </Space>
-                                      <Tag color="blue">{recordData.unit || '未知科室'}</Tag>
-                                    </div>
-                                  </Card>
-                                );
-                              } catch (error) {
+                        <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                          <Collapse defaultActiveKey={[]} style={{ marginTop: '8px' }}>
+                            {this.state.patientRecords.map((record, index) => {
+                              const objectData = this.safeParseRecordObject(record?.object);
+                              if (!objectData) {
                                 return null;
                               }
+
+                              const hospitalName = objectData.section || objectData.admHosName || objectData.hospitalName || objectData.hosName || objectData.admHos || '未知医院';
+                              const consultationTime = objectData.consultationTime ? moment(objectData.consultationTime).format('YYYY-MM-DD HH:mm:ss') : '未知时间';
+                              const unit = objectData.unit || '未知科室';
+
+                              return (
+                                <Panel
+                                  header={
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                                      <Space>
+                                        <MedicineBoxOutlined style={{ color: '#165DFF' }} />
+                                        <span style={{ fontWeight: 500 }}>{hospitalName}</span>
+                                        <span style={{ color: '#86909C', fontSize: '12px' }}>{consultationTime}</span>
+                                      </Space>
+                                      <Tag color="blue">{unit}</Tag>
+                                    </div>
+                                  }
+                                  key={index}
+                                >
+                                  <div style={{ backgroundColor: '#f8f9fa', padding: '16px', borderRadius: '4px' }}>
+                                    <div style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 500, color: '#165DFF' }}>
+                                      就诊记录详细信息
+                                    </div>
+                                    <pre style={{
+                                      margin: 0,
+                                      fontSize: '12px',
+                                      fontFamily: 'monospace',
+                                      whiteSpace: 'pre-wrap',
+                                      wordBreak: 'break-word',
+                                      maxHeight: '400px',
+                                      overflowY: 'auto'
+                                    }}>
+                                      {JSON.stringify(objectData, null, 2)}
+                                    </pre>
+                                  </div>
+                                </Panel>
+                              );
                             })}
-                          </Space>
+                          </Collapse>
                         </div>
                       </div>
                     )}
@@ -1018,7 +1217,11 @@ class PythonSrPage extends React.Component {
                             {availableHospitals.map((hospital, index) => {
                               const isHospitalSelected = this.state.collaborationForm.selectedHospitals.includes(hospital);
                               const hospitalDoctors = this.state.hospitalDoctorsMap[hospital] || [];
-                              const currentDoctorId = account?.id || account?.name || '';
+                              // 统一格式：确保 currentDoctorId 是 owner/name 格式
+                              const currentDoctorIdRaw = account?.id || account?.name || '';
+                              const currentDoctorId = currentDoctorIdRaw.includes('/')
+                                ? currentDoctorIdRaw
+                                : `${account?.owner || 'casibase'}/${currentDoctorIdRaw}`;
 
                               return (
                                 <Card key={index} size="small" style={{ border: isHospitalSelected ? '2px solid #165DFF' : '1px solid #d9d9d9' }}>
@@ -1070,6 +1273,15 @@ class PythonSrPage extends React.Component {
                                           return doctorId !== currentDoctorId;
                                         });
 
+                                        // 如果过滤后没有可用医生（只有当前医生自己）
+                                        if (availableDoctors.length === 0) {
+                                          return (
+                                            <div style={{ color: '#86909C', fontSize: '12px' }}>
+                                              该医院暂无其他医生（已排除您自己）
+                                            </div>
+                                          );
+                                        }
+
                                         // 获取已选中的该医院的医生ID列表
                                         const selectedDoctorIds = this.state.collaborationForm.selectedDoctors
                                           .filter(item => item.hospitalName === hospital)
@@ -1082,13 +1294,26 @@ class PythonSrPage extends React.Component {
                                             value={selectedDoctorIds}
                                             style={{ width: '100%' }}
                                             onChange={(selectedIds) => {
+                                              // 验证：不能选择自己
+                                              const currentDoctorIdRaw = account?.id || account?.name || '';
+                                              const currentDoctorId = currentDoctorIdRaw.includes('/')
+                                                ? currentDoctorIdRaw
+                                                : `${account?.owner || 'casibase'}/${currentDoctorIdRaw}`;
+
+                                              // 过滤掉当前医生（防止通过其他方式选择自己）
+                                              const validSelectedIds = selectedIds.filter(id => id !== currentDoctorId);
+
+                                              if (selectedIds.length !== validSelectedIds.length) {
+                                                message.warning('不能选择自己作为协作医生');
+                                              }
+
                                               // 先移除该医院的所有医生选择
                                               let selectedDoctors = this.state.collaborationForm.selectedDoctors.filter(
                                                 item => item.hospitalName !== hospital
                                               );
 
                                               // 添加新选中的医生
-                                              selectedIds.forEach(doctorId => {
+                                              validSelectedIds.forEach(doctorId => {
                                                 const doctor = availableDoctors.find(d => `${d.owner}/${d.name}` === doctorId);
                                                 if (doctor) {
                                                   selectedDoctors.push({
@@ -1170,6 +1395,70 @@ class PythonSrPage extends React.Component {
                               });
                             }}
                           />
+                        </div>
+
+                        <div style={{ marginBottom: '20px' }}>
+                          <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#86909C', marginBottom: '8px' }}>
+                            上传患者信息PDF（可选）
+                          </label>
+                          {this.state.collaborationForm.pdfFileUrl || this.state.collaborationForm.pdfFile ? (
+                            <div style={{ padding: '12px', backgroundColor: '#f0f9ff', borderRadius: '4px', border: '1px solid #91d5ff' }}>
+                              <Space>
+                                <FilePdfOutlined style={{ color: '#1890ff', fontSize: '20px' }} />
+                                <span style={{ fontSize: '14px' }}>
+                                  {this.state.collaborationForm.pdfFile?.name || 'PDF文件已上传'}
+                                </span>
+                                <Button
+                                  type="link"
+                                  danger
+                                  size="small"
+                                  icon={<DeleteOutlined />}
+                                  onClick={this.removePdfFile}
+                                >
+                                  删除
+                                </Button>
+                              </Space>
+                            </div>
+                          ) : (
+                            <Upload
+                              accept=".pdf"
+                              maxCount={1}
+                              beforeUpload={(file) => {
+                                // 检查文件类型
+                                const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+                                if (!isPdf) {
+                                  message.error('只能上传PDF文件！');
+                                  return Upload.LIST_IGNORE;
+                                }
+                                // 检查文件大小（限制为50MB）
+                                const isLt50M = file.size / 1024 / 1024 < 50;
+                                if (!isLt50M) {
+                                  message.error('PDF文件大小不能超过50MB！');
+                                  return Upload.LIST_IGNORE;
+                                }
+                                // 自动上传
+                                this.uploadPdfFile(file);
+                                return false; // 阻止自动上传，我们手动处理
+                              }}
+                              fileList={this.state.collaborationForm.pdfFile ? [{
+                                uid: '-1',
+                                name: this.state.collaborationForm.pdfFile.name,
+                                status: this.state.isUploadingPdf ? 'uploading' : 'done',
+                                percent: this.state.isUploadingPdf ? 50 : 100
+                              }] : []}
+                              onRemove={() => {
+                                this.removePdfFile();
+                                return true;
+                              }}
+                            >
+                              <Button icon={<UploadOutlined />} loading={this.state.isUploadingPdf}>
+                                选择PDF文件
+                              </Button>
+                            </Upload>
+                          )}
+                          <div style={{ fontSize: '12px', color: '#86909C', marginTop: '8px' }}>
+                            支持上传患者病历、检查报告等PDF文件，最大50MB
+                          </div>
                         </div>
 
                         <div style={{ textAlign: 'center' }}>
@@ -1417,45 +1706,108 @@ class PythonSrPage extends React.Component {
         <Modal
           title="协同诊疗请求详情"
           open={this.state.showRequestModal}
-          onCancel={() => this.setState({ showRequestModal: false, selectedRequest: null })}
+          onCancel={() => this.setState({ showRequestModal: false, selectedRequest: null, selectedRequestRecords: [] })}
           footer={[
-            <Button key="close" onClick={() => this.setState({ showRequestModal: false, selectedRequest: null })}>
+            <Button key="close" onClick={() => this.setState({ showRequestModal: false, selectedRequest: null, selectedRequestRecords: [] })}>
               关闭
             </Button>
           ]}
-          width={600}
+          width={900}
         >
           {this.state.selectedRequest && (
-            <Descriptions column={1} size="small">
-              <Descriptions.Item label="发起医生">{this.state.selectedRequest.initiatorDoctorName}</Descriptions.Item>
-              <Descriptions.Item label="发起医院">{this.state.selectedRequest.initiatorHospital}</Descriptions.Item>
-              <Descriptions.Item label="患者姓名">{this.getDisplayPatientName(this.state.selectedRequest)}</Descriptions.Item>
-              <Descriptions.Item label="患者身份证号">
-                {this.getDisplayPatientIdentity(this.state.selectedRequest)}
-              </Descriptions.Item>
-              <Descriptions.Item label="患者HashID">{this.state.selectedRequest.patientHashId}</Descriptions.Item>
-              <Descriptions.Item label="发起时间">{moment(this.state.selectedRequest.createdTime).format('YYYY-MM-DD HH:mm:ss')}</Descriptions.Item>
-              <Descriptions.Item label="状态">
-                <Tag color={this.state.selectedRequest.status === 'active' ? 'green' : this.state.selectedRequest.status === 'completed' ? 'blue' : 'default'}>
-                  {this.state.selectedRequest.status === 'active' ? '进行中' : this.state.selectedRequest.status === 'completed' ? '已完成' : this.state.selectedRequest.status === 'cancelled' ? '已关闭' : '未知状态'}
-                </Tag>
-              </Descriptions.Item>
-              <Descriptions.Item label="协作医院">
-                {JSON.parse(this.state.selectedRequest.targetHospitals || '[]').map((hospital, index) => (
-                  <Tag key={index} color="blue" style={{ marginBottom: '4px' }}>{hospital}</Tag>
-                ))}
-              </Descriptions.Item>
-              {this.state.selectedRequest.targetDoctors && (
-                <Descriptions.Item label="指定医生">
-                  {JSON.parse(this.state.selectedRequest.targetDoctors || '[]').map((doctorId, index) => (
-                    <Tag key={index} color="green" style={{ marginBottom: '4px' }}>{doctorId}</Tag>
+            <>
+              <Descriptions column={1} size="small" style={{ marginBottom: '24px' }}>
+                <Descriptions.Item label="发起医生">{this.state.selectedRequest.initiatorDoctorName}</Descriptions.Item>
+                <Descriptions.Item label="发起医院">{this.state.selectedRequest.initiatorHospital}</Descriptions.Item>
+                <Descriptions.Item label="患者姓名">{this.getDisplayPatientName(this.state.selectedRequest)}</Descriptions.Item>
+                <Descriptions.Item label="患者身份证号">
+                  {this.getDisplayPatientIdentity(this.state.selectedRequest)}
+                </Descriptions.Item>
+                <Descriptions.Item label="患者HashID">{this.state.selectedRequest.patientHashId}</Descriptions.Item>
+                <Descriptions.Item label="发起时间">{moment(this.state.selectedRequest.createdTime).format('YYYY-MM-DD HH:mm:ss')}</Descriptions.Item>
+                <Descriptions.Item label="状态">
+                  <Tag color={this.state.selectedRequest.status === 'active' ? 'green' : this.state.selectedRequest.status === 'completed' ? 'blue' : 'default'}>
+                    {this.state.selectedRequest.status === 'active' ? '进行中' : this.state.selectedRequest.status === 'completed' ? '已完成' : this.state.selectedRequest.status === 'cancelled' ? '已关闭' : '未知状态'}
+                  </Tag>
+                </Descriptions.Item>
+                <Descriptions.Item label="协作医院">
+                  {JSON.parse(this.state.selectedRequest.targetHospitals || '[]').map((hospital, index) => (
+                    <Tag key={index} color="blue" style={{ marginBottom: '4px' }}>{hospital}</Tag>
                   ))}
                 </Descriptions.Item>
+                {this.state.selectedRequest.targetDoctors && (
+                  <Descriptions.Item label="指定医生">
+                    {JSON.parse(this.state.selectedRequest.targetDoctors || '[]').map((doctorId, index) => (
+                      <Tag key={index} color="green" style={{ marginBottom: '4px' }}>{doctorId}</Tag>
+                    ))}
+                  </Descriptions.Item>
+                )}
+                <Descriptions.Item label="说明">
+                  {this.state.selectedRequest.description || '无'}
+                </Descriptions.Item>
+                {this.state.selectedRequest.pdfFileUrl && (
+                  <Descriptions.Item label="患者信息PDF">
+                    <Button
+                      type="link"
+                      icon={<FilePdfOutlined />}
+                      onClick={() => {
+                        const downloadUrl = this.getPdfDownloadUrl(this.state.selectedRequest.pdfFileUrl);
+                        window.open(downloadUrl, '_blank');
+                      }}
+                    >
+                      下载PDF文件
+                    </Button>
+                  </Descriptions.Item>
+                )}
+              </Descriptions>
+
+              <Divider>就诊记录详情</Divider>
+
+              {this.state.isLoadingRequestRecords ? (
+                <div style={{ textAlign: 'center', padding: '40px' }}>
+                  <Progress type="circle" />
+                </div>
+              ) : this.state.selectedRequestRecords.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '20px', color: '#86909C' }}>
+                  <div style={{ fontSize: '14px' }}>暂无就诊记录</div>
+                </div>
+              ) : (
+                <Collapse defaultActiveKey={['0']} style={{ marginTop: '16px' }}>
+                  {this.state.selectedRequestRecords.map((record, index) => {
+                    const objectData = this.safeParseRecordObject(record?.object);
+                    const hospitalName = objectData?.admHosName || objectData?.section || objectData?.hospitalName || objectData?.hosName || objectData?.admHos || '未知医院';
+                    const consultationTime = objectData?.consultationTime ? moment(objectData.consultationTime).format('YYYY-MM-DD HH:mm:ss') : '未知时间';
+                    const unit = objectData?.unit || '未知科室';
+
+                    return (
+                      <Panel
+                        header={
+                          <Space>
+                            <MedicineBoxOutlined style={{ color: '#165DFF' }} />
+                            <span style={{ fontWeight: 500 }}>{hospitalName}</span>
+                            <span style={{ color: '#86909C', fontSize: '12px' }}>{consultationTime}</span>
+                            <Tag color="blue">{unit}</Tag>
+                          </Space>
+                        }
+                        key={index}
+                      >
+                        <div style={{ backgroundColor: '#f8f9fa', padding: '16px', borderRadius: '4px', maxHeight: '500px', overflowY: 'auto' }}>
+                          <pre style={{
+                            margin: 0,
+                            fontSize: '12px',
+                            fontFamily: 'monospace',
+                            whiteSpace: 'pre-wrap',
+                            wordBreak: 'break-word'
+                          }}>
+                            {JSON.stringify(objectData || {}, null, 2)}
+                          </pre>
+                        </div>
+                      </Panel>
+                    );
+                  })}
+                </Collapse>
               )}
-              <Descriptions.Item label="说明">
-                {this.state.selectedRequest.description || '无'}
-              </Descriptions.Item>
-            </Descriptions>
+            </>
           )}
         </Modal>
 
@@ -1485,6 +1837,24 @@ class PythonSrPage extends React.Component {
               提示：您可以对同一个协同诊疗请求提交多条意见，每条意见都会记录在区块链上。
             </div>
           </div>
+          {this.state.selectedRequest?.pdfFileUrl && (
+            <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#f0f9ff', borderRadius: '4px', border: '1px solid #91d5ff' }}>
+              <Space>
+                <FilePdfOutlined style={{ color: '#1890ff', fontSize: '18px' }} />
+                <span style={{ fontSize: '14px', fontWeight: 500 }}>患者信息PDF：</span>
+                <Button
+                  type="link"
+                  icon={<EyeOutlined />}
+                  onClick={() => {
+                    const downloadUrl = this.getPdfDownloadUrl(this.state.selectedRequest.pdfFileUrl);
+                    window.open(downloadUrl, '_blank');
+                  }}
+                >
+                  下载PDF文件
+                </Button>
+              </Space>
+            </div>
+          )}
           <Space direction="vertical" style={{ width: '100%' }} size="middle">
             <div>
               <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>
@@ -1591,6 +1961,84 @@ class PythonSrPage extends React.Component {
               ))}
             </Space>
           )}
+        </Modal>
+
+        {/* 关闭请求模态框 */}
+        <Modal
+          title="关闭协同诊疗请求"
+          open={this.state.showCloseModal}
+          onCancel={() => this.setState({ showCloseModal: false, requestToClose: null })}
+          footer={[
+            <Button key="cancel" onClick={() => this.setState({ showCloseModal: false, requestToClose: null })}>
+              取消
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              danger
+              loading={this.state.isClosingRequest}
+              onClick={this.submitCloseRequest}
+            >
+              确认关闭并归档
+            </Button>
+          ]}
+          width={700}
+        >
+          <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#fff1f0', borderLeft: '4px solid #ff4d4f', borderRadius: '4px' }}>
+            <div style={{ fontSize: '14px', color: '#cf1322' }}>
+              请填写最终诊疗意见。此操作将结束本次协同诊疗流程，并将状态更新为“已完成”。
+            </div>
+          </div>
+          <Space direction="vertical" style={{ width: '100%' }} size="middle">
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>
+                最终诊疗意见 <span style={{ color: 'red' }}>*</span>
+              </label>
+              <TextArea
+                rows={4}
+                placeholder="请输入最终的综合诊疗意见..."
+                value={this.state.closeOpinion.opinion}
+                onChange={(e) => this.setState({
+                  closeOpinion: {
+                    ...this.state.closeOpinion,
+                    opinion: e.target.value
+                  }
+                })}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>
+                最终诊断结果（可选）
+              </label>
+              <TextArea
+                rows={3}
+                placeholder="请输入最终诊断结果..."
+                value={this.state.closeOpinion.diagnosis}
+                onChange={(e) => this.setState({
+                  closeOpinion: {
+                    ...this.state.closeOpinion,
+                    diagnosis: e.target.value
+                  }
+                })}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>
+                最终治疗建议（可选）
+              </label>
+              <TextArea
+                rows={3}
+                placeholder="请输入最终治疗建议..."
+                value={this.state.closeOpinion.treatmentSuggestion}
+                onChange={(e) => this.setState({
+                  closeOpinion: {
+                    ...this.state.closeOpinion,
+                    treatmentSuggestion: e.target.value
+                  }
+                })}
+              />
+            </div>
+          </Space>
         </Modal>
       </div>
     );
