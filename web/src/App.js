@@ -1225,6 +1225,10 @@ class App extends Component {
           const PythonSrPageWithPermission = withPagePermission(PythonSrPage, "/sr");
           return this.renderSigninIfNotSignedIn(<PythonSrPageWithPermission account={this.state.account} {...props} />);
         }} />
+        <Route exact path="/sr-k" render={(props) => {
+          const PythonSrKPageWithPermission = withPagePermission(PythonSrKPage, "/sr-k");
+          return this.renderSigninIfNotSignedIn(<PythonSrKPageWithPermission account={this.state.account} {...props} />);
+        }} />
         <Route exact path="/tasks" render={(props) => this.renderSigninIfNotSignedIn(<TaskListPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks/:taskName" render={(props) => this.renderSigninIfNotSignedIn(<TaskEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/forms" render={(props) => this.renderSigninIfNotSignedIn(<FormListPage account={this.state.account} {...props} />)} />
