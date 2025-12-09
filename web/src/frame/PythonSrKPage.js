@@ -943,7 +943,7 @@ class PythonSrKPage extends React.Component {
         });
 
         if (shareTriples.length === 0) {
-            message.warning('您没有该专病的相关数据可共享');
+            message.warning('您没有该专病的相关数据可共享。');
             return;
         }
 
