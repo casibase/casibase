@@ -1033,7 +1033,12 @@
     "Video": "ビデオ",
     "Video - Tooltip": "ビデオ",
     "Video ID": "ビデオID",
-    "Video ID - Tooltip": "ビデオID（一意の識別子）"
+    "Video ID - Tooltip": "ビデオID（一意の識別子）",
+    "Remark": "備考",
+    "Videos": "動画",
+    "Wait Time": "待機時間",
+    "Wait Time - Tooltip": "動画生成の待機時間（秒）",
+    "Watch Video": "動画を視聴"
   },
   "workflow": {
     "Edit Workflow": "ワークフローを編集"

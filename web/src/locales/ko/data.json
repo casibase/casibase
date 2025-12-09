@@ -160,7 +160,7 @@
     "List Page": "목록 페이지",
     "Position": "위치",
     "Position - Tooltip": "양식 내 항목의 위치",
-    "Table": "Table",
+    "Table": "테이블",
     "Width": "너비",
     "iFrame": "iFrame"
   },
@@ -885,7 +885,7 @@
     "Welcome text - Tooltip": "환영 팝업의 본문 내용",
     "Welcome title": "환영 제목",
     "Welcome title - Tooltip": "환영 팝업의 제목",
-    "Workflow": "워크플로우",
+    "Workflow": "워크플로",
     "Workflow - Tooltip": "연결된 워크플로 프로세스",
     "files and": "파일 및",
     "folders are checked": "폴더가 선택되었습니다"
@@ -1033,9 +1033,16 @@
     "Video": "녹화",
     "Video - Tooltip": "비디오",
     "Video ID": "녹화 ID",
-    "Video ID - Tooltip": "비디오 ID(고유 식별자)"
+    "Video ID - Tooltip": "비디오 ID(고유 식별자)",
+    "Remark": "비고",
+    "Videos": "비디오",
+    "Wait Time": "대기 시간",
+    "Wait Time - Tooltip": "비디오 생성 대기 시간(초)",
+    "Watch": "보기",
+    "Watch Video": "비디오 보기"
   },
   "workflow": {
-    "Edit Workflow": "워크플로 편집"
+    "Edit Workflow": "워크플로 편집",
+    "New Workflow": "새 워크플로"
   }
 }

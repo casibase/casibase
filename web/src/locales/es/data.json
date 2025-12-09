@@ -896,7 +896,7 @@
     "Welcome text - Tooltip": "Contenido del cuerpo de la ventana de bienvenida",
     "Welcome title": "Título de bienvenida",
     "Welcome title - Tooltip": "Título de la ventana de bienvenida",
-    "Workflow": "Workflow",
+    "Workflow": "Flujo de trabajo",
     "Workflow - Tooltip": "Proceso de flujo de trabajo asociado",
     "files and": "archivos y",
     "folders are checked": "carpetas seleccionadas"
@@ -1044,9 +1044,33 @@
     "Video": "Grabación",
     "Video - Tooltip": "Video",
     "Video ID": "ID de grabación",
-    "Video ID - Tooltip": "ID de video (identificador único)"
+    "Video ID - Tooltip": "ID de video (identificador único)",
+    "Remark": "Observación",
+    "Videos": "Videos",
+    "Wait Time": "Tiempo de espera",
+    "Wait Time - Tooltip": "Tiempo de espera para la generación de video en segundos",
+    "Watch": "Ver",
+    "Watch Video": "Ver video",
+    "Prompt": "Prompt",
+    "Prompt - Tooltip": "Descripción de texto para generación de video",
+    "Request": "Solicitud",
+    "Request - Tooltip": "Parámetros de solicitud para generación de video",
+    "Response": "Respuesta",
+    "Response - Tooltip": "Datos de respuesta de generación de video",
+    "Sora": "Sora",
+    "Transcription": "Transcripción",
+    "Transcription - Tooltip": "Contenido de texto del video",
+    "Translate": "Traducir",
+    "Translation": "Traducción",
+    "Translation - Tooltip": "Contenido de traducción del video",
+    "Video Length": "Duración del video",
+    "Video Length - Tooltip": "Duración del video en segundos"
   },
   "workflow": {
-    "Edit Workflow": "Editar flujo de trabajo"
+    "Edit Workflow": "Editar flujo de trabajo",
+    "New Workflow": "Nuevo flujo de trabajo",
+    "Workflow": "Flujo de trabajo",
+    "Workflow - Tooltip": "Definición y ejecución del flujo de trabajo",
+    "Workflows": "Flujos de trabajo"
   }
 }
