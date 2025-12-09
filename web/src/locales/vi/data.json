@@ -451,7 +451,13 @@
     "Zone - Tooltip": "Availability zone",
     "empty": "empty",
     "items": "items",
-    "{total} in total": "{total} in total"
+    "{total} in total": "{total} in total",
+    "Collapse row": "Thu gọn hàng",
+    "Expand row": "Mở rộng hàng",
+    "Invert selection": "Đảo ngược lựa chọn",
+    "Select all": "Chọn tất cả",
+    "Select all data": "Chọn tất cả dữ liệu",
+    "Sort": "Sắp xếp"
   },
   "graph": {
     "Circular": "Vòng tròn",

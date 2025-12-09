@@ -451,7 +451,13 @@
     "Zone - Tooltip": "Availability zone",
     "empty": "empty",
     "items": "items",
-    "{total} in total": "{total} in total"
+    "{total} in total": "{total} in total",
+    "Collapse row": "Satırı daralt",
+    "Expand row": "Satırı genişlet",
+    "Invert selection": "Seçimi tersine çevir",
+    "Select all": "Tümünü seç",
+    "Select all data": "Tüm verileri seç",
+    "Sort": "Sırala"
   },
   "graph": {
     "Circular": "Dairesel",

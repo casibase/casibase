@@ -451,7 +451,13 @@
     "Zone - Tooltip": "利用可能ゾーン",
     "empty": "空",
     "items": "項目",
-    "{total} in total": "{total} 合計"
+    "{total} in total": "{total} 合計",
+    "Collapse row": "行を折りたたむ",
+    "Expand row": "行を展開",
+    "Invert selection": "選択を反転",
+    "Select all": "すべて選択",
+    "Select all data": "すべてのデータを選択",
+    "Sort": "並べ替え"
   },
   "graph": {
     "Circular": "円形",

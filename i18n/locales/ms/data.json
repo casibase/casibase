@@ -253,7 +253,8 @@
     "storage provider name: [%s] doesn't exist": "nama pembekal penyimpanan: [%s] tidak wujud"
   },
   "store": {
-    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "memandangkan mesti ada satu stor lalai dalam Casibase, anda tidak boleh menetapkan stor ini kepada bukan lalai. Anda boleh terus menetapkan stor lain sebagai lalai"
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "memandangkan mesti ada satu stor lalai dalam Casibase, anda tidak boleh menetapkan stor ini kepada bukan lalai. Anda boleh terus menetapkan stor lain sebagai lalai",
+    "Cannot delete the default store": "Tidak boleh memadam stor lalai"
   },
   "scan": {
     "Scan not found": "Imbasan tidak ditemui",

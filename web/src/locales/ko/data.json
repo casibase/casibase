@@ -451,7 +451,13 @@
     "Zone - Tooltip": "사용 가능한 지역",
     "empty": "빈",
     "items": "항목",
-    "{total} in total": "{total} 총계"
+    "{total} in total": "{total} 총계",
+    "Collapse row": "행 접기",
+    "Expand row": "행 펼치기",
+    "Invert selection": "선택 반전",
+    "Select all": "모두 선택",
+    "Select all data": "모든 데이터 선택",
+    "Sort": "정렬"
   },
   "graph": {
     "Circular": "원형",

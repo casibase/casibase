@@ -253,7 +253,8 @@
     "storage provider name: [%s] doesn't exist": "nome do provedor de armazenamento: [%s] não existe"
   },
   "store": {
-    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "dado que deve haver um armazenamento padrão no Casibase, você não pode definir este armazenamento como não padrão. Você pode definir diretamente outro armazenamento como padrão"
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "dado que deve haver um armazenamento padrão no Casibase, você não pode definir este armazenamento como não padrão. Você pode definir diretamente outro armazenamento como padrão",
+    "Cannot delete the default store": "Não é possível excluir o armazenamento padrão"
   },
   "scan": {
     "Scan not found": "Varredura não encontrada",

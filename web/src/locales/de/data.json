@@ -451,7 +451,13 @@
     "Zone - Tooltip": "Verfügbare Zone",
     "empty": "leer",
     "items": "Elemente",
-    "{total} in total": "{total} insgesamt"
+    "{total} in total": "{total} insgesamt",
+    "Collapse row": "Zeile einklappen",
+    "Expand row": "Zeile erweitern",
+    "Invert selection": "Auswahl umkehren",
+    "Select all": "Alle auswählen",
+    "Select all data": "Alle Daten auswählen",
+    "Sort": "Sortieren"
   },
   "graph": {
     "Circular": "Kreisförmig",

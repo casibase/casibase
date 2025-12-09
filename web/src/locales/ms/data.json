@@ -451,7 +451,13 @@
     "Zone - Tooltip": "Availability zone",
     "empty": "empty",
     "items": "items",
-    "{total} in total": "{total} in total"
+    "{total} in total": "{total} in total",
+    "Collapse row": "Kuncupkan baris",
+    "Expand row": "Kembangkan baris",
+    "Invert selection": "Songsangkan pemilihan",
+    "Select all": "Pilih semua",
+    "Select all data": "Pilih semua data",
+    "Sort": "Susun"
   },
   "graph": {
     "Circular": "Bulat",

@@ -253,7 +253,8 @@
     "storage provider name: [%s] doesn't exist": "tên nhà cung cấp lưu trữ: [%s] không tồn tại"
   },
   "store": {
-    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "do phải có một kho lưu trữ mặc định trong Casibase, bạn không thể đặt kho lưu trữ này thành không mặc định. Bạn có thể trực tiếp đặt kho lưu trữ khác làm mặc định"
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "do phải có một kho lưu trữ mặc định trong Casibase, bạn không thể đặt kho lưu trữ này thành không mặc định. Bạn có thể trực tiếp đặt kho lưu trữ khác làm mặc định",
+    "Cannot delete the default store": "Không thể xóa kho lưu trữ mặc định"
   },
   "scan": {
     "Scan not found": "Không tìm thấy quét",

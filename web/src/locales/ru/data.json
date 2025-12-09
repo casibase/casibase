@@ -451,7 +451,13 @@
     "Zone - Tooltip": "Доступная зона",
     "empty": "Пустой",
     "items": "Пункты",
-    "{total} in total": "{total} Итого"
+    "{total} in total": "{total} Итого",
+    "Collapse row": "Свернуть строку",
+    "Expand row": "Развернуть строку",
+    "Invert selection": "Инвертировать выбор",
+    "Select all": "Выбрать все",
+    "Select all data": "Выбрать все данные",
+    "Sort": "Сортировать"
   },
   "graph": {
     "Circular": "Круговой",
