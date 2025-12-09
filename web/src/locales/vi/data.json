@@ -114,7 +114,9 @@
     "Sources": "Nguồn",
     "Search Sources": "Nguồn tìm kiếm",
     "Score": "Điểm",
-    "Source": "Nguồn"
+    "Source": "Nguồn",
+    "Knowledge Fragment": "Đoạn tri thức",
+    "Unable to load knowledge base sources. Please try again.": "Không thể tải nguồn cơ sở tri thức. Vui lòng thử lại."
   },
   "connection": {
     "History": "History",

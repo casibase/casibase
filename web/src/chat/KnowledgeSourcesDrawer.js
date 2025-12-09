@@ -58,7 +58,7 @@ const KnowledgeSourceItem = ({vectorScore, vectorData, idx, themeColor}) => {
           fontSize: "12px",
           fontWeight: "500",
         }}>
-          {vectorData.file || "Knowledge Fragment"}
+          {vectorData.file || i18next.t("chat:Knowledge Fragment")}
         </span>
         <span style={{
           marginLeft: "auto",
@@ -109,6 +109,9 @@ const KnowledgeSourcesDrawer = ({visible, onClose, vectorScores, account}) => {
 
     try {
       for (const vectorScore of vectorScores) {
+        if (!vectorScore.vector || typeof vectorScore.vector !== "string") {
+          continue; // Skip invalid vector IDs
+        }
         const parts = vectorScore.vector.split("/");
         if (parts.length >= 2) {
           const owner = parts[0];
@@ -122,7 +125,7 @@ const KnowledgeSourcesDrawer = ({visible, onClose, vectorScores, account}) => {
       setVectorsData(newVectorsData);
     } catch (error) {
       // Failed to load vectors data
-      Setting.showMessage("error", "Failed to load vectors data");
+      Setting.showMessage("error", i18next.t("chat:Unable to load knowledge base sources. Please try again."));
     } finally {
       setLoading(false);
     }

@@ -114,7 +114,9 @@
     "Sources": "Quellen",
     "Search Sources": "Suchquellen",
     "Score": "Punktzahl",
-    "Source": "Quelle"
+    "Source": "Quelle",
+    "Knowledge Fragment": "Wissensfragment",
+    "Unable to load knowledge base sources. Please try again.": "Wissensdatenbankquellen können nicht geladen werden. Bitte versuchen Sie es erneut."
   },
   "connection": {
     "History": "Verlauf",

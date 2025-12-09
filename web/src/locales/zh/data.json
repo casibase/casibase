@@ -170,7 +170,9 @@
     "Sources": "来源",
     "Search Sources": "搜索来源",
     "Score": "得分",
-    "Source": "来源"
+    "Source": "来源",
+    "Knowledge Fragment": "知识片段",
+    "Unable to load knowledge base sources. Please try again.": "无法加载知识库来源。请重试。"
   },
   "connection": {
     "History": "历史",

@@ -114,7 +114,9 @@
     "Sources": "소스",
     "Search Sources": "검색 소스",
     "Score": "점수",
-    "Source": "소스"
+    "Source": "소스",
+    "Knowledge Fragment": "지식 조각",
+    "Unable to load knowledge base sources. Please try again.": "지식 베이스 소스를 로드할 수 없습니다. 다시 시도해 주세요."
   },
   "connection": {
     "History": "히스토리",

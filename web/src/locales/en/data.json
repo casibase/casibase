@@ -170,7 +170,9 @@
     "Sources": "Sources",
     "Search Sources": "Search Sources",
     "Score": "Score",
-    "Source": "Source"
+    "Source": "Source",
+    "Knowledge Fragment": "Knowledge Fragment",
+    "Unable to load knowledge base sources. Please try again.": "Unable to load knowledge base sources. Please try again."
   },
   "connection": {
     "History": "History",

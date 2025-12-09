@@ -114,7 +114,9 @@
     "Sources": "Fontes",
     "Search Sources": "Fontes de pesquisa",
     "Score": "Pontuação",
-    "Source": "Fonte"
+    "Source": "Fonte",
+    "Knowledge Fragment": "Fragmento de conhecimento",
+    "Unable to load knowledge base sources. Please try again.": "Não foi possível carregar fontes da base de conhecimento. Por favor, tente novamente."
   },
   "connection": {
     "History": "History",

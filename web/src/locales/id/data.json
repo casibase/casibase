@@ -114,7 +114,9 @@
     "Sources": "Sumber",
     "Search Sources": "Sumber Pencarian",
     "Score": "Skor",
-    "Source": "Sumber"
+    "Source": "Sumber",
+    "Knowledge Fragment": "Fragmen Pengetahuan",
+    "Unable to load knowledge base sources. Please try again.": "Tidak dapat memuat sumber basis pengetahuan. Silakan coba lagi."
   },
   "connection": {
     "History": "Riwayat",

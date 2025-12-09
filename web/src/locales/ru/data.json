@@ -114,7 +114,9 @@
     "Sources": "Источники",
     "Search Sources": "Источники поиска",
     "Score": "Оценка",
-    "Source": "Источник"
+    "Source": "Источник",
+    "Knowledge Fragment": "Фрагмент знаний",
+    "Unable to load knowledge base sources. Please try again.": "Не удалось загрузить источники базы знаний. Пожалуйста, попробуйте еще раз."
   },
   "connection": {
     "History": "История",

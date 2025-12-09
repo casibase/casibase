@@ -114,7 +114,9 @@
     "Sources": "Kaynaklar",
     "Search Sources": "Arama Kaynakları",
     "Score": "Puan",
-    "Source": "Kaynak"
+    "Source": "Kaynak",
+    "Knowledge Fragment": "Bilgi Parçası",
+    "Unable to load knowledge base sources. Please try again.": "Bilgi tabanı kaynakları yüklenemiyor. Lütfen tekrar deneyin."
   },
   "connection": {
     "History": "History",

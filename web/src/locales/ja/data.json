@@ -114,7 +114,9 @@
     "Sources": "ソース",
     "Search Sources": "検索ソース",
     "Score": "スコア",
-    "Source": "ソース"
+    "Source": "ソース",
+    "Knowledge Fragment": "知識の断片",
+    "Unable to load knowledge base sources. Please try again.": "知識ベースソースを読み込めません。もう一度お試しください。"
   },
   "connection": {
     "History": "履歴",
