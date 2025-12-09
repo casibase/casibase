@@ -25,7 +25,7 @@
     "this operation requires admin privilege": "Для этой операции требуются права администратора"
   },
   "blockchain": {
-    "The default blockchain provider is not found": "The default blockchain provider is not found",
+    "The default blockchain provider is not found": "Провайдер блокчейна по умолчанию не найден",
     "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'"
   },
   "bpmn": {
@@ -87,9 +87,9 @@
     "failed to unmarshal response: %v": "failed to unmarshal response: %v",
     "input text is empty": "входной текст пуст",
     "no embedding provider specified": "не указан поставщик встраивания",
-    "no embedding vector found in response": "no embedding vector found in response",
-    "no embeddings found in the response": "no embeddings found in the response",
-    "none of the tokens were found in the vocabulary": "none of the tokens were found in the vocabulary",
+    "no embedding vector found in response": "в ответе не найден вектор встраивания",
+    "no embeddings found in the response": "в ответе не найдены встраивания",
+    "none of the tokens were found in the vocabulary": "ни один токен не найден в словаре",
     "request failed with status code %d: %s": "request failed with status code %d: %s",
     "text can not be empty.": "текст не может быть пустым.",
     "text cannot be empty": "текст не может быть пустым"
@@ -101,32 +101,32 @@
     "QueryText() error: unknown model type: %s": "QueryText() error: unknown model type: %s",
     "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]",
     "calculatePrice() error: unknown model type: %s": "Ошибка calculatePrice(): неизвестный тип модели: %s",
-    "calculatePrice() error: video generation pricing requires duration information": "calculatePrice() error: video generation pricing requires duration information",
-    "cannot calculate tokens": "cannot calculate tokens",
+    "calculatePrice() error: video generation pricing requires duration information": "ошибка calculatePrice(): ценообразование генерации видео требует информации о продолжительности",
+    "cannot calculate tokens": "невозможно рассчитать токены",
     "error getting chat completion: %v": "error getting chat completion: %v",
-    "exceed max tokens": "exceed max tokens",
+    "exceed max tokens": "превышено максимальное количество токенов",
     "failed to calculate price: %v": "failed to calculate price: %v",
     "failed to marshal content: %v": "failed to marshal content: %v",
     "failed to marshal error content: %v": "failed to marshal error content: %v",
     "failed to marshal tool response: %v": "failed to marshal tool response: %v",
     "failed to parse tool arguments: %v": "failed to parse tool arguments: %v",
     "failed to write response: %v": "failed to write response: %v",
-    "no generations returned": "no generations returned",
+    "no generations returned": "не возвращено никаких генераций",
     "the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]",
     "unsupported model: %s": "unsupported model: %s",
-    "writer does not implement http.Flusher": "writer does not implement http.Flusher"
+    "writer does not implement http.Flusher": "writer не реализует http.Flusher"
   },
   "object": {
     "Cannot generate word cloud, the dict file: [%s] does not exist": "Cannot generate word cloud, the dict file: [%s] does not exist",
     "Casdoor application: [%s] doesn't exist": "Casdoor application: [%s] doesn't exist",
     "Casdoor organization: [%s] doesn't exist": "Casdoor organization: [%s] doesn't exist",
-    "Please add a model provider first": "Please add a model provider first",
-    "Please add an embedding provider first": "Please add an embedding provider first",
+    "Please add a model provider first": "Сначала добавьте провайдера модели",
+    "Please add an embedding provider first": "Сначала добавьте провайдера встраивания",
     "Question message: [%s] doesn't exist": "Question message: [%s] doesn't exist",
-    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() error, the receiver user: ",
+    "SendErrorEmail() error, the receiver user: ": "Ошибка SendErrorEmail(), получатель:",
     "The agent provider: %s is expected to be ": "The agent provider: %s is expected to be ",
     "The chat: %s is not found": "The chat: %s is not found",
-    "The default video provider should not be empty": "The default video provider should not be empty",
+    "The default video provider should not be empty": "Провайдер видео по умолчанию не должен быть пустым",
     "The embedding provider for store: %s is not found": "The embedding provider for store: %s is not found",
     "The embedding provider: %s is expected to be ": "The embedding provider: %s is expected to be ",
     "The embedding provider: %s is not found": "The embedding provider: %s is not found",
@@ -137,7 +137,7 @@
     "The model provider: %s is expected to be ": "The model provider: %s is expected to be ",
     "The model provider: %s is not found": "The model provider: %s is not found",
     "The model provider: %s's client secret should not be empty": "The model provider: %s's client secret should not be empty",
-    "The provider is not found": "The provider is not found",
+    "The provider is not found": "Провайдер не найден",
     "The provider: %s does not exist": "The provider: %s does not exist",
     "The provider: %s is not found": "The provider: %s is not found",
     "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v": "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v",
@@ -145,7 +145,7 @@
     "The text-to-speech provider for store: %s is not found": "The text-to-speech provider for store: %s is not found",
     "deployment failed, and could not retrieve failure details: %v": "deployment failed, and could not retrieve failure details: %v",
     "deployment failed: %s": "deployment failed: %s",
-    "empty provider key": "empty provider key",
+    "empty provider key": "пустой ключ провайдера",
     "failed to connect to kubernetes cluster: %v": "failed to connect to kubernetes cluster: %v",
     "failed to convert result to yaml: %v": "failed to convert result to yaml: %v",
     "failed to create discovery client: %v": "failed to create discovery client: %v",
@@ -156,7 +156,7 @@
     "failed to create root directory: %v": "failed to create root directory: %v",
     "failed to decode YAML: %v": "failed to decode YAML: %v",
     "failed to delete namespace: %v": "failed to delete namespace: %v",
-    "failed to deploy application": "failed to deploy application",
+    "failed to deploy application": "не удалось развернуть приложение",
     "failed to deploy manifest: %v": "failed to deploy manifest: %v",
     "failed to deploy resource: %v": "failed to deploy resource: %v",
     "failed to generate manifest: %v": "failed to generate manifest: %v",
@@ -178,7 +178,7 @@
     "failed to parse record: name %s, field %s, error: %v": "failed to parse record: name %s, field %s, error: %v",
     "failed to parse server URL: %v": "failed to parse server URL: %v",
     "failed to start cache manager: %v": "failed to start cache manager: %v",
-    "failed to start undeployment": "failed to start undeployment",
+    "failed to start undeployment": "не удалось начать отмену развертывания",
     "failed to update error text for record %s: %s": "failed to update error text for record %s: %s",
     "failed to update resource %s/%s: %v": "failed to update resource %s/%s: %v",
     "failed to write kustomization.yaml: %v": "failed to write kustomization.yaml: %v",
@@ -186,22 +186,22 @@
     "failed to write resource file: %v": "failed to write resource file: %v",
     "getExtFromMimeType() error: unknown MimeType: %s": "getExtFromMimeType() error: unknown MimeType: %s",
     "invalid range type: %s": "invalid range type: %s",
-    "k8s client is not connected to the cluster": "k8s client is not connected to the cluster",
-    "k8s client not connected": "k8s client not connected",
-    "k8s client not connected to cluster": "k8s client not connected to cluster",
-    "k8s client not initialized": "k8s client not initialized",
-    "kubeconfig content is empty": "kubeconfig content is empty",
+    "k8s client is not connected to the cluster": "клиент k8s не подключен к кластеру",
+    "k8s client not connected": "клиент k8s не подключен",
+    "k8s client not connected to cluster": "клиент k8s не подключен к кластеру",
+    "k8s client not initialized": "клиент k8s не инициализирован",
+    "kubeconfig content is empty": "содержимое kubeconfig пусто",
     "kustomize run failed: %v": "kustomize run failed: %v",
-    "metrics client not available": "metrics client not available",
+    "metrics client not available": "клиент метрик недоступен",
     "namespace %s is terminating and all resources have been cleaned up": "namespace %s is terminating and all resources have been cleaned up",
-    "namespace cannot be empty": "namespace cannot be empty",
-    "no Kubernetes provider found": "no Kubernetes provider found",
-    "no accessible URL found for application": "no accessible URL found for application",
-    "no qVector found": "no qVector found",
-    "parseBase64Image() error: invalid image format": "parseBase64Image() error: invalid image format",
-    "provider kubeconfig content is empty": "provider kubeconfig content is empty",
+    "namespace cannot be empty": "пространство имен не может быть пустым",
+    "no Kubernetes provider found": "провайдер Kubernetes не найден",
+    "no accessible URL found for application": "для приложения не найден доступный URL",
+    "no qVector found": "qVector не найден",
+    "parseBase64Image() error: invalid image format": "ошибка parseBase64Image(): недопустимый формат изображения",
+    "provider kubeconfig content is empty": "содержимое kubeconfig провайдера пусто",
     "queryVectorSafe() error, %s": "queryVectorSafe() error, %s",
-    "server address not found": "server address not found",
+    "server address not found": "адрес сервера не найден",
     "the STT provider type: %s is not supported": "the STT provider type: %s is not supported",
     "the TTS provider type: %s is not supported": "the TTS provider type: %s is not supported",
     "the agent provider type: %s is not supported": "Тип поставщика агента: %s не поддерживается",
@@ -214,13 +214,13 @@
     "the record: %s's block ID should not be empty": "the record: %s's block ID should not be empty",
     "the scan provider type: %s is not supported": "the scan provider type: %s is not supported",
     "the storage provider type: %s is not supported": "the storage provider type: %s is not supported",
-    "there is no active blockchain provider": "there is no active blockchain provider",
-    "unable to extract host": "unable to extract host",
-    "undeployment timeout: application did not undeploy within 10 minutes": "undeployment timeout: application did not undeploy within 10 minutes"
+    "there is no active blockchain provider": "нет активного провайдера блокчейна",
+    "unable to extract host": "невозможно извлечь хост",
+    "undeployment timeout: application did not undeploy within 10 minutes": "тайм-аут отмены развертывания: приложение не было отменено в течение 10 минут"
   },
   "openai": {
-    "Invalid API key format. Expected 'Bearer API_KEY'": "Invalid API key format. Expected 'Bearer API_KEY'",
-    "No user message found in the request": "No user message found in the request"
+    "Invalid API key format. Expected 'Bearer API_KEY'": "Недопустимый формат ключа API. Ожидается 'Bearer API_KEY'",
+    "No user message found in the request": "В запросе не найдено сообщение пользователя"
   },
   "pkgdocker": {
     "Container %s not found": "Container %s not found"
@@ -236,24 +236,24 @@
     "Instance not found: %s": "Instance not found: %s",
     "Instance: [%s] is not found": "Instance: [%s] is not found",
     "Instance: [%s]'s state has been successfully updated to: [%s]": "Instance: [%s]'s state has been successfully updated to: [%s]",
-    "Not implemented": "Not implemented",
+    "Not implemented": "Не реализовано",
     "Tencent Cloud API error: %s": "Tencent Cloud API error: %s",
     "Unsupported state: %s": "Unsupported state: %s",
     "VMware API error, code = %d, message = %s": "VMware API error, code = %d, message = %s",
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
   "provider": {
-    "Provider not found": "Provider not found"
+    "Provider not found": "Провайдер не найден"
   },
   "resource": {
-    "Invalid file data format": "Invalid file data format",
+    "Invalid file data format": "Недопустимый формат данных файла",
     "Missing required parameters": "Отсутствуют обязательные параметры"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] doesn't exist"
   },
   "store": {
-    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "учитывая, что в Casibase должно быть одно хранилище по умолчанию, вы не можете установить это хранилище как не по умолчанию. Вы можете напрямую установить другое хранилище по умолчанию"
   },
   "scan": {
     "Scan not found": "Сканирование не найдено",
@@ -264,29 +264,29 @@
   },
   "stt": {
     "API error: %s": "API error: %s",
-    "Missing required parameter: storeId": "Missing required parameter: storeId",
+    "Missing required parameter: storeId": "Отсутствует обязательный параметр: storeId",
     "speech recognition API error: %v": "speech recognition API error: %v",
     "speech recognition timed out after %v seconds": "speech recognition timed out after %v seconds"
   },
   "tts": {
-    "The audio data is nil": "The audio data is nil",
+    "The audio data is nil": "Аудиоданные равны nil",
     "calculatePrice() error: unknown model type: %s": "Ошибка calculatePrice(): неизвестный тип модели: %s",
     "error creating synthesizer: %v": "error creating synthesizer: %v",
     "error finishing task: %v": "error finishing task: %v",
     "error running task: %v": "error running task: %v",
     "error sending text: %v": "error sending text: %v",
     "output error: %v": "output error: %v",
-    "writer does not implement http.Flusher": "writer does not implement http.Flusher"
+    "writer does not implement http.Flusher": "writer не реализует http.Flusher"
   },
   "txt": {
-    ".docx file is empty": ".docx file is empty",
+    ".docx file is empty": "файл .docx пуст",
     "GetTextFromMarkitdown() error, failed to open file: %v": "GetTextFromMarkitdown() error, failed to open file: %v",
-    "GetTextFromMarkitdown() error, markitdown does not exist": "GetTextFromMarkitdown() error, markitdown does not exist",
+    "GetTextFromMarkitdown() error, markitdown does not exist": "ошибка GetTextFromMarkitdown(), markitdown не существует",
     "GetTextFromMarkitdown() error, markitdown failed to run: %v: %s": "GetTextFromMarkitdown() error, markitdown failed to run: %v: %s",
     "unsupported file type: %s": "unsupported file type: %s"
   },
   "video": {
-    "The video can only be updated when there are no remarks and the state is \"Draft\"": "The video can only be updated when there are no remarks and the state is \"Draft\"",
-    "UploadVideo() error, videoId should not be empty": "UploadVideo() error, videoId should not be empty"
+    "The video can only be updated when there are no remarks and the state is \"Draft\"": "Видео можно обновить только когда нет примечаний и состояние \"Черновик\"",
+    "UploadVideo() error, videoId should not be empty": "ошибка UploadVideo(), videoId не должен быть пустым"
   }
 }
