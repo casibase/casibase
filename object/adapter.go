@@ -324,4 +324,20 @@ func (a *Adapter) createTable() {
 	if err != nil {
 		panic(err)
 	}
+
+	
+	err = a.engine.Sync2(new(CollaborationRequest))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(DiagnosisOpinion))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(SharedKnowledge))
+	if err != nil {
+		panic(err)
+	}
 }
