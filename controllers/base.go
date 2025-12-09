@@ -125,6 +125,52 @@ func (c *ApiController) GetSessionUserAffiliation() string {
 
 	return GetUserAffiliation(user)
 }
+// EnforceStoreIsolation enforces store isolation based on user's Homepage field.
+// Returns the enforced store name and true if isolation check passes, or empty string and false if access denied.
+func (c *ApiController) EnforceStoreIsolation(requestedStoreName string) (string, bool) {
+	user := c.GetSessionUser()
+	if user == nil || user.Homepage == "" {
+		// No user or no Homepage binding, no isolation
+		return requestedStoreName, true
+	}
+
+	// User is bound to a specific store via Homepage
+	if requestedStoreName == "" || requestedStoreName == "All" {
+		// Force the store to be their bound store
+		return user.Homepage, true
+	} else if requestedStoreName != user.Homepage {
+		// User is trying to access a different store, deny access
+		c.ResponseError(c.T("controllers:You can only access data from your assigned store"))
+		return "", false
+	}
+
+	return requestedStoreName, true
+}
+
+// FilterStoresByHomepage filters stores based on user's Homepage field.
+func FilterStoresByHomepage(stores []*object.Store, user *casdoorsdk.User) []*object.Store {
+	if user == nil || user.Homepage == "" {
+		// No Homepage binding, return all stores
+		return stores
+	}
+
+	// Check if Homepage matches any store name
+	var filteredStores []*object.Store
+	for _, store := range stores {
+		if store.Name == user.Homepage {
+			filteredStores = append(filteredStores, store)
+			break
+		}
+	}
+
+	// If Homepage matches a store, only return that store
+	if len(filteredStores) > 0 {
+		return filteredStores
+	}
+
+	// If Homepage doesn't match any store, return all stores (no isolation)
+	return stores
+}
 
 func wrapActionResponse(affected bool, e ...error) *Response {
 	if len(e) != 0 && e[0] != nil {
