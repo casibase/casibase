@@ -635,41 +635,20 @@ func formatVarianceResult(v *VarianceResult) string {
 	return builder.String()
 }
 func ComparePath(standardBpmnText string, unknownBpmnText string, lang string) string {
-	standardTasks, standardSequenceFlows, standardExclusiveGateways, standardParallelGateways, standardTimerEvents, standardStartEvents, err := ParseBPMN(standardBpmnText, lang)
+	parser := NewBPMNParser()
+	result1, err := parser.Parse(standardBpmnText)
 	if err != nil {
 		return fmt.Sprintf("解析标准BPMN文件时出错：%v", err)
 	}
 
-	unknownTasks, unknownSequenceFlows, unknownExclusiveGateways, unknownParallelGateways, unknownTimerEvents, unknownStartEvents, err := ParseBPMN(unknownBpmnText, lang)
+	result2, err := parser.Parse(unknownBpmnText)
 	if err != nil {
 		return fmt.Sprintf("解析待比较BPMN文件时出错：%v", err)
 	}
 
-	if len(standardStartEvents) == 0 || len(unknownStartEvents) == 0 {
-		return "其中一个BPMN文件中未找到开始事件。"
-	}
+	comparator := NewStructureComparator()
+	variance := comparator.CompareStructures(result1.Tasks, result1.SequenceFlows, result2.Tasks, result2.SequenceFlows)
 
-	standardPaths := buildPaths(standardStartEvents[0], standardTasks, standardSequenceFlows, standardExclusiveGateways, standardParallelGateways, standardTimerEvents, nil)
-	if len(standardPaths) == 0 {
-		return "未找到标准路径。"
-	}
-	standardPath := standardPaths[0]
-
-	unknownPaths := buildPaths(unknownStartEvents[0], unknownTasks, unknownSequenceFlows, unknownExclusiveGateways, unknownParallelGateways, unknownTimerEvents, nil)
-	if len(unknownPaths) == 0 {
-		return "未找到待比较路径。"
-	}
-	unknownPath := unknownPaths[0]
-
-	var variance int
-	var variances strings.Builder
-	ComparePaths(standardPath, unknownPath, &variance, nil, &variances)
-
-	if variance > 0 {
-		result := variances.String()
-		result += fmt.Sprintf("与标准路径相比，该路径有%d个差异。", variance)
-		return result
-	} else {
-		return "路径完全匹配！"
-	}
+	resultText := formatVarianceResult(variance)
+	return resultText
 }
