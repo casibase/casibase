@@ -151,6 +151,10 @@ func ParseBPMN(bpmnText string, lang string) (map[string]Task, map[string][]Sequ
 			case "sequenceFlow":
 				sourceRef := flowElement.SourceRef
 				targetRef := flowElement.TargetRef
+				weight := 1.0
+				if flowElement.ExtensionElements != nil && flowElement.ExtensionElements.Weight != nil {
+					weight = flowElement.ExtensionElements.Weight.Value
+				}
 				seqFlow := SequenceFlow{
 					ID:                  flowElement.ID,
 					SourceRef:           sourceRef,
