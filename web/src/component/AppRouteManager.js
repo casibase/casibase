@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, {useEffect, useState} from "react";
-import {Spin} from "antd";
+import React, { useEffect, useState } from "react";
+import { Spin } from "antd";
 
 class AppRouteManager {
   constructor() {
@@ -474,6 +474,10 @@ routeManager.registerApp("super-resolution", {
       path: "/sr",
       component: () => import("../frame/PythonSrPage"),
     },
+    {
+      path: "/sr-k",
+      component: () => import("../frame/PythonSrKPage"),
+    },
   ],
 });
 
@@ -514,7 +518,7 @@ routeManager.registerApp("records", {
   ],
 });
 
-  routeManager.registerApp("ipfs-archives", {
+routeManager.registerApp("ipfs-archives", {
   title: "IPFS Archives",
   gradient: "linear-gradient(135deg, #6e91da 0%, #c0e8ff 100%)",
   routes: [
@@ -529,7 +533,7 @@ routeManager.registerApp("records", {
   ],
 });
 
-export const DynamicRouteComponent = ({appType, match, location, ...props}) => {
+export const DynamicRouteComponent = ({ appType, match, location, ...props }) => {
   const [Component, setComponent] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -545,7 +549,7 @@ export const DynamicRouteComponent = ({appType, match, location, ...props}) => {
 
   if (loading) {
     return (
-      <div style={{padding: "20px", textAlign: "center"}}>
+      <div style={{ padding: "20px", textAlign: "center" }}>
         <Spin size="large" />
       </div>
     );
