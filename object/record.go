@@ -332,11 +332,20 @@ func prepareRecord(record *Record, providerFirst, providerSecond *Provider) (boo
 	record.Id = 0
 	record.Name = util.GenerateId()
 	record.Owner = record.Organization
+	// 如果 Name 已经设置，不要重新生成（避免覆盖）
+	// if record.Name == "" {
+	// 	record.Name = util.GenerateId()
+	// }
+	// // 如果 Owner 已经设置，不要覆盖（避免覆盖手动设置的 Owner）
+	// if record.Owner == "" {
+	// 	record.Owner = record.Organization
+	// }
 
 	// Set default count to 1 if not set
 	if record.Count == 0 {
 		record.Count = 1
 	}
+	
 
 	return true, nil
 }
