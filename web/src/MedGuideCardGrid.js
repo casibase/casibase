@@ -26,7 +26,6 @@ const GROUPS = [
         bg: "#f6fbf8",
         buttons: [
             { title: "数据总览", icon: "📊", desc: "全局展示平台内数据分布、趋势与共享情况。", route: "/dashboard" },
-            // { title: "专病知识图谱", icon: "🧠", desc: "构建专病知识结构，助力智能诊疗与科研分析。", route: "https://rws.neusoft.com:10100/medkb/#/login" },
             { title: "医疗知识平台", icon: "🧠", desc: "构建医疗知识服务平台，助力医疗知识传播与学习分析。", route: "/integration/page" },
             // https://rws.neusoft.com:10100/medkb/#/login
             { title: "专病知识图谱", icon: "📚", desc: "构建专病知识结构，助力智能诊疗与科研分析。", route: "/integration/graph" },
@@ -99,7 +98,7 @@ const MedGuideCardGrid = (props) => {
                 const canViewTrustFederation = isAdmin && userTag !== 'user';
                 return canViewTrustFederation;
             }
-            // 专病知识图谱 - 不是 user 标签
+            // 专病知识图谱\医疗知识服务平台 - 不是 user 标签
             if (button.title === "专病知识图谱" || button.title === "医疗知识平台") {
                 const canViewKnowledgeGraph = userTag !== 'user';
                 return canViewKnowledgeGraph;
