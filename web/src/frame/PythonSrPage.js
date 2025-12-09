@@ -2006,6 +2006,7 @@ class PythonSrPage extends React.Component {
                 })}
               />
             </div>
+
             <div>
               <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>
                 最终诊断结果（可选）
