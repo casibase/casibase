@@ -830,13 +830,7 @@ class App extends Component {
         Setting.getItem(<Link to="/dashboard">{i18next.t("leftSideMedMenu:Dashboard")}</Link>, "/dashboard"),
         // Setting.getItem(<Link to="/forms/专病库知识图谱/data">{i18next.t("leftSideMedMenu:knowledge graph")}</Link>, "/forms/专病库知识图谱/data"),
 
-        // // 专病知识图谱 - 仅对非 user 标签用户可见
-        // ...(userTag !== 'user' ? [Setting.getItem(
-        //   <a target="_blank" rel="noreferrer" href="https://rws.neusoft.com:10100/medkb/#/login">
-        //     {i18next.t("leftSideMedMenu:knowledge graph")}
-        //     {Setting.renderExternalLink()}
-        //   </a>, "/knowledge-graph"),
-        // ] : []),
+
         ...(userTag !== 'user' ? [
           // Setting.getItem(
           // <a target="_blank" rel="noreferrer" href="https://rws.neusoft.com:10100/medkb/#/login">
