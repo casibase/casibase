@@ -132,7 +132,6 @@ export default function MuiltiCenter(props) {
                 {/* 可用数据集 */}
                 <div style={{ fontSize: 22, fontWeight: 700, margin: '40px 0 18px 0' }}>数据集申请与管理</div>
                 <div style={{ display: 'flex', gap: 20, marginTop: 12, flexWrap: 'wrap' }}>
-                    {/* 更炫酷的入口卡片 */}
                     <div
                         role="button"
                         tabIndex={0}
