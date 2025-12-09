@@ -136,6 +136,8 @@ import MedKnoeladgeGraph from "./frame/MedKnowledgeGraph";
 import MedKnowledgePage from "./frame/MedKnowledgePage";
 import FedPage from "./frame/FedPage";
 
+import PythonSrKPage from "./frame/PythonSrKPage";
+
 
 
 
