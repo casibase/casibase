@@ -77,7 +77,7 @@ class RecordEditPage extends React.Component {
   }
 
   parseRecordField(key, value) {
-    if (["count"].includes(key)) {
+    if ([""].includes(key)) {
       value = Setting.myParseInt(value);
     }
     return value;
@@ -305,7 +305,7 @@ class RecordEditPage extends React.Component {
             <Input disabled={false} value={this.state.record.correlationId} />
           </Col>
         </Row>
-        {/* <Row style={{ marginTop: "20px" }} >
+        <Row style={{ marginTop: "20px" }} >
           <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Object"), i18next.t("general:Object - Tooltip"))} :
           </Col>
@@ -319,75 +319,9 @@ class RecordEditPage extends React.Component {
               />
             </div>
           </Col>
-        </Row> */}
+        </Row>
         {/* objcid展示：如果objcid为空则不渲染，否则渲染按钮，点击弹窗展示CodeMirror */}
-        {this.state.record.objcid && this.state.record.objcid !== "" && (
-          <Row style={{ marginTop: "20px" }} >
-            <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
-              {Setting.getLabel(i18next.t("general:objcid"), i18next.t("general:objcid - Tooltip"))} :
-            </Col>
-
-            <Col span={22} >
-              {/* 内联 objcid 预览按钮及逻辑 */}
-              {(() => {
-                // 本地 state
-                if (!this.objcidPreviewState) {
-                  this.objcidPreviewState = { visible: false, loading: false };
-                }
-                const { visible, loading } = this.objcidPreviewState;
-                const ipfsQueryResult = this.state.ipfsQueryResult;
-                const ipfsQueryLoading = this.state.ipfsQueryLoading;
-                const handlePreviewClick = async () => {
-                  if (!ipfsQueryResult) {
-                    this.objcidPreviewState.loading = true;
-                    this.forceUpdate();
-                    await this.fetchQueryResult(this.state.record.objcid);
-                    this.objcidPreviewState.loading = false;
-                    this.objcidPreviewState.visible = true;
-                    this.forceUpdate();
-                  } else {
-                    this.objcidPreviewState.visible = !this.objcidPreviewState.visible;
-                    this.forceUpdate();
-                  }
-                };
-                return (
-                  <div>
-                    <span style={{ marginRight: 16 }}>{this.state.record.objcid}</span>
-                    <Button onClick={handlePreviewClick} loading={loading || ipfsQueryLoading}>
-                      {visible ? "收起" : "查询"}
-                    </Button>
-                    {/* 动画展开效果 */}
-                    <div style={{
-                      maxHeight: visible ? 400 : 0,
-                      overflow: 'hidden',
-                      transition: 'max-height 0.4s cubic-bezier(0.4,0,0.2,1)',
-                      marginTop: visible ? 16 : 0,
-                      background: '#222',
-                      borderRadius: 6,
-                      boxShadow: visible ? '0 2px 8px #0002' : 'none',
-                    }}>
-                      {visible && (
-                        <div style={{ padding: 12 }}>
-                          {ipfsQueryLoading || loading ? (
-                            <div style={{ textAlign: 'center', padding: 32 }}>
-                              <span>加载中...</span>
-                            </div>
-                          ) : (
-                            <CodeMirror
-                              value={Setting.formatJsonString(ipfsQueryResult)}
-                              options={{ mode: "javascript", theme: "material-darker", readOnly: true }}
-                              onBeforeChange={() => { }}
-                            />
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
-            </Col>
-          </Row>
-        )}
+        {/*  */}
         <Row style={{ marginTop: "20px" }}>
           <Col style={{ marginTop: "5px" }} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Response"), i18next.t("general:Response - Tooltip"))} :
