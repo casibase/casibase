@@ -43,7 +43,6 @@ class ProviderEditPage extends React.Component {
       provider: null,
       originalProvider: null,
       refreshButtonLoading: false,
-      isAdmin: props.account?.isAdmin || props.account?.owner === "admin",
       isNewProvider: props.location?.state?.isNewProvider || false,
     };
   }
@@ -1113,7 +1112,7 @@ class ProviderEditPage extends React.Component {
               <Col span={22} >
                 <Input.Password
                   value={this.state.provider.providerKey}
-                  disabled={!this.state.isAdmin}
+                  disabled={!Setting.isAdminUser(this.props.account)}
                   onChange={e => {
                     this.updateProviderField("providerKey", e.target.value);
                   }}
@@ -1132,7 +1131,7 @@ class ProviderEditPage extends React.Component {
                 <CodeMirror
                   editable={!isRemote}
                   value={this.state.provider.configText}
-                  disabled={!this.state.isAdmin}
+                  disabled={!Setting.isAdminUser(this.props.account)}
                   options={{mode: "yaml", theme: "material-darker"}}
                   onBeforeChange={(editor, data, value) => {
                     this.updateProviderField("configText", value);
