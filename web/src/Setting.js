@@ -1728,6 +1728,7 @@ export function getModelSubTypeOptions(type) {
     return [
       {id: "deepseek-chat", name: "deepseek-chat"},
       {id: "deepseek-reasoner", name: "deepseek-reasoner"},
+      {id: "deepseek-reasoner(1)", name: "deepseek-reasoner(1)"},
     ];
   } else if (type === "StepFun") {
     return [

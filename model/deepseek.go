@@ -41,17 +41,20 @@ func (p *DeepSeekProvider) GetPricing() string {
 	return `URL:
 https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 
-| Model          | sub-type             | Input Price per 1K characters    | Output Price per 1K characters |
-|----------------|----------------------|----------------------------------|--------------------------------|
-|    deepseek    |     deepseek-chat    | 0.001 yuan/1,000 tokens          | 0.002 yuan/1,000 tokens         |
+| Model          		    | sub-type             | Input Price per 1K characters    | Output Price per 1K characters |
+|---------------------------|----------------------|----------------------------------|--------------------------------|
+|  deepseek-V3.2 			|     deepseek-chat    | 0.002 yuan/1,000 tokens          | 0.003 yuan/1,000 tokens         |
+|  deepseek-V3.2 			|  deepseek-reasoner   | 0.002 yuan/1,000 tokens          | 0.003 yuan/1,000 tokens         |
+|  deepseek-V3.2-Speciale	|  deepseek-reasoner(1)| 0.002 yuan/1,000 tokens          | 0.003 yuan/1,000 tokens         |
 `
 }
 
 func (p *DeepSeekProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
-		"deepseek-chat":     {0.001, 0.002},
-		"deepseek-reasoner": {0.002, 0.004},
+		"deepseek-chat":     {0.002, 0.003},
+		"deepseek-reasoner": {0.002, 0.003},
+		"deepseek-reasoner(1)": {0.002, 0.003},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
