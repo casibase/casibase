@@ -62,8 +62,8 @@ const StoreInfoTitle = (props) => {
 
   // Check if user can manage panes: only admin and chat-admin
   const canManagePanes = useMemo(() => {
-    return account?.isAdmin || account?.type === "chat-admin";
-  }, [account?.isAdmin, account?.type]);
+    return Setting.isLocalAdminUser(account);
+  }, [account]);
 
   // Check if device is mobile
   useEffect(() => {

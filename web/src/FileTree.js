@@ -329,7 +329,7 @@ class FileTree extends React.Component {
   }
 
   isFileOk(file, action) {
-    if (this.props.account.isAdmin && this.props.account.homepage !== "non-store-admin") {
+    if (Setting.isLocalAndStoreAdminUser(this.props.account)) {
       return true;
     }
 
