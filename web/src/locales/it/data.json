@@ -492,14 +492,14 @@
     "Loading": "Caricamento",
     "Please log in to use this feature": "Effettua il login per utilizzare questa funzione",
     "You will be redirected to the login page shortly": "Sarai reindirizzato alla pagina di login a breve",
-    "Login Error": "Login Error",
-    "Signing in...": "Signing in...",
-    "Details": "Details",
-    "Help": "Help",
-    "Error Details": "Error Details",
-    "Error Message": "Error Message",
-    "Additional Information": "Additional Information",
-    "More Details": "More Details"
+    "Login Error": "Errore di accesso",
+    "Signing in...": "Accesso in corso...",
+    "Details": "Dettagli",
+    "Help": "Aiuto",
+    "Error Details": "Dettagli dell'errore",
+    "Error Message": "Messaggio di errore",
+    "Additional Information": "Informazioni aggiuntive",
+    "More Details": "Ulteriori dettagli"
   },
   "machine": {
     "Edit Machine": "Edit Machine",
