@@ -84,6 +84,8 @@ class AuthCallback extends React.Component {
       });
     }
 
+    // Display additional error details for debugging purposes.
+    // The backend should sanitize sensitive information before sending it.
     if (errorDetails.data) {
       details.push({
         label: i18next.t("login:Additional Information"),
