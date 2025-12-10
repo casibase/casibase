@@ -491,7 +491,15 @@
   "login": {
     "Loading": "Lade",
     "Please log in to use this feature": "Melden Sie sich an, um diese Funktion zu verwenden",
-    "You will be redirected to the login page shortly": "Sie werden in Kürze zur Anmeldeseite weitergeleitet"
+    "You will be redirected to the login page shortly": "Sie werden in Kürze zur Anmeldeseite weitergeleitet",
+    "Login Error": "Anmeldefehler",
+    "Signing in...": "Anmeldung läuft...",
+    "Details": "Details",
+    "Help": "Hilfe",
+    "Error Details": "Fehlerdetails",
+    "Error Message": "Fehlermeldung",
+    "Additional Information": "Zusätzliche Informationen",
+    "More Details": "Weitere Details"
   },
   "machine": {
     "Edit Machine": "Server bearbeiten",

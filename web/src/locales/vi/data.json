@@ -491,7 +491,15 @@
   "login": {
     "Loading": "Đang tải",
     "Please log in to use this feature": "Please log in to use this feature",
-    "You will be redirected to the login page shortly": "You will be redirected to the login page shortly"
+    "You will be redirected to the login page shortly": "You will be redirected to the login page shortly",
+    "Login Error": "Lỗi đăng nhập",
+    "Signing in...": "Đang đăng nhập...",
+    "Details": "Chi tiết",
+    "Help": "Trợ giúp",
+    "Error Details": "Chi tiết lỗi",
+    "Error Message": "Thông báo lỗi",
+    "Additional Information": "Thông tin bổ sung",
+    "More Details": "Chi tiết thêm"
   },
   "machine": {
     "Edit Machine": "Edit Machine",

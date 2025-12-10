@@ -491,7 +491,15 @@
   "login": {
     "Loading": "Chargement",
     "Please log in to use this feature": "Connectez-vous pour utiliser cette fonction",
-    "You will be redirected to the login page shortly": "Vous serez redirigé vers la page de connexion bientôt"
+    "You will be redirected to the login page shortly": "Vous serez redirigé vers la page de connexion bientôt",
+    "Login Error": "Erreur de connexion",
+    "Signing in...": "Connexion en cours...",
+    "Details": "Détails",
+    "Help": "Aide",
+    "Error Details": "Détails de l'erreur",
+    "Error Message": "Message d'erreur",
+    "Additional Information": "Informations supplémentaires",
+    "More Details": "Plus de détails"
   },
   "machine": {
     "Edit Machine": "Éditer l'hôte",
