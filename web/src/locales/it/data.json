@@ -491,7 +491,15 @@
   "login": {
     "Loading": "Caricamento",
     "Please log in to use this feature": "Effettua il login per utilizzare questa funzione",
-    "You will be redirected to the login page shortly": "Sarai reindirizzato alla pagina di login a breve"
+    "You will be redirected to the login page shortly": "Sarai reindirizzato alla pagina di login a breve",
+    "Login Error": "Login Error",
+    "Signing in...": "Signing in...",
+    "Details": "Details",
+    "Help": "Help",
+    "Error Details": "Error Details",
+    "Error Message": "Error Message",
+    "Additional Information": "Additional Information",
+    "More Details": "More Details"
   },
   "machine": {
     "Edit Machine": "Edit Machine",

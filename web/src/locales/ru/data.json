@@ -491,7 +491,15 @@
   "login": {
     "Loading": "Загрузка",
     "Please log in to use this feature": "Пожалуйста, войдите, чтобы использовать эту функцию",
-    "You will be redirected to the login page shortly": "Вы будете перенаправлены на страницу входа в ближайшее время"
+    "You will be redirected to the login page shortly": "Вы будете перенаправлены на страницу входа в ближайшее время",
+    "Login Error": "Login Error",
+    "Signing in...": "Signing in...",
+    "Details": "Details",
+    "Help": "Help",
+    "Error Details": "Error Details",
+    "Error Message": "Error Message",
+    "Additional Information": "Additional Information",
+    "More Details": "More Details"
   },
   "machine": {
     "Edit Machine": "Редактировать хост",

@@ -491,7 +491,15 @@
   "login": {
     "Loading": "로딩 중",
     "Please log in to use this feature": "이 기능을 사용하려면 로그인해야 합니다",
-    "You will be redirected to the login page shortly": "곧 로그인 페이지로 리디렉션됩니다"
+    "You will be redirected to the login page shortly": "곧 로그인 페이지로 리디렉션됩니다",
+    "Login Error": "로그인 오류",
+    "Signing in...": "로그인 중...",
+    "Details": "세부정보",
+    "Help": "도움말",
+    "Error Details": "오류 세부정보",
+    "Error Message": "오류 메시지",
+    "Additional Information": "추가 정보",
+    "More Details": "추가 세부정보"
   },
   "machine": {
     "Edit Machine": "호스트 편집",
