@@ -161,6 +161,20 @@ export function isAdminUser(account) {
   return account.owner === "built-in" || account.isAdmin === true;
 }
 
+export function isChatAdminUser(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+  return account.type === "chat-admin";
+}
+
+export function canViewAllUsers(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+  return account.name === "admin" || isChatAdminUser(account);
+}
+
 export function isLocalAdminUser(account) {
   if (account === undefined || account === null) {
     return false;
@@ -170,7 +184,7 @@ export function isLocalAdminUser(account) {
     return true;
   }
 
-  if (account.type === "chat-admin") {
+  if (isChatAdminUser(account)) {
     return true;
   }
 
@@ -190,7 +204,7 @@ export function isLocalAndStoreAdminUser(account) {
     return true;
   }
 
-  if (account.type === "chat-admin") {
+  if (isChatAdminUser(account)) {
     return true;
   }
 

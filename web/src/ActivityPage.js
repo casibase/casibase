@@ -114,7 +114,7 @@ class ActivityPage extends BaseListPage {
             this.getActivitiesAll("");
           }
           );
-          this.state.selectedUser = !(this.props.account.name === "admin" || this.props.account.type === "chat-admin") ? res.data[0] : "All";
+          this.state.selectedUser = !Setting.canViewAllUsers(this.props.account) ? res.data[0] : "All";
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
@@ -258,7 +258,7 @@ class ActivityPage extends BaseListPage {
 
   renderDropdown() {
     const users_options = [
-      <option key="all" value="All" disabled={!(this.props.account.name === "admin" || this.props.account.type === "chat-admin")}>
+      <option key="all" value="All" disabled={!Setting.canViewAllUsers(this.props.account)}>
         All
       </option>,
       ...this.state.users.map((user, index) => (

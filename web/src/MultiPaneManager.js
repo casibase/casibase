@@ -50,7 +50,7 @@ const MultiPaneManager = ({
   const initialChatRef = useRef(null);
   const globalInputRef = useRef();
 
-  const canManagePanes = account?.isAdmin || account?.type === "chat-admin";
+  const canManagePanes = Setting.isLocalAdminUser(account);
   const availableStores = stores || [];
 
   // Load model providers
