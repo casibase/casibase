@@ -47,26 +47,63 @@ func (p *MoonshotModelProvider) GetPricing() string {
 
 Model
 
-| Model           | Unit Of Charge | Price  |
-|-----------------|----------------|--------|
-| moonshot-v1-8k  | 1M tokens      | 12yuan |
-| moonshot-v1-32k | 1M tokens      | 24yuan |
-| moonshot-v1-128k| 1M tokens      | 60yuan |
+| Model                  | Unit Of Charge | Input Price | Output Price |
+|------------------------|----------------|-------------|--------------|
+| moonshot-v1-8k         | 1M tokens      | 12 yuan     | 12 yuan      |
+| moonshot-v1-32k        | 1M tokens      | 24 yuan     | 24 yuan      |
+| moonshot-v1-128k       | 1M tokens      | 60 yuan     | 60 yuan      |
+| kimi-k2-0905-preview   | 1M tokens      | 4 yuan      | 16 yuan      |
+| kimi-k2-0711-preview   | 1M tokens      | 4 yuan      | 16 yuan      |
+| kimi-k2-turbo-preview  | 1M tokens      | 8 yuan      | 58 yuan      |
+| kimi-k2-thinking       | 1M tokens      | 4 yuan      | 16 yuan      |
+| kimi-k2-thinking-turbo | 1M tokens      | 8 yuan      | 58 yuan      |
+| kimi-latest            | 1M tokens      | Auto (Tier) | Auto (Tier)  |
 `
 }
 
 func (p *MoonshotModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
-	switch p.subType {
-	case "moonshot-v1-8k":
-		price = getPrice(modelResult.TotalTokenCount, 0.012)
-	case "moonshot-v1-32k":
-		price = getPrice(modelResult.TotalTokenCount, 0.024)
-	case "moonshot-v1-128k":
-		price = getPrice(modelResult.TotalTokenCount, 0.06)
-	default:
+	priceTable := map[string][2]float64{
+		// Old Models (Input = Output)
+		"moonshot-v1-8k":   {0.012, 0.012},
+		"moonshot-v1-32k":  {0.024, 0.024},
+		"moonshot-v1-128k": {0.060, 0.060},
+
+		// New Kimi K2 Models (Standard)
+		"kimi-k2-0905-preview": {0.004, 0.016},
+		"kimi-k2-0711-preview": {0.004, 0.016},
+		"kimi-k2-thinking":     {0.004, 0.016},
+
+		// New Kimi K2 Models (Turbo)
+		"kimi-k2-turbo-preview":  {0.008, 0.058},
+		"kimi-k2-thinking-turbo": {0.008, 0.058},
+	}
+
+	var priceItem [2]float64
+	var ok bool
+
+	// Handle dynamic pricing for kimi-latest
+	if p.subType == "kimi-latest" {
+		if modelResult.TotalTokenCount <= 8192 {
+			priceItem = [2]float64{0.002, 0.010} // Tier 1
+		} else if modelResult.TotalTokenCount <= 32768 {
+			priceItem = [2]float64{0.005, 0.020} // Tier 2
+		} else {
+			priceItem = [2]float64{0.010, 0.030} // Tier 3
+		}
+		ok = true
+	} else {
+		priceItem, ok = priceTable[p.subType]
+	}
+
+	if ok {
+		inputPrice := getPrice(modelResult.PromptTokenCount, priceItem[0])
+		outputPrice := getPrice(modelResult.ResponseTokenCount, priceItem[1])
+		price = inputPrice + outputPrice
+	} else {
 		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
+
 	modelResult.TotalPrice = price
 	modelResult.Currency = "CNY"
 	return nil
@@ -97,23 +134,7 @@ func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, his
 		}
 	}
 
-	messages := []*moonshot.ChatCompletionsMessage{}
-
-	for i := len(history) - 1; i >= 0; i-- {
-		rawMessage := history[i]
-		role := moonshot.RoleUser
-		if rawMessage.Author == "AI" {
-			role = moonshot.RoleAssistant
-		}
-		messages = append(messages, &moonshot.ChatCompletionsMessage{
-			Role:    role,
-			Content: rawMessage.Text,
-		})
-	}
-	messages = append(messages, &moonshot.ChatCompletionsMessage{
-		Role:    moonshot.RoleUser,
-		Content: question,
-	})
+	messages := buildMoonshotMessages(question, history)
 
 	// Chat completions
 	resp, err := cli.Chat().Completions(context.Background(), &moonshot.ChatCompletionsRequest{
@@ -155,4 +176,26 @@ func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, his
 	}
 
 	return modelResult, nil
+}
+
+func buildMoonshotMessages(question string, history []*RawMessage) []*moonshot.ChatCompletionsMessage {
+	messages := []*moonshot.ChatCompletionsMessage{}
+
+	for i := len(history) - 1; i >= 0; i-- {
+		rawMessage := history[i]
+		role := moonshot.RoleUser
+		if rawMessage.Author == "AI" {
+			role = moonshot.RoleAssistant
+		}
+		messages = append(messages, &moonshot.ChatCompletionsMessage{
+			Role:    role,
+			Content: rawMessage.Text,
+		})
+	}
+	messages = append(messages, &moonshot.ChatCompletionsMessage{
+		Role:    moonshot.RoleUser,
+		Content: question,
+	})
+
+	return messages
 }
