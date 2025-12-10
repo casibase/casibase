@@ -15,7 +15,7 @@
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
 import {Alert, Button, Col, Collapse, Row} from "antd";
-import {LinkOutlined} from "@ant-design/icons";
+import {FileTextOutlined, GlobalOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -389,7 +389,7 @@ const MessageItem = ({
                     <Button
                       type="text"
                       size="small"
-                      icon={<LinkOutlined />}
+                      icon={<GlobalOutlined />}
                       onClick={() => setSearchDrawerVisible(true)}
                       style={{
                         fontSize: "12px",
@@ -398,14 +398,14 @@ const MessageItem = ({
                         height: "24px",
                       }}
                     >
-                      {message.searchResults.length} {i18next.t("chat:Sources")}
+                      {message.searchResults.length} {i18next.t("chat:Web sources")}
                     </Button>
                   )}
                   {message.vectorScores?.length > 0 && (
                     <Button
                       type="text"
                       size="small"
-                      icon={<LinkOutlined />}
+                      icon={<FileTextOutlined />}
                       onClick={() => setKnowledgeDrawerVisible(true)}
                       style={{
                         fontSize: "12px",
@@ -414,7 +414,7 @@ const MessageItem = ({
                         height: "24px",
                       }}
                     >
-                      {message.vectorScores.length} {i18next.t("chat:Knowledge Sources")}
+                      {message.vectorScores.length} {i18next.t("chat:Knowledge sources")}
                     </Button>
                   )}
                 </div>

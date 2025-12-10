@@ -23,35 +23,31 @@ const IconFont = createFromIconfontCN({
   scriptUrl: "https://cdn.open-ct.com/icon/iconfont.js",
 });
 
-const KnowledgeSourceItem = ({vectorScore, vectorData, idx, themeColor}) => {
+const KnowledgeSourceItem = ({vectorScore, vectorData, idx, themeColor, account}) => {
   if (!vectorData) {
     return null;
   }
 
   const handleClick = () => {
-    if (vectorScore.vector) {
-      window.open(`/vectors/${vectorScore.vector}`, "_blank");
+    const selection = window.getSelection();
+    const url = `/vectors/${vectorScore.vector}${Setting.isLocalAdminUser(account) ? "" : "?mode=view"}`;
+    if (selection.toString().length > 0) {
+      return;
     }
-  };
 
-  const handleKeyDown = (e) => {
-    if ((e.key === "Enter" || e.key === " ") && vectorScore.vector) {
-      e.preventDefault();
-      window.open(`/vectors/${vectorScore.vector}`, "_blank");
+    if (vectorScore.vector) {
+      window.open(url, "_blank");
     }
   };
 
   return (
     <div
-      role="button"
-      tabIndex={0}
       style={{
         padding: "12px",
         background: "#fff",
         borderRadius: "8px",
         border: "1px solid #e8e8e8",
         transition: "all 0.2s",
-        cursor: "pointer",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
@@ -61,43 +57,66 @@ const KnowledgeSourceItem = ({vectorScore, vectorData, idx, themeColor}) => {
         e.currentTarget.style.boxShadow = "none";
         e.currentTarget.style.borderColor = "#e8e8e8";
       }}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
     >
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
-        marginBottom: "8px",
-      }}>
-        <span style={{
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "20px",
-          height: "20px",
-          background: themeColor,
-          color: "#fff",
-          borderRadius: "50%",
-          fontSize: "12px",
-          fontWeight: "bold",
-        }}>
-          {idx + 1}
-        </span>
-        <span style={{
-          fontSize: "20px",
-          color: "#666",
+      <div
+        style={{
           display: "flex",
           alignItems: "center",
-        }}>
+          gap: "8px",
+          marginBottom: "12px",
+        }}
+      >
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "20px",
+            height: "20px",
+            background: themeColor,
+            color: "#fff",
+            borderRadius: "50%",
+            fontSize: "12px",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+          onClick={handleClick}
+        >
+          {idx + 1}
+        </span>
+        <span
+          style={{
+            fontSize: "20px",
+            color: "#666",
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (vectorData.store && vectorData.file) {
+              window.open(`/stores/${vectorData.owner || "admin"}/${vectorData.store}/view`, "_blank");
+            }
+          }}
+        >
           <IconFont type={Setting.getFileIconType(vectorData.file)} />
         </span>
-        <span style={{
-          color: themeColor,
-          fontSize: "13px",
-          fontWeight: "500",
-          flex: 1,
-        }}>
+        <span
+          style={{
+            color: themeColor,
+            fontSize: "13px",
+            fontWeight: "500",
+            flex: 1,
+            cursor: "pointer",
+            textDecoration: "underline",
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (vectorData.store && vectorData.file) {
+              window.open(`/stores/${vectorData.owner || "admin"}/${vectorData.store}/view`, "_blank");
+            }
+          }}
+        >
           {vectorData.file || i18next.t("chat:Knowledge Fragment")}
         </span>
         <span style={{
@@ -111,22 +130,28 @@ const KnowledgeSourceItem = ({vectorScore, vectorData, idx, themeColor}) => {
           {i18next.t("chat:Relevance")}: {(vectorScore.score * 100).toFixed(1)}%
         </span>
       </div>
-      <div style={{
-        fontSize: "13px",
-        color: "#666",
-        lineHeight: "1.5",
-        whiteSpace: "pre-wrap",
-        wordBreak: "break-word",
-        maxHeight: "200px",
-        overflow: "auto",
-      }}>
+      <div
+        style={{
+          fontSize: "13px",
+          color: "#666",
+          lineHeight: "1.5",
+          whiteSpace: "pre-line",
+          wordBreak: "break-word",
+          maxHeight: "800px",
+          overflow: "auto",
+          maxWidth: "800px",
+          minWidth: "400px",
+          cursor: "pointer",
+        }}
+        onClick={handleClick}
+      >
         {vectorData.text}
       </div>
     </div>
   );
 };
 
-const KnowledgeSourcesDrawer = ({visible, onClose, vectorScores}) => {
+const KnowledgeSourcesDrawer = ({visible, onClose, vectorScores, account}) => {
   const [loading, setLoading] = useState(false);
   const [vectorsData, setVectorsData] = useState({});
   const themeColor = Setting.getThemeColor();
@@ -163,9 +188,9 @@ const KnowledgeSourcesDrawer = ({visible, onClose, vectorScores}) => {
 
   return (
     <Drawer
-      title={i18next.t("chat:Knowledge Base Sources")}
+      title={i18next.t("chat:Knowledge sources")}
       placement="right"
-      width={600}
+      width={"auto"}
       onClose={onClose}
       open={visible}
       styles={{
@@ -178,7 +203,7 @@ const KnowledgeSourcesDrawer = ({visible, onClose, vectorScores}) => {
         </div>
       ) : (
         vectorScores?.length > 0 && (
-          <div style={{display: "flex", flexDirection: "column", gap: "12px"}}>
+          <div style={{display: "flex", flexDirection: "column", gap: "20px"}}>
             {vectorScores.map((vectorScore, idx) => (
               <KnowledgeSourceItem
                 key={vectorScore.vector}
@@ -186,6 +211,7 @@ const KnowledgeSourcesDrawer = ({visible, onClose, vectorScores}) => {
                 vectorData={vectorsData[vectorScore.vector]}
                 idx={idx}
                 themeColor={themeColor}
+                account={account}
               />
             ))}
           </div>
