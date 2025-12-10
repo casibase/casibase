@@ -121,9 +121,9 @@ const SearchSourcesDrawer = ({visible, onClose, searchResults}) => {
 
   return (
     <Drawer
-      title={i18next.t("chat:Search Sources")}
+      title={i18next.t("chat:Web sources")}
       placement="right"
-      width={400}
+      width={"auto"}
       onClose={onClose}
       open={visible}
       styles={{

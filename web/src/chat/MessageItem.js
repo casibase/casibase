@@ -15,7 +15,7 @@
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
 import {Alert, Button, Col, Collapse, Row} from "antd";
-import {LinkOutlined} from "@ant-design/icons";
+import {FileTextOutlined, GlobalOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -386,26 +386,28 @@ const MessageItem = ({
                     isRegenerating={isRegenerating}
                   />
                   {message.searchResults?.length > 0 && (
-                    <Button
-                      type="text"
-                      size="small"
-                      icon={<LinkOutlined />}
-                      onClick={() => setSearchDrawerVisible(true)}
-                      style={{
-                        fontSize: "12px",
-                        color: themeColor,
-                        padding: "0 8px",
-                        height: "24px",
-                      }}
-                    >
-                      {message.searchResults.length} {i18next.t("chat:Sources")}
-                    </Button>
+                    <div style={{display: "flex", gap: "4px", alignItems: "center"}}>
+                      <Button
+                        type="text"
+                        size="small"
+                        icon={<GlobalOutlined />}
+                        onClick={() => setSearchDrawerVisible(true)}
+                        style={{
+                          fontSize: "12px",
+                          color: themeColor,
+                          padding: "0 8px",
+                          height: "24px",
+                        }}
+                      >
+                        {message.searchResults.length} {i18next.t("chat:Web sources")}
+                      </Button>
+                    </div>
                   )}
                   {message.vectorScores?.length > 0 && (
                     <Button
                       type="text"
                       size="small"
-                      icon={<LinkOutlined />}
+                      icon={<FileTextOutlined />}
                       onClick={() => setKnowledgeDrawerVisible(true)}
                       style={{
                         fontSize: "12px",
@@ -414,7 +416,7 @@ const MessageItem = ({
                         height: "24px",
                       }}
                     >
-                      {message.vectorScores.length} {i18next.t("chat:Knowledge Sources")}
+                      {message.vectorScores.length} {i18next.t("chat:Knowledge sources")}
                     </Button>
                   )}
                 </div>
