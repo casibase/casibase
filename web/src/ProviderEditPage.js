@@ -129,9 +129,7 @@ class ProviderEditPage extends React.Component {
       }
       return Setting.getLabel(i18next.t("general:Secret key"), i18next.t("general:Secret key - Tooltip"));
     } else if (provider.category === "Model") {
-      if (provider.type === "Baidu Cloud" || provider.type === "Tencent Cloud") {
-        return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
-      }
+      return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
     } else if (provider.category === "Blockchain") {
       if (provider.type === "Ethereum") {
         return Setting.getLabel(i18next.t("provider:Private key"), i18next.t("provider:Private key - Tooltip"));
@@ -141,7 +139,7 @@ class ProviderEditPage extends React.Component {
         return Setting.getLabel(i18next.t("provider:Token"), i18next.t("provider:Token - Tooltip"));
       }
     }
-    return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
+    return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret - Tooltip"));
   }
 
   getContractNameLabel(provider) {
