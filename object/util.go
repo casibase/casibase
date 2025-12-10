@@ -19,7 +19,6 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/util"
 	"github.com/sashabaranov/go-openai"
 	"xorm.io/xorm"
@@ -58,19 +57,6 @@ func GetDbSession(owner string, offset, limit int, field, value, sortField, sort
 		session = session.Desc(util.SnakeString(sortField))
 	}
 	return session
-}
-
-func isAdmin(user *casdoorsdk.User) bool {
-	if user == nil {
-		return false
-	}
-
-	res := user.IsAdmin || user.Type == "chat-admin"
-	return res
-}
-
-func IsAnonymousUserByUsername(username string) bool {
-	return strings.HasPrefix(username, "u-") && len(username) == 10
 }
 
 func isRetryableError(err error) bool {

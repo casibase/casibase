@@ -21,6 +21,7 @@ import (
 	"github.com/beego/beego/context"
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/controllers"
+	"github.com/casibase/casibase/util"
 )
 
 func AuthzFilter(ctx *context.Context) {
@@ -88,8 +89,7 @@ func permissionFilter(ctx *context.Context) {
 
 	user := GetSessionUser(ctx)
 
-	isAdmin := user != nil && (user.IsAdmin || user.Type == "chat-admin")
-	if !isAdmin {
+	if !util.IsAdmin(user) {
 		responseError(ctx, "auth:this operation requires admin privilege")
 		return
 	}

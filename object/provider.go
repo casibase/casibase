@@ -102,7 +102,7 @@ func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.
 		provider.ClientSecret = "***"
 	}
 
-	if !isAdmin(user) {
+	if !util.IsAdmin(user) {
 		if provider.ProviderKey != "" {
 			provider.ProviderKey = "***"
 		}
