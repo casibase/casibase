@@ -43,36 +43,71 @@ func NewMoonshotModelProvider(subType string, secretKey string, temperature floa
 
 func (p *MoonshotModelProvider) GetPricing() string {
 	return `URL: 
-	https://api.moonshot.cn
+https://platform.moonshot.cn/docs/pricing/chat
 
 Model
 
-| Model           | Unit Of Charge | Price  |
-|-----------------|----------------|--------|
-| moonshot-v1-8k  | 1M tokens      | 12yuan |
-| moonshot-v1-32k | 1M tokens      | 24yuan |
-| moonshot-v1-128k| 1M tokens      | 60yuan |
+| Model                  | Unit Of Charge | Input Price | Output Price |
+|------------------------|----------------|-------------|--------------|
+| moonshot-v1-8k         | 1M tokens      | 2 yuan      | 10 yuan      |
+| moonshot-v1-32k        | 1M tokens      | 5 yuan      | 20 yuan      |
+| moonshot-v1-128k       | 1M tokens      | 10 yuan     | 30 yuan      |
+| kimi-k2-0905-preview   | 1M tokens      | 4 yuan      | 16 yuan      |
+| kimi-k2-0711-preview   | 1M tokens      | 4 yuan      | 16 yuan      |
+| kimi-k2-turbo-preview  | 1M tokens      | 8 yuan      | 58 yuan      |
+| kimi-k2-thinking       | 1M tokens      | 4 yuan      | 16 yuan      |
+| kimi-k2-thinking-turbo | 1M tokens      | 8 yuan      | 58 yuan      |
+| kimi-latest            | 1M tokens      | Auto (Tier) | Auto (Tier)  |
 `
 }
 
 func (p *MoonshotModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
-	switch p.subType {
-	case "moonshot-v1-8k":
-		price = getPrice(modelResult.TotalTokenCount, 0.012)
-	case "moonshot-v1-32k":
-		price = getPrice(modelResult.TotalTokenCount, 0.024)
-	case "moonshot-v1-128k":
-		price = getPrice(modelResult.TotalTokenCount, 0.06)
-	default:
+	priceTable := map[string][2]float64{
+		"moonshot-v1-8k":   {0.002, 0.010},
+		"moonshot-v1-32k":  {0.005, 0.020},
+		"moonshot-v1-128k": {0.010, 0.030},
+
+		"kimi-k2-0905-preview": {0.004, 0.016},
+		"kimi-k2-0711-preview": {0.004, 0.016},
+		"kimi-k2-thinking":     {0.004, 0.016},
+
+		"kimi-k2-turbo-preview":  {0.008, 0.058},
+		"kimi-k2-thinking-turbo": {0.008, 0.058},
+	}
+
+	var priceItem [2]float64
+	var ok bool
+
+	if p.subType == "kimi-latest" {
+		if modelResult.TotalTokenCount <= 8192 {
+			priceItem = [2]float64{0.002, 0.010}
+		} else if modelResult.TotalTokenCount <= 32768 {
+			priceItem = [2]float64{0.005, 0.020}
+		} else {
+			priceItem = [2]float64{0.010, 0.030}
+		}
+		ok = true
+	} else {
+		priceItem, ok = priceTable[p.subType]
+	}
+
+	if ok {
+		inputPrice := getPrice(modelResult.PromptTokenCount, priceItem[0])
+		outputPrice := getPrice(modelResult.ResponseTokenCount, priceItem[1])
+		price = inputPrice + outputPrice
+	} else {
 		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
+
 	modelResult.TotalPrice = price
 	modelResult.Currency = "CNY"
 	return nil
 }
 
 func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
+	_ = agentInfo
+
 	if p.secretKey == "" {
 		return nil, errors.New("missing moonshot_key")
 	}
@@ -97,23 +132,7 @@ func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, his
 		}
 	}
 
-	messages := []*moonshot.ChatCompletionsMessage{}
-
-	for i := len(history) - 1; i >= 0; i-- {
-		rawMessage := history[i]
-		role := moonshot.RoleUser
-		if rawMessage.Author == "AI" {
-			role = moonshot.RoleAssistant
-		}
-		messages = append(messages, &moonshot.ChatCompletionsMessage{
-			Role:    role,
-			Content: rawMessage.Text,
-		})
-	}
-	messages = append(messages, &moonshot.ChatCompletionsMessage{
-		Role:    moonshot.RoleUser,
-		Content: question,
-	})
+	messages := buildMoonshotMessages(question, history, prompt, knowledgeMessages)
 
 	// Chat completions
 	resp, err := cli.Chat().Completions(context.Background(), &moonshot.ChatCompletionsRequest{
@@ -131,7 +150,7 @@ func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, his
 	}
 
 	flushData := func(data string) error {
-		if _, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
+		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
 			return err
 		}
 		flusher.Flush()
@@ -155,4 +174,35 @@ func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, his
 	}
 
 	return modelResult, nil
+}
+
+func buildMoonshotMessages(question string, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) []*moonshot.ChatCompletionsMessage {
+	messages := []*moonshot.ChatCompletionsMessage{}
+
+	systemMsgs := getSystemMessages(prompt, knowledgeMessages)
+	for _, msg := range systemMsgs {
+		messages = append(messages, &moonshot.ChatCompletionsMessage{
+			Role:    moonshot.RoleSystem,
+			Content: msg.Text,
+		})
+	}
+
+	for i := len(history) - 1; i >= 0; i-- {
+		rawMessage := history[i]
+		role := moonshot.RoleUser
+		if rawMessage.Author == "AI" {
+			role = moonshot.RoleAssistant
+		}
+		messages = append(messages, &moonshot.ChatCompletionsMessage{
+			Role:    role,
+			Content: rawMessage.Text,
+		})
+	}
+
+	messages = append(messages, &moonshot.ChatCompletionsMessage{
+		Role:    moonshot.RoleUser,
+		Content: question,
+	})
+
+	return messages
 }
