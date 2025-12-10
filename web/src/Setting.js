@@ -165,7 +165,7 @@ export function isChatAdminUser(account) {
   if (account === undefined || account === null) {
     return false;
   }
-  return account.type === "chat-admin";
+  return account.type === "chat-admin" || account.tag === "教师";
 }
 
 export function canViewAllUsers(account) {
