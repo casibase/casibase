@@ -52,8 +52,8 @@ https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 func (p *DeepSeekProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
-		"deepseek-chat":     {0.002, 0.003},
-		"deepseek-reasoner": {0.002, 0.003},
+		"deepseek-chat":        {0.002, 0.003},
+		"deepseek-reasoner":    {0.002, 0.003},
 		"deepseek-reasoner(1)": {0.002, 0.003},
 	}
 
