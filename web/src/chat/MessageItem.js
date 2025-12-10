@@ -26,6 +26,7 @@ import MessageSuggestions from "./MessageSuggestions";
 import MessageEdit from "./MessageEdit";
 import {MessageCarrier} from "./MessageCarrier";
 import SearchSourcesDrawer from "./SearchSourcesDrawer";
+import KnowledgeSourcesDrawer from "./KnowledgeSourcesDrawer";
 
 const {Panel} = Collapse;
 
@@ -51,6 +52,7 @@ const MessageItem = ({
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [reasonExpanded, setReasonExpanded] = useState(["reason"]);
   const [searchDrawerVisible, setSearchDrawerVisible] = useState(false);
+  const [knowledgeDrawerVisible, setKnowledgeDrawerVisible] = useState(false);
   const themeColor = Setting.getThemeColor();
   const toolColor = (message.reasonText && message.toolCalls) ? "#1890ff" : themeColor;
 
@@ -399,6 +401,22 @@ const MessageItem = ({
                       {message.searchResults.length} {i18next.t("chat:Sources")}
                     </Button>
                   )}
+                  {message.vectorScores?.length > 0 && (
+                    <Button
+                      type="text"
+                      size="small"
+                      icon={<LinkOutlined />}
+                      onClick={() => setKnowledgeDrawerVisible(true)}
+                      style={{
+                        fontSize: "12px",
+                        color: themeColor,
+                        padding: "0 8px",
+                        height: "24px",
+                      }}
+                    >
+                      {message.vectorScores.length} {i18next.t("chat:Knowledge Sources")}
+                    </Button>
+                  )}
                 </div>
               )}
               {message.author === "AI" && isLastMessage && (
@@ -457,6 +475,13 @@ const MessageItem = ({
         visible={searchDrawerVisible}
         onClose={() => setSearchDrawerVisible(false)}
         searchResults={message.searchResults}
+      />
+
+      <KnowledgeSourcesDrawer
+        visible={knowledgeDrawerVisible}
+        onClose={() => setKnowledgeDrawerVisible(false)}
+        vectorScores={message.vectorScores}
+        account={account}
       />
     </>
   );

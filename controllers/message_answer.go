@@ -264,6 +264,13 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
+	if len(vectorScores) > 0 {
+		bytes, err := json.Marshal(vectorScores)
+		if err == nil {
+			_, _ = c.Ctx.ResponseWriter.Write([]byte(fmt.Sprintf("event: vector\ndata: %s\n\n", string(bytes))))
+		}
+	}
+
 	if writer.writerCleaner.cleaned == false {
 		cleanedData := writer.writerCleaner.GetCleanedData()
 		writer.buf = append(writer.buf, []byte(cleanedData)...)
