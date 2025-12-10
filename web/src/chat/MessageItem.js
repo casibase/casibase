@@ -386,22 +386,20 @@ const MessageItem = ({
                     isRegenerating={isRegenerating}
                   />
                   {message.searchResults?.length > 0 && (
-                    <div style={{display: "flex", gap: "4px", alignItems: "center"}}>
-                      <Button
-                        type="text"
-                        size="small"
-                        icon={<GlobalOutlined />}
-                        onClick={() => setSearchDrawerVisible(true)}
-                        style={{
-                          fontSize: "12px",
-                          color: themeColor,
-                          padding: "0 8px",
-                          height: "24px",
-                        }}
-                      >
-                        {message.searchResults.length} {i18next.t("chat:Web sources")}
-                      </Button>
-                    </div>
+                    <Button
+                      type="text"
+                      size="small"
+                      icon={<GlobalOutlined />}
+                      onClick={() => setSearchDrawerVisible(true)}
+                      style={{
+                        fontSize: "12px",
+                        color: themeColor,
+                        padding: "0 8px",
+                        height: "24px",
+                      }}
+                    >
+                      {message.searchResults.length} {i18next.t("chat:Web sources")}
+                    </Button>
                   )}
                   {message.vectorScores?.length > 0 && (
                     <Button
