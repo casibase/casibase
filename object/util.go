@@ -61,12 +61,7 @@ func GetDbSession(owner string, offset, limit int, field, value, sortField, sort
 }
 
 func isAdmin(user *casdoorsdk.User) bool {
-	if user == nil {
-		return false
-	}
-
-	res := user.IsAdmin || user.Type == "chat-admin"
-	return res
+	return util.IsAdminOrChatAdmin(user)
 }
 
 func IsAnonymousUserByUsername(username string) bool {

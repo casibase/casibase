@@ -145,7 +145,7 @@ func (c *ApiController) UpdateVideo() {
 		return
 	}
 
-	if user.Type == "video-normal-user" {
+	if util.IsVideoNormalUser(user) {
 		if len(video.Remarks) > 0 || len(video.Remarks2) > 0 || video.State != "Draft" {
 			c.ResponseError(c.T("video:The video can only be updated when there are no remarks and the state is \"Draft\""))
 			return

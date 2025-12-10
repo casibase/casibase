@@ -86,7 +86,7 @@ func (c *ApiController) Signin() {
 	}
 
 	if strings.Count(claims.Type, "-") <= 1 {
-		if !claims.IsAdmin && claims.Type != "chat-admin" {
+		if !util.IsAdminOrChatAdmin(&claims.User) {
 			claims.Type = "chat-user"
 		}
 	}
