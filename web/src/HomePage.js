@@ -67,7 +67,7 @@ class HomePage extends React.Component {
       if (this.state.store === null) {
         return null;
       } else {
-        if (this.props.account.name === "admin" || this.props.account.type === "chat-admin") {
+        if (Setting.canViewAllUsers(this.props.account)) {
           return <UsagePage account={this.props.account} />;
         }
 

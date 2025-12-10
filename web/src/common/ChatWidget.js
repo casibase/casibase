@@ -542,6 +542,23 @@ class ChatWidget extends React.Component {
           messages: updatedMessages,
         });
       },
+      // onVector
+      (data) => {
+        if (!chat || (this.state.currentChat?.name !== chat.name)) {
+          return;
+        }
+        const vectorScores = JSON.parse(data);
+
+        const lastMessage2 = Setting.deepCopy(lastMessage);
+        lastMessage2.vectorScores = vectorScores;
+
+        const updatedMessages = [...messages];
+        updatedMessages[updatedMessages.length - 1] = lastMessage2;
+
+        this.setState({
+          messages: updatedMessages,
+        });
+      },
       // onError
       (error) => {
         Setting.showMessage("error", Setting.getRefinedErrorText(error));
@@ -584,6 +601,11 @@ class ChatWidget extends React.Component {
         // Keep the search results if they exist
         if (messages[messages.length - 1].searchResults) {
           lastMessage2.searchResults = messages[messages.length - 1].searchResults;
+        }
+
+        // Keep the vector scores if they exist
+        if (messages[messages.length - 1].vectorScores) {
+          lastMessage2.vectorScores = messages[messages.length - 1].vectorScores;
         }
 
         lastMessage2.isReasoningPhase = false;

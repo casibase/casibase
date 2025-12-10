@@ -50,7 +50,7 @@ const MultiPaneManager = ({
   const initialChatRef = useRef(null);
   const globalInputRef = useRef();
 
-  const canManagePanes = account?.isAdmin || account?.type === "chat-admin";
+  const canManagePanes = Setting.isLocalAdminUser(account);
   const availableStores = stores || [];
 
   // Load model providers
@@ -214,6 +214,17 @@ const MultiPaneManager = ({
           i === paneIndex ? {...pane, messages: [...messages]} : pane
         ));
       },
+      (data) => {
+        const vectorScores = JSON.parse(data);
+
+        const lastMessage2 = Setting.deepCopy(lastMessage);
+        lastMessage2.vectorScores = vectorScores;
+
+        messages[messages.length - 1] = lastMessage2;
+        setPanes(prev => prev.map((pane, i) =>
+          i === paneIndex ? {...pane, messages: [...messages]} : pane
+        ));
+      },
       (error) => {
         Setting.showMessage("error", Setting.getRefinedErrorText(error));
         const errorMessage = Setting.deepCopy(lastMessage);
@@ -241,6 +252,10 @@ const MultiPaneManager = ({
 
         if (messages[messages.length - 1].searchResults) {
           finalMessage.searchResults = messages[messages.length - 1].searchResults;
+        }
+
+        if (messages[messages.length - 1].vectorScores) {
+          finalMessage.vectorScores = messages[messages.length - 1].vectorScores;
         }
 
         const parsedResult = messageCarrier.parseAnswerWithCarriers(text);

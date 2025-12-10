@@ -47,7 +47,7 @@ func createTransactionFromMessage(message *Message) *casdoorsdk.Transaction {
 		State:       "Paid",
 	}
 
-	if IsAnonymousUserByUsername(message.User) {
+	if util.IsAnonymousUserByUsername(message.User) {
 		transaction.Tag = "Organization"
 	}
 

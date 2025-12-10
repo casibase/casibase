@@ -329,7 +329,7 @@ class FileTree extends React.Component {
   }
 
   isFileOk(file, action) {
-    if (this.props.account.isAdmin && this.props.account.homepage !== "non-store-admin") {
+    if (Setting.isLocalAndStoreAdminUser(this.props.account)) {
       return true;
     }
 
@@ -719,28 +719,7 @@ class FileTree extends React.Component {
         }}
         icon={(file) => {
           if (file.isLeaf) {
-            const ext = Setting.getExtFromPath(file.data.key);
-            if (ext === "pdf") {
-              return <IconFont type="icon-testpdf" />;
-            } else if (ext === "doc" || ext === "docx") {
-              return <IconFont type="icon-testdocx" />;
-            } else if (ext === "ppt" || ext === "pptx") {
-              return <IconFont type="icon-testpptx" />;
-            } else if (ext === "xls" || ext === "xlsx") {
-              return <IconFont type="icon-testxlsx" />;
-            } else if (ext === "txt") {
-              return <IconFont type="icon-testdocument" />;
-            } else if (ext === "png" || ext === "bmp" || ext === "jpg" || ext === "jpeg" || ext === "svg") {
-              return <IconFont type="icon-testPicture" />;
-            } else if (ext === "html") {
-              return <IconFont type="icon-testhtml" />;
-            } else if (ext === "js") {
-              return <IconFont type="icon-testjs" />;
-            } else if (ext === "css") {
-              return <IconFont type="icon-testcss" />;
-            } else {
-              return <IconFont type="icon-testfile-unknown" />;
-            }
+            return <IconFont type={Setting.getFileIconType(file.data.key)} />;
           }
         }}
       />

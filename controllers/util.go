@@ -133,12 +133,7 @@ func (c *ApiController) RequireAdmin() bool {
 
 func (c *ApiController) IsAdmin() bool {
 	user := c.GetSessionUser()
-	if user == nil {
-		return false
-	}
-
-	res := user.IsAdmin || user.Type == "chat-admin"
-	return res
+	return util.IsAdmin(user)
 }
 
 func DenyRequest(ctx *context.Context) {

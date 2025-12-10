@@ -493,7 +493,15 @@
   "login": {
     "Loading": "Cargando",
     "Please log in to use this feature": "Inicia sesión para usar esta función",
-    "You will be redirected to the login page shortly": "Serás redirigido a la página de inicio de sesión shortly"
+    "You will be redirected to the login page shortly": "Serás redirigido a la página de inicio de sesión en breve",
+    "Login Error": "Error de inicio de sesión",
+    "Signing in...": "Iniciando sesión...",
+    "Details": "Detalles",
+    "Help": "Ayuda",
+    "Error Details": "Detalles del error",
+    "Error Message": "Mensaje de error",
+    "Additional Information": "Información adicional",
+    "More Details": "Más detalles"
   },
   "machine": {
     "Edit Machine": "Editar host",

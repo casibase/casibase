@@ -98,7 +98,7 @@ class UsagePage extends BaseListPage {
     UsageBackend.getUsers(serverUrl, this.props.account.name, Setting.getRequestStore(this.props.account))
       .then((res) => {
         if (res.status === "ok") {
-          const selectedUser = !(this.props.account.name === "admin" || this.props.account.type === "chat-admin") ? res.data[0] : "All";
+          const selectedUser = !Setting.canViewAllUsers(this.props.account) ? res.data[0] : "All";
           this.setState({
             users: res.data,
             selectedUser: selectedUser,
@@ -453,7 +453,7 @@ class UsagePage extends BaseListPage {
 
   renderDropdown() {
     const users_options = [
-      <option key="all" value="All" disabled={!(this.props.account.name === "admin" || this.props.account.type === "chat-admin")}>
+      <option key="all" value="All" disabled={!Setting.canViewAllUsers(this.props.account)}>
         All
       </option>,
       ...this.state.users.map((user, index) => (

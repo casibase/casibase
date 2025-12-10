@@ -27,6 +27,7 @@ import (
 	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/controllers"
+	"github.com/casibase/casibase/util"
 	"github.com/casibase/casibase/object"
 )
 
@@ -261,8 +262,7 @@ func permissionFilter(ctx *context.Context) {
 		}
 	}
 
-	isAdmin := user != nil && (user.IsAdmin || user.Type == "chat-admin")
-	if !isAdmin {
+	if !util.IsAdmin(user) {
 		responseError(ctx, "auth:this operation requires admin privilege")
 		return
 	}

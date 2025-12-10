@@ -493,7 +493,15 @@
   "login": {
     "Loading": "Sedang memuat",
     "Please log in to use this feature": "Masuk untuk menggunakan fitur ini",
-    "You will be redirected to the login page shortly": "Anda akan dialihkan ke halaman masuk segera"
+    "You will be redirected to the login page shortly": "Anda akan dialihkan ke halaman masuk segera",
+    "Login Error": "Kesalahan Login",
+    "Signing in...": "Masuk...",
+    "Details": "Detail",
+    "Help": "Bantuan",
+    "Error Details": "Detail Kesalahan",
+    "Error Message": "Pesan Kesalahan",
+    "Additional Information": "Informasi Tambahan",
+    "More Details": "Detail Lebih Lanjut"
   },
   "machine": {
     "Edit Machine": "Sunting host",

@@ -174,6 +174,20 @@ export function isAdminUser(account) {
   return account.owner === "built-in" || account.isAdmin === true;
 }
 
+export function isChatAdminUser(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+  return account.type === "chat-admin" || account.tag === "教师";
+}
+
+export function canViewAllUsers(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+  return account.name === "admin" || isChatAdminUser(account);
+}
+
 export function isLocalAdminUser(account) {
   if (account === undefined || account === null) {
     return false;
@@ -183,11 +197,11 @@ export function isLocalAdminUser(account) {
     return true;
   }
 
-  if (account.type === "chat-admin") {
+  if (isChatAdminUser(account)) {
     return true;
   }
 
-  return account.isAdmin === true || isAdminUser(account);
+  return isAdminUser(account);
 }
 
 export function isAnonymousUser(account) {
@@ -606,6 +620,34 @@ export function getExtFromPath(path) {
     return filename.split(".").pop().toLowerCase();
   } else {
     return "";
+  }
+}
+
+export function getFileIconType(filename) {
+  if (!filename) {
+    return "icon-testdocument";
+  }
+  const ext = getExtFromPath(filename);
+  if (ext === "pdf") {
+    return "icon-testpdf";
+  } else if (ext === "doc" || ext === "docx") {
+    return "icon-testdocx";
+  } else if (ext === "ppt" || ext === "pptx") {
+    return "icon-testpptx";
+  } else if (ext === "xls" || ext === "xlsx") {
+    return "icon-testxlsx";
+  } else if (ext === "txt") {
+    return "icon-testdocument";
+  } else if (ext === "png" || ext === "bmp" || ext === "jpg" || ext === "jpeg" || ext === "svg") {
+    return "icon-testPicture";
+  } else if (ext === "html") {
+    return "icon-testhtml";
+  } else if (ext === "js") {
+    return "icon-testjs";
+  } else if (ext === "css") {
+    return "icon-testcss";
+  } else {
+    return "icon-testfile-unknown";
   }
 }
 

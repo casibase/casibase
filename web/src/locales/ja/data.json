@@ -493,7 +493,15 @@
   "login": {
     "Loading": "読み込み中",
     "Please log in to use this feature": "この機能を使用する前にログインしてください",
-    "You will be redirected to the login page shortly": "すぐにログインページにリダイレクトされます"
+    "You will be redirected to the login page shortly": "すぐにログインページにリダイレクトされます",
+    "Login Error": "ログインエラー",
+    "Signing in...": "サインイン中...",
+    "Details": "詳細",
+    "Help": "ヘルプ",
+    "Error Details": "エラー詳細",
+    "Error Message": "エラーメッセージ",
+    "Additional Information": "追加情報",
+    "More Details": "詳細情報"
   },
   "machine": {
     "Edit Machine": "マシンを編集",

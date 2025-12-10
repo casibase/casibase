@@ -483,7 +483,7 @@ class App extends Component {
         Setting.isAnonymousUser(this.state.account) ||
         Setting.isChatUser(this.state.account) ||
         Setting.isAdminUser(this.state.account) ||
-        this.state.account?.type === "chat-admin" ||
+        Setting.isChatAdminUser(this.state.account) ||
         Setting.getUrlParam("isRaw") !== null
       ) {
         return true;
@@ -747,8 +747,8 @@ class App extends Component {
       return res;
     }
 
-    if (!this.state.account.isAdmin && (!Setting.isAnonymousUser(this.state.account) || Conf.DisablePreviewMode)) { // show complete menu for anonymous user in preview mode even not login
-      if (this.state.account.type !== "chat-admin") {
+    if (!Setting.isAdminUser(this.state.account) && (!Setting.isAnonymousUser(this.state.account) || Conf.DisablePreviewMode)) { // show complete menu for anonymous user in preview mode even not login
+      if (!Setting.isChatAdminUser(this.state.account)) {
         // res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
         return res;
       }
@@ -775,7 +775,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities"));
       // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
       // res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
-    } else if (this.state.account.type === "chat-admin") {
+    } else if (Setting.isChatAdminUser(this.state.account)) {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
