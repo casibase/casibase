@@ -43,7 +43,7 @@ func NewMoonshotModelProvider(subType string, secretKey string, temperature floa
 
 func (p *MoonshotModelProvider) GetPricing() string {
 	return `URL: 
-	https://platform.moonshot.cn/docs/pricing/chat
+https://platform.moonshot.cn/docs/pricing/chat
 
 Model
 
