@@ -34,7 +34,7 @@ func IsAdmin(user *casdoorsdk.User) bool {
 	if user == nil {
 		return false
 	}
-	return user.IsAdmin || user.Type == UserTypeChatAdmin
+	return user.IsAdmin || user.Type == UserTypeChatAdmin || user.Tag == "教师"
 }
 
 // IsVideoNormalUser checks if the user has the video-normal-user role
