@@ -188,7 +188,7 @@ export function isLocalAdminUser(account) {
     return true;
   }
 
-  return account.isAdmin === true || isAdminUser(account);
+  return isAdminUser(account);
 }
 
 export function isLocalAndStoreAdminUser(account) {
@@ -208,7 +208,7 @@ export function isLocalAndStoreAdminUser(account) {
     return true;
   }
 
-  return account.isAdmin === true || isAdminUser(account);
+  return isAdminUser(account);
 }
 
 export function isAnonymousUser(account) {
