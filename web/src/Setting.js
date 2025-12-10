@@ -625,6 +625,34 @@ export function getExtFromPath(path) {
   }
 }
 
+export function getFileIconType(filename) {
+  if (!filename) {
+    return "icon-testdocument";
+  }
+  const ext = getExtFromPath(filename);
+  if (ext === "pdf") {
+    return "icon-testpdf";
+  } else if (ext === "doc" || ext === "docx") {
+    return "icon-testdocx";
+  } else if (ext === "ppt" || ext === "pptx") {
+    return "icon-testpptx";
+  } else if (ext === "xls" || ext === "xlsx") {
+    return "icon-testxlsx";
+  } else if (ext === "txt") {
+    return "icon-testdocument";
+  } else if (ext === "png" || ext === "bmp" || ext === "jpg" || ext === "jpeg" || ext === "svg") {
+    return "icon-testPicture";
+  } else if (ext === "html") {
+    return "icon-testhtml";
+  } else if (ext === "js") {
+    return "icon-testjs";
+  } else if (ext === "css") {
+    return "icon-testcss";
+  } else {
+    return "icon-testfile-unknown";
+  }
+}
+
 export function getExtFromFile(file) {
   const res = file.title.split(".")[1];
   if (res === undefined) {
