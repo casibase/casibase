@@ -132,7 +132,6 @@ export default function DataAuditLog() {
                     <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, marginTop: 2, color: '#222' }}>区块链技术保障</div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 0 }}>
-                    {/* 三个特性卡片横向分布 */}
                     <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 0 }}>
                         <div style={{ textAlign: 'center', flex: 1 }}>
                             <CheckCircle2 size={44} color="#52c41a" style={{ background: '#e9faef', borderRadius: '50%', padding: 8, marginBottom: 8 }} />

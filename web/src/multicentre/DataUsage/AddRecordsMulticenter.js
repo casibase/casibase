@@ -12,15 +12,15 @@ export default function AddRecordsMulticenter(props) {
     // 使用公共工具解析 id 列表（支持逗号/空格/换行）
     // 解析逻辑放在 `Setting.parseIds`，便于多个页面复用和统一行为
     // `Setting.parseIds` 已经负责去重并保留输入顺序
-    const parseIds = (text) => Setting.parseIds(text);
-    // const parseIds = (text) => {
-    //     if (!text) return [];
-    //     // 支持逗号/空格/换行分隔
-    //     return text
-    //         .split(/[,\n\s]+/)
-    //         .map(s => s.trim())
-    //         .filter(Boolean);
-    // };
+    // const parseIds = (text) => Setting.parseIds(text);
+    const parseIds = (text) => {
+        if (!text) return [];
+        // 支持逗号/空格/换行分隔
+        return text
+            .split(/[,\n\s]+/)
+            .map(s => s.trim())
+            .filter(Boolean);
+    };
 
     const handleUpload = async () => {
         setError(null);
