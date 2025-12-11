@@ -659,7 +659,26 @@ class App extends Component {
  * @param {*} uri 
  */
   setOpenMenuKeysForParentMenu(uri) {
+    // 更新展开的菜单键
+    const pathToMenuKeyMap = this.buildPathToMenuKeyMap();
+    let openKeys = [];
+    // uri中可能存在中文的uri编码，中文需要正确转为中文
+    uri = decodeURIComponent(uri);
 
+    // 精确匹配路径
+    if (pathToMenuKeyMap[uri]) {
+      openKeys = [pathToMenuKeyMap[uri]];
+    } else {
+      // 查找包含子路径的匹配
+      const matchingParentKey = Object.keys(pathToMenuKeyMap).find(path =>
+        uri.includes(path) && pathToMenuKeyMap[path]
+      );
+      if (matchingParentKey) {
+        openKeys = [pathToMenuKeyMap[matchingParentKey]];
+      }
+    }
+
+    this.setState({ openMenuKeys: openKeys });
   }
 
   /**
