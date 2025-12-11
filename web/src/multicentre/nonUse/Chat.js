@@ -84,39 +84,50 @@ export default function Chat({ onSend, initialMessages = [] }) {
         <Card size="small" title="简单聊天（前端）" style={{ maxWidth: 900, margin: '12px auto' }}>
             <div
                 ref={listRef}
-                style={{ maxHeight: 320, overflowY: 'auto', padding: '8px 4px', marginBottom: 12, border: '1px solid #f0f0f0', borderRadius: 4 }}
+                style={{ maxHeight: 360, overflowY: 'auto', padding: '12px', marginBottom: 12, border: '1px solid #f0f0f0', borderRadius: 8, background: '#fff' }}
             >
                 <List
                     dataSource={messages}
-                    renderItem={(item) => (
-                        <List.Item style={{ padding: '6px 12px' }}>
-                            <List.Item.Meta
-                                avatar={
-                                    <Avatar icon={<UserOutlined />} style={{ backgroundColor: item.role === 'user' ? '#1890ff' : '#52c41a' }} />
-                                }
-                                title={
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-                                        <div>{item.role === 'user' ? 'User' : 'Bot'}</div>
-                                        <div style={{ color: '#999', fontSize: 12 }}>{new Date(item.time).toLocaleString()}</div>
+                    renderItem={(item) => {
+                        const isUser = item.role === 'user';
+                        return (
+                            <List.Item style={{ padding: '6px 4px', display: 'flex', justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
+                                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, maxWidth: '80%' }}>
+                                    {!isUser && (
+                                        <Avatar size={36} icon={<UserOutlined />} style={{ backgroundColor: '#52c41a' }} />
+                                    )}
+                                    <div style={{
+                                        background: isUser ? '#1890ff' : '#f5f5f5',
+                                        color: isUser ? '#ffffff' : '#000000',
+                                        padding: '10px 14px',
+                                        borderRadius: 14,
+                                        boxShadow: '0 1px 2px rgba(0,0,0,0.06)',
+                                        wordBreak: 'break-word'
+                                    }}>
+                                        <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{item.text}</div>
+                                        <div style={{ fontSize: 11, color: isUser ? 'rgba(255,255,255,0.85)' : '#888', marginTop: 6, textAlign: isUser ? 'right' : 'left' }}>{new Date(item.time).toLocaleString()}</div>
                                     </div>
-                                }
-                                description={<div style={{ whiteSpace: 'pre-wrap' }}>{item.text}</div>}
-                            />
-                        </List.Item>
-                    )}
+                                    {isUser && (
+                                        <Avatar size={36} icon={<UserOutlined />} style={{ backgroundColor: '#1890ff' }} />
+                                    )}
+                                </div>
+                            </List.Item>
+                        );
+                    }}
                 />
             </div>
 
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
                 <Input.TextArea
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     placeholder="输入消息，按 Enter 发送，Shift+Enter 换行"
-                    autoSize={{ minRows: 2, maxRows: 6 }}
+                    autoSize={{ minRows: 2, maxRows: 5 }}
                     onKeyDown={onKeyDown}
+                    style={{ borderRadius: 8 }}
                 />
-                <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-                    <Button type="primary" onClick={handleSend} loading={sending}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Button type="primary" onClick={handleSend} loading={sending} style={{ borderRadius: 8 }}>
                         发送
                     </Button>
                 </div>
