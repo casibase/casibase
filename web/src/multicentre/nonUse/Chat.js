@@ -20,6 +20,43 @@ export default function Chat({ onSend, initialMessages = [] }) {
     const [sending, setSending] = useState(false);
     const listRef = useRef(null);
 
+    // 格式化时间，统一显示格式，抽离为小函数便于复用/测试
+    const formatTime = (iso) => {
+        try {
+            return new Date(iso).toLocaleString();
+        } catch (e) {
+            return iso || '';
+        }
+    };
+
+    // 渲染单条消息的气泡，抽离可让 renderItem 更清晰
+    const renderMessage = (item) => {
+        const isUser = item.role === 'user';
+        return (
+            <List.Item style={{ padding: '6px 4px', display: 'flex', justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, maxWidth: '80%' }}>
+                    {!isUser && (
+                        <Avatar size={36} icon={<UserOutlined />} style={{ backgroundColor: '#52c41a' }} />
+                    )}
+                    <div style={{
+                        background: isUser ? '#1890ff' : '#f5f5f5',
+                        color: isUser ? '#ffffff' : '#000000',
+                        padding: '10px 14px',
+                        borderRadius: 14,
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.06)',
+                        wordBreak: 'break-word'
+                    }}>
+                        <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{item.text}</div>
+                        <div style={{ fontSize: 11, color: isUser ? 'rgba(255,255,255,0.85)' : '#888', marginTop: 6, textAlign: isUser ? 'right' : 'left' }}>{formatTime(item.time)}</div>
+                    </div>
+                    {isUser && (
+                        <Avatar size={36} icon={<UserOutlined />} style={{ backgroundColor: '#1890ff' }} />
+                    )}
+                </div>
+            </List.Item>
+        );
+    };
+
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
