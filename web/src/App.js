@@ -125,6 +125,7 @@ import AddRecordsMulticenter from "./multicentre/DataUsage/AddRecordsMulticenter
 import DynamicConfigPage from "./DynamicConfigPage";
 import MedRecordCenterPage from "./component/record/MedRecordCenterPage";
 
+import PythonSrKPage from "./frame/PythonSrKPage";
 // 功能介绍页面组
 import PatientChainDataIntro from "./introduce/PatientChainDataIntro"
 import MedicalRecordChainIntro from "./introduce/MedicalRecordChainIntro"
@@ -136,7 +137,7 @@ import MedKnoeladgeGraph from "./frame/MedKnowledgeGraph";
 import MedKnowledgePage from "./frame/MedKnowledgePage";
 import FedPage from "./frame/FedPage";
 
-import PythonSrKPage from "./frame/PythonSrKPage";
+
 
 
 
@@ -658,26 +659,7 @@ class App extends Component {
  * @param {*} uri 
  */
   setOpenMenuKeysForParentMenu(uri) {
-    // 更新展开的菜单键
-    const pathToMenuKeyMap = this.buildPathToMenuKeyMap();
-    let openKeys = [];
-    // uri中可能存在中文的uri编码，中文需要正确转为中文
-    uri = decodeURIComponent(uri);
 
-    // 精确匹配路径
-    if (pathToMenuKeyMap[uri]) {
-      openKeys = [pathToMenuKeyMap[uri]];
-    } else {
-      // 查找包含子路径的匹配
-      const matchingParentKey = Object.keys(pathToMenuKeyMap).find(path =>
-        uri.includes(path) && pathToMenuKeyMap[path]
-      );
-      if (matchingParentKey) {
-        openKeys = [pathToMenuKeyMap[matchingParentKey]];
-      }
-    }
-
-    this.setState({ openMenuKeys: openKeys });
   }
 
   /**
@@ -811,9 +793,7 @@ class App extends Component {
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "video") {
       if (Conf.EnableExtraPages) {
         res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
-        // res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
-        // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
-        // res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
+
       }
 
       if (window.location.pathname === "/" && false) {
@@ -858,9 +838,7 @@ class App extends Component {
         Setting.getItem(<Link to="/records">{i18next.t("leftSideMedMenu:Records")}</Link>, "/records"),
         // 仅管理员可访问归档数据
         isUserTagNotUserAndDoctor ? Setting.getItem(<Link to="/ipfs-archive">{i18next.t("leftSideMedMenu:IpfsArchives")}</Link>, "/ipfs-archive") : null,
-        // // 病例数据中心（录入/导入/列表）
-        // Setting.getItem(<Link to="/med-records">病例数据</Link>, "/med-records"),
-        // 区块链浏览器 - 仅管理员可见，隐藏 user 和 doctor 标签用户
+
 
         Setting.getItem(<Link to="/ipfs-search">{i18next.t("leftSideMedMenu:Audit")}</Link>, "/ipfs-search"),
       ];
