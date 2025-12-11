@@ -141,6 +141,9 @@ func parseAllWords(category string) *I18nData {
 	return &data
 }
 
+// copyI18nData creates a deep copy of an I18nData structure to prevent shared reference issues
+// between language translations. This ensures each language starts with fresh English defaults
+// rather than inheriting values from previously processed languages.
 func copyI18nData(src *I18nData) *I18nData {
 	dst := I18nData{}
 	for namespace, pairs := range *src {
