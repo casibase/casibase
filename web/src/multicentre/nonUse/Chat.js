@@ -20,7 +20,65 @@ export default function Chat({ onSend, initialMessages = [] }) {
     const [sending, setSending] = useState(false);
     const listRef = useRef(null);
 
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
 
+    const scrollToBottom = () => {
+        try {
+            if (listRef.current) {
+                const el = listRef.current;
+                el.scrollTop = el.scrollHeight;
+            }
+        } catch (e) {
+            // ignore
+        }
+    };
+
+    const handleSend = async () => {
+        const trimmed = text.trim();
+        if (!trimmed) return;
+        const msg = {
+            id: Date.now(),
+            role: 'user',
+            text: trimmed,
+            time: new Date().toISOString(),
+        };
+
+        // 本地回显
+        setMessages((m) => [...m, msg]);
+        setText('');
+
+        if (onSend) {
+            try {
+                setSending(true);
+                await onSend(msg);
+            } catch (e) {
+                // 可在这里追加错误消息或 toast 提示
+                console.error('onSend error', e);
+            } finally {
+                setSending(false);
+            }
+        } else {
+            // 没有提供 onSend，则模拟一个简单的回复（可选）
+            setTimeout(() => {
+                const reply = {
+                    id: Date.now() + 1,
+                    role: 'bot',
+                    text: `已收到：${trimmed}`,
+                    time: new Date().toISOString(),
+                };
+                setMessages((m) => [...m, reply]);
+            }, 600);
+        }
+    };
+
+    const onKeyDown = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+        }
+    };
 
     return (
         <Card size="small" title="简单聊天（前端）" style={{ maxWidth: 900, margin: '12px auto' }}>
