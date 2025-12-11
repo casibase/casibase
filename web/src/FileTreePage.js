@@ -60,11 +60,15 @@ class FileTreePage extends React.Component {
       );
     }
 
+    const searchParams = new URLSearchParams(this.props.location?.search || "");
+    const rawFileKey = searchParams.get("fileKey");
+    const initialFileKey = rawFileKey ? decodeURIComponent(rawFileKey) : null;
+
     return (
       <div>
         <Row>
           <Col span={24}>
-            <FileTree account={this.props.account} store={this.state.store} onUpdateStore={(store) => {
+            <FileTree account={this.props.account} store={this.state.store} initialFileKey={initialFileKey} onUpdateStore={(store) => {
               this.setState({
                 store: store,
               });

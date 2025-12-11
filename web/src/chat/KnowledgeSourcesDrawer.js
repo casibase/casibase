@@ -36,7 +36,15 @@ const KnowledgeSourceItem = ({vectorScore, vectorData, idx, themeColor, account}
     }
 
     if (vectorScore.vector) {
-      window.open(url, "_blank");
+      Setting.openLink(url);
+    }
+  };
+
+  const handleFileOpen = (e) => {
+    e.stopPropagation();
+    if (vectorData.store && vectorData.file) {
+      const fileKey = encodeURIComponent(vectorData.file.replace(/^\/+/, ""));
+      Setting.openLink(`/stores/${vectorData.owner || "admin"}/${vectorData.store}/view?fileKey=${fileKey}`);
     }
   };
 
@@ -92,12 +100,7 @@ const KnowledgeSourceItem = ({vectorScore, vectorData, idx, themeColor, account}
             alignItems: "center",
             cursor: "pointer",
           }}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (vectorData.store && vectorData.file) {
-              window.open(`/stores/${vectorData.owner || "admin"}/${vectorData.store}/view`, "_blank");
-            }
-          }}
+          onClick={handleFileOpen}
         >
           <IconFont type={Setting.getFileIconType(vectorData.file)} />
         </span>
@@ -110,12 +113,7 @@ const KnowledgeSourceItem = ({vectorScore, vectorData, idx, themeColor, account}
             cursor: "pointer",
             textDecoration: "underline",
           }}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (vectorData.store && vectorData.file) {
-              window.open(`/stores/${vectorData.owner || "admin"}/${vectorData.store}/view`, "_blank");
-            }
-          }}
+          onClick={handleFileOpen}
         >
           {vectorData.file || i18next.t("chat:Knowledge Fragment")}
         </span>
