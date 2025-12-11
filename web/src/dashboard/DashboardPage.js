@@ -1626,9 +1626,9 @@ class DashboardPage extends Component {
     const dataCapacity = [
       { name: "江苏省人民医院", value: 2.8 },
       { name: "广东省人民医院", value: 1.94143 },
-      { name: "中国医科大学附属第一医院", value: 1.20488 },
-      { name: "协和医院", value: 0.0596 },
+      { name: "中国医科大学附属第一医院", value: 1.0264 },
       { name: "深圳市中医院", value: 0.0065 },
+      { name: "协和医院", value: 0.0596 },
       { name: "示范应用中心", value: 0.00238 }
     ];
 
