@@ -71,6 +71,13 @@ class FileTree extends React.Component {
 
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyDown);
+    this.applyInitialSelection();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.store && this.props.store) {
+      this.applyInitialSelection();
+    }
   }
 
   componentWillUnmount() {
@@ -397,6 +404,74 @@ class FileTree extends React.Component {
     }
 
     return filename;
+  }
+
+  findFileNodeByKey(file, targetKey) {
+    if (!file) {
+      return null;
+    }
+
+    if (file.key === targetKey) {
+      return file;
+    }
+
+    if (!file.children?.length) {
+      return null;
+    }
+
+    for (const child of file.children) {
+      const found = this.findFileNodeByKey(child, targetKey);
+      if (found) {
+        return found;
+      }
+    }
+
+    return null;
+  }
+
+  applyInitialSelection() {
+    const {store, initialFileKey} = this.props;
+
+    if (!store?.fileTree || !initialFileKey) {
+      return;
+    }
+
+    if (this.state.selectedKeys.length !== 0 || this.state.selectedFile !== null) {
+      return;
+    }
+
+    const targetKey = initialFileKey.replace(/^\/+/, "").replace(/\/+$/, "");
+    const file = this.findFileNodeByKey(store.fileTree, targetKey);
+    if (!file?.isLeaf) {
+      return;
+    }
+
+    this.setState({
+      checkedKeys: [],
+      checkedFiles: [],
+      selectedKeys: [file.key],
+      selectedFile: file,
+    });
+
+    const ext = Setting.getExtFromPath(file.key);
+    if (ext && file.url && !this.isExtForDocViewer(ext) && !this.isExtForFileViewer(ext)) {
+      this.setState({loading: true});
+
+      fetch(file.url, {
+        method: "GET",
+        credentials: "include",
+      })
+        .then(res => res.text())
+        .then(res => {
+          this.setState({
+            text: res,
+            loading: false,
+          });
+        })
+        .catch(() => {
+          this.setState({loading: false});
+        });
+    }
   }
 
   renderTree(store) {
