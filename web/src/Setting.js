@@ -748,15 +748,7 @@ export const Countries = [{label: "English", key: "en", country: "US", alt: "Eng
   {label: "Español", key: "es", country: "ES", alt: "Español"},
   {label: "Français", key: "fr", country: "FR", alt: "Français"},
   {label: "Deutsch", key: "de", country: "DE", alt: "Deutsch"},
-  {label: "Indonesia", key: "id", country: "ID", alt: "Indonesia"},
   {label: "日本語", key: "ja", country: "JP", alt: "日本語"},
-  {label: "한국어", key: "ko", country: "KR", alt: "한국어"},
-  {label: "Русский", key: "ru", country: "RU", alt: "Русский"},
-  {label: "Tiếng Việt", key: "vi", country: "VN", alt: "Tiếng Việt"},
-  {label: "Português", key: "pt", country: "PT", alt: "Português"},
-  {label: "Italiano", key: "it", country: "IT", alt: "Italiano"},
-  {label: "Bahasa Melayu", key: "ms", country: "MY", alt: "Bahasa Melayu"},
-  {label: "Türkçe", key: "tr", country: "TR", alt: "Türkçe"},
 ];
 
 export function getOtherProviderInfo() {
