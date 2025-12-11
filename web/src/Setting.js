@@ -1443,6 +1443,7 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "Claude") {
     return [
+      { id: "claude-opus-4-5", name: "claude-opus-4-5" },
       { id: "claude-opus-4-1", name: "claude-opus-4-1" },
       { id: "claude-opus-4-0", name: "claude-opus-4-0" },
       { id: "claude-opus-4-20250514", name: "claude-opus-4-20250514" },
@@ -1586,6 +1587,12 @@ export function getModelSubTypeOptions(type) {
       { id: "moonshot-v1-32k-vision-preview", name: "moonshot-v1-32k-vision-preview" },
       { id: "moonshot-v1-128k", name: "moonshot-v1-128k" },
       { id: "moonshot-v1-128k-vision-preview", name: "moonshot-v1-128k-vision-preview" },
+      { id: "kimi-k2-0905-preview", name: "kimi-k2-0905-preview" },
+      { id: "kimi-k2-0711-preview", name: "kimi-k2-0711-preview" },
+      { id: "kimi-k2-turbo-preview", name: "kimi-k2-turbo-preview" },
+      { id: "kimi-k2-thinking", name: "kimi-k2-thinking" },
+      { id: "kimi-k2-thinking-turbo", name: "kimi-k2-thinking-turbo" },
+      { id: "kimi-latest", name: "kimi-latest (Auto Tier)" },
     ];
   } else if (type === "Amazon Bedrock") {
     return [

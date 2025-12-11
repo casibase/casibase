@@ -128,9 +128,7 @@ class ProviderEditPage extends React.Component {
       }
       return Setting.getLabel(i18next.t("general:Secret key"), i18next.t("general:Secret key - Tooltip"));
     } else if (provider.category === "Model") {
-      if (provider.type === "Baidu Cloud" || provider.type === "Tencent Cloud") {
-        return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
-      }
+      return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
     } else if (provider.category === "Blockchain") {
       if (provider.type === "Ethereum") {
         return Setting.getLabel(i18next.t("provider:Private key"), i18next.t("provider:Private key - Tooltip"));
@@ -673,7 +671,7 @@ class ProviderEditPage extends React.Component {
                   {this.getClientSecretLabel(this.state.provider)} :
                 </Col>
                 <Col span={22} >
-                  <Input disabled={isRemote} value={this.state.provider.clientSecret} onChange={e => {
+                  <Input.Password disabled={isRemote} value={this.state.provider.clientSecret} onChange={e => {
                     this.updateProviderField("clientSecret", e.target.value);
                   }} />
                 </Col>

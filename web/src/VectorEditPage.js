@@ -33,6 +33,7 @@ class VectorEditPage extends React.Component {
       vectorName: props.match.params.vectorName,
       vector: null,
       isNewVector: props.location?.state?.isNewVector || false,
+      mode: new URLSearchParams(props.location?.search || "").get("mode") || "edit",
     };
   }
 
@@ -43,6 +44,11 @@ class VectorEditPage extends React.Component {
   getVector() {
     VectorBackend.getVector("admin", this.props.match.params.vectorName)
       .then((res) => {
+        if (res.data === null) {
+          this.props.history.push("/404");
+          return;
+        }
+
         if (res.status === "ok") {
           this.setState({
             vector: res.data,
@@ -75,13 +81,16 @@ class VectorEditPage extends React.Component {
   }
 
   renderVector() {
+    const isViewMode = this.state.mode === "view";
     return (
       <Card size="small" title={
         <div>
-          {i18next.t("vector:Edit Vector")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button onClick={() => this.submitVectorEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitVectorEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
-          {this.state.isNewVector && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelVectorEdit()}>{i18next.t("general:Cancel")}</Button>}
+          {isViewMode ? i18next.t("vector:View Vector") : i18next.t("vector:Edit Vector")}&nbsp;&nbsp;&nbsp;&nbsp;
+          {!isViewMode && (<>
+            <Button onClick={() => this.submitVectorEdit(false)}>{i18next.t("general:Save")}</Button>
+            <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitVectorEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+            {this.state.isNewVector && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelVectorEdit()}>{i18next.t("general:Cancel")}</Button>}
+          </>)}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -89,7 +98,7 @@ class VectorEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.vector.name} onChange={e => {
+            <Input value={this.state.vector.name} disabled={isViewMode} onChange={e => {
               this.updateVectorField("name", e.target.value);
             }} />
           </Col>
@@ -99,7 +108,7 @@ class VectorEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.vector.displayName} onChange={e => {
+            <Input value={this.state.vector.displayName} disabled={isViewMode} onChange={e => {
               this.updateVectorField("displayName", e.target.value);
             }} />
           </Col>
@@ -109,7 +118,7 @@ class VectorEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Store"), i18next.t("general:Store - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.vector.store} onChange={e => {
+            <Input value={this.state.vector.store} disabled={isViewMode} onChange={e => {
               this.updateVectorField("store", e.target.value);
             }} />
           </Col>
@@ -119,7 +128,7 @@ class VectorEditPage extends React.Component {
             {Setting.getLabel(i18next.t("vector:Provider"), i18next.t("vector:Provider - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.vector.provider} onChange={e => {
+            <Input value={this.state.vector.provider} disabled={isViewMode} onChange={e => {
               this.updateVectorField("provider", e.target.value);
             }} />
           </Col>
@@ -129,7 +138,7 @@ class VectorEditPage extends React.Component {
             {Setting.getLabel(i18next.t("store:File"), i18next.t("store:File - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.vector.file} onChange={e => {
+            <Input value={this.state.vector.file} disabled={isViewMode} onChange={e => {
               this.updateVectorField("file", e.target.value);
             }} />
           </Col>
@@ -140,9 +149,11 @@ class VectorEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <CodeMirror value={this.state.vector.text}
-              options={{mode: "markdown", theme: "material-darker", lineWrapping: true}}
+              options={{mode: "markdown", theme: "material-darker", lineWrapping: true, readOnly: isViewMode}}
               onBeforeChange={(editor, data, value) => {
-                this.updateVectorField("text", value);
+                if (!isViewMode) {
+                  this.updateVectorField("text", value);
+                }
               }}
             />
           </Col>
@@ -172,7 +183,7 @@ class VectorEditPage extends React.Component {
             {Setting.getLabel(i18next.t("vector:Data"), i18next.t("vector:Data - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.vector.data} onChange={(e) => {
+            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.vector.data} disabled={isViewMode} onChange={(e) => {
               this.updateVectorField("data", e.target.value);
             }} />
           </Col>
@@ -232,16 +243,19 @@ class VectorEditPage extends React.Component {
   }
 
   render() {
+    const isViewMode = this.state.mode === "view";
     return (
       <div>
         {
           this.state.vector !== null ? this.renderVector() : null
         }
-        <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button size="large" onClick={() => this.submitVectorEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitVectorEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
-          {this.state.isNewVector && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelVectorEdit()}>{i18next.t("general:Cancel")}</Button>}
-        </div>
+        {!isViewMode && (
+          <div style={{marginTop: "20px", marginLeft: "40px"}}>
+            <Button size="large" onClick={() => this.submitVectorEdit(false)}>{i18next.t("general:Save")}</Button>
+            <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitVectorEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+            {this.state.isNewVector && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelVectorEdit()}>{i18next.t("general:Cancel")}</Button>}
+          </div>
+        )}
       </div>
     );
   }

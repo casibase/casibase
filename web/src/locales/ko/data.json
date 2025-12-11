@@ -622,7 +622,7 @@
     "AES key": "AES 키",
     "AES key - Tooltip": "보안 통신을 위한 AES 암호화 키",
     "API key": "API 키",
-    "API key - Tooltip": "모델 API 키(관리자만 가능)",
+    "API key - Tooltip": "인증용 API 키",
     "API version": "API 버전",
     "API version - Tooltip": "Azure API 버전",
     "Action": "Action",

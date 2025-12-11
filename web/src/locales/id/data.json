@@ -624,7 +624,7 @@
     "AES key": "Kunci AES",
     "AES key - Tooltip": "Kunci enkripsi AES untuk komunikasi aman",
     "API key": "Kunci API",
-    "API key - Tooltip": "Kunci API model (hanya terlihat administrator)",
+    "API key - Tooltip": "Kunci API untuk autentikasi",
     "API version": "Versi API",
     "API version - Tooltip": "Versi API Azure",
     "Action": "Action",
