@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/scan"
 	"github.com/casibase/casibase/util"
 )
@@ -47,7 +48,7 @@ func ScanAsset(provider, scanParam, targetMode, target, asset, command string, s
 			return nil, err
 		}
 		if scanObj == nil {
-			return nil, fmt.Errorf("scan not found")
+			return nil, fmt.Errorf(i18n.Translate(lang, "scan:scan not found"))
 		}
 
 		scanObj.State = "Pending"
@@ -86,7 +87,7 @@ func executeScan(provider, scanParam, targetMode, target, asset, command, owner 
 	// Get the hostname to identify the runner
 	hostname, err := os.Hostname()
 	if err != nil {
-		return nil, fmt.Errorf("error getting hostname: %v", err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "scan:error getting hostname: %v"), err)
 	}
 
 	// Get the provider
@@ -95,7 +96,7 @@ func executeScan(provider, scanParam, targetMode, target, asset, command, owner 
 		return nil, err
 	}
 	if providerObj == nil {
-		return nil, fmt.Errorf("provider not found")
+		return nil, fmt.Errorf(i18n.Translate(lang, "scan:provider not found"))
 	}
 
 	// Create scan provider
@@ -104,7 +105,7 @@ func executeScan(provider, scanParam, targetMode, target, asset, command, owner 
 		return nil, err
 	}
 	if scanProvider == nil {
-		return nil, fmt.Errorf("scan provider not supported")
+		return nil, fmt.Errorf(i18n.Translate(lang, "scan:scan provider not supported"))
 	}
 
 	// Determine the scan target
@@ -118,13 +119,13 @@ func executeScan(provider, scanParam, targetMode, target, asset, command, owner 
 			return nil, err
 		}
 		if assetObj == nil {
-			return nil, fmt.Errorf("asset not found")
+			return nil, fmt.Errorf(i18n.Translate(lang, "scan:asset not found"))
 		}
 
 		// Get the scan target from asset
 		scanTarget, err = assetObj.GetScanTarget()
 		if err != nil {
-			return nil, fmt.Errorf("error getting scan target: %v", err)
+			return nil, fmt.Errorf(i18n.Translate(lang, "scan:error getting scan target: %v"), err)
 		}
 	} else {
 		// Use manual input target

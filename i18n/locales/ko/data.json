@@ -67,6 +67,7 @@
     "No permission": "권한 없음",
     "No records to add": "추가할 레코드 없음",
     "No sessions to delete": "삭제할 세션 없음",
+    "You can only access data from your assigned store": "You can only access data from your assigned store",
     "You can only view your own chats": "자신의 채팅만 볼 수 있습니다",
     "You can only view your own messages": "자신의 메시지만 볼 수 있습니다"
   },
@@ -242,25 +243,23 @@
     "VMware API error, code = %d, message = %s": "VMware API error, code = %d, message = %s",
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
-  "provider": {
-    "Provider not found": "Provider not found"
-  },
   "resource": {
     "Invalid file data format": "Invalid file data format",
     "Missing required parameters": "필수 매개변수 누락"
+  },
+  "scan": {
+    "asset not found": "asset not found",
+    "error getting hostname: %v": "error getting hostname: %v",
+    "error getting scan target: %v": "error getting scan target: %v",
+    "provider not found": "provider not found",
+    "scan provider not supported": "scan provider not supported"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] doesn't exist"
   },
   "store": {
+    "Cannot delete the default store": "无法删除默认存储库",
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
-  },
-  "scan": {
-    "Scan not found": "스캔을 찾을 수 없습니다",
-    "Asset not found": "자산을 찾을 수 없습니다",
-    "Provider not found": "공급자를 찾을 수 없습니다",
-    "Scan provider not supported": "스캔 공급자가 지원되지 않습니다",
-    "Failed to start scan": "스캔을 시작하지 못했습니다"
   },
   "stt": {
     "API error: %s": "API error: %s",

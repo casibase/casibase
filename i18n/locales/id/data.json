@@ -67,6 +67,7 @@
     "No permission": "Tidak ada izin",
     "No records to add": "Tidak ada catatan untuk ditambahkan",
     "No sessions to delete": "Tidak ada sesi untuk dihapus",
+    "You can only access data from your assigned store": "You can only access data from your assigned store",
     "You can only view your own chats": "Anda hanya dapat melihat obrolan Anda sendiri",
     "You can only view your own messages": "Anda hanya dapat melihat pesan Anda sendiri"
   },
@@ -242,25 +243,23 @@
     "VMware API error, code = %d, message = %s": "VMware API error, code = %d, message = %s",
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
-  "provider": {
-    "Provider not found": "Provider not found"
-  },
   "resource": {
     "Invalid file data format": "Invalid file data format",
     "Missing required parameters": "Parameter yang diperlukan hilang"
+  },
+  "scan": {
+    "asset not found": "asset not found",
+    "error getting hostname: %v": "error getting hostname: %v",
+    "error getting scan target: %v": "error getting scan target: %v",
+    "provider not found": "provider not found",
+    "scan provider not supported": "scan provider not supported"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] doesn't exist"
   },
   "store": {
+    "Cannot delete the default store": "无法删除默认存储库",
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
-  },
-  "scan": {
-    "Scan not found": "Pemindaian tidak ditemukan",
-    "Asset not found": "Aset tidak ditemukan",
-    "Provider not found": "Penyedia tidak ditemukan",
-    "Scan provider not supported": "Penyedia pemindaian tidak didukung",
-    "Failed to start scan": "Gagal memulai pemindaian"
   },
   "stt": {
     "API error: %s": "API error: %s",

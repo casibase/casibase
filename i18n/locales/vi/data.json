@@ -67,6 +67,7 @@
     "No permission": "Không có quyền",
     "No records to add": "Không có bản ghi để thêm",
     "No sessions to delete": "Không có phiên để xóa",
+    "You can only access data from your assigned store": "You can only access data from your assigned store",
     "You can only view your own chats": "Bạn chỉ có thể xem các cuộc trò chuyện của mình",
     "You can only view your own messages": "Bạn chỉ có thể xem tin nhắn của mình"
   },
@@ -123,18 +124,18 @@
     "Please add a model provider first": "Vui lòng thêm nhà cung cấp mô hình trước",
     "Please add an embedding provider first": "Vui lòng thêm nhà cung cấp embedding trước",
     "Question message: [%s] doesn't exist": "Tin nhắn câu hỏi: [%s] không tồn tại",
-    "SendErrorEmail() error, the receiver user: ": "Lỗi SendErrorEmail(), người dùng nhận: ",
-    "The agent provider: %s is expected to be ": "Nhà cung cấp tác nhân: %s được mong đợi là ",
+    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() error, the receiver user: ",
+    "The agent provider: %s is expected to be ": "The agent provider: %s is expected to be ",
     "The chat: %s is not found": "Cuộc trò chuyện: %s không được tìm thấy",
     "The default video provider should not be empty": "Nhà cung cấp video mặc định không được để trống",
     "The embedding provider for store: %s is not found": "Nhà cung cấp embedding cho kho lưu trữ: %s không được tìm thấy",
-    "The embedding provider: %s is expected to be ": "Nhà cung cấp embedding: %s được mong đợi là ",
+    "The embedding provider: %s is expected to be ": "The embedding provider: %s is expected to be ",
     "The embedding provider: %s is not found": "Nhà cung cấp embedding: %s không được tìm thấy",
     "The embedding provider: %s's client secret should not be empty": "Client secret của nhà cung cấp embedding: %s không được để trống",
     "The image provider for store: %s should not be empty": "Nhà cung cấp hình ảnh cho kho lưu trữ: %s không được để trống",
     "The message: %s is not found": "Tin nhắn: %s không được tìm thấy",
     "The model provider for store: %s is not found": "Nhà cung cấp mô hình cho kho lưu trữ: %s không được tìm thấy",
-    "The model provider: %s is expected to be ": "Nhà cung cấp mô hình: %s được mong đợi là ",
+    "The model provider: %s is expected to be ": "The model provider: %s is expected to be ",
     "The model provider: %s is not found": "Nhà cung cấp mô hình: %s không được tìm thấy",
     "The model provider: %s's client secret should not be empty": "Client secret của nhà cung cấp mô hình: %s không được để trống",
     "The provider is not found": "Nhà cung cấp không được tìm thấy",
@@ -242,25 +243,23 @@
     "VMware API error, code = %d, message = %s": "Lỗi API VMware, mã = %d, thông báo = %s",
     "unsupported provider type: %s": "loại nhà cung cấp không được hỗ trợ: %s"
   },
-  "provider": {
-    "Provider not found": "Không tìm thấy nhà cung cấp"
-  },
   "resource": {
     "Invalid file data format": "Định dạng dữ liệu tệp không hợp lệ",
     "Missing required parameters": "Thiếu các tham số bắt buộc"
+  },
+  "scan": {
+    "asset not found": "asset not found",
+    "error getting hostname: %v": "error getting hostname: %v",
+    "error getting scan target: %v": "error getting scan target: %v",
+    "provider not found": "provider not found",
+    "scan provider not supported": "scan provider not supported"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "tên nhà cung cấp lưu trữ: [%s] không tồn tại"
   },
   "store": {
+    "Cannot delete the default store": "无法删除默认存储库",
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "do phải có một kho lưu trữ mặc định trong Casibase, bạn không thể đặt kho lưu trữ này thành không mặc định. Bạn có thể trực tiếp đặt kho lưu trữ khác làm mặc định"
-  },
-  "scan": {
-    "Scan not found": "Không tìm thấy quét",
-    "Asset not found": "Không tìm thấy tài sản",
-    "Provider not found": "Không tìm thấy nhà cung cấp",
-    "Scan provider not supported": "Nhà cung cấp quét không được hỗ trợ",
-    "Failed to start scan": "Không thể bắt đầu quét"
   },
   "stt": {
     "API error: %s": "Lỗi API: %s",
