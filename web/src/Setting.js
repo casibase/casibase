@@ -127,6 +127,26 @@ export function parseJson(s) {
   }
 }
 
+// parseIds: 将用户在 textarea 中输入的 id 列表解析为字符串数组
+// 支持逗号、空格或换行分隔，返回去重后的、按输入顺序保留的非空字符串数组
+export function parseIds(text) {
+  if (!text) return [];
+  const parts = text
+    .split(/[,\n\s]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  // 去重但保留顺序
+  const seen = new Set();
+  const res = [];
+  for (const p of parts) {
+    if (!seen.has(p)) {
+      seen.add(p);
+      res.push(p);
+    }
+  }
+  return res;
+}
+
 export function myParseInt(i) {
   const res = parseInt(i);
   return isNaN(res) ? 0 : res;

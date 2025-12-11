@@ -9,6 +9,7 @@ export default function AddRecordsMulticenter(props) {
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
 
+
     const parseIds = (text) => {
         if (!text) return [];
         // 支持逗号/空格/换行分隔
@@ -27,10 +28,10 @@ export default function AddRecordsMulticenter(props) {
             return;
         }
         // 将ids转为int数组
-        ids.forEach((id, index) => {
-            ids[index] = parseInt(id);
-        });
+        // 将 ids 转为整型（如果不是数字，parseInt 会产生 NaN，后续接口应校验）
+        const intIds = ids.map((id) => parseInt(id));
 
+        // 解析并验证可选的 record JSON（若用户提供）
         let record = null;
         if (recordText && recordText.trim()) {
             try {
@@ -41,10 +42,15 @@ export default function AddRecordsMulticenter(props) {
             }
         }
 
-        const payload = { ids };
+        // payload 中包含 ids 与可选的 record 字段（若为空则不传）
+        const payload = { ids: intIds };
+        if (record !== null) {
+            payload.record = record;
+        }
 
         try {
             setLoading(true);
+            // 调用后端接口，将 ids（int数组）和可选 record 一并发送
             const resp = await addMultiCenterDatasetRecordByIds(payload);
             setResult(resp);
         } catch (e) {
