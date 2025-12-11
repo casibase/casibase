@@ -7,22 +7,6 @@ import { UserOutlined } from '@ant-design/icons';
  * - props:
  *    - onSend(message): 可选，发送消息的回调；如果不提供，组件会在本地回显消息
  *    - initialMessages: 可选，初始消息数组，元素格式 {id, role: 'user'|'bot', text, time}
- *
- * 行为：
- * - 支持按 Enter 发送（shift+enter 换行）
- * - 发送后输入框清空，消息追加到消息列表并滚动到底部
- * - UI 使用 Ant Design 简单布局，易于集成
- */
-
-import React, { useEffect, useRef, useState } from 'react';
-import { Card, List, Input, Button, Avatar } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-
-/**
- * 简单聊天组件（前端仅展示）
- * - props:
- *    - onSend(message): 可选，发送消息的回调；如果不提供，组件会在本地回显消息
- *    - initialMessages: 可选，初始消息数组，元素格式 {id, role: 'user'|'bot', text, time}
  */
 
 export default function Chat({ onSend, initialMessages = [] }) {
