@@ -198,8 +198,17 @@ const MedGuideCardGrid = (props) => {
 
     const handleBtnClick = btnObj => {
         if (btnObj.route) {
-            //跳转
-            history.push(btnObj.route);
+            // 根据按钮路由类型决定跳转方式
+            // 外链用window.open，内链用history
+            if (/^https?:\/\//.test(btnObj.route)) {
+                window.open(btnObj.route, '_blank');
+            } else if (btnObj.route.startsWith("/")) {
+                history.push(btnObj.route);
+            } else {
+                window.open(btnObj.route, '_blank');
+            }
+        } else {
+            // 无路由则pass
         }
     };
 
