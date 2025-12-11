@@ -45,16 +45,14 @@ https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 |---------------------------|----------------------|----------------------------------|--------------------------------|
 |  deepseek-V3.2 			|     deepseek-chat    | 0.002 yuan/1,000 tokens          | 0.003 yuan/1,000 tokens         |
 |  deepseek-V3.2 			|  deepseek-reasoner   | 0.002 yuan/1,000 tokens          | 0.003 yuan/1,000 tokens         |
-|  deepseek-V3.2-Speciale	|  deepseek-reasoner(1)| 0.002 yuan/1,000 tokens          | 0.003 yuan/1,000 tokens         |
 `
 }
 
 func (p *DeepSeekProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
-		"deepseek-chat":        {0.002, 0.003},
-		"deepseek-reasoner":    {0.002, 0.003},
-		"deepseek-reasoner(1)": {0.002, 0.003},
+		"deepseek-chat":       {0.002, 0.003},
+		"deepseek-reasoner":   {0.002, 0.003},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
