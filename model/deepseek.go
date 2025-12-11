@@ -41,10 +41,10 @@ func (p *DeepSeekProvider) GetPricing() string {
 	return `URL:
 https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 
-| Model          		    | sub-type             | Input Price per 1K characters    | Output Price per 1K characters |
-|---------------------------|----------------------|----------------------------------|--------------------------------|
-|  deepseek-V3.2 			|     deepseek-chat    | 0.002 yuan/1,000 tokens          | 0.003 yuan/1,000 tokens         |
-|  deepseek-V3.2 			|  deepseek-reasoner   | 0.002 yuan/1,000 tokens          | 0.003 yuan/1,000 tokens         |
+| Model            | sub-type           | Input Price per 1K characters    | Output Price per 1K characters |
+|------------------|--------------------|----------------------------------|--------------------------------|
+| deepseek-V3.2    | deepseek-chat      | 0.002 yuan/1,000 tokens          | 0.003 yuan/1,000 tokens        |
+| deepseek-V3.2    | deepseek-reasoner  | 0.002 yuan/1,000 tokens          | 0.003 yuan/1,000 tokens        |
 `
 }
 
