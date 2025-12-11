@@ -67,6 +67,7 @@
     "No permission": "İzin yok",
     "No records to add": "Eklenecek kayıt yok",
     "No sessions to delete": "Silinecek oturum yok",
+    "You can only access data from your assigned store": "You can only access data from your assigned store",
     "You can only view your own chats": "Yalnızca kendi sohbetlerinizi görüntüleyebilirsiniz",
     "You can only view your own messages": "Yalnızca kendi mesajlarınızı görüntüleyebilirsiniz"
   },
@@ -123,18 +124,18 @@
     "Please add a model provider first": "Lütfen önce bir model sağlayıcısı ekleyin",
     "Please add an embedding provider first": "Lütfen önce bir gömme sağlayıcısı ekleyin",
     "Question message: [%s] doesn't exist": "Soru mesajı: [%s] mevcut değil",
-    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() hatası, alıcı kullanıcı: ",
-    "The agent provider: %s is expected to be ": "Ajan sağlayıcısı: %s olması bekleniyor ",
+    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() error, the receiver user: ",
+    "The agent provider: %s is expected to be ": "The agent provider: %s is expected to be ",
     "The chat: %s is not found": "Sohbet: %s bulunamadı",
     "The default video provider should not be empty": "Varsayılan video sağlayıcısı boş olmamalı",
     "The embedding provider for store: %s is not found": "Depo için gömme sağlayıcısı: %s bulunamadı",
-    "The embedding provider: %s is expected to be ": "Gömme sağlayıcısı: %s olması bekleniyor ",
+    "The embedding provider: %s is expected to be ": "The embedding provider: %s is expected to be ",
     "The embedding provider: %s is not found": "Gömme sağlayıcısı: %s bulunamadı",
     "The embedding provider: %s's client secret should not be empty": "Gömme sağlayıcısının: %s istemci gizliliği boş olmamalı",
     "The image provider for store: %s should not be empty": "Depo için görüntü sağlayıcısı: %s boş olmamalı",
     "The message: %s is not found": "Mesaj: %s bulunamadı",
     "The model provider for store: %s is not found": "Depo için model sağlayıcısı: %s bulunamadı",
-    "The model provider: %s is expected to be ": "Model sağlayıcısı: %s olması bekleniyor ",
+    "The model provider: %s is expected to be ": "The model provider: %s is expected to be ",
     "The model provider: %s is not found": "Model sağlayıcısı: %s bulunamadı",
     "The model provider: %s's client secret should not be empty": "Model sağlayıcısının: %s istemci gizliliği boş olmamalı",
     "The provider is not found": "Sağlayıcı bulunamadı",
@@ -242,25 +243,23 @@
     "VMware API error, code = %d, message = %s": "VMware API hatası, kod = %d, mesaj = %s",
     "unsupported provider type: %s": "desteklenmeyen sağlayıcı türü: %s"
   },
-  "provider": {
-    "Provider not found": "Sağlayıcı bulunamadı"
-  },
   "resource": {
     "Invalid file data format": "Geçersiz dosya veri formatı",
     "Missing required parameters": "Gerekli parametreler eksik"
+  },
+  "scan": {
+    "asset not found": "asset not found",
+    "error getting hostname: %v": "error getting hostname: %v",
+    "error getting scan target: %v": "error getting scan target: %v",
+    "provider not found": "provider not found",
+    "scan provider not supported": "scan provider not supported"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "depolama sağlayıcı adı: [%s] mevcut değil"
   },
   "store": {
+    "Cannot delete the default store": "无法删除默认存储库",
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "Casibase'de bir varsayılan depo olması gerektiğinden, bu depoyu varsayılan olmayan olarak ayarlayamazsınız. Doğrudan başka bir depoyu varsayılan olarak ayarlayabilirsiniz"
-  },
-  "scan": {
-    "Scan not found": "Tarama bulunamadı",
-    "Asset not found": "Varlık bulunamadı",
-    "Provider not found": "Sağlayıcı bulunamadı",
-    "Scan provider not supported": "Tarama sağlayıcısı desteklenmiyor",
-    "Failed to start scan": "Tarama başlatılamadı"
   },
   "stt": {
     "API error: %s": "API hatası: %s",
