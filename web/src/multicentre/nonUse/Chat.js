@@ -93,35 +93,10 @@ export default function Chat({ onSend, initialMessages = [] }) {
             } catch (e) {
                 // 可在这里追加错误消息或 toast 提示
                 console.error('onSend error', e);
-            } finally {
-                setSending(false);
-            }
-        } else {
-            // 没有提供 onSend，则模拟一个简单的回复（可选）
-            setTimeout(() => {
-                const reply = {
-                    id: Date.now() + 1,
-                    role: 'bot',
-                    text: `已收到：${trimmed}`,
-                    time: new Date().toISOString(),
-                };
-                setMessages((m) => [...m, reply]);
-            }, 600);
-        }
-    };
-
-    const onKeyDown = (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSend();
-        }
-    };
-
-    return (
-        <Card size="small" title="简单聊天（前端）" style={{ maxWidth: 900, margin: '12px auto' }}>
-            <div
-                ref={listRef}
-                style={{ maxHeight: 360, overflowY: 'auto', padding: '12px', marginBottom: 12, border: '1px solid #f0f0f0', borderRadius: 8, background: '#fff' }}
+                <List
+                    dataSource={messages}
+                    renderItem={(item) => renderMessage(item)}
+                />
             >
                 <List
                     dataSource={messages}
