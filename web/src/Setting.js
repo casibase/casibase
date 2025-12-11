@@ -138,6 +138,7 @@ export function parseIds(text) {
   // 去重但保留顺序
   const seen = new Set();
   const res = [];
+
   for (const p of parts) {
     if (!seen.has(p)) {
       seen.add(p);
