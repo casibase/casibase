@@ -41,8 +41,7 @@ const GROUPS = [
         buttons: [
             { title: "医疗数据归档", icon: "📄", desc: "将医疗数据高效上链，数据不可篡改可追溯。", route: "/ipfs-archive", introRoute: "/introduce/medical-record-chain" },
             { title: "数据操作上链", icon: "🔗", desc: "各类数据操作全流程上链，提升数据可信。", route: "/records" },
-            // { title: "区块链浏览器", icon: "🌐", desc: "可视化浏览链上数据，支持多条件筛选与溯源。", route: "/forms/区块链浏览器/data" },
-            // { title: "病例数据", icon: "🗒", desc: "可视化病例数据上传，支持批量导入", route: "/med-records" },
+
             { title: "查询与审计", icon: "🔍", desc: "查看患者的上链数据明细，支持检索与追溯。", route: "/ipfs-search", introRoute: "/introduce/patient-chain-data" },
         ],
     },
@@ -52,13 +51,10 @@ const GROUPS = [
         color: "#5a4697", // 稳重紫
         bg: "#f7f6fa",
         buttons: [
-            // { title: "医疗影像分析", icon: "📸", desc: "AI驱动医学影像检测、分割与辅助诊断。", route: "/yolov8mi" },
             { title: "受控使用", icon: "🛡️", desc: "实现数据分级授权与受控访问，保障数据安全。", route: "/forms/受控使用/data" },
             { title: "可信联邦", icon: "🤝", desc: "安全可信的数据解密服务，合规可控。", route: "/integration/fed" },
-            // "https://30b44636.r3.cpolar.top/"
             { title: "密文计算", icon: "🧮", desc: "支持隐私保护计算，数据加密流转与分析。", route: "/forms/密文计算/data" },
-            // { title: "SM9-IPFE", icon: "🔐", desc: "支持SM9-IPFE，保障数据安全与合规。", route: "/forms/SM9-IPFE/data" },
-            // { title: "可信联邦", icon: "🤝", desc: "安全可信的数据解密服务，合规可控。", route: "/forms/联邦学习/data" },
+
 
         ],
     },
@@ -103,26 +99,7 @@ const MedGuideCardGrid = (props) => {
                 const canViewKnowledgeGraph = userTag !== 'user';
                 return canViewKnowledgeGraph;
             }
-            // 用户管理 - 不是 user 和 doctor 标签
-            if (button.title === "用户管理") {
-                const canViewUserManagement = userTag !== 'user' && userTag !== 'doctor';
-                return canViewUserManagement;
-            }
-            // 权限管理 - 需要管理员权限且不是 user 和 doctor 标签
-            if (button.title === "权限管理") {
-                const canViewPermissionManagement = isAdmin && userTag !== 'user' && userTag !== 'doctor';
-                return canViewPermissionManagement;
-            }
-            // 资源管理 - 不是 user 和 doctor 标签（如果有这个按钮的话）
-            if (button.title === "资源管理") {
-                const canViewResourceManagement = userTag !== 'user' && userTag !== 'doctor';
-                return canViewResourceManagement;
-            }
-            // 医疗数据归档 - 不是user 和 doctor 标签（如果有这个按钮的话）
-            if (button.title === "医疗数据归档") {
-                const canViewIpfsArchive = userTag !== 'user' && userTag !== 'doctor';
-                return canViewIpfsArchive;
-            }
+
             // 其他按钮正常显示
             return true;
         });
