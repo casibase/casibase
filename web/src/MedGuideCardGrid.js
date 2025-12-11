@@ -99,7 +99,26 @@ const MedGuideCardGrid = (props) => {
                 const canViewKnowledgeGraph = userTag !== 'user';
                 return canViewKnowledgeGraph;
             }
-
+            // 用户管理 - 不是 user 和 doctor 标签
+            if (button.title === "用户管理") {
+                const canViewUserManagement = userTag !== 'user' && userTag !== 'doctor';
+                return canViewUserManagement;
+            }
+            // 权限管理 - 需要管理员权限且不是 user 和 doctor 标签
+            if (button.title === "权限管理") {
+                const canViewPermissionManagement = isAdmin && userTag !== 'user' && userTag !== 'doctor';
+                return canViewPermissionManagement;
+            }
+            // 资源管理 - 不是 user 和 doctor 标签（如果有这个按钮的话）
+            if (button.title === "资源管理") {
+                const canViewResourceManagement = userTag !== 'user' && userTag !== 'doctor';
+                return canViewResourceManagement;
+            }
+            // 医疗数据归档 - 不是user 和 doctor 标签（如果有这个按钮的话）
+            if (button.title === "医疗数据归档") {
+                const canViewIpfsArchive = userTag !== 'user' && userTag !== 'doctor';
+                return canViewIpfsArchive;
+            }
             // 其他按钮正常显示
             return true;
         });
