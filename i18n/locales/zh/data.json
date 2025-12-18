@@ -219,8 +219,8 @@
     "undeployment timeout: application did not undeploy within 10 minutes": "取消部署超时：应用未在10分钟内完成取消部署"
   },
   "openai": {
-    "Invalid API key format. Expected 'Bearer API_KEY'": "Invalid API key format. Expected 'Bearer API_KEY'",
-    "No user message found in the request": "No user message found in the request"
+    "Invalid API key format. Expected 'Bearer API_KEY'": "API 密钥格式无效。期望格式为 'Bearer API_KEY'",
+    "No user message found in the request": "请求中未找到用户消息"
   },
   "pkgdocker": {
     "Container %s not found": "容器 %s 未找到"
@@ -243,10 +243,10 @@
     "unsupported provider type: %s": "不支持的提供商类型：%s"
   },
   "provider": {
-    "Provider not found": "Provider not found"
+    "Provider not found": "未找到提供商"
   },
   "resource": {
-    "Invalid file data format": "Invalid file data format",
+    "Invalid file data format": "无效的文件数据格式",
     "Missing required parameters": "缺少必需参数"
   },
   "storage": {
@@ -254,7 +254,7 @@
   },
   "store": {
     "Cannot delete the default store": "无法删除默认存储库",
-    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "由于 Casibase 中必须有一个默认存储，您不能将此存储设置为非默认。您可以直接将另一个存储设置为默认"
   },
   "scan": {
     "Scan not found": "未找到扫描",
@@ -265,12 +265,12 @@
   },
   "stt": {
     "API error: %s": "API 错误：%s",
-    "Missing required parameter: storeId": "Missing required parameter: storeId",
+    "Missing required parameter: storeId": "缺少必需参数：storeId",
     "speech recognition API error: %v": "语音识别 API 错误：%v",
     "speech recognition timed out after %v seconds": "语音识别在 %v 秒后超时"
   },
   "tts": {
-    "The audio data is nil": "The audio data is nil",
+    "The audio data is nil": "音频数据为空",
     "calculatePrice() error: unknown model type: %s": "calculatePrice() 错误：未知的模型类型：%s",
     "error creating synthesizer: %v": "创建合成器错误：%v",
     "error finishing task: %v": "完成任务错误：%v",
@@ -287,7 +287,7 @@
     "unsupported file type: %s": "不支持的文件类型：%s"
   },
   "video": {
-    "The video can only be updated when there are no remarks and the state is \"Draft\"": "The video can only be updated when there are no remarks and the state is \"Draft\"",
-    "UploadVideo() error, videoId should not be empty": "UploadVideo() error, videoId should not be empty"
+    "The video can only be updated when there are no remarks and the state is \"Draft\"": "视频只能在没有备注且状态为\"草稿\"时更新",
+    "UploadVideo() error, videoId should not be empty": "UploadVideo() 错误，videoId 不应为空"
   }
 }
