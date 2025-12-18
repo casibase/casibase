@@ -12,12 +12,12 @@
     "The Template not found": "Die Vorlage wurde nicht gefunden"
   },
   "audio": {
-    "complete slice upload failed: %s": "complete slice upload failed: %s",
-    "get progress failed: %s": "get progress failed: %s",
-    "get result failed: %s": "get result failed: %s",
-    "init slice upload failed: %s": "init slice upload failed: %s",
-    "perform slice upload failed: %s": "perform slice upload failed: %s",
-    "worker upload failed: %s": "worker upload failed: %s"
+    "complete slice upload failed: %s": "Slice-Upload fehlgeschlagen: %s",
+    "get progress failed: %s": "Fortschrittsabfrage fehlgeschlagen: %s",
+    "get result failed: %s": "Ergebnisabruf fehlgeschlagen: %s",
+    "init slice upload failed: %s": "Initialisierung des Slice-Uploads fehlgeschlagen: %s",
+    "perform slice upload failed: %s": "Slice-Upload-Durchführung fehlgeschlagen: %s",
+    "worker upload failed: %s": "Worker-Upload fehlgeschlagen: %s"
   },
   "auth": {
     "Please sign in first": "Bitte melden Sie sich zuerst an",
@@ -243,7 +243,7 @@
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
   "provider": {
-    "Provider not found": "Provider not found"
+    "Provider not found": "Anbieter nicht gefunden"
   },
   "resource": {
     "Invalid file data format": "Invalid file data format",

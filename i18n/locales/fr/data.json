@@ -12,12 +12,12 @@
     "The Template not found": "Le modèle n'a pas été trouvé"
   },
   "audio": {
-    "complete slice upload failed: %s": "complete slice upload failed: %s",
-    "get progress failed: %s": "get progress failed: %s",
-    "get result failed: %s": "get result failed: %s",
-    "init slice upload failed: %s": "init slice upload failed: %s",
-    "perform slice upload failed: %s": "perform slice upload failed: %s",
-    "worker upload failed: %s": "worker upload failed: %s"
+    "complete slice upload failed: %s": "Échec de la finalisation du téléchargement de fragment : %s",
+    "get progress failed: %s": "Échec de l'obtention de la progression : %s",
+    "get result failed: %s": "Échec de l'obtention du résultat : %s",
+    "init slice upload failed: %s": "Échec de l'initialisation du téléchargement de fragment : %s",
+    "perform slice upload failed: %s": "Échec de l'exécution du téléchargement de fragment : %s",
+    "worker upload failed: %s": "Échec du téléchargement du travailleur : %s"
   },
   "auth": {
     "Please sign in first": "Veuillez vous connecter d'abord",
@@ -243,7 +243,7 @@
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
   "provider": {
-    "Provider not found": "Provider not found"
+    "Provider not found": "Fournisseur non trouvé"
   },
   "resource": {
     "Invalid file data format": "Invalid file data format",

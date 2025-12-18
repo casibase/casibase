@@ -12,12 +12,12 @@
     "The Template not found": "La plantilla no se encontró"
   },
   "audio": {
-    "complete slice upload failed: %s": "complete slice upload failed: %s",
-    "get progress failed: %s": "get progress failed: %s",
-    "get result failed: %s": "get result failed: %s",
-    "init slice upload failed: %s": "init slice upload failed: %s",
-    "perform slice upload failed: %s": "perform slice upload failed: %s",
-    "worker upload failed: %s": "worker upload failed: %s"
+    "complete slice upload failed: %s": "Error al completar la carga de fragmentos: %s",
+    "get progress failed: %s": "Error al obtener progreso: %s",
+    "get result failed: %s": "Error al obtener resultado: %s",
+    "init slice upload failed: %s": "Error al inicializar carga de fragmentos: %s",
+    "perform slice upload failed: %s": "Error al realizar carga de fragmentos: %s",
+    "worker upload failed: %s": "Error en carga de trabajador: %s"
   },
   "auth": {
     "Please sign in first": "Por favor, inicie sesión primero",
@@ -243,7 +243,7 @@
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
   "provider": {
-    "Provider not found": "Provider not found"
+    "Provider not found": "Proveedor no encontrado"
   },
   "resource": {
     "Invalid file data format": "Invalid file data format",

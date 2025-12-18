@@ -12,12 +12,12 @@
     "The Template not found": "テンプレートが見つかりません"
   },
   "audio": {
-    "complete slice upload failed: %s": "complete slice upload failed: %s",
-    "get progress failed: %s": "get progress failed: %s",
-    "get result failed: %s": "get result failed: %s",
-    "init slice upload failed: %s": "init slice upload failed: %s",
-    "perform slice upload failed: %s": "perform slice upload failed: %s",
-    "worker upload failed: %s": "worker upload failed: %s"
+    "complete slice upload failed: %s": "スライスアップロード完了に失敗しました: %s",
+    "get progress failed: %s": "進捗取得に失敗しました: %s",
+    "get result failed: %s": "結果取得に失敗しました: %s",
+    "init slice upload failed: %s": "スライスアップロード初期化に失敗しました: %s",
+    "perform slice upload failed: %s": "スライスアップロード実行に失敗しました: %s",
+    "worker upload failed: %s": "ワーカーアップロードに失敗しました: %s"
   },
   "auth": {
     "Please sign in first": "最初にサインインしてください",
@@ -243,7 +243,7 @@
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
   "provider": {
-    "Provider not found": "Provider not found"
+    "Provider not found": "プロバイダーが見つかりません"
   },
   "resource": {
     "Invalid file data format": "Invalid file data format",

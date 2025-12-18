@@ -295,7 +295,7 @@
     "Failed to decode audio data": "音频数据解码失败",
     "Failed to delete": "删除失败",
     "Failed to deploy": "部署失败",
-    "Failed to execute": "Failed to execute",
+    "Failed to execute": "执行失败",
     "Failed to get": "获取失败",
     "Failed to query": "查询失败",
     "Failed to redirect": "重定向失败",
