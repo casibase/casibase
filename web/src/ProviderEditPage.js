@@ -664,7 +664,8 @@ class ProviderEditPage extends React.Component {
             (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") ||
             (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker") ||
             this.state.provider.category === "Scan" ||
-            this.state.provider.type === "Dummy"
+            this.state.provider.type === "Dummy" ||
+            this.state.provider.type === "Ollama"
           ) ? null : (
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
