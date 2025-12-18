@@ -67,6 +67,7 @@
     "No permission": "Keine Berechtigung",
     "No records to add": "Keine Datensätze zum Hinzufügen",
     "No sessions to delete": "Keine Sitzungen zum Löschen",
+    "You can only access data from your assigned store": "You can only access data from your assigned store",
     "You can only view your own chats": "Sie können nur Ihre eigenen Chats ansehen",
     "You can only view your own messages": "Sie können nur Ihre eigenen Nachrichten ansehen"
   },
@@ -242,25 +243,23 @@
     "VMware API error, code = %d, message = %s": "VMware API error, code = %d, message = %s",
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
-  "provider": {
-    "Provider not found": "Provider not found"
-  },
   "resource": {
     "Invalid file data format": "Invalid file data format",
     "Missing required parameters": "Erforderliche Parameter fehlen"
+  },
+  "scan": {
+    "asset not found": "asset not found",
+    "error getting scan target: %v": "error getting scan target: %v",
+    "provider not found": "provider not found",
+    "scan not found": "scan not found",
+    "scan provider not supported": "scan provider not supported"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] doesn't exist"
   },
   "store": {
+    "Cannot delete the default store": "Cannot delete the default store",
     "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
-  },
-  "scan": {
-    "Scan not found": "Scan nicht gefunden",
-    "Asset not found": "Asset nicht gefunden",
-    "Provider not found": "Anbieter nicht gefunden",
-    "Scan provider not supported": "Scan-Anbieter wird nicht unterstützt",
-    "Failed to start scan": "Scan konnte nicht gestartet werden"
   },
   "stt": {
     "API error: %s": "API error: %s",
