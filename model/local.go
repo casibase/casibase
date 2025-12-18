@@ -163,7 +163,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
-		flushData = flushDataOpenai
+		flushData = flushDataThink
 	} else if p.typ == "Azure" {
 		client = getAzureClientFromToken(p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
 		flushData = flushDataAzure
@@ -286,7 +286,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			}
 
 			// Handle both regular content and reasoning content
-			if p.typ == "Custom-think" {
+			if p.typ == "Custom-think" || p.typ == "Local" {
 				// For Custom-think type, we'll handle both reasoning and regular content
 				flushThink := flushData.(func(string, string, io.Writer, string) error)
 

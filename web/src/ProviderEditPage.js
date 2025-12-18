@@ -550,15 +550,16 @@ class ProviderEditPage extends React.Component {
                   {Setting.getLabel(i18next.t("provider:Compatible provider"), i18next.t("provider:Compatible provider - Tooltip"))} :
                 </Col>
                 <Col span={22} >
-                  <Select virtual={false} disabled={isRemote} style={{width: "100%"}} value={this.state.provider.compatibleProvider} onChange={(value => {
-                    this.updateProviderField("compatibleProvider", value);
-                  })}>
-                    {
-                      Setting.getCompatibleProviderOptions(this.state.provider.category)
-                      // .sort((a, b) => a.name.localeCompare(b.name))
-                        .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-                    }
-                  </Select>
+                  <AutoComplete
+                    style={{width: "100%"}}
+                    value={this.state.provider.compatibleProvider}
+                    disabled={isRemote}
+                    onChange={(value) => {
+                      this.updateProviderField("compatibleProvider", value);
+                    }}
+                    options={Setting.getCompatibleProviderOptions(this.state.provider.category).map((item) => Setting.getOption(item.name, item.id))}
+                    placeholder="Please select or enter the compatible provider"
+                  />
                 </Col>
               </Row>
             </>
