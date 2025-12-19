@@ -67,6 +67,7 @@
     "No permission": "No permission",
     "No records to add": "No records to add",
     "No sessions to delete": "No sessions to delete",
+    "You can only access data from your assigned store": "You can only access data from your assigned store",
     "You can only view your own chats": "You can only view your own chats",
     "You can only view your own messages": "You can only view your own messages"
   },
@@ -242,9 +243,6 @@
     "VMware API error, code = %d, message = %s": "VMware API error, code = %d, message = %s",
     "unsupported provider type: %s": "unsupported provider type: %s"
   },
-  "provider": {
-    "Provider not found": "Provider not found"
-  },
   "resource": {
     "Invalid file data format": "Invalid file data format",
     "Missing required parameters": "Missing required parameters"
@@ -271,13 +269,6 @@
     "error sending text: %v": "error sending text: %v",
     "output error: %v": "output error: %v",
     "writer does not implement http.Flusher": "writer does not implement http.Flusher"
-  },
-  "scan": {
-    "Scan not found": "Scan not found",
-    "Asset not found": "Asset not found",
-    "Provider not found": "Provider not found",
-    "Scan provider not supported": "Scan provider not supported",
-    "Failed to start scan": "Failed to start scan"
   },
   "txt": {
     ".docx file is empty": ".docx file is empty",
