@@ -61,7 +61,7 @@
     "transaction failed with status: %d, reason: %s": "交易失败，状态码：%d，原因：%s"
   },
   "chat": {
-    "The default store is not found": "未找到 The default store"
+    "The default store is not found": "未找到默认存储"
   },
   "controllers": {
     "No permission": "无权限",
@@ -213,7 +213,7 @@
     "the record: %s does not exist": "记录：%s 不存在",
     "the record: %s has already been committed, blockId = %s": "记录：%s 已提交，blockId = %s",
     "the record: %s's block ID should not be empty": "记录：%s 的区块 ID 不能为空",
-    "the scan provider type: %s is not supported": "the scan provider type: %s 不是 supported",
+    "the scan provider type: %s is not supported": "扫描提供商类型: %s 不受支持",
     "the storage provider type: %s is not supported": "不支持的存储提供商类型：%s",
     "there is no active blockchain provider": "没有活跃的区块链提供商",
     "unable to extract host": "无法提取主机",
