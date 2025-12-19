@@ -26,7 +26,7 @@
   },
   "blockchain": {
     "The default blockchain provider is not found": "The default blockchain provider が見つかりません",
-    "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'"
+    "The default blockchain providers' Provider URL cannot be empty. The default value is: 'http://localhost:13900'": "デフォルトのブロックチェーンプロバイダーのProvider URLは空にできません。デフォルト値は: 'http://localhost:13900'"
   },
   "bpmn": {
     "Error parsing BPMN file: %v": "BPMNファイルの解析エラー: %v"
@@ -34,8 +34,8 @@
   "chain": {
     "ChainTencentChainmakerClient.Client.Invoke() error: %v": "ChainTencentChainmakerClient.Client.Invoke() エラー: %v",
     "ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v": "ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() エラー: %v",
-    "TencentCloudSDKError, code = %d, message = %s": "TencentCloudSDKError, code = %d, message = %s",
-    "TencentCloudSDKError: %v": "TencentCloudSDKError: %v",
+    "TencentCloudSDKError, code = %d, message = %s": "TencentCloudSDKエラー, コード = %d, メッセージ = %s",
+    "TencentCloudSDKError: %v": "TencentCloudSDKエラー: %v",
     "chainmakerEndpoint is not configured": "chainmakerEndpoint は configured ではありません",
     "event log value is not string: %v": "event log value は string: %v ではありません",
     "failed to connect to Ethereum RPC: %v": "connect to Ethereum RPCに失敗しました: %v",
@@ -55,10 +55,10 @@
     "failed to unpack event log: %v": "unpack event logに失敗しました: %v",
     "marshal normalized data error: %v": "marshal normalized data エラー: %v",
     "newChainTencentChainmakerClient() error: %v": "newChainTencentChainmakerClient() エラー: %v",
-    "not enough string events found in transaction logs, expected at least 3, got %d": "not enough string events found in transaction logs, expected at least 3, got %d",
+    "not enough string events found in transaction logs, expected at least 3, got %d": "トランザクションログで十分な文字列イベントが見つかりませんでした、少なくとも3つ必要ですが、%d個しかありませんでした",
     "parse json data error: %v": "parse json data エラー: %v",
-    "transaction failed to be mined: %v": "transaction failed to be mined: %v",
-    "transaction failed with status: %d, reason: %s": "transaction failed with status: %d, reason: %s"
+    "transaction failed to be mined: %v": "トランザクションがマイニングできませんでした: %v",
+    "transaction failed with status: %d, reason: %s": "トランザクションが失敗しました、ステータス: %d, 理由: %s"
   },
   "chat": {
     "The default store is not found": "デフォルトのストアが見つかりません"
@@ -67,12 +67,12 @@
     "No permission": "権限がありません",
     "No records to add": "追加するレコードがありません",
     "No sessions to delete": "削除するセッションがありません",
-    "You can only access data from your assigned store": "You can only access data from your assigned store",
+    "You can only access data from your assigned store": "割り当てられたストアのデータのみにアクセスできます",
     "You can only view your own chats": "自分のチャットのみ表示できます",
     "You can only view your own messages": "自分のメッセージのみ表示できます"
   },
   "embedding": {
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
+    "calculatePrice() error: unknown model type: %s": "calculatePrice() エラー: 不明なモデルタイプ: %s",
     "error unmarshaling response JSON: %v": "エラー unmarshaling response JSON: %v",
     "failed to calculate price: %v": "calculate priceに失敗しました: %v",
     "failed to create client: %v": "create clientに失敗しました: %v",
@@ -87,11 +87,11 @@
     "failed to read word: %v": "read wordに失敗しました: %v",
     "failed to unmarshal response: %v": "unmarshal responseに失敗しました: %v",
     "input text is empty": "入力テキストが空です",
-    "no embedding provider specified": "no embedding provider specified",
-    "no embedding vector found in response": "no embedding vector found in response",
-    "no embeddings found in the response": "no embeddings found in the response",
-    "none of the tokens were found in the vocabulary": "none of the tokens were found in the vocabulary",
-    "request failed with status code %d: %s": "request failed with status code %d: %s",
+    "no embedding provider specified": "エンベディングプロバイダーが指定されていません",
+    "no embedding vector found in response": "レスポンスにエンベディングベクトルが見つかりません",
+    "no embeddings found in the response": "レスポンスにエンベディングが見つかりません",
+    "none of the tokens were found in the vocabulary": "トークンがボキャブラリーに見つかりませんでした",
+    "request failed with status code %d: %s": "リクエストがステータスコード %d で失敗しました: %s",
     "text can not be empty.": "テキストを空にすることはできません。",
     "text cannot be empty": "テキストを空にすることはできません"
   },
@@ -101,7 +101,7 @@
   "model": {
     "QueryText() error: unknown model type: %s": "QueryText() error: unknown model type: %s",
     "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]",
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
+    "calculatePrice() error: unknown model type: %s": "calculatePrice() エラー: 不明なモデルタイプ: %s",
     "calculatePrice() error: video generation pricing requires duration information": "calculatePrice() error: video generation pricing requires duration information",
     "cannot calculate tokens": "cannot calculate tokens",
     "error getting chat completion: %v": "エラー getting chat completion: %v",
@@ -262,7 +262,7 @@
   },
   "tts": {
     "The audio data is nil": "音声データがnilです",
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() error: unknown model type: %s",
+    "calculatePrice() error: unknown model type: %s": "calculatePrice() エラー: 不明なモデルタイプ: %s",
     "error creating synthesizer: %v": "エラー creating synthesizer: %v",
     "error finishing task: %v": "エラー finishing task: %v",
     "error running task: %v": "エラー running task: %v",

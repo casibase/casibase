@@ -33,9 +33,9 @@
   },
   "chain": {
     "ChainTencentChainmakerClient.Client.Invoke() error: %v": "Error de ChainTencentChainmakerClient.Client.Invoke(): %v",
-    "ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v": "ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v",
+    "ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v": "Error de ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract(): %v",
     "TencentCloudSDKError, code = %d, message = %s": "TencentCloudSDKError, código = %d, mensaje = %s",
-    "TencentCloudSDKError: %v": "TencentCloudSDKError: %v",
+    "TencentCloudSDKError: %v": "Error de TencentCloudSDK: %v",
     "chainmakerEndpoint is not configured": "chainmakerEndpoint no está configurado",
     "event log value is not string: %v": "event log value no es string: %v",
     "failed to connect to Ethereum RPC: %v": "Error al conectar con Ethereum RPC: %v",
@@ -53,12 +53,12 @@
     "failed to suggest gas price: %v": "error al suggest gas price: %v",
     "failed to unmarshal JSON: %v": "error al unmarshal JSON: %v",
     "failed to unpack event log: %v": "error al unpack event log: %v",
-    "marshal normalized data error: %v": "marshal normalized data error: %v",
-    "newChainTencentChainmakerClient() error: %v": "newChainTencentChainmakerClient() error: %v",
-    "not enough string events found in transaction logs, expected at least 3, got %d": "not enough string events found in transaction logs, expected at least 3, got %d",
-    "parse json data error: %v": "parse json data error: %v",
-    "transaction failed to be mined: %v": "transaction failed to be mined: %v",
-    "transaction failed with status: %d, reason: %s": "transaction failed with status: %d, reason: %s"
+    "marshal normalized data error: %v": "Error al serializar datos normalizados: %v",
+    "newChainTencentChainmakerClient() error: %v": "Error de newChainTencentChainmakerClient(): %v",
+    "not enough string events found in transaction logs, expected at least 3, got %d": "No se encontraron suficientes eventos de cadena en los registros de transacciones, se esperaban al menos 3, se obtuvieron %d",
+    "parse json data error: %v": "Error al analizar datos JSON: %v",
+    "transaction failed to be mined: %v": "La transacción no pudo ser minada: %v",
+    "transaction failed with status: %d, reason: %s": "La transacción falló con estado: %d, razón: %s"
   },
   "chat": {
     "The default store is not found": "No se encontró el almacén predeterminado"
@@ -67,7 +67,7 @@
     "No permission": "Sin permiso",
     "No records to add": "No hay registros para agregar",
     "No sessions to delete": "No hay sesiones para eliminar",
-    "You can only access data from your assigned store": "You can only access data from your assigned store",
+    "You can only access data from your assigned store": "Solo puede acceder a datos de su almacén asignado",
     "You can only view your own chats": "Solo puede ver sus propios chats",
     "You can only view your own messages": "Solo puede ver sus propios mensajes"
   },
@@ -88,10 +88,10 @@
     "failed to unmarshal response: %v": "error al unmarshal response: %v",
     "input text is empty": "el texto de entrada está vacío",
     "no embedding provider specified": "no se especificó un proveedor de incrustación",
-    "no embedding vector found in response": "no embedding vector found in response",
-    "no embeddings found in the response": "no embeddings found in the response",
-    "none of the tokens were found in the vocabulary": "none of the tokens were found in the vocabulary",
-    "request failed with status code %d: %s": "request failed with status code %d: %s",
+    "no embedding vector found in response": "No se encontró vector de incrustación en la respuesta",
+    "no embeddings found in the response": "No se encontraron incrustaciones en la respuesta",
+    "none of the tokens were found in the vocabulary": "Ninguno de los tokens se encontró en el vocabulario",
+    "request failed with status code %d: %s": "La solicitud falló con código de estado %d: %s",
     "text can not be empty.": "el texto no puede estar vacío.",
     "text cannot be empty": "el texto no puede estar vacío"
   },

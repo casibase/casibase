@@ -34,8 +34,8 @@
   "chain": {
     "ChainTencentChainmakerClient.Client.Invoke() error: %v": "Erreur ChainTencentChainmakerClient.Client.Invoke(): %v",
     "ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract() error: %v": "erreur ChainTencentChainmakerDemoClient.Client.InvokeChainMakerDemoContract(): %v",
-    "TencentCloudSDKError, code = %d, message = %s": "TencentCloudSDKError, code = %d, message = %s",
-    "TencentCloudSDKError: %v": "TencentCloudSDKError: %v",
+    "TencentCloudSDKError, code = %d, message = %s": "Erreur TencentCloudSDK, code = %d, message = %s",
+    "TencentCloudSDKError: %v": "Erreur TencentCloudSDK: %v",
     "chainmakerEndpoint is not configured": "chainmakerEndpoint n'est pas configuré",
     "event log value is not string: %v": "event log value n'est pas string: %v",
     "failed to connect to Ethereum RPC: %v": "Échec de la connexion à Ethereum RPC: %v",
@@ -55,10 +55,10 @@
     "failed to unpack event log: %v": "échec de unpack event log: %v",
     "marshal normalized data error: %v": "erreur marshal normalized data: %v",
     "newChainTencentChainmakerClient() error: %v": "erreur newChainTencentChainmakerClient(): %v",
-    "not enough string events found in transaction logs, expected at least 3, got %d": "not enough string events found in transaction logs, expected at least 3, got %d",
+    "not enough string events found in transaction logs, expected at least 3, got %d": "Pas assez d'événements de chaîne trouvés dans les journaux de transactions, au moins 3 attendus, %d obtenus",
     "parse json data error: %v": "erreur parse json data: %v",
-    "transaction failed to be mined: %v": "transaction failed to be mined: %v",
-    "transaction failed with status: %d, reason: %s": "transaction failed with status: %d, reason: %s"
+    "transaction failed to be mined: %v": "La transaction n'a pas pu être minée: %v",
+    "transaction failed with status: %d, reason: %s": "La transaction a échoué avec le statut: %d, raison: %s"
   },
   "chat": {
     "The default store is not found": "Le magasin par défaut n'a pas été trouvé"
@@ -67,7 +67,7 @@
     "No permission": "Pas de permission",
     "No records to add": "Aucun enregistrement à ajouter",
     "No sessions to delete": "Aucune session à supprimer",
-    "You can only access data from your assigned store": "You can only access data from your assigned store",
+    "You can only access data from your assigned store": "Vous ne pouvez accéder qu'aux données de votre magasin assigné",
     "You can only view your own chats": "Vous ne pouvez consulter que vos propres discussions",
     "You can only view your own messages": "Vous ne pouvez consulter que vos propres messages"
   },
@@ -88,10 +88,10 @@
     "failed to unmarshal response: %v": "échec de unmarshal response: %v",
     "input text is empty": "le texte d'entrée est vide",
     "no embedding provider specified": "aucun fournisseur d'intégration spécifié",
-    "no embedding vector found in response": "no embedding vector found in response",
-    "no embeddings found in the response": "no embeddings found in the response",
-    "none of the tokens were found in the vocabulary": "none of the tokens were found in the vocabulary",
-    "request failed with status code %d: %s": "request failed with status code %d: %s",
+    "no embedding vector found in response": "Aucun vecteur d'incorporation trouvé dans la réponse",
+    "no embeddings found in the response": "Aucune incorporation trouvée dans la réponse",
+    "none of the tokens were found in the vocabulary": "Aucun des jetons n'a été trouvé dans le vocabulaire",
+    "request failed with status code %d: %s": "La requête a échoué avec le code de statut %d: %s",
     "text can not be empty.": "le texte ne peut pas être vide.",
     "text cannot be empty": "le texte ne peut pas être vide"
   },
