@@ -61,13 +61,13 @@
     "transaction failed with status: %d, reason: %s": "交易失败，状态码：%d，原因：%s"
   },
   "chat": {
-    "The default store is not found": "The default store is not found"
+    "The default store is not found": "未找到默认存储"
   },
   "controllers": {
     "No permission": "无权限",
     "No records to add": "没有要添加的记录",
     "No sessions to delete": "没有要删除的会话",
-    "You can only access data from your assigned store": "You can only access data from your assigned store",
+    "You can only access data from your assigned store": "您只能访问分配给您的存储中的数据",
     "You can only view your own chats": "您只能查看自己的聊天",
     "You can only view your own messages": "您只能查看自己的消息"
   },
@@ -107,8 +107,8 @@
     "error getting chat completion: %v": "获取聊天补全（chat completion）错误：%v",
     "exceed max tokens": "超过最大标记（token）数量",
     "failed to calculate price: %v": "计算价格失败：%v",
-    "failed to marshal content: %v": "failed to marshal content: %v",
-    "failed to marshal error content: %v": "failed to marshal error content: %v",
+    "failed to marshal content: %v": "marshal content失败: %v",
+    "failed to marshal error content: %v": "marshal error content失败: %v",
     "failed to marshal tool response: %v": "序列化工具响应失败：%v",
     "failed to parse tool arguments: %v": "解析工具参数失败：%v",
     "failed to write response: %v": "写入响应失败：%v",
@@ -124,18 +124,18 @@
     "Please add a model provider first": "请先添加模型提供商",
     "Please add an embedding provider first": "请先添加嵌入提供商",
     "Question message: [%s] doesn't exist": "问题消息：[%s] 不存在",
-    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() error, the receiver user: ",
-    "The agent provider: %s is expected to be ": "The agent provider: %s is expected to be ",
+    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() 错误，接收用户: ",
+    "The agent provider: %s is expected to be ": "代理提供商: %s 应该是 ",
     "The chat: %s is not found": "聊天：%s 未找到",
     "The default video provider should not be empty": "默认视频提供商不能为空",
     "The embedding provider for store: %s is not found": "存储 %s 的嵌入提供商未找到",
-    "The embedding provider: %s is expected to be ": "The embedding provider: %s is expected to be ",
+    "The embedding provider: %s is expected to be ": "Embedding提供商: %s 应该是 ",
     "The embedding provider: %s is not found": "嵌入提供商：%s 未找到",
     "The embedding provider: %s's client secret should not be empty": "嵌入提供商：%s 的客户端密钥不能为空",
     "The image provider for store: %s should not be empty": "存储 %s 的图像提供商不能为空",
     "The message: %s is not found": "消息：%s 未找到",
     "The model provider for store: %s is not found": "存储 %s 的模型提供商未找到",
-    "The model provider: %s is expected to be ": "The model provider: %s is expected to be ",
+    "The model provider: %s is expected to be ": "模型提供商: %s 应该是 ",
     "The model provider: %s is not found": "模型提供商：%s 未找到",
     "The model provider: %s's client secret should not be empty": "模型提供商：%s 的客户端密钥不能为空",
     "The provider is not found": "提供商未找到",
@@ -213,15 +213,15 @@
     "the record: %s does not exist": "记录：%s 不存在",
     "the record: %s has already been committed, blockId = %s": "记录：%s 已提交，blockId = %s",
     "the record: %s's block ID should not be empty": "记录：%s 的区块 ID 不能为空",
-    "the scan provider type: %s is not supported": "the scan provider type: %s is not supported",
+    "the scan provider type: %s is not supported": "扫描提供商类型: %s 不受支持",
     "the storage provider type: %s is not supported": "不支持的存储提供商类型：%s",
     "there is no active blockchain provider": "没有活跃的区块链提供商",
     "unable to extract host": "无法提取主机",
     "undeployment timeout: application did not undeploy within 10 minutes": "取消部署超时：应用未在10分钟内完成取消部署"
   },
   "openai": {
-    "Invalid API key format. Expected 'Bearer API_KEY'": "Invalid API key format. Expected 'Bearer API_KEY'",
-    "No user message found in the request": "No user message found in the request"
+    "Invalid API key format. Expected 'Bearer API_KEY'": "无效的 API key format. Expected 'Bearer API_KEY'",
+    "No user message found in the request": "请求中未找到用户消息"
   },
   "pkgdocker": {
     "Container %s not found": "容器 %s 未找到"
@@ -244,7 +244,7 @@
     "unsupported provider type: %s": "不支持的提供商类型：%s"
   },
   "resource": {
-    "Invalid file data format": "Invalid file data format",
+    "Invalid file data format": "无效的 file data format",
     "Missing required parameters": "缺少必需参数"
   },
   "storage": {
@@ -252,16 +252,16 @@
   },
   "store": {
     "Cannot delete the default store": "无法删除默认存储库",
-    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "由于Casibase中必须有一个默认存储，因此您不能将此存储设置为非默认。您可以直接将另一个存储设置为默认"
   },
   "stt": {
     "API error: %s": "API 错误：%s",
-    "Missing required parameter: storeId": "Missing required parameter: storeId",
+    "Missing required parameter: storeId": "缺少 required parameter: storeId",
     "speech recognition API error: %v": "语音识别 API 错误：%v",
     "speech recognition timed out after %v seconds": "语音识别在 %v 秒后超时"
   },
   "tts": {
-    "The audio data is nil": "The audio data is nil",
+    "The audio data is nil": "音频数据为空",
     "calculatePrice() error: unknown model type: %s": "calculatePrice() 错误：未知的模型类型：%s",
     "error creating synthesizer: %v": "创建合成器错误：%v",
     "error finishing task: %v": "完成任务错误：%v",
@@ -278,7 +278,7 @@
     "unsupported file type: %s": "不支持的文件类型：%s"
   },
   "video": {
-    "The video can only be updated when there are no remarks and the state is \"Draft\"": "The video can only be updated when there are no remarks and the state is \"Draft\"",
-    "UploadVideo() error, videoId should not be empty": "UploadVideo() error, videoId should not be empty"
+    "The video can only be updated when there are no remarks and the state is \"Draft\"": "只有在没有备注且状态为\"草稿\"时才能更新视频",
+    "UploadVideo() error, videoId should not be empty": "UploadVideo() error, videoId 不应为空"
   }
 }
