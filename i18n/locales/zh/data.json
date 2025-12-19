@@ -61,7 +61,7 @@
     "transaction failed with status: %d, reason: %s": "交易失败，状态码：%d，原因：%s"
   },
   "chat": {
-    "The default store is not found": "The default store is not found"
+    "The default store is not found": "未找到 The default store"
   },
   "controllers": {
     "No permission": "无权限",
@@ -107,8 +107,8 @@
     "error getting chat completion: %v": "获取聊天补全（chat completion）错误：%v",
     "exceed max tokens": "超过最大标记（token）数量",
     "failed to calculate price: %v": "计算价格失败：%v",
-    "failed to marshal content: %v": "failed to marshal content: %v",
-    "failed to marshal error content: %v": "failed to marshal error content: %v",
+    "failed to marshal content: %v": "marshal content失败: %v",
+    "failed to marshal error content: %v": "marshal error content失败: %v",
     "failed to marshal tool response: %v": "序列化工具响应失败：%v",
     "failed to parse tool arguments: %v": "解析工具参数失败：%v",
     "failed to write response: %v": "写入响应失败：%v",
@@ -213,15 +213,15 @@
     "the record: %s does not exist": "记录：%s 不存在",
     "the record: %s has already been committed, blockId = %s": "记录：%s 已提交，blockId = %s",
     "the record: %s's block ID should not be empty": "记录：%s 的区块 ID 不能为空",
-    "the scan provider type: %s is not supported": "the scan provider type: %s is not supported",
+    "the scan provider type: %s is not supported": "the scan provider type: %s 不是 supported",
     "the storage provider type: %s is not supported": "不支持的存储提供商类型：%s",
     "there is no active blockchain provider": "没有活跃的区块链提供商",
     "unable to extract host": "无法提取主机",
     "undeployment timeout: application did not undeploy within 10 minutes": "取消部署超时：应用未在10分钟内完成取消部署"
   },
   "openai": {
-    "Invalid API key format. Expected 'Bearer API_KEY'": "Invalid API key format. Expected 'Bearer API_KEY'",
-    "No user message found in the request": "No user message found in the request"
+    "Invalid API key format. Expected 'Bearer API_KEY'": "无效的 API key format. Expected 'Bearer API_KEY'",
+    "No user message found in the request": "请求中未找到用户消息"
   },
   "pkgdocker": {
     "Container %s not found": "容器 %s 未找到"
@@ -244,7 +244,7 @@
     "unsupported provider type: %s": "不支持的提供商类型：%s"
   },
   "resource": {
-    "Invalid file data format": "Invalid file data format",
+    "Invalid file data format": "无效的 file data format",
     "Missing required parameters": "缺少必需参数"
   },
   "storage": {
@@ -252,16 +252,16 @@
   },
   "store": {
     "Cannot delete the default store": "无法删除默认存储库",
-    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"
+    "given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default": "由于Casibase中必须有一个默认存储，因此您不能将此存储设置为非默认。您可以直接将另一个存储设置为默认"
   },
   "stt": {
     "API error: %s": "API 错误：%s",
-    "Missing required parameter: storeId": "Missing required parameter: storeId",
+    "Missing required parameter: storeId": "缺少 required parameter: storeId",
     "speech recognition API error: %v": "语音识别 API 错误：%v",
     "speech recognition timed out after %v seconds": "语音识别在 %v 秒后超时"
   },
   "tts": {
-    "The audio data is nil": "The audio data is nil",
+    "The audio data is nil": "音频数据为空",
     "calculatePrice() error: unknown model type: %s": "calculatePrice() 错误：未知的模型类型：%s",
     "error creating synthesizer: %v": "创建合成器错误：%v",
     "error finishing task: %v": "完成任务错误：%v",
@@ -278,7 +278,7 @@
     "unsupported file type: %s": "不支持的文件类型：%s"
   },
   "video": {
-    "The video can only be updated when there are no remarks and the state is \"Draft\"": "The video can only be updated when there are no remarks and the state is \"Draft\"",
-    "UploadVideo() error, videoId should not be empty": "UploadVideo() error, videoId should not be empty"
+    "The video can only be updated when there are no remarks and the state is \"Draft\"": "只有在没有备注且状态为\"草稿\"时才能更新视频",
+    "UploadVideo() error, videoId should not be empty": "UploadVideo() error, videoId 不应为空"
   }
 }
