@@ -248,9 +248,9 @@ const StoreInfoTitle = (props) => {
     }}>
       <div style={{display: "flex", alignItems: "center"}}>
         {filteredStores.length > 0 && (
-          <div style={{marginRight: "20px"}}>
-            {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Store")}:</span>}
-            <Select value={selectedStore?.name || storeInfo?.name || (filteredStores[0]?.name)} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating}>
+          <div style={{marginRight: "20px", display: "flex", alignItems: "center"}}>
+            {!isMobile && <span style={{marginRight: "10px", fontWeight: "600"}}>{i18next.t("general:Store")}:</span>}
+            <Select value={selectedStore?.name || storeInfo?.name || (filteredStores[0]?.name)} style={{width: isMobile ? "35vw" : "12rem", fontWeight: "500"}} onChange={handleStoreChange} disabled={isUpdating}>
               {filteredStores.map(store => (
                 <Select.Option key={store.name} value={store.name}>
                   {store.displayName || store.name}
