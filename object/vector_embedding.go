@@ -153,25 +153,77 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			}
 
 			if vector != nil {
-				logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s", i+1, len(textSections), storeName, file.Key, i, "Skipped due to already exists")
-				continue
-			}
-
-			logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s", i+1, len(textSections), storeName, file.Key, i, textSection)
-
-			operation := func() error {
-				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType, lang)
-				if err != nil {
-					if isRetryableError(err) {
-						return err
-					}
-					return backoff.Permanent(err)
+				// Check if the text content has changed
+				if vector.Text == textSection {
+					logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s", i+1, len(textSections), storeName, file.Key, i, "Skipped due to already exists with same content")
+					continue
 				}
-				return nil
+
+				// Content has changed, update the vector
+				logs.Info("[%d/%d] Updating embedding for store: [%s], file: [%s], index: [%d]: content changed", i+1, len(textSections), storeName, file.Key, i)
+				
+				// Delete the old vector first
+				_, err = DeleteVector(vector)
+				if err != nil {
+					logs.Error("Failed to delete old vector: %v", err)
+					return false, err
+				}
+
+				// Create new vector with updated content
+				operation := func() error {
+					affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType, lang)
+					if err != nil {
+						if isRetryableError(err) {
+							return err
+						}
+						return backoff.Permanent(err)
+					}
+					return nil
+				}
+				err = backoff.Retry(operation, backoff.NewExponentialBackOff())
+				if err != nil {
+					logs.Error("Failed to generate embedding after retries: %v", err)
+					return false, err
+				}
+			} else {
+				// Vector doesn't exist, create new one
+				logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s", i+1, len(textSections), storeName, file.Key, i, textSection)
+
+				operation := func() error {
+					affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType, lang)
+					if err != nil {
+						if isRetryableError(err) {
+							return err
+						}
+						return backoff.Permanent(err)
+					}
+					return nil
+				}
+				err = backoff.Retry(operation, backoff.NewExponentialBackOff())
+				if err != nil {
+					logs.Error("Failed to generate embedding after retries: %v", err)
+					return false, err
+				}
 			}
-			err = backoff.Retry(operation, backoff.NewExponentialBackOff())
+		}
+
+		// Delete vectors that exceed the current number of text sections (file was shortened)
+		for i := len(textSections); ; i++ {
+			var vector *Vector
+			vector, err = getVectorByIndex("admin", storeName, file.Key, i)
 			if err != nil {
-				logs.Error("Failed to generate embedding after retries: %v", err)
+				return false, err
+			}
+			
+			if vector == nil {
+				// No more vectors to delete
+				break
+			}
+
+			logs.Info("Deleting obsolete vector for store: [%s], file: [%s], index: [%d]", storeName, file.Key, i)
+			_, err = DeleteVector(vector)
+			if err != nil {
+				logs.Error("Failed to delete obsolete vector: %v", err)
 				return false, err
 			}
 		}
@@ -228,7 +280,8 @@ func GetNearestKnowledge(storeName string, vectorStores []string, searchProvider
 		return nil, nil, nil, err
 	}
 
-	relatedStores := append(vectorStores, storeName)
+	// Only use the current store to prevent cross-library content leakage
+	relatedStores := []string{storeName}
 	vectors, embeddingResult, err := searchProvider.Search(relatedStores, embeddingProvider.Name, embeddingProviderObj, modelProvider.Name, text, knowledgeCount, lang)
 	if err != nil {
 		if err.Error() == "no knowledge vectors found" {
