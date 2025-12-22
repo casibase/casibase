@@ -129,6 +129,9 @@ class ChatPage extends BaseListPage {
 
   updateStoreAndUrl = (newStore) => {
     if (!this.state.chat) {
+      // When there's no active chat yet, update the URL and state to reflect the new store
+      this.setState({storeName: newStore.name});
+      this.goToLinkSoft(this.generateChatUrl(null, newStore.name));
       return null;
     }
     const updatedChat = {...this.state.chat, store: newStore.name};
