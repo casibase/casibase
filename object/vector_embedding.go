@@ -165,7 +165,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 				// Delete the old vector first
 				_, err = DeleteVector(vector)
 				if err != nil {
-					logs.Error("Failed to delete old vector: %v", err)
+					logs.Error("Failed to delete old vector for store: [%s], file: [%s], index: [%d]: %v", storeName, file.Key, i, err)
 					return false, err
 				}
 
@@ -212,6 +212,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			var vector *Vector
 			vector, err = getVectorByIndex("admin", storeName, file.Key, i)
 			if err != nil {
+				logs.Error("Failed to retrieve vector during cleanup for store: [%s], file: [%s], index: [%d]: %v", storeName, file.Key, i, err)
 				return false, err
 			}
 			
@@ -223,7 +224,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			logs.Info("Deleting obsolete vector for store: [%s], file: [%s], index: [%d]", storeName, file.Key, i)
 			_, err = DeleteVector(vector)
 			if err != nil {
-				logs.Error("Failed to delete obsolete vector: %v", err)
+				logs.Error("Failed to delete obsolete vector for store: [%s], file: [%s], index: [%d]: %v", storeName, file.Key, i, err)
 				return false, err
 			}
 		}
