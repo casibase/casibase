@@ -21,7 +21,7 @@ import * as ChatBackend from "./backend/ChatBackend";
 import i18next from "i18next";
 
 const StoreInfoTitle = (props) => {
-  const {chat, stores, onChatUpdated, onStoreChange, autoRead, onUpdateAutoRead, account, paneCount = 1, onPaneCountChange, showPaneControls = false} = props;
+  const {chat, stores, onChatUpdated, onStoreChange, autoRead, onUpdateAutoRead, account, paneCount = 1, onPaneCountChange, showPaneControls = false, currentStoreName = null} = props;
 
   const [modelProviders, setModelProviders] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
@@ -87,9 +87,12 @@ const StoreInfoTitle = (props) => {
   }, [chat]);
 
   // Find the current store info
+  // If there's a chat, use its store; otherwise use the currentStoreName or default store
   const storeInfo = chat
     ? stores?.find(store => store.name === chat.store)
-    : null;
+    : (currentStoreName
+      ? stores?.find(store => store.name === currentStoreName)
+      : stores?.find(store => store.isDefault));
 
   // Initialize the local state when props change
   useEffect(() => {
@@ -181,17 +184,20 @@ const StoreInfoTitle = (props) => {
   const handleStoreChange = (value) => {
     // Find the store object
     const newStore = stores?.find(store => store.name === value);
-    if (newStore && chat) {
+    if (newStore) {
       // Update local state immediately for UI responsiveness
       setSelectedStore(newStore);
 
       // Also update the provider if the new store has one
-      if (!chat.modelProvider && newStore.modelProvider) {
+      if (chat && !chat.modelProvider && newStore.modelProvider) {
         setSelectedProvider(newStore.modelProvider);
       }
 
-      // Trigger the combined update
-      updateStoreAndChat(newStore, newStore.modelProvider);
+      // Only trigger backend update if there's an active chat
+      if (chat) {
+        // Trigger the combined update
+        updateStoreAndChat(newStore, newStore.modelProvider);
+      }
 
       if (onStoreChange) {
         const updatedChat = onStoreChange(newStore);

@@ -793,7 +793,7 @@ class ChatPage extends BaseListPage {
         )}
 
         <div style={{flex: 1, height: "100%", position: "relative", display: "flex", flexDirection: "column"}}>
-          {this.state.chat && this.state.paneCount === 1 && (
+          {this.state.paneCount === 1 && (
             <div style={{display: "flex", alignItems: "center", marginLeft: "15px"}}>
               {Setting.isMobile() && (
                 <Button type="text" icon={<BarsOutlined />} onClick={this.toggleChatMenu} style={{marginRight: "8px"}} />
@@ -802,7 +802,7 @@ class ChatPage extends BaseListPage {
                 <Button type="text" icon={this.state.chatMenuCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={this.toggleChatMenuCollapse} style={{marginRight: "8px"}} />
               )}
               <div style={{flex: 1}}>
-                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} onChatUpdated={this.handleChatUpdate} onStoreChange={this.updateStoreAndUrl} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} />
+                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} onChatUpdated={this.handleChatUpdate} onStoreChange={this.updateStoreAndUrl} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} currentStoreName={this.state.storeName} />
               </div>
             </div>
           )}
