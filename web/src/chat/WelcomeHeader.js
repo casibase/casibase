@@ -22,7 +22,9 @@ const WelcomeHeader = ({store}) => {
 
   // Create a more informative description that includes the store name
   const getDescription = () => {
-    if (store === undefined) {return null;}
+    if (store === undefined) {
+      return null;
+    }
 
     const baseDescription = store.welcomeText || i18next.t("chat:I'm here to help answer your questions");
     const storeName = store.displayName || store.name;
