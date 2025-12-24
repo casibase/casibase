@@ -236,7 +236,7 @@ class FileListPage extends BaseListPage {
     //     const field = params.searchedColumn, value = params.searchText;
     //     const sortField = params.sortField, sortOrder = params.sortOrder;
     this.setState({loading: true});
-    const store = Setting.getRequestStore(this.props.account);
+    const store = this.state.storeName;
     FileBackend.getFiles("admin", store)
       .then((res) => {
         this.setState({
