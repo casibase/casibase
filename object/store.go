@@ -294,6 +294,11 @@ func (store *Store) GetEmbeddingProvider() (*Provider, error) {
 }
 
 func RefreshStoreVectors(store *Store, lang string) (bool, error) {
+	_, err := DeleteVectorsByStore(store.Owner, store.Name)
+	if err != nil {
+		return false, err
+	}
+
 	storageProviderObj, err := store.GetStorageProviderObj(lang)
 	if err != nil {
 		return false, err
