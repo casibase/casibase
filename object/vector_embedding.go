@@ -114,10 +114,19 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 	files = filterTextFiles(files)
 
 	for _, file := range files {
+		// Update file status to "In Progress"
+		if err := updateFileStatusByPath("admin", storeName, file.Key, "In Progress"); err != nil {
+			logs.Error("Failed to update file status to 'In Progress' for file: %s, error: %v", file.Key, err)
+		}
+
 		var text string
 		fileExt := filepath.Ext(file.Key)
 		text, err = txt.GetParsedTextFromUrl(file.Url, fileExt, lang)
 		if err != nil {
+			// Update file status to "Failed" on error
+			if err := updateFileStatusByPath("admin", storeName, file.Key, "Failed"); err != nil {
+				logs.Error("Failed to update file status to 'Failed' for file: %s, error: %v", file.Key, err)
+			}
 			return false, err
 		}
 
@@ -136,15 +145,24 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 		var splitProvider split.SplitProvider
 		splitProvider, err = split.GetSplitProvider(splitProviderType)
 		if err != nil {
+			// Update file status to "Failed" on error
+			if err := updateFileStatusByPath("admin", storeName, file.Key, "Failed"); err != nil {
+				logs.Error("Failed to update file status to 'Failed' for file: %s, error: %v", file.Key, err)
+			}
 			return false, err
 		}
 
 		var textSections []string
 		textSections, err = splitProvider.SplitText(text)
 		if err != nil {
+			// Update file status to "Failed" on error
+			if err := updateFileStatusByPath("admin", storeName, file.Key, "Failed"); err != nil {
+				logs.Error("Failed to update file status to 'Failed' for file: %s, error: %v", file.Key, err)
+			}
 			return false, err
 		}
 
+		embeddingFailed := false
 		for i, textSection := range textSections {
 			logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s", i+1, len(textSections), storeName, file.Key, i, textSection)
 
@@ -161,7 +179,24 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			err = backoff.Retry(operation, backoff.NewExponentialBackOff())
 			if err != nil {
 				logs.Error("Failed to generate embedding after retries: %v", err)
-				return false, err
+				embeddingFailed = true
+				break
+			}
+		}
+
+		if embeddingFailed {
+			// Update file status to "Failed" on embedding error
+			if err := updateFileStatusByPath("admin", storeName, file.Key, "Failed"); err != nil {
+				logs.Error("Failed to update file status to 'Failed' for file: %s, error: %v", file.Key, err)
+			}
+			if err == nil {
+				err = fmt.Errorf("embedding failed for file: %s", file.Key)
+			}
+			return false, err
+		} else {
+			// Update file status to "Success" after successful embedding
+			if err := updateFileStatusByPath("admin", storeName, file.Key, "Success"); err != nil {
+				logs.Error("Failed to update file status to 'Success' for file: %s, error: %v", file.Key, err)
 			}
 		}
 	}
