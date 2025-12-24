@@ -146,3 +146,22 @@ func GetPaginationFiles(owner string, offset, limit int, field, value, sortField
 
 	return files, nil
 }
+
+func updateFileStatusByPath(owner string, storeName string, path string, status string) error {
+	// Find file record by path and update its status
+	files, err := GetFilesByStore(owner, storeName)
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
+		if file.Path == path {
+			file.Status = status
+			_, err = UpdateFile(file.GetId(), file)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
