@@ -179,6 +179,9 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 		if embeddingFailed {
 			// Update file status to "Failed" on embedding error
 			_ = updateFileStatusByPath("admin", storeName, file.Key, "Failed")
+			if err == nil {
+				err = fmt.Errorf("embedding failed for file: %s", file.Key)
+			}
 			return false, err
 		} else {
 			// Update file status to "Success" after successful embedding

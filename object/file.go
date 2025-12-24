@@ -158,9 +158,7 @@ func updateFileStatusByPath(owner string, storeName string, path string, status 
 		if file.Path == path {
 			file.Status = status
 			_, err = UpdateFile(file.GetId(), file)
-			if err != nil {
-				return err
-			}
+			return err
 		}
 	}
 	return nil

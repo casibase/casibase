@@ -151,9 +151,7 @@ func deleteFileRecordByPath(owner string, storeName string, path string) error {
 	for _, file := range files {
 		if file.Path == path {
 			_, err = DeleteFile(file)
-			if err != nil {
-				return err
-			}
+			return err
 		}
 	}
 	return nil
