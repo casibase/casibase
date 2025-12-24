@@ -360,7 +360,7 @@ class App extends Component {
     if (uri.includes("/chat")) {
       return true;
     }
-    const enabledStartsWith = ["/stores", "/providers", "/vectors", "/chats", "/messages", "/usages"];
+    const enabledStartsWith = ["/stores", "/providers", "/vectors", "/chats", "/messages", "/usages", "/files"];
     if (enabledStartsWith.some(prefix => uri.startsWith(prefix))) {
       return true;
     }
