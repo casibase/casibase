@@ -115,14 +115,18 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 
 	for _, file := range files {
 		// Update file status to "In Progress"
-		_ = updateFileStatusByPath("admin", storeName, file.Key, "In Progress")
+		if err := updateFileStatusByPath("admin", storeName, file.Key, "In Progress"); err != nil {
+			logs.Error("Failed to update file status to 'In Progress' for file: %s, error: %v", file.Key, err)
+		}
 
 		var text string
 		fileExt := filepath.Ext(file.Key)
 		text, err = txt.GetParsedTextFromUrl(file.Url, fileExt, lang)
 		if err != nil {
 			// Update file status to "Failed" on error
-			_ = updateFileStatusByPath("admin", storeName, file.Key, "Failed")
+			if err := updateFileStatusByPath("admin", storeName, file.Key, "Failed"); err != nil {
+				logs.Error("Failed to update file status to 'Failed' for file: %s, error: %v", file.Key, err)
+			}
 			return false, err
 		}
 
@@ -142,7 +146,9 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 		splitProvider, err = split.GetSplitProvider(splitProviderType)
 		if err != nil {
 			// Update file status to "Failed" on error
-			_ = updateFileStatusByPath("admin", storeName, file.Key, "Failed")
+			if err := updateFileStatusByPath("admin", storeName, file.Key, "Failed"); err != nil {
+				logs.Error("Failed to update file status to 'Failed' for file: %s, error: %v", file.Key, err)
+			}
 			return false, err
 		}
 
@@ -150,7 +156,9 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 		textSections, err = splitProvider.SplitText(text)
 		if err != nil {
 			// Update file status to "Failed" on error
-			_ = updateFileStatusByPath("admin", storeName, file.Key, "Failed")
+			if err := updateFileStatusByPath("admin", storeName, file.Key, "Failed"); err != nil {
+				logs.Error("Failed to update file status to 'Failed' for file: %s, error: %v", file.Key, err)
+			}
 			return false, err
 		}
 
@@ -178,14 +186,18 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 
 		if embeddingFailed {
 			// Update file status to "Failed" on embedding error
-			_ = updateFileStatusByPath("admin", storeName, file.Key, "Failed")
+			if err := updateFileStatusByPath("admin", storeName, file.Key, "Failed"); err != nil {
+				logs.Error("Failed to update file status to 'Failed' for file: %s, error: %v", file.Key, err)
+			}
 			if err == nil {
 				err = fmt.Errorf("embedding failed for file: %s", file.Key)
 			}
 			return false, err
 		} else {
 			// Update file status to "Success" after successful embedding
-			_ = updateFileStatusByPath("admin", storeName, file.Key, "Success")
+			if err := updateFileStatusByPath("admin", storeName, file.Key, "Success"); err != nil {
+				logs.Error("Failed to update file status to 'Success' for file: %s, error: %v", file.Key, err)
+			}
 		}
 	}
 
