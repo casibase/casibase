@@ -103,6 +103,62 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 	return AddVector(vector)
 }
 
+func addVectorsForFile(embeddingProviderObj embedding.EmbeddingProvider, storeName string, fileKey string, fileUrl string, splitProviderName string, embeddingProviderName string, modelSubType string, lang string) (bool, error) {
+	var affected bool
+
+	fileExt := filepath.Ext(fileKey)
+	text, err := txt.GetParsedTextFromUrl(fileUrl, fileExt, lang)
+	if err != nil {
+		return false, err
+	}
+
+	splitProviderType := splitProviderName
+	if splitProviderType == "" {
+		splitProviderType = "Default"
+	}
+
+	if strings.HasPrefix(fileKey, "QA") && fileExt == ".docx" {
+		splitProviderType = "QA"
+	}
+
+	if fileExt == ".md" {
+		splitProviderType = "Markdown"
+	}
+
+	splitProvider, err := split.GetSplitProvider(splitProviderType)
+	if err != nil {
+		return false, err
+	}
+
+	textSections, err := splitProvider.SplitText(text)
+	if err != nil {
+		return false, err
+	}
+
+	for i, textSection := range textSections {
+		logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s", i+1, len(textSections), storeName, fileKey, i, textSection)
+
+		operation := func() error {
+			sectionAffected, err := addEmbeddedVector(embeddingProviderObj, textSection, storeName, fileKey, i, embeddingProviderName, modelSubType, lang)
+			if err != nil {
+				if isRetryableError(err) {
+					return err
+				}
+				return backoff.Permanent(err)
+			}
+			affected = affected || sectionAffected
+			return nil
+		}
+		err = backoff.Retry(operation, backoff.NewExponentialBackOff())
+		if err != nil {
+			logs.Error("Failed to generate embedding after retries: %v", err)
+			return false, err
+		}
+	}
+
+	return affected, nil
+}
+
 func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, splitProviderName string, embeddingProviderName string, modelSubType string, lang string) (bool, error) {
 	var affected bool
 
@@ -114,56 +170,11 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 	files = filterTextFiles(files)
 
 	for _, file := range files {
-		var text string
-		fileExt := filepath.Ext(file.Key)
-		text, err = txt.GetParsedTextFromUrl(file.Url, fileExt, lang)
+		fileAffected, err := addVectorsForFile(embeddingProviderObj, storeName, file.Key, file.Url, splitProviderName, embeddingProviderName, modelSubType, lang)
 		if err != nil {
 			return false, err
 		}
-
-		splitProviderType := splitProviderName
-		if splitProviderType == "" {
-			splitProviderType = "Default"
-		}
-
-		if strings.HasPrefix(file.Key, "QA") && fileExt == ".docx" {
-			splitProviderType = "QA"
-		}
-
-		if fileExt == ".md" {
-			splitProviderType = "Markdown"
-		}
-		var splitProvider split.SplitProvider
-		splitProvider, err = split.GetSplitProvider(splitProviderType)
-		if err != nil {
-			return false, err
-		}
-
-		var textSections []string
-		textSections, err = splitProvider.SplitText(text)
-		if err != nil {
-			return false, err
-		}
-
-		for i, textSection := range textSections {
-			logs.Info("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s", i+1, len(textSections), storeName, file.Key, i, textSection)
-
-			operation := func() error {
-				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType, lang)
-				if err != nil {
-					if isRetryableError(err) {
-						return err
-					}
-					return backoff.Permanent(err)
-				}
-				return nil
-			}
-			err = backoff.Retry(operation, backoff.NewExponentialBackOff())
-			if err != nil {
-				logs.Error("Failed to generate embedding after retries: %v", err)
-				return false, err
-			}
-		}
+		affected = affected || fileAffected
 	}
 
 	return affected, err
