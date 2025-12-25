@@ -329,6 +329,32 @@ func RefreshStoreVectors(store *Store, lang string) (bool, error) {
 	return ok, err
 }
 
+func AddVectorsForFile(store *Store, fileName string, fileUrl string, lang string) (bool, error) {
+	modelProvider, err := store.GetModelProvider()
+	if err != nil {
+		return false, err
+	}
+	if modelProvider == nil {
+		return false, fmt.Errorf(i18n.Translate(lang, "object:The model provider for store: %s is not found"), store.GetId())
+	}
+
+	embeddingProvider, err := store.GetEmbeddingProvider()
+	if err != nil {
+		return false, err
+	}
+	if embeddingProvider == nil {
+		return false, fmt.Errorf(i18n.Translate(lang, "object:The embedding provider for store: %s is not found"), store.GetId())
+	}
+
+	embeddingProviderObj, err := embeddingProvider.GetEmbeddingProvider(lang)
+	if err != nil {
+		return false, err
+	}
+
+	ok, err := addVectorsForFile(embeddingProviderObj, store.Name, fileName, fileUrl, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, lang)
+	return ok, err
+}
+
 func refreshVector(vector *Vector, lang string) (bool, error) {
 	_, embeddingProviderObj, err := getEmbeddingProviderFromName("admin", vector.Provider, lang)
 	if err != nil {

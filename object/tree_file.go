@@ -20,6 +20,8 @@ import (
 	"io"
 	"mime/multipart"
 	"strings"
+
+	"github.com/beego/beego/logs"
 )
 
 func UpdateTreeFile(storeId string, key string, file *TreeFile) bool {
@@ -52,10 +54,17 @@ func AddTreeFile(storeId string, userName string, key string, isLeaf bool, filen
 		}
 
 		bs := fileBuffer.Bytes()
-		_, err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
+		fileUrl, err := storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
 		if err != nil {
 			return false, nil, err
 		}
+
+		go func() {
+			_, vectorErr := AddVectorsForFile(store, objectKey, fileUrl, lang)
+			if vectorErr != nil {
+				logs.Error("Failed to generate vectors for file %s: %v", objectKey, vectorErr)
+			}
+		}()
 
 		return true, bs, nil
 	} else {
@@ -91,6 +100,12 @@ func DeleteTreeFile(storeId string, key string, isLeaf bool, lang string) (bool,
 		if err != nil {
 			return false, err
 		}
+
+		_, err = DeleteVectorsByFile(store.Owner, store.Name, key)
+		if err != nil {
+			logs.Error("Failed to delete vectors for file %s: %v", key, err)
+			return false, err
+		}
 	} else {
 		objects, err := storageProviderObj.ListObjects(key)
 		if err != nil {
@@ -100,6 +115,12 @@ func DeleteTreeFile(storeId string, key string, isLeaf bool, lang string) (bool,
 		for _, object := range objects {
 			err = storageProviderObj.DeleteObject(object.Key)
 			if err != nil {
+				return false, err
+			}
+
+			_, err = DeleteVectorsByFile(store.Owner, store.Name, object.Key)
+			if err != nil {
+				logs.Error("Failed to delete vectors for file %s: %v", object.Key, err)
 				return false, err
 			}
 		}
