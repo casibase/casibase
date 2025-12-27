@@ -25,7 +25,7 @@ class FileEditPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      fileName: props.match.params.fileName,
+      fileName: decodeURIComponent(props.match.params.fileName),
       isNewFile: props.location?.state?.isNewFile || false,
       file: null,
     };
@@ -36,11 +36,13 @@ class FileEditPage extends React.Component {
   }
 
   getFile() {
-    FileBackend.getFile("admin", this.props.match.params.fileName)
+    const fileName = this.state.fileName;
+    FileBackend.getFile("admin", fileName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
             file: res.data,
+            fileName: fileName,
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -87,31 +89,11 @@ class FileEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.file.displayName} onChange={e => {
-              this.updateFileField("displayName", e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("file:Filename"), i18next.t("file:Filename - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.file.filename} onChange={e => {
               this.updateFileField("filename", e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("file:Path"), i18next.t("file:Path - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.file.path} onChange={e => {
-              this.updateFileField("path", e.target.value);
             }} />
           </Col>
         </Row>
@@ -137,7 +119,7 @@ class FileEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("file:Storage Provider"), i18next.t("file:Storage Provider - Tooltip"))} :
+            {Setting.getLabel(i18next.t("file:Storage provider"), i18next.t("file:Storage provider - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.file.storageProvider} onChange={e => {
@@ -147,7 +129,7 @@ class FileEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("file:Token Count"), i18next.t("file:Token Count - Tooltip"))} :
+            {Setting.getLabel(i18next.t("file:Token count"), i18next.t("file:Token count - Tooltip"))} :
           </Col>
           <Col span={22} >
             <InputNumber value={this.state.file.tokenCount} onChange={value => {
@@ -163,11 +145,19 @@ class FileEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.file.status} onChange={(value) => {
               this.updateFileField("status", value);
             }}>
-              <Option value="Active">{i18next.t("file:Active")}</Option>
-              <Option value="Inactive">{i18next.t("file:Inactive")}</Option>
+              <Option value="Pending">{i18next.t("file:Pending")}</Option>
               <Option value="Processing">{i18next.t("file:Processing")}</Option>
+              <Option value="Finished">{i18next.t("file:Finished")}</Option>
               <Option value="Error">{i18next.t("file:Error")}</Option>
             </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("file:Error text"), i18next.t("file:Error text - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input.TextArea value={this.state.file.errorText} autoSize={{minRows: 2, maxRows: 4}} readOnly />
           </Col>
         </Row>
       </Card>
@@ -189,7 +179,7 @@ class FileEditPage extends React.Component {
             if (exitAfterSave) {
               this.props.history.push("/files");
             } else {
-              this.props.history.push(`/files/${this.state.file.name}`);
+              this.props.history.push(`/files/${encodeURIComponent(this.state.file.name)}`);
             }
           } else {
             Setting.showMessage("error", i18next.t("general:Failed to save"));

@@ -294,11 +294,6 @@ func (store *Store) GetEmbeddingProvider() (*Provider, error) {
 }
 
 func RefreshStoreVectors(store *Store, lang string) (bool, error) {
-	_, err := DeleteVectorsByStore(store.Owner, store.Name)
-	if err != nil {
-		return false, err
-	}
-
 	storageProviderObj, err := store.GetStorageProviderObj(lang)
 	if err != nil {
 		return false, err
@@ -325,7 +320,17 @@ func RefreshStoreVectors(store *Store, lang string) (bool, error) {
 		return false, err
 	}
 
-	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, lang)
+	err = UpdateFilesStatusByStore(store.Owner, store.Name, FileStatusPending)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = DeleteVectorsByStore(store.Owner, store.Name)
+	if err != nil {
+		return false, err
+	}
+
+	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Owner, store.Name, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, lang)
 	return ok, err
 }
 
@@ -351,7 +356,10 @@ func AddVectorsForFile(store *Store, fileName string, fileUrl string, lang strin
 		return false, err
 	}
 
-	ok, err := addVectorsForFile(embeddingProviderObj, store.Name, fileName, fileUrl, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, lang)
+	ok, err := withFileStatus(store.Owner, store.Name, fileName, func() (bool, error) {
+		return addVectorsForFile(embeddingProviderObj, store.Name, fileName, fileUrl, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, lang)
+	})
+
 	return ok, err
 }
 

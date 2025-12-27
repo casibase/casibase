@@ -30,18 +30,18 @@ class FileListPage extends BaseListPage {
   newFile() {
     const randomName = Setting.getRandomName();
     const storeName = Setting.isDefaultStoreSelected(this.props.account) ? "store-built-in" : Setting.getRequestStore(this.props.account);
+    const objectKey = `file/file_${randomName}.txt`;
     return {
       owner: "admin",
-      name: `file_${randomName}`,
+      name: `${storeName}_${objectKey}`,
       createdTime: moment().format(),
-      displayName: `New File - ${randomName}`,
       filename: `file_${randomName}.txt`,
-      path: `/files/file_${randomName}.txt`,
       size: 0,
       store: storeName,
       storageProvider: "",
       tokenCount: 0,
-      status: "Active",
+      status: "Pending",
+      errorText: "",
     };
   }
 
@@ -52,7 +52,7 @@ class FileListPage extends BaseListPage {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
           this.props.history.push({
-            pathname: `/files/${newFile.name}`,
+            pathname: `/files/${encodeURIComponent(newFile.name)}`,
             state: {isNewFile: true},
           });
         } else {
@@ -100,18 +100,11 @@ class FileListPage extends BaseListPage {
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
-            <Link to={`/files/${text}`}>
+            <Link to={`/files/${encodeURIComponent(text)}`}>
               {text}
             </Link>
           );
         },
-      },
-      {
-        title: i18next.t("general:Display name"),
-        dataIndex: "displayName",
-        key: "displayName",
-        width: "200px",
-        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
         title: i18next.t("file:Filename"),
@@ -120,14 +113,6 @@ class FileListPage extends BaseListPage {
         width: "200px",
         sorter: (a, b) => a.filename.localeCompare(b.filename),
         ...this.getColumnSearchProps("filename"),
-      },
-      {
-        title: i18next.t("file:Path"),
-        dataIndex: "path",
-        key: "path",
-        width: "200px",
-        sorter: (a, b) => a.path.localeCompare(b.path),
-        ...this.getColumnSearchProps("path"),
       },
       {
         title: i18next.t("file:Size"),
@@ -155,7 +140,7 @@ class FileListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("file:Storage Provider"),
+        title: i18next.t("file:Storage provider"),
         dataIndex: "storageProvider",
         key: "storageProvider",
         width: "150px",
@@ -163,7 +148,7 @@ class FileListPage extends BaseListPage {
         ...this.getColumnSearchProps("storageProvider"),
       },
       {
-        title: i18next.t("file:Token Count"),
+        title: i18next.t("file:Token count"),
         dataIndex: "tokenCount",
         key: "tokenCount",
         width: "100px",
@@ -178,6 +163,15 @@ class FileListPage extends BaseListPage {
         ...this.getColumnSearchProps("status"),
       },
       {
+        title: i18next.t("file:Error text"),
+        dataIndex: "errorText",
+        key: "errorText",
+        width: "200px",
+        ellipsis: true,
+        sorter: (a, b) => (a.errorText || "").localeCompare(b.errorText || ""),
+        ...this.getColumnSearchProps("errorText"),
+      },
+      {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
@@ -186,7 +180,7 @@ class FileListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/files/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/files/${encodeURIComponent(record.name)}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteFile(record)}

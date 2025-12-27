@@ -16,6 +16,7 @@ package object
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -159,8 +160,36 @@ func addVectorsForFile(embeddingProviderObj embedding.EmbeddingProvider, storeNa
 	return affected, nil
 }
 
-func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, splitProviderName string, embeddingProviderName string, modelSubType string, lang string) (bool, error) {
-	var affected bool
+func withFileStatus(owner string, storeName string, fileKey string, op func() (bool, error)) (bool, error) {
+	err := updateFileStatus(owner, storeName, fileKey, FileStatusProcessing, "")
+	if err != nil {
+		logs.Error("Failed to update file status for store: [%s], file: [%s]: %v", storeName, fileKey, err)
+		return false, err
+	}
+
+	affected, opErr := op()
+
+	fileStatus := FileStatusFinished
+	errorText := ""
+	if opErr != nil {
+		fileStatus = FileStatusError
+		errorText = opErr.Error()
+	}
+
+	err = updateFileStatus(owner, storeName, fileKey, fileStatus, errorText)
+	if err != nil {
+		logs.Error("Failed to update file status for store: [%s], file: [%s]: %v", storeName, fileKey, err)
+		return affected, errors.Join(opErr, err)
+	}
+
+	return affected, opErr
+}
+
+func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, owner string, storeName string, splitProviderName string, embeddingProviderName string, modelSubType string, lang string) (bool, error) {
+	var (
+		affected bool
+		fileErr  error
+	)
 
 	files, err := storageProviderObj.ListObjects(prefix)
 	if err != nil {
@@ -170,14 +199,19 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 	files = filterTextFiles(files)
 
 	for _, file := range files {
-		fileAffected, err := addVectorsForFile(embeddingProviderObj, storeName, file.Key, file.Url, splitProviderName, embeddingProviderName, modelSubType, lang)
+		fileAffected, err := withFileStatus(owner, storeName, file.Key, func() (bool, error) {
+			return addVectorsForFile(embeddingProviderObj, storeName, file.Key, file.Url, splitProviderName, embeddingProviderName, modelSubType, lang)
+		})
 		if err != nil {
-			return false, err
+			logs.Error("Failed to add vectors for store: [%s], file: [%s]: %v", storeName, file.Key, err)
+			fileErr = errors.Join(fileErr, err)
+			continue
 		}
+
 		affected = affected || fileAffected
 	}
 
-	return affected, err
+	return affected, fileErr
 }
 
 func getRelatedVectors(relatedStores []string, provider string) ([]*Vector, error) {
