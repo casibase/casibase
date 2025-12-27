@@ -159,7 +159,29 @@ func addVectorsForFile(embeddingProviderObj embedding.EmbeddingProvider, storeNa
 	return affected, nil
 }
 
-func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, splitProviderName string, embeddingProviderName string, modelSubType string, lang string) (bool, error) {
+func withFileStatus(owner string, storeName string, fileKey string, op func() (bool, error)) (bool, error) {
+	err := updateFileStatus(owner, storeName, fileKey, FileStatusProcessing)
+	if err != nil {
+		logs.Error("Failed to update file status for store: [%s], file: [%s]: %v", storeName, fileKey, err)
+		return false, err
+	}
+
+	affected, opErr := op()
+
+	fileStatus := FileStatusFinished
+	if opErr != nil {
+		fileStatus = FileStatusError
+	}
+
+	err1 := updateFileStatus(owner, storeName, fileKey, fileStatus)
+	if err1 != nil {
+		logs.Error("Failed to update file status for store: [%s], file: [%s]: %v", storeName, fileKey, err1)
+	}
+
+	return affected, opErr
+}
+
+func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, owner string, storeName string, splitProviderName string, embeddingProviderName string, modelSubType string, lang string) (bool, error) {
 	var affected bool
 
 	files, err := storageProviderObj.ListObjects(prefix)
@@ -170,14 +192,17 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 	files = filterTextFiles(files)
 
 	for _, file := range files {
-		fileAffected, err := addVectorsForFile(embeddingProviderObj, storeName, file.Key, file.Url, splitProviderName, embeddingProviderName, modelSubType, lang)
+		fileAffected, err := withFileStatus(owner, storeName, file.Key, func() (bool, error) {
+			return addVectorsForFile(embeddingProviderObj, storeName, file.Key, file.Url, splitProviderName, embeddingProviderName, modelSubType, lang)
+		})
 		if err != nil {
 			return false, err
 		}
+
 		affected = affected || fileAffected
 	}
 
-	return affected, err
+	return affected, nil
 }
 
 func getRelatedVectors(relatedStores []string, provider string) ([]*Vector, error) {
