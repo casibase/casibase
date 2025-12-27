@@ -29,7 +29,7 @@ type Vector struct {
 	DisplayName string  `xorm:"varchar(100)" json:"displayName"`
 	Store       string  `xorm:"varchar(100)" json:"store"`
 	Provider    string  `xorm:"varchar(100) index" json:"provider"`
-	File        string  `xorm:"varchar(100)" json:"file"`
+	File        string  `xorm:"varchar(500)" json:"file"`
 	Index       int     `json:"index"`
 	Text        string  `xorm:"mediumtext" json:"text"`
 	TokenCount  int     `json:"tokenCount"`
