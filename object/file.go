@@ -150,6 +150,12 @@ func DeleteFile(file *File) (bool, error) {
 		if err != nil {
 			logs.Error("Failed to delete vectors for file %s: %v", objectKey, err)
 		}
+	} else {
+		// If file name doesn't match expected format, still try to delete vectors using file.Name as fallback
+		_, err := DeleteVectorsByFile(file.Owner, file.Store, file.Name)
+		if err != nil {
+			logs.Error("Failed to delete vectors for file %s: %v", file.Name, err)
+		}
 	}
 
 	// Delete the file record from database
