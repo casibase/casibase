@@ -79,3 +79,15 @@ export function deleteFile(file) {
     body: JSON.stringify(newFile),
   }).then(res => res.json());
 }
+
+export function refreshFileVectors(file) {
+  const newFile = Setting.deepCopy(file);
+  return fetch(`${Setting.ServerUrl}/api/refresh-file-vectors`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: JSON.stringify(newFile),
+  }).then(res => res.json());
+}

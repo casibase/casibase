@@ -151,6 +151,7 @@
     "Path": "Path",
     "Path - Tooltip": "Full path to the file",
     "Processing": "Processing",
+    "Refresh Vectors": "Refresh Vectors",
     "Size": "Size",
     "Size - Tooltip": "File size in bytes",
     "Storage Provider": "Storage Provider",

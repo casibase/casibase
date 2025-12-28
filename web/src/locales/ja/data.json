@@ -151,6 +151,7 @@
     "Path": "パス",
     "Path - Tooltip": "ファイルへの完全なパス",
     "Processing": "処理中",
+    "Refresh Vectors": "ベクトルを更新",
     "Size": "サイズ",
     "Size - Tooltip": "ファイルサイズ（バイト）",
     "Storage Provider": "ストレージプロバイダー",

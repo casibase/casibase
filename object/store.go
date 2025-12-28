@@ -363,6 +363,15 @@ func AddVectorsForFile(store *Store, fileName string, fileUrl string, lang strin
 	return ok, err
 }
 
+func RefreshFileVectors(store *Store, fileName string, fileUrl string, lang string) (bool, error) {
+	_, err := DeleteVectorsByFile(store.Owner, store.Name, fileName)
+	if err != nil {
+		return false, err
+	}
+
+	return AddVectorsForFile(store, fileName, fileUrl, lang)
+}
+
 func refreshVector(vector *Vector, lang string) (bool, error) {
 	_, embeddingProviderObj, err := getEmbeddingProviderFromName("admin", vector.Provider, lang)
 	if err != nil {

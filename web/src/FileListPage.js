@@ -25,6 +25,10 @@ import {DeleteOutlined} from "@ant-design/icons";
 class FileListPage extends BaseListPage {
   constructor(props) {
     super(props);
+    this.state = {
+      ...this.state,
+      refreshing: {},
+    };
   }
 
   newFile() {
@@ -86,6 +90,39 @@ class FileListPage extends BaseListPage {
       })
       .catch(error => {
         Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
+      });
+  }
+
+  refreshFileVectors(index) {
+    this.setState(prevState => ({
+      refreshing: {
+        ...prevState.refreshing,
+        [index]: true,
+      },
+    }));
+    FileBackend.refreshFileVectors(this.state.data[index])
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", i18next.t("general:Vectors generated successfully"));
+          this.fetch({pagination: this.state.pagination});
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Vectors failed to generate")}: ${res.msg}`);
+        }
+        this.setState(prevState => ({
+          refreshing: {
+            ...prevState.refreshing,
+            [index]: false,
+          },
+        }));
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Vectors failed to generate")}: ${error}`);
+        this.setState(prevState => ({
+          refreshing: {
+            ...prevState.refreshing,
+            [index]: false,
+          },
+        }));
       });
   }
 
@@ -175,11 +212,12 @@ class FileListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "150px",
+        width: "200px",
         fixed: "right",
         render: (text, record, index) => {
           return (
             <div>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} loading={this.state.refreshing[index]} onClick={() => this.refreshFileVectors(index)}>{i18next.t("file:Refresh Vectors")}</Button>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/files/${encodeURIComponent(record.name)}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}

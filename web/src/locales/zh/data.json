@@ -151,6 +151,7 @@
     "Path": "路径",
     "Path - Tooltip": "文件的完整路径",
     "Processing": "处理中",
+    "Refresh Vectors": "刷新向量",
     "Size": "大小",
     "Size - Tooltip": "文件大小（字节）",
     "Storage Provider": "存储提供商",
