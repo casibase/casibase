@@ -375,9 +375,11 @@ func RefreshFileVectors(store *Store, fileName string, fileUrl string, lang stri
 			return false, err
 		}
 
-		if len(files) > 0 {
-			fileUrl = files[0].Url
+		if len(files) == 0 {
+			return false, fmt.Errorf(i18n.Translate(lang, "object:File not found in storage: %s"), fileName)
 		}
+
+		fileUrl = files[0].Url
 	}
 
 	_, err := DeleteVectorsByFile(store.Owner, store.Name, fileName)
