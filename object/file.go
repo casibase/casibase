@@ -16,7 +16,9 @@ package object
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -121,6 +123,36 @@ func AddFile(file *File) (bool, error) {
 }
 
 func DeleteFile(file *File) (bool, error) {
+	// Extract objectKey from file.Name (format: storeName_objectKey)
+	parts := strings.SplitN(file.Name, "_", 2)
+	if len(parts) == 2 {
+		objectKey := parts[1]
+
+		// Get the store to access storage provider
+		store, err := getStore(file.Owner, file.Store)
+		if err != nil {
+			logs.Error("Failed to get store for file deletion: %v", err)
+		} else if store != nil {
+			// Delete from storage provider
+			storageProviderObj, err := store.GetStorageProviderObj("")
+			if err != nil {
+				logs.Error("Failed to get storage provider for file deletion: %v", err)
+			} else {
+				err = storageProviderObj.DeleteObject(objectKey)
+				if err != nil {
+					logs.Error("Failed to delete file from storage provider: %v", err)
+				}
+			}
+		}
+
+		// Delete vectors associated with the file
+		_, err = DeleteVectorsByFile(file.Owner, file.Store, objectKey)
+		if err != nil {
+			logs.Error("Failed to delete vectors for file %s: %v", objectKey, err)
+		}
+	}
+
+	// Delete the file record from database
 	affected, err := adapter.engine.ID(core.PK{file.Owner, file.Name}).Delete(&File{})
 	if err != nil {
 		return false, err
