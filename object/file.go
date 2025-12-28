@@ -21,19 +21,27 @@ import (
 	"xorm.io/core"
 )
 
+type FileStatus string
+
+const (
+	FileStatusPending    FileStatus = "Pending"
+	FileStatusProcessing FileStatus = "Processing"
+	FileStatusFinished   FileStatus = "Finished"
+	FileStatusError      FileStatus = "Error"
+)
+
 type File struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
-	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
+	Name        string `xorm:"varchar(512) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
-	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
-	Filename        string `xorm:"varchar(255)" json:"filename"`
-	Path            string `xorm:"varchar(500)" json:"path"`
-	Size            int64  `json:"size"`
-	Store           string `xorm:"varchar(100)" json:"store"`
-	StorageProvider string `xorm:"varchar(100)" json:"storageProvider"`
-	TokenCount      int    `json:"tokenCount"`
-	Status          string `xorm:"varchar(100)" json:"status"`
+	Filename        string     `xorm:"varchar(255)" json:"filename"`
+	Size            int64      `json:"size"`
+	Store           string     `xorm:"varchar(100)" json:"store"`
+	StorageProvider string     `xorm:"varchar(100)" json:"storageProvider"`
+	TokenCount      int        `json:"tokenCount"`
+	Status          FileStatus `xorm:"varchar(100)" json:"status"`
+	ErrorText       string     `xorm:"mediumtext" json:"errorText"`
 }
 
 func GetGlobalFiles() ([]*File, error) {
@@ -81,19 +89,13 @@ func getFile(owner string, name string) (*File, error) {
 }
 
 func GetFile(id string) (*File, error) {
-	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
-	if err != nil {
-		return nil, err
-	}
+	owner, name := util.GetOwnerAndNameFromIdNoCheck(id)
 	return getFile(owner, name)
 }
 
 func UpdateFile(id string, file *File) (bool, error) {
-	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
-	if err != nil {
-		return false, err
-	}
-	_, err = getFile(owner, name)
+	owner, name := util.GetOwnerAndNameFromIdNoCheck(id)
+	_, err := getFile(owner, name)
 	if err != nil {
 		return false, err
 	}
@@ -131,6 +133,10 @@ func (file *File) GetId() string {
 	return fmt.Sprintf("%s/%s", file.Owner, file.Name)
 }
 
+func getFileName(storeName string, objectKey string) string {
+	return fmt.Sprintf("%s_%s", storeName, objectKey)
+}
+
 func GetFileCount(owner, field, value string) (int64, error) {
 	session := GetDbSession(owner, -1, -1, field, value, "", "")
 	return session.Count(&File{})
@@ -145,4 +151,23 @@ func GetPaginationFiles(owner string, offset, limit int, field, value, sortField
 	}
 
 	return files, nil
+}
+
+func updateFileStatus(owner string, storeName string, objectKey string, status FileStatus, errorText string) error {
+	name := getFileName(storeName, objectKey)
+	_, err := adapter.engine.ID(core.PK{owner, name}).Cols("status", "error_text").
+		Update(&File{Status: status, ErrorText: errorText})
+	return err
+}
+
+func UpdateFilesStatusByStore(owner string, storeName string, status FileStatus) error {
+	_, err := adapter.engine.Where("owner = ? and store = ?", owner, storeName).
+		Cols("status", "error_text").Update(&File{Status: status, ErrorText: ""})
+	return err
+}
+
+func deleteFileRecord(owner string, storeName string, objectKey string) error {
+	name := getFileName(storeName, objectKey)
+	_, err := DeleteFile(&File{Owner: owner, Name: name})
+	return err
 }

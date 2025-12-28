@@ -22,6 +22,7 @@ import (
 	"strings"
 
 	"github.com/beego/beego/logs"
+	"github.com/casibase/casibase/util"
 )
 
 func UpdateTreeFile(storeId string, key string, file *TreeFile) bool {
@@ -59,6 +60,23 @@ func AddTreeFile(storeId string, userName string, key string, isLeaf bool, filen
 			return false, nil, err
 		}
 
+		// Persist file information in the file table
+		fileRecord := &File{
+			Owner:           store.Owner,
+			Name:            getFileName(store.Name, objectKey),
+			CreatedTime:     util.GetCurrentTime(),
+			Filename:        filename,
+			Size:            int64(len(bs)),
+			Store:           store.Name,
+			StorageProvider: store.StorageProvider,
+			TokenCount:      0,
+			Status:          FileStatusPending, // Initial status before embedding
+		}
+		_, err = AddFile(fileRecord)
+		if err != nil {
+			return false, nil, err
+		}
+
 		go func() {
 			_, vectorErr := AddVectorsForFile(store, objectKey, fileUrl, lang)
 			if vectorErr != nil {
@@ -82,7 +100,12 @@ func AddTreeFile(storeId string, userName string, key string, isLeaf bool, filen
 }
 
 func DeleteTreeFile(storeId string, key string, isLeaf bool, lang string) (bool, error) {
-	store, err := GetStore(storeId)
+	owner, name, err := util.GetOwnerAndNameFromIdWithError(storeId)
+	if err != nil {
+		return false, err
+	}
+
+	store, err := getStore(owner, name)
 	if err != nil {
 		return false, err
 	}
@@ -106,6 +129,11 @@ func DeleteTreeFile(storeId string, key string, isLeaf bool, lang string) (bool,
 			logs.Error("Failed to delete vectors for file %s: %v", key, err)
 			return false, err
 		}
+
+		// Delete file record from the file table
+		if err := deleteFileRecord(owner, name, key); err != nil {
+			return false, err
+		}
 	} else {
 		objects, err := storageProviderObj.ListObjects(key)
 		if err != nil {
@@ -121,6 +149,11 @@ func DeleteTreeFile(storeId string, key string, isLeaf bool, lang string) (bool,
 			_, err = DeleteVectorsByFile(store.Owner, store.Name, object.Key)
 			if err != nil {
 				logs.Error("Failed to delete vectors for file %s: %v", object.Key, err)
+				return false, err
+			}
+
+			// Delete file record from the file table
+			if err := deleteFileRecord(owner, name, object.Key); err != nil {
 				return false, err
 			}
 		}
