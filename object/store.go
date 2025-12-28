@@ -364,6 +364,22 @@ func AddVectorsForFile(store *Store, fileName string, fileUrl string, lang strin
 }
 
 func RefreshFileVectors(store *Store, fileName string, fileUrl string, lang string) (bool, error) {
+	if fileUrl == "" {
+		storageProviderObj, err := store.GetStorageProviderObj(lang)
+		if err != nil {
+			return false, err
+		}
+
+		files, err := storageProviderObj.ListObjects(fileName)
+		if err != nil {
+			return false, err
+		}
+
+		if len(files) > 0 {
+			fileUrl = files[0].Url
+		}
+	}
+
 	_, err := DeleteVectorsByFile(store.Owner, store.Name, fileName)
 	if err != nil {
 		return false, err
