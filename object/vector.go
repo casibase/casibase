@@ -214,7 +214,7 @@ func GetTotalTokenCountByFile(owner string, storeName string, fileKey string) (i
 	result := Result{}
 	_, err := adapter.engine.
 		Table("vector").
-		Select("SUM(token_count) as total_token_count").
+		Select("COALESCE(SUM(token_count), 0) as total_token_count").
 		Where("owner = ? AND store = ? AND file = ?", owner, storeName, fileKey).
 		Get(&result)
 	if err != nil {
