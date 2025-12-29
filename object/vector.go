@@ -210,7 +210,7 @@ func GetTotalTokenCountByFile(owner string, storeName string, fileKey string) (i
 	type Result struct {
 		TotalTokenCount int
 	}
-	
+
 	result := Result{}
 	_, err := adapter.engine.
 		Table("vector").
