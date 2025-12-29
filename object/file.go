@@ -167,6 +167,17 @@ func UpdateFilesStatusByStore(owner string, storeName string, status FileStatus)
 	return err
 }
 
+func updateFileTokenCount(owner string, storeName string, objectKey string) error {
+	name := getFileName(storeName, objectKey)
+	tokenCount, err := GetTotalTokenCountByFile(owner, storeName, objectKey)
+	if err != nil {
+		return err
+	}
+	_, err = adapter.engine.ID(core.PK{owner, name}).Cols("token_count").
+		Update(&File{TokenCount: tokenCount})
+	return err
+}
+
 func deleteFileRecord(owner string, storeName string, objectKey string) error {
 	name := getFileName(storeName, objectKey)
 	_, err := DeleteFile(&File{Owner: owner, Name: name})

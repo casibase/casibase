@@ -182,6 +182,15 @@ func withFileStatus(owner string, storeName string, fileKey string, op func() (b
 		return affected, errors.Join(opErr, err)
 	}
 
+	// Update token count after successful vector generation
+	if opErr == nil {
+		err = updateFileTokenCount(owner, storeName, fileKey)
+		if err != nil {
+			logs.Error("Failed to update file token count for store: [%s], file: [%s]: %v", storeName, fileKey, err)
+			// Don't return error here, as the vectors were successfully created
+		}
+	}
+
 	return affected, opErr
 }
 
