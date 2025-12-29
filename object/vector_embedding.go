@@ -187,6 +187,7 @@ func withFileStatus(owner string, storeName string, fileKey string, op func() (b
 		err = updateFileTokenCount(owner, storeName, fileKey)
 		if err != nil {
 			logs.Error("Failed to update file token count for store: [%s], file: [%s]: %v", storeName, fileKey, err)
+			// Token count update is non-critical and shouldn't fail the entire vector generation process
 			// Don't return error here, as the vectors were successfully created
 		}
 	}
