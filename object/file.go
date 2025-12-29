@@ -39,6 +39,7 @@ type File struct {
 	Size            int64      `json:"size"`
 	Store           string     `xorm:"varchar(100)" json:"store"`
 	StorageProvider string     `xorm:"varchar(100)" json:"storageProvider"`
+	Url             string     `xorm:"varchar(500)" json:"url"`
 	TokenCount      int        `json:"tokenCount"`
 	Status          FileStatus `xorm:"varchar(100)" json:"status"`
 	ErrorText       string     `xorm:"mediumtext" json:"errorText"`

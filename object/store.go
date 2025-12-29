@@ -363,6 +363,36 @@ func AddVectorsForFile(store *Store, fileName string, fileUrl string, lang strin
 	return ok, err
 }
 
+func RefreshFileVectors(file *File, lang string) (bool, error) {
+	store, err := getStore(file.Owner, file.Store)
+	if err != nil {
+		return false, err
+	}
+	if store == nil {
+		return false, fmt.Errorf(i18n.Translate(lang, "object:The store: %s is not found"), file.Store)
+	}
+
+	var objectKey string
+	prefix := fmt.Sprintf("%s_", file.Store)
+	if strings.HasPrefix(file.Name, prefix) {
+		objectKey = strings.TrimPrefix(file.Name, prefix)
+	}
+	if objectKey == "" {
+		return false, fmt.Errorf(i18n.Translate(lang, "object:The file: %s is not found"), file.Name)
+	}
+
+	if file.Url == "" {
+		return false, fmt.Errorf(i18n.Translate(lang, "object:The file: %s is not found"), file.Name)
+	}
+
+	_, err = DeleteVectorsByFile(store.Owner, store.Name, objectKey)
+	if err != nil {
+		return false, err
+	}
+
+	return AddVectorsForFile(store, objectKey, file.Url, lang)
+}
+
 func refreshVector(vector *Vector, lang string) (bool, error) {
 	_, embeddingProviderObj, err := getEmbeddingProviderFromName("admin", vector.Provider, lang)
 	if err != nil {
