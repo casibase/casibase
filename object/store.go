@@ -382,7 +382,7 @@ func RefreshFileVectors(file *File, lang string) (bool, error) {
 	}
 
 	if file.Url == "" {
-		return false, fmt.Errorf(i18n.Translate(lang, "object:The file: %s is not found"), file.Name)
+		return false, fmt.Errorf(i18n.Translate(lang, "object:The file URL for: %s is empty"), file.Name)
 	}
 
 	_, err = DeleteVectorsByFile(store.Owner, store.Name, objectKey)
