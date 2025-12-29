@@ -25,6 +25,10 @@ import {DeleteOutlined} from "@ant-design/icons";
 class FileListPage extends BaseListPage {
   constructor(props) {
     super(props);
+    this.state = {
+      ...this.state,
+      refreshing: {},
+    };
   }
 
   newFile() {
@@ -89,6 +93,39 @@ class FileListPage extends BaseListPage {
       });
   }
 
+  refreshFileVectors(index) {
+    this.setState(prevState => ({
+      refreshing: {
+        ...prevState.refreshing,
+        [index]: true,
+      },
+    }));
+    FileBackend.refreshFileVectors(this.state.data[index])
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", i18next.t("general:Vectors generated successfully"));
+          this.fetch({pagination: this.state.pagination});
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Vectors failed to generate")}: ${res.msg}`);
+        }
+        this.setState(prevState => ({
+          refreshing: {
+            ...prevState.refreshing,
+            [index]: false,
+          },
+        }));
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Vectors failed to generate")}: ${error}`);
+        this.setState(prevState => ({
+          refreshing: {
+            ...prevState.refreshing,
+            [index]: false,
+          },
+        }));
+      });
+  }
+
   renderTable(files) {
     const columns = [
       {
@@ -146,6 +183,13 @@ class FileListPage extends BaseListPage {
         width: "150px",
         sorter: (a, b) => a.storageProvider.localeCompare(b.storageProvider),
         ...this.getColumnSearchProps("storageProvider"),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/providers/${text}`}>
+              {text}
+            </Link>
+          );
+        },
       },
       {
         title: i18next.t("file:Token count"),
@@ -163,23 +207,32 @@ class FileListPage extends BaseListPage {
         ...this.getColumnSearchProps("status"),
       },
       {
-        title: i18next.t("file:Error text"),
+        title: i18next.t("message:Error text"),
         dataIndex: "errorText",
         key: "errorText",
         width: "200px",
-        ellipsis: true,
-        sorter: (a, b) => (a.errorText || "").localeCompare(b.errorText || ""),
+        sorter: (a, b) => a.errorText.localeCompare(b.errorText),
         ...this.getColumnSearchProps("errorText"),
+        render: (text, record, index) => {
+          return (
+            <div dangerouslySetInnerHTML={{__html: text}} />
+          );
+        },
       },
       {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "150px",
+        width: "260px",
         fixed: "right",
         render: (text, record, index) => {
           return (
             <div>
+              {
+                !Setting.isLocalAdminUser(this.props.account) ? null : (
+                  <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} loading={this.state.refreshing[index]} onClick={() => this.refreshFileVectors(index)}>{i18next.t("general:Refresh Vectors")}</Button>
+                )
+              }
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/files/${encodeURIComponent(record.name)}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}

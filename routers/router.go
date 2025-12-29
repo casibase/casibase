@@ -76,6 +76,7 @@ func initAPI() {
 	beego.Router("/api/update-file", &controllers.ApiController{}, "POST:UpdateFile")
 	beego.Router("/api/add-file", &controllers.ApiController{}, "POST:AddFile")
 	beego.Router("/api/delete-file", &controllers.ApiController{}, "POST:DeleteFile")
+	beego.Router("/api/refresh-file-vectors", &controllers.ApiController{}, "POST:RefreshFileVectors")
 
 	beego.Router("/api/get-global-vectors", &controllers.ApiController{}, "GET:GetGlobalVectors")
 	beego.Router("/api/get-vectors", &controllers.ApiController{}, "GET:GetVectors")

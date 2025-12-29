@@ -186,3 +186,27 @@ func (c *ApiController) DeleteFile() {
 
 	c.ResponseOk(success)
 }
+
+// RefreshFileVectors
+// @Title RefreshFileVectors
+// @Tag File API
+// @Description refresh file vectors
+// @Param body body object.File true "The details of the file object"
+// @Success 200 {object} controllers.Response The Response object
+// @router /refresh-file-vectors [post]
+func (c *ApiController) RefreshFileVectors() {
+	var file object.File
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &file)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	ok, err := object.RefreshFileVectors(&file, c.GetAcceptLanguage())
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(ok)
+}

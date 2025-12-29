@@ -69,6 +69,7 @@ func AddTreeFile(storeId string, userName string, key string, isLeaf bool, filen
 			Size:            int64(len(bs)),
 			Store:           store.Name,
 			StorageProvider: store.StorageProvider,
+			Url:             fileUrl,
 			TokenCount:      0,
 			Status:          FileStatusPending, // Initial status before embedding
 		}
