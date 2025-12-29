@@ -207,16 +207,19 @@ func GetPaginationVectors(owner string, storeName string, offset, limit int, fie
 }
 
 func GetTotalTokenCountByFile(owner string, storeName string, fileKey string) (int, error) {
-	vectors := []*Vector{}
-	err := adapter.engine.Where("owner = ? AND store = ? AND file = ?", owner, storeName, fileKey).Find(&vectors)
+	type Result struct {
+		TotalTokenCount int
+	}
+	
+	result := Result{}
+	_, err := adapter.engine.
+		Table("vector").
+		Select("SUM(token_count) as total_token_count").
+		Where("owner = ? AND store = ? AND file = ?", owner, storeName, fileKey).
+		Get(&result)
 	if err != nil {
 		return 0, err
 	}
 
-	totalTokenCount := 0
-	for _, vector := range vectors {
-		totalTokenCount += vector.TokenCount
-	}
-
-	return totalTokenCount, nil
+	return result.TotalTokenCount, nil
 }
