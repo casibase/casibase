@@ -154,10 +154,18 @@ func GetPaginationFiles(owner string, offset, limit int, field, value, sortField
 	return files, nil
 }
 
-func updateFileStatus(owner string, storeName string, objectKey string, status FileStatus, errorText string) error {
+func updateFileStatus(owner string, storeName string, objectKey string, status FileStatus, errorText string, tokenCount int) error {
 	name := getFileName(storeName, objectKey)
-	_, err := adapter.engine.ID(core.PK{owner, name}).Cols("status", "error_text").
-		Update(&File{Status: status, ErrorText: errorText})
+	cols := []string{"status", "error_text"}
+	file := &File{Status: status, ErrorText: errorText}
+	if status == FileStatusProcessing {
+		cols = append(cols, "token_count")
+		file.TokenCount = 0
+	} else if status == FileStatusFinished || status == FileStatusError {
+		cols = append(cols, "token_count")
+		file.TokenCount = tokenCount
+	}
+	_, err := adapter.engine.ID(core.PK{owner, name}).Cols(cols...).Update(file)
 	return err
 }
 

@@ -356,7 +356,7 @@ func AddVectorsForFile(store *Store, fileName string, fileUrl string, lang strin
 		return false, err
 	}
 
-	ok, err := withFileStatus(store.Owner, store.Name, fileName, func() (bool, error) {
+	ok, err := withFileStatus(store.Owner, store.Name, fileName, func() (bool, int, error) {
 		return addVectorsForFile(embeddingProviderObj, store.Name, fileName, fileUrl, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, lang)
 	})
 
