@@ -16,11 +16,8 @@ package util
 
 import (
 	"encoding/json"
-	"net/http"
-	"net/url"
 
 	"github.com/beego/beego/context"
-
 	"github.com/casibase/casibase/conf"
 )
 
@@ -32,22 +29,6 @@ func AppendWebConfigCookie(ctx *context.Context) error {
 		return err
 	}
 
-	return SetCookieWithAttributes(ctx, "jsonWebConfig", string(jsonWebConfig))
-}
-
-func SetCookieWithAttributes(ctx *context.Context, name string, value string) error {
-	encodedValue := url.QueryEscape(value)
-
-	cookie := &http.Cookie{
-		Name:     name,
-		Value:    encodedValue,
-		Path:     "/",
-		HttpOnly: false,
-	}
-
-	cookie.SameSite = http.SameSiteNoneMode
-	cookie.Secure = true
-
-	http.SetCookie(ctx.ResponseWriter, cookie)
+	ctx.SetCookie("jsonWebConfig", string(jsonWebConfig))
 	return nil
 }
