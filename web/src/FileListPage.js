@@ -19,6 +19,7 @@ import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
+import * as StoreBackend from "./backend/StoreBackend";
 import i18next from "i18next";
 import {DeleteOutlined} from "@ant-design/icons";
 
@@ -49,24 +50,31 @@ class FileListPage extends BaseListPage {
     };
   }
 
-  addFile() {
-    const newFile = this.newFile();
-    FileBackend.addFile(newFile)
-      .then((res) => {
-        if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully added"));
-          this.props.history.push({
-            pathname: `/files/${encodeURIComponent(newFile.name)}`,
-            state: {isNewFile: true},
-          });
+  addFile = async() => {
+    let storeName;
+    if (Setting.isDefaultStoreSelected(this.props.account)) {
+      try {
+        const res = await StoreBackend.getStore("admin", "_casibase_default_store_");
+        if (res.status === "ok" && res.data?.name) {
+          storeName = res.data.name;
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
+          const msg = res.msg || "";
+          Setting.showMessage("error", `${i18next.t("general:Failed to get store")}${msg ? `: ${msg}` : ""}`);
+          return;
         }
-      })
-      .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
-      });
-  }
+      } catch (error) {
+        Setting.showMessage("error", `${i18next.t("general:Failed to get store")}: ${error}`);
+        return;
+      }
+    } else {
+      storeName = Setting.getRequestStore(this.props.account);
+      if (!storeName) {
+        Setting.showMessage("error", i18next.t("general:Store is not available"));
+        return;
+      }
+    }
+    this.props.history.push(`/stores/admin/${storeName}/view`);
+  };
 
   deleteItem = async(i) => {
     return FileBackend.deleteFile(this.state.data[i]);
