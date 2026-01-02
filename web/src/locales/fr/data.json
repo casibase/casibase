@@ -451,7 +451,7 @@
     "Tokens": "Tokens",
     "Total": "Total",
     "Type": "Type",
-    "Type - Tooltip": "Type",
+    "Type - Tooltip": "Type - Tooltip",
     "URL": "Lien",
     "URL - Tooltip": "Adresse réseau complète de la ressource",
     "Unit": "Unité",
@@ -487,7 +487,7 @@
   "graph": {
     "Circular": "Circulaire",
     "Edit Graph": "Modifier le graphique",
-    "Force": "Force",
+    "Force": "力导向",
     "Grid": "Grille",
     "Layout": "Disposition",
     "Layout - Tooltip": "Type de disposition du graphique",
@@ -949,7 +949,7 @@
     "Throughput": "Débit",
     "Total Throughput": "Débit total",
     "Unknown version": "Version inconnue",
-    "Version": "Version",
+    "Version": " Version",
     "🚀⚡️Open-Source LangChain-like AI Knowledge Database & Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)": "🚀⚡️Base de connaissances AI et robot de chat similaire à LangChain open-source avec interface d'administration et prise en charge multi-modèle (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)"
   },
   "task": {
