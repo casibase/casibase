@@ -58,8 +58,7 @@ class FileListPage extends BaseListPage {
         if (res.status === "ok" && res.data?.name) {
           storeName = res.data.name;
         } else {
-          const msg = res.msg || "";
-          Setting.showMessage("error", `${i18next.t("general:Failed to get store")}${msg ? `: ${msg}` : ""}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get store")}: ${res.msg}`);
           return;
         }
       } catch (error) {
