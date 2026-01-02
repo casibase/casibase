@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/beego/beego/logs"
 	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
@@ -153,7 +152,6 @@ func DeleteFile(file *File, lang string) (bool, error) {
 
 	_, err = DeleteVectorsByFile(file.Owner, file.Store, objectKey)
 	if err != nil {
-		logs.Error("Failed to delete vectors for file %s: %v", objectKey, err)
 		return false, err
 	}
 
