@@ -16,7 +16,9 @@ package object
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -121,7 +123,38 @@ func AddFile(file *File) (bool, error) {
 	return affected != 0, nil
 }
 
-func DeleteFile(file *File) (bool, error) {
+func DeleteFile(file *File, lang string) (bool, error) {
+	var objectKey string
+	prefix := fmt.Sprintf("%s_", file.Store)
+	if strings.HasPrefix(file.Name, prefix) {
+		objectKey = strings.TrimPrefix(file.Name, prefix)
+	}
+	if objectKey == "" {
+		return false, fmt.Errorf(i18n.Translate(lang, "object:The file: %s is not found"), file.Name)
+	}
+
+	store, err := getStore(file.Owner, file.Store)
+	if err != nil {
+		return false, err
+	}
+	if store == nil {
+		return false, fmt.Errorf(i18n.Translate(lang, "object:The store: %s is not found"), file.Store)
+	}
+
+	storageProviderObj, err := store.GetStorageProviderObj(lang)
+	if err != nil {
+		return false, fmt.Errorf(i18n.Translate(lang, "object:The provider: %s does not exist"), store.StorageProvider)
+	}
+	err = storageProviderObj.DeleteObject(objectKey)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = DeleteVectorsByFile(file.Owner, file.Store, objectKey)
+	if err != nil {
+		return false, err
+	}
+
 	affected, err := adapter.engine.ID(core.PK{file.Owner, file.Name}).Delete(&File{})
 	if err != nil {
 		return false, err
@@ -177,6 +210,6 @@ func UpdateFilesStatusByStore(owner string, storeName string, status FileStatus)
 
 func deleteFileRecord(owner string, storeName string, objectKey string) error {
 	name := getFileName(storeName, objectKey)
-	_, err := DeleteFile(&File{Owner: owner, Name: name})
+	_, err := adapter.engine.ID(core.PK{owner, name}).Delete(&File{})
 	return err
 }

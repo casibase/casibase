@@ -178,7 +178,7 @@ func (c *ApiController) DeleteFile() {
 		return
 	}
 
-	success, err := object.DeleteFile(&file)
+	success, err := object.DeleteFile(&file, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
