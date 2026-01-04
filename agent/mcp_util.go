@@ -94,8 +94,14 @@ func createMCPClient(srv ServerConfig) (*client.Client, error) {
 	// Create appropriate transport
 	switch transportType {
 	case "sse":
+		if srv.URL == "" {
+			return nil, fmt.Errorf("URL is required for SSE transport")
+		}
 		transportClient, err = transport.NewSSEClientTransport(srv.URL)
 	case "streamablehttp":
+		if srv.URL == "" {
+			return nil, fmt.Errorf("URL is required for StreamableHTTP transport")
+		}
 		transportClient, err = transport.NewStreamableHTTPClientTransport(srv.URL)
 	case "stdio":
 		envs := make([]string, 0, len(srv.Env))
