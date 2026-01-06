@@ -27,7 +27,7 @@ import HomePage from "./HomePage";
 import StoreListPage from "./StoreListPage";
 import StoreEditPage from "./StoreEditPage";
 import FileListPage from "./FileListPage";
-import FileEditPage from "./FileEditPage";
+import FileViewPage from "./FileViewPage";
 import FileTreePage from "./FileTreePage";
 import VideoListPage from "./VideoListPage";
 import VideoEditPage from "./VideoEditPage";
@@ -817,7 +817,7 @@ class App extends Component {
         <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />
         <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/files" render={(props) => this.renderSigninIfNotSignedIn(<FileListPage account={this.state.account} {...props} />)} />
-        <Route exact path="/files/:fileName" render={(props) => this.renderSigninIfNotSignedIn(<FileEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/files/:fileName" render={(props) => this.renderSigninIfNotSignedIn(<FileViewPage account={this.state.account} {...props} />)} />
         <Route exact path="/vectors" render={(props) => this.renderSigninIfNotSignedIn(<VectorListPage account={this.state.account} {...props} />)} />
         <Route exact path="/vectors/:vectorName" render={(props) => this.renderSigninIfNotSignedIn(<VectorEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />
