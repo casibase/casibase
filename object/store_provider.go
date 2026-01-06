@@ -80,6 +80,18 @@ func isObjectLeaf(object *storage.Object) bool {
 }
 
 func (store *Store) syncFilesToTable(objects []*storage.Object, origin string) error {
+	// Fetch all existing file records for this store to avoid N+1 queries
+	existingFiles, err := GetFilesByStore(store.Owner, store.Name)
+	if err != nil {
+		return err
+	}
+
+	// Create a map for quick lookup
+	existingFileMap := make(map[string]bool)
+	for _, file := range existingFiles {
+		existingFileMap[file.Name] = true
+	}
+
 	for _, object := range objects {
 		// Skip directories and hidden files
 		if !isObjectLeaf(object) || strings.HasSuffix(object.Key, "/_hidden.ini") {
@@ -88,39 +100,38 @@ func (store *Store) syncFilesToTable(objects []*storage.Object, origin string) e
 
 		// Check if file record already exists
 		fileName := getFileName(store.Name, object.Key)
-		existingFile, err := getFile(store.Owner, fileName)
+		if existingFileMap[fileName] {
+			continue
+		}
+
+		// Extract filename from object key
+		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
+		if len(tokens) == 0 || tokens[len(tokens)-1] == "" {
+			continue
+		}
+		filename := tokens[len(tokens)-1]
+
+		url, err := getUrlFromPath(object.Url, origin)
 		if err != nil {
 			return err
 		}
 
-		// If file record doesn't exist, create it for backward compatibility
-		if existingFile == nil {
-			url, err := getUrlFromPath(object.Url, origin)
-			if err != nil {
-				return err
-			}
+		fileRecord := &File{
+			Owner:           store.Owner,
+			Name:            fileName,
+			CreatedTime:     object.LastModified,
+			Filename:        filename,
+			Size:            object.Size,
+			Store:           store.Name,
+			StorageProvider: store.StorageProvider,
+			Url:             url,
+			TokenCount:      0,
+			Status:          FileStatusPending,
+		}
 
-			// Extract filename from object key
-			tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
-			filename := tokens[len(tokens)-1]
-
-			fileRecord := &File{
-				Owner:           store.Owner,
-				Name:            fileName,
-				CreatedTime:     object.LastModified,
-				Filename:        filename,
-				Size:            object.Size,
-				Store:           store.Name,
-				StorageProvider: store.StorageProvider,
-				Url:             url,
-				TokenCount:      0,
-				Status:          FileStatusPending,
-			}
-
-			_, err = AddFile(fileRecord)
-			if err != nil {
-				return err
-			}
+		_, err = AddFile(fileRecord)
+		if err != nil {
+			return err
 		}
 	}
 
