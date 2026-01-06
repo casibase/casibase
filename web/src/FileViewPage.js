@@ -82,8 +82,8 @@ class FileViewPage extends React.Component {
           <Descriptions.Item label={i18next.t("file:Filename")}>{this.state.file.filename}</Descriptions.Item>
           <Descriptions.Item label={i18next.t("file:Size")}>{Setting.getFormattedSize(this.state.file.size)}</Descriptions.Item>
           <Descriptions.Item label={i18next.t("general:Store")}>{this.state.file.store}</Descriptions.Item>
-          <Descriptions.Item label={i18next.t("file:Storage provider")}>{this.state.file.storageProvider}</Descriptions.Item>
-          <Descriptions.Item label={i18next.t("file:Token count")}>{this.state.file.tokenCount}</Descriptions.Item>
+          <Descriptions.Item label={i18next.t("file:Storage Provider")}>{this.state.file.storageProvider}</Descriptions.Item>
+          <Descriptions.Item label={i18next.t("file:Token Count")}>{this.state.file.tokenCount}</Descriptions.Item>
           <Descriptions.Item label={i18next.t("general:Status")}>{this.state.file.status}</Descriptions.Item>
           <Descriptions.Item label={i18next.t("general:Created time")}>{Setting.getFormattedDate(this.state.file.createdTime)}</Descriptions.Item>
         </Descriptions>
