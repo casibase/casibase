@@ -32,6 +32,12 @@ type ServerConfig struct {
 
 	// SSE config
 	URL string `json:"url"`
+
+	// Transport type: "sse", "stdio", "streamablehttp"
+	// If not specified, auto-detected based on URL field:
+	// - URL not empty -> SSE
+	// - URL empty -> Stdio
+	Type string `json:"type,omitempty"`
 }
 
 type McpTools struct {
@@ -74,9 +80,35 @@ func createMCPClient(srv ServerConfig) (*client.Client, error) {
 	var transportClient transport.ClientTransport
 	var err error
 
-	if srv.URL != "" {
+	// Determine transport type
+	transportType := srv.Type
+	if transportType == "" {
+		// Auto-detect based on URL field for backward compatibility
+		if srv.URL != "" {
+			transportType = "sse"
+		} else {
+			transportType = "stdio"
+		}
+	}
+
+	// Create appropriate transport
+	switch transportType {
+	case "sse":
+		if srv.URL == "" {
+			return nil, fmt.Errorf("URL is required for SSE transport")
+		}
 		transportClient, err = transport.NewSSEClientTransport(srv.URL)
-	} else {
+	case "streamablehttp":
+		if srv.URL == "" {
+			return nil, fmt.Errorf("URL is required for StreamableHTTP transport")
+		}
+		if len(srv.Env) > 0 {
+			transportClient, err = transport.NewStreamableHTTPClientTransport(srv.URL, transport.WithStreamableHTTPClientOptionHeader(srv.Env))
+		} else {
+			// Initialize StreamableHTTP transport without headers when Env is empty or nil
+			transportClient, err = transport.NewStreamableHTTPClientTransport(srv.URL)
+		}
+	case "stdio":
 		envs := make([]string, 0, len(srv.Env))
 		for k, v := range srv.Env {
 			envs = append(envs, fmt.Sprintf("%s=%s", k, v))
@@ -86,6 +118,8 @@ func createMCPClient(srv ServerConfig) (*client.Client, error) {
 			srv.Args,
 			transport.WithStdioClientOptionEnv(envs...),
 		)
+	default:
+		return nil, fmt.Errorf("unsupported transport type: %s", transportType)
 	}
 	if err != nil {
 		return nil, err
