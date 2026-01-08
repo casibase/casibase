@@ -18,12 +18,8 @@ import * as WorkflowBackend from "./backend/WorkflowBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import BpmnComponent from "./BpmnComponent";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
+import {Controlled as CodeMirror} from "./common/CodeMirrorWrapper";
 import ChatWidget from "./common/ChatWidget";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/xml/xml");
-require("codemirror/mode/htmlmixed/htmlmixed");
 
 class WorkflowEditPage extends React.Component {
   constructor(props) {

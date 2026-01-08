@@ -26,10 +26,7 @@ import TtsTestWidget from "./common/TestTtsWidget";
 import EmbedTestWidget from "./common/TestEmbedWidget";
 import TestScanWidget from "./common/TestScanWidget";
 
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
+import {Controlled as CodeMirror} from "./common/CodeMirrorWrapper";
 
 const {Option} = Select;
 const {TextArea} = Input;

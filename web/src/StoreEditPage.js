@@ -24,7 +24,7 @@ import {ThemeDefault} from "./Conf";
 import ExampleQuestionTable from "./table/ExampleQuestionTable";
 import StoreAvatarUploader from "./AvatarUpload";
 import {LinkOutlined} from "@ant-design/icons";
-import {Controlled as CodeMirror} from "react-codemirror2";
+import {Controlled as CodeMirror} from "./common/CodeMirrorWrapper";
 import {NavItemTree} from "./component/nav-item-tree/NavItemTree";
 
 const {Option} = Select;

@@ -22,7 +22,7 @@ import i18next from "i18next";
 import GraphDataPage from "./GraphDataPage";
 import GraphChatDataPage from "./GraphChatDataPage";
 import GraphChatTable from "./GraphChatTable";
-import {Controlled as CodeMirror} from "react-codemirror2";
+import {Controlled as CodeMirror} from "./common/CodeMirrorWrapper";
 import dayjs from "dayjs";
 import weekday from "dayjs/plugin/weekday";
 import localeData from "dayjs/plugin/localeData";

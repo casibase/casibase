@@ -22,11 +22,7 @@ import * as WorkflowBackend from "./backend/WorkflowBackend";
 import i18next from "i18next";
 import BpmnComponent from "./BpmnComponent";
 import {DeleteOutlined} from "@ant-design/icons";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/xml/xml");
-require("codemirror/mode/htmlmixed/htmlmixed");
+import {Controlled as CodeMirror} from "./common/CodeMirrorWrapper";
 
 const {TextArea} = Input;
 class WorkflowListPage extends BaseListPage {
