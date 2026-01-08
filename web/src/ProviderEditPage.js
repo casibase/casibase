@@ -53,6 +53,17 @@ class ProviderEditPage extends React.Component {
     this.getProvider();
   }
 
+  componentWillUnmount() {
+    if (this.mcpServerResizeObserver) {
+      this.mcpServerResizeObserver.disconnect();
+      this.mcpServerResizeObserver = null;
+    }
+    if (this.configTextResizeObserver) {
+      this.configTextResizeObserver.disconnect();
+      this.configTextResizeObserver = null;
+    }
+  }
+
   getProvider() {
     ProviderBackend.getProvider("admin", this.state.providerName)
       .then((res) => {
