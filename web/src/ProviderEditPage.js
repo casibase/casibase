@@ -744,7 +744,10 @@ class ProviderEditPage extends React.Component {
                           this.mcpServerResizeObserver = new ResizeObserver(() => {
                             editor.refresh();
                           });
-                          this.mcpServerResizeObserver.observe(editor.getWrapperElement().parentNode);
+                          const wrapper = editor.getWrapperElement();
+                          if (wrapper && wrapper.parentNode) {
+                            this.mcpServerResizeObserver.observe(wrapper.parentNode);
+                          }
                         }
                       }}
                       editorWillUnmount={() => {
@@ -1168,7 +1171,10 @@ class ProviderEditPage extends React.Component {
                       this.configTextResizeObserver = new ResizeObserver(() => {
                         editor.refresh();
                       });
-                      this.configTextResizeObserver.observe(editor.getWrapperElement().parentNode);
+                      const wrapper = editor.getWrapperElement();
+                      if (wrapper && wrapper.parentNode) {
+                        this.configTextResizeObserver.observe(wrapper.parentNode);
+                      }
                     }
                   }}
                   editorWillUnmount={() => {
