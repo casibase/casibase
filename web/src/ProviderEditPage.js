@@ -729,7 +729,7 @@ class ProviderEditPage extends React.Component {
                     placeholder="Enter MCP server configuration in JSON format"
                   />
                   <br />
-                  <Button disabled={isRemote} loading={this.state.refreshButtonLoading} style={{marginBottom: "10px", marginTop: "10px"}} type="primary" onClick={() => {
+                  <Button disabled={isRemote} loading={this.state.refreshButtonLoading} style={{marginBottom: "10px"}} type="primary" onClick={() => {
                     this.refreshMcpTools();
                   }}
                   >
