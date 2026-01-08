@@ -724,7 +724,7 @@ class ProviderEditPage extends React.Component {
                     onChange={e => {
                       this.updateProviderField("text", e.target.value);
                     }}
-                    rows={20}
+                    autoSize={{minRows: 20, maxRows: 20}}
                     style={{fontFamily: "monospace", fontSize: "14px"}}
                     placeholder="Enter MCP server configuration in JSON format"
                   />
