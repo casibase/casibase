@@ -82,10 +82,10 @@ export const Controlled = ({
   const handleChange = useCallback((newValue, viewUpdate) => {
     if (onBeforeChange && !readOnly && editable) {
       // Create a mock editor and data object for compatibility
-      const mockEditor = viewUpdate.view;
+      const mockEditor = viewUpdate?.view;
       const mockData = {
-        from: viewUpdate.changes.desc.from,
-        to: viewUpdate.changes.desc.to,
+        from: viewUpdate?.changes?.desc?.from || 0,
+        to: viewUpdate?.changes?.desc?.to || 0,
       };
       onBeforeChange(mockEditor, mockData, newValue);
     }
