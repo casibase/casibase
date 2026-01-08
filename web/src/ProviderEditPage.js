@@ -45,6 +45,8 @@ class ProviderEditPage extends React.Component {
       refreshButtonLoading: false,
       isNewProvider: props.location?.state?.isNewProvider || false,
     };
+    this.mcpServerResizeObserver = null;
+    this.configTextResizeObserver = null;
   }
 
   UNSAFE_componentWillMount() {
@@ -728,10 +730,16 @@ class ProviderEditPage extends React.Component {
                       }}
                       editorDidMount={(editor) => {
                         if (window.ResizeObserver) {
-                          const resizeObserver = new ResizeObserver(() => {
+                          this.mcpServerResizeObserver = new ResizeObserver(() => {
                             editor.refresh();
                           });
-                          resizeObserver.observe(editor.getWrapperElement().parentNode);
+                          this.mcpServerResizeObserver.observe(editor.getWrapperElement().parentNode);
+                        }
+                      }}
+                      editorWillUnmount={() => {
+                        if (this.mcpServerResizeObserver) {
+                          this.mcpServerResizeObserver.disconnect();
+                          this.mcpServerResizeObserver = null;
                         }
                       }}
                     />
@@ -1146,10 +1154,16 @@ class ProviderEditPage extends React.Component {
                   }}
                   editorDidMount={(editor) => {
                     if (window.ResizeObserver) {
-                      const resizeObserver = new ResizeObserver(() => {
+                      this.configTextResizeObserver = new ResizeObserver(() => {
                         editor.refresh();
                       });
-                      resizeObserver.observe(editor.getWrapperElement().parentNode);
+                      this.configTextResizeObserver.observe(editor.getWrapperElement().parentNode);
+                    }
+                  }}
+                  editorWillUnmount={() => {
+                    if (this.configTextResizeObserver) {
+                      this.configTextResizeObserver.disconnect();
+                      this.configTextResizeObserver = null;
                     }
                   }}
                 />
