@@ -26,7 +26,9 @@ import {markdown} from "@codemirror/lang-markdown";
  * Get the language extension based on mode string
  */
 const getLanguageExtension = (mode) => {
-  if (!mode) {return [];}
+  if (!mode) {
+    return [];
+  }
 
   const modeStr = typeof mode === "string" ? mode : mode.name || "";
 
