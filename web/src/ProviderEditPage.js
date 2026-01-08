@@ -726,7 +726,7 @@ class ProviderEditPage extends React.Component {
                     }}
                     rows={20}
                     style={{fontFamily: "monospace", fontSize: "14px"}}
-                    placeholder='{"mcpServers": {...}}'
+                    placeholder='Enter MCP server configuration in JSON format'
                   />
                   <br />
                   <Button disabled={isRemote} loading={this.state.refreshButtonLoading} style={{marginBottom: "10px", marginTop: "10px"}} type="primary" onClick={() => {
