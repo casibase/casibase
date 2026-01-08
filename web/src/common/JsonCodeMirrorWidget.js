@@ -14,10 +14,7 @@
 
 import React from "react";
 import {Alert, Popover, Typography} from "antd";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
+import {Controlled as CodeMirror} from "./CodeMirrorWrapper";
 import * as Setting from "../Setting";
 
 /**

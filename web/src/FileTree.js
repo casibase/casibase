@@ -29,11 +29,7 @@ import * as PermissionBackend from "./backend/PermissionBackend";
 import * as PermissionUtil from "./PermissionUtil";
 import * as Conf from "./Conf";
 import FileTable from "./table/FileTable";
-
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-// require("codemirror/theme/material-darker.css");
-// require("codemirror/mode/javascript/javascript");
+import {Controlled as CodeMirror} from "./common/CodeMirrorWrapper";
 
 const {Search} = Input;
 const {Option} = Select;

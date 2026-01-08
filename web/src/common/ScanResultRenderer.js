@@ -14,8 +14,7 @@
 
 import React from "react";
 import {Tabs} from "antd";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
+import {Controlled as CodeMirror} from "./CodeMirrorWrapper";
 import i18next from "i18next";
 import NmapResultRenderer from "../renderers/NmapResultRenderer";
 import OsPatchResultRenderer from "../renderers/OsPatchResultRenderer";
@@ -23,8 +22,6 @@ import NucleiResultRenderer from "../renderers/NucleiResultRenderer";
 import ZapResultRenderer from "../renderers/ZapResultRenderer";
 import SubfinderResultRenderer from "../renderers/SubfinderResultRenderer";
 import HttpxResultRenderer from "../renderers/HttpxResultRenderer";
-
-require("codemirror/theme/material-darker.css");
 
 const {TabPane} = Tabs;
 

@@ -21,7 +21,7 @@ import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as GraphBackend from "./backend/GraphBackend";
 import i18next from "i18next";
-import {Controlled as CodeMirror} from "react-codemirror2";
+import {Controlled as CodeMirror} from "./common/CodeMirrorWrapper";
 import GraphDataPage from "./GraphDataPage";
 import GraphChatDataPage from "./GraphChatDataPage";
 

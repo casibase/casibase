@@ -20,12 +20,9 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import StoreAvatarUploader from "./AvatarUpload";
 
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
+import {Controlled as CodeMirror} from "./common/CodeMirrorWrapper";
 import TextArea from "antd/es/input/TextArea";
 import TemplateOptionTable from "./table/TemplateOptionTable";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
 
 class TemplateEditPage extends React.Component {
   constructor(props) {

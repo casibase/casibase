@@ -22,10 +22,7 @@ import * as MessageBackend from "./backend/MessageBackend";
 import ChatPage from "./ChatPage";
 import * as ConfTask from "./ConfTask";
 
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
+import {Controlled as CodeMirror} from "./common/CodeMirrorWrapper";
 
 const {Option} = Select;
 const {TextArea} = Input;

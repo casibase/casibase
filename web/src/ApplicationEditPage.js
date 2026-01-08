@@ -20,10 +20,7 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import TemplateOptionTable from "./table/TemplateOptionTable";
 
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/yaml/yaml");
+import {Controlled as CodeMirror} from "./common/CodeMirrorWrapper";
 
 const {TextArea} = Input;
 

@@ -18,10 +18,7 @@ import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
 
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/markdown/markdown");
+import {Controlled as CodeMirror} from "./common/CodeMirrorWrapper";
 
 const {TextArea} = Input;
 

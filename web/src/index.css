@@ -49,7 +49,7 @@ code {
   height: 500px;
 }
 
-.CodeMirror {
+.cm-editor {
   height: 100% !important;
 }
 
@@ -81,12 +81,6 @@ code {
 
 .conferenceMenu {
   background-color: rgb(242,242,242) !important;
-}
-
-.react-codemirror2 {
-  width: 100%;
-  height: 100%;
-  position: relative;
 }
 
 .anticon-file {

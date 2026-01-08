@@ -23,9 +23,7 @@ import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import {CloseCircleFilled, DeleteOutlined} from "@ant-design/icons";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material-darker.css";
+import {Controlled as CodeMirror} from "./common/CodeMirrorWrapper";
 import CommitResultWidget from "./component/record/CommitResultWidget";
 
 class RecordListPage extends BaseListPage {
