@@ -718,18 +718,18 @@ class ProviderEditPage extends React.Component {
                   {Setting.getLabel(i18next.t("provider:MCP servers"), i18next.t("provider:MCP servers - Tooltip"))} :
                 </Col>
                 <Col span={10} >
-                  <div style={{height: "500px"}}>
-                    <CodeMirror
-                      editable={!isRemote}
-                      value={this.state.provider.text}
-                      options={{mode: "application/json", theme: "material-darker"}}
-                      onBeforeChange={(editor, data, value) => {
-                        this.updateProviderField("text", value);
-                      }}
-                    />
-                  </div>
+                  <TextArea
+                    disabled={isRemote}
+                    value={this.state.provider.text}
+                    onChange={e => {
+                      this.updateProviderField("text", e.target.value);
+                    }}
+                    rows={20}
+                    style={{fontFamily: "monospace", fontSize: "14px"}}
+                    placeholder='{"mcpServers": {...}}'
+                  />
                   <br />
-                  <Button disabled={isRemote} loading={this.state.refreshButtonLoading} style={{marginBottom: "10px"}} type="primary" onClick={() => {
+                  <Button disabled={isRemote} loading={this.state.refreshButtonLoading} style={{marginBottom: "10px", marginTop: "10px"}} type="primary" onClick={() => {
                     this.refreshMcpTools();
                   }}
                   >
