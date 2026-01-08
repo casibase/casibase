@@ -19,11 +19,9 @@ import * as TemplateBackend from "./backend/TemplateBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import TemplateOptionTable from "./table/TemplateOptionTable";
-
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/yaml/yaml");
+import CodeMirror from "@uiw/react-codemirror";
+import {yaml} from "@codemirror/lang-yaml";
+import {githubDark} from "@uiw/codemirror-theme-github";
 
 const {TextArea} = Input;
 
@@ -260,8 +258,10 @@ class ApplicationEditPage extends React.Component {
             <div style={{height: "500px"}}>
               <CodeMirror
                 value={this.state.application.parameters}
-                options={{mode: "yaml", theme: "material-darker"}}
-                onBeforeChange={(editor, data, value) => {
+                height="500px"
+                theme={githubDark}
+                extensions={[yaml()]}
+                onChange={(value) => {
                   this.updateApplicationField("parameters", value);
                 }}
               />
@@ -277,7 +277,11 @@ class ApplicationEditPage extends React.Component {
             <div style={{height: "500px"}}>
               <CodeMirror
                 value={this.state.application.manifest}
-                options={{mode: "yaml", theme: "material-darker", readOnly: true}}
+                height="500px"
+                theme={githubDark}
+                extensions={[yaml()]}
+                editable={false}
+                readOnly={true}
               />
             </div>
           </Col>

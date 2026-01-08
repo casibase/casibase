@@ -18,11 +18,9 @@ import * as RecordBackend from "./backend/RecordBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
+import CodeMirror from "@uiw/react-codemirror";
+import {javascript} from "@codemirror/lang-javascript";
+import {githubDark} from "@uiw/codemirror-theme-github";
 
 const {Option} = Select;
 
@@ -300,9 +298,11 @@ class RecordEditPage extends React.Component {
             <div style={{width: "900px", height: "300px"}}>
               <CodeMirror
                 value={Setting.formatJsonString(this.state.record.object)}
-                options={{mode: "javascript", theme: "material-darker"}}
-                onBeforeChange={(editor, data, value) => {
-                }}
+                height="300px"
+                theme={githubDark}
+                extensions={[javascript()]}
+                editable={false}
+                readOnly={true}
               />
             </div>
           </Col>
@@ -315,9 +315,11 @@ class RecordEditPage extends React.Component {
             <div style={{width: "900px", height: "300px"}}>
               <CodeMirror
                 value={Setting.formatJsonString(this.state.record.response)}
-                options={{mode: "javascript", theme: "material-darker"}}
-                onBeforeChange={(editor, data, value) => {
-                }}
+                height="300px"
+                theme={githubDark}
+                extensions={[javascript()]}
+                editable={false}
+                readOnly={true}
               />
             </div>
           </Col>

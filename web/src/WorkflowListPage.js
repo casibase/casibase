@@ -22,11 +22,9 @@ import * as WorkflowBackend from "./backend/WorkflowBackend";
 import i18next from "i18next";
 import BpmnComponent from "./BpmnComponent";
 import {DeleteOutlined} from "@ant-design/icons";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/xml/xml");
-require("codemirror/mode/htmlmixed/htmlmixed");
+import CodeMirror from "@uiw/react-codemirror";
+import {xml} from "@codemirror/lang-xml";
+import {githubDark} from "@uiw/codemirror-theme-github";
 
 const {TextArea} = Input;
 class WorkflowListPage extends BaseListPage {
@@ -231,19 +229,13 @@ class WorkflowListPage extends BaseListPage {
                   <div style={{width: "400px", height: "400px"}}>
                     <CodeMirror
                       value={this.renderQuestionTemplate(record)}
-                      options={{
-                        mode: "xml",
-                        theme: "material-darker",
+                      height="400px"
+                      theme={githubDark}
+                      extensions={[xml()]}
+                      editable={false}
+                      readOnly={true}
+                      basicSetup={{
                         lineNumbers: true,
-                        readOnly: true,
-                      }}
-                      editorDidMount={(editor) => {
-                        if (window.ResizeObserver) {
-                          const resizeObserver = new ResizeObserver(() => {
-                            editor.refresh();
-                          });
-                          resizeObserver.observe(editor.getWrapperElement().parentNode);
-                        }
                       }}
                     />
                   </div>

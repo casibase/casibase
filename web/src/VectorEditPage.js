@@ -17,11 +17,9 @@ import {Button, Card, Col, Input, InputNumber, Row} from "antd";
 import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
-
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/markdown/markdown");
+import CodeMirror from "@uiw/react-codemirror";
+import {markdown} from "@codemirror/lang-markdown";
+import {githubDark} from "@uiw/codemirror-theme-github";
 
 const {TextArea} = Input;
 
@@ -149,8 +147,12 @@ class VectorEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <CodeMirror value={this.state.vector.text}
-              options={{mode: "markdown", theme: "material-darker", lineWrapping: true, readOnly: isViewMode}}
-              onBeforeChange={(editor, data, value) => {
+              height="300px"
+              theme={githubDark}
+              extensions={[markdown()]}
+              editable={!isViewMode}
+              readOnly={isViewMode}
+              onChange={(value) => {
                 if (!isViewMode) {
                   this.updateVectorField("text", value);
                 }

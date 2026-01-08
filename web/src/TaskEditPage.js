@@ -21,11 +21,9 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import * as MessageBackend from "./backend/MessageBackend";
 import ChatPage from "./ChatPage";
 import * as ConfTask from "./ConfTask";
-
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
+import CodeMirror from "@uiw/react-codemirror";
+import {javascript} from "@codemirror/lang-javascript";
+import {githubDark} from "@uiw/codemirror-theme-github";
 
 const {Option} = Select;
 const {TextArea} = Input;
@@ -363,8 +361,10 @@ class TaskEditPage extends React.Component {
                 <div style={{height: "200px"}}>
                   <CodeMirror
                     value={this.state.task.log}
-                    options={{mode: "javascript", theme: "material-darker"}}
-                    onBeforeChange={(editor, data, value) => {
+                    height="200px"
+                    theme={githubDark}
+                    extensions={[javascript()]}
+                    onChange={(value) => {
                       this.updateTaskField("log", value);
                     }}
                   />

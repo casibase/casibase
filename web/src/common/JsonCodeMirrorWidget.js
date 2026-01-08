@@ -14,10 +14,9 @@
 
 import React from "react";
 import {Alert, Popover, Typography} from "antd";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
+import CodeMirror from "@uiw/react-codemirror";
+import {json} from "@codemirror/lang-json";
+import {githubDark} from "@uiw/codemirror-theme-github";
 import * as Setting from "../Setting";
 
 /**
@@ -33,25 +32,18 @@ export function JsonCodeMirrorEditor({value, onChange, readOnly = false, editabl
   return (
     <div style={{height: height}}>
       <CodeMirror
-        editable={editable && !readOnly}
         value={value || ""}
-        options={{
-          mode: "application/json",
-          theme: "material-darker",
-          readOnly: readOnly,
+        height={height}
+        theme={githubDark}
+        extensions={[json()]}
+        editable={editable && !readOnly}
+        readOnly={readOnly}
+        basicSetup={{
           lineNumbers: lineNumbers !== null ? lineNumbers : readOnly,
         }}
-        onBeforeChange={(editor, data, newValue) => {
+        onChange={(newValue) => {
           if (onChange && !readOnly) {
-            onChange(editor, data, newValue);
-          }
-        }}
-        editorDidMount={(editor) => {
-          if (window.ResizeObserver) {
-            const resizeObserver = new ResizeObserver(() => {
-              editor.refresh();
-            });
-            resizeObserver.observe(editor.getWrapperElement().parentNode);
+            onChange(null, null, newValue);
           }
         }}
       />
@@ -115,19 +107,13 @@ export function JsonCodeMirrorPopover({text, displayText, placement = "right", m
             />)}
           <CodeMirror
             value={formattedText}
-            options={{
-              mode: isValidJson ? "application/json" : "text/plain",
-              theme: "material-darker",
-              readOnly: true,
+            height={height}
+            theme={githubDark}
+            extensions={isValidJson ? [json()] : []}
+            editable={false}
+            readOnly={true}
+            basicSetup={{
               lineNumbers: true,
-            }}
-            editorDidMount={(editor) => {
-              if (window.ResizeObserver) {
-                const resizeObserver = new ResizeObserver(() => {
-                  editor.refresh();
-                });
-                resizeObserver.observe(editor.getWrapperElement().parentNode);
-              }
             }}
           />
         </div>

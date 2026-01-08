@@ -14,8 +14,9 @@
 
 import React from "react";
 import {Tabs} from "antd";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
+import CodeMirror from "@uiw/react-codemirror";
+import {json} from "@codemirror/lang-json";
+import {githubDark} from "@uiw/codemirror-theme-github";
 import i18next from "i18next";
 import NmapResultRenderer from "../renderers/NmapResultRenderer";
 import OsPatchResultRenderer from "../renderers/OsPatchResultRenderer";
@@ -24,16 +25,14 @@ import ZapResultRenderer from "../renderers/ZapResultRenderer";
 import SubfinderResultRenderer from "../renderers/SubfinderResultRenderer";
 import HttpxResultRenderer from "../renderers/HttpxResultRenderer";
 
-require("codemirror/theme/material-darker.css");
-
 const {TabPane} = Tabs;
 
-// Helper function to configure CodeMirror editor mount
-const configureEditorMinHeight = (editor, minHeight) => {
-  editor.setSize(null, "auto");
-  const lineHeight = editor.defaultTextHeight();
-  const defaultMinHeight = lineHeight * 10;
-  editor.getWrapperElement().style.minHeight = minHeight || `${defaultMinHeight}px`;
+// Helper function to get minimum height in pixels
+const getMinHeightPixels = (minHeight) => {
+  if (typeof minHeight === "string" && minHeight.endsWith("px")) {
+    return minHeight;
+  }
+  return "300px";
 };
 
 /**
@@ -52,13 +51,13 @@ export function ScanResultRenderer({scanResult, scanRawResult, providerType, pro
     return (
       <CodeMirror
         value=""
-        options={{
-          mode: "text/plain",
-          theme: "material-darker",
-          readOnly: true,
+        height={getMinHeightPixels(minHeight)}
+        theme={githubDark}
+        editable={false}
+        readOnly={true}
+        basicSetup={{
           lineNumbers: true,
         }}
-        editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
       />
     );
   }
@@ -68,13 +67,13 @@ export function ScanResultRenderer({scanResult, scanRawResult, providerType, pro
     return (
       <CodeMirror
         value={scanRawResult}
-        options={{
-          mode: "text/plain",
-          theme: "material-darker",
-          readOnly: true,
+        height={getMinHeightPixels(minHeight)}
+        theme={githubDark}
+        editable={false}
+        readOnly={true}
+        basicSetup={{
           lineNumbers: true,
         }}
-        editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
       />
     );
   }
@@ -93,13 +92,13 @@ export function ScanResultRenderer({scanResult, scanRawResult, providerType, pro
     return (
       <CodeMirror
         value={scanResult}
-        options={{
-          mode: "text/plain",
-          theme: "material-darker",
-          readOnly: true,
+        height={getMinHeightPixels(minHeight)}
+        theme={githubDark}
+        editable={false}
+        readOnly={true}
+        basicSetup={{
           lineNumbers: true,
         }}
-        editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
       />
     );
   }
@@ -127,25 +126,26 @@ export function ScanResultRenderer({scanResult, scanRawResult, providerType, pro
       <TabPane tab={i18next.t("scan:Raw JSON")} key="raw">
         <CodeMirror
           value={JSON.stringify(JSON.parse(scanResult), null, 2)}
-          options={{
-            mode: "application/json",
-            theme: "material-darker",
-            readOnly: true,
+          height={getMinHeightPixels(minHeight)}
+          theme={githubDark}
+          extensions={[json()]}
+          editable={false}
+          readOnly={true}
+          basicSetup={{
             lineNumbers: true,
           }}
-          editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
         />
       </TabPane>
       <TabPane tab={i18next.t("scan:Raw Text")} key="rawText">
         <CodeMirror
           value={scanRawResult || ""}
-          options={{
-            mode: "text/plain",
-            theme: "material-darker",
-            readOnly: true,
+          height={getMinHeightPixels(minHeight)}
+          theme={githubDark}
+          editable={false}
+          readOnly={true}
+          basicSetup={{
             lineNumbers: true,
           }}
-          editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
         />
       </TabPane>
     </Tabs>

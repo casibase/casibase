@@ -21,7 +21,9 @@ import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as GraphBackend from "./backend/GraphBackend";
 import i18next from "i18next";
-import {Controlled as CodeMirror} from "react-codemirror2";
+import CodeMirror from "@uiw/react-codemirror";
+import {json} from "@codemirror/lang-json";
+import {githubDark} from "@uiw/codemirror-theme-github";
 import GraphDataPage from "./GraphDataPage";
 import GraphChatDataPage from "./GraphChatDataPage";
 
@@ -185,19 +187,13 @@ class GraphListPage extends BaseListPage {
                 <div style={{width: "800px", height: "400px", display: "flex"}}>
                   <CodeMirror
                     value={text}
-                    options={{
-                      mode: "application/json",
-                      theme: "material-darker",
+                    height="400px"
+                    theme={githubDark}
+                    extensions={[json()]}
+                    editable={false}
+                    readOnly={true}
+                    basicSetup={{
                       lineNumbers: true,
-                      readOnly: true,
-                    }}
-                    editorDidMount={(editor) => {
-                      if (window.ResizeObserver) {
-                        const resizeObserver = new ResizeObserver(() => {
-                          editor.refresh();
-                        });
-                        resizeObserver.observe(editor.getWrapperElement().parentNode);
-                      }
                     }}
                   />
                 </div>

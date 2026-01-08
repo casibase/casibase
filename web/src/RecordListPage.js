@@ -23,9 +23,9 @@ import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
 import {CloseCircleFilled, DeleteOutlined} from "@ant-design/icons";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material-darker.css";
+import CodeMirror from "@uiw/react-codemirror";
+import {json} from "@codemirror/lang-json";
+import {githubDark} from "@uiw/codemirror-theme-github";
 import CommitResultWidget from "./component/record/CommitResultWidget";
 
 class RecordListPage extends BaseListPage {
@@ -470,19 +470,13 @@ class RecordListPage extends BaseListPage {
                     />)}
                   <CodeMirror
                     value={formattedText}
-                    options={{
-                      mode: isValidJson ? "application/json" : "text/plain",
-                      theme: "material-darker",
-                      readOnly: true,
+                    height="400px"
+                    theme={githubDark}
+                    extensions={isValidJson ? [json()] : []}
+                    editable={false}
+                    readOnly={true}
+                    basicSetup={{
                       lineNumbers: true,
-                    }}
-                    editorDidMount={(editor) => {
-                      if (window.ResizeObserver) {
-                        const resizeObserver = new ResizeObserver(() => {
-                          editor.refresh();
-                        });
-                        resizeObserver.observe(editor.getWrapperElement().parentNode);
-                      }
                     }}
                   />
                 </div>

@@ -24,7 +24,9 @@ import {ThemeDefault} from "./Conf";
 import ExampleQuestionTable from "./table/ExampleQuestionTable";
 import StoreAvatarUploader from "./AvatarUpload";
 import {LinkOutlined} from "@ant-design/icons";
-import {Controlled as CodeMirror} from "react-codemirror2";
+import CodeMirror from "@uiw/react-codemirror";
+import {html} from "@codemirror/lang-html";
+import {githubDark} from "@uiw/codemirror-theme-github";
 import {NavItemTree} from "./component/nav-item-tree/NavItemTree";
 
 const {Option} = Select;
@@ -645,8 +647,10 @@ class StoreEditPage extends React.Component {
                     <div style={{width: "900px", height: "300px"}} >
                       <CodeMirror
                         value={this.state.store.footerHtml}
-                        options={{mode: "htmlmixed", theme: "material-darker"}}
-                        onBeforeChange={(editor, data, value) => {
+                        height="300px"
+                        theme={githubDark}
+                        extensions={[html()]}
+                        onChange={(value) => {
                           this.updateStoreField("footerHtml", value);
                         }}
                       />

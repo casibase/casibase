@@ -22,7 +22,9 @@ import i18next from "i18next";
 import GraphDataPage from "./GraphDataPage";
 import GraphChatDataPage from "./GraphChatDataPage";
 import GraphChatTable from "./GraphChatTable";
-import {Controlled as CodeMirror} from "react-codemirror2";
+import CodeMirror from "@uiw/react-codemirror";
+import {json} from "@codemirror/lang-json";
+import {githubDark} from "@uiw/codemirror-theme-github";
 import dayjs from "dayjs";
 import weekday from "dayjs/plugin/weekday";
 import localeData from "dayjs/plugin/localeData";
@@ -326,8 +328,10 @@ class GraphEditPage extends React.Component {
             <div style={{height: "500px"}}>
               <CodeMirror
                 value={this.state.graph.text}
-                options={{mode: "application/json", theme: "material-darker", lineNumbers: true}}
-                onBeforeChange={(editor, data, value) => {
+                height="500px"
+                theme={githubDark}
+                extensions={[json()]}
+                onChange={(value) => {
                   this.updateGraphField("text", value);
                 }}
               />
