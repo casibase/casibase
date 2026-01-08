@@ -726,6 +726,14 @@ class ProviderEditPage extends React.Component {
                       onBeforeChange={(editor, data, value) => {
                         this.updateProviderField("text", value);
                       }}
+                      editorDidMount={(editor) => {
+                        if (window.ResizeObserver) {
+                          const resizeObserver = new ResizeObserver(() => {
+                            editor.refresh();
+                          });
+                          resizeObserver.observe(editor.getWrapperElement().parentNode);
+                        }
+                      }}
                     />
                   </div>
                   <br />
@@ -1135,6 +1143,14 @@ class ProviderEditPage extends React.Component {
                   options={{mode: "yaml", theme: "material-darker"}}
                   onBeforeChange={(editor, data, value) => {
                     this.updateProviderField("configText", value);
+                  }}
+                  editorDidMount={(editor) => {
+                    if (window.ResizeObserver) {
+                      const resizeObserver = new ResizeObserver(() => {
+                        editor.refresh();
+                      });
+                      resizeObserver.observe(editor.getWrapperElement().parentNode);
+                    }
                   }}
                 />
               </Col>
