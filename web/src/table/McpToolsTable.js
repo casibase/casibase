@@ -15,13 +15,7 @@
 import React from "react";
 import {Col, Input, Row, Switch, Table} from "antd";
 import i18next from "i18next";
-
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material-darker.css";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/addon/scroll/simplescrollbars.js";
-import "codemirror/addon/scroll/simplescrollbars.css";
+import Editor from "../common/Editor";
 
 class McpToolsTable extends React.Component {
   constructor(props) {
@@ -76,19 +70,11 @@ class McpToolsTable extends React.Component {
           const formattedTools = JSON.stringify(JSON.parse(record.tools), null, 2);
           return (
             <div style={{height: "490px", overflow: "auto"}}>
-              <CodeMirror
+              <Editor
                 value={formattedTools}
-                options={{
-                  mode: "application/json",
-                  theme: "material-darker",
-                  readOnly: true,
-                  lineNumbers: true,
-                  scrollbarStyle: "simple",
-                  lineWrapping: true,
-                  autoRefresh: true,
-                }}
-                onBeforeChange={(editor, data, value) => {
-                }}
+                lang="json"
+                dark
+                readOnly
               />
             </div>
           );
