@@ -14,8 +14,7 @@
 
 import React from "react";
 import {Tabs} from "antd";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
+import Editor from "../common/Editor";
 import i18next from "i18next";
 import NmapResultRenderer from "../renderers/NmapResultRenderer";
 import OsPatchResultRenderer from "../renderers/OsPatchResultRenderer";
@@ -24,17 +23,7 @@ import ZapResultRenderer from "../renderers/ZapResultRenderer";
 import SubfinderResultRenderer from "../renderers/SubfinderResultRenderer";
 import HttpxResultRenderer from "../renderers/HttpxResultRenderer";
 
-require("codemirror/theme/material-darker.css");
-
 const {TabPane} = Tabs;
-
-// Helper function to configure CodeMirror editor mount
-const configureEditorMinHeight = (editor, minHeight) => {
-  editor.setSize(null, "auto");
-  const lineHeight = editor.defaultTextHeight();
-  const defaultMinHeight = lineHeight * 10;
-  editor.getWrapperElement().style.minHeight = minHeight || `${defaultMinHeight}px`;
-};
 
 /**
  * ScanResultRenderer - A reusable component to render scan results
@@ -50,15 +39,12 @@ export function ScanResultRenderer({scanResult, scanRawResult, providerType, pro
   // If neither result is available, show empty editor
   if (!scanResult && !scanRawResult) {
     return (
-      <CodeMirror
+      <Editor
         value=""
-        options={{
-          mode: "text/plain",
-          theme: "material-darker",
-          readOnly: true,
-          lineNumbers: true,
-        }}
-        editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
+        dark
+        fillHeight
+        minHeight={minHeight}
+        readOnly
       />
     );
   }
@@ -66,15 +52,12 @@ export function ScanResultRenderer({scanResult, scanRawResult, providerType, pro
   // If only raw result is available, show it as plain text
   if (!scanResult && scanRawResult) {
     return (
-      <CodeMirror
+      <Editor
         value={scanRawResult}
-        options={{
-          mode: "text/plain",
-          theme: "material-darker",
-          readOnly: true,
-          lineNumbers: true,
-        }}
-        editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
+        dark
+        fillHeight
+        minHeight={minHeight}
+        readOnly
       />
     );
   }
@@ -91,15 +74,12 @@ export function ScanResultRenderer({scanResult, scanRawResult, providerType, pro
   // If not JSON, just show as plain text
   if (!isJson) {
     return (
-      <CodeMirror
+      <Editor
         value={scanResult}
-        options={{
-          mode: "text/plain",
-          theme: "material-darker",
-          readOnly: true,
-          lineNumbers: true,
-        }}
-        editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
+        dark
+        fillHeight
+        minHeight={minHeight}
+        readOnly
       />
     );
   }
@@ -125,27 +105,22 @@ export function ScanResultRenderer({scanResult, scanRawResult, providerType, pro
         </div>
       </TabPane>
       <TabPane tab={i18next.t("scan:Raw JSON")} key="raw">
-        <CodeMirror
+        <Editor
           value={JSON.stringify(JSON.parse(scanResult), null, 2)}
-          options={{
-            mode: "application/json",
-            theme: "material-darker",
-            readOnly: true,
-            lineNumbers: true,
-          }}
-          editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
+          lang={"json"}
+          dark
+          fillHeight
+          minHeight={minHeight}
+          readOnly
         />
       </TabPane>
       <TabPane tab={i18next.t("scan:Raw Text")} key="rawText">
-        <CodeMirror
+        <Editor
           value={scanRawResult || ""}
-          options={{
-            mode: "text/plain",
-            theme: "material-darker",
-            readOnly: true,
-            lineNumbers: true,
-          }}
-          editorDidMount={(editor) => configureEditorMinHeight(editor, minHeight)}
+          dark
+          fillHeight
+          minHeight={minHeight}
+          readOnly
         />
       </TabPane>
     </Tabs>
