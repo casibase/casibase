@@ -14,10 +14,7 @@
 
 import React from "react";
 import {Alert, Popover, Typography} from "antd";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
+import Editor from "../common/Editor";
 import * as Setting from "../Setting";
 
 /**
@@ -32,26 +29,18 @@ import * as Setting from "../Setting";
 export function JsonCodeMirrorEditor({value, onChange, readOnly = false, editable = true, height = "300px", lineNumbers = null}) {
   return (
     <div style={{height: height}}>
-      <CodeMirror
+      <Editor
         editable={editable && !readOnly}
         value={value || ""}
-        options={{
-          mode: "application/json",
-          theme: "material-darker",
-          readOnly: readOnly,
-          lineNumbers: lineNumbers !== null ? lineNumbers : readOnly,
-        }}
-        onBeforeChange={(editor, data, newValue) => {
+        lang="json"
+        fillWidth
+        fillHeight
+        dark
+        readOnly={readOnly}
+        lineNumbers={lineNumbers !== null ? lineNumbers : readOnly}
+        onChange={value => {
           if (onChange && !readOnly) {
-            onChange(editor, data, newValue);
-          }
-        }}
-        editorDidMount={(editor) => {
-          if (window.ResizeObserver) {
-            const resizeObserver = new ResizeObserver(() => {
-              editor.refresh();
-            });
-            resizeObserver.observe(editor.getWrapperElement().parentNode);
+            onChange(value);
           }
         }}
       />
@@ -113,22 +102,13 @@ export function JsonCodeMirrorPopover({text, displayText, placement = "right", m
             <Alert type="error" showIcon message={
               <Typography.Paragraph ellipsis={{expandable: "collapsible"}} style={{margin: 0}}>{errorMessage}</Typography.Paragraph>}
             />)}
-          <CodeMirror
+          <Editor
             value={formattedText}
-            options={{
-              mode: isValidJson ? "application/json" : "text/plain",
-              theme: "material-darker",
-              readOnly: true,
-              lineNumbers: true,
-            }}
-            editorDidMount={(editor) => {
-              if (window.ResizeObserver) {
-                const resizeObserver = new ResizeObserver(() => {
-                  editor.refresh();
-                });
-                resizeObserver.observe(editor.getWrapperElement().parentNode);
-              }
-            }}
+            lang={isValidJson ? "json" : "text"}
+            fillWidth
+            fillHeight
+            dark
+            readOnly
           />
         </div>
       }

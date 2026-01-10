@@ -19,13 +19,9 @@ import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import StoreAvatarUploader from "./AvatarUpload";
-
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
+import Editor from "./common/Editor";
 import TextArea from "antd/es/input/TextArea";
 import TemplateOptionTable from "./table/TemplateOptionTable";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
 
 class TemplateEditPage extends React.Component {
   constructor(props) {
@@ -199,10 +195,12 @@ class TemplateEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div style={{height: "500px"}}>
-              <CodeMirror
+              <Editor
                 value={this.state.template.manifest}
-                options={{mode: "yaml", theme: "material-darker"}}
-                onBeforeChange={(editor, data, value) => {
+                lang="yaml"
+                fillHeight
+                dark
+                onChange={value => {
                   this.updateTemplateField("manifest", value);
                 }}
               />

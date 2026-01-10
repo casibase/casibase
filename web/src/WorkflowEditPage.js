@@ -18,12 +18,9 @@ import * as WorkflowBackend from "./backend/WorkflowBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import BpmnComponent from "./BpmnComponent";
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
+import Editor from "./common/Editor";
+
 import ChatWidget from "./common/ChatWidget";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/xml/xml");
-require("codemirror/mode/htmlmixed/htmlmixed");
 
 class WorkflowEditPage extends React.Component {
   constructor(props) {
@@ -135,10 +132,12 @@ class WorkflowEditPage extends React.Component {
           </Col>
           <Col span={10} >
             <div style={{height: "500px"}}>
-              <CodeMirror
+              <Editor
                 value={this.state.workflow.text}
-                options={{mode: "xml", theme: "material-darker"}}
-                onBeforeChange={(editor, data, value) => {
+                lang="xml"
+                fillHeight
+                dark
+                onChange={value => {
                   this.updateWorkflowField("text", value);
                 }}
               />
@@ -168,10 +167,13 @@ class WorkflowEditPage extends React.Component {
           </Col>
           <Col span={10} >
             <div style={{height: "500px"}}>
-              <CodeMirror
+              <Editor
                 value={this.state.workflow.text2}
-                options={{mode: "xml", theme: "material-darker"}}
-                onBeforeChange={(editor, data, value) => {
+                lang="xml"
+                fillHeight
+                fillWidth
+                dark
+                onChange={value => {
                   this.updateWorkflowField("text2", value);
                 }}
               />
@@ -201,10 +203,13 @@ class WorkflowEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <div style={{height: "500px"}}>
-              <CodeMirror
+              <Editor
                 value={this.state.workflow.message}
-                options={{mode: "html", theme: "material-darker"}}
-                onBeforeChange={(editor, data, value) => {
+                lang="html"
+                fillHeight
+                fillWidth
+                dark
+                onChange={value => {
                   this.updateWorkflowField("message", value);
                 }}
               />
@@ -230,14 +235,13 @@ class WorkflowEditPage extends React.Component {
                       {i18next.t("general:Preview")}:
                     </div>
                     <div style={{height: "600px", borderRadius: "4px"}}>
-                      <CodeMirror value={this.renderQuestionTemplate()} options={{mode: "markdown", theme: "material-darker", readOnly: true}} editorDidMount={(editor) => {
-                        if (window.ResizeObserver) {
-                          const resizeObserver = new ResizeObserver(() => {
-                            editor.refresh();
-                          });
-                          resizeObserver.observe(editor.getWrapperElement().parentNode);
-                        }
-                      }}
+                      <Editor
+                        value={this.renderQuestionTemplate()}
+                        lang="markdown"
+                        fillHeight
+                        fillWidth
+                        dark
+                        readOnly
                       />
                     </div>
                   </Col>

@@ -29,11 +29,7 @@ import * as PermissionBackend from "./backend/PermissionBackend";
 import * as PermissionUtil from "./PermissionUtil";
 import * as Conf from "./Conf";
 import FileTable from "./table/FileTable";
-
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-// require("codemirror/theme/material-darker.css");
-// require("codemirror/mode/javascript/javascript");
+import Editor from "./common/Editor";
 
 const {Search} = Input;
 const {Option} = Select;
@@ -921,11 +917,10 @@ class FileTree extends React.Component {
 
       return (
         <div style={{height: this.getEditorHeightCss()}}>
-          <CodeMirror
+          <Editor
             key={path}
             value={this.state.text}
-            // options={{mode: "javascript", theme: "material-darker"}}
-            onBeforeChange={(editor, data, value) => {}}
+            fillHeight
           />
         </div>
       );

@@ -25,11 +25,7 @@ import ModelTestWidget from "./common/TestModelWidget";
 import TtsTestWidget from "./common/TestTtsWidget";
 import EmbedTestWidget from "./common/TestEmbedWidget";
 import TestScanWidget from "./common/TestScanWidget";
-
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
+import Editor from "./common/Editor";
 
 const {Option} = Select;
 const {TextArea} = Input;
@@ -719,11 +715,13 @@ class ProviderEditPage extends React.Component {
                 </Col>
                 <Col span={10} >
                   <div style={{height: "500px"}}>
-                    <CodeMirror
+                    <Editor
                       editable={!isRemote}
                       value={this.state.provider.text}
-                      options={{mode: "application/json", theme: "material-darker"}}
-                      onBeforeChange={(editor, data, value) => {
+                      lang="json"
+                      fillHeight
+                      dark
+                      onChange={value => {
                         this.updateProviderField("text", value);
                       }}
                     />
@@ -1128,12 +1126,14 @@ class ProviderEditPage extends React.Component {
                 {Setting.getLabel(i18next.t("provider:Config text"), i18next.t("provider:Config text - Tooltip"))} :
               </Col>
               <Col span={22} >
-                <CodeMirror
+                <Editor
                   editable={!isRemote}
                   value={this.state.provider.configText}
-                  disabled={!Setting.isAdminUser(this.props.account)}
-                  options={{mode: "yaml", theme: "material-darker"}}
-                  onBeforeChange={(editor, data, value) => {
+                  lang="yaml"
+                  fillHeight
+                  dark
+                  readOnly={!Setting.isAdminUser(this.props.account)}
+                  onChange={value => {
                     this.updateProviderField("configText", value);
                   }}
                 />

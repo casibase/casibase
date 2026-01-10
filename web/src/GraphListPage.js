@@ -21,7 +21,7 @@ import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as GraphBackend from "./backend/GraphBackend";
 import i18next from "i18next";
-import {Controlled as CodeMirror} from "react-codemirror2";
+import Editor from "./common/Editor";
 import GraphDataPage from "./GraphDataPage";
 import GraphChatDataPage from "./GraphChatDataPage";
 
@@ -183,22 +183,14 @@ class GraphListPage extends BaseListPage {
               title={i18next.t("general:Text")}
               content={
                 <div style={{width: "800px", height: "400px", display: "flex"}}>
-                  <CodeMirror
+                  <Editor
                     value={text}
-                    options={{
-                      mode: "application/json",
-                      theme: "material-darker",
-                      lineNumbers: true,
-                      readOnly: true,
-                    }}
-                    editorDidMount={(editor) => {
-                      if (window.ResizeObserver) {
-                        const resizeObserver = new ResizeObserver(() => {
-                          editor.refresh();
-                        });
-                        resizeObserver.observe(editor.getWrapperElement().parentNode);
-                      }
-                    }}
+                    lang="json"
+                    w
+                    dark
+                    fillWidth
+                    fillHeight
+                    readOnly
                   />
                 </div>
               }>
