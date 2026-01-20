@@ -50,8 +50,8 @@ func buildSystemInstruction(prompt string, knowledgeMessages []*RawMessage) *gen
 		parts = append(parts, &genai.Part{Text: msg.Text})
 	}
 
+	// SystemInstruction doesn't need a role (defaults to user if empty)
 	return &genai.Content{
 		Parts: parts,
-		Role:  genai.RoleUser,
 	}
 }
