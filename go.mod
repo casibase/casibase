@@ -46,7 +46,6 @@ require (
 	github.com/leverly/ChatGLM v1.2.0
 	github.com/lib/pq v1.10.2
 	github.com/luthermonson/go-proxmox v0.2.1
-	github.com/northes/go-moonshot v0.3.0
 	github.com/openai/openai-go/v2 v2.1.1
 	github.com/oschwald/geoip2-golang v1.11.0
 	github.com/pkg/errors v0.9.1

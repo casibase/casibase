@@ -15,28 +15,25 @@
 package model
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"io"
-	"net/http"
-	"strings"
 
 	"github.com/casibase/casibase/i18n"
-	"github.com/northes/go-moonshot"
 )
 
 type MoonshotModelProvider struct {
-	temperature float64
+	temperature float32
 	subType     string
 	secretKey   string
+	topP        float32
 }
 
-func NewMoonshotModelProvider(subType string, secretKey string, temperature float64) (*MoonshotModelProvider, error) {
+func NewMoonshotModelProvider(subType string, secretKey string, temperature float32, topP float32) (*MoonshotModelProvider, error) {
 	client := &MoonshotModelProvider{
 		subType:     subType,
 		secretKey:   secretKey,
 		temperature: temperature,
+		topP:        topP,
 	}
 	return client, nil
 }
@@ -106,103 +103,21 @@ func (p *MoonshotModelProvider) calculatePrice(modelResult *ModelResult, lang st
 }
 
 func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
-	_ = agentInfo
+	const BaseUrl = "https://api.moonshot.cn/v1"
 
-	if p.secretKey == "" {
-		return nil, errors.New("missing moonshot_key")
-	}
-	cli, err := moonshot.NewClientWithConfig(
-		moonshot.NewConfig(
-			moonshot.WithAPIKey(p.secretKey),
-		),
-	)
+	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.secretKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
 	if err != nil {
 		return nil, err
 	}
 
-	if strings.HasPrefix(question, "$CasibaseDryRun$") {
-		modelResult, err := getDefaultModelResult(p.subType, question, "")
-		if err != nil {
-			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))
-		}
-		if getContextLength(p.subType) > modelResult.TotalTokenCount {
-			return modelResult, nil
-		} else {
-			return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
-		}
-	}
-
-	messages := buildMoonshotMessages(question, history, prompt, knowledgeMessages)
-
-	// Chat completions
-	resp, err := cli.Chat().Completions(context.Background(), &moonshot.ChatCompletionsRequest{
-		Model:       moonshot.ChatCompletionsModelID(p.subType),
-		Messages:    messages,
-		Temperature: p.temperature,
-	})
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo, lang)
 	if err != nil {
 		return nil, err
-	}
-
-	flusher, ok := writer.(http.Flusher)
-	if !ok {
-		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
-	}
-
-	flushData := func(data string) error {
-		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
-			return err
-		}
-		flusher.Flush()
-		return nil
-	}
-
-	err = flushData(resp.Choices[0].Message.Content)
-	if err != nil {
-		return nil, err
-	}
-
-	modelResult := &ModelResult{
-		PromptTokenCount:   resp.Usage.PromptTokens,
-		ResponseTokenCount: resp.Usage.CompletionTokens,
-		TotalTokenCount:    resp.Usage.TotalTokens,
 	}
 
 	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}
-
 	return modelResult, nil
-}
-
-func buildMoonshotMessages(question string, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) []*moonshot.ChatCompletionsMessage {
-	messages := []*moonshot.ChatCompletionsMessage{}
-
-	systemMsgs := getSystemMessages(prompt, knowledgeMessages)
-	for _, msg := range systemMsgs {
-		messages = append(messages, &moonshot.ChatCompletionsMessage{
-			Role:    moonshot.RoleSystem,
-			Content: msg.Text,
-		})
-	}
-
-	for i := len(history) - 1; i >= 0; i-- {
-		rawMessage := history[i]
-		role := moonshot.RoleUser
-		if rawMessage.Author == "AI" {
-			role = moonshot.RoleAssistant
-		}
-		messages = append(messages, &moonshot.ChatCompletionsMessage{
-			Role:    role,
-			Content: rawMessage.Text,
-		})
-	}
-
-	messages = append(messages, &moonshot.ChatCompletionsMessage{
-		Role:    moonshot.RoleUser,
-		Content: question,
-	})
-
-	return messages
 }
