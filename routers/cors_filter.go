@@ -15,6 +15,7 @@
 package routers
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -54,23 +55,23 @@ func CorsFilter(ctx *context.Context) {
 	}
 
 	// Check if origin is allowed based on Casdoor application's RedirectUris
+	setCorsHeaders(ctx, origin)
 	ok, err := isOriginAllowed(origin)
 	if err != nil {
 		// If Casdoor is not configured, allow the origin for backwards compatibility
 		casdoorEndpoint := conf.GetConfigString("casdoorEndpoint")
 		if casdoorEndpoint == "" {
-			setCorsHeaders(ctx, origin)
 			return
 		}
 		// Otherwise, reject the request
 		ctx.ResponseWriter.WriteHeader(http.StatusForbidden)
+		responseError(ctx, fmt.Sprintf("CORS error: %s, path: %s", err.Error(), ctx.Request.URL.Path))
 		return
 	}
 
-	if ok {
-		setCorsHeaders(ctx, origin)
-	} else {
+	if !ok {
 		ctx.ResponseWriter.WriteHeader(http.StatusForbidden)
+		responseError(ctx, fmt.Sprintf("CORS error: origin [%s] is not allowed, path: %s", origin, ctx.Request.URL.Path))
 	}
 
 	if object.CasibaseHost == "" {
@@ -84,7 +85,7 @@ func isOriginAllowed(origin string) (bool, error) {
 
 	// If Casdoor is not configured, return error to trigger backwards compatibility
 	if casdoorEndpoint == "" || casdoorApplication == "" {
-		return false, nil
+		return false, fmt.Errorf("casdoorEndpoint or casdoorApplication is empty")
 	}
 
 	application, err := casdoorsdk.GetApplication(casdoorApplication)
@@ -92,7 +93,7 @@ func isOriginAllowed(origin string) (bool, error) {
 		return false, err
 	}
 	if application == nil {
-		return false, nil
+		return false, fmt.Errorf("The application: %s does not exist", casdoorApplication)
 	}
 
 	// Check if origin matches any RedirectUri
