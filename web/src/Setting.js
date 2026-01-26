@@ -85,7 +85,8 @@ export function getUserProfileUrl(userName, account) {
 }
 
 export function getMyProfileUrl(account) {
-  return getUrlWithLanguage(CasdoorSdk.getMyProfileUrl(account));
+  const returnUrl = window.location.href;
+  return getUrlWithLanguage(CasdoorSdk.getMyProfileUrl(account, returnUrl));
 }
 
 export function getUserAvatar(message, account) {
