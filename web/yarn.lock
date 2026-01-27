@@ -4801,10 +4801,13 @@ canvas@^3.0.0-rc2:
     node-addon-api "^7.0.0"
     prebuild-install "^7.1.3"
 
-casdoor-js-sdk@^0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/casdoor-js-sdk/-/casdoor-js-sdk-0.2.7.tgz#09342f6715977bc1991222d04dd36c93b5f0872b"
-  integrity sha512-pEI7chd6KWDa7dhBxl3zDY+LagG40bBPoxdPMOZ5OG2gFMTXwRQ4Ka1do0giJsd2YTeAU3u6vwP62YmiQVzgSQ==
+casdoor-js-sdk@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/casdoor-js-sdk/-/casdoor-js-sdk-0.16.0.tgz#8fafdadeabcbb326b57c33fc9b8f2c1f6b8c16ec"
+  integrity sha512-K5ZKaSGxzAgLzYGlp444OnhZ0nAZqnvlq5/wPhpQ0HCU0uwk0NIt+KC4LC+qUdnRxaQN6f1LP8wR/xsTZQBWVQ==
+  dependencies:
+    js-pkce "^1.3.0"
+    jwt-decode "^4.0.0"
 
 case-sensitive-paths-webpack-plugin@^2.4.0:
   version "2.4.0"
@@ -5340,6 +5343,11 @@ crypt@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
   integrity sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow==
+
+crypto-js@^4.0.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.2.0.tgz#4d931639ecdfd12ff80e8186dba6af2c2e856631"
+  integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
 
 crypto-random-string@^2.0.0:
   version "2.0.0"
@@ -8772,6 +8780,13 @@ js-base64@^3.7.7:
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.8.tgz#af44496bc09fa178ed9c4adf67eb2b46f5c6d2a4"
   integrity sha512-hNngCeKxIUQiEUN3GPJOkz4wF/YvdUdbNL9hsBcMQTkKzboD7T/q3OYOuuPZLUE6dBxSGpwhk5mwuDud7JVAow==
 
+js-pkce@^1.3.0:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/js-pkce/-/js-pkce-1.5.1.tgz#8c16144e49280950c754a5b747a2a7ce685afe00"
+  integrity sha512-+NYxv4wAwa/aHKpXS+AhBswxeOtIpxVwoz36oBLHjznCcTg+v8L9ijDR6xtkZb5vsxdpQ7sEWtr4fCc9aIt8yA==
+  dependencies:
+    crypto-js "^4.0.0"
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -8928,6 +8943,11 @@ jszip@~2.5.0:
   integrity sha512-IRoyf8JSYY3nx+uyh5xPc0qdy8pUDTp2UkHOWYNF/IO/3D8nx7899UlSAjD8rf8wUgOmm0lACWx/GbW3EaxIXQ==
   dependencies:
     pako "~0.2.5"
+
+jwt-decode@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-4.0.0.tgz#2270352425fd413785b2faf11f6e755c5151bd4b"
+  integrity sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==
 
 kapsule@^1.16:
   version "1.16.3"

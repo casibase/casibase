@@ -25,7 +25,7 @@
     "bpmn-js-element-templates": "^2.11.0",
     "bpmn-js-properties-panel": "^5.35.0",
     "camunda-bpmn-moddle": "^7.0.1",
-    "casdoor-js-sdk": "^0.2.7",
+    "casdoor-js-sdk": "^0.16.0",
     "codemirror": "^6.0.1",
     "copy-to-clipboard": "^3.3.1",
     "craco-less": "2.0.0",
