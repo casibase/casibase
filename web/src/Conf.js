@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// eslint-disable-next-line
-export let AuthConfig = {};
+export const AuthConfig = {serverUrl: "", clientId: "", appName: "", organizationName: "", redirectPath: ""};
 export let EnableExtraPages = false;
 export let ShortcutPageItems = [];
 export let UsageEndpoints = [];
