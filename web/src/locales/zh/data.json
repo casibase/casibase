@@ -145,12 +145,14 @@
     "Active": "激活",
     "Edit File": "编辑文件",
     "Error": "错误",
+    "File Information": "文件信息",
     "Filename": "文件名",
     "Filename - Tooltip": "文件的名称",
     "Inactive": "未激活",
     "Path": "路径",
     "Path - Tooltip": "文件的完整路径",
     "Processing": "处理中",
+    "Segmented Content": "分段内容",
     "Size": "大小",
     "Size - Tooltip": "文件大小（字节）",
     "Storage Provider": "存储提供商",
@@ -1001,7 +1003,10 @@
     "Index": "索引",
     "Provider": "提供商",
     "Provider - Tooltip": "向量化服务提供商",
-    "View Vector": "查看向量"
+    "Segment": "段落",
+    "View Vector": "查看向量",
+    "characters": "字符",
+    "segments": "段落"
   },
   "video": {
     "All": "全部",
