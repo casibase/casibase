@@ -780,8 +780,13 @@ class App extends Component {
 
   renderSigninIfNotSignedIn(component) {
     if (this.state.account === null) {
-      sessionStorage.setItem("from", window.location.pathname);
-      window.location.replace(Setting.getSigninUrl());
+      const signinUrl = Setting.getSigninUrl();
+      if (signinUrl && signinUrl !== "") {
+        sessionStorage.setItem("from", window.location.pathname);
+        window.location.replace(signinUrl);
+      } else {
+        return null;
+      }
     } else if (this.state.account === undefined) {
       return null;
     } else {
