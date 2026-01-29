@@ -55,12 +55,15 @@ func CorsFilter(ctx *context.Context) {
 	}
 
 	// Check if origin is allowed based on Casdoor application's RedirectUris
-	setCorsHeaders(ctx, origin)
 	ok, err := isOriginAllowed(origin)
 	if err != nil {
 		// If Casdoor is not configured, allow the origin for backwards compatibility
 		casdoorEndpoint := conf.GetConfigString("casdoorEndpoint")
 		if casdoorEndpoint == "" {
+			setCorsHeaders(ctx, origin)
+			if object.CasibaseHost == "" {
+				object.CasibaseHost = origin
+			}
 			return
 		}
 		// Otherwise, reject the request
@@ -72,8 +75,11 @@ func CorsFilter(ctx *context.Context) {
 	if !ok {
 		ctx.ResponseWriter.WriteHeader(http.StatusForbidden)
 		responseError(ctx, fmt.Sprintf("CORS error: origin [%s] is not allowed, path: %s", origin, ctx.Request.URL.Path))
+		return
 	}
 
+	// Only set CORS headers for allowed origins
+	setCorsHeaders(ctx, origin)
 	if object.CasibaseHost == "" {
 		object.CasibaseHost = origin
 	}
