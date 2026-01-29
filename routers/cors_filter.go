@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/beego/beego/context"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -109,7 +108,7 @@ func isOriginAllowed(origin string) (bool, error) {
 			continue
 		}
 		allowedOrigin := parsedUrl.Scheme + "://" + parsedUrl.Host
-		if origin == allowedOrigin || strings.Contains(origin, allowedOrigin) {
+		if origin == allowedOrigin {
 			return true, nil
 		}
 	}

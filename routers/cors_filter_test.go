@@ -20,7 +20,6 @@ import (
 	"testing"
 
 	"github.com/beego/beego/context"
-	"github.com/casibase/casibase/conf"
 )
 
 func TestCorsFilter_NoOriginHeader(t *testing.T) {
@@ -35,6 +34,11 @@ func TestCorsFilter_NoOriginHeader(t *testing.T) {
 	// Should not set CORS headers when no Origin header is present
 	if resp.Header().Get(headerAllowOrigin) != "" {
 		t.Error("CORS headers should not be set when Origin header is missing")
+	}
+
+	// Should not block the request (no 403)
+	if resp.Code == http.StatusForbidden {
+		t.Error("Request should not be blocked when Origin header is missing")
 	}
 }
 
@@ -52,31 +56,21 @@ func TestCorsFilter_NullOrigin(t *testing.T) {
 	if resp.Header().Get(headerAllowOrigin) != "" {
 		t.Error("CORS headers should not be set for null origin")
 	}
+
+	// Should not block the request (no 403)
+	if resp.Code == http.StatusForbidden {
+		t.Error("Request should not be blocked for null origin")
+	}
 }
 
-func TestCorsFilter_UnauthorizedOrigin_WithoutCasdoor(t *testing.T) {
-	// Save original config values
-	originalEndpoint := conf.GetConfigString("casdoorEndpoint")
-	originalApp := conf.GetConfigString("casdoorApplication")
-
-	// Clear Casdoor config to test backwards compatibility mode
-	// We need to unset environment variables to simulate missing config
-	defer func() {
-		// Restore original config if it was set
-		if originalEndpoint != "" {
-			t.Setenv("casdoorEndpoint", originalEndpoint)
-		}
-		if originalApp != "" {
-			t.Setenv("casdoorApplication", originalApp)
-		}
-	}()
-	
-	// Unset the environment variables for this test
+func TestCorsFilter_BackwardsCompatibilityMode(t *testing.T) {
+	// This test verifies backwards compatibility mode where any origin is allowed
+	// when Casdoor is not configured
 	t.Setenv("casdoorEndpoint", "")
 	t.Setenv("casdoorApplication", "")
 
 	req := httptest.NewRequest(http.MethodGet, "http://example.com/api/health", nil)
-	req.Header.Set(headerOrigin, "https://evil.com")
+	req.Header.Set(headerOrigin, "https://any-origin.com")
 	resp := httptest.NewRecorder()
 
 	ctx := context.NewContext()
@@ -88,15 +82,15 @@ func TestCorsFilter_UnauthorizedOrigin_WithoutCasdoor(t *testing.T) {
 	allowOrigin := resp.Header().Get(headerAllowOrigin)
 	allowCredentials := resp.Header().Get(headerAllowCredentials)
 
-	if allowOrigin != "https://evil.com" {
-		t.Errorf("Expected Access-Control-Allow-Origin to be 'https://evil.com', got '%s'", allowOrigin)
+	if allowOrigin != "https://any-origin.com" {
+		t.Errorf("Expected Access-Control-Allow-Origin to be 'https://any-origin.com', got '%s'", allowOrigin)
 	}
 
 	if allowCredentials != "true" {
 		t.Errorf("Expected Access-Control-Allow-Credentials to be 'true', got '%s'", allowCredentials)
 	}
 
-	// Should not return forbidden status
+	// Should not return forbidden status in backwards compatibility mode
 	if resp.Code == http.StatusForbidden {
 		t.Error("Should not return 403 in backwards compatibility mode")
 	}
@@ -158,5 +152,10 @@ func TestCorsFilter_AllCorsHeaders(t *testing.T) {
 		if got != tt.expected {
 			t.Errorf("Header %s: expected '%s', got '%s'", tt.header, tt.expected, got)
 		}
+	}
+
+	// Verify the response is not blocked
+	if resp.Code == http.StatusForbidden {
+		t.Error("Request should not be blocked for allowed origin")
 	}
 }
