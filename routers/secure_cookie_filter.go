@@ -31,8 +31,19 @@ func SecureCookieFilter(ctx *context.Context) {
 
 	// Process each cookie
 	for i, cookie := range cookies {
-		// Check if Secure flag is already present
-		if !strings.Contains(cookie, "Secure") && !strings.Contains(cookie, "secure") {
+		// Check if Secure flag is already present as a standalone attribute
+		// Cookie attributes are separated by semicolons
+		hasSecure := false
+		parts := strings.Split(cookie, ";")
+		for _, part := range parts {
+			trimmed := strings.TrimSpace(part)
+			if strings.EqualFold(trimmed, "Secure") {
+				hasSecure = true
+				break
+			}
+		}
+
+		if !hasSecure {
 			// Add Secure flag
 			// The cookie format is: name=value; attributes
 			cookies[i] = cookie + "; Secure"

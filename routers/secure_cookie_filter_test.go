@@ -129,3 +129,36 @@ func TestSecureCookieFilterNoCookies(t *testing.T) {
 		t.Errorf("Expected no cookies, got %d", len(cookies))
 	}
 }
+
+func TestSecureCookieFilterWithSecureInValue(t *testing.T) {
+	// Create a mock request
+	req := httptest.NewRequest(http.MethodGet, "https://example.com/api/health", nil)
+	resp := httptest.NewRecorder()
+
+	// Create a Beego context
+	ctx := context.NewContext()
+	ctx.Reset(resp, req)
+
+	// Set a cookie where the value contains "secure" but doesn't have the Secure flag
+	resp.Header().Add("Set-Cookie", "username=SecureUser123; Path=/; HttpOnly")
+
+	// Apply the Secure Cookie filter
+	SecureCookieFilter(ctx)
+
+	// Check if the Secure flag is added (should be added despite "Secure" in value)
+	cookies := resp.Header()["Set-Cookie"]
+	if len(cookies) == 0 {
+		t.Fatal("Expected cookies to be set")
+	}
+
+	cookie := cookies[0]
+	// The cookie should have the Secure flag added
+	if !strings.Contains(cookie, "; Secure") {
+		t.Errorf("Expected cookie to have '; Secure' flag added, got: %s", cookie)
+	}
+
+	// Verify the cookie value is not modified
+	if !strings.Contains(cookie, "username=SecureUser123") {
+		t.Errorf("Cookie value should remain unchanged, got: %s", cookie)
+	}
+}
