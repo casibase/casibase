@@ -69,6 +69,8 @@ func main() {
 	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
 
 	// Set session cookie security attributes
+	// HTTPOnly protects against XSS attacks
+	beego.BConfig.WebConfig.Session.SessionDisableHTTPOnly = false
 	// SameSite=Lax provides CSRF protection while maintaining compatibility
 	beego.BConfig.WebConfig.Session.SessionCookieSameSite = http.SameSiteLaxMode
 

@@ -29,6 +29,10 @@ func AppendWebConfigCookie(ctx *context.Context) error {
 		return err
 	}
 
-	ctx.SetCookie("jsonWebConfig", string(jsonWebConfig))
+	// Set cookie with security attributes:
+	// maxAge: 0 (session cookie), path: "/", domain: "", secure: true, httponly: false
+	// Note: The Secure flag is applied by SecureCookieFilter
+	// HttpOnly is set to false because this config may need to be read by JavaScript
+	ctx.SetCookie("jsonWebConfig", string(jsonWebConfig), 0, "/", "", false, false)
 	return nil
 }

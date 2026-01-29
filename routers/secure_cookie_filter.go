@@ -20,7 +20,7 @@ import (
 	"github.com/beego/beego/context"
 )
 
-// SecureCookieFilter ensures session cookies have the Secure flag set
+// SecureCookieFilter ensures all cookies have the Secure flag set
 // This is necessary when running behind a reverse proxy that handles HTTPS
 func SecureCookieFilter(ctx *context.Context) {
 	// This filter runs after the response is written
@@ -31,14 +31,11 @@ func SecureCookieFilter(ctx *context.Context) {
 
 	// Process each cookie
 	for i, cookie := range cookies {
-		// Only modify session cookies
-		if strings.Contains(cookie, "casibase_session_id=") {
-			// Check if Secure flag is already present
-			if !strings.Contains(cookie, "Secure") && !strings.Contains(cookie, "secure") {
-				// Add Secure flag
-				// The cookie format is: name=value; attributes
-				cookies[i] = cookie + "; Secure"
-			}
+		// Check if Secure flag is already present
+		if !strings.Contains(cookie, "Secure") && !strings.Contains(cookie, "secure") {
+			// Add Secure flag
+			// The cookie format is: name=value; attributes
+			cookies[i] = cookie + "; Secure"
 		}
 	}
 
