@@ -25,7 +25,7 @@ require (
 	github.com/baidubce/bce-qianfan-sdk/go/qianfan v0.0.14
 	github.com/beego/beego v1.12.12
 	github.com/carmel/gooxml v0.0.0-20220216072414-40ff56130850
-	github.com/casdoor/casdoor-go-sdk v1.38.0
+	github.com/casdoor/casdoor-go-sdk v1.44.0
 	github.com/casibase/dashscope-go-sdk v0.0.2
 	github.com/casibase/dashscopego v0.6.0
 	github.com/casibase/go-openrouter v1.0.0
