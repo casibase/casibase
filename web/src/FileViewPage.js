@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import {Link} from "react-router-dom";
 import {
   Badge,
   Button,
@@ -141,10 +142,15 @@ class FileViewPage extends React.Component {
 
           <div style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
             <Title level={4} style={{margin: 0, fontSize: "16px", lineHeight: "1.2"}}>
-              {file?.filename || fileName}
+              <Link to={`/files/${file?.name || fileName}`} style={{color: "#1890ff"}}>
+                {file?.filename || fileName}
+              </Link>
             </Title>
             <Text type="secondary" style={{fontSize: "12px"}}>
-              <UnorderedListOutlined /> {file?.store || "Universal Store"}
+              <UnorderedListOutlined />
+              <Link to={`/stores/admin/${file?.store || ""}`} style={{color: "#8c8c8c"}}>
+                {file?.store || "Universal Store"}
+              </Link>
             </Text>
           </div>
         </div>
@@ -203,33 +209,50 @@ class FileViewPage extends React.Component {
           }}>
             DOCUMENTATION INFO
           </Title>
+
           <Row gutter={[0, 0]}>
             <InfoItem label="Original File Name" value={file.filename} />
             <InfoItem label="File Size" value={Setting.getFormattedSize(file.size)} />
             <InfoItem label="Upload Date" value={Setting.getFormattedDate(file.createdTime)} />
-            <InfoItem label="Storage Provider" renderValue={<Tag color="blue">{file.storageProvider}</Tag>} />
-          </Row>
-        </div>
-
-        <div style={{height: "1px", background: "#f0f0f0", marginBottom: "32px"}} />
-
-        <div style={sectionStyle}>
-          <Title level={5} style={{
-            ...labelTitleStyle,
-            fontSize: "14px",
-            color: "#262626",
-            marginBottom: "16px",
-          }}>
-            TECHNICAL SPECS
-          </Title>
-          <Row gutter={[0, 0]}>
-            <InfoItem label="Store Name" value={file.store} />
             <InfoItem label="Total Segments" value={`${vectors.length} items`} />
             <InfoItem label="Token Count" value={`${file.tokenCount} tokens`} />
+          </Row>
+
+          <div style={{height: "1px", background: "#f0f0f0", margin: "16px 0 24px 0"}} />
+
+          <Row gutter={[0, 0]}>
             <InfoItem
-              label="Vector Dimension"
-              value={vectors.length > 0 ? vectors[0].dimension : "-"}
+              label="Store"
+              renderValue={
+                <Link to={`/stores/admin/${file.store}`}>
+                  <Tag color="geekblue" style={{cursor: "pointer", fontWeight: 500}}>
+                    {file.store}
+                  </Tag>
+                </Link>
+              }
             />
+            <InfoItem
+              label="Storage Provider"
+              renderValue={
+                <Link to={`/providers/${file.storageProvider}`}>
+                  <Tag color="blue" style={{cursor: "pointer", fontWeight: 500}}>
+                    {file.storageProvider}
+                  </Tag>
+                </Link>
+              }
+            />
+            {vectors.length > 0 && (
+              <InfoItem
+                label="Embedding Provider"
+                renderValue={
+                  <Link to={`/providers/${vectors[0].provider}`}>
+                    <Tag color="green" style={{cursor: "pointer", fontWeight: 500}}>
+                      {vectors[0].provider}
+                    </Tag>
+                  </Link>
+                }
+              />
+            )}
           </Row>
         </div>
       </div>
@@ -310,9 +333,11 @@ class FileViewPage extends React.Component {
                         {item.score > 0 && <Tag color="gold">Score: {item.score.toFixed(4)}</Tag>}
                       </div>
                       <div style={{marginTop: "4px"}}>
-                        <Tag style={{border: "none", background: "#f5f5f5", color: "#595959"}}>
-                          {item.provider}
-                        </Tag>
+                        <Link to={`/providers/${item.provider}`}>
+                          <Tag style={{border: "none", background: "#f5f5f5", color: "#595959", cursor: "pointer"}}>
+                            {item.provider}
+                          </Tag>
+                        </Link>
                         <Tag style={{border: "none", background: "#f5f5f5", color: "#595959"}}>
                           {item.price} {item.currency}
                         </Tag>
