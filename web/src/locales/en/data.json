@@ -1001,10 +1001,7 @@
     "Index": "Index",
     "Provider": "Provider",
     "Provider - Tooltip": "Embedding service provider",
-    "Segment": "Segment",
-    "View Vector": "View Vector",
-    "characters": "characters",
-    "segments": "segments"
+    "View Vector": "View Vector"
   },
   "video": {
     "All": "All",
