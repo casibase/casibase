@@ -1003,10 +1003,7 @@
     "Index": "索引",
     "Provider": "提供商",
     "Provider - Tooltip": "向量化服务提供商",
-    "Segment": "片段",
-    "View Vector": "查看向量",
-    "characters": "字符",
-    "segments": "段落"
+    "View Vector": "查看向量"
   },
   "video": {
     "All": "全部",
