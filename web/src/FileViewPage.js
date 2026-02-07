@@ -142,7 +142,7 @@ class FileViewPage extends React.Component {
 
           <div style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
             <Title level={4} style={{margin: 0, fontSize: "16px", lineHeight: "1.2"}}>
-              <Link to={`/files/${file?.name || fileName}`} style={{color: "#1890ff"}}>
+              <Link to={`/files/${encodeURIComponent(file?.name || fileName)}`} style={{color: "#1890ff"}}>
                 {file?.filename || fileName}
               </Link>
             </Title>
