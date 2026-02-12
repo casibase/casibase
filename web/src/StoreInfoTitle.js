@@ -268,7 +268,7 @@ const StoreInfoTitle = (props) => {
         {storeInfo && (
           <div style={{marginRight: "20px"}}>
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Store")}:</span>}
-            <Select value={selectedStore?.name || storeInfo?.name || storeOptions[0]?.name} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating || !canChangeStores}>
+            <Select value={selectedStore?.name || storeInfo.name} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating || !canChangeStores}>
               {storeOptions.map(store => (
                 <Select.Option key={store.name} value={store.name}>
                   {store.displayName || store.name}
