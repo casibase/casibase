@@ -62,6 +62,7 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		AgentProvider:        "",
 		TextToSpeechProvider: ttsProviderName,
 		SpeechToTextProvider: sttProviderName,
+		BuiltinTools:         []string{"generate_image"},
 		Frequency:            10000,
 		MemoryLimit:          10,
 		LimitMinutes:         15,
