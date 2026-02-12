@@ -247,8 +247,8 @@ const StoreInfoTitle = (props) => {
     return storeInfo ? [storeInfo] : [];
   }, [filteredStores, storeInfo]);
 
-  // Always show the store select, but disable it when user cannot change stores
-  const canChangeStores = filteredStores.length > 1;
+  // User can change stores if there are multiple options available
+  const canChangeStores = storeOptions.length > 1;
 
   const shouldShowTitleBar = paneCount === 1 && (storeInfo || modelProviders.length > 0 || (showPaneControls && canManagePanes));
 
