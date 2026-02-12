@@ -1010,6 +1010,8 @@ github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1074 h1:ZD
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1074/go.mod h1:6pNHW98ensuFt7LC/OpDQIfQ3XpGpxIlupgzYOD3l0E=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tbaas v1.0.1115 h1:tG8pHXfS+/QVxcMfXW5ROvachiMm+v8WV5AvJyb4RBQ=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tbaas v1.0.1115/go.mod h1:on3m9ALT6gDYRCLZLUK5OEraAmes/o04tJr0wFrZKow=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/vpc v1.0.1116 h1:48m9mpwWgOViYMjoEgvXXqi3rOA8txuiB2HuTsKv4IA=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/vpc v1.0.1116/go.mod h1:PI6W5g88bOM2UPwlrgbXjtU3Hq44rZngsE2K70/Jszg=
 github.com/tidwall/gjson v1.14.2/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
 github.com/tidwall/gjson v1.18.0 h1:FIDeeyB800efLX89e5a8Y0BNH+LOngJyGrIWxG2FKQY=
 github.com/tidwall/gjson v1.18.0/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
