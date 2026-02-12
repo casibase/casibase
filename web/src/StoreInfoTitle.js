@@ -232,15 +232,6 @@ const StoreInfoTitle = (props) => {
     }
   };
 
-  const shouldShowTitleBar = paneCount === 1 && (storeInfo || modelProviders.length > 0 || (showPaneControls && canManagePanes));
-
-  if (!shouldShowTitleBar) {
-    return null;
-  }
-
-  // Always show the store select, but disable it when user cannot change stores
-  const canChangeStores = filteredStores.length > 1;
-
   // Ensure the current store is always in the options list
   const storeOptions = useMemo(() => {
     if (filteredStores.length > 0) {
@@ -256,6 +247,15 @@ const StoreInfoTitle = (props) => {
     return storeInfo ? [storeInfo] : [];
   }, [filteredStores, storeInfo]);
 
+  // Always show the store select, but disable it when user cannot change stores
+  const canChangeStores = filteredStores.length > 1;
+
+  const shouldShowTitleBar = paneCount === 1 && (storeInfo || modelProviders.length > 0 || (showPaneControls && canManagePanes));
+
+  if (!shouldShowTitleBar) {
+    return null;
+  }
+
   return (
     <div style={{
       padding: "10px 15px",
@@ -268,7 +268,7 @@ const StoreInfoTitle = (props) => {
         {storeInfo && (
           <div style={{marginRight: "20px"}}>
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Store")}:</span>}
-            <Select value={selectedStore?.name || storeInfo?.name} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating || !canChangeStores}>
+            <Select value={selectedStore?.name || storeInfo?.name || storeOptions[0]?.name} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating || !canChangeStores}>
               {storeOptions.map(store => (
                 <Select.Option key={store.name} value={store.name}>
                   {store.displayName || store.name}
