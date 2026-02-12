@@ -23,7 +23,7 @@ import (
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
 	"github.com/casibase/casibase/agent"
-	"github.com/casibase/casibase/agent/builtin_tool"
+	"github.com/casibase/casibase/agent/toolcontext"
 	"github.com/casibase/casibase/i18n"
 	"github.com/openai/openai-go/v2/responses"
 	"github.com/sashabaranov/go-openai"
@@ -35,10 +35,11 @@ type AgentMessages struct {
 }
 
 type AgentInfo struct {
-	AgentClients  *agent.AgentClients
-	AgentMessages *AgentMessages
-	StoreOwner    string
-	StoreName     string
+	AgentClients     *agent.AgentClients
+	AgentMessages    *AgentMessages
+	StoreOwner       string
+	StoreName        string
+	ImageGenerator   func(prompt string, writer io.Writer, lang string) (string, error)
 }
 
 type ToolCallResponse struct {
@@ -176,7 +177,12 @@ func callTools(toolCall openai.ToolCall, serverName, toolName string, agentInfo 
 	
 	// Add store information to context for builtin tools
 	if agentInfo != nil && agentInfo.StoreOwner != "" && agentInfo.StoreName != "" {
-		ctx = builtin_tool.WithStoreInfo(ctx, agentInfo.StoreOwner, agentInfo.StoreName, lang)
+		ctx = toolcontext.WithStoreInfo(ctx, agentInfo.StoreOwner, agentInfo.StoreName, lang)
+	}
+	
+	// Add image generator to context if available
+	if agentInfo != nil && agentInfo.ImageGenerator != nil {
+		ctx = toolcontext.WithImageGenerator(ctx, agentInfo.ImageGenerator)
 	}
 
 	if err := json.Unmarshal([]byte(toolCall.Function.Arguments), &arguments); err != nil {

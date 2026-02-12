@@ -17,14 +17,10 @@ package imagetools
 import (
 	"context"
 	"fmt"
-	"io"
 	"strings"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
-	"github.com/casibase/casibase/agent/builtin_tool"
-	"github.com/casibase/casibase/model"
-	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/util"
+	"github.com/casibase/casibase/agent/toolcontext"
 )
 
 type GenerateImageTool struct{}
@@ -64,84 +60,29 @@ func (t *GenerateImageTool) Execute(ctx context.Context, arguments map[string]in
 		}, nil
 	}
 
-	// Get store information from context
-	owner, storeName, lang, ok := builtin_tool.GetStoreInfo(ctx)
+	// Get language from context
+	_, _, lang, ok := toolcontext.GetStoreInfo(ctx)
+	if !ok {
+		lang = "en" // default to English
+	}
+
+	// Get the image generator function from context
+	generator, ok := toolcontext.GetImageGenerator(ctx)
 	if !ok {
 		return &protocol.CallToolResult{
 			IsError: true,
 			Content: []protocol.Content{
 				&protocol.TextContent{
 					Type: "text",
-					Text: "Error: Store information not available in context",
+					Text: "Error: Image generation is not available. Please ensure an image generation provider (like DALL-E) is configured in the store's child model providers.",
 				},
 			},
 		}, nil
 	}
 
-	// Get the store object
-	storeId := util.GetIdFromOwnerAndName(owner, storeName)
-	store, err := object.GetStore(storeId)
-	if err != nil || store == nil {
-		return &protocol.CallToolResult{
-			IsError: true,
-			Content: []protocol.Content{
-				&protocol.TextContent{
-					Type: "text",
-					Text: fmt.Sprintf("Error: Failed to get store: %v", err),
-				},
-			},
-		}, nil
-	}
-
-	// Find an image generation provider from child model providers
-	var imageProviderName string
-	for _, providerName := range store.ChildModelProviders {
-		provider, err := object.GetProvider(util.GetIdFromOwnerAndName(owner, providerName))
-		if err != nil || provider == nil {
-			continue
-		}
-		
-		// Check if this is an image generation model
-		subType := strings.ToLower(provider.SubType)
-		if strings.Contains(subType, "dall-e") || strings.Contains(subType, "gpt-image") || 
-		   strings.Contains(subType, "seedream") || strings.Contains(subType, "seededit") || 
-		   strings.Contains(subType, "grok-2-image") {
-			imageProviderName = providerName
-			break
-		}
-	}
-
-	if imageProviderName == "" {
-		return &protocol.CallToolResult{
-			IsError: true,
-			Content: []protocol.Content{
-				&protocol.TextContent{
-					Type: "text",
-					Text: "Error: No image generation provider found. Please configure a DALL-E or other image generation provider in the store's child model providers.",
-				},
-			},
-		}, nil
-	}
-
-	// Get the image provider
-	_, imageProviderObj, err := object.GetModelProviderFromContext(owner, imageProviderName, lang)
-	if err != nil {
-		return &protocol.CallToolResult{
-			IsError: true,
-			Content: []protocol.Content{
-				&protocol.TextContent{
-					Type: "text",
-					Text: fmt.Sprintf("Error: Failed to initialize image provider: %v", err),
-				},
-			},
-		}, nil
-	}
-
-	// Generate the image using a string buffer to capture output
+	// Generate the image using the callback
 	var outputBuilder strings.Builder
-	writer := io.Writer(&outputBuilder)
-	
-	modelResult, err := imageProviderObj.QueryText(prompt, writer, nil, "", nil, nil, lang)
+	output, err := generator(prompt, &outputBuilder, lang)
 	if err != nil {
 		return &protocol.CallToolResult{
 			IsError: true,
@@ -154,18 +95,13 @@ func (t *GenerateImageTool) Execute(ctx context.Context, arguments map[string]in
 		}, nil
 	}
 
-	// Get the generated output (should contain the image HTML)
-	output := outputBuilder.String()
-	
-	// Create result message
-	resultText := output
-	if resultText == "" {
-		resultText = "Image generated successfully"
+	// Use the output from the generator
+	if output == "" {
+		output = outputBuilder.String()
 	}
 	
-	// Include cost information if available
-	if modelResult != nil && modelResult.TotalPrice > 0 {
-		resultText += fmt.Sprintf("\n\nCost: %.4f %s", modelResult.TotalPrice, modelResult.Currency)
+	if output == "" {
+		output = "Image generated successfully"
 	}
 
 	return &protocol.CallToolResult{
@@ -173,7 +109,7 @@ func (t *GenerateImageTool) Execute(ctx context.Context, arguments map[string]in
 		Content: []protocol.Content{
 			&protocol.TextContent{
 				Type: "text",
-				Text: resultText,
+				Text: output,
 			},
 		},
 	}, nil

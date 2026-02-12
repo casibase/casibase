@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/casibase/casibase/agent"
@@ -243,11 +244,52 @@ func (c *ApiController) GetMessageAnswer() {
 			Messages:  []*model.RawMessage{},
 			ToolCalls: nil,
 		}
+		
+		// Create image generator function for the generate_image tool
+		imageGenerator := func(prompt string, imgWriter io.Writer, lang string) (string, error) {
+			// Find an image generation provider from child model providers
+			var imageProviderName string
+			for _, providerName := range store.ChildModelProviders {
+				provider, provErr := object.GetProvider(util.GetIdFromOwnerAndName(store.Owner, providerName))
+				if provErr != nil || provider == nil {
+					continue
+				}
+				
+				// Check if this is an image generation model
+				subType := strings.ToLower(provider.SubType)
+				if strings.Contains(subType, "dall-e") || strings.Contains(subType, "gpt-image") || 
+				   strings.Contains(subType, "seedream") || strings.Contains(subType, "seededit") || 
+				   strings.Contains(subType, "grok-2-image") {
+					imageProviderName = providerName
+					break
+				}
+			}
+
+			if imageProviderName == "" {
+				return "", fmt.Errorf("no image generation provider found in child model providers")
+			}
+
+			// Get the image provider
+			_, imageProviderObj, provErr := object.GetModelProviderFromContext(store.Owner, imageProviderName, lang)
+			if provErr != nil {
+				return "", fmt.Errorf("failed to initialize image provider: %v", provErr)
+			}
+
+			// Generate the image
+			_, genErr := imageProviderObj.QueryText(prompt, imgWriter, nil, "", nil, nil, lang)
+			if genErr != nil {
+				return "", fmt.Errorf("failed to generate image: %v", genErr)
+			}
+
+			return "", nil // Return empty string as the output is written to imgWriter
+		}
+		
 		agentInfo := &model.AgentInfo{
-			AgentClients:  agentClients,
-			AgentMessages: messages,
-			StoreOwner:    store.Owner,
-			StoreName:     store.Name,
+			AgentClients:   agentClients,
+			AgentMessages:  messages,
+			StoreOwner:     store.Owner,
+			StoreName:      store.Name,
+			ImageGenerator: imageGenerator,
 		}
 		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, prompt, knowledge, agentInfo, c.GetAcceptLanguage())
 	} else {
