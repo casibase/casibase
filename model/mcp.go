@@ -23,6 +23,7 @@ import (
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
 	"github.com/casibase/casibase/agent"
+	"github.com/casibase/casibase/agent/builtin_tool"
 	"github.com/casibase/casibase/i18n"
 	"github.com/openai/openai-go/v2/responses"
 	"github.com/sashabaranov/go-openai"
@@ -36,6 +37,8 @@ type AgentMessages struct {
 type AgentInfo struct {
 	AgentClients  *agent.AgentClients
 	AgentMessages *AgentMessages
+	StoreOwner    string
+	StoreName     string
 }
 
 type ToolCallResponse struct {
@@ -129,7 +132,7 @@ func QueryTextWithTools(p ModelProvider, question string, writer io.Writer, hist
 				ToolCall: toolCall,
 			})
 
-			messages, err = callTools(toolCall, serverName, toolName, agentInfo.AgentClients, messages, writer, lang)
+			messages, err = callTools(toolCall, serverName, toolName, agentInfo, messages, writer, lang)
 			if err != nil {
 				return nil, err
 			}
@@ -167,9 +170,14 @@ func createToolMessage(toolCall openai.ToolCall, text string) *RawMessage {
 	}
 }
 
-func callTools(toolCall openai.ToolCall, serverName, toolName string, agentClients *agent.AgentClients, messages []*RawMessage, writer io.Writer, lang string) ([]*RawMessage, error) {
+func callTools(toolCall openai.ToolCall, serverName, toolName string, agentInfo *AgentInfo, messages []*RawMessage, writer io.Writer, lang string) ([]*RawMessage, error) {
 	var arguments map[string]interface{}
 	ctx := context.Background()
+	
+	// Add store information to context for builtin tools
+	if agentInfo != nil && agentInfo.StoreOwner != "" && agentInfo.StoreName != "" {
+		ctx = builtin_tool.WithStoreInfo(ctx, agentInfo.StoreOwner, agentInfo.StoreName, lang)
+	}
 
 	if err := json.Unmarshal([]byte(toolCall.Function.Arguments), &arguments); err != nil {
 		return nil, fmt.Errorf(i18n.Translate(lang, "model:failed to parse tool arguments: %v"), err)
@@ -180,13 +188,16 @@ func callTools(toolCall openai.ToolCall, serverName, toolName string, agentClien
 
 	if serverName == "" {
 		// builtin tools
-		if agentClients.BuiltinToolReg == nil {
+		if agentInfo == nil || agentInfo.AgentClients == nil || agentInfo.AgentClients.BuiltinToolReg == nil {
 			return messages, nil
 		}
-		result, err = agentClients.BuiltinToolReg.ExecuteTool(ctx, toolName, arguments)
+		result, err = agentInfo.AgentClients.BuiltinToolReg.ExecuteTool(ctx, toolName, arguments)
 	} else {
 		// MCP tools
-		mcpClient, ok := agentClients.Clients[serverName]
+		if agentInfo == nil || agentInfo.AgentClients == nil {
+			return messages, nil
+		}
+		mcpClient, ok := agentInfo.AgentClients.Clients[serverName]
 		if !ok {
 			return messages, nil
 		}

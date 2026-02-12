@@ -246,6 +246,8 @@ func (c *ApiController) GetMessageAnswer() {
 		agentInfo := &model.AgentInfo{
 			AgentClients:  agentClients,
 			AgentMessages: messages,
+			StoreOwner:    store.Owner,
+			StoreName:     store.Name,
 		}
 		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, prompt, knowledge, agentInfo, c.GetAcceptLanguage())
 	} else {

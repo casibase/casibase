@@ -17,8 +17,14 @@ package imagetools
 import (
 	"context"
 	"fmt"
+	"io"
+	"strings"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
+	"github.com/casibase/casibase/agent/builtin_tool"
+	"github.com/casibase/casibase/model"
+	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/util"
 )
 
 type GenerateImageTool struct{}
@@ -58,9 +64,109 @@ func (t *GenerateImageTool) Execute(ctx context.Context, arguments map[string]in
 		}, nil
 	}
 
-	// TODO: Implement actual image generation
-	// For now, return a placeholder message
-	resultText := fmt.Sprintf("Image generation requested with prompt: %s\n\nNote: This is a placeholder. Image generation functionality needs to be connected to an image provider (like DALL-E).", prompt)
+	// Get store information from context
+	owner, storeName, lang, ok := builtin_tool.GetStoreInfo(ctx)
+	if !ok {
+		return &protocol.CallToolResult{
+			IsError: true,
+			Content: []protocol.Content{
+				&protocol.TextContent{
+					Type: "text",
+					Text: "Error: Store information not available in context",
+				},
+			},
+		}, nil
+	}
+
+	// Get the store object
+	storeId := util.GetIdFromOwnerAndName(owner, storeName)
+	store, err := object.GetStore(storeId)
+	if err != nil || store == nil {
+		return &protocol.CallToolResult{
+			IsError: true,
+			Content: []protocol.Content{
+				&protocol.TextContent{
+					Type: "text",
+					Text: fmt.Sprintf("Error: Failed to get store: %v", err),
+				},
+			},
+		}, nil
+	}
+
+	// Find an image generation provider from child model providers
+	var imageProviderName string
+	for _, providerName := range store.ChildModelProviders {
+		provider, err := object.GetProvider(util.GetIdFromOwnerAndName(owner, providerName))
+		if err != nil || provider == nil {
+			continue
+		}
+		
+		// Check if this is an image generation model
+		subType := strings.ToLower(provider.SubType)
+		if strings.Contains(subType, "dall-e") || strings.Contains(subType, "gpt-image") || 
+		   strings.Contains(subType, "seedream") || strings.Contains(subType, "seededit") || 
+		   strings.Contains(subType, "grok-2-image") {
+			imageProviderName = providerName
+			break
+		}
+	}
+
+	if imageProviderName == "" {
+		return &protocol.CallToolResult{
+			IsError: true,
+			Content: []protocol.Content{
+				&protocol.TextContent{
+					Type: "text",
+					Text: "Error: No image generation provider found. Please configure a DALL-E or other image generation provider in the store's child model providers.",
+				},
+			},
+		}, nil
+	}
+
+	// Get the image provider
+	_, imageProviderObj, err := object.GetModelProviderFromContext(owner, imageProviderName, lang)
+	if err != nil {
+		return &protocol.CallToolResult{
+			IsError: true,
+			Content: []protocol.Content{
+				&protocol.TextContent{
+					Type: "text",
+					Text: fmt.Sprintf("Error: Failed to initialize image provider: %v", err),
+				},
+			},
+		}, nil
+	}
+
+	// Generate the image using a string buffer to capture output
+	var outputBuilder strings.Builder
+	writer := io.Writer(&outputBuilder)
+	
+	modelResult, err := imageProviderObj.QueryText(prompt, writer, nil, "", nil, nil, lang)
+	if err != nil {
+		return &protocol.CallToolResult{
+			IsError: true,
+			Content: []protocol.Content{
+				&protocol.TextContent{
+					Type: "text",
+					Text: fmt.Sprintf("Error generating image: %v", err),
+				},
+			},
+		}, nil
+	}
+
+	// Get the generated output (should contain the image HTML)
+	output := outputBuilder.String()
+	
+	// Create result message
+	resultText := output
+	if resultText == "" {
+		resultText = "Image generated successfully"
+	}
+	
+	// Include cost information if available
+	if modelResult != nil && modelResult.TotalPrice > 0 {
+		resultText += fmt.Sprintf("\n\nCost: %.4f %s", modelResult.TotalPrice, modelResult.Currency)
+	}
 
 	return &protocol.CallToolResult{
 		IsError: false,
