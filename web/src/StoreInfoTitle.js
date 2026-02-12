@@ -232,11 +232,14 @@ const StoreInfoTitle = (props) => {
     }
   };
 
-  const shouldShowTitleBar = paneCount === 1 && (filteredStores.length > 0 || modelProviders.length > 0 || storeInfo?.showAutoRead || (showPaneControls && canManagePanes));
+  const shouldShowTitleBar = paneCount === 1 && (storeInfo || modelProviders.length > 0 || storeInfo?.showAutoRead || (showPaneControls && canManagePanes));
 
   if (!shouldShowTitleBar) {
     return null;
   }
+
+  // Always show the store select, but disable it when user cannot change stores
+  const canChangeStores = filteredStores.length > 1;
 
   return (
     <div style={{
@@ -247,15 +250,19 @@ const StoreInfoTitle = (props) => {
       justifyContent: "space-between",
     }}>
       <div style={{display: "flex", alignItems: "center"}}>
-        {filteredStores.length > 0 && (
+        {storeInfo && (
           <div style={{marginRight: "20px"}}>
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Store")}:</span>}
-            <Select value={selectedStore?.name || storeInfo?.name || (filteredStores[0]?.name)} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating}>
-              {filteredStores.map(store => (
+            <Select value={selectedStore?.name || storeInfo?.name || (filteredStores[0]?.name)} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating || !canChangeStores}>
+              {filteredStores.length > 0 ? filteredStores.map(store => (
                 <Select.Option key={store.name} value={store.name}>
                   {store.displayName || store.name}
                 </Select.Option>
-              ))}
+              )) : (
+                <Select.Option key={storeInfo.name} value={storeInfo.name}>
+                  {storeInfo.displayName || storeInfo.name}
+                </Select.Option>
+              )}
             </Select>
           </div>)}
 
