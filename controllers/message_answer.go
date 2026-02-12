@@ -246,7 +246,7 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 		
 		// Create image generator function for the generate_image tool
-		imageGenerator := func(prompt string, imgWriter io.Writer, lang string) (string, error) {
+		imageGenerator := func(prompt string, writer io.Writer, lang string) (string, error) {
 			// Find an image generation provider from child model providers
 			var imageProviderName string
 			for _, providerName := range store.ChildModelProviders {
@@ -276,12 +276,12 @@ func (c *ApiController) GetMessageAnswer() {
 			}
 
 			// Generate the image
-			_, genErr := imageProviderObj.QueryText(prompt, imgWriter, nil, "", nil, nil, lang)
+			_, genErr := imageProviderObj.QueryText(prompt, writer, nil, "", nil, nil, lang)
 			if genErr != nil {
 				return "", fmt.Errorf("failed to generate image: %v", genErr)
 			}
 
-			return "", nil // Return empty string as the output is written to imgWriter
+			return "", nil // Return empty string as the output is written to writer
 		}
 		
 		agentInfo := &model.AgentInfo{

@@ -81,7 +81,6 @@ func (t *GenerateImageTool) Execute(ctx context.Context, arguments map[string]in
 	}
 
 	// Generate the image using the callback
-	var outputBuilder strings.Builder
 	output, err := generator(prompt, &outputBuilder, lang)
 	if err != nil {
 		return &protocol.CallToolResult{
@@ -95,13 +94,12 @@ func (t *GenerateImageTool) Execute(ctx context.Context, arguments map[string]in
 		}, nil
 	}
 
-	// Use the output from the generator
+	// Use output from generator, fallback to builder output, or use default message
 	if output == "" {
 		output = outputBuilder.String()
-	}
-	
-	if output == "" {
-		output = "Image generated successfully"
+		if output == "" {
+			output = "Image generated successfully"
+		}
 	}
 
 	return &protocol.CallToolResult{
