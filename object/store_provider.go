@@ -79,6 +79,65 @@ func isObjectLeaf(object *storage.Object) bool {
 	return isLeaf
 }
 
+func (store *Store) syncFilesToTable(objects []*storage.Object, origin string) error {
+	// Fetch all existing file records for this store to avoid N+1 queries
+	existingFiles, err := GetFilesByStore(store.Owner, store.Name)
+	if err != nil {
+		return err
+	}
+
+	// Create a map for quick lookup
+	existingFileMap := make(map[string]bool)
+	for _, file := range existingFiles {
+		existingFileMap[file.Name] = true
+	}
+
+	for _, object := range objects {
+		// Skip directories and hidden files
+		if !isObjectLeaf(object) || strings.HasSuffix(object.Key, "/_hidden.ini") {
+			continue
+		}
+
+		// Check if file record already exists
+		fileName := getFileName(store.Name, object.Key)
+		if existingFileMap[fileName] {
+			continue
+		}
+
+		// Extract filename from object key
+		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
+		if len(tokens) == 0 || tokens[len(tokens)-1] == "" {
+			continue
+		}
+		filename := tokens[len(tokens)-1]
+
+		url, err := getUrlFromPath(object.Url, origin)
+		if err != nil {
+			return err
+		}
+
+		fileRecord := &File{
+			Owner:           store.Owner,
+			Name:            fileName,
+			CreatedTime:     object.LastModified,
+			Filename:        filename,
+			Size:            object.Size,
+			Store:           store.Name,
+			StorageProvider: store.StorageProvider,
+			Url:             url,
+			TokenCount:      0,
+			Status:          FileStatusPending,
+		}
+
+		_, err = AddFile(fileRecord)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (store *Store) Populate(origin string, lang string) error {
 	storageProviderObj, err := store.GetStorageProviderObj(lang)
 	if err != nil {
@@ -86,6 +145,12 @@ func (store *Store) Populate(origin string, lang string) error {
 	}
 
 	objects, err := storageProviderObj.ListObjects("")
+	if err != nil {
+		return err
+	}
+
+	// Sync files from storage to file table for backward compatibility
+	err = store.syncFilesToTable(objects, origin)
 	if err != nil {
 		return err
 	}
