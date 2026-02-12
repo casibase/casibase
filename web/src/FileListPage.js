@@ -240,7 +240,7 @@ class FileListPage extends BaseListPage {
                   <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} loading={this.state.refreshing[index]} onClick={() => this.refreshFileVectors(index)}>{i18next.t("general:Refresh Vectors")}</Button>
                 )
               }
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/files/${encodeURIComponent(record.name)}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/files/${encodeURIComponent(record.name)}`)}>{i18next.t("general:View")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteFile(record)}

@@ -163,9 +163,9 @@ func getStore(owner string, name string) (*Store, error) {
 
 	if existed {
 		return &store, nil
-	} else {
-		return nil, nil
 	}
+
+	return nil, nil
 }
 
 func GetStore(id string) (*Store, error) {
@@ -376,6 +376,8 @@ func RefreshFileVectors(file *File, lang string) (bool, error) {
 	prefix := fmt.Sprintf("%s_", file.Store)
 	if strings.HasPrefix(file.Name, prefix) {
 		objectKey = strings.TrimPrefix(file.Name, prefix)
+	} else {
+		objectKey = file.Name
 	}
 	if objectKey == "" {
 		return false, fmt.Errorf(i18n.Translate(lang, "object:The file: %s is not found"), file.Name)
