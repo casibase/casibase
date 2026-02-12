@@ -232,7 +232,7 @@ const StoreInfoTitle = (props) => {
     }
   };
 
-  const shouldShowTitleBar = paneCount === 1 && (storeInfo || modelProviders.length > 0 || storeInfo?.showAutoRead || (showPaneControls && canManagePanes));
+  const shouldShowTitleBar = paneCount === 1 && (storeInfo || modelProviders.length > 0 || (showPaneControls && canManagePanes));
 
   if (!shouldShowTitleBar) {
     return null;
@@ -240,6 +240,21 @@ const StoreInfoTitle = (props) => {
 
   // Always show the store select, but disable it when user cannot change stores
   const canChangeStores = filteredStores.length > 1;
+
+  // Ensure the current store is always in the options list
+  const storeOptions = useMemo(() => {
+    if (filteredStores.length > 0) {
+      // Check if current store is in filtered stores
+      const currentStoreInFiltered = storeInfo && filteredStores.some(store => store.name === storeInfo.name);
+      if (!currentStoreInFiltered && storeInfo) {
+        // Add current store to the beginning of the list
+        return [storeInfo, ...filteredStores];
+      }
+      return filteredStores;
+    }
+    // If no filtered stores, show only the current store
+    return storeInfo ? [storeInfo] : [];
+  }, [filteredStores, storeInfo]);
 
   return (
     <div style={{
@@ -253,16 +268,12 @@ const StoreInfoTitle = (props) => {
         {storeInfo && (
           <div style={{marginRight: "20px"}}>
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Store")}:</span>}
-            <Select value={selectedStore?.name || storeInfo?.name || (filteredStores[0]?.name)} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating || !canChangeStores}>
-              {filteredStores.length > 0 ? filteredStores.map(store => (
+            <Select value={selectedStore?.name || storeInfo?.name} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating || !canChangeStores}>
+              {storeOptions.map(store => (
                 <Select.Option key={store.name} value={store.name}>
                   {store.displayName || store.name}
                 </Select.Option>
-              )) : (
-                <Select.Option key={storeInfo.name} value={storeInfo.name}>
-                  {storeInfo.displayName || storeInfo.name}
-                </Select.Option>
-              )}
+              ))}
             </Select>
           </div>)}
 
