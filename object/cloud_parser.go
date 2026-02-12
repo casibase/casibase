@@ -27,6 +27,8 @@ func NewCloudParser(providerType string) (CloudParser, error) {
 	switch providerType {
 	case "Aliyun":
 		return &AlibabaCloudParser{}, nil
+	case "Azure":
+		return &AzureCloudParser{}, nil
 	default:
 		return nil, fmt.Errorf("unsupported provider type: %s", providerType)
 	}
