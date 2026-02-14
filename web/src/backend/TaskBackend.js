@@ -79,3 +79,18 @@ export function deleteTask(task) {
     body: JSON.stringify(newTask),
   }).then(res => res.json());
 }
+
+export function uploadTaskDocument(taskId, base64, filename, filetype) {
+  const formData = new FormData();
+  formData.append("file", base64);
+  formData.append("name", filename);
+  formData.append("type", filetype);
+  return fetch(`${Setting.ServerUrl}/api/upload-task-document?id=${taskId}`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: formData,
+  }).then((res) => res.json());
+}

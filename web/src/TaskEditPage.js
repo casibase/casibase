@@ -13,7 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row, Select} from "antd";
+import {Button, Card, Col, Input, Row, Select, Upload} from "antd";
+import {FilePdfOutlined, FileWordOutlined, UploadOutlined} from "@ant-design/icons";
 import * as TaskBackend from "./backend/TaskBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -38,6 +39,7 @@ class TaskEditPage extends React.Component {
       task: null,
       chatPageObj: null,
       loading: false,
+      uploadingDocument: false,
     };
   }
 
@@ -111,6 +113,47 @@ class TaskEditPage extends React.Component {
       task: task,
     });
   }
+
+  fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  };
+
+  handleDocumentUpload = async({file}) => {
+    this.setState({uploadingDocument: true});
+
+    const fileExt = file.name.split(".").pop();
+    const filename = `${this.state.task.owner}_${this.state.task.name}_${Date.now()}.${fileExt}`;
+
+    const base64Data = await this.fileToBase64(file);
+    const taskId = `${this.state.task.owner}/${this.state.task.name}`;
+
+    TaskBackend.uploadTaskDocument(taskId, base64Data, filename, file.type)
+      .then((res) => {
+        if (res.status === "ok") {
+          const result = res.data;
+          // Update both fields in a single setState to avoid race conditions
+          const task = this.state.task;
+          task.documentUrl = result.url;
+          task.documentText = result.text;
+          this.setState({task: task});
+
+          Setting.showMessage("success", i18next.t("general:Successfully uploaded"));
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to upload")}: ${res.msg}`);
+        }
+      })
+      .catch(err => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to upload")}: ${err.message}`);
+      })
+      .finally(() => {
+        this.setState({uploadingDocument: false});
+      });
+  };
 
   renderTask() {
     return (
@@ -285,6 +328,38 @@ class TaskEditPage extends React.Component {
             </Row>
           ) : null
         }
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("task:Document"), i18next.t("task:Document - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input
+              value={this.state.task.documentUrl}
+              onChange={e => {
+                this.updateTaskField("documentUrl", e.target.value);
+              }}
+              placeholder={i18next.t("task:Document URL")}
+              addonAfter={
+                this.state.task.documentUrl && (
+                  <a href={this.state.task.documentUrl} target="_blank" rel="noopener noreferrer">
+                    {this.state.task.documentUrl.endsWith(".pdf") ? <FilePdfOutlined /> : <FileWordOutlined />}
+                  </a>
+                )
+              }
+            />
+            <Upload
+              name="file"
+              accept=".docx,.pdf"
+              showUploadList={false}
+              customRequest={this.handleDocumentUpload}
+              style={{marginTop: "10px"}}
+            >
+              <Button icon={<UploadOutlined />} loading={this.state.uploadingDocument} style={{marginTop: "10px"}}>
+                {i18next.t("task:Upload Document")} (docx, pdf)
+              </Button>
+            </Upload>
+          </Col>
+        </Row>
         {
           (this.state.task.type !== "Labeling") ? null : (
             <React.Fragment>
