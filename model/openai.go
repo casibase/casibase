@@ -184,6 +184,7 @@ Language models:
 | GPT-5-mini            | 400K    | $0.00025                 | $0.002                   |
 | GPT-5-nano            | 400K    | $0.00005                 | $0.0004                  |
 | GPT-5-chat-latest     | 400K    | $0.00125                 | $0.01                    |
+| GPT-5.2-chat          | 400K    | $0.00125                 | $0.01                    |
 Image models:
 
 | Models   | Quality | Resolution               | Price (per image) |

@@ -179,6 +179,8 @@ func getContextLength(typ string) int {
 	} else if strings.Contains(typ, "gpt") || strings.HasPrefix(typ, "o") {
 		if strings.Contains(typ, "curie") {
 			return 2048
+		} else if strings.HasPrefix(typ, "gpt-5") {
+			return 400000
 		} else if strings.Contains(typ, "o4") {
 			return 100000
 		} else if strings.Contains(typ, "o3") {

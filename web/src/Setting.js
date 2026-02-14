@@ -1397,6 +1397,7 @@ const openaiModels = [
   {id: "gpt-5-mini", name: "gpt-5-mini"},
   {id: "gpt-5-nano", name: "gpt-5-nano"},
   {id: "gpt-5-chat-latest", name: "gpt-5-chat-latest"},
+  {id: "gpt-5.2-chat", name: "gpt-5.2-chat"},
 ];
 
 const openaiEmbeddings = [
