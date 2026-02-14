@@ -217,7 +217,18 @@ func (c *ApiController) DeleteTask() {
 	// Check ownership for non-admins
 	if !c.IsAdmin() {
 		username := c.GetSessionUsername()
-		if task.User != username {
+		// Fetch task from database to verify ownership
+		id := task.GetId()
+		existingTask, err := object.GetTask(id)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		if existingTask == nil {
+			c.ResponseError(c.T("general:The task does not exist"))
+			return
+		}
+		if existingTask.User != username {
 			c.ResponseError(c.T("auth:Unauthorized operation"))
 			return
 		}
