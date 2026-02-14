@@ -138,7 +138,7 @@ class TaskEditPage extends React.Component {
           const result = res.data;
           // Update both fields in a single setState to avoid race conditions
           const task = this.state.task;
-          task.document = result.url;
+          task.documentUrl = result.url;
           task.documentText = result.text;
           this.setState({task: task});
 
@@ -334,15 +334,15 @@ class TaskEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <Input
-              value={this.state.task.document}
+              value={this.state.task.documentUrl}
               onChange={e => {
-                this.updateTaskField("document", e.target.value);
+                this.updateTaskField("documentUrl", e.target.value);
               }}
               placeholder={i18next.t("task:Document URL")}
               addonAfter={
-                this.state.task.document && (
-                  <a href={this.state.task.document} target="_blank" rel="noopener noreferrer">
-                    {this.state.task.document.endsWith(".pdf") ? <FilePdfOutlined /> : <FileWordOutlined />}
+                this.state.task.documentUrl && (
+                  <a href={this.state.task.documentUrl} target="_blank" rel="noopener noreferrer">
+                    {this.state.task.documentUrl.endsWith(".pdf") ? <FilePdfOutlined /> : <FileWordOutlined />}
                   </a>
                 )
               }

@@ -211,11 +211,11 @@ class TaskListPage extends BaseListPage {
       },
       {
         title: i18next.t("task:Document"),
-        dataIndex: "document",
-        key: "document",
+        dataIndex: "documentUrl",
+        key: "documentUrl",
         width: "120px",
-        sorter: (a, b) => (a.document || "").localeCompare(b.document || ""),
-        ...this.getColumnSearchProps("document"),
+        sorter: (a, b) => (a.documentUrl || "").localeCompare(b.documentUrl || ""),
+        ...this.getColumnSearchProps("documentUrl"),
         render: (text, record, index) => {
           if (!text) {
             return null;

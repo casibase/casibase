@@ -42,7 +42,7 @@ type Task struct {
 	Labels  []string `xorm:"mediumtext" json:"labels"`
 	Log     string   `xorm:"mediumtext" json:"log"`
 
-	Document     string `xorm:"varchar(500)" json:"document"`
+	DocumentUrl  string `xorm:"varchar(500)" json:"documentUrl"`
 	DocumentText string `xorm:"mediumtext" json:"documentText"`
 }
 

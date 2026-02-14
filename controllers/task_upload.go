@@ -115,7 +115,7 @@ func (c *ApiController) UploadTaskDocument() {
 	}
 
 	// Update task with document URL and text
-	task.Document = fileUrl
+	task.DocumentUrl = fileUrl
 	task.DocumentText = documentText
 
 	success, err := object.UpdateTask(taskId, task)
