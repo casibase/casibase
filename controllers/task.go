@@ -60,15 +60,10 @@ func (c *ApiController) GetTasks() {
 		if util.IsAdmin(user) {
 			// Admins can see all tasks - use empty owner to bypass filtering
 			owner = ""
-		} else if util.IsTaskUser(user) {
-			// Task users can only see their own tasks
-			owner = user.Name
 		} else {
-			// Other user types (chat-user, video-user, etc.) use the owner parameter as provided
-			// For backward compatibility, if owner is not provided, default to the user's name
-			if owner == "" {
-				owner = user.Name
-			}
+			// Non-admin users (including task-users) can only see their own tasks
+			// Force owner to be the current user's name for security
+			owner = user.Name
 		}
 	}
 
