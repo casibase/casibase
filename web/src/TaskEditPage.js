@@ -327,7 +327,7 @@ class TaskEditPage extends React.Component {
         }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("task:Document"), i18next.t("task:Document - Tooltip"))} :
+            {Setting.getLabel(i18next.t("store:File"), i18next.t("store:File - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input
@@ -335,7 +335,6 @@ class TaskEditPage extends React.Component {
               onChange={e => {
                 this.updateTaskField("documentUrl", e.target.value);
               }}
-              placeholder={i18next.t("task:Document URL")}
               addonAfter={
                 this.state.task.documentUrl && (
                   <a href={this.state.task.documentUrl} target="_blank" rel="noopener noreferrer">
@@ -352,7 +351,7 @@ class TaskEditPage extends React.Component {
               style={{marginTop: "10px"}}
             >
               <Button icon={<UploadOutlined />} loading={this.state.uploadingDocument} style={{marginTop: "10px"}}>
-                {i18next.t("task:Upload Document")} (docx, pdf)
+                {i18next.t("store:Upload file")} (.docx, .pdf)
               </Button>
             </Upload>
           </Col>
@@ -405,7 +404,7 @@ class TaskEditPage extends React.Component {
                 {Setting.getLabel(i18next.t("general:Chat"), i18next.t("general:Chat - Tooltip"))} :
               </Col>
               <Col span={22} >
-                <Button disabled={this.state.task.subject === "" && this.state.task.topic === "" && this.state.task.result === "" && this.state.task.activity === "" && this.state.task.grade === ""} style={{marginBottom: "20px", width: "200px"}} type="primary" onClick={() => this.generateProject()}>{i18next.t("task:Generate Project")}</Button>
+                <Button disabled={this.state.task.subject === "" && this.state.task.topic === "" && this.state.task.result === "" && this.state.task.activity === "" && this.state.task.grade === ""} style={{marginBottom: "20px", width: "200px"}} type="primary" onClick={() => this.generateProject()}>{i18next.t("task:Analyze")}</Button>
                 <ChatPage onCreateChatPage={(chatPageObj) => {this.setState({chatPageObj: chatPageObj});}} account={this.props.account} />
               </Col>
             </Row>
