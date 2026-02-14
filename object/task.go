@@ -82,7 +82,11 @@ func GetGlobalTasks(owner string) ([]*Task, error) {
 
 func GetTasks(owner string) ([]*Task, error) {
 	tasks := []*Task{}
-	err := adapter.engine.Desc("created_time").Find(&tasks, &Task{Owner: owner})
+	session := adapter.engine.Desc("created_time")
+	if owner != "" {
+		session = session.Where("owner = ?", owner)
+	}
+	err := session.Find(&tasks)
 	if err != nil {
 		return tasks, err
 	}
