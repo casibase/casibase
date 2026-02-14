@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Button, Card, Col, Input, Row, Select, Upload} from "antd";
-import {UploadOutlined, FilePdfOutlined, FileWordOutlined} from "@ant-design/icons";
+import {FilePdfOutlined, FileWordOutlined, UploadOutlined} from "@ant-design/icons";
 import * as TaskBackend from "./backend/TaskBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
