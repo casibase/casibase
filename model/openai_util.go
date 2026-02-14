@@ -15,6 +15,8 @@
 package model
 
 import (
+	"strings"
+
 	"github.com/pkoukk/tiktoken-go"
 	"github.com/sashabaranov/go-openai"
 )

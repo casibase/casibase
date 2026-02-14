@@ -27,6 +27,10 @@ func TestGetContextLength(t *testing.T) {
 		"gpt-4o-2024-08-06": 128000,
 		"gpt-4o":            128000,
 		"gpt-4o-mini":       128000,
+		"gpt-5":             400000,
+		"gpt-5-mini":        400000,
+		"gpt-5-nano":        400000,
+		"gpt-5.2-chat":      400000,
 		// deepseek
 		"deepseek-r1-distill-llama-70b": 131072,
 		"deepseek-r1-distill-qwen-7b":   8192,

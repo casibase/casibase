@@ -101,6 +101,9 @@ func getCompatibleModel(model string) string {
 	// Handle generic model families
 	if strings.Contains(model, "gpt-3.5-turbo") {
 		return openai.GPT3Dot5Turbo
+	} else if strings.Contains(model, "gpt-5") {
+		// GPT-5 models use GPT-4 encoding for token counting
+		return openai.GPT4
 	} else if strings.Contains(model, "gpt-4") {
 		return openai.GPT4
 	}
