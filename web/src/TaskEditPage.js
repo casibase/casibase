@@ -126,13 +126,10 @@ class TaskEditPage extends React.Component {
   handleDocumentUpload = async({file}) => {
     this.setState({uploadingDocument: true});
 
-    const fileExt = file.name.split(".").pop();
-    const filename = `${this.state.task.owner}_${this.state.task.name}_${Date.now()}.${fileExt}`;
-
     const base64Data = await this.fileToBase64(file);
     const taskId = `${this.state.task.owner}/${this.state.task.name}`;
 
-    TaskBackend.uploadTaskDocument(taskId, base64Data, filename, file.type)
+    TaskBackend.uploadTaskDocument(taskId, base64Data, file.name, file.type)
       .then((res) => {
         if (res.status === "ok") {
           const result = res.data;
