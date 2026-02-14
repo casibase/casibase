@@ -22,6 +22,7 @@ import * as Setting from "./Setting";
 import * as TaskBackend from "./backend/TaskBackend";
 import i18next from "i18next";
 import * as ConfTask from "./ConfTask";
+import * as Conf from "./Conf";
 
 class TaskListPage extends BaseListPage {
   constructor(props) {
@@ -91,6 +92,21 @@ class TaskListPage extends BaseListPage {
   renderTable(tasks) {
     let columns = [
       {
+        title: i18next.t("general:User"),
+        dataIndex: "owner",
+        key: "owner",
+        width: "90px",
+        sorter: true,
+        ...this.getColumnSearchProps("owner"),
+        render: (text, record, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${Conf.AuthConfig.organizationName}/${text}`)}>
+              {text}
+            </a>
+          );
+        },
+      },
+      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
@@ -153,6 +169,14 @@ class TaskListPage extends BaseListPage {
         ...this.getColumnSearchProps("topic"),
       },
       {
+        title: i18next.t("video:Grade"),
+        dataIndex: "grade",
+        key: "grade",
+        width: "200px",
+        sorter: (a, b) => a.grade.localeCompare(b.grade),
+        ...this.getColumnSearchProps("grade"),
+      },
+      {
         title: i18next.t("general:Result"),
         dataIndex: "result",
         key: "result",
@@ -167,14 +191,6 @@ class TaskListPage extends BaseListPage {
         width: "200px",
         sorter: (a, b) => a.activity.localeCompare(b.activity),
         ...this.getColumnSearchProps("activity"),
-      },
-      {
-        title: i18next.t("video:Grade"),
-        dataIndex: "grade",
-        key: "grade",
-        width: "200px",
-        sorter: (a, b) => a.grade.localeCompare(b.grade),
-        ...this.getColumnSearchProps("grade"),
       },
       {
         title: i18next.t("general:Text"),
