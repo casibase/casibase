@@ -205,7 +205,6 @@ func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult, lang stri
 
 func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
 	ctx := context.Background()
-	// Access your API key as an environment variable (see "Set up your API key" above)
 	client, err := genai.NewClient(ctx,
 		&genai.ClientConfig{
 			APIKey:     p.secretKey,
@@ -228,20 +227,28 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 		}
 	}
 
-	model := client.Models
+	// Build configuration with system instruction and parameters
+	config := &genai.GenerateContentConfig{
+		SystemInstruction: buildSystemInstruction(prompt, knowledgeMessages),
+		Temperature:       &p.temperature,
+		TopP:              &p.topP,
+	}
+	if p.topK > 0 {
+		topKFloat := float32(p.topK)
+		config.TopK = &topKFloat
+	}
 
-	// https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/get-token-count#gemini-get-token-count-samples-drest
-	// has to use CountToken() to get
+	// Build messages from history and current question
+	messages := GenaiRawMessagesToMessages(question, history)
+
+	// Count tokens for pricing (using separate config for CountTokens)
+	countConfig := &genai.CountTokensConfig{
+		SystemInstruction: config.SystemInstruction,
+	}
 	contents := []*genai.Content{
 		genai.NewContentFromText(question, genai.RoleUser),
 	}
-	promptTokenCountResp, err := client.Models.CountTokens(ctx, p.subType, contents, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	messages := GenaiRawMessagesToMessages(question, history)
-	resp, err := model.GenerateContent(ctx, p.subType, messages, nil)
+	promptTokenCountResp, err := client.Models.CountTokens(ctx, p.subType, contents, countConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -251,27 +258,43 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 
-	flushData := func(data []*genai.Part) error {
-		for _, message := range data {
-			if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", message.Text); err != nil {
-				return err
-			}
-			flusher.Flush()
+	flushData := func(data string) error {
+		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
+			return err
 		}
+		flusher.Flush()
 		return nil
 	}
 
-	err = flushData(resp.Candidates[0].Content.Parts)
-	if err != nil {
-		return nil, err
+	// Use streaming API for real-time responses
+	modelResult := &ModelResult{}
+	for result, err := range client.Models.GenerateContentStream(ctx, p.subType, messages, config) {
+		if err != nil {
+			return nil, err
+		}
+
+		// Stream the response text
+		text := result.Text()
+		if text != "" {
+			if err := flushData(text); err != nil {
+				return nil, err
+			}
+		}
+
+		// Collect token counts from the final candidate
+		if result.UsageMetadata != nil {
+			modelResult.PromptTokenCount = int(result.UsageMetadata.PromptTokenCount)
+			modelResult.ResponseTokenCount = int(result.UsageMetadata.CandidatesTokenCount)
+			modelResult.TotalTokenCount = int(result.UsageMetadata.TotalTokenCount)
+		}
 	}
 
-	respTokenCount := int(resp.Candidates[0].TokenCount)
-	promptTokenCount := int(promptTokenCountResp.TotalTokens)
-	modelResult := &ModelResult{
-		PromptTokenCount:   promptTokenCount,
-		ResponseTokenCount: respTokenCount,
-		TotalTokenCount:    promptTokenCount + respTokenCount,
+	// Fallback to counting if usage metadata not available
+	if modelResult.PromptTokenCount == 0 {
+		modelResult.PromptTokenCount = int(promptTokenCountResp.TotalTokens)
+	}
+	if modelResult.TotalTokenCount == 0 {
+		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
 	}
 
 	err = p.calculatePrice(modelResult, lang)
