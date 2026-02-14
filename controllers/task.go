@@ -29,12 +29,12 @@ import (
 // @Success 200 {array} object.Task The Response object
 // @router /get-global-tasks [get]
 func (c *ApiController) GetGlobalTasks() {
-	user := c.GetSessionUsername()
+	owner := c.GetSessionUsername()
 	if c.IsAdmin() {
-		user = ""
+		owner = ""
 	}
 
-	tasks, err := object.GetGlobalTasks(user)
+	tasks, err := object.GetGlobalTasks(owner)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -59,13 +59,16 @@ func (c *ApiController) GetTasks() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 
-	user := c.GetSessionUsername()
-	if c.IsAdmin() {
-		user = ""
+	// For non-admins, filter by their username
+	if !c.IsAdmin() {
+		username := c.GetSessionUsername()
+		if username != "" {
+			owner = username
+		}
 	}
 
 	if limit == "" || page == "" {
-		tasks, err := object.GetTasks(owner, user)
+		tasks, err := object.GetTasks(owner)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -74,14 +77,14 @@ func (c *ApiController) GetTasks() {
 		c.ResponseOk(object.GetMaskedTasks(tasks, true))
 	} else {
 		limit := util.ParseInt(limit)
-		count, err := object.GetTaskCount(owner, field, value, user)
+		count, err := object.GetTaskCount(owner, field, value)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		tasks, err := object.GetPaginationTasks(owner, paginator.Offset(), limit, field, value, sortField, sortOrder, user)
+		tasks, err := object.GetPaginationTasks(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -115,7 +118,7 @@ func (c *ApiController) GetTask() {
 	// Check ownership for non-admins
 	if !c.IsAdmin() {
 		username := c.GetSessionUsername()
-		if task.User != username {
+		if task.Owner != username {
 			c.ResponseError(c.T("auth:Unauthorized operation"))
 			return
 		}
@@ -154,7 +157,7 @@ func (c *ApiController) UpdateTask() {
 			c.ResponseError(c.T("general:The task does not exist"))
 			return
 		}
-		if existingTask.User != username {
+		if existingTask.Owner != username {
 			c.ResponseError(c.T("auth:Unauthorized operation"))
 			return
 		}
@@ -182,12 +185,6 @@ func (c *ApiController) AddTask() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
-	}
-
-	// Set the user field from session
-	user := c.GetSessionUsername()
-	if user != "" {
-		task.User = user
 	}
 
 	success, err := object.AddTask(&task)
@@ -228,7 +225,7 @@ func (c *ApiController) DeleteTask() {
 			c.ResponseError(c.T("general:The task does not exist"))
 			return
 		}
-		if existingTask.User != username {
+		if existingTask.Owner != username {
 			c.ResponseError(c.T("auth:Unauthorized operation"))
 			return
 		}
