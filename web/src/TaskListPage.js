@@ -249,8 +249,12 @@ class TaskListPage extends BaseListPage {
       },
     ];
     columns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
-    if (!this.props.account || this.props.account.name !== "admin") {
+    if (!this.props.account || this.props.account.name !== "admin" && !Setting.isAdminUser(this.props.account)) {
       columns = columns.filter(column => column.key !== "provider");
+    }
+
+    if (Setting.isTaskUser(this.props.account)) {
+      columns = columns.filter(column => column.key !== "provider" && column.key !== "text");
     }
 
     if (ConfTask.TaskMode !== "Labeling") {

@@ -146,7 +146,7 @@ class TaskEditPage extends React.Component {
           )
         }
         {
-          this.props.account.name !== "admin" ? null : (
+          Setting.isAdminUser(this.props.account) ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("store:Model provider"), i18next.t("store:Model provider - Tooltip"))} :
@@ -157,7 +157,7 @@ class TaskEditPage extends React.Component {
                   } />
               </Col>
             </Row>
-          )
+          ) : null
         }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -238,16 +238,20 @@ class TaskEditPage extends React.Component {
             </React.Fragment>
           )
         }
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.task.text} onChange={(e) => {
-              this.updateTaskField("text", e.target.value);
-            }} />
-          </Col>
-        </Row>
+        {
+          Setting.isAdminUser(this.props.account) ? (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.task.text} onChange={(e) => {
+                  this.updateTaskField("text", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          ) : null
+        }
         {
           (this.state.task.type !== "Labeling") ? null : (
             <React.Fragment>
@@ -276,14 +280,18 @@ class TaskEditPage extends React.Component {
             </React.Fragment>
           )
         }
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("task:Question"), i18next.t("task:Question - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <TextArea disabled={true} autoSize={{minRows: 1, maxRows: 15}} value={(this.state.task.type !== "Labeling") ? this.getProjectText() : this.getQuestion()} onChange={(e) => {}} />
-          </Col>
-        </Row>
+        {
+          Setting.isAdminUser(this.props.account) ? (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("task:Question"), i18next.t("task:Question - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <TextArea disabled={true} autoSize={{minRows: 1, maxRows: 15}} value={(this.state.task.type !== "Labeling") ? this.getProjectText() : this.getQuestion()} onChange={(e) => {}} />
+              </Col>
+            </Row>
+          ) : null
+        }
         {
           (this.state.task.type !== "Labeling") ? (
             <Row style={{marginTop: "20px"}} >

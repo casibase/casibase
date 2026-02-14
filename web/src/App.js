@@ -593,6 +593,11 @@ class App extends Component {
       return res;
     }
 
+    if (Setting.isTaskUser(this.state.account)) {
+      res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
+      return res;
+    }
+
     if (!Setting.isAdminUser(this.state.account) && (!Setting.isAnonymousUser(this.state.account) || Conf.DisablePreviewMode)) { // show complete menu for anonymous user in preview mode even not login
       if (!Setting.isChatAdminUser(this.state.account)) {
         // res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));

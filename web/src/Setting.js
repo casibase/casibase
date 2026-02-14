@@ -232,6 +232,13 @@ export function isChatUser(account) {
   return account.type === "chat-user";
 }
 
+export function isTaskUser(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+  return account.type === "task-user";
+}
+
 export function isUserBoundToStore(account) {
   if (account === undefined || account === null) {
     return false;
