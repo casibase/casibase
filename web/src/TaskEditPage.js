@@ -146,9 +146,8 @@ class TaskEditPage extends React.Component {
           )
         }
         {
-          // Hide Model provider field for non-admin users OR task-user users
-          // Show only for admin users who are NOT task-users
-          (this.props.account.name !== "admin" || Setting.isTaskUser(this.props.account)) ? null : (
+          // Show Model provider field only for admin users who are NOT task-users
+          (this.props.account.name === "admin" && !Setting.isTaskUser(this.props.account)) ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("store:Model provider"), i18next.t("store:Model provider - Tooltip"))} :
@@ -159,7 +158,7 @@ class TaskEditPage extends React.Component {
                   } />
               </Col>
             </Row>
-          )
+          ) : null
         }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -271,8 +270,8 @@ class TaskEditPage extends React.Component {
           )
         }
         {
-          // Hide Text field for task-user users
-          Setting.isTaskUser(this.props.account) ? null : (
+          // Show Text field only for non-task-user users
+          !Setting.isTaskUser(this.props.account) ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("general:Text"), i18next.t("general:Text - Tooltip"))} :
@@ -283,7 +282,7 @@ class TaskEditPage extends React.Component {
                 }} />
               </Col>
             </Row>
-          )
+          ) : null
         }
         {
           (this.state.task.type !== "Labeling") ? null : (
@@ -314,8 +313,8 @@ class TaskEditPage extends React.Component {
           )
         }
         {
-          // Hide Question field for task-user users
-          Setting.isTaskUser(this.props.account) ? null : (
+          // Show Question field only for non-task-user users
+          !Setting.isTaskUser(this.props.account) ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("task:Question"), i18next.t("task:Question - Tooltip"))} :
@@ -324,7 +323,7 @@ class TaskEditPage extends React.Component {
                 <TextArea disabled={true} autoSize={{minRows: 1, maxRows: 15}} value={(this.state.task.type !== "Labeling") ? this.getProjectText() : this.getQuestion()} onChange={(e) => {}} />
               </Col>
             </Row>
-          )
+          ) : null
         }
         {
           (this.state.task.type !== "Labeling") ? (
