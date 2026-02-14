@@ -253,6 +253,10 @@ class TaskListPage extends BaseListPage {
       columns = columns.filter(column => column.key !== "provider");
     }
 
+    if (Setting.isTaskUser(this.props.account)) {
+      columns = columns.filter(column => column.key !== "provider" && column.key !== "text");
+    }
+
     if (ConfTask.TaskMode !== "Labeling") {
       columns = columns.filter(column => column.key !== "displayName" && column.key !== "labels" && column.key !== "example");
     } else {
