@@ -182,33 +182,51 @@ class TaskEditPage extends React.Component {
                   {Setting.getLabel(i18next.t("store:Subject"), i18next.t("store:Subject - Tooltip"))} :
                 </Col>
                 <Col span={3} >
-                  <Select virtual={false} style={{width: "100%"}} value={this.state.task.subject} onChange={(value => {this.updateTaskField("subject", value);})}>
-                    {
-                      ConfTask.SubjectOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-                    }
-                  </Select>
+                  {ConfTask.SubjectOptions.length > 0 ? (
+                    <Select virtual={false} style={{width: "100%"}} value={this.state.task.subject} onChange={(value => {this.updateTaskField("subject", value);})}>
+                      {
+                        ConfTask.SubjectOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                      }
+                    </Select>
+                  ) : (
+                    <Input value={this.state.task.subject} onChange={e => {
+                      this.updateTaskField("subject", e.target.value);
+                    }} />
+                  )}
                 </Col>
                 <Col span={2} />
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {Setting.getLabel(i18next.t("video:Topic"), i18next.t("video:Topic - Tooltip"))} :
                 </Col>
                 <Col span={3} >
-                  <Select virtual={false} style={{width: "100%"}} value={this.state.task.topic} onChange={(value => {this.updateTaskField("topic", value);})}>
-                    {
-                      ConfTask.TopicOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-                    }
-                  </Select>
+                  {ConfTask.TopicOptions.length > 0 ? (
+                    <Select virtual={false} style={{width: "100%"}} value={this.state.task.topic} onChange={(value => {this.updateTaskField("topic", value);})}>
+                      {
+                        ConfTask.TopicOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                      }
+                    </Select>
+                  ) : (
+                    <Input value={this.state.task.topic} onChange={e => {
+                      this.updateTaskField("topic", e.target.value);
+                    }} />
+                  )}
                 </Col>
                 <Col span={2} />
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {Setting.getLabel(i18next.t("video:Grade"), i18next.t("video:Grade - Tooltip"))} :
                 </Col>
                 <Col span={3} >
-                  <Select virtual={false} style={{width: "100%"}} value={this.state.task.grade} onChange={(value => {this.updateTaskField("grade", value);})}>
-                    {
-                      ConfTask.GradeOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-                    }
-                  </Select>
+                  {ConfTask.GradeOptions.length > 0 ? (
+                    <Select virtual={false} style={{width: "100%"}} value={this.state.task.grade} onChange={(value => {this.updateTaskField("grade", value);})}>
+                      {
+                        ConfTask.GradeOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                      }
+                    </Select>
+                  ) : (
+                    <Input value={this.state.task.grade} onChange={e => {
+                      this.updateTaskField("grade", e.target.value);
+                    }} />
+                  )}
                 </Col>
               </Row>
               <Row style={{marginTop: "20px"}} >
@@ -216,11 +234,17 @@ class TaskEditPage extends React.Component {
                   {Setting.getLabel(i18next.t("general:Result"), i18next.t("general:Result - Tooltip"))} :
                 </Col>
                 <Col span={22} >
-                  <Select virtual={false} style={{width: "100%"}} value={this.state.task.result} onChange={(value => {this.updateTaskField("result", value);})}>
-                    {
-                      ConfTask.ResultOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-                    }
-                  </Select>
+                  {ConfTask.ResultOptions.length > 0 ? (
+                    <Select virtual={false} style={{width: "100%"}} value={this.state.task.result} onChange={(value => {this.updateTaskField("result", value);})}>
+                      {
+                        ConfTask.ResultOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                      }
+                    </Select>
+                  ) : (
+                    <Input value={this.state.task.result} onChange={e => {
+                      this.updateTaskField("result", e.target.value);
+                    }} />
+                  )}
                 </Col>
               </Row>
               <Row style={{marginTop: "20px"}} >
@@ -228,11 +252,17 @@ class TaskEditPage extends React.Component {
                   {Setting.getLabel(i18next.t("task:Activity"), i18next.t("task:Activity - Tooltip"))} :
                 </Col>
                 <Col span={22} >
-                  <Select virtual={false} style={{width: "100%"}} value={this.state.task.activity} onChange={(value => {this.updateTaskField("activity", value);})}>
-                    {
-                      ConfTask.ActivityOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-                    }
-                  </Select>
+                  {ConfTask.ActivityOptions.length > 0 ? (
+                    <Select virtual={false} style={{width: "100%"}} value={this.state.task.activity} onChange={(value => {this.updateTaskField("activity", value);})}>
+                      {
+                        ConfTask.ActivityOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                      }
+                    </Select>
+                  ) : (
+                    <Input value={this.state.task.activity} onChange={e => {
+                      this.updateTaskField("activity", e.target.value);
+                    }} />
+                  )}
                 </Col>
               </Row>
             </React.Fragment>
@@ -291,7 +321,7 @@ class TaskEditPage extends React.Component {
                 {Setting.getLabel(i18next.t("general:Chat"), i18next.t("general:Chat - Tooltip"))} :
               </Col>
               <Col span={22} >
-                <Button disabled={this.state.task.subject === "" || this.state.task.topic === "" || this.state.task.result === "" || this.state.task.activity === "" || this.state.task.grade === ""} style={{marginBottom: "20px", width: "200px"}} type="primary" onClick={() => this.generateProject()}>{i18next.t("task:Generate Project")}</Button>
+                <Button disabled={this.state.task.subject === "" && this.state.task.topic === "" && this.state.task.result === "" && this.state.task.activity === "" && this.state.task.grade === ""} style={{marginBottom: "20px", width: "200px"}} type="primary" onClick={() => this.generateProject()}>{i18next.t("task:Generate Project")}</Button>
                 <ChatPage onCreateChatPage={(chatPageObj) => {this.setState({chatPageObj: chatPageObj});}} account={this.props.account} />
               </Col>
             </Row>
