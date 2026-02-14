@@ -106,10 +106,16 @@ func (c *ApiController) GetTask() {
 		return
 	}
 
+	// Check if task exists
+	if task == nil {
+		c.ResponseError(c.T("general:The task does not exist"))
+		return
+	}
+
 	// Check ownership for non-admins
 	if !c.IsAdmin() {
 		username := c.GetSessionUsername()
-		if task != nil && task.User != username {
+		if task.User != username {
 			c.ResponseError(c.T("auth:Unauthorized operation"))
 			return
 		}
@@ -144,7 +150,11 @@ func (c *ApiController) UpdateTask() {
 			c.ResponseError(err.Error())
 			return
 		}
-		if existingTask != nil && existingTask.User != username {
+		if existingTask == nil {
+			c.ResponseError(c.T("general:The task does not exist"))
+			return
+		}
+		if existingTask.User != username {
 			c.ResponseError(c.T("auth:Unauthorized operation"))
 			return
 		}
