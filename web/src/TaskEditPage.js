@@ -31,6 +31,7 @@ class TaskEditPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
+      owner: props.match.params.owner,
       taskName: props.match.params.taskName,
       isNewTask: props.location?.state?.isNewTask || false,
       modelProviders: [],
@@ -46,7 +47,7 @@ class TaskEditPage extends React.Component {
   }
 
   getTask() {
-    TaskBackend.getTask(this.props.account.name, this.state.taskName)
+    TaskBackend.getTask(this.state.owner, this.state.taskName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -399,7 +400,7 @@ class TaskEditPage extends React.Component {
             if (exitAfterSave) {
               this.props.history.push("/tasks");
             } else {
-              this.props.history.push(`/tasks/${this.state.task.name}`);
+              this.props.history.push(`/tasks/${this.state.task.owner}/${this.state.task.name}`);
             }
           } else {
             Setting.showMessage("error", i18next.t("general:Failed to save"));

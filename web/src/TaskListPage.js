@@ -52,7 +52,7 @@ class TaskListPage extends BaseListPage {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
           this.props.history.push({
-            pathname: `/tasks/${newTask.name}`,
+            pathname: `/tasks/${newTask.owner}/${newTask.name}`,
             state: {isNewTask: true},
           });
         } else {
@@ -115,7 +115,7 @@ class TaskListPage extends BaseListPage {
         ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
-            <Link to={`/tasks/${text}`}>
+            <Link to={`/tasks/${record.owner}/${text}`}>
               {text}
             </Link>
           );
@@ -250,7 +250,7 @@ class TaskListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/tasks/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/tasks/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteTask(record)}

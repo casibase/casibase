@@ -386,7 +386,7 @@ routeManager.registerApp("tasks", {
       component: () => import("../TaskListPage"),
     },
     {
-      path: "/tasks/:taskName",
+      path: "/tasks/:owner/:taskName",
       component: () => import("../TaskEditPage"),
     },
   ],
