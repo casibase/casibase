@@ -159,30 +159,6 @@ class TaskEditPage extends React.Component {
             </Row>
           )
         }
-        {/* <Row style={{marginTop: "20px"}} >*/}
-        {/*  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>*/}
-        {/*    {i18next.t("task:Application")}:*/}
-        {/*  </Col>*/}
-        {/*  <Col span={22} >*/}
-        {/*    <Select virtual={false} style={{width: "100%"}} value={this.state.task.application} onChange={(value => {this.updateTaskField("application", value);})}>*/}
-        {/*      {*/}
-        {/*        [*/}
-        {/*          {id: "Docs-Polish", name: "Docs-Polish"},*/}
-        {/*        ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)*/}
-        {/*      }*/}
-        {/*    </Select>*/}
-        {/*  </Col>*/}
-        {/* </Row>*/}
-        {/* <Row style={{marginTop: "20px"}} >*/}
-        {/*  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>*/}
-        {/*    {i18next.t("provider:Path")}:*/}
-        {/*  </Col>*/}
-        {/*  <Col span={22} >*/}
-        {/*    <Input value={this.state.task.path} onChange={e => {*/}
-        {/*      this.updateTaskField("path", e.target.value);*/}
-        {/*    }} />*/}
-        {/*  </Col>*/}
-        {/* </Row>*/}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Type"), i18next.t("general:Type - Tooltip"))} :

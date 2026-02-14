@@ -36,7 +36,6 @@ class TaskListPage extends BaseListPage {
       displayName: `New Task - ${randomName}`,
       provider: "provider_model_azure_gpt4",
       type: ConfTask.TaskMode === "Labeling" ? "Labeling" : "PBL",
-      application: "Docs-Polish",
       path: "F:/github_repos/casdoor-website",
       text: ConfTask.TaskText,
       example: "",
@@ -177,20 +176,6 @@ class TaskListPage extends BaseListPage {
         sorter: (a, b) => a.grade.localeCompare(b.grade),
         ...this.getColumnSearchProps("grade"),
       },
-      // {
-      //   title: i18next.t("task:Application"),
-      //   dataIndex: "application",
-      //   key: "application",
-      //   width: "180px",
-      //   sorter: (a, b) => a.application.localeCompare(b.application),
-      // },
-      // {
-      //   title: i18next.t("provider:Path"),
-      //   dataIndex: "path",
-      //   key: "path",
-      //   // width: "160px",
-      //   sorter: (a, b) => a.path.localeCompare(b.path),
-      // },
       {
         title: i18next.t("general:Text"),
         dataIndex: "text",
