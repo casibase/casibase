@@ -349,13 +349,13 @@ class TaskEditPage extends React.Component {
             />
             <Upload
               name="file"
-              accept=".doc,.docx,.pdf"
+              accept=".docx,.pdf"
               showUploadList={false}
               customRequest={this.handleDocumentUpload}
               style={{marginTop: "10px"}}
             >
               <Button icon={<UploadOutlined />} loading={this.state.uploadingDocument} style={{marginTop: "10px"}}>
-                {i18next.t("task:Upload Document")} (doc, docx, pdf)
+                {i18next.t("task:Upload Document")} (docx, pdf)
               </Button>
             </Upload>
           </Col>

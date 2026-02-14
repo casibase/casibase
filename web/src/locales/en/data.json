@@ -965,11 +965,7 @@
     "Log": "Log",
     "Log - Tooltip": "Technical execution log",
     "Question": "Question",
-    "Question - Tooltip": "Dynamically generated task prompt",
-    "Document": "Document",
-    "Document - Tooltip": "Uploaded document file (doc, docx, pdf)",
-    "Document URL": "Document URL",
-    "Upload Document": "Upload Document"
+    "Question - Tooltip": "Dynamically generated task prompt"
   },
   "template": {
     "Basic config": "Basic config",
