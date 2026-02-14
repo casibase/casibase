@@ -654,6 +654,12 @@ class App extends Component {
           {Setting.renderExternalLink()}
         </a>,
         "###"));
+    } else if (Setting.isTaskUser(this.state.account)) {
+      res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
+
+      if (window.location.pathname === "/") {
+        Setting.goToLinkSoft(this, "/tasks");
+      }
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "video") {
       if (Conf.EnableExtraPages) {
         res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
