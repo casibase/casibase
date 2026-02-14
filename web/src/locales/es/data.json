@@ -485,7 +485,7 @@
     "{total} in total": "{total} en total"
   },
   "graph": {
-    "Circular": "Circular",
+    "Circular": "环形",
     "Edit Graph": "Editar gráfico",
     "Force": "Fuerza",
     "Grid": "Cuadrícula",
@@ -1072,7 +1072,7 @@
     "Unreviewed": "No revisado",
     "Upload Video": "Cargar grabación",
     "Video": "Grabación",
-    "Video - Tooltip": "Video",
+    "Video - Tooltip": "Video - Tooltip",
     "Video ID": "ID de grabación",
     "Video ID - Tooltip": "ID de video (identificador único)"
   },
