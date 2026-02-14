@@ -106,6 +106,14 @@ class TaskListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("general:Owner"),
+        dataIndex: "owner",
+        key: "owner",
+        width: "120px",
+        sorter: (a, b) => a.owner.localeCompare(b.owner),
+        ...this.getColumnSearchProps("owner"),
+      },
+      {
         title: i18next.t("general:Display name"),
         dataIndex: "displayName",
         key: "displayName",
@@ -249,12 +257,13 @@ class TaskListPage extends BaseListPage {
       },
     ];
     columns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
-    if (!this.props.account || this.props.account.name !== "admin" && !Setting.isAdminUser(this.props.account)) {
-      columns = columns.filter(column => column.key !== "provider");
+    
+    if (!Setting.isAdminUser(this.props.account)) {
+      columns = columns.filter(column => column.key !== "provider" && column.key !== "owner");
     }
 
     if (Setting.isTaskUser(this.props.account)) {
-      columns = columns.filter(column => column.key !== "provider" && column.key !== "text");
+      columns = columns.filter(column => column.key !== "provider" && column.key !== "text" && column.key !== "owner");
     }
 
     if (ConfTask.TaskMode !== "Labeling") {
@@ -298,7 +307,8 @@ class TaskListPage extends BaseListPage {
     const field = params.searchedColumn, value = params.searchText;
     const sortField = params.sortField, sortOrder = params.sortOrder;
     this.setState({loading: true});
-    TaskBackend.getTasks(this.props.account.name, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    const owner = Setting.isAdminUser(this.props.account) ? "" : this.props.account.name;
+    TaskBackend.getTasks(owner, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,
