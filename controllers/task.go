@@ -64,8 +64,8 @@ func (c *ApiController) GetTasks() {
 			// Task users can only see their own tasks
 			owner = user.Name
 		} else {
-			// Other users use the owner parameter as provided
-			// For backward compatibility, if owner is not provided, use the user's name
+			// Other user types (chat-user, video-user, etc.) use the owner parameter as provided
+			// For backward compatibility, if owner is not provided, default to the user's name
 			if owner == "" {
 				owner = user.Name
 			}
