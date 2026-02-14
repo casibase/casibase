@@ -436,11 +436,12 @@ class TaskEditPage extends React.Component {
 
   getProjectText() {
     let text = this.state.task.text;
+    text = text.replaceAll("${document}", this.state.task.documentText);
     text = text.replaceAll("${subject}", this.state.task.subject);
     text = text.replaceAll("${topic}", this.state.task.topic);
+    text = text.replaceAll("${grade}", this.state.task.grade);
     text = text.replaceAll("${result}", this.state.task.result);
     text = text.replaceAll("${activity}", this.state.task.activity);
-    text = text.replaceAll("${grade}", this.state.task.grade);
     return text;
   }
 
