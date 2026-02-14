@@ -21,6 +21,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/beego/beego/logs"
 	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/txt"
@@ -338,7 +339,7 @@ func (c *ApiController) UploadTaskDocument() {
 		documentText, err = txt.GetParsedTextFromUrl(fileUrl, ext, c.GetAcceptLanguage())
 		if err != nil {
 			// Log error but don't fail the upload
-			// Just set documentText to empty string
+			logs.Error("Failed to parse text from %s: %v", fileUrl, err)
 			documentText = ""
 		}
 	}
@@ -353,11 +354,15 @@ func (c *ApiController) UploadTaskDocument() {
 		return
 	}
 
+	if !success {
+		c.ResponseError(c.T("general:Failed to update"))
+		return
+	}
+
 	// Return both URL and parsed text
 	result := map[string]interface{}{
 		"url":  fileUrl,
 		"text": documentText,
 	}
-	c.ResponseOk(result, success)
+	c.ResponseOk(result)
 }
-

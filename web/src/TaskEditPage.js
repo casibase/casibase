@@ -136,8 +136,11 @@ class TaskEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           const result = res.data;
-          this.updateTaskField("document", result.url);
-          this.updateTaskField("documentText", result.text);
+          // Update both fields in a single setState to avoid race conditions
+          const task = this.state.task;
+          task.document = result.url;
+          task.documentText = result.text;
+          this.setState({task: task});
 
           Setting.showMessage("success", i18next.t("general:Successfully uploaded"));
         } else {
