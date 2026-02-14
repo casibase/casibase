@@ -81,6 +81,11 @@ func getOpenAiModelType(model string) string {
 		}
 	}
 
+	// Pattern matching for GPT-5.x models (e.g., gpt-5.2-chat, gpt-5.1-turbo)
+	if strings.HasPrefix(model, "gpt-5") {
+		return "Chat"
+	}
+
 	for _, completionModel := range completionModels {
 		if model == completionModel {
 			return "Completion"
