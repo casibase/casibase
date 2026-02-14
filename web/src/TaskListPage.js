@@ -110,7 +110,7 @@ class TaskListPage extends BaseListPage {
         dataIndex: "owner",
         key: "owner",
         width: "120px",
-        sorter: (a, b) => a.owner.localeCompare(b.owner),
+        sorter: (a, b) => (a.owner || "").localeCompare(b.owner || ""),
         ...this.getColumnSearchProps("owner"),
       },
       {
