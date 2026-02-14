@@ -29,7 +29,12 @@ import (
 // @Success 200 {array} object.Task The Response object
 // @router /get-global-tasks [get]
 func (c *ApiController) GetGlobalTasks() {
-	tasks, err := object.GetGlobalTasks()
+	owner := c.GetSessionUsername()
+	if c.IsAdmin() {
+		owner = ""
+	}
+
+	tasks, err := object.GetGlobalTasks(owner)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -53,6 +58,14 @@ func (c *ApiController) GetTasks() {
 	value := c.Input().Get("value")
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
+
+	// For non-admins, filter by their username
+	if !c.IsAdmin() {
+		username := c.GetSessionUsername()
+		if username != "" {
+			owner = username
+		}
+	}
 
 	if limit == "" || page == "" {
 		tasks, err := object.GetTasks(owner)
@@ -96,6 +109,21 @@ func (c *ApiController) GetTask() {
 		return
 	}
 
+	// Check if task exists
+	if task == nil {
+		c.ResponseError(c.T("general:The task does not exist"))
+		return
+	}
+
+	// Check ownership for non-admins
+	if !c.IsAdmin() {
+		username := c.GetSessionUsername()
+		if task.Owner != username {
+			c.ResponseError(c.T("auth:Unauthorized operation"))
+			return
+		}
+	}
+
 	c.ResponseOk(object.GetMaskedTask(task, true))
 }
 
@@ -115,6 +143,24 @@ func (c *ApiController) UpdateTask() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	// Check ownership for non-admins
+	if !c.IsAdmin() {
+		username := c.GetSessionUsername()
+		existingTask, err := object.GetTask(id)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		if existingTask == nil {
+			c.ResponseError(c.T("general:The task does not exist"))
+			return
+		}
+		if existingTask.Owner != username {
+			c.ResponseError(c.T("auth:Unauthorized operation"))
+			return
+		}
 	}
 
 	success, err := object.UpdateTask(id, &task)
@@ -163,6 +209,26 @@ func (c *ApiController) DeleteTask() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	// Check ownership for non-admins
+	if !c.IsAdmin() {
+		username := c.GetSessionUsername()
+		// Fetch task from database to verify ownership
+		id := task.GetId()
+		existingTask, err := object.GetTask(id)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		if existingTask == nil {
+			c.ResponseError(c.T("general:The task does not exist"))
+			return
+		}
+		if existingTask.Owner != username {
+			c.ResponseError(c.T("auth:Unauthorized operation"))
+			return
+		}
 	}
 
 	success, err := object.DeleteTask(&task)
