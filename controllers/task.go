@@ -120,7 +120,7 @@ func (c *ApiController) GetTask() {
 	}
 
 	// Check ownership for non-admins
-	if !c.IsAdmin() {
+	if !c.IsAdmin() && !c.IsPreviewMode() {
 		username := c.GetSessionUsername()
 		if task.Owner != username {
 			c.ResponseError(c.T("auth:Unauthorized operation"))
@@ -150,7 +150,7 @@ func (c *ApiController) UpdateTask() {
 	}
 
 	// Check ownership for non-admins
-	if !c.IsAdmin() {
+	if !c.IsAdmin() && !c.IsPreviewMode() {
 		username := c.GetSessionUsername()
 		existingTask, err := object.GetTask(id)
 		if err != nil {

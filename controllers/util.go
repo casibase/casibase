@@ -131,6 +131,11 @@ func (c *ApiController) RequireAdmin() bool {
 	return true
 }
 
+func (c *ApiController) IsPreviewMode() bool {
+	disablePreviewMode, _ := beego.AppConfig.Bool("disablePreviewMode")
+	return !disablePreviewMode
+}
+
 func (c *ApiController) IsAdmin() bool {
 	user := c.GetSessionUser()
 	return util.IsAdmin(user)

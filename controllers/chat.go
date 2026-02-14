@@ -147,7 +147,7 @@ func (c *ApiController) GetChat() {
 	}
 
 	// Check if user has permission to view this chat
-	if !c.IsAdmin() {
+	if !c.IsAdmin() && !c.IsPreviewMode() {
 		username := c.GetSessionUsername()
 		if username != chat.User {
 			c.ResponseError(c.T("auth:Unauthorized operation"))
