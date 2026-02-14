@@ -27,6 +27,7 @@ type Task struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
+	User        string `xorm:"varchar(100) index" json:"user"`
 	Provider    string `xorm:"varchar(100)" json:"provider"`
 	Type        string `xorm:"varchar(100)" json:"type"`
 
@@ -66,9 +67,13 @@ func GetMaskedTasks(tasks []*Task, isMaskEnabled bool) []*Task {
 	return tasks
 }
 
-func GetGlobalTasks() ([]*Task, error) {
+func GetGlobalTasks(user string) ([]*Task, error) {
 	tasks := []*Task{}
-	err := adapter.engine.Asc("owner").Desc("created_time").Find(&tasks)
+	session := adapter.engine.Asc("owner").Desc("created_time")
+	if user != "" {
+		session = session.Where("user = ?", user)
+	}
+	err := session.Find(&tasks)
 	if err != nil {
 		return tasks, err
 	}
@@ -76,9 +81,9 @@ func GetGlobalTasks() ([]*Task, error) {
 	return tasks, nil
 }
 
-func GetTasks(owner string) ([]*Task, error) {
+func GetTasks(owner string, user string) ([]*Task, error) {
 	tasks := []*Task{}
-	err := adapter.engine.Desc("created_time").Find(&tasks, &Task{Owner: owner})
+	err := adapter.engine.Desc("created_time").Find(&tasks, &Task{Owner: owner, User: user})
 	if err != nil {
 		return tasks, err
 	}
@@ -152,14 +157,20 @@ func (task *Task) GetId() string {
 	return fmt.Sprintf("%s/%s", task.Owner, task.Name)
 }
 
-func GetTaskCount(owner string, field, value string) (int64, error) {
+func GetTaskCount(owner string, field, value string, user string) (int64, error) {
 	session := GetDbSession(owner, -1, -1, field, value, "", "")
+	if user != "" {
+		session = session.And("user = ?", user)
+	}
 	return session.Count(&Task{})
 }
 
-func GetPaginationTasks(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Task, error) {
+func GetPaginationTasks(owner string, offset, limit int, field, value, sortField, sortOrder string, user string) ([]*Task, error) {
 	tasks := []*Task{}
 	session := GetDbSession(owner, offset, limit, field, value, sortField, sortOrder)
+	if user != "" {
+		session = session.And("user = ?", user)
+	}
 	err := session.Find(&tasks)
 	if err != nil {
 		return tasks, err

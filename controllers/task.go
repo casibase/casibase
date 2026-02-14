@@ -29,7 +29,12 @@ import (
 // @Success 200 {array} object.Task The Response object
 // @router /get-global-tasks [get]
 func (c *ApiController) GetGlobalTasks() {
-	tasks, err := object.GetGlobalTasks()
+	user := c.GetSessionUsername()
+	if c.IsAdmin() {
+		user = ""
+	}
+
+	tasks, err := object.GetGlobalTasks(user)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -54,8 +59,13 @@ func (c *ApiController) GetTasks() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 
+	user := c.GetSessionUsername()
+	if c.IsAdmin() {
+		user = ""
+	}
+
 	if limit == "" || page == "" {
-		tasks, err := object.GetTasks(owner)
+		tasks, err := object.GetTasks(owner, user)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -64,14 +74,14 @@ func (c *ApiController) GetTasks() {
 		c.ResponseOk(object.GetMaskedTasks(tasks, true))
 	} else {
 		limit := util.ParseInt(limit)
-		count, err := object.GetTaskCount(owner, field, value)
+		count, err := object.GetTaskCount(owner, field, value, user)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
 		paginator := pagination.SetPaginator(c.Ctx, limit, count)
-		tasks, err := object.GetPaginationTasks(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		tasks, err := object.GetPaginationTasks(owner, paginator.Offset(), limit, field, value, sortField, sortOrder, user)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -96,6 +106,15 @@ func (c *ApiController) GetTask() {
 		return
 	}
 
+	// Check ownership for non-admins
+	if !c.IsAdmin() {
+		username := c.GetSessionUsername()
+		if task != nil && task.User != username {
+			c.ResponseError(c.T("auth:Unauthorized operation"))
+			return
+		}
+	}
+
 	c.ResponseOk(object.GetMaskedTask(task, true))
 }
 
@@ -115,6 +134,20 @@ func (c *ApiController) UpdateTask() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	// Check ownership for non-admins
+	if !c.IsAdmin() {
+		username := c.GetSessionUsername()
+		existingTask, err := object.GetTask(id)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		if existingTask != nil && existingTask.User != username {
+			c.ResponseError(c.T("auth:Unauthorized operation"))
+			return
+		}
 	}
 
 	success, err := object.UpdateTask(id, &task)
@@ -141,6 +174,12 @@ func (c *ApiController) AddTask() {
 		return
 	}
 
+	// Set the user field from session
+	user := c.GetSessionUsername()
+	if user != "" {
+		task.User = user
+	}
+
 	success, err := object.AddTask(&task)
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -163,6 +202,15 @@ func (c *ApiController) DeleteTask() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	// Check ownership for non-admins
+	if !c.IsAdmin() {
+		username := c.GetSessionUsername()
+		if task.User != username {
+			c.ResponseError(c.T("auth:Unauthorized operation"))
+			return
+		}
 	}
 
 	success, err := object.DeleteTask(&task)
