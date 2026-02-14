@@ -23,6 +23,7 @@ import (
 const (
 	UserTypeChatAdmin       = "chat-admin"
 	UserTypeVideoNormalUser = "video-normal-user"
+	UserTypeTaskUser        = "task-user"
 )
 
 func IsAnonymousUserByUsername(username string) bool {
@@ -43,4 +44,12 @@ func IsVideoNormalUser(user *casdoorsdk.User) bool {
 		return false
 	}
 	return user.Type == UserTypeVideoNormalUser
+}
+
+// IsTaskUser checks if the user has the task-user role
+func IsTaskUser(user *casdoorsdk.User) bool {
+	if user == nil {
+		return false
+	}
+	return user.Type == UserTypeTaskUser
 }

@@ -54,6 +54,24 @@ func (c *ApiController) GetTasks() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 
+	// Enforce owner filtering based on user type for security
+	user := c.GetSessionUser()
+	if user != nil {
+		if util.IsAdmin(user) {
+			// Admins can see all tasks - use empty owner to bypass filtering
+			owner = ""
+		} else if util.IsTaskUser(user) {
+			// Task users can only see their own tasks
+			owner = user.Name
+		} else {
+			// Other users use the owner parameter as provided
+			// For backward compatibility, if owner is not provided, use the user's name
+			if owner == "" {
+				owner = user.Name
+			}
+		}
+	}
+
 	if limit == "" || page == "" {
 		tasks, err := object.GetTasks(owner)
 		if err != nil {
