@@ -15,7 +15,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Table, Tag, Tooltip} from "antd";
-import {DeleteOutlined} from "@ant-design/icons";
+import {DeleteOutlined, FilePdfOutlined, FileWordOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -206,6 +206,25 @@ class TaskListPage extends BaseListPage {
                 {Setting.getShortText(text, 100)}
               </div>
             </Tooltip>
+          );
+        },
+      },
+      {
+        title: i18next.t("task:Document"),
+        dataIndex: "document",
+        key: "document",
+        width: "120px",
+        sorter: (a, b) => (a.document || "").localeCompare(b.document || ""),
+        ...this.getColumnSearchProps("document"),
+        render: (text, record, index) => {
+          if (!text) {
+            return null;
+          }
+          const isPdf = text.endsWith(".pdf");
+          return (
+            <a href={text} target="_blank" rel="noopener noreferrer">
+              {isPdf ? <FilePdfOutlined style={{fontSize: "20px"}} /> : <FileWordOutlined style={{fontSize: "20px"}} />}
+            </a>
           );
         },
       },
