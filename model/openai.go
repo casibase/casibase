@@ -127,7 +127,7 @@ func CalculateOpenAIModelPrice(model string, modelResult *ModelResult, lang stri
 		}
 		modelResult.Currency = "USD"
 
-	// gpt 5.2 model
+	// gpt 5.2 model (includes gpt-5.2-chat which uses same pricing)
 	case strings.Contains(model, "gpt-5.2"):
 		if strings.Contains(model, "5.2-mini") {
 			inputPricePerThousandTokens = 0.00025
