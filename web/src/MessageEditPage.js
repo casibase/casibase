@@ -187,7 +187,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={2}>
-            {Setting.getLabel(i18next.t("message:Chat"), i18next.t("message:Chat - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Chat"), i18next.t("general:Chat - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Button onClick={() => this.props.history.push(`/chats/${this.state.message.chat}`)} >

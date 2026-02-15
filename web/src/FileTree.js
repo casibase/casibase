@@ -191,7 +191,7 @@ class FileTree extends React.Component {
           <Radio.Button value={"ECG"}>ECG</Radio.Button>
           <Radio.Button value={"Impedance"}>Impedance</Radio.Button>
           {/* <Radio.Button value={"EEG"}>EEG</Radio.Button>*/}
-          <Radio.Button value={"Other"}>{i18next.t("store:Other")}</Radio.Button>
+          <Radio.Button value={"Other"}>{i18next.t("med:Other")}</Radio.Button>
         </Radio.Group>
       </Modal>
     );
@@ -975,7 +975,7 @@ class FileTree extends React.Component {
       {id: "Physics", name: i18next.t("store:Physics")},
       {id: "Chemistry", name: i18next.t("store:Chemistry")},
       {id: "Biology", name: i18next.t("store:Biology")},
-      {id: "History", name: i18next.t("store:History")},
+      {id: "History", name: i18next.t("connection:History")},
     ];
 
     const getSubjectDisplayName = (id) => {

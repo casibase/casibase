@@ -260,7 +260,7 @@ class WorkflowEditPage extends React.Component {
           <Col span={22} >
             <ChatWidget
               chatName={`workflow_chat_${this.state.workflowName}`}
-              displayName={`${i18next.t("message:Chat")} - ${this.state.workflowName}`}
+              displayName={`${i18next.t("general:Chat")} - ${this.state.workflowName}`}
               category="Workflow"
               account={this.props.account}
               title={i18next.t("general:Chat")}

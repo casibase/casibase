@@ -110,7 +110,7 @@ func getStoreProvider(storeId string, lang string) (*Provider, error) {
 		return nil, err
 	}
 	if store == nil {
-		return nil, fmt.Errorf(i18n.Translate(lang, "object:The store: %s is not found"), storeId)
+		return nil, fmt.Errorf(i18n.Translate(lang, "account:The store: %s is not found"), storeId)
 	}
 
 	provider, err := store.GetTextToSpeechProvider()

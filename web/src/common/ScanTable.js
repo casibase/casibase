@@ -69,7 +69,7 @@ class ScanTable extends React.Component {
 
     if (showAsset) {
       columns.push({
-        title: i18next.t("scan:Asset"),
+        title: i18next.t("general:Asset"),
         dataIndex: "asset",
         key: "asset",
         width: compact ? "100px" : "150px",
@@ -86,7 +86,7 @@ class ScanTable extends React.Component {
 
     columns.push(
       {
-        title: i18next.t("scan:Provider"),
+        title: i18next.t("asset:Provider"),
         dataIndex: "provider",
         key: "provider",
         width: compact ? "150px" : "200px",
@@ -125,7 +125,7 @@ class ScanTable extends React.Component {
         },
       },
       {
-        title: i18next.t("scan:Result"),
+        title: i18next.t("general:Result"),
         dataIndex: "result",
         key: "result",
         width: compact ? "80px" : "120px",

@@ -102,7 +102,7 @@ class ContainerListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Provider"),
+        title: i18next.t("asset:Provider"),
         dataIndex: "provider",
         key: "provider",
         width: "120px",

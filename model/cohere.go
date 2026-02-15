@@ -81,7 +81,7 @@ func (p *CohereModelProvider) calculatePrice(modelResult *ModelResult, lang stri
 		inputPricePerThousandTokens = 0.001
 		outputPricePerThousandTokens = 0.002
 	default:
-		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)

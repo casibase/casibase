@@ -175,7 +175,7 @@ class GraphEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("provider:Category"), i18next.t("provider:Category - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Category"), i18next.t("provider:Category - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select
@@ -187,7 +187,7 @@ class GraphEditPage extends React.Component {
             >
               <Select.Option value="Default">{i18next.t("general:Default")}</Select.Option>
               <Select.Option value={"Assets"}>{i18next.t("general:Assets")}</Select.Option>
-              <Select.Option value={"Chats"}>{i18next.t("general:Chats")}</Select.Option>
+              <Select.Option value={"Chats"}>{i18next.t("chat:Chats")}</Select.Option>
             </Select>
           </Col>
         </Row>
@@ -212,7 +212,7 @@ class GraphEditPage extends React.Component {
                   <Select.Option value="radial">{i18next.t("graph:Radial")}</Select.Option>
                   <Select.Option value="grid">{i18next.t("graph:Grid")}</Select.Option>
                   <Select.Option value="tree">{i18next.t("graph:Tree")}</Select.Option>
-                  <Select.Option value="none">{i18next.t("graph:None")}</Select.Option>
+                  <Select.Option value="none">{i18next.t("general:None")}</Select.Option>
                 </>
               )}
             </Select>

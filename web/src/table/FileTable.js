@@ -108,7 +108,7 @@ class FileTable extends React.Component {
         },
       },
       {
-        title: i18next.t("provider:Category"),
+        title: i18next.t("general:Category"),
         dataIndex: "isLeaf",
         key: "isLeaf",
         width: "110px",

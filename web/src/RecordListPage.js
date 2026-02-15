@@ -270,7 +270,7 @@ class RecordListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("vector:Provider"),
+        title: i18next.t("asset:Provider"),
         dataIndex: "provider",
         key: "provider",
         width: "150px",
@@ -398,7 +398,7 @@ class RecordListPage extends BaseListPage {
         ...this.getColumnSearchProps("section"),
       },
       {
-        title: i18next.t("general:Count"),
+        title: i18next.t("chat:Count"),
         dataIndex: "count",
         key: "count",
         width: "110px",
@@ -418,7 +418,7 @@ class RecordListPage extends BaseListPage {
         ...this.getColumnSearchProps("response"),
       },
       {
-        title: i18next.t("record:Object"),
+        title: i18next.t("general:Object"),
         dataIndex: "object",
         key: "object",
         width: "200px",
@@ -601,13 +601,13 @@ class RecordListPage extends BaseListPage {
                         onClick={() => {
                           this.queryRecord(record, true);
                         }}
-                      >{i18next.t("record:Query")}
+                      >{i18next.t("general:Query")}
                       </Button>
                     </Popover>
                   )}
                   {this.state.enableCrossChain && (
                     (record.block2 === "") ? (
-                      <Tooltip title={record.provider2 === "" ? i18next.t("general:Error") : ""}>
+                      <Tooltip title={record.provider2 === "" ? i18next.t("file:Error") : ""}>
                         <Button
                           disabled={record.provider2 === ""}
                           type="primary" danger
@@ -641,7 +641,7 @@ class RecordListPage extends BaseListPage {
                           onClick={() => {
                             this.queryRecord(record, false);
                           }}
-                        >{i18next.t("record:Query") + " 2"}
+                        >{i18next.t("general:Query") + " 2"}
                         </Button>
                       </Popover>
                     )

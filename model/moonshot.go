@@ -94,7 +94,7 @@ func (p *MoonshotModelProvider) calculatePrice(modelResult *ModelResult, lang st
 		outputPrice := getPrice(modelResult.ResponseTokenCount, priceItem[1])
 		price = inputPrice + outputPrice
 	} else {
-		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	modelResult.TotalPrice = price

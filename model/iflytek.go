@@ -166,7 +166,7 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult, lang str
 	case "spark-lite":
 		price = 0.0
 	default:
-		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	modelResult.TotalPrice = price

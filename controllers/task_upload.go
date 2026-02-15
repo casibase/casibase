@@ -47,7 +47,7 @@ func (c *ApiController) UploadTaskDocument() {
 	fileName := c.GetString("name")
 
 	if taskId == "" || fileBase64 == "" || fileType == "" || fileName == "" {
-		c.ResponseError(c.T("resource:Missing required parameters"))
+		c.ResponseError(c.T("application:Missing required parameters"))
 		return
 	}
 

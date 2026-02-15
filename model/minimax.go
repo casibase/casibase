@@ -66,7 +66,7 @@ func (p *MiniMaxModelProvider) calculatePrice(modelResult *ModelResult, lang str
 	if pricePerThousandTokens, ok := priceTable[p.subType]; ok {
 		price = getPrice(modelResult.TotalTokenCount, pricePerThousandTokens)
 	} else {
-		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	modelResult.TotalPrice = price

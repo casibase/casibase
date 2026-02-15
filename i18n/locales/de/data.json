@@ -60,9 +60,6 @@
     "transaction failed to be mined: %v": "Transaktion konnte nicht gemint werden: %v",
     "transaction failed with status: %d, reason: %s": "Transaktion fehlgeschlagen mit Status: %d, Grund: %s"
   },
-  "chat": {
-    "The default store is not found": "Der Standardspeicher wurde nicht gefunden"
-  },
   "controllers": {
     "No permission": "Keine Berechtigung",
     "No records to add": "Keine Datensätze zum Hinzufügen",
@@ -101,12 +98,10 @@
   "model": {
     "QueryText() error: unknown model type: %s": "QueryText() Fehler: unbekannter Modelltyp: %s",
     "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "Die Token-Anzahl: [%d] überschreitet die maximale Token-Anzahl des Modells: [%s]: [%d]",
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() Fehler: unbekannter Modelltyp: %s",
     "calculatePrice() error: video generation pricing requires duration information": "calculatePrice() Fehler: Videogenerierungs-Preisberechnung erfordert Dauerinformationen",
     "cannot calculate tokens": "Tokens können nicht berechnet werden",
     "error getting chat completion: %v": "Fehler beim Abrufen der Chat-Vervollständigung: %v",
     "exceed max tokens": "Maximale Token-Anzahl überschritten",
-    "failed to calculate price: %v": "Preis berechnen fehlgeschlagen: %v",
     "failed to marshal content: %v": "Inhalt marshalen fehlgeschlagen: %v",
     "failed to marshal error content: %v": "Fehlerinhalt marshalen fehlgeschlagen: %v",
     "failed to marshal tool response: %v": "Tool-Antwort marshalen fehlgeschlagen: %v",
@@ -142,7 +137,6 @@
     "The provider: %s does not exist": "Der Anbieter: %s existiert nicht",
     "The provider: %s is not found": "Der Anbieter: %s wurde nicht gefunden",
     "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v": "Der Embedding-Anbieter des Speichers: [%s] sollte gleich dem Embedding-Anbieter des Vektors sein: [%s], Vektor = %v",
-    "The store: %s is not found": "Der Speicher: %s wurde nicht gefunden",
     "The text-to-speech provider for store: %s is not found": "Der Text-to-Speech-Anbieter für Speicher: %s wurde nicht gefunden",
     "deployment failed, and could not retrieve failure details: %v": "Bereitstellung fehlgeschlagen, Fehlerdetails konnten nicht abgerufen werden: %v",
     "deployment failed: %s": "Bereitstellung fehlgeschlagen: %s",
@@ -205,7 +199,6 @@
     "server address not found": "server address nicht gefunden",
     "the STT provider type: %s is not supported": "the STT provider type: %s ist nicht supported",
     "the TTS provider type: %s is not supported": "the TTS provider type: %s ist nicht supported",
-    "the agent provider type: %s is not supported": "Der Agenten-Anbietertyp: %s wird nicht unterstützt",
     "the blockchain provider: %s is not found": "the blockchain provider: %s wurde nicht gefunden",
     "the embedding provider type: %s is not supported": "the embedding provider type: %s ist nicht supported",
     "the form: %s is not found": "the form: %s wurde nicht gefunden",
@@ -240,12 +233,10 @@
     "Not implemented": "Nicht implementiert",
     "Tencent Cloud API error: %s": "Tencent Cloud API-Fehler: %s",
     "Unsupported state: %s": "Nicht unterstützter Status: %s",
-    "VMware API error, code = %d, message = %s": "VMware API-Fehler, Code = %d, Nachricht = %s",
-    "unsupported provider type: %s": "Nicht unterstützt provider type: %s"
+    "VMware API error, code = %d, message = %s": "VMware API-Fehler, Code = %d, Nachricht = %s"
   },
   "resource": {
-    "Invalid file data format": "Ungültiger/e/s file data format",
-    "Missing required parameters": "Erforderliche Parameter fehlen"
+    "Invalid file data format": "Ungültiger/e/s file data format"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] existiert nicht"
@@ -262,13 +253,11 @@
   },
   "tts": {
     "The audio data is nil": "Die Audiodaten sind nil",
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() Fehler: unbekannter Modelltyp: %s",
     "error creating synthesizer: %v": "Fehler creating synthesizer: %v",
     "error finishing task: %v": "Fehler finishing task: %v",
     "error running task: %v": "Fehler running task: %v",
     "error sending text: %v": "Fehler sending text: %v",
-    "output error: %v": "output Fehler: %v",
-    "writer does not implement http.Flusher": "Writer implementiert http.Flusher nicht"
+    "output error: %v": "output Fehler: %v"
   },
   "txt": {
     ".docx file is empty": ".docx file ist leer",

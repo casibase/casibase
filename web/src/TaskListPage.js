@@ -130,7 +130,7 @@ class TaskListPage extends BaseListPage {
         ...this.getColumnSearchProps("displayName"),
       },
       {
-        title: i18next.t("store:Model provider"),
+        title: i18next.t("provider:Model provider"),
         dataIndex: "provider",
         key: "provider",
         width: "250px",

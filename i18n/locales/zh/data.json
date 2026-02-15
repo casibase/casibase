@@ -60,9 +60,6 @@
     "transaction failed to be mined: %v": "交易挖矿失败：%v",
     "transaction failed with status: %d, reason: %s": "交易失败，状态码：%d，原因：%s"
   },
-  "chat": {
-    "The default store is not found": "未找到默认存储"
-  },
   "controllers": {
     "No permission": "无权限",
     "No records to add": "没有要添加的记录",
@@ -101,12 +98,10 @@
   "model": {
     "QueryText() error: unknown model type: %s": "QueryText() 错误：未知模型类型：%s",
     "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "标记（token）数量：[%d] 超过模型：[%s] 的最大标记数量：[%d]",
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() 错误：未知模型类型：%s",
     "calculatePrice() error: video generation pricing requires duration information": "calculatePrice() 错误：视频生成定价需要时长信息",
     "cannot calculate tokens": "无法计算标记（token）数量",
     "error getting chat completion: %v": "获取聊天补全（chat completion）错误：%v",
     "exceed max tokens": "超过最大标记（token）数量",
-    "failed to calculate price: %v": "计算价格失败：%v",
     "failed to marshal content: %v": "marshal content失败: %v",
     "failed to marshal error content: %v": "marshal error content失败: %v",
     "failed to marshal tool response: %v": "序列化工具响应失败：%v",
@@ -142,7 +137,6 @@
     "The provider: %s does not exist": "提供商：%s 不存在",
     "The provider: %s is not found": "提供商：%s 未找到",
     "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v": "存储的嵌入提供商：[%s] 应与向量的嵌入提供商：[%s] 一致，向量 = %v",
-    "The store: %s is not found": "存储：%s 未找到",
     "The text-to-speech provider for store: %s is not found": "存储 %s 的文本转语音提供商未找到",
     "deployment failed, and could not retrieve failure details: %v": "部署失败，无法获取失败详情：%v",
     "deployment failed: %s": "部署失败：%s",
@@ -205,7 +199,6 @@
     "server address not found": "未找到服务器地址",
     "the STT provider type: %s is not supported": "不支持的 STT 提供商类型：%s",
     "the TTS provider type: %s is not supported": "不支持的 TTS 提供商类型：%s",
-    "the agent provider type: %s is not supported": "不支持的代理提供商类型：%s",
     "the blockchain provider: %s is not found": "区块链提供商：%s 未找到",
     "the embedding provider type: %s is not supported": "不支持的嵌入提供商类型：%s",
     "the form: %s is not found": "表单：%s 未找到",
@@ -240,12 +233,10 @@
     "Not implemented": "未实现",
     "Tencent Cloud API error: %s": "腾讯云 API 错误：%s",
     "Unsupported state: %s": "不支持的状态：%s",
-    "VMware API error, code = %d, message = %s": "VMware API 错误，错误码 = %d，错误信息 = %s",
-    "unsupported provider type: %s": "不支持的提供商类型：%s"
+    "VMware API error, code = %d, message = %s": "VMware API 错误，错误码 = %d，错误信息 = %s"
   },
   "resource": {
-    "Invalid file data format": "无效的 file data format",
-    "Missing required parameters": "缺少必需参数"
+    "Invalid file data format": "无效的 file data format"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "存储提供商名称：[%s] 不存在"
@@ -262,13 +253,11 @@
   },
   "tts": {
     "The audio data is nil": "音频数据为空",
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() 错误：未知的模型类型：%s",
     "error creating synthesizer: %v": "创建合成器错误：%v",
     "error finishing task: %v": "完成任务错误：%v",
     "error running task: %v": "运行任务错误：%v",
     "error sending text: %v": "发送文本错误：%v",
-    "output error: %v": "输出错误：%v",
-    "writer does not implement http.Flusher": "writer 未实现 http.Flusher 接口"
+    "output error: %v": "输出错误：%v"
   },
   "txt": {
     ".docx file is empty": ".docx 文件为空",

@@ -85,7 +85,7 @@ class ExampleQuestionTable extends React.Component {
         ),
       },
       {
-        title: i18next.t("store:Icon"),
+        title: i18next.t("general:Icon"),
         dataIndex: "image",
         key: "image",
         width: "30%",

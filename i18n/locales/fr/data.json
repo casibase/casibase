@@ -60,9 +60,6 @@
     "transaction failed to be mined: %v": "La transaction n'a pas pu être minée: %v",
     "transaction failed with status: %d, reason: %s": "La transaction a échoué avec le statut: %d, raison: %s"
   },
-  "chat": {
-    "The default store is not found": "Le magasin par défaut n'a pas été trouvé"
-  },
   "controllers": {
     "No permission": "Pas de permission",
     "No records to add": "Aucun enregistrement à ajouter",
@@ -101,12 +98,10 @@
   "model": {
     "QueryText() error: unknown model type: %s": "QueryText() error: unknown model type: %s",
     "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]",
-    "calculatePrice() error: unknown model type: %s": "Erreur calculatePrice(): type de modèle inconnu: %s",
     "calculatePrice() error: video generation pricing requires duration information": "calculatePrice() error: video generation pricing requires duration information",
     "cannot calculate tokens": "cannot calculate tokens",
     "error getting chat completion: %v": "erreur getting chat completion: %v",
     "exceed max tokens": "exceed max tokens",
-    "failed to calculate price: %v": "échec de calculate price: %v",
     "failed to marshal content: %v": "échec de marshal content: %v",
     "failed to marshal error content: %v": "échec de marshal error content: %v",
     "failed to marshal tool response: %v": "échec de marshal tool response: %v",
@@ -142,7 +137,6 @@
     "The provider: %s does not exist": "The provider: %s n'existe pas",
     "The provider: %s is not found": "The provider: %s introuvable",
     "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v": "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v",
-    "The store: %s is not found": "Le magasin: %s n'a pas été trouvé",
     "The text-to-speech provider for store: %s is not found": "The text-to-speech provider for store: %s introuvable",
     "deployment failed, and could not retrieve failure details: %v": "deployment failed, and could pas retrieve failure details: %v",
     "deployment failed: %s": "deployment échoué: %s",
@@ -205,7 +199,6 @@
     "server address not found": "server address introuvable",
     "the STT provider type: %s is not supported": "the STT provider type: %s n'est pas supported",
     "the TTS provider type: %s is not supported": "the TTS provider type: %s n'est pas supported",
-    "the agent provider type: %s is not supported": "Le type de fournisseur d'agent: %s n'est pas pris en charge",
     "the blockchain provider: %s is not found": "the blockchain provider: %s introuvable",
     "the embedding provider type: %s is not supported": "the embedding provider type: %s n'est pas supported",
     "the form: %s is not found": "the form: %s introuvable",
@@ -240,12 +233,10 @@
     "Not implemented": "Non implémenté",
     "Tencent Cloud API error: %s": "Erreur API Tencent Cloud: %s",
     "Unsupported state: %s": "État non pris en charge: %s",
-    "VMware API error, code = %d, message = %s": "Erreur API VMware, code = %d, message = %s",
-    "unsupported provider type: %s": "provider type non pris en charge: %s"
+    "VMware API error, code = %d, message = %s": "Erreur API VMware, code = %d, message = %s"
   },
   "resource": {
-    "Invalid file data format": "file data format invalide",
-    "Missing required parameters": "Paramètres requis manquants"
+    "Invalid file data format": "file data format invalide"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] n'existe pas"
@@ -262,13 +253,11 @@
   },
   "tts": {
     "The audio data is nil": "Les données audio sont nulles",
-    "calculatePrice() error: unknown model type: %s": "Erreur calculatePrice(): type de modèle inconnu: %s",
     "error creating synthesizer: %v": "erreur creating synthesizer: %v",
     "error finishing task: %v": "erreur finishing task: %v",
     "error running task: %v": "erreur running task: %v",
     "error sending text: %v": "erreur sending text: %v",
-    "output error: %v": "erreur output: %v",
-    "writer does not implement http.Flusher": "writer does pas implement http.Flusher"
+    "output error: %v": "erreur output: %v"
   },
   "txt": {
     ".docx file is empty": ".docx file est vide",

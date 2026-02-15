@@ -248,7 +248,7 @@ class ApplicationViewPage extends React.Component {
       return (
         <Card title={i18next.t("general:Applications")} style={{margin: "0 32px"}}>
           <div style={{textAlign: "center", padding: "20px"}}>
-            <Text type="danger">{i18next.t("general:Error")}: {this.state.error}</Text>
+            <Text type="danger">{i18next.t("file:Error")}: {this.state.error}</Text>
           </div>
         </Card>
       );

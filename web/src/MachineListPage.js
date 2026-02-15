@@ -107,7 +107,7 @@ class MachineListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Provider"),
+        title: i18next.t("asset:Provider"),
         dataIndex: "provider",
         key: "provider",
         width: "120px",
@@ -155,7 +155,7 @@ class MachineListPage extends BaseListPage {
         sorter: (a, b) => a.region.localeCompare(b.region),
       },
       {
-        title: i18next.t("machine:Zone"),
+        title: i18next.t("general:Zone"),
         dataIndex: "zone",
         key: "zone",
         width: "120px",
@@ -169,7 +169,7 @@ class MachineListPage extends BaseListPage {
         sorter: (a, b) => a.type.localeCompare(b.type),
       },
       {
-        title: i18next.t("general:Size"),
+        title: i18next.t("file:Size"),
         dataIndex: "size",
         key: "size",
         width: "120px",

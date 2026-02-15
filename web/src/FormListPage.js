@@ -120,7 +120,7 @@ class FormListPage extends BaseListPage {
         sorter: (a, b) => a.position.localeCompare(b.position),
       },
       {
-        title: i18next.t("provider:Category"),
+        title: i18next.t("general:Category"),
         dataIndex: "category",
         key: "category",
         width: "90px",

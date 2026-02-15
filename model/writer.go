@@ -66,7 +66,7 @@ func (p *WriterModelProvider) calculatePrice(modelResult *ModelResult, lang stri
 		inputPricePerThousandTokens = priceItem[0]
 		outputPricePerThousandTokens = priceItem[1]
 	} else {
-		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)

@@ -258,7 +258,7 @@ class ChatListPage extends BaseListPage {
       //   },
       // },
       // {
-      //   title: i18next.t("provider:Category"),
+      //   title: i18next.t("general:Category"),
       //   dataIndex: "category",
       //   key: "category",
       //   width: "100px",
@@ -551,7 +551,7 @@ class ChatListPage extends BaseListPage {
               &nbsp;
               {Setting.getDisplayTag(Setting.uniqueFields(chats, "user"))}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {i18next.t("general:Chats")}:
+              {i18next.t("chat:Chats")}:
               &nbsp;
               {Setting.getDisplayTag(Setting.sumFields(chats, "count"))}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

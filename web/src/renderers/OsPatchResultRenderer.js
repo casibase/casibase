@@ -133,7 +133,7 @@ class OsPatchResultRenderer extends React.Component {
     const {patches, error} = this.state;
 
     if (error) {
-      return <Alert message={i18next.t("general:Error")} description={error} type="error" showIcon />;
+      return <Alert message={i18next.t("file:Error")} description={error} type="error" showIcon />;
     }
 
     if (!patches || patches.length === 0) {
@@ -142,7 +142,7 @@ class OsPatchResultRenderer extends React.Component {
 
     const columns = [
       {
-        title: i18next.t("scan:Title"),
+        title: i18next.t("general:Title"),
         dataIndex: "title",
         key: "title",
         width: "25%",
@@ -163,7 +163,7 @@ class OsPatchResultRenderer extends React.Component {
         render: (status) => this.renderStatus(status),
       },
       {
-        title: i18next.t("scan:Size"),
+        title: i18next.t("file:Size"),
         dataIndex: "size",
         key: "size",
         width: "8%",
@@ -173,7 +173,7 @@ class OsPatchResultRenderer extends React.Component {
         dataIndex: "rebootRequired",
         key: "rebootRequired",
         width: "10%",
-        render: (value) => this.renderBooleanTag(value, i18next.t("scan:Required"), i18next.t("scan:Not Required")),
+        render: (value) => this.renderBooleanTag(value, i18next.t("general:Required"), i18next.t("scan:Not Required")),
       },
       {
         title: i18next.t("scan:Mandatory"),
@@ -242,7 +242,7 @@ class OsPatchResultRenderer extends React.Component {
           expandable={{
             expandedRowRender: (record) => (
               <div style={{margin: 0}}>
-                <Text strong>{i18next.t("scan:Description")}:</Text>
+                <Text strong>{i18next.t("general:Description")}:</Text>
                 <p style={{marginTop: "8px"}}>{record.description || i18next.t("scan:No description available")}</p>
                 {record.categories && (
                   <p style={{marginTop: "8px"}}>

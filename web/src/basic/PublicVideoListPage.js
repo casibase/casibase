@@ -65,7 +65,7 @@ const PublicVideoListPage = (props) => {
       <Radio.Group block style={{marginBottom: "10px", width: "100%"}} buttonStyle="solid" value={grade} onChange={e => {
         setGrade(e.target.value);
       }}>
-        <Radio.Button value={"All"}>{i18next.t("video:All")}</Radio.Button>
+        <Radio.Button value={"All"}>{i18next.t("store:All")}</Radio.Button>
         <Radio.Button value={"Grade 1"}>{i18next.t("video:Grade 1")}</Radio.Button>
         <Radio.Button value={"Grade 2"}>{i18next.t("video:Grade 2")}</Radio.Button>
         <Radio.Button value={"Grade 3"}>{i18next.t("video:Grade 3")}</Radio.Button>

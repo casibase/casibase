@@ -351,7 +351,7 @@ func (p *Provider) GetAgentProvider(lang string) (agent.AgentProvider, error) {
 	}
 
 	if pProvider == nil {
-		return nil, fmt.Errorf(i18n.Translate(lang, "object:the agent provider type: %s is not supported"), p.Type)
+		return nil, fmt.Errorf(i18n.Translate(lang, "agent:the agent provider type: %s is not supported"), p.Type)
 	}
 
 	return pProvider, nil

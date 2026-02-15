@@ -53,7 +53,7 @@ class SingleCard extends React.Component {
           style={{justifyContent: "center"}}
         />
         <br />
-        {i18next.t("video:Comment")}
+        {i18next.t("message:Comment")}
         <br />
         {time}
       </Card.Grid>
@@ -75,7 +75,7 @@ class SingleCard extends React.Component {
         >
           <Meta title={title} description={desc} />
           <br />
-          {i18next.t("video:Comment")}
+          {i18next.t("message:Comment")}
           <br />
           {time}
         </Card>

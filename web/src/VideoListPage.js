@@ -246,7 +246,7 @@ class VideoListPage extends BaseListPage {
         ...this.getColumnSearchProps("grade"),
       },
       {
-        title: i18next.t("video:Unit"),
+        title: i18next.t("general:Unit"),
         dataIndex: "unit",
         key: "unit",
         width: "90px",
@@ -370,7 +370,7 @@ class VideoListPage extends BaseListPage {
         },
       },
       // {
-      //   title: i18next.t("video:Labels"),
+      //   title: i18next.t("task:Labels"),
       //   dataIndex: "labels",
       //   key: "labels",
       //   width: "120px",

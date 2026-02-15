@@ -341,7 +341,7 @@ class StoreListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("store:Model provider"),
+        title: i18next.t("provider:Model provider"),
         dataIndex: "modelProvider",
         key: "modelProvider",
         width: "330px",

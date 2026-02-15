@@ -203,7 +203,7 @@ func CalculateOpenAIModelPrice(model string, modelResult *ModelResult, lang stri
 	default:
 		// inputPricePerThousandTokens = 0
 		// outputPricePerThousandTokens = 0
-		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), model)
+		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), model)
 	}
 
 	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)

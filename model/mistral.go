@@ -77,7 +77,7 @@ func (c *MistralModelProvider) calculatePrice(modelResult *ModelResult, lang str
 		outputPrice := getPrice(modelResult.TotalTokenCount, priceItem[1])
 		price = inputPrice + outputPrice
 	} else {
-		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), c.modelName)
+		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), c.modelName)
 	}
 
 	modelResult.TotalPrice = price
@@ -106,7 +106,7 @@ func (c *MistralModelProvider) QueryText(question string, writer io.Writer, hist
 
 	err = c.calculatePrice(modelResult, lang)
 	if err != nil {
-		return nil, fmt.Errorf(i18n.Translate(lang, "model:failed to calculate price: %v"), err)
+		return nil, fmt.Errorf(i18n.Translate(lang, "embedding:failed to calculate price: %v"), err)
 	}
 	modelResult.PromptTokenCount += len(question)
 

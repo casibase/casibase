@@ -42,7 +42,7 @@ func (c *ApiController) UploadFile() {
 	fileName := c.Input().Get("name")
 
 	if fileBase64 == "" || fileType == "" || fileName == "" {
-		c.ResponseError(c.T("resource:Missing required parameters"))
+		c.ResponseError(c.T("application:Missing required parameters"))
 		return
 	}
 

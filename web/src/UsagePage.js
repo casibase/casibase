@@ -155,7 +155,7 @@ class UsagePage extends BaseListPage {
         trigger: "axis",
       },
       legend: {
-        data: [i18next.t("general:Users"), i18next.t("general:Chats")],
+        data: [i18next.t("general:Users"), i18next.t("chat:Chats")],
       },
       toolbox: {
         feature: {
@@ -181,7 +181,7 @@ class UsagePage extends BaseListPage {
         },
         {
           type: "value",
-          name: i18next.t("general:Chats"),
+          name: i18next.t("chat:Chats"),
           position: "right",
         },
       ],
@@ -192,7 +192,7 @@ class UsagePage extends BaseListPage {
           data: userCounts,
         },
         {
-          name: i18next.t("general:Chats"),
+          name: i18next.t("chat:Chats"),
           type: "line",
           yAxisIndex: 1,
           data: chatCounts,
@@ -320,7 +320,7 @@ class UsagePage extends BaseListPage {
         <Col span={3}>
           <Statistic
             loading={isLoading}
-            title={i18next.t("general:Chats")}
+            title={i18next.t("chat:Chats")}
             value={lastUsage.chatCount}
           />
         </Col>
@@ -413,7 +413,7 @@ class UsagePage extends BaseListPage {
           }
           );
         }}>
-          <Radio.Button value={"All"}>{i18next.t("usage:All")}</Radio.Button>
+          <Radio.Button value={"All"}>{i18next.t("store:All")}</Radio.Button>
           <Radio.Button value={"Hour"}>{i18next.t("usage:Hour")}</Radio.Button>
           <Radio.Button value={"Day"}>{i18next.t("usage:Day")}</Radio.Button>
           <Radio.Button value={"Week"}>{i18next.t("usage:Week")}</Radio.Button>
@@ -536,7 +536,7 @@ class UsagePage extends BaseListPage {
         },
       },
       legend: {
-        data: [i18next.t("general:Users"), i18next.t("general:Chats")],
+        data: [i18next.t("general:Users"), i18next.t("chat:Chats")],
       },
       xAxis: [
         {
@@ -555,7 +555,7 @@ class UsagePage extends BaseListPage {
         },
         {
           type: "value",
-          name: i18next.t("general:Chats"),
+          name: i18next.t("chat:Chats"),
           position: "right",
         },
       ],
@@ -566,7 +566,7 @@ class UsagePage extends BaseListPage {
           data: userCountData,
         },
         {
-          name: i18next.t("general:Chats"),
+          name: i18next.t("chat:Chats"),
           type: "bar",
           yAxisIndex: 1,
           data: chatCountData,

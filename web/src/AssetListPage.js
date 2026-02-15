@@ -351,7 +351,7 @@ class AssetListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("scan:Scans"),
+        title: i18next.t("general:Scans"),
         dataIndex: "name",
         key: "scans",
         width: "200px",

@@ -404,7 +404,7 @@ export function getTag(text, type, state) {
     );
   } else if (type === "Admin") {
     return (
-      <Tooltip placement="top" title={i18next.t("store:Admin")}>
+      <Tooltip placement="top" title={i18next.t("general:Admin")}>
         <Tag icon={icon} style={style} color={"error"}>
           {text}
         </Tag>
@@ -2397,7 +2397,7 @@ export function getFormTypeItems(formType) {
       {name: "name", label: "general:Name", visible: true, width: "300"},
       {name: "clientIp", label: "general:Client IP", visible: true, width: "150"},
       {name: "createdTime", label: "general:Created time", visible: true, width: "150"},
-      {name: "provider", label: "vector:Provider", visible: true, width: "150"},
+      {name: "provider", label: "asset:Provider", visible: true, width: "150"},
       {name: "provider2", label: "general:Provider 2", visible: true, width: "150"},
       {name: "user", label: "general:User", visible: true, width: "120"},
       {name: "method", label: "general:Method", visible: true, width: "110"},
@@ -2409,7 +2409,7 @@ export function getFormTypeItems(formType) {
       {name: "unit", label: "general:Unit", visible: true, width: "90"},
       {name: "section", label: "general:Section", visible: true, width: "90"},
       {name: "response", label: "general:Response", visible: true, width: "90"},
-      {name: "object", label: "record:Object", visible: true, width: "200"},
+      {name: "object", label: "general:Object", visible: true, width: "200"},
       {name: "errorText", label: "message:Error text", visible: true, width: "120"},
       {name: "isTriggered", label: "general:Is triggered", visible: true, width: "140"},
       {name: "action", label: "general:Action", visible: true, width: "150"},
@@ -2426,7 +2426,7 @@ export function getFormTypeItems(formType) {
       {name: "storageProvider", label: "store:Storage provider", visible: true, width: "250"},
       // { name: "splitProvider", label: "store:Split provider", visible: false, width: "200" },
       {name: "imageProvider", label: "store:Image provider", visible: true, width: "300"},
-      {name: "modelProvider", label: "store:Model provider", visible: true, width: "330"},
+      {name: "modelProvider", label: "provider:Model provider", visible: true, width: "330"},
       {name: "embeddingProvider", label: "store:Embedding provider", visible: true, width: "300"},
       {name: "textToSpeechProvider", label: "store:Text-to-Speech provider", visible: true, width: "300"},
       {name: "speechToTextProvider", label: "store:Speech-to-Text provider", visible: true, width: "200"},
@@ -2439,12 +2439,12 @@ export function getFormTypeItems(formType) {
       {name: "name", label: "general:Name", visible: true, width: "140"},
       // { name: "displayName", label: "general:Display name", visible: false, width: "200" },
       {name: "store", label: "general:Store", visible: true, width: "130"},
-      {name: "provider", label: "vector:Provider", visible: true, width: "200"},
+      {name: "provider", label: "asset:Provider", visible: true, width: "200"},
       {name: "file", label: "store:File", visible: true, width: "200"},
       {name: "index", label: "vector:Index", visible: true, width: "80"},
       {name: "text", label: "general:Text", visible: true, width: "200"},
-      {name: "size", label: "general:Size", visible: true, width: "80"},
-      {name: "data", label: "vector:Data", visible: true, width: "200"},
+      {name: "size", label: "file:Size", visible: true, width: "80"},
+      {name: "data", label: "general:Data", visible: true, width: "200"},
       {name: "dimension", label: "vector:Dimension", visible: true, width: "80"},
     ];
   } else if (formType === "videos") {
@@ -2454,12 +2454,12 @@ export function getFormTypeItems(formType) {
       {name: "displayName", label: "general:Display name", visible: true, width: "180"},
       {name: "description", label: "general:Description", visible: true, width: "120"},
       {name: "grade", label: "video:Grade", visible: true, width: "90"},
-      {name: "unit", label: "video:Unit", visible: true, width: "90"},
+      {name: "unit", label: "general:Unit", visible: true, width: "90"},
       {name: "lesson", label: "video:Lesson", visible: true, width: "90"},
       // { name: "videoId", label: "video:Video ID", visible: false, width: "250" },
       {name: "coverUrl", label: "video:Cover", visible: true, width: "170"},
       {name: "remarks", label: "video:Remarks", visible: true},
-      // { name: "labels", label: "video:Labels", visible: false, width: "120" },
+      // { name: "labels", label: "task:Labels", visible: false, width: "120" },
       {name: "state", label: "general:State", visible: true, width: "90"},
       {name: "reviewState", label: "video:Review state", visible: true, width: "110"},
       {name: "isPublic", label: "video:Is public", visible: true, width: "110"},
@@ -2472,7 +2472,7 @@ export function getFormTypeItems(formType) {
     return [
       {name: "name", label: "general:Name", visible: true, width: "160"},
       {name: "displayName", label: "general:Display name", visible: true, width: "200"},
-      {name: "provider", label: "store:Model provider", visible: true, width: "250"},
+      {name: "provider", label: "provider:Model provider", visible: true, width: "250"},
       {name: "type", label: "general:Type", visible: true, width: "90"},
       {name: "subject", label: "store:Subject", visible: true, width: "200"},
       {name: "topic", label: "video:Topic", visible: true, width: "200"},

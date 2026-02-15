@@ -107,7 +107,7 @@ class TestEmbedWidget extends React.Component {
           </Col>
           <Col span={6} >
             <Button style={{marginLeft: "10px", marginBottom: "5px"}} type="primary" loading={this.state.testButtonLoading} disabled={!provider.testContent} onClick={() => this.sendTestEmbedding(provider, originalProvider, provider.testContent, this.props.account)}>
-              {i18next.t("store:Refresh Vectors")}
+              {i18next.t("general:Refresh Vectors")}
             </Button>
           </Col>
         </Row>
@@ -116,7 +116,7 @@ class TestEmbedWidget extends React.Component {
             <Col span={2}></Col>
             <Col span={20}>
               <div style={{border: "1px solid #d9d9d9", borderRadius: "6px", padding: "10px", backgroundColor: "#fafafa"}}>
-                <div><strong>{i18next.t("vector:Data")}:</strong></div>
+                <div><strong>{i18next.t("general:Data")}:</strong></div>
                 <TextArea autoSize={{minRows: 3, maxRows: 10}} value={this.state.embeddingResult ? this.state.embeddingResult.join(", ") : ""} readOnly style={{marginTop: "5px", fontFamily: "monospace", fontSize: "12px"}} />
               </div>
             </Col>

@@ -406,7 +406,7 @@ class VideoEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("video:Subject"), i18next.t("video:Subject - Tooltip"))} :
+            {Setting.getLabel(i18next.t("store:Subject"), i18next.t("store:Subject - Tooltip"))} :
           </Col>
           <Col span={3} >
             <Input value={this.state.video.subject} onChange={e => {
@@ -433,7 +433,7 @@ class VideoEditPage extends React.Component {
                 this.updateVideoField("template", e.target.value);
               }} />
             }>
-              <Button style={{marginLeft: "20px"}}>{i18next.t("video:Edit Template")}</Button>
+              <Button style={{marginLeft: "20px"}}>{i18next.t("template:Edit Template")}</Button>
             </Tooltip>
           </Col>
         </Row>
@@ -459,7 +459,7 @@ class VideoEditPage extends React.Component {
       <div style={{marginTop: "20px"}}>
         <LabelTable
           ref={this.labelTable}
-          title={i18next.t("video:Labels")}
+          title={i18next.t("task:Labels")}
           account={this.props.account}
           table={this.state.video.labels}
           currentTime={this.state.currentTime}
@@ -601,7 +601,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("video:Unit"), i18next.t("video:Unit - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Unit"), i18next.t("general:Unit - Tooltip"))} :
           </Col>
           <Col span={6} >
             <Select disabled={this.requireUserOrAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.unit} onChange={(value => {

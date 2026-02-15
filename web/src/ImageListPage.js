@@ -155,7 +155,7 @@ class ImageListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("provider:Category"),
+        title: i18next.t("general:Category"),
         dataIndex: "category",
         key: "category",
         width: "120px",
@@ -211,7 +211,7 @@ class ImageListPage extends BaseListPage {
         sorter: (a, b) => a.systemArchitecture.localeCompare(b.systemArchitecture),
       },
       {
-        title: i18next.t("general:Size"),
+        title: i18next.t("file:Size"),
         dataIndex: "size",
         key: "size",
         width: "90px",

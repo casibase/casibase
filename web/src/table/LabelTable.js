@@ -219,7 +219,7 @@ class LabelTable extends React.Component {
         },
       },
       {
-        title: i18next.t("video:Comment"),
+        title: i18next.t("message:Comment"),
         dataIndex: "text",
         key: "text",
         // width: '200px',

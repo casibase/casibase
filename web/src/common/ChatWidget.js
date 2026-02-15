@@ -683,7 +683,7 @@ class ChatWidget extends React.Component {
   // Render header with title and controls
   renderHeader() {
     const {showNewChatButton = true, title} = this.props;
-    const chatDisplayName = this.state.currentChat?.displayName || title || i18next.t("message:Chat");
+    const chatDisplayName = this.state.currentChat?.displayName || title || i18next.t("general:Chat");
 
     return (
       <div style={{

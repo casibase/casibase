@@ -60,9 +60,6 @@
     "transaction failed to be mined: %v": "トランザクションがマイニングできませんでした: %v",
     "transaction failed with status: %d, reason: %s": "トランザクションが失敗しました、ステータス: %d, 理由: %s"
   },
-  "chat": {
-    "The default store is not found": "デフォルトのストアが見つかりません"
-  },
   "controllers": {
     "No permission": "権限がありません",
     "No records to add": "追加するレコードがありません",
@@ -101,12 +98,10 @@
   "model": {
     "QueryText() error: unknown model type: %s": "QueryText() error: unknown model type: %s",
     "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]": "The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]",
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() エラー: 不明なモデルタイプ: %s",
     "calculatePrice() error: video generation pricing requires duration information": "calculatePrice() error: video generation pricing requires duration information",
     "cannot calculate tokens": "cannot calculate tokens",
     "error getting chat completion: %v": "エラー getting chat completion: %v",
     "exceed max tokens": "exceed max tokens",
-    "failed to calculate price: %v": "calculate priceに失敗しました: %v",
     "failed to marshal content: %v": "marshal contentに失敗しました: %v",
     "failed to marshal error content: %v": "marshal error contentに失敗しました: %v",
     "failed to marshal tool response: %v": "marshal tool responseに失敗しました: %v",
@@ -142,7 +137,6 @@
     "The provider: %s does not exist": "The provider: %s は存在しません",
     "The provider: %s is not found": "The provider: %s が見つかりません",
     "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v": "The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v",
-    "The store: %s is not found": "ストア: %s が見つかりません",
     "The text-to-speech provider for store: %s is not found": "The text-to-speech provider for store: %s が見つかりません",
     "deployment failed, and could not retrieve failure details: %v": "deployment failed, and could retrieve failure details: %v ではありません",
     "deployment failed: %s": "deployment 失敗: %s",
@@ -205,7 +199,6 @@
     "server address not found": "server address が見つかりません",
     "the STT provider type: %s is not supported": "the STT provider type: %s は supported ではありません",
     "the TTS provider type: %s is not supported": "the TTS provider type: %s は supported ではありません",
-    "the agent provider type: %s is not supported": "エージェントプロバイダータイプ: %s はサポートされていません",
     "the blockchain provider: %s is not found": "the blockchain provider: %s が見つかりません",
     "the embedding provider type: %s is not supported": "the embedding provider type: %s は supported ではありません",
     "the form: %s is not found": "the form: %s が見つかりません",
@@ -240,12 +233,10 @@
     "Not implemented": "実装されていません",
     "Tencent Cloud API error: %s": "Tencent Cloud APIエラー: %s",
     "Unsupported state: %s": "サポートされていない状態: %s",
-    "VMware API error, code = %d, message = %s": "VMware APIエラー, コード = %d, メッセージ = %s",
-    "unsupported provider type: %s": "サポートされていない provider type: %s"
+    "VMware API error, code = %d, message = %s": "VMware APIエラー, コード = %d, メッセージ = %s"
   },
   "resource": {
-    "Invalid file data format": "無効な file data format",
-    "Missing required parameters": "必須パラメータが不足しています"
+    "Invalid file data format": "無効な file data format"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] は存在しません"
@@ -262,13 +253,11 @@
   },
   "tts": {
     "The audio data is nil": "音声データがnilです",
-    "calculatePrice() error: unknown model type: %s": "calculatePrice() エラー: 不明なモデルタイプ: %s",
     "error creating synthesizer: %v": "エラー creating synthesizer: %v",
     "error finishing task: %v": "エラー finishing task: %v",
     "error running task: %v": "エラー running task: %v",
     "error sending text: %v": "エラー sending text: %v",
-    "output error: %v": "output エラー: %v",
-    "writer does not implement http.Flusher": "writer does implement http.Flusher ではありません"
+    "output error: %v": "output エラー: %v"
   },
   "txt": {
     ".docx file is empty": ".docx file は空です",

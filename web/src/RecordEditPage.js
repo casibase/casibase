@@ -122,7 +122,7 @@ class RecordEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Provider"), i18next.t("general:Provider - Tooltip"))} :
+            {Setting.getLabel(i18next.t("asset:Provider"), i18next.t("asset:Provider - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Select disabled={false} virtual={false} style={{width: "100%"}} value={this.state.record.provider} onChange={(value => {
@@ -148,7 +148,7 @@ class RecordEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Provider 2"), i18next.t("general:Provider - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Provider 2"), i18next.t("asset:Provider - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Select disabled={false} virtual={false} style={{width: "100%"}} value={this.state.record.provider2} onChange={(value => {
@@ -280,7 +280,7 @@ class RecordEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Count"), i18next.t("general:Count - Tooltip"))} :
+            {Setting.getLabel(i18next.t("chat:Count"), i18next.t("general:Count - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input disabled={false} value={this.state.record.count === 0 ? 1 : this.state.record.count} onChange={e => {

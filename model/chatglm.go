@@ -56,7 +56,7 @@ func (p *ChatGLMModelProvider) calculatePrice(modelResult *ModelResult, lang str
 	case "glm-4", "glm-4v":
 		price = getPrice(modelResult.TotalTokenCount, 0.1)
 	default:
-		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	modelResult.TotalPrice = price

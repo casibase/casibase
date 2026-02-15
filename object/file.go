@@ -138,7 +138,7 @@ func DeleteFile(file *File, lang string) (bool, error) {
 		return false, err
 	}
 	if store == nil {
-		return false, fmt.Errorf(i18n.Translate(lang, "object:The store: %s is not found"), file.Store)
+		return false, fmt.Errorf(i18n.Translate(lang, "account:The store: %s is not found"), file.Store)
 	}
 
 	storageProviderObj, err := store.GetStorageProviderObj(lang)

@@ -153,7 +153,7 @@ class ProviderListPage extends BaseListPage {
         ...this.getColumnSearchProps("displayName"),
       },
       {
-        title: i18next.t("provider:Category"),
+        title: i18next.t("general:Category"),
         dataIndex: "category",
         key: "category",
         width: "110px",
@@ -217,7 +217,7 @@ class ProviderListPage extends BaseListPage {
         ...this.getColumnSearchProps("clientId"),
       },
       {
-        title: i18next.t("provider:Secret key"),
+        title: i18next.t("general:Secret key"),
         dataIndex: "clientSecret",
         key: "clientSecret",
         width: "120px",
@@ -239,7 +239,7 @@ class ProviderListPage extends BaseListPage {
         sorter: (a, b) => a.apiKey.localeCompare(b.apiKey),
       },
       {
-        title: i18next.t("provider:Provider URL"),
+        title: i18next.t("general:Provider URL"),
         dataIndex: "providerUrl",
         key: "providerUrl",
         // width: "250px",

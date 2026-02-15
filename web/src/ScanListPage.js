@@ -250,7 +250,7 @@ class ScanListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Provider"),
+        title: i18next.t("asset:Provider"),
         dataIndex: "provider",
         key: "provider",
         width: "220px",
@@ -300,7 +300,7 @@ class ScanListPage extends BaseListPage {
         ...this.getColumnSearchProps("runner"),
       },
       {
-        title: i18next.t("scan:Error"),
+        title: i18next.t("file:Error"),
         dataIndex: "errorText",
         key: "errorText",
         width: "200px",

@@ -45,7 +45,7 @@ func NewMachineClient(providerType string, accessKeyId string, accessKeySecret s
 	case "Tencent Cloud":
 		res, err = newMachineTencentClient(accessKeyId, accessKeySecret, region)
 	default:
-		return nil, fmt.Errorf(i18n.Translate(lang, "pkgmachine:unsupported provider type: %s"), providerType)
+		return nil, fmt.Errorf(i18n.Translate(lang, "pkgimage:unsupported provider type: %s"), providerType)
 	}
 
 	if err != nil {

@@ -188,7 +188,7 @@ func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult, lang stri
 		outputPricePerMillionTokens = 0
 
 	default:
-		return fmt.Errorf(i18n.Translate(lang, "model:calculatePrice() error: unknown model type: %s"), p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 
 	// Convert from per million to per token pricing

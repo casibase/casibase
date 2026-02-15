@@ -66,7 +66,7 @@ func (p *AlibabacloudTextToSpeechProvider) calculatePrice(res *TextToSpeechResul
 		res.Currency = "CNY"
 		return nil
 	} else {
-		return fmt.Errorf(i18n.Translate(lang, "tts:calculatePrice() error: unknown model type: %s"), p.subType)
+		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
 }
 
@@ -175,7 +175,7 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudioStream(text string, ctx con
 	// Check if writer supports Flush
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return nil, fmt.Errorf(i18n.Translate(lang, "tts:writer does not implement http.Flusher"))
+		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
 	}
 
 	// Error channel for streaming mode

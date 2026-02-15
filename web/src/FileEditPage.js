@@ -145,7 +145,7 @@ class FileEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.file.status} onChange={(value) => {
               this.updateFileField("status", value);
             }}>
-              <Option value="Pending">{i18next.t("file:Pending")}</Option>
+              <Option value="Pending">{i18next.t("application:Pending")}</Option>
               <Option value="Processing">{i18next.t("file:Processing")}</Option>
               <Option value="Finished">{i18next.t("file:Finished")}</Option>
               <Option value="Error">{i18next.t("file:Error")}</Option>
