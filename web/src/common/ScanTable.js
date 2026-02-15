@@ -86,7 +86,7 @@ class ScanTable extends React.Component {
 
     columns.push(
       {
-        title: i18next.t("asset:Provider"),
+        title: i18next.t("general:Provider"),
         dataIndex: "provider",
         key: "provider",
         width: compact ? "150px" : "200px",

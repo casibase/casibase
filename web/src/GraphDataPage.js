@@ -752,7 +752,7 @@ class GraphDataPage extends React.Component {
           )}
           {selectedNode.provider && (
             <div style={{marginBottom: "8px"}}>
-              <strong>{i18next.t("asset:Provider")}:</strong> <span style={{color: "#666"}}>{selectedNode.provider}</span>
+              <strong>{i18next.t("general:Provider")}:</strong> <span style={{color: "#666"}}>{selectedNode.provider}</span>
             </div>
           )}
           {selectedNode.region && (

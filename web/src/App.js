@@ -615,7 +615,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
       res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
-      res.push(Setting.getItem(<Link to="/chats">{i18next.t("chat:Chats")}</Link>, "/chats"));
+      res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
       res.push(Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities"));
@@ -625,7 +625,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
-      res.push(Setting.getItem(<Link to="/chats">{i18next.t("chat:Chats")}</Link>, "/chats"));
+      res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
       res.push(Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities"));
@@ -685,7 +685,7 @@ class App extends Component {
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/chats">{i18next.t("general:Chats & Messages")}</Link>, "/ai-chat", <BulbTwoTone twoToneColor={twoToneColor} />, [
-        Setting.getItem(<Link to="/chats">{i18next.t("chat:Chats")}</Link>, "/chats"),
+        Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"),
         Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"),
       ]));
 

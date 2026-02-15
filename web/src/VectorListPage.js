@@ -150,7 +150,7 @@ class VectorListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("asset:Provider"),
+        title: i18next.t("general:Provider"),
         dataIndex: "provider",
         key: "provider",
         width: "200px",
@@ -199,7 +199,7 @@ class VectorListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("file:Size"),
+        title: i18next.t("general:Size"),
         dataIndex: "size",
         key: "size",
         width: "80px",

@@ -403,7 +403,7 @@ class ChatListPage extends BaseListPage {
       //   },
       // },
       {
-        title: i18next.t("chat:Count"),
+        title: i18next.t("general:Count"),
         dataIndex: "messageCount",
         key: "messageCount",
         width: "80px",
@@ -532,7 +532,7 @@ class ChatListPage extends BaseListPage {
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={chats} rowKey="name" rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("chat:Chats")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Chats")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addChat.bind(this)}>{i18next.t("general:Add")}</Button>
               {this.state.selectedRowKeys.length > 0 && (
                 <Popconfirm title={`${i18next.t("general:Sure to delete")}: ${this.state.selectedRowKeys.length} ${i18next.t("general:items")} ?`} onConfirm={() => this.performBulkDelete(this.state.selectedRows, this.state.selectedRowKeys)} okText={i18next.t("general:OK")} cancelText={i18next.t("general:Cancel")}>
@@ -551,7 +551,7 @@ class ChatListPage extends BaseListPage {
               &nbsp;
               {Setting.getDisplayTag(Setting.uniqueFields(chats, "user"))}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {i18next.t("chat:Chats")}:
+              {i18next.t("general:Chats")}:
               &nbsp;
               {Setting.getDisplayTag(Setting.sumFields(chats, "count"))}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

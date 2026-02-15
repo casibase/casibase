@@ -50,11 +50,8 @@
     "Edit Asset": "Sunting aset",
     "Failed to scan assets": "Gagal memindai aset",
     "New Asset": "Aset baru",
-    "Please select a provider": "Silakan pilih penyedia",
     "Properties": "Properti",
     "Properties - Tooltip": "Properti sumber daya dalam format JSON",
-    "Provider": "Penyedia",
-    "Provider - Tooltip": "Nama penyedia cloud",
     "Scan": "Pindai",
     "Successfully scanned assets": "Berhasil memindai aset"
   },
@@ -77,8 +74,6 @@
     "Add attachment": "添付ファイルを追加",
     "An error occurred during responding": "応答中にエラーが発生しました",
     "CPrice": "C価格",
-    "Chats": "チャット",
-    "Count": "件数",
     "Default Category": "デフォルトカテゴリ",
     "Drop files here to upload": "ファイルをここにドラッグしてアップロード",
     "Edit Chat": "チャットを編集",
@@ -144,13 +139,10 @@
   },
   "file": {
     "Edit File": "ファイルを編集",
-    "Error": "エラー",
     "Filename": "ファイル名",
     "Filename - Tooltip": "ファイルの名前",
     "Finished": "Finished",
-    "Processing": "処理中",
-    "Size": "サイズ",
-    "Size - Tooltip": "ファイルサイズ（バイト）"
+    "Processing": "処理中"
   },
   "form": {
     "Edit Form": "フォームを編集",
@@ -471,7 +463,15 @@
     "Zone - Tooltip": "利用可能ゾーン",
     "empty": "空",
     "items": "項目",
-    "{total} in total": "{total} 合計"
+    "{total} in total": "{total} 合計",
+    "Chats": "チャット",
+    "Size": "サイズ",
+    "Size - Tooltip": "ファイルサイズ（バイト）",
+    "Count": "件数",
+    "Provider - Tooltip": "Nama penyedia cloud",
+    "Error": "エラー",
+    "Please select a provider": "Silakan pilih penyedia",
+    "Provider": "Penyedia"
   },
   "graph": {
     "Circular": "円形",

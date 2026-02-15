@@ -99,7 +99,7 @@ class FileEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("file:Size"), i18next.t("file:Size - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Size"), i18next.t("general:Size - Tooltip"))} :
           </Col>
           <Col span={22} >
             <InputNumber value={this.state.file.size} onChange={value => {
@@ -148,7 +148,7 @@ class FileEditPage extends React.Component {
               <Option value="Pending">{i18next.t("application:Pending")}</Option>
               <Option value="Processing">{i18next.t("file:Processing")}</Option>
               <Option value="Finished">{i18next.t("file:Finished")}</Option>
-              <Option value="Error">{i18next.t("file:Error")}</Option>
+              <Option value="Error">{i18next.t("general:Error")}</Option>
             </Select>
           </Col>
         </Row>

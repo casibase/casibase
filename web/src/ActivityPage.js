@@ -201,7 +201,7 @@ class ActivityPage extends BaseListPage {
         <Col span={3}>
           <Statistic
             loading={isLoading}
-            title={i18next.t("file:Error")}
+            title={i18next.t("general:Error")}
             value={lastActivity.error}
           />
         </Col>

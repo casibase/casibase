@@ -155,7 +155,7 @@ class UsagePage extends BaseListPage {
         trigger: "axis",
       },
       legend: {
-        data: [i18next.t("general:Users"), i18next.t("chat:Chats")],
+        data: [i18next.t("general:Users"), i18next.t("general:Chats")],
       },
       toolbox: {
         feature: {
@@ -181,7 +181,7 @@ class UsagePage extends BaseListPage {
         },
         {
           type: "value",
-          name: i18next.t("chat:Chats"),
+          name: i18next.t("general:Chats"),
           position: "right",
         },
       ],
@@ -192,7 +192,7 @@ class UsagePage extends BaseListPage {
           data: userCounts,
         },
         {
-          name: i18next.t("chat:Chats"),
+          name: i18next.t("general:Chats"),
           type: "line",
           yAxisIndex: 1,
           data: chatCounts,
@@ -320,7 +320,7 @@ class UsagePage extends BaseListPage {
         <Col span={3}>
           <Statistic
             loading={isLoading}
-            title={i18next.t("chat:Chats")}
+            title={i18next.t("general:Chats")}
             value={lastUsage.chatCount}
           />
         </Col>
@@ -536,7 +536,7 @@ class UsagePage extends BaseListPage {
         },
       },
       legend: {
-        data: [i18next.t("general:Users"), i18next.t("chat:Chats")],
+        data: [i18next.t("general:Users"), i18next.t("general:Chats")],
       },
       xAxis: [
         {
@@ -555,7 +555,7 @@ class UsagePage extends BaseListPage {
         },
         {
           type: "value",
-          name: i18next.t("chat:Chats"),
+          name: i18next.t("general:Chats"),
           position: "right",
         },
       ],
@@ -566,7 +566,7 @@ class UsagePage extends BaseListPage {
           data: userCountData,
         },
         {
-          name: i18next.t("chat:Chats"),
+          name: i18next.t("general:Chats"),
           type: "bar",
           yAxisIndex: 1,
           data: chatCountData,

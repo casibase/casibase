@@ -26,7 +26,7 @@ const UsageTable = ({data, account}) => {
       width: "12%",
     },
     {
-      title: i18next.t("chat:Chats"),
+      title: i18next.t("general:Chats"),
       dataIndex: "chats",
       key: "chats",
       render: (text, record) => (

@@ -203,7 +203,7 @@ class ImageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-            {Setting.getLabel(i18next.t("file:Size"), i18next.t("file:Size - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Size"), i18next.t("general:Size - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Input

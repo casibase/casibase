@@ -121,7 +121,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("asset:Provider"), i18next.t("asset:Provider - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Provider"), i18next.t("general:Provider - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.vector.provider} disabled={isViewMode} onChange={e => {
@@ -161,7 +161,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("file:Size"), i18next.t("file:Size - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Size"), i18next.t("general:Size - Tooltip"))} :
           </Col>
           <Col span={22} >
             <InputNumber disabled={true} value={this.state.vector.size} onChange={value => {

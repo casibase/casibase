@@ -133,7 +133,7 @@ class OsPatchResultRenderer extends React.Component {
     const {patches, error} = this.state;
 
     if (error) {
-      return <Alert message={i18next.t("file:Error")} description={error} type="error" showIcon />;
+      return <Alert message={i18next.t("general:Error")} description={error} type="error" showIcon />;
     }
 
     if (!patches || patches.length === 0) {
@@ -163,7 +163,7 @@ class OsPatchResultRenderer extends React.Component {
         render: (status) => this.renderStatus(status),
       },
       {
-        title: i18next.t("file:Size"),
+        title: i18next.t("general:Size"),
         dataIndex: "size",
         key: "size",
         width: "8%",

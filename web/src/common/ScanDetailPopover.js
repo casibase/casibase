@@ -70,7 +70,7 @@ export function ScanDetailPopover({
         <div style={{fontSize: "12px", color: "#666"}}>
           <div><strong>{i18next.t("general:Name")}:</strong> {scan.name}</div>
           <div><strong>{i18next.t("general:Created time")}:</strong> {Setting.getFormattedDate(scan.createdTime)}</div>
-          <div><strong>{i18next.t("asset:Provider")}:</strong> {scan.provider || "-"}</div>
+          <div><strong>{i18next.t("general:Provider")}:</strong> {scan.provider || "-"}</div>
           <div><strong>{i18next.t("general:State")}:</strong> {scan.state}</div>
         </div>
       </div>

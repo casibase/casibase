@@ -50,11 +50,8 @@
     "Edit Asset": "Vermögenswert bearbeiten",
     "Failed to scan assets": "Fehler beim Scannen von Vermögenswerten",
     "New Asset": "Neuer Vermögenswert",
-    "Please select a provider": "Bitte wählen Sie einen Anbieter",
     "Properties": "Eigenschaften",
     "Properties - Tooltip": "Ressourceneigenschaften im JSON-Format",
-    "Provider": "Anbieter",
-    "Provider - Tooltip": "Cloud-Anbietername",
     "Scan": "Scannen",
     "Successfully scanned assets": "Vermögenswerte erfolgreich gescannt"
   },
@@ -77,8 +74,6 @@
     "Add attachment": "Anhang hinzufügen",
     "An error occurred during responding": "Beim Antworten ist ein Fehler aufgetreten",
     "CPrice": "C-Preis",
-    "Chats": "Chats",
-    "Count": "Anzahl",
     "Default Category": "Standardkategorie",
     "Drop files here to upload": "Dateien hier ablegen, um sie hochzuladen",
     "Edit Chat": "Chat bearbeiten",
@@ -144,13 +139,10 @@
   },
   "file": {
     "Edit File": "Datei bearbeiten",
-    "Error": "Fehler",
     "Filename": "Dateiname",
     "Filename - Tooltip": "Name der Datei",
     "Finished": "Finished",
-    "Processing": "Verarbeitung",
-    "Size": "Größe",
-    "Size - Tooltip": "Dateigröße in Bytes"
+    "Processing": "Verarbeitung"
   },
   "form": {
     "Edit Form": "Formular bearbeiten",
@@ -471,7 +463,15 @@
     "Zone - Tooltip": "Verfügbare Zone",
     "empty": "leer",
     "items": "Elemente",
-    "{total} in total": "{total} insgesamt"
+    "{total} in total": "{total} insgesamt",
+    "Chats": "Chats",
+    "Size": "Größe",
+    "Size - Tooltip": "Dateigröße in Bytes",
+    "Count": "Anzahl",
+    "Provider - Tooltip": "Cloud-Anbietername",
+    "Error": "Fehler",
+    "Please select a provider": "Bitte wählen Sie einen Anbieter",
+    "Provider": "Anbieter"
   },
   "graph": {
     "Circular": "Kreisförmig",

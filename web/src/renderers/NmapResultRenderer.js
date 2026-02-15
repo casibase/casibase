@@ -152,7 +152,7 @@ class NmapResultRenderer extends React.Component {
     const {scanResult, error} = this.state;
 
     if (error) {
-      return <Alert message={i18next.t("file:Error")} description={error} type="error" showIcon />;
+      return <Alert message={i18next.t("general:Error")} description={error} type="error" showIcon />;
     }
 
     if (!scanResult) {

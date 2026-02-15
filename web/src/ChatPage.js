@@ -786,7 +786,7 @@ class ChatPage extends BaseListPage {
         }
 
         {Setting.isMobile() && (
-          <Drawer title={i18next.t("chat:Chats")} placement="left" open={this.state.chatMenuVisible} onClose={this.closeChatMenu} width={250}
+          <Drawer title={i18next.t("general:Chats")} placement="left" open={this.state.chatMenuVisible} onClose={this.closeChatMenu} width={250}
           >
             <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores} />
           </Drawer>

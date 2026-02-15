@@ -50,11 +50,8 @@
     "Edit Asset": "编辑资产",
     "Failed to scan assets": "扫描资产失败",
     "New Asset": "新建资产",
-    "Please select a provider": "请选择提供商",
     "Properties": "属性",
     "Properties - Tooltip": "JSON格式的资源属性",
-    "Provider": "提供商",
-    "Provider - Tooltip": "云提供商名称",
     "Scan": "扫描",
     "Successfully scanned assets": "成功扫描资产"
   },
@@ -77,8 +74,6 @@
     "Add attachment": "添加附件",
     "An error occurred during responding": "回答时出现错误",
     "CPrice": "C价格",
-    "Chats": "会话",
-    "Count": "数量",
     "Default Category": "默认分类",
     "Drop files here to upload": "将文件拖至此处上传",
     "Edit Chat": "编辑会话",
@@ -144,13 +139,10 @@
   },
   "file": {
     "Edit File": "编辑文件",
-    "Error": "错误",
     "Filename": "文件名",
     "Filename - Tooltip": "文件的名称",
     "Finished": "已完成",
-    "Processing": "处理中",
-    "Size": "大小",
-    "Size - Tooltip": "文件大小（字节）"
+    "Processing": "处理中"
   },
   "form": {
     "Edit Form": "编辑表单",
@@ -471,7 +463,15 @@
     "Zone - Tooltip": "可用区域",
     "empty": "空",
     "items": "项",
-    "{total} in total": "{total} 总计"
+    "{total} in total": "{total} 总计",
+    "Chats": "会话",
+    "Size": "大小",
+    "Size - Tooltip": "文件大小（字节）",
+    "Count": "数量",
+    "Provider - Tooltip": "云提供商名称",
+    "Error": "错误",
+    "Please select a provider": "请选择提供商",
+    "Provider": "提供商"
   },
   "graph": {
     "Circular": "环形",

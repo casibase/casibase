@@ -187,7 +187,7 @@ class GraphEditPage extends React.Component {
             >
               <Select.Option value="Default">{i18next.t("general:Default")}</Select.Option>
               <Select.Option value={"Assets"}>{i18next.t("general:Assets")}</Select.Option>
-              <Select.Option value={"Chats"}>{i18next.t("chat:Chats")}</Select.Option>
+              <Select.Option value={"Chats"}>{i18next.t("general:Chats")}</Select.Option>
             </Select>
           </Col>
         </Row>

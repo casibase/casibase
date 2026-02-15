@@ -50,11 +50,8 @@
     "Edit Asset": "Editar activo",
     "Failed to scan assets": "Error al escanear activos",
     "New Asset": "Nuevo activo",
-    "Please select a provider": "Por favor seleccione un proveedor",
     "Properties": "Propiedades",
     "Properties - Tooltip": "Propiedades del recurso en formato JSON",
-    "Provider": "Proveedor",
-    "Provider - Tooltip": "Nombre del proveedor de nube",
     "Scan": "Escanear",
     "Successfully scanned assets": "Activos escaneados exitosamente"
   },
@@ -77,8 +74,6 @@
     "Add attachment": "Agregar adjunto",
     "An error occurred during responding": "Se produjo un error durante la respuesta",
     "CPrice": "Precio C",
-    "Chats": "Conversaciones",
-    "Count": "Cantidad",
     "Default Category": "Categoría predeterminada",
     "Drop files here to upload": "Arrastra los archivos aquí para cargarlos",
     "Edit Chat": "Editar conversación",
@@ -144,13 +139,10 @@
   },
   "file": {
     "Edit File": "Editar archivo",
-    "Error": "Error",
     "Filename": "Nombre de archivo",
     "Filename - Tooltip": "Nombre del archivo",
     "Finished": "Finished",
-    "Processing": "Procesando",
-    "Size": "Tamaño",
-    "Size - Tooltip": "Tamaño del archivo en bytes"
+    "Processing": "Procesando"
   },
   "form": {
     "Edit Form": "Editar formulario",
@@ -471,7 +463,15 @@
     "Zone - Tooltip": "Zona disponible",
     "empty": "Vacio",
     "items": "Elementos",
-    "{total} in total": "{total} en total"
+    "{total} in total": "{total} en total",
+    "Chats": "Conversaciones",
+    "Size": "Tamaño",
+    "Size - Tooltip": "Tamaño del archivo en bytes",
+    "Count": "Cantidad",
+    "Provider - Tooltip": "Nombre del proveedor de nube",
+    "Error": "Error",
+    "Please select a provider": "Por favor seleccione un proveedor",
+    "Provider": "Proveedor"
   },
   "graph": {
     "Circular": "Circular",

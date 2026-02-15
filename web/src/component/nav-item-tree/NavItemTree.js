@@ -35,7 +35,7 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
           title: i18next.t("general:Chats & Messages"),
           key: "/ai-chat",
           children: [
-            {title: i18next.t("chat:Chats"), key: "/chats"},
+            {title: i18next.t("general:Chats"), key: "/chats"},
             {title: i18next.t("general:Messages"), key: "/messages"},
           ],
         },

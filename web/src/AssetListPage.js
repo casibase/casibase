@@ -126,7 +126,7 @@ class AssetListPage extends BaseListPage {
 
   scanAssets() {
     if (!this.state.selectedProvider) {
-      Setting.showMessage("error", i18next.t("asset:Please select a provider"));
+      Setting.showMessage("error", i18next.t("general:Please select a provider"));
       return;
     }
 
@@ -259,7 +259,7 @@ class AssetListPage extends BaseListPage {
         ...this.getColumnSearchProps("displayName"),
       },
       {
-        title: i18next.t("asset:Provider"),
+        title: i18next.t("general:Provider"),
         dataIndex: "provider",
         key: "provider",
         width: "150px",
@@ -415,7 +415,7 @@ class AssetListPage extends BaseListPage {
             <div>
               {i18next.t("general:Assets")}
               <span style={{marginLeft: 32}}>
-                {i18next.t("asset:Provider")}:
+                {i18next.t("general:Provider")}:
                 <Select size={"small"}
                   style={{width: 280, marginLeft: 8, marginRight: 16, marginTop: 2}}
                   value={this.state.selectedProvider}

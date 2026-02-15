@@ -509,7 +509,7 @@ class MessageListPage extends BaseListPage {
               &nbsp;
               {Setting.getDisplayTag(Setting.uniqueFields(messages, "user"))}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {i18next.t("chat:Chats")}:
+              {i18next.t("general:Chats")}:
               &nbsp;
               {Setting.getDisplayTag(Setting.uniqueFields(messages, "chat"))}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

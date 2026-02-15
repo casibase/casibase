@@ -156,7 +156,7 @@ class CommitResultWidget extends React.Component {
           differences.push({
             path: currentPath,
             chainValue: chainObj[key],
-            localValue: i18next.t("file:Error"),
+            localValue: i18next.t("general:Error"),
             type: "missing",
           });
         } else if (typeof chainObj[key] !== typeof localObj[key]) {
@@ -255,7 +255,7 @@ class CommitResultWidget extends React.Component {
             <div className={styles["status-icon"]}>🔴</div>
             <div className={styles["status-info"]}>
               <h3>{i18next.t("record:Data Verification")}</h3>
-              <p>{i18next.t("file:Error")}</p>
+              <p>{i18next.t("general:Error")}</p>
             </div>
           </div>
 
@@ -266,7 +266,7 @@ class CommitResultWidget extends React.Component {
             </div>
             <div className={styles["detail-item"]}>
               <span className={styles.label}>❌ {i18next.t("general:Status")}:</span>
-              <span className={`${styles.value} ${styles.error}`}>{i18next.t("file:Error")}</span>
+              <span className={`${styles.value} ${styles.error}`}>{i18next.t("general:Error")}</span>
             </div>
           </div>
 
@@ -318,8 +318,8 @@ class CommitResultWidget extends React.Component {
         <div className={`${styles["result-header"]} ${styles.warning}`}>
           <div className={styles["status-icon"]}>🟡</div>
           <div className={styles["status-info"]}>
-            <h3>{i18next.t("file:Error")}</h3>
-            <p>{i18next.t("file:Error")}</p>
+            <h3>{i18next.t("general:Error")}</h3>
+            <p>{i18next.t("general:Error")}</p>
           </div>
         </div>
 

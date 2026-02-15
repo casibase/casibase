@@ -36,7 +36,7 @@ class PrometheusInfoTable extends React.Component {
         key: "method",
       },
       {
-        title: i18next.t("chat:Count"),
+        title: i18next.t("general:Count"),
         dataIndex: "count",
         key: "count",
       },

@@ -29,7 +29,7 @@ class EventTable extends React.Component {
       `${i18next.t("general:Object")}: ${event.involvedObject}`,
       `${i18next.t("general:Message")}: ${event.message}`,
       `${i18next.t("message:Author")}: ${event.source}`,
-      `${i18next.t("chat:Count")}: ${event.count}`,
+      `${i18next.t("general:Count")}: ${event.count}`,
       `${i18next.t("general:Created time")}: ${event.firstTime}`,
       `${i18next.t("general:Updated time")}: ${event.lastTime}`,
     ].join("\n");
@@ -89,7 +89,7 @@ class EventTable extends React.Component {
         ),
       },
       {
-        title: i18next.t("chat:Count"),
+        title: i18next.t("general:Count"),
         dataIndex: "count",
         key: "count",
         width: "60px",

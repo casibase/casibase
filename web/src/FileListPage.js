@@ -159,7 +159,7 @@ class FileListPage extends BaseListPage {
         ...this.getColumnSearchProps("filename"),
       },
       {
-        title: i18next.t("file:Size"),
+        title: i18next.t("general:Size"),
         dataIndex: "size",
         key: "size",
         width: "100px",

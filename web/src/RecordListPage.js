@@ -270,7 +270,7 @@ class RecordListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("asset:Provider"),
+        title: i18next.t("general:Provider"),
         dataIndex: "provider",
         key: "provider",
         width: "150px",
@@ -398,7 +398,7 @@ class RecordListPage extends BaseListPage {
         ...this.getColumnSearchProps("section"),
       },
       {
-        title: i18next.t("chat:Count"),
+        title: i18next.t("general:Count"),
         dataIndex: "count",
         key: "count",
         width: "110px",
@@ -607,7 +607,7 @@ class RecordListPage extends BaseListPage {
                   )}
                   {this.state.enableCrossChain && (
                     (record.block2 === "") ? (
-                      <Tooltip title={record.provider2 === "" ? i18next.t("file:Error") : ""}>
+                      <Tooltip title={record.provider2 === "" ? i18next.t("general:Error") : ""}>
                         <Button
                           disabled={record.provider2 === ""}
                           type="primary" danger

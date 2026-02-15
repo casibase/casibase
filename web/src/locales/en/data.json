@@ -50,11 +50,8 @@
     "Edit Asset": "Edit Asset",
     "Failed to scan assets": "Failed to scan assets",
     "New Asset": "New Asset",
-    "Please select a provider": "Please select a provider",
     "Properties": "Properties",
     "Properties - Tooltip": "Resource properties in JSON format",
-    "Provider": "Provider",
-    "Provider - Tooltip": "Cloud provider name",
     "Scan": "Scan",
     "Successfully scanned assets": "Successfully scanned assets"
   },
@@ -77,8 +74,6 @@
     "Add attachment": "Add attachment",
     "An error occurred during responding": "An error occurred during responding",
     "CPrice": "CPrice",
-    "Chats": "Chats",
-    "Count": "Count",
     "Default Category": "Default Category",
     "Drop files here to upload": "Drop files here to upload",
     "Edit Chat": "Edit Chat",
@@ -144,13 +139,10 @@
   },
   "file": {
     "Edit File": "Edit File",
-    "Error": "Error",
     "Filename": "Filename",
     "Filename - Tooltip": "Name of the file",
     "Finished": "Finished",
-    "Processing": "Processing",
-    "Size": "Size",
-    "Size - Tooltip": "File size in bytes"
+    "Processing": "Processing"
   },
   "form": {
     "Edit Form": "Edit Form",
@@ -471,7 +463,15 @@
     "Zone - Tooltip": "Availability zone",
     "empty": "empty",
     "items": "items",
-    "{total} in total": "{total} in total"
+    "{total} in total": "{total} in total",
+    "Chats": "Chats",
+    "Size": "Size",
+    "Size - Tooltip": "File size in bytes",
+    "Count": "Count",
+    "Provider - Tooltip": "Cloud provider name",
+    "Error": "Error",
+    "Please select a provider": "Please select a provider",
+    "Provider": "Provider"
   },
   "graph": {
     "Circular": "Circular",

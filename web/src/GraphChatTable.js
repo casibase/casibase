@@ -103,7 +103,7 @@ class GraphChatTable extends React.Component {
     ];
 
     return (
-      <Card size="small" title={i18next.t("chat:Chats")} style={{marginTop: "20px", marginLeft: "5px"}} type="inner">
+      <Card size="small" title={i18next.t("general:Chats")} style={{marginTop: "20px", marginLeft: "5px"}} type="inner">
         <Table
           columns={columns}
           dataSource={chats}
