@@ -328,7 +328,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 				return nil, err
 			}
 
-			if GetOpenAiMaxTokens(model) > modelResult.TotalTokenCount {
+			if getContextLength(model) > modelResult.TotalTokenCount {
 				return modelResult, nil
 			} else {
 				return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))

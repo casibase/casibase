@@ -101,7 +101,9 @@ func getCompatibleModel(model string) string {
 	// Handle generic model families
 	if strings.Contains(model, "gpt-3.5-turbo") {
 		return openai.GPT3Dot5Turbo
-	} else if strings.Contains(model, "gpt-4") {
+	} else if strings.Contains(model, "gpt-5") || strings.Contains(model, "gpt-4") || 
+		strings.Contains(model, "deep-research") || strings.Contains(model, "o1") || 
+		strings.Contains(model, "o3") || strings.Contains(model, "o4") {
 		return openai.GPT4
 	}
 
