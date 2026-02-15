@@ -176,7 +176,7 @@ func getContextLength(typ string) int {
 		} else {
 			return 4096
 		}
-	} else if strings.Contains(typ, "gpt") || strings.HasPrefix(typ, "o") {
+	} else if strings.Contains(typ, "gpt") || strings.HasPrefix(typ, "o") || strings.Contains(typ, "deep-research") {
 		if strings.Contains(typ, "curie") {
 			return 2048
 		} else if strings.Contains(typ, "o4") {
@@ -185,6 +185,14 @@ func getContextLength(typ string) int {
 			return 100000
 		} else if strings.Contains(typ, "o1") {
 			return 128000
+		} else if strings.Contains(typ, "deep-research") {
+			return 100000
+		} else if strings.Contains(typ, "5.2") {
+			return 400000
+		} else if strings.Contains(typ, "5.1") {
+			return 400000
+		} else if strings.Contains(typ, "5") {
+			return 400000
 		} else if strings.Contains(typ, "4.5") || strings.Contains(typ, "4o") {
 			return 128000
 		} else if strings.Contains(typ, "4.1") {

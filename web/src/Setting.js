@@ -1378,6 +1378,7 @@ export function redirectToLogin() {
 
 const openaiModels = [
   {id: "dall-e-3", name: "dall-e-3"},
+  {id: "gpt-image-1", name: "gpt-image-1"},
   {id: "gpt-3.5-turbo", name: "gpt-3.5-turbo"},
   {id: "gpt-4", name: "gpt-4"},
   {id: "gpt-4-turbo", name: "gpt-4-turbo"},
@@ -1388,6 +1389,9 @@ const openaiModels = [
   {id: "gpt-4.1", name: "gpt-4.1"},
   {id: "gpt-4.1-mini", name: "gpt-4.1-mini"},
   {id: "gpt-4.1-nano", name: "gpt-4.1-nano"},
+  {id: "gpt-4.5", name: "gpt-4.5"},
+  {id: "gpt-4.5-mini", name: "gpt-4.5-mini"},
+  {id: "gpt-4.5-nano", name: "gpt-4.5-nano"},
   {id: "o1", name: "o1"},
   {id: "o1-pro", name: "o1-pro"},
   {id: "o3", name: "o3"},
@@ -1396,7 +1400,15 @@ const openaiModels = [
   {id: "gpt-5", name: "gpt-5"},
   {id: "gpt-5-mini", name: "gpt-5-mini"},
   {id: "gpt-5-nano", name: "gpt-5-nano"},
+  {id: "gpt-5.1", name: "gpt-5.1"},
+  {id: "gpt-5.1-mini", name: "gpt-5.1-mini"},
+  {id: "gpt-5.1-nano", name: "gpt-5.1-nano"},
+  {id: "gpt-5.2", name: "gpt-5.2"},
+  {id: "gpt-5.2-mini", name: "gpt-5.2-mini"},
+  {id: "gpt-5.2-nano", name: "gpt-5.2-nano"},
+  {id: "gpt-5.2-chat", name: "gpt-5.2-chat"},
   {id: "gpt-5-chat-latest", name: "gpt-5-chat-latest"},
+  {id: "deep-research", name: "deep-research"},
 ];
 
 const openaiEmbeddings = [

@@ -127,6 +127,34 @@ func CalculateOpenAIModelPrice(model string, modelResult *ModelResult, lang stri
 		}
 		modelResult.Currency = "USD"
 
+	// gpt 5.2 model
+	case strings.Contains(model, "gpt-5.2"):
+		if strings.Contains(model, "5.2-mini") {
+			inputPricePerThousandTokens = 0.00025
+			outputPricePerThousandTokens = 0.002
+		} else if strings.Contains(model, "5.2-nano") {
+			inputPricePerThousandTokens = 0.00005
+			outputPricePerThousandTokens = 0.0004
+		} else {
+			inputPricePerThousandTokens = 0.00125
+			outputPricePerThousandTokens = 0.01
+		}
+		modelResult.Currency = "USD"
+
+	// gpt 5.1 model
+	case strings.Contains(model, "gpt-5.1"):
+		if strings.Contains(model, "5.1-mini") {
+			inputPricePerThousandTokens = 0.00025
+			outputPricePerThousandTokens = 0.002
+		} else if strings.Contains(model, "5.1-nano") {
+			inputPricePerThousandTokens = 0.00005
+			outputPricePerThousandTokens = 0.0004
+		} else {
+			inputPricePerThousandTokens = 0.00125
+			outputPricePerThousandTokens = 0.01
+		}
+		modelResult.Currency = "USD"
+
 	// gpt 5.0 model
 	case strings.Contains(model, "gpt-5"):
 		if strings.Contains(model, "5-mini") {
@@ -140,6 +168,32 @@ func CalculateOpenAIModelPrice(model string, modelResult *ModelResult, lang stri
 			outputPricePerThousandTokens = 0.01
 		}
 		modelResult.Currency = "USD"
+
+	// gpt 4.5 model
+	case strings.Contains(model, "gpt-4.5"):
+		if strings.Contains(model, "4.5-mini") {
+			inputPricePerThousandTokens = 0.0004
+			outputPricePerThousandTokens = 0.0016
+		} else if strings.Contains(model, "4.5-nano") {
+			inputPricePerThousandTokens = 0.0001
+			outputPricePerThousandTokens = 0.0004
+		} else {
+			inputPricePerThousandTokens = 0.002
+			outputPricePerThousandTokens = 0.008
+		}
+		modelResult.Currency = "USD"
+
+	// deep-research model
+	case strings.Contains(model, "deep-research"):
+		inputPricePerThousandTokens = 0.002
+		outputPricePerThousandTokens = 0.008
+		modelResult.Currency = "USD"
+
+	// gpt-image-1 model
+	case strings.Contains(model, "gpt-image-1"):
+		modelResult.TotalPrice = float64(modelResult.ImageCount) * 0.08
+		modelResult.Currency = "USD"
+		return nil
 
 	// dall-e model
 	case strings.Contains(model, "dall-e-3"):
@@ -175,6 +229,9 @@ Language models:
 | GPT-4.1               | 100K    | $0.002                   | $0.008                   |
 | GPT-4.1-mini          | 100K    | $0.0004	                 | $0.0016                  |
 | GPT-4.1-nano          | 100K    | $0.0001                  | $0.0004                  |
+| GPT-4.5               | 100K    | $0.002                   | $0.008                   |
+| GPT-4.5-mini          | 100K    | $0.0004                  | $0.0016                  |
+| GPT-4.5-nano          | 100K    | $0.0001                  | $0.0004                  |
 | o1                    | 200K    | $0.015                   | $0.060                   |
 | o1-pro                | 200K    | $0.15                    | $0.6                     |
 | o3                    | 200K    | $0.002                   | $0.008                   |
@@ -183,16 +240,25 @@ Language models:
 | GPT-5                 | 400K    | $0.00125                 | $0.01                    |
 | GPT-5-mini            | 400K    | $0.00025                 | $0.002                   |
 | GPT-5-nano            | 400K    | $0.00005                 | $0.0004                  |
+| GPT-5.1               | 400K    | $0.00125                 | $0.01                    |
+| GPT-5.1-mini          | 400K    | $0.00025                 | $0.002                   |
+| GPT-5.1-nano          | 400K    | $0.00005                 | $0.0004                  |
+| GPT-5.2               | 400K    | $0.00125                 | $0.01                    |
+| GPT-5.2-mini          | 400K    | $0.00025                 | $0.002                   |
+| GPT-5.2-nano          | 400K    | $0.00005                 | $0.0004                  |
+| GPT-5.2-chat          | 400K    | $0.00125                 | $0.01                    |
 | GPT-5-chat-latest     | 400K    | $0.00125                 | $0.01                    |
+| Deep-Research         | 200K    | $0.002                   | $0.008                   |
 Image models:
 
-| Models   | Quality | Resolution               | Price (per image) |
-|----------|---------|--------------------------|------------------|
-| Dall-E-3 | Standard| 1024 * 1024              | N/A              |
-|          | Standard| 1024 * 1792, 1792 * 1024 | $0.08            |
-| Dall-E-3 | HD      | 1024 * 1024              | N/A              |
-|          | HD      | 1024 * 1792, 1792 * 1024 | N/A              |
-| Dall-E-2 | Standard| 1024 * 1024              | N/A              |
+| Models       | Quality | Resolution               | Price (per image) |
+|--------------|---------|--------------------------|------------------|
+| Dall-E-3     | Standard| 1024 * 1024              | N/A              |
+|              | Standard| 1024 * 1792, 1792 * 1024 | $0.08            |
+| Dall-E-3     | HD      | 1024 * 1024              | N/A              |
+|              | HD      | 1024 * 1792, 1792 * 1024 | N/A              |
+| Dall-E-2     | Standard| 1024 * 1024              | N/A              |
+| GPT-Image-1  | Standard| 1024 * 1024              | $0.08            |
 `
 }
 

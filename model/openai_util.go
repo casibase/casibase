@@ -62,7 +62,11 @@ func getOpenAiModelType(model string) string {
 	chatModels := []string{
 		"gpt-3.5-turbo", "gpt-4-turbo", "gpt-4", "gpt-4o",
 		"gpt-4o-2024-08-06", "gpt-4o-mini", "gpt-4o-mini-2024-07-18", "gpt-4.1",
-		"gpt-4.1-mini", "gpt-4.1-nano", "o1", "o1-pro", "o3", "o3-mini", "o4-mini", "gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-5-chat-latest", "custom-model",
+		"gpt-4.1-mini", "gpt-4.1-nano", "gpt-4.5", "gpt-4.5-mini", "gpt-4.5-nano",
+		"o1", "o1-pro", "o3", "o3-mini", "o4-mini",
+		"gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-5.1", "gpt-5.1-mini", "gpt-5.1-nano",
+		"gpt-5.2", "gpt-5.2-mini", "gpt-5.2-nano", "gpt-5.2-chat", "gpt-5-chat-latest",
+		"deep-research", "custom-model",
 	}
 
 	completionModels := []string{
