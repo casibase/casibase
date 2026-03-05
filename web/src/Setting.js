@@ -2350,6 +2350,9 @@ export function getLogo(themes, storeLogoUrl) {
   if (storeLogoUrl && storeLogoUrl !== defaultLogoUrl) {
     logoUrl = storeLogoUrl;
   }
+  if (!logoUrl) {
+    logoUrl = defaultLogoUrl;
+  }
   logoUrl = logoUrl.replace("https://cdn.casibase.org", Conf.StaticBaseUrl);
   if (themes.includes("dark")) {
     return logoUrl.replace(/\.png$/, "_white.png");
