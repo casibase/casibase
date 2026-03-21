@@ -691,7 +691,6 @@ github.com/lithammer/shortuuid v3.0.0+incompatible h1:NcD0xWW/MZYXEHa6ITy6kaXN5n
 github.com/lithammer/shortuuid v3.0.0+incompatible/go.mod h1:FR74pbAuElzOUuenUHTK2Tciko1/vKuIKS9dSkDrA4w=
 github.com/luthermonson/go-proxmox v0.2.1 h1:RkVM1oS9PxpS336FoM9nZujbpUwNwTCvAdOlPLsGxf4=
 github.com/luthermonson/go-proxmox v0.2.1/go.mod h1:wkD6045y9lKBCP0sJGjNqmlBCo0vwRwnfhmsrPBTu34=
-github.com/lyft/protoc-gen-validate v0.0.13/go.mod h1:XbGvPuh87YZc5TdIa2/I4pLk0QoUACkjt2znoq26NVQ=
 github.com/magefile/mage v1.14.0 h1:6QDX3g6z1YvJ4olPhT1wksUcSa/V0a1B+pJb73fBjyo=
 github.com/magefile/mage v1.14.0/go.mod h1:z5UZb/iS3GoOSn0JgWuiw7dxlurVYTu+/jHXqQg881A=
 github.com/magiconair/properties v1.8.7 h1:IeQXZAiQcpL9mgcAe1Nu6cX9LLw6ExEHKjN0VQdvPDY=
@@ -1000,14 +999,14 @@ github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7 h1:epCh84lMvA70
 github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7/go.mod h1:q4W45IWZaF22tdD+VEXcAWRA037jwmWEB5VWYORlTpc=
 github.com/tealeg/xlsx v1.0.5 h1:+f8oFmvY8Gw1iUXzPk+kz+4GpbDZPK1FhPiQRd+ypgE=
 github.com/tealeg/xlsx v1.0.5/go.mod h1:btRS8dz54TDnvKNosuAqxrM1QgN1udgk9O34bDCnORM=
-github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1074/go.mod h1:r5r4xbfxSaeR04b166HGsBa/R4U3SueirEUpXGuw+Q0=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1115/go.mod h1:r5r4xbfxSaeR04b166HGsBa/R4U3SueirEUpXGuw+Q0=
-github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1116 h1:hd0TUuEj077JDFJfCVj9WR4P14FYWIROTh13Mq0s0tM=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1116/go.mod h1:r5r4xbfxSaeR04b166HGsBa/R4U3SueirEUpXGuw+Q0=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.57 h1:SciPs1sSbUsGffDyybdCwZSn6A9x07lWXi3uI8/l31s=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.57/go.mod h1:r5r4xbfxSaeR04b166HGsBa/R4U3SueirEUpXGuw+Q0=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cvm v1.0.1116 h1:BjChmTQBlggr2KlEvPYZ5hhIg3re5sKLdzCkLpG7f2Q=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cvm v1.0.1116/go.mod h1:UxYpiD9axTPEP68ZeiRZLJT2XupwW2m8nSvR12hNpBc=
-github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1074 h1:ZDLfvOeWHW5jWFRrfuryuPmaiby1W3tAqxx1hvnBi+U=
-github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1074/go.mod h1:6pNHW98ensuFt7LC/OpDQIfQ3XpGpxIlupgzYOD3l0E=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.3.57 h1:8MHFkK9cNg91/M/Bib/cJFtdbSkPglwvFDsyffOr/94=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.3.57/go.mod h1:czSGdIDC/tBHPzK4zCzfxQvt8NES9vXbaKmOj/OgL5s=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tbaas v1.0.1115 h1:tG8pHXfS+/QVxcMfXW5ROvachiMm+v8WV5AvJyb4RBQ=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tbaas v1.0.1115/go.mod h1:on3m9ALT6gDYRCLZLUK5OEraAmes/o04tJr0wFrZKow=
 github.com/tidwall/gjson v1.14.2/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=

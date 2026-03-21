@@ -33,3 +33,6 @@ lastupdate.tmp
 commentsRouter*.go
 
 dist/
+
+# Local SQLite database (dev)
+*.db

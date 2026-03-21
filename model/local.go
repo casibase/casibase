@@ -81,8 +81,8 @@ func (p *LocalModelProvider) GetPricing() string {
 }
 
 func (p *LocalModelProvider) CalculatePrice(modelResult *ModelResult, lang string) error {
-	// local custom model:
-	if p.subType == "custom-model" {
+	// local custom model or Custom type provider: use user-configured prices
+	if p.subType == "custom-model" || p.typ == "Custom" {
 		inputPrice := getPrice(modelResult.PromptTokenCount, p.inputPricePerThousandTokens)
 		outputPrice := getPrice(modelResult.ResponseTokenCount, p.outputPricePerThousandTokens)
 		modelResult.TotalPrice = AddPrices(inputPrice, outputPrice)
@@ -185,7 +185,13 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	}
 
 	model := p.subType
-	if model == "custom-model" && p.compatibleProvider != "" {
+	if p.typ == "Custom" {
+		// For Custom type, use subType directly as the model name;
+		// only fall back if it's the placeholder "custom-model" and a compatibleProvider is set
+		if model == "custom-model" && p.compatibleProvider != "" {
+			model = p.compatibleProvider
+		}
+	} else if model == "custom-model" && p.compatibleProvider != "" {
 		model = p.compatibleProvider
 	} else if model == "custom-model" && p.compatibleProvider == "" {
 		model = "gpt-3.5-turbo"

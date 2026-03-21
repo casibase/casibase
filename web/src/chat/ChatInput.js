@@ -15,7 +15,7 @@
 import React from "react";
 import {Button} from "antd";
 import {Sender} from "@ant-design/x";
-import {CloseOutlined, GlobalOutlined} from "@ant-design/icons";
+import {CloseOutlined, GlobalOutlined, PictureOutlined} from "@ant-design/icons";
 import ChatFileInput from "./ChatFileInput";
 import UploadFileArea from "./UploadFileArea";
 import ChatInputMenu from "./ChatInputMenu";
@@ -39,6 +39,7 @@ const ChatInput = ({
   isVoiceInput,
   webSearchEnabled,
   onWebSearchChange,
+  onSendImage,
 }) => {
 
   let storageThemeAlgorithm = [];
@@ -183,6 +184,20 @@ const ChatInput = ({
               disableFileUpload={store?.disableFileUpload}
               store={store}
               chat={chat}
+            />
+          }
+          actions={
+            <Button
+              type="text"
+              icon={<PictureOutlined />}
+              title={i18next.t("chat:Generate Image")}
+              disabled={sendButtonDisabled}
+              onClick={() => {
+                if (!sendButtonDisabled && onSendImage) {
+                  onSendImage(value, webSearchEnabled);
+                  onChange("");
+                }
+              }}
             />
           }
           loading={loading}

@@ -57,9 +57,9 @@ require (
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/tealeg/xlsx v1.0.5
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1116
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.57
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cvm v1.0.1116
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1074
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.3.57
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tbaas v1.0.1115
 	github.com/ua-parser/uap-go v0.0.0-20230823213814-f77b3e91e9dc
 	github.com/volcengine/volcengine-go-sdk v1.0.141
@@ -305,3 +305,5 @@ require (
 replace github.com/sashabaranov/go-openai => github.com/casibase/go-openai v1.39.0
 
 replace google.golang.org/api v0.153.0 => google.golang.org/api v0.150.0
+
+replace github.com/lyft/protoc-gen-validate => github.com/envoyproxy/protoc-gen-validate v0.1.0

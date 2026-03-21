@@ -282,7 +282,7 @@ const MessageItem = ({
       return renderText(mssageCarrier.parseAnswerWithCarriers(message.text).finalAnswer);
     }
 
-    return message.html;
+    return message.html || renderText(message.text);
   };
 
   const renderReasoningBubble = () => {
