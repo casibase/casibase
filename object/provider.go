@@ -22,6 +22,7 @@ import (
 	"github.com/casibase/casibase/agent"
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/i18n"
+	"github.com/casibase/casibase/image"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/scan"
 	"github.com/casibase/casibase/storage"
@@ -63,6 +64,7 @@ type Provider struct {
 
 	InputPricePerThousandTokens  float64 `xorm:"DECIMAL(10, 4)" json:"inputPricePerThousandTokens"`
 	OutputPricePerThousandTokens float64 `xorm:"DECIMAL(10, 4)" json:"outputPricePerThousandTokens"`
+	InputPricePerImage           float64 `xorm:"DECIMAL(10, 4)" json:"inputPricePerImage"`
 	Currency                     string  `xorm:"varchar(100)" json:"currency"`
 
 	UserKey        string `xorm:"varchar(1000)" json:"userKey"`
@@ -383,6 +385,19 @@ func (p *Provider) GetSpeechToTextProvider(lang string) (stt.SpeechToTextProvide
 	return pProvider, nil
 }
 
+func (p *Provider) GetTextToImageProvider(lang string) (image.TextToImageProvider, error) {
+	pProvider, err := image.GetTextToImageProvider(p.Type, p.SubType, p.ClientSecret, p.ProviderUrl, p.InputPricePerImage, p.Currency)
+	if err != nil {
+		return nil, err
+	}
+
+	if pProvider == nil {
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:the Text-to-Image provider type: %s is not supported"), p.Type)
+	}
+
+	return pProvider, nil
+}
+
 func (p *Provider) GetScanProvider(lang string) (scan.ScanProvider, error) {
 	pProvider, err := scan.GetScanProvider(p.Type, p.ClientId, lang)
 	if err != nil {
@@ -516,6 +531,9 @@ func collectProviderNames(store *Store) []string {
 	}
 	if store.SpeechToTextProvider != "" {
 		providerNames = append(providerNames, store.SpeechToTextProvider)
+	}
+	if store.TextToImageProvider != "" {
+		providerNames = append(providerNames, store.TextToImageProvider)
 	}
 	if store.AgentProvider != "" {
 		providerNames = append(providerNames, store.AgentProvider)

@@ -240,3 +240,24 @@ func GetDefaultSpeechToTextProvider() (*Provider, error) {
 
 	return &provider, nil
 }
+
+func GetDefaultTextToImageProvider() (*Provider, error) {
+	provider := Provider{Owner: "admin", Category: "Text-to-Image", IsDefault: true}
+	existed, err := adapter.engine.UseBool("is_default").Get(&provider)
+	if err != nil {
+		return &provider, err
+	}
+
+	if providerAdapter != nil && !existed {
+		existed, err = providerAdapter.engine.UseBool("is_default").Get(&provider)
+		if err != nil {
+			return &provider, err
+		}
+	}
+
+	if !existed {
+		return nil, nil
+	}
+
+	return &provider, nil
+}

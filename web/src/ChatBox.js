@@ -148,6 +148,33 @@ class ChatBox extends React.Component {
     this.setState({value: "", files: []});
   };
 
+  handleSendImage = (value, webSearchEnabled = false) => {
+    // abort because the remaining recognition results are useless
+    this.sttHelper.stopRecognition();
+
+    let newValue = value;
+    this.state.files.forEach(uploadedFile => {
+      newValue = uploadedFile.value + "\n" + newValue;
+    });
+
+    if (newValue === "" || this.props.disableInput) {
+      return;
+    }
+
+    let fileName = "";
+    if (this.state.files[0]) {
+      fileName = this.state.files[0].file.name;
+    } else if (this.copyFileName) {
+      const dateString = moment().format("YYYYMMDD_HHmmss");
+      const fileExtension = this.copyFileName.match(/\..+$/)[0];
+      fileName = dateString + fileExtension;
+      this.copyFileName = null;
+    }
+
+    this.props.sendImageMessage(newValue, fileName, webSearchEnabled);
+    this.setState({value: "", files: []});
+  };
+
   handleRegenerate = (index) => {
     // can only regenerate after sending the message
     const messages = this.state.messages || [];
@@ -373,6 +400,7 @@ class ChatBox extends React.Component {
               onFileChange={(files) => this.setState({files})}
               onChange={(value) => this.setState({value})}
               onSend={this.handleSend}
+              onSendImage={this.handleSendImage}
               loading={this.props.loading}
               disableInput={this.props.disableInput}
               messageError={this.props.messageError}

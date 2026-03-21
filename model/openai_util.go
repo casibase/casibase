@@ -97,7 +97,7 @@ func getOpenAiModelType(model string) string {
 		}
 	}
 
-	return "Unknown"
+	return "Chat"
 }
 
 func OpenaiRawMessagesToMessages(messages []*RawMessage) []openai.ChatCompletionMessage {

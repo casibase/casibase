@@ -70,6 +70,7 @@ type Store struct {
 	TextToSpeechProvider string   `xorm:"varchar(100)" json:"textToSpeechProvider"`
 	EnableTtsStreaming   bool     `xorm:"bool" json:"enableTtsStreaming"`
 	SpeechToTextProvider string   `xorm:"varchar(100)" json:"speechToTextProvider"`
+	TextToImageProvider  string   `xorm:"varchar(100)" json:"textToImageProvider"`
 	AgentProvider        string   `xorm:"varchar(100)" json:"agentProvider"`
 	VectorStoreId        string   `xorm:"varchar(100)" json:"vectorStoreId"`
 	BuiltinTools         []string `xorm:"varchar(500)" json:"builtinTools"`
@@ -272,6 +273,15 @@ func (store *Store) GetTextToSpeechProvider() (*Provider, error) {
 	}
 
 	providerId := util.GetIdFromOwnerAndName(store.Owner, store.TextToSpeechProvider)
+	return GetProvider(providerId)
+}
+
+func (store *Store) GetTextToImageProvider() (*Provider, error) {
+	if store.TextToImageProvider == "" {
+		return GetDefaultTextToImageProvider()
+	}
+
+	providerId := util.GetIdFromOwnerAndName(store.Owner, store.TextToImageProvider)
 	return GetProvider(providerId)
 }
 

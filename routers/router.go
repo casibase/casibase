@@ -88,6 +88,7 @@ func initAPI() {
 
 	beego.Router("/api/generate-text-to-speech-audio", &controllers.ApiController{}, "POST:GenerateTextToSpeechAudio")
 	beego.Router("/api/generate-text-to-speech-audio-stream", &controllers.ApiController{}, "GET:GenerateTextToSpeechAudioStream")
+	beego.Router("/api/generate-text-to-image", &controllers.ApiController{}, "POST:GenerateTextToImage")
 	beego.Router("/api/process-speech-to-text", &controllers.ApiController{}, "POST:ProcessSpeechToText")
 
 	beego.Router("/api/get-global-chats", &controllers.ApiController{}, "GET:GetGlobalChats")

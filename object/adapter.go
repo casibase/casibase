@@ -131,6 +131,11 @@ func NewAdapterWithDbName(driverName string, dataSourceName string, dbName strin
 }
 
 func (a *Adapter) CreateDatabase() error {
+	// SQLite uses a single file; the database is created on first open — no CREATE DATABASE.
+	if a.driverName == "sqlite" || a.driverName == "sqlite3" {
+		return nil
+	}
+
 	engine, err := xorm.NewEngine(a.driverName, a.dataSourceName)
 	if err != nil {
 		return err

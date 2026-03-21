@@ -817,6 +817,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_local.jpg`,
         url: "",
       },
+      "Custom": {
+        logo: `${StaticBaseUrl}/img/social_default.png`,
+        url: "",
+      },
       "Azure": {
         logo: `${StaticBaseUrl}/img/social_azure.png`,
         url: "https://azure.microsoft.com/",
@@ -1098,6 +1102,20 @@ export function getOtherProviderInfo() {
         url: "https://cloud.tencent.com/",
       },
     },
+    "Text-to-Image": {
+      "OpenAI": {
+        logo: `${StaticBaseUrl}/img/social_openai.svg`,
+        url: "https://platform.openai.com",
+      },
+      "Custom": {
+        logo: `${StaticBaseUrl}/img/social_default.png`,
+        url: "",
+      },
+      "Silicon Flow": {
+        logo: `${StaticBaseUrl}/img/social_silicon_flow.png`,
+        url: "https://www.siliconflow.com/",
+      },
+    },
     "Scan": {
       "Nmap": {
         logo: `${StaticBaseUrl}/img/social_nmap.png`,
@@ -1286,6 +1304,7 @@ export function getProviderTypeOptions(category) {
         {id: "Silicon Flow", name: "Silicon Flow"},
         {id: "GitHub", name: "GitHub"},
         {id: "Writer", name: "Writer"},
+        {id: "Custom", name: "Custom"},
       ]
     );
   } else if (category === "Embedding") {
@@ -1365,6 +1384,12 @@ export function getProviderTypeOptions(category) {
       {id: "ZAP", name: "ZAP"},
       {id: "Subfinder", name: "Subfinder"},
       {id: "httpx", name: "httpx"},
+    ];
+  } else if (category === "Text-to-Image") {
+    return [
+      {id: "OpenAI", name: "OpenAI"},
+      {id: "Custom", name: "Custom"},
+      {id: "Silicon Flow", name: "Silicon Flow"},
     ];
   } else {
     return [];
@@ -1647,6 +1672,10 @@ export function getModelSubTypeOptions(type) {
       {id: "llama3:70b", name: "llama3:70b"},
     ];
   } else if (type === "Local") {
+    return [
+      {id: "custom-model", name: "custom-model"},
+    ];
+  } else if (type === "Custom") {
     return [
       {id: "custom-model", name: "custom-model"},
     ];
@@ -1935,6 +1964,8 @@ export function getProviderSubTypeOptions(category, type) {
       return [
         {id: "Default", name: "Default"},
       ];
+    } else {
+      return [];
     }
   } else if (category === "Text-to-Speech") {
     if (type === "Alibaba Cloud") {
@@ -1952,6 +1983,23 @@ export function getProviderSubTypeOptions(category, type) {
     } else {
       return [];
     }
+  } else if (category === "Text-to-Image") {
+    if (type === "OpenAI") {
+      return [
+        {id: "dall-e-3", name: "dall-e-3"},
+        {id: "dall-e-2", name: "dall-e-2"},
+      ];
+    } else if (type === "Custom") {
+      return [
+        {id: "custom-image-model", name: "custom-image-model"},
+      ];
+    } else if (type === "Silicon Flow") {
+      return [
+        {id: "Qwen/Qwen-Image", name: "Qwen/Qwen-Image"},
+      ];
+    } else {
+      return [];
+    }
   } else if (category === "Bot") {
     if (type === "Tencent") {
       return [
@@ -1961,6 +2009,8 @@ export function getProviderSubTypeOptions(category, type) {
       return [];
     }
   }
+
+  return [];
 }
 
 export function getProviderAzureApiVersionOptions() {

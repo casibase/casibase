@@ -25,6 +25,7 @@ import ModelTestWidget from "./common/TestModelWidget";
 import TtsTestWidget from "./common/TestTtsWidget";
 import EmbedTestWidget from "./common/TestEmbedWidget";
 import TestScanWidget from "./common/TestScanWidget";
+import TestImageWidget from "./common/TestImageWidget";
 import Editor from "./common/Editor";
 
 const {Option} = Select;
@@ -118,7 +119,7 @@ class ProviderEditPage extends React.Component {
   }
 
   getClientSecretLabel(provider) {
-    if (["Storage", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(provider.category)) {
+    if (["Storage", "Embedding", "Text-to-Speech", "Speech-to-Text", "Text-to-Image"].includes(provider.category)) {
       if (provider.type === "Baidu Cloud") {
         return Setting.getLabel(i18next.t("general:Access secret"), i18next.t("general:Access secret - Tooltip"));
       }
@@ -307,6 +308,9 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Text-to-Speech") {
                 this.updateProviderField("type", "Alibaba Cloud");
                 this.updateProviderField("subType", "cosyvoice-v1");
+              } else if (value === "Text-to-Image") {
+                this.updateProviderField("type", "OpenAI");
+                this.updateProviderField("subType", "dall-e-3");
               } else if (value === "Speech-to-Text") {
                 this.updateProviderField("type", "Alibaba Cloud");
                 this.updateProviderField("subType", "paraformer-realtime-v1");
@@ -331,6 +335,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Blockchain", name: "Blockchain"},
                   {id: "Video", name: "Video"},
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
+                  {id: "Text-to-Image", name: "Text-to-Image"},
                   {id: "Speech-to-Text", name: "Speech-to-Text"},
                   {id: "Bot", name: "Bot"},
                   {id: "Scan", name: "Scan"},
@@ -399,6 +404,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "gpt-4o");
                 } else if (value === "Writer") {
                   this.updateProviderField("subType", "palmyra-x5");
+                } else if (value === "Custom") {
+                  this.updateProviderField("subType", "custom-model");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
@@ -428,6 +435,14 @@ class ProviderEditPage extends React.Component {
                 if (value === "Alibaba Cloud") {
                   this.updateProviderField("subType", "cosyvoice-v1");
                 }
+              } else if (this.state.provider.category === "Text-to-Image") {
+                if (value === "OpenAI") {
+                  this.updateProviderField("subType", "dall-e-3");
+                } else if (value === "Custom") {
+                  this.updateProviderField("subType", "custom-image-model");
+                } else if (value === "Silicon Flow") {
+                  this.updateProviderField("subType", "Qwen/Qwen-Image");
+                }
               } else if (this.state.provider.category === "Speech-to-Text") {
                 if (value === "Alibaba Cloud") {
                   this.updateProviderField("subType", "paraformer-realtime-v1");
@@ -445,7 +460,7 @@ class ProviderEditPage extends React.Component {
             >
               {
                 Setting.getProviderTypeOptions(this.state.provider.category)
-                // .sort((a, b) => a.name.localeCompare(b.name))
+                  // .sort((a, b) => a.name.localeCompare(b.name))
                   .map((item, index) => <Option key={index} value={item.name}>
                     <img width={20} height={20} style={{marginBottom: "3px", marginRight: "10px"}} src={Setting.getProviderLogoURL({category: this.state.provider.category, type: item.name})} alt={item.name} />
                     {item.name}
@@ -455,44 +470,22 @@ class ProviderEditPage extends React.Component {
           </Col>
         </Row>
         {
-          !["Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text", "Bot"].includes(this.state.provider.category) ? null : (
+          !["Model", "Embedding", "Agent", "Text-to-Speech", "Text-to-Image", "Speech-to-Text", "Bot"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("provider:Sub type"), i18next.t("provider:Sub type - Tooltip"))} :
               </Col>
               <Col span={22} >
-                {this.state.provider.type === "Ollama" ? (
-                  <AutoComplete
-                    style={{width: "100%"}}
-                    value={this.state.provider.subType}
-                    disabled={isRemote}
-                    onChange={(value) => {
-                      this.updateProviderField("subType", value);
-                    }}
-                    options={Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type).map((item) => Setting.getOption(item.name, item.id))}
-                    placeholder="Please select or enter the model name"
-                  />
-                ) : (
-                  <Select
-                    virtual={false}
-                    style={{width: "100%"}}
-                    value={this.state.provider.subType}
-                    disabled={isRemote}
-                    onChange={(value) => {
-                      this.updateProviderField("subType", value);
-                    }}
-                    showSearch
-                    filterOption={(input, option) =>
-                      option.children.toLowerCase().includes(input.toLowerCase())
-                    }
-                  >
-                    {Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type)
-                      .map((item, index) => (
-                        <Option key={index} value={item.id}>{item.name}</Option>
-                      ))
-                    }
-                  </Select>
-                )}
+                <AutoComplete
+                  style={{width: "100%"}}
+                  value={this.state.provider.subType}
+                  disabled={isRemote}
+                  onChange={(value) => {
+                    this.updateProviderField("subType", value);
+                  }}
+                  options={Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type).map((item) => Setting.getOption(item.name, item.id))}
+                  placeholder="Please select or enter the model name"
+                />
               </Col>
             </Row>
           )
@@ -516,16 +509,16 @@ class ProviderEditPage extends React.Component {
         }
         {
           !(this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") &&
-          this.state.provider.category !== "Scan" &&
-          (
-            ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") ||
-              (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") ||
-              (this.state.provider.category === "Storage" && this.state.provider.type !== "OpenAI File System")) ||
-            (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
-            (this.state.provider.category === "Blockchain" && !["ChainMaker", "Ethereum"].includes(this.state.provider.type)) ||
-            ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
-            (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent", "Blockchain"].includes(this.state.provider.category)))
-          ) ? (
+            this.state.provider.category !== "Scan" &&
+            (
+              ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") ||
+                (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") ||
+                (this.state.provider.category === "Storage" && this.state.provider.type !== "OpenAI File System")) ||
+              (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
+              (this.state.provider.category === "Blockchain" && !["ChainMaker", "Ethereum"].includes(this.state.provider.type)) ||
+              ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
+              (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Text-to-Image", "Speech-to-Text", "Agent", "Blockchain"].includes(this.state.provider.category)))
+            ) ? (
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {this.getClientIdLabel(this.state.provider)} :
@@ -539,7 +532,7 @@ class ProviderEditPage extends React.Component {
             ) : null
         }
         {
-          (this.state.provider.type === "Local") ? (
+          (this.state.provider.type === "Local" || this.state.provider.type === "Custom") ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -562,7 +555,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          !(this.state.provider.category === "Model" && (this.state.provider.type === "Local" || this.state.provider.type === "Ollama")) ? null : (
+          !(this.state.provider.category === "Model" && (this.state.provider.type === "Local" || this.state.provider.type === "Ollama" || this.state.provider.type === "Custom")) ? null : (
             <>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -604,7 +597,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.type === "Local" || this.state.provider.type === "Ollama") ? (
+          (this.state.provider.type === "Local" || this.state.provider.type === "Ollama" || this.state.provider.type === "Custom") ? (
             <>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -753,7 +746,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text", "Scan"].includes(this.state.provider.category) || (this.state.provider.category === "Blockchain" && this.state.provider.type === "Ethereum") || (this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") ? null : (
+          ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Text-to-Image", "Speech-to-Text", "Scan"].includes(this.state.provider.category) || (this.state.provider.category === "Blockchain" && this.state.provider.type === "Ethereum") || (this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {this.getRegionLabel(this.state.provider)} :
@@ -1096,6 +1089,12 @@ class ProviderEditPage extends React.Component {
           onUpdateProvider={this.updateProviderField.bind(this)}
         />
         <TestScanWidget
+          provider={this.state.provider}
+          originalProvider={this.state.originalProvider}
+          account={this.props.account}
+          onUpdateProvider={this.updateProviderField.bind(this)}
+        />
+        <TestImageWidget
           provider={this.state.provider}
           originalProvider={this.state.originalProvider}
           account={this.props.account}

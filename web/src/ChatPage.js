@@ -25,6 +25,7 @@ import {renderReason, renderText} from "./ChatMessageRender";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
 import * as MessageBackend from "./backend/MessageBackend";
+import * as TextToImageBackend from "./backend/TextToImageBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import * as Conf from "./Conf";
@@ -325,6 +326,78 @@ class ChatPage extends BaseListPage {
         Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
       });
   }
+
+  sendImageMessage = (text, fileName, webSearchEnabled = false) => {
+    const newMessage = this.newMessage(text, fileName, false, false, webSearchEnabled);
+    MessageBackend.addMessage(newMessage).then((res) => {
+      if (res.status === "ok") {
+        const chat = res.data;
+        this.setState({
+          chat: chat,
+          messageLoading: true,
+          messageError: false,
+        });
+
+        // The backend `addMessage` creates a blank AI message automatically.
+        // We'll fetch all messages, locate the blank AI message, and use it to store the generated image.
+        MessageBackend.getChatMessages("admin", chat.name).then((res2) => {
+          if (res2.status !== "ok") {
+            return;
+          }
+          const messages = res2.data;
+          messages.forEach(message => {
+            message.html = renderText(message.text);
+          });
+          this.setState({messages: messages});
+          Setting.scrollToDiv(`chatbox-list-item-${messages.length}`);
+
+          const lastMessage = messages[messages.length - 1];
+          if (lastMessage && lastMessage.author === "AI" && lastMessage.text === "") {
+            // Generate the image
+            const storeId = `admin/${chat.store}`;
+            const messageId = `${lastMessage.owner}/${lastMessage.name}`;
+            TextToImageBackend.generateTextToImage(storeId, "", messageId, text).then((imageHtml) => {
+              if (imageHtml && imageHtml.startsWith("{")) {
+                const data = JSON.parse(imageHtml);
+                if (data.status === "error") {
+                  throw new Error(data.msg);
+                }
+              }
+
+              lastMessage.text = imageHtml;
+              lastMessage.html = renderText(imageHtml);
+              lastMessage.isReasoningPhase = false;
+
+              MessageBackend.updateMessage(lastMessage.owner, lastMessage.name, lastMessage).then(() => {
+                const updatedMessages = [...this.state.messages];
+                updatedMessages[updatedMessages.length - 1] = lastMessage;
+                this.setState({
+                  messages: updatedMessages,
+                  messageLoading: false,
+                });
+                Setting.scrollToDiv(`chatbox-list-item-${updatedMessages.length}`);
+              });
+            }).catch(err => {
+              lastMessage.errorText = err.message || err.toString();
+              MessageBackend.updateMessage(lastMessage.owner, lastMessage.name, lastMessage).then(() => {
+                this.setState({
+                  messageLoading: false,
+                  messageError: true,
+                });
+                this.getMessages(chat); // refetch
+              });
+            });
+          } else {
+            this.setState({messageLoading: false});
+          }
+        });
+      } else {
+        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
+      }
+    }).catch(error => {
+      Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+    });
+  };
 
   getMessages(chat) {
     this.setState({
@@ -837,6 +910,9 @@ class ChatPage extends BaseListPage {
                 messageError={this.state.messageError}
                 sendMessage={(text, fileName, isHidden = false, regenerate = false, webSearchEnabled = false) => {
                   this.sendMessage(text, fileName, isHidden, regenerate, webSearchEnabled);
+                }}
+                sendImageMessage={(text, fileName, webSearchEnabled = false) => {
+                  this.sendImageMessage(text, fileName, webSearchEnabled);
                 }}
                 onMessageEdit={this.handleMessageEdit}
                 onCancelMessage={this.cancelMessage}

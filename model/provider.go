@@ -103,6 +103,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewGitHubModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty)
 	} else if typ == "Writer" {
 		p, err = NewWriterModelProvider(subType, clientSecret, temperature, topP)
+	} else if typ == "Custom" {
+		p, err = NewLocalModelProvider("Custom", subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl, compatibleProvider, inputPricePerThousandTokens, outputPricePerThousandTokens, Currency)
 	} else {
 		return nil, nil
 	}
