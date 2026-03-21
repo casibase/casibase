@@ -41,7 +41,7 @@ const VectorTooltip = ({vectorScore, children}) => {
       <div style={{maxWidth: 800, fontSize: "14px", padding: "5px", boxSizing: "border-box"}}>
         <div style={{display: "flex", gap: "5px", flexWrap: "wrap"}}>
           <span><strong>{i18next.t("general:Name")}:</strong> {vectorScore.vector}</span>
-          <span><strong>{i18next.t("video:Score")}:</strong> {vectorScore.score}</span>
+          <span><strong>{i18next.t("video:Level")}:</strong> {vectorScore.score}</span>
           <span><strong>{i18next.t("store:File")}:</strong> {vectorData?.file}</span>
         </div>
         <div style={{marginTop: 8, paddingTop: 8, borderTop: "1px solid #d9d9d9"}}>
