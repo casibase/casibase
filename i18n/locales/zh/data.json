@@ -92,6 +92,10 @@
     "text can not be empty.": "文本不能为空。",
     "text cannot be empty": "文本不能为空"
   },
+  "general": {
+    "Failed to update": "Failed to update",
+    "The task does not exist": "The task does not exist"
+  },
   "message_answer": {
     "object.GetNearestKnowledge() error, %s": "object.GetNearestKnowledge() 错误，%s"
   },
@@ -119,18 +123,20 @@
     "Please add a model provider first": "请先添加模型提供商",
     "Please add an embedding provider first": "请先添加嵌入提供商",
     "Question message: [%s] doesn't exist": "问题消息：[%s] 不存在",
-    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() 错误，接收用户: ",
-    "The agent provider: %s is expected to be ": "代理提供商: %s 应该是 ",
+    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() error, the receiver user: ",
+    "The agent provider: %s is expected to be ": "The agent provider: %s is expected to be ",
     "The chat: %s is not found": "聊天：%s 未找到",
     "The default video provider should not be empty": "默认视频提供商不能为空",
     "The embedding provider for store: %s is not found": "存储 %s 的嵌入提供商未找到",
-    "The embedding provider: %s is expected to be ": "Embedding提供商: %s 应该是 ",
+    "The embedding provider: %s is expected to be ": "The embedding provider: %s is expected to be ",
     "The embedding provider: %s is not found": "嵌入提供商：%s 未找到",
     "The embedding provider: %s's client secret should not be empty": "嵌入提供商：%s 的客户端密钥不能为空",
+    "The file URL for: %s is empty": "The file URL for: %s is empty",
+    "The file: %s is not found": "The file: %s is not found",
     "The image provider for store: %s should not be empty": "存储 %s 的图像提供商不能为空",
     "The message: %s is not found": "消息：%s 未找到",
     "The model provider for store: %s is not found": "存储 %s 的模型提供商未找到",
-    "The model provider: %s is expected to be ": "模型提供商: %s 应该是 ",
+    "The model provider: %s is expected to be ": "The model provider: %s is expected to be ",
     "The model provider: %s is not found": "模型提供商：%s 未找到",
     "The model provider: %s's client secret should not be empty": "模型提供商：%s 的客户端密钥不能为空",
     "The provider is not found": "提供商未找到",
@@ -236,7 +242,8 @@
     "VMware API error, code = %d, message = %s": "VMware API 错误，错误码 = %d，错误信息 = %s"
   },
   "resource": {
-    "Invalid file data format": "无效的 file data format"
+    "Invalid file data format": "无效的 file data format",
+    "Only docx and pdf files are allowed": "Only docx and pdf files are allowed"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "存储提供商名称：[%s] 不存在"

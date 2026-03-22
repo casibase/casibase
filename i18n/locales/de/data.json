@@ -92,6 +92,10 @@
     "text can not be empty.": "Text darf nicht leer sein.",
     "text cannot be empty": "Text darf nicht leer sein"
   },
+  "general": {
+    "Failed to update": "Failed to update",
+    "The task does not exist": "The task does not exist"
+  },
   "message_answer": {
     "object.GetNearestKnowledge() error, %s": "object.GetNearestKnowledge() Fehler, %s"
   },
@@ -119,18 +123,20 @@
     "Please add a model provider first": "Bitte fügen Sie zuerst einen Modellanbieter hinzu",
     "Please add an embedding provider first": "Bitte fügen Sie zuerst einen Embedding-Anbieter hinzu",
     "Question message: [%s] doesn't exist": "Fragenachricht: [%s] existiert nicht",
-    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() Fehler, der Empfänger-Benutzer: ",
-    "The agent provider: %s is expected to be ": "Der Agent-Anbieter: %s wird erwartet als ",
+    "SendErrorEmail() error, the receiver user: ": "SendErrorEmail() error, the receiver user: ",
+    "The agent provider: %s is expected to be ": "The agent provider: %s is expected to be ",
     "The chat: %s is not found": "Der Chat: %s wurde nicht gefunden",
     "The default video provider should not be empty": "Der Standard-Videoanbieter darf nicht leer sein",
     "The embedding provider for store: %s is not found": "Der Embedding-Anbieter für Speicher: %s wurde nicht gefunden",
-    "The embedding provider: %s is expected to be ": "Der Embedding-Anbieter: %s wird erwartet als ",
+    "The embedding provider: %s is expected to be ": "The embedding provider: %s is expected to be ",
     "The embedding provider: %s is not found": "Der Embedding-Anbieter: %s wurde nicht gefunden",
     "The embedding provider: %s's client secret should not be empty": "Das Client-Secret des Embedding-Anbieters: %s darf nicht leer sein",
+    "The file URL for: %s is empty": "The file URL for: %s is empty",
+    "The file: %s is not found": "The file: %s is not found",
     "The image provider for store: %s should not be empty": "Der Bildanbieter für Speicher: %s darf nicht leer sein",
     "The message: %s is not found": "Die Nachricht: %s wurde nicht gefunden",
     "The model provider for store: %s is not found": "Der Modellanbieter für Speicher: %s wurde nicht gefunden",
-    "The model provider: %s is expected to be ": "Der Modellanbieter: %s wird erwartet als ",
+    "The model provider: %s is expected to be ": "The model provider: %s is expected to be ",
     "The model provider: %s is not found": "Der Modellanbieter: %s wurde nicht gefunden",
     "The model provider: %s's client secret should not be empty": "Das Client-Secret des Modellanbieters: %s darf nicht leer sein",
     "The provider is not found": "Der Anbieter wurde nicht gefunden",
@@ -236,7 +242,8 @@
     "VMware API error, code = %d, message = %s": "VMware API-Fehler, Code = %d, Nachricht = %s"
   },
   "resource": {
-    "Invalid file data format": "Ungültiger/e/s file data format"
+    "Invalid file data format": "Ungültiger/e/s file data format",
+    "Only docx and pdf files are allowed": "Only docx and pdf files are allowed"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] existiert nicht"

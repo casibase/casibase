@@ -92,6 +92,10 @@
     "text can not be empty.": "el texto no puede estar vacío.",
     "text cannot be empty": "el texto no puede estar vacío"
   },
+  "general": {
+    "Failed to update": "Failed to update",
+    "The task does not exist": "The task does not exist"
+  },
   "message_answer": {
     "object.GetNearestKnowledge() error, %s": "object.GetNearestKnowledge() error, %s"
   },
@@ -127,6 +131,8 @@
     "The embedding provider: %s is expected to be ": "The embedding provider: %s is expected to be ",
     "The embedding provider: %s is not found": "The embedding provider: %s no se encontró",
     "The embedding provider: %s's client secret should not be empty": "The embedding provider: %s's client secret no debe estar vacío",
+    "The file URL for: %s is empty": "The file URL for: %s is empty",
+    "The file: %s is not found": "The file: %s is not found",
     "The image provider for store: %s should not be empty": "The image provider for store: %s no debe estar vacío",
     "The message: %s is not found": "The message: %s no se encontró",
     "The model provider for store: %s is not found": "The model provider for store: %s no se encontró",
@@ -236,7 +242,8 @@
     "VMware API error, code = %d, message = %s": "Error de API de VMware, código = %d, mensaje = %s"
   },
   "resource": {
-    "Invalid file data format": "file data format inválido"
+    "Invalid file data format": "file data format inválido",
+    "Only docx and pdf files are allowed": "Only docx and pdf files are allowed"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] no existe"

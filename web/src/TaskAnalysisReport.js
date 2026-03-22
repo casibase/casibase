@@ -26,12 +26,12 @@ export default function TaskAnalysisReport({result}) {
   const metaItems = [
     {label: i18next.t("task:Unit Name"), value: result.title},
     {label: i18next.t("task:Designer"), value: result.designer},
-    {label: i18next.t("task:Stage"), value: result.stage},
+    {label: i18next.t("video:Stage"), value: result.stage},
     {label: i18next.t("task:Participants"), value: result.participants},
     {label: i18next.t("video:Grade"), value: result.grade},
     {label: i18next.t("task:Instructor"), value: result.instructor},
     {label: i18next.t("store:Subject"), value: result.subject},
-    {label: i18next.t("task:School"), value: result.school},
+    {label: i18next.t("video:School"), value: result.school},
     {label: i18next.t("task:Other Subjects"), value: result.otherSubjects},
     {label: i18next.t("task:Textbook"), value: result.textbook},
   ];
@@ -41,7 +41,7 @@ export default function TaskAnalysisReport({result}) {
     {title: i18next.t("task:Score"), dataIndex: "score", key: "score", width: "8%", render: (score) => `${score}${i18next.t("task:Score Unit")}`},
     {title: i18next.t("task:Advantages"), dataIndex: "advantage", key: "advantage", width: "27%"},
     {title: i18next.t("task:Disadvantages"), dataIndex: "disadvantage", key: "disadvantage", width: "27%"},
-    {title: i18next.t("task:Suggestions"), dataIndex: "suggestion", key: "suggestion", width: "26%"},
+    {title: i18next.t("task:Suggestion"), dataIndex: "suggestion", key: "suggestion", width: "26%"},
   ];
 
   const categories = result.categories || [];

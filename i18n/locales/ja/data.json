@@ -92,6 +92,10 @@
     "text can not be empty.": "テキストを空にすることはできません。",
     "text cannot be empty": "テキストを空にすることはできません"
   },
+  "general": {
+    "Failed to update": "Failed to update",
+    "The task does not exist": "The task does not exist"
+  },
   "message_answer": {
     "object.GetNearestKnowledge() error, %s": "object.GetNearestKnowledge() error, %s"
   },
@@ -127,6 +131,8 @@
     "The embedding provider: %s is expected to be ": "The embedding provider: %s is expected to be ",
     "The embedding provider: %s is not found": "The embedding provider: %s が見つかりません",
     "The embedding provider: %s's client secret should not be empty": "The embedding provider: %s's client secret は空であってはなりません",
+    "The file URL for: %s is empty": "The file URL for: %s is empty",
+    "The file: %s is not found": "The file: %s is not found",
     "The image provider for store: %s should not be empty": "The image provider for store: %s は空であってはなりません",
     "The message: %s is not found": "The message: %s が見つかりません",
     "The model provider for store: %s is not found": "The model provider for store: %s が見つかりません",
@@ -236,7 +242,8 @@
     "VMware API error, code = %d, message = %s": "VMware APIエラー, コード = %d, メッセージ = %s"
   },
   "resource": {
-    "Invalid file data format": "無効な file data format"
+    "Invalid file data format": "無効な file data format",
+    "Only docx and pdf files are allowed": "Only docx and pdf files are allowed"
   },
   "storage": {
     "storage provider name: [%s] doesn't exist": "storage provider name: [%s] は存在しません"
