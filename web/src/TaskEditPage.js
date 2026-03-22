@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Progress, Row, Select, Space, Spin, Typography, Upload} from "antd";
+import {Button, Card, Col, Input, Progress, Row, Select, Space, Spin, Switch, Typography, Upload} from "antd";
 
 const ANALYZE_PROGRESS_DURATION_SEC = 300;
 const ANALYZE_PROGRESS_TICK_MS = 500;
@@ -71,17 +71,21 @@ class TaskEditPage extends React.Component {
   }
 
   normalizeTaskResult(task) {
-    if (!task || !task.result) {
+    if (!task) {
       return task;
     }
-    if (typeof task.result === "string") {
+    let t = task.isTemplate === undefined || task.isTemplate === null ? {...task, isTemplate: false} : task;
+    if (!t.result) {
+      return t;
+    }
+    if (typeof t.result === "string") {
       try {
-        task = {...task, result: JSON.parse(task.result)};
+        t = {...t, result: JSON.parse(t.result)};
       } catch {
-        task = {...task, result: null};
+        t = {...t, result: null};
       }
     }
-    return task;
+    return t;
   }
 
   getTask() {
@@ -315,6 +319,27 @@ class TaskEditPage extends React.Component {
           ) : null}
         </Row>
         {
+          Setting.isAdminUser(this.props.account) ? (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("task:Is template"), i18next.t("task:Is template - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Switch
+                  checked={!!this.state.task.isTemplate}
+                  onChange={(checked) => {
+                    const task = {...this.state.task, isTemplate: checked};
+                    if (checked) {
+                      task.template = "";
+                    }
+                    this.setState({task});
+                  }}
+                />
+              </Col>
+            </Row>
+          ) : null
+        }
+        {
           this.state.task.type !== "Labeling" ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -329,7 +354,7 @@ class TaskEditPage extends React.Component {
           )
         }
         {
-          Setting.isAdminUser(this.props.account) ? (
+          Setting.isAdminUser(this.props.account) && !this.state.task.isTemplate ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("general:Template"), i18next.t("general:Template - Tooltip"))} :
@@ -369,38 +394,42 @@ class TaskEditPage extends React.Component {
             </Row>
           ) : null
         }
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("store:File"), i18next.t("store:File - Tooltip"))} :
-          </Col>
-          <Col span={22}>
-            {this.state.task.documentUrl ? (
-              <Card size="small" style={{maxWidth: 560}}>
-                <Space align="center">
-                  <span style={{fontSize: 28, color: this.state.task.documentUrl.endsWith(".pdf") ? "#cf1322" : "#1890ff"}}>
-                    {this.state.task.documentUrl.endsWith(".pdf") ? <FilePdfOutlined /> : <FileWordOutlined />}
-                  </span>
-                  <Typography.Text ellipsis style={{maxWidth: 420}}>{this.getDocumentFileName()}</Typography.Text>
-                  <Button type="link" size="small" icon={<DownloadOutlined />} href={this.state.task.documentUrl} target="_blank" rel="noopener noreferrer">
-                    {i18next.t("general:Download")}
-                  </Button>
-                  <Button type="text" size="small" danger icon={<CloseOutlined />} onClick={this.clearDocument} aria-label={i18next.t("general:Delete")} />
-                </Space>
-              </Card>
-            ) : (
-              <Upload
-                name="file"
-                accept=".docx,.pdf"
-                showUploadList={false}
-                customRequest={this.handleDocumentUpload}
-              >
-                <Button type="primary" icon={<UploadOutlined />} loading={this.state.uploadingDocument}>
-                  {i18next.t("store:Upload file")} (.docx, .pdf)
-                </Button>
-              </Upload>
-            )}
-          </Col>
-        </Row>
+        {
+          this.state.task.isTemplate ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:File"), i18next.t("store:File - Tooltip"))} :
+              </Col>
+              <Col span={22}>
+                {this.state.task.documentUrl ? (
+                  <Card size="small" style={{maxWidth: 560}}>
+                    <Space align="center">
+                      <span style={{fontSize: 28, color: this.state.task.documentUrl.endsWith(".pdf") ? "#cf1322" : "#1890ff"}}>
+                        {this.state.task.documentUrl.endsWith(".pdf") ? <FilePdfOutlined /> : <FileWordOutlined />}
+                      </span>
+                      <Typography.Text ellipsis style={{maxWidth: 420}}>{this.getDocumentFileName()}</Typography.Text>
+                      <Button type="link" size="small" icon={<DownloadOutlined />} href={this.state.task.documentUrl} target="_blank" rel="noopener noreferrer">
+                        {i18next.t("general:Download")}
+                      </Button>
+                      <Button type="text" size="small" danger icon={<CloseOutlined />} onClick={this.clearDocument} aria-label={i18next.t("general:Delete")} />
+                    </Space>
+                  </Card>
+                ) : (
+                  <Upload
+                    name="file"
+                    accept=".docx,.pdf"
+                    showUploadList={false}
+                    customRequest={this.handleDocumentUpload}
+                  >
+                    <Button type="primary" icon={<UploadOutlined />} loading={this.state.uploadingDocument}>
+                      {i18next.t("store:Upload file")} (.docx, .pdf)
+                    </Button>
+                  </Upload>
+                )}
+              </Col>
+            </Row>
+          )
+        }
         {
           (this.state.task.type !== "Labeling") ? null : (
             <React.Fragment>
@@ -430,7 +459,7 @@ class TaskEditPage extends React.Component {
           )
         }
         {
-          (this.state.task.type !== "Labeling") && this.state.task.documentUrl ? (
+          (this.state.task.type !== "Labeling") && this.state.task.documentUrl && !this.state.task.isTemplate ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("task:Report"), i18next.t("task:Report - Tooltip"))} :
@@ -469,7 +498,7 @@ class TaskEditPage extends React.Component {
                 )}
               </Col>
             </Row>
-          ) : this.state.task.type === "Labeling" ? (
+          ) : this.state.task.type === "Labeling" && !this.state.task.isTemplate ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("task:Log"), i18next.t("task:Log - Tooltip"))} :

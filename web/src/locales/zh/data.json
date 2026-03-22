@@ -923,6 +923,8 @@
     "III. Chart Analysis": "三、图表分析",
     "IV. Detailed Evaluation": "四、分项评价",
     "Instructor": "指导教师",
+    "Is template": "作为模板",
+    "Is template - Tooltip": "开启后，本任务作为可复用模板（不显示文件上传与报告）。其他任务可在「模板」下拉框中选择此项。",
     "Item count unit": "项",
     "Labels": "标签",
     "Labels - Tooltip": "分类标签列表",

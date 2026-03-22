@@ -923,6 +923,8 @@
     "III. Chart Analysis": "III. Chart Analysis",
     "IV. Detailed Evaluation": "IV. Detailed Evaluation",
     "Instructor": "Instructor",
+    "Is template": "Is template",
+    "Is template - Tooltip": "When enabled, this task is a reusable template (no file upload or report). It appears in the Template dropdown for other tasks.",
     "Item count unit": " items",
     "Labels": "Labels",
     "Labels - Tooltip": "Classification labels",

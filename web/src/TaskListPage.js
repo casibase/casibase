@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Input, Popconfirm, Popover, Table, Tag} from "antd";
+import {Button, Input, Popconfirm, Popover, Switch, Table, Tag} from "antd";
 import {DeleteOutlined, FilePdfOutlined, FileWordOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
@@ -213,6 +213,16 @@ class TaskListPage extends BaseListPage {
         ...this.getColumnSearchProps("type"),
       },
       {
+        title: i18next.t("task:Is template"),
+        dataIndex: "isTemplate",
+        key: "isTemplate",
+        width: "110px",
+        sorter: (a, b) => Number(!!b.isTemplate) - Number(!!a.isTemplate),
+        render: (text, record) => {
+          return <Switch checked={!!record.isTemplate} disabled />;
+        },
+      },
+      {
         title: i18next.t("general:Template"),
         dataIndex: "template",
         key: "template",
@@ -373,7 +383,7 @@ class TaskListPage extends BaseListPage {
     columns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
 
     if (!this.props.account || !Setting.isAdminUser(this.props.account)) {
-      columns = columns.filter(column => !["provider", "type", "template", "scale"].includes(column.key));
+      columns = columns.filter(column => !["provider", "type", "isTemplate", "template", "scale"].includes(column.key));
     }
 
     if (ConfTask.TaskMode !== "Labeling") {

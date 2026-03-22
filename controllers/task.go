@@ -134,7 +134,7 @@ func (c *ApiController) GetTask() {
 // GetTaskTemplates
 // @Title GetTaskTemplates
 // @Tag Task API
-// @Description get task templates (admin only). Returns tasks under owner "admin" for use as task templates.
+// @Description get task templates (admin only). Returns tasks under owner "admin" with IsTemplate set, for use in the Template dropdown.
 // @Success 200 {array} object.Task The Response object
 // @router /get-task-templates [get]
 func (c *ApiController) GetTaskTemplates() {
@@ -142,7 +142,7 @@ func (c *ApiController) GetTaskTemplates() {
 		c.ResponseError(c.T("auth:this operation requires admin privilege"))
 		return
 	}
-	tasks, err := object.GetTasks("admin")
+	tasks, err := object.GetTasksMarkedAsTemplate("admin")
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -168,18 +168,23 @@ func (c *ApiController) UpdateTask() {
 		return
 	}
 
+	existingTask, err := object.GetTask(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	if existingTask == nil {
+		c.ResponseError(c.T("general:The task does not exist"))
+		return
+	}
+
+	if !c.IsAdmin() {
+		task.IsTemplate = existingTask.IsTemplate
+	}
+
 	// Check ownership for non-admins
 	if !c.IsAdmin() && !c.IsPreviewMode() {
 		username := c.GetSessionUsername()
-		existingTask, err := object.GetTask(id)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-		if existingTask == nil {
-			c.ResponseError(c.T("general:The task does not exist"))
-			return
-		}
 		if existingTask.Owner != username {
 			c.ResponseError(c.T("auth:Unauthorized operation"))
 			return

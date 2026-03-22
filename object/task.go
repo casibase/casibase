@@ -67,6 +67,7 @@ type Task struct {
 
 	Path     string   `xorm:"varchar(100)" json:"path"`
 	Template string   `xorm:"varchar(200)" json:"template"`
+	IsTemplate bool   `xorm:"bool" json:"isTemplate"`
 	Scale    string   `xorm:"mediumtext" json:"scale"`
 	Example  string   `xorm:"varchar(200)" json:"example"`
 	Labels   []string `xorm:"mediumtext" json:"labels"`
@@ -126,6 +127,17 @@ func GetTasks(owner string) ([]*Task, error) {
 		return tasks, err
 	}
 
+	return tasks, nil
+}
+
+// GetTasksMarkedAsTemplate returns tasks for the owner that are flagged as reusable templates (admin task template picker).
+func GetTasksMarkedAsTemplate(owner string) ([]*Task, error) {
+	tasks := []*Task{}
+	session := adapter.engine.Where("owner = ? AND is_template = ?", owner, true).Desc("created_time")
+	err := session.Find(&tasks)
+	if err != nil {
+		return tasks, err
+	}
 	return tasks, nil
 }
 
