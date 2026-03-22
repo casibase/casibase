@@ -255,6 +255,28 @@ class TaskListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("general:State"),
+        dataIndex: "state",
+        key: "state",
+        width: "100px",
+        sorter: (a, b) => {
+          const rank = (r) => (r.state === "Hidden" ? 0 : 1);
+          return rank(a) - rank(b);
+        },
+        ...this.getColumnSearchProps("state"),
+        render: (text, record) => {
+          if (!record.isTemplate) {
+            return null;
+          }
+          const isHidden = record.state === "Hidden";
+          return (
+            <Tag color={isHidden ? "warning" : "success"}>
+              {isHidden ? i18next.t("video:Hidden") : i18next.t("video:Public")}
+            </Tag>
+          );
+        },
+      },
+      {
         title: i18next.t("general:Template"),
         dataIndex: "template",
         key: "template",
@@ -447,7 +469,7 @@ class TaskListPage extends BaseListPage {
     columns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
 
     if (!this.props.account || !Setting.isAdminUser(this.props.account)) {
-      columns = columns.filter(column => !["provider", "type", "isTemplate", "template", "scale"].includes(column.key));
+      columns = columns.filter(column => !["provider", "type", "isTemplate", "state", "template", "scale"].includes(column.key));
     }
 
     if (ConfTask.TaskMode !== "Labeling") {

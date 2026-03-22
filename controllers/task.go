@@ -134,15 +134,21 @@ func (c *ApiController) GetTask() {
 // GetTaskTemplates
 // @Title GetTaskTemplates
 // @Tag Task API
-// @Description get task templates (admin only). Returns tasks under owner "admin" with IsTemplate set, for use in the Template dropdown.
+// @Description get task templates under owner "admin". Admins get all template tasks; signed-in non-admins get only Public templates for the Template dropdown.
 // @Success 200 {array} object.Task The Response object
 // @router /get-task-templates [get]
 func (c *ApiController) GetTaskTemplates() {
-	if !c.IsAdmin() {
-		c.ResponseError(c.T("auth:this operation requires admin privilege"))
+	if c.GetSessionUsername() == "" {
+		c.ResponseError(c.T("auth:Please sign in first"))
 		return
 	}
-	tasks, err := object.GetTasksMarkedAsTemplate("admin")
+	var tasks []*object.Task
+	var err error
+	if c.IsAdmin() {
+		tasks, err = object.GetTasksMarkedAsTemplate("admin")
+	} else {
+		tasks, err = object.GetPublicTaskTemplates("admin")
+	}
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -180,6 +186,13 @@ func (c *ApiController) UpdateTask() {
 
 	if !c.IsAdmin() {
 		task.IsTemplate = existingTask.IsTemplate
+		task.State = existingTask.State
+	} else if !task.IsTemplate {
+		task.State = ""
+	} else if task.State == object.TaskStateHidden {
+		task.State = object.TaskStateHidden
+	} else {
+		task.State = object.TaskStatePublic
 	}
 
 	// Check ownership for non-admins
@@ -213,6 +226,17 @@ func (c *ApiController) AddTask() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	if !c.IsAdmin() {
+		task.IsTemplate = false
+		task.State = ""
+	} else if task.IsTemplate {
+		if task.State == object.TaskStateHidden {
+			task.State = object.TaskStateHidden
+		} else {
+			task.State = object.TaskStatePublic
+		}
 	}
 
 	success, err := object.AddTask(&task)

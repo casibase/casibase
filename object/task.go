@@ -21,6 +21,12 @@ import (
 	"xorm.io/core"
 )
 
+// Task template visibility for the Template dropdown (non-admin users only see Public).
+const (
+	TaskStatePublic = "Public"
+	TaskStateHidden = "Hidden"
+)
+
 type TaskResultItem struct {
 	Name         string  `json:"name"`
 	Score        float64 `json:"score"`
@@ -68,6 +74,7 @@ type Task struct {
 	Path     string   `xorm:"varchar(100)" json:"path"`
 	Template string   `xorm:"varchar(200)" json:"template"`
 	IsTemplate bool   `xorm:"bool" json:"isTemplate"`
+	State    string   `xorm:"varchar(50)" json:"state"`
 	Scale    string   `xorm:"mediumtext" json:"scale"`
 	Example  string   `xorm:"varchar(200)" json:"example"`
 	Labels   []string `xorm:"mediumtext" json:"labels"`
@@ -134,6 +141,17 @@ func GetTasks(owner string) ([]*Task, error) {
 func GetTasksMarkedAsTemplate(owner string) ([]*Task, error) {
 	tasks := []*Task{}
 	session := adapter.engine.Where("owner = ? AND is_template = ?", owner, true).Desc("created_time")
+	err := session.Find(&tasks)
+	if err != nil {
+		return tasks, err
+	}
+	return tasks, nil
+}
+
+// GetPublicTaskTemplates returns template tasks that are visible in the Template dropdown for regular users (is_template + Public or empty state treated as Public).
+func GetPublicTaskTemplates(owner string) ([]*Task, error) {
+	tasks := []*Task{}
+	session := adapter.engine.Where("owner = ? AND is_template = ? AND (state = ? OR state = '' OR state IS NULL)", owner, true, TaskStatePublic).Desc("created_time")
 	err := session.Find(&tasks)
 	if err != nil {
 		return tasks, err

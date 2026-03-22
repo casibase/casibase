@@ -61,13 +61,11 @@ class TaskEditPage extends React.Component {
   UNSAFE_componentWillMount() {
     this.getTask();
     this.getModelProviders();
-    if (Setting.isAdminUser(this.props.account)) {
-      TaskBackend.getTaskTemplates().then((res) => {
-        if (res.status === "ok" && res.data) {
-          this.setState({templates: res.data});
-        }
-      });
-    }
+    TaskBackend.getTaskTemplates().then((res) => {
+      if (res.status === "ok" && res.data) {
+        this.setState({templates: res.data});
+      }
+    });
   }
 
   normalizeTaskResult(task) {
@@ -75,6 +73,9 @@ class TaskEditPage extends React.Component {
       return task;
     }
     let t = task.isTemplate === undefined || task.isTemplate === null ? {...task, isTemplate: false} : task;
+    if (t.isTemplate && (t.state === undefined || t.state === null || t.state === "")) {
+      t = {...t, state: "Public"};
+    }
     if (!t.result) {
       return t;
     }
@@ -331,9 +332,33 @@ class TaskEditPage extends React.Component {
                     const task = {...this.state.task, isTemplate: checked};
                     if (checked) {
                       task.template = "";
+                      task.state = "Public";
+                    } else {
+                      task.state = "";
                     }
                     this.setState({task});
                   }}
+                />
+              </Col>
+            </Row>
+          ) : null
+        }
+        {
+          Setting.isAdminUser(this.props.account) && this.state.task.isTemplate ? (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select
+                  virtual={false}
+                  style={{width: "100%"}}
+                  value={this.state.task.state || "Public"}
+                  onChange={(value) => this.updateTaskField("state", value)}
+                  options={[
+                    {value: "Public", label: i18next.t("video:Public")},
+                    {value: "Hidden", label: i18next.t("video:Hidden")},
+                  ]}
                 />
               </Col>
             </Row>
@@ -354,7 +379,7 @@ class TaskEditPage extends React.Component {
           )
         }
         {
-          Setting.isAdminUser(this.props.account) && !this.state.task.isTemplate ? (
+          !this.state.task.isTemplate && (Setting.isAdminUser(this.props.account) || this.state.templates.length > 0) ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("general:Template"), i18next.t("general:Template - Tooltip"))} :
