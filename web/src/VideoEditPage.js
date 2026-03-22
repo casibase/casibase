@@ -357,7 +357,7 @@ class VideoEditPage extends React.Component {
       <React.Fragment>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("video:School"), i18next.t("video:School - Tooltip"))} :
+            {Setting.getLabel(i18next.t("task:School"), i18next.t("video:School - Tooltip"))} :
           </Col>
           <Col span={3} >
             <Input value={this.state.video.school} onChange={e => {
@@ -366,7 +366,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("video:Stage"), i18next.t("video:Stage - Tooltip"))} :
+            {Setting.getLabel(i18next.t("task:Stage"), i18next.t("video:Stage - Tooltip"))} :
           </Col>
           <Col span={3} >
             <Input value={this.state.video.stage} onChange={e => {

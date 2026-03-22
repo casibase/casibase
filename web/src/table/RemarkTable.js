@@ -156,7 +156,7 @@ class RemarkTable extends React.Component {
         },
       },
       {
-        title: i18next.t("video:Score"),
+        title: i18next.t("task:Score"),
         dataIndex: "score",
         key: "score",
         width: "130px",

@@ -366,7 +366,7 @@ class MessageListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("message:Suggestions"),
+        title: i18next.t("message:Advice"),
         dataIndex: "suggestions",
         key: "suggestions",
         width: "400px",

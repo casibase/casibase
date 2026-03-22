@@ -41,7 +41,7 @@ export default function TaskAnalysisReport({result}) {
     {title: i18next.t("task:Score"), dataIndex: "score", key: "score", width: "8%", render: (score) => `${score}${i18next.t("task:Score Unit")}`},
     {title: i18next.t("task:Advantages"), dataIndex: "advantage", key: "advantage", width: "27%"},
     {title: i18next.t("task:Disadvantages"), dataIndex: "disadvantage", key: "disadvantage", width: "27%"},
-    {title: i18next.t("task:Suggestions"), dataIndex: "suggestion", key: "suggestion", width: "26%"},
+    {title: i18next.t("message:Suggestions"), dataIndex: "suggestion", key: "suggestion", width: "26%"},
   ];
 
   const categories = result.categories || [];
