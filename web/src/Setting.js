@@ -758,12 +758,9 @@ export function getDefaultAiAvatar() {
   return `${StaticBaseUrl}/img/casibase.png`;
 }
 
-export const Countries = [{label: "English", key: "en", country: "US", alt: "English"},
+export const Countries = [
+  {label: "English", key: "en", country: "US", alt: "English"},
   {label: "中文", key: "zh", country: "CN", alt: "中文"},
-  {label: "Español", key: "es", country: "ES", alt: "Español"},
-  {label: "Français", key: "fr", country: "FR", alt: "Français"},
-  {label: "Deutsch", key: "de", country: "DE", alt: "Deutsch"},
-  {label: "日本語", key: "ja", country: "JP", alt: "日本語"},
 ];
 
 export function getOtherProviderInfo() {

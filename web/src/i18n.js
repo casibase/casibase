@@ -15,21 +15,15 @@
 import i18n from "i18next";
 import zh from "./locales/zh/data.json";
 import en from "./locales/en/data.json";
-import es from "./locales/es/data.json";
-import fr from "./locales/fr/data.json";
-import de from "./locales/de/data.json";
-import ja from "./locales/ja/data.json";
 import * as Conf from "./Conf";
 import {initReactI18next} from "react-i18next";
 
 const resources = {
   en: en,
   zh: zh,
-  es: es,
-  fr: fr,
-  de: de,
-  ja: ja,
 };
+
+const supportedLanguages = ["en", "zh"];
 
 function initLanguage() {
   let language = localStorage.getItem("language");
@@ -51,22 +45,16 @@ function initLanguage() {
       case "zh":
         language = "zh";
         break;
-      case "es":
-        language = "es";
-        break;
-      case "fr":
-        language = "fr";
-        break;
-      case "de":
-        language = "de";
-        break;
-      case "ja":
-        language = "ja";
-        break;
       default:
         language = Conf.DefaultLanguage;
       }
     }
+  }
+
+  if (!supportedLanguages.includes(language)) {
+    language = (Conf.DefaultLanguage && supportedLanguages.includes(Conf.DefaultLanguage))
+      ? Conf.DefaultLanguage
+      : "en";
   }
 
   return language;
@@ -76,6 +64,9 @@ i18n.use(initReactI18next).init({
   lng: initLanguage(),
 
   resources: resources,
+
+  fallbackLng: "en",
+  supportedLngs: supportedLanguages,
 
   keySeparator: false,
 
