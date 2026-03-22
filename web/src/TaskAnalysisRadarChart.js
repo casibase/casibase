@@ -16,7 +16,7 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 import i18next from "i18next";
 
-export default function TaskAnalysisRadarChart({categories, radarMax}) {
+export default function TaskAnalysisRadarChart({categories, radarMax, chartRef}) {
   if (!categories || categories.length === 0) {
     return null;
   }
@@ -39,5 +39,5 @@ export default function TaskAnalysisRadarChart({categories, radarMax}) {
       }],
     }],
   };
-  return <ReactEcharts option={option} style={{width: "100%", height: "100%"}} notMerge />;
+  return <ReactEcharts ref={chartRef} option={option} style={{width: "100%", height: "100%"}} notMerge />;
 }

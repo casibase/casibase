@@ -72,7 +72,7 @@ function countByScoreBand(categories) {
   })).filter((d) => d.count > 0);
 }
 
-export default function TaskAnalysisPieChart({categories}) {
+export default function TaskAnalysisPieChart({categories, chartRef}) {
   const bandData = countByScoreBand(categories);
   if (bandData.length === 0) {
     return null;
@@ -111,5 +111,5 @@ export default function TaskAnalysisPieChart({categories}) {
       data,
     }],
   };
-  return <ReactEcharts option={option} style={{width: "100%", height: "100%"}} notMerge />;
+  return <ReactEcharts ref={chartRef} option={option} style={{width: "100%", height: "100%"}} notMerge />;
 }

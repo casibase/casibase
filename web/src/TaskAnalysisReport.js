@@ -12,14 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from "react";
-import {Table} from "antd";
+import React, {useRef, useState} from "react";
+import {Button, Table} from "antd";
+import {DownloadOutlined} from "@ant-design/icons";
 import i18next from "i18next";
 import TaskAnalysisRadarChart from "./TaskAnalysisRadarChart";
 import TaskAnalysisBarChart from "./TaskAnalysisBarChart";
 import TaskAnalysisPieChart from "./TaskAnalysisPieChart";
+import {downloadTaskAnalysisReportDocx} from "./taskReportDocx";
+import * as Setting from "./Setting";
 
-export default function TaskAnalysisReport({result}) {
+export default function TaskAnalysisReport({result, downloadFileName}) {
+  const radarRef = useRef(null);
+  const barRef = useRef(null);
+  const pieRef = useRef(null);
+  const [downloading, setDownloading] = useState(false);
   if (!result) {
     return null;
   }
@@ -61,6 +68,51 @@ export default function TaskAnalysisReport({result}) {
 
   const hasCharts = categories.length > 0;
 
+  const getChartDataUrl = (ref) => {
+    const comp = ref?.current;
+    if (!comp || typeof comp.getEchartsInstance !== "function") {
+      return null;
+    }
+    const inst = comp.getEchartsInstance();
+    if (!inst) {
+      return null;
+    }
+    const opts = {type: "png", pixelRatio: 2, backgroundColor: "#fff"};
+    try {
+      return inst.getDataURL(opts);
+    } catch {
+      return null;
+    }
+  };
+
+  const handleDownloadReport = async() => {
+    setDownloading(true);
+    try {
+      const chartImages = {};
+      const r = getChartDataUrl(radarRef);
+      if (r) {
+        chartImages.radar = r;
+      }
+      const b = getChartDataUrl(barRef);
+      if (b) {
+        chartImages.bar = b;
+      }
+      const p = getChartDataUrl(pieRef);
+      if (p) {
+        chartImages.pie = p;
+      }
+      await downloadTaskAnalysisReportDocx(result, {
+        fileName: downloadFileName || "task_report.docx",
+        chartImages,
+      });
+      Setting.showMessage("success", i18next.t("general:Successfully downloaded"));
+    } catch (err) {
+      Setting.showMessage("error", err?.message || String(err));
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div style={{marginTop: "16px"}}>
       <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 24px", marginBottom: "16px", padding: "12px", border: "1px solid #f0f0f0", borderRadius: "6px", background: "#fafafa"}}>
@@ -71,19 +123,24 @@ export default function TaskAnalysisReport({result}) {
           </div>
         ))}
       </div>
-      <div style={{marginBottom: "12px", fontSize: "16px", fontWeight: 600}}>
-        {i18next.t("task:Overall Score")}：<span style={{color: "#1677ff", fontSize: "20px"}}>{result.score}</span>
+      <div style={{marginBottom: "12px", display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap"}}>
+        <div style={{fontSize: "16px", fontWeight: 600}}>
+          {i18next.t("task:Overall Score")}：<span style={{color: "#1677ff", fontSize: "20px"}}>{result.score}</span>
+        </div>
+        <Button type="primary" icon={<DownloadOutlined />} loading={downloading} onClick={handleDownloadReport}>
+          {i18next.t("task:Download report")}
+        </Button>
       </div>
       {hasCharts && (
         <div style={{marginBottom: "24px", height: "320px", display: "flex", gap: "24px"}}>
           <div style={{flex: 1, minWidth: 0}}>
-            <TaskAnalysisRadarChart categories={categories} radarMax={radarMax} />
+            <TaskAnalysisRadarChart categories={categories} radarMax={radarMax} chartRef={radarRef} />
           </div>
           <div style={{flex: 1, minWidth: 0}}>
-            <TaskAnalysisBarChart categories={categories} />
+            <TaskAnalysisBarChart categories={categories} chartRef={barRef} />
           </div>
           <div style={{flex: 1, minWidth: 0}}>
-            <TaskAnalysisPieChart categories={categories} />
+            <TaskAnalysisPieChart categories={categories} chartRef={pieRef} />
           </div>
         </div>
       )}

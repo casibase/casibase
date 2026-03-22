@@ -55,7 +55,7 @@ function getScoreRange(categories) {
   return {min: axisMin, max: Math.max(axisMax, axisMin + 10)};
 }
 
-export default function TaskAnalysisBarChart({categories}) {
+export default function TaskAnalysisBarChart({categories, chartRef}) {
   const items = flattenItems(categories);
   if (items.length === 0) {
     return null;
@@ -106,5 +106,5 @@ export default function TaskAnalysisBarChart({categories}) {
       },
     }],
   };
-  return <ReactEcharts option={option} style={{width: "100%", height: "100%"}} notMerge />;
+  return <ReactEcharts ref={chartRef} option={option} style={{width: "100%", height: "100%"}} notMerge />;
 }

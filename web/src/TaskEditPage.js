@@ -461,7 +461,12 @@ class TaskEditPage extends React.Component {
                     <Spin style={{marginLeft: "16px"}} tip={i18next.t("task:Analyzing")} />
                   </>
                 )}
-                {this.state.task.result && <TaskAnalysisReport result={this.state.task.result} />}
+                {this.state.task.result && (
+                  <TaskAnalysisReport
+                    result={this.state.task.result}
+                    downloadFileName={`${this.state.task.owner}_${this.state.task.name}_report.docx`}
+                  />
+                )}
               </Col>
             </Row>
           ) : this.state.task.type === "Labeling" ? (
