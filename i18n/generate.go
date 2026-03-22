@@ -117,6 +117,10 @@ func parseAllWords(category string) *I18nData {
 
 		var words []string
 		if category == "backend" {
+			if strings.HasSuffix(path, "deduplicate_test.go") {
+				continue
+			}
+
 			isControllerPackage := strings.Contains(path, "controller")
 			words = getAllI18nStringsBackend(fileContent, isControllerPackage)
 		} else {
