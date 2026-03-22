@@ -71,14 +71,14 @@ type Task struct {
 	Activity string  `xorm:"varchar(100)" json:"activity"`
 	Grade    string  `xorm:"varchar(100)" json:"grade"`
 
-	Path     string   `xorm:"varchar(100)" json:"path"`
-	Template string   `xorm:"varchar(200)" json:"template"`
-	IsTemplate bool   `xorm:"bool" json:"isTemplate"`
-	State    string   `xorm:"varchar(50)" json:"state"`
-	Scale    string   `xorm:"mediumtext" json:"scale"`
-	Example  string   `xorm:"varchar(200)" json:"example"`
-	Labels   []string `xorm:"mediumtext" json:"labels"`
-	Log      string   `xorm:"mediumtext" json:"log"`
+	Path       string   `xorm:"varchar(100)" json:"path"`
+	Template   string   `xorm:"varchar(200)" json:"template"`
+	IsTemplate bool     `xorm:"bool" json:"isTemplate"`
+	State      string   `xorm:"varchar(50)" json:"state"`
+	Scale      string   `xorm:"mediumtext" json:"scale"`
+	Example    string   `xorm:"varchar(200)" json:"example"`
+	Labels     []string `xorm:"mediumtext" json:"labels"`
+	Log        string   `xorm:"mediumtext" json:"log"`
 
 	Result string `xorm:"mediumtext" json:"result"`
 
