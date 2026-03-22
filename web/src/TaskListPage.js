@@ -29,6 +29,31 @@ import * as Provider from "./Provider";
 
 const {TextArea} = Input;
 
+function formatTaskListScoreNumber(score) {
+  const n = Number(score);
+  if (!Number.isFinite(n)) {
+    return "";
+  }
+  if (Number.isInteger(n)) {
+    return String(n);
+  }
+  return String(Math.round(n * 100) / 100);
+}
+
+function getTaskScoreTagColor(score) {
+  const n = Number(score);
+  if (!Number.isFinite(n)) {
+    return "default";
+  }
+  if (n >= 80) {
+    return "success";
+  }
+  if (n >= 60) {
+    return "warning";
+  }
+  return "error";
+}
+
 class TaskListPage extends BaseListPage {
   constructor(props) {
     super(props);
@@ -268,6 +293,38 @@ class TaskListPage extends BaseListPage {
             >
               <div style={{maxWidth: "200px", cursor: "pointer"}}>{Setting.getShortText(text, 80)}</div>
             </Popover>
+          );
+        },
+      },
+      {
+        title: i18next.t("task:Score"),
+        dataIndex: "score",
+        key: "score",
+        width: "90px",
+        sorter: (a, b) => (Number(a.score) || 0) - (Number(b.score) || 0),
+        render: (text, record) => {
+          if (record.isTemplate) {
+            return null;
+          }
+          if (!this.parseReportResult(record.result)) {
+            return null;
+          }
+          const s = record.score;
+          if (s === null || s === undefined || Number.isNaN(Number(s))) {
+            return null;
+          }
+          const label = formatTaskListScoreNumber(s);
+          if (!label) {
+            return null;
+          }
+          return (
+            <Tag
+              color={getTaskScoreTagColor(s)}
+              bordered={false}
+              style={{marginInlineEnd: 0, fontWeight: 600, minWidth: 36, textAlign: "center"}}
+            >
+              {label}
+            </Tag>
           );
         },
       },
