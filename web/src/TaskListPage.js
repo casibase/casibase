@@ -32,7 +32,14 @@ const {TextArea} = Input;
 class TaskListPage extends BaseListPage {
   constructor(props) {
     super(props);
-    this.state = {...this.state, modelProviders: []};
+    this.state = {
+      ...this.state,
+      modelProviders: [],
+      pagination: {
+        ...this.state.pagination,
+        pageSize: 100,
+      },
+    };
   }
 
   UNSAFE_componentWillMount() {
@@ -391,6 +398,8 @@ class TaskListPage extends BaseListPage {
     }
 
     const paginationProps = {
+      current: this.state.pagination.current,
+      pageSize: this.state.pagination.pageSize,
       total: this.state.pagination.total,
       showQuickJumper: true,
       showSizeChanger: true,
