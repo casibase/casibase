@@ -256,6 +256,10 @@ func getContextLength(typ string) int {
 		} else if strings.Contains(typ, "4") {
 			return 131072
 		}
+	} else if strings.Contains(typ, "minimax") || strings.Contains(typ, "m2-her") {
+		// MiniMax models all support 1M token context window.
+		// Reference: https://platform.minimaxi.com/document/ChatCompletion%20v2
+		return 1000000
 	}
 	return 4096
 }

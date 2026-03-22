@@ -1624,7 +1624,11 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "MiniMax") {
     return [
-      {id: "abab5-chat", name: "abab5-chat"},
+      {id: "MiniMax-M2.7", name: "MiniMax-M2.7"},
+      {id: "MiniMax-M2.7-highspeed", name: "MiniMax-M2.7-highspeed"},
+      {id: "MiniMax-M2.5", name: "MiniMax-M2.5"},
+      {id: "MiniMax-M2.5-highspeed", name: "MiniMax-M2.5-highspeed"},
+      {id: "M2-her", name: "M2-her"},
     ];
   } else if (type === "Ollama") {
     return [

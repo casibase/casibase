@@ -358,7 +358,7 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "Baidu Cloud") {
                   this.updateProviderField("subType", "ernie-4.0-8k");
                 } else if (value === "MiniMax") {
-                  this.updateProviderField("subType", "abab5-chat");
+                  this.updateProviderField("subType", "MiniMax-M2.5");
                 } else if (value === "Claude") {
                   this.updateProviderField("subType", "claude-opus-4-0");
                 } else if (value === "Hugging Face") {

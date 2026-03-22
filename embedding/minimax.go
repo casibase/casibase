@@ -65,8 +65,8 @@ type EmbeddingRequest struct {
 	Type  string   `json:"type"`
 }
 type base_resp struct {
-	status_code int64
-	status_msg  string
+	StatusCode int64  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 }
 type EmbeddingResponse struct {
 	Vectors      [][]float32 `json:"vectors"`
