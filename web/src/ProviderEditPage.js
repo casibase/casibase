@@ -358,7 +358,7 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "Baidu Cloud") {
                   this.updateProviderField("subType", "ernie-4.0-8k");
                 } else if (value === "MiniMax") {
-                  this.updateProviderField("subType", "abab5-chat");
+                  this.updateProviderField("subType", "MiniMax-Text-01");
                 } else if (value === "Claude") {
                   this.updateProviderField("subType", "claude-opus-4-0");
                 } else if (value === "Hugging Face") {
@@ -521,7 +521,6 @@ class ProviderEditPage extends React.Component {
             ((this.state.provider.category === "Embedding" && this.state.provider.type === "Baidu Cloud") ||
               (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") ||
               (this.state.provider.category === "Storage" && this.state.provider.type !== "OpenAI File System")) ||
-            (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
             (this.state.provider.category === "Blockchain" && !["ChainMaker", "Ethereum"].includes(this.state.provider.type)) ||
             ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
             (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text", "Agent", "Blockchain"].includes(this.state.provider.category)))

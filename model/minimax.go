@@ -15,20 +15,14 @@
 package model
 
 import (
-	"context"
 	"fmt"
 	"io"
-	"net/http"
-	"strings"
 
-	textv1 "github.com/ConnectAI-E/go-minimax/gen/go/minimax/text/v1"
-	"github.com/ConnectAI-E/go-minimax/minimax"
 	"github.com/casibase/casibase/i18n"
 )
 
 type MiniMaxModelProvider struct {
 	subType     string
-	groupID     string
 	apiKey      string
 	temperature float32
 }
@@ -36,7 +30,6 @@ type MiniMaxModelProvider struct {
 func NewMiniMaxModelProvider(subType string, groupID string, apiKey string, temperature float32) (*MiniMaxModelProvider, error) {
 	return &MiniMaxModelProvider{
 		subType:     subType,
-		groupID:     groupID,
 		apiKey:      apiKey,
 		temperature: temperature,
 	}, nil
@@ -44,27 +37,30 @@ func NewMiniMaxModelProvider(subType string, groupID string, apiKey string, temp
 
 func (p *MiniMaxModelProvider) GetPricing() string {
 	return `URL:
-https://api.minimax.chat/document/price
+https://www.minimax.io/price
 
-| Billing Item     | Unit Price                    | Billing Description                                                                                            |
-|------------------|-------------------------------|----------------------------------------------------------------------------------------------------------------|
-| abab6            | 0.1 CNY/1k tokens             | Token count includes input and output                                                                          |
-| abab5.5          | 0.015 CNY/1k tokens           |                                                                                                                |
-| abab5.5s         | 0.005 CNY/1k tokens           |                                                                                                                |
+| Model              | Input Price         | Output Price         |
+|--------------------|---------------------|----------------------|
+| MiniMax-Text-01    | 1 CNY/1M tokens     | 7 CNY/1M tokens      |
+| abab6.5s-chat      | 0.1 CNY/1M tokens   | 0.1 CNY/1M tokens    |
+| abab6.5g-chat      | 0.5 CNY/1M tokens   | 0.5 CNY/1M tokens    |
+| abab6.5t-chat      | 0.5 CNY/1M tokens   | 0.5 CNY/1M tokens    |
 `
 }
 
 func (p *MiniMaxModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
-	priceTable := map[string]float64{
-		"abab6":      0.1,
-		"abab5.5":    0.015,
-		"abab5-chat": 0.015,
-		"abab5.5s":   0.005,
+	priceTable := map[string][2]float64{
+		"MiniMax-Text-01": {0.001, 0.007},
+		"abab6.5s-chat":   {0.0001, 0.0001},
+		"abab6.5g-chat":   {0.0005, 0.0005},
+		"abab6.5t-chat":   {0.0005, 0.0005},
 	}
 
-	if pricePerThousandTokens, ok := priceTable[p.subType]; ok {
-		price = getPrice(modelResult.TotalTokenCount, pricePerThousandTokens)
+	if priceItem, ok := priceTable[p.subType]; ok {
+		inputPrice := getPrice(modelResult.PromptTokenCount, priceItem[0])
+		outputPrice := getPrice(modelResult.ResponseTokenCount, priceItem[1])
+		price = inputPrice + outputPrice
 	} else {
 		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
@@ -75,67 +71,21 @@ func (p *MiniMaxModelProvider) calculatePrice(modelResult *ModelResult, lang str
 }
 
 func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
-	ctx := context.Background()
-	client, err := minimax.New(
-		minimax.WithApiToken(p.apiKey),
-		minimax.WithGroupId(p.groupID),
-	)
+	const BaseUrl = "https://api.minimax.chat/v1"
+
+	localProvider, err := NewLocalModelProvider("Custom", "", p.apiKey, p.temperature, 0, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
 	if err != nil {
 		return nil, err
 	}
 
-	if strings.HasPrefix(question, "$CasibaseDryRun$") {
-		modelResult, err := getDefaultModelResult(p.subType, question, "")
-		if err != nil {
-			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))
-		}
-		if getContextLength(p.subType) > modelResult.TotalTokenCount {
-			return modelResult, nil
-		} else {
-			return nil, fmt.Errorf(i18n.Translate(lang, "model:exceed max tokens"))
-		}
-	}
-
-	req := &textv1.ChatCompletionsRequest{
-		Messages: []*textv1.Message{
-			{
-				SenderType: "USER",
-				Text:       question,
-			},
-		},
-		Model:       p.subType,
-		Temperature: p.temperature,
-	}
-	res, err := client.ChatCompletions(ctx, req)
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages, agentInfo, lang)
 	if err != nil {
 		return nil, err
 	}
-
-	flusher, ok := writer.(http.Flusher)
-	if !ok {
-		return nil, fmt.Errorf(i18n.Translate(lang, "model:writer does not implement http.Flusher"))
-	}
-
-	flushData := func(data string) error {
-		if _, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
-			return err
-		}
-		flusher.Flush()
-		return nil
-	}
-
-	err = flushData(res.Choices[0].Text)
-	if err != nil {
-		return nil, err
-	}
-
-	totalTokens := int(res.Usage.TotalTokens)
-	modelResult := &ModelResult{ResponseTokenCount: totalTokens}
 
 	err = p.calculatePrice(modelResult, lang)
 	if err != nil {
 		return nil, err
 	}
-
 	return modelResult, nil
 }
