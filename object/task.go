@@ -137,18 +137,7 @@ func GetTasks(owner string) ([]*Task, error) {
 	return tasks, nil
 }
 
-// GetTasksMarkedAsTemplate returns tasks for the owner that are flagged as reusable templates (admin task template picker).
-func GetTasksMarkedAsTemplate(owner string) ([]*Task, error) {
-	tasks := []*Task{}
-	session := adapter.engine.Where("owner = ? AND is_template = ?", owner, true).Desc("created_time")
-	err := session.Find(&tasks)
-	if err != nil {
-		return tasks, err
-	}
-	return tasks, nil
-}
-
-// GetPublicTaskTemplates returns template tasks that are visible in the Template dropdown for regular users (is_template + Public or empty state treated as Public).
+// GetPublicTaskTemplates returns template tasks for the Template dropdown (is_template + not Hidden: Public, empty, or NULL).
 func GetPublicTaskTemplates(owner string) ([]*Task, error) {
 	tasks := []*Task{}
 	session := adapter.engine.Where("owner = ? AND is_template = ? AND (state = ? OR state = '' OR state IS NULL)", owner, true, TaskStatePublic).Desc("created_time")

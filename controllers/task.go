@@ -134,7 +134,7 @@ func (c *ApiController) GetTask() {
 // GetTaskTemplates
 // @Title GetTaskTemplates
 // @Tag Task API
-// @Description get task templates under owner "admin". Admins get all template tasks; signed-in non-admins get only Public templates for the Template dropdown.
+// @Description get selectable task templates under owner "admin" for the Template dropdown (excludes Hidden templates; empty or Public state is included).
 // @Success 200 {array} object.Task The Response object
 // @router /get-task-templates [get]
 func (c *ApiController) GetTaskTemplates() {
@@ -142,13 +142,7 @@ func (c *ApiController) GetTaskTemplates() {
 		c.ResponseError(c.T("auth:Please sign in first"))
 		return
 	}
-	var tasks []*object.Task
-	var err error
-	if c.IsAdmin() {
-		tasks, err = object.GetTasksMarkedAsTemplate("admin")
-	} else {
-		tasks, err = object.GetPublicTaskTemplates("admin")
-	}
+	tasks, err := object.GetPublicTaskTemplates("admin")
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

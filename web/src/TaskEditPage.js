@@ -365,7 +365,7 @@ class TaskEditPage extends React.Component {
           ) : null
         }
         {
-          this.state.task.type !== "Labeling" ? null : (
+          (this.state.task.type === "Labeling" || Setting.isAdminUser(this.props.account)) ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
@@ -376,7 +376,7 @@ class TaskEditPage extends React.Component {
                 }} />
               </Col>
             </Row>
-          )
+          ) : null
         }
         {
           !this.state.task.isTemplate && (Setting.isAdminUser(this.props.account) || this.state.templates.length > 0) ? (
