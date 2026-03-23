@@ -392,6 +392,21 @@ routeManager.registerApp("tasks", {
   ],
 });
 
+routeManager.registerApp("scales", {
+  title: "Scales",
+  gradient: "linear-gradient(135deg, rgb(239 246 255) 0%, #4393f6 100%)",
+  routes: [
+    {
+      path: "/scales",
+      component: () => import("../ScaleListPage"),
+    },
+    {
+      path: "/scales/:owner/:scaleName",
+      component: () => import("../ScaleEditPage"),
+    },
+  ],
+});
+
 routeManager.registerApp("workflows", {
   title: "Workflows",
   gradient: "linear-gradient(135deg, #f8d187 0%, #fff8ea 100%)",

@@ -34,16 +34,6 @@ export function getTasks(owner, page = "", pageSize = "", field = "", value = ""
   }).then(res => res.json());
 }
 
-export function getTaskTemplates() {
-  return fetch(`${Setting.ServerUrl}/api/get-task-templates`, {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Accept-Language": Setting.getAcceptLanguage(),
-    },
-  }).then(res => res.json());
-}
-
 export function getTask(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-task?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",

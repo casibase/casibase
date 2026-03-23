@@ -14,12 +14,13 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Input, Popconfirm, Popover, Switch, Table, Tag} from "antd";
+import {Button, Input, Popconfirm, Popover, Table, Tag} from "antd";
 import {DeleteOutlined, FilePdfOutlined, FileWordOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as TaskBackend from "./backend/TaskBackend";
+import * as ScaleBackend from "./backend/ScaleBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import * as ConfTask from "./ConfTask";
@@ -60,6 +61,7 @@ class TaskListPage extends BaseListPage {
     this.state = {
       ...this.state,
       modelProviders: [],
+      publicScales: [],
       pagination: {
         ...this.state.pagination,
         pageSize: 100,
@@ -69,6 +71,11 @@ class TaskListPage extends BaseListPage {
 
   UNSAFE_componentWillMount() {
     super.UNSAFE_componentWillMount?.();
+    ScaleBackend.getPublicScales().then((res) => {
+      if (res.status === "ok" && res.data) {
+        this.setState({publicScales: res.data});
+      }
+    });
     if (Setting.isAdminUser(this.props.account)) {
       ProviderBackend.getProviders(this.props.account.name).then((res) => {
         if (res.status === "ok" && res.data) {
@@ -76,6 +83,14 @@ class TaskListPage extends BaseListPage {
         }
       });
     }
+  }
+
+  getScalePreviewText(record) {
+    if (!record?.scale || !this.state.publicScales?.length) {
+      return "";
+    }
+    const s = this.state.publicScales.find((x) => `${x.owner}/${x.name}` === record.scale);
+    return s ? (s.text || "") : "";
   }
 
   getNextTaskIndex() {
@@ -110,7 +125,6 @@ class TaskListPage extends BaseListPage {
       provider: "provider_model_azure_gpt4",
       type: ConfTask.TaskMode === "Labeling" ? "Labeling" : "PBL",
       path: "F:/github_repos/casdoor-website",
-      template: "admin/template",
       scale: "",
       example: "",
       labels: [],
@@ -245,75 +259,31 @@ class TaskListPage extends BaseListPage {
         ...this.getColumnSearchProps("type"),
       },
       {
-        title: i18next.t("task:Is template"),
-        dataIndex: "isTemplate",
-        key: "isTemplate",
-        width: "110px",
-        sorter: (a, b) => Number(!!b.isTemplate) - Number(!!a.isTemplate),
-        render: (text, record) => {
-          return <Switch checked={!!record.isTemplate} disabled />;
-        },
-      },
-      {
-        title: i18next.t("general:State"),
-        dataIndex: "state",
-        key: "state",
-        width: "100px",
-        sorter: (a, b) => {
-          const rank = (r) => (r.state === "Hidden" ? 0 : 1);
-          return rank(a) - rank(b);
-        },
-        ...this.getColumnSearchProps("state"),
-        render: (text, record) => {
-          if (!record.isTemplate) {
-            return null;
-          }
-          const isHidden = record.state === "Hidden";
-          return (
-            <Tag color={isHidden ? "warning" : "success"}>
-              {isHidden ? i18next.t("video:Hidden") : i18next.t("video:Public")}
-            </Tag>
-          );
-        },
-      },
-      {
-        title: i18next.t("general:Template"),
-        dataIndex: "template",
-        key: "template",
-        width: "140px",
-        sorter: (a, b) => (a.template || "").localeCompare(b.template || ""),
-        ...this.getColumnSearchProps("template"),
-        render: (text, record, index) => {
-          if (!text) {
-            return null;
-          }
-          return (
-            <Link to={`/tasks/${text}`}>{text}</Link>
-          );
-        },
-      },
-      {
         title: i18next.t("task:Scale"),
         dataIndex: "scale",
         key: "scale",
         width: "200px",
         sorter: (a, b) => (a.scale || "").localeCompare(b.scale || ""),
-        ...this.getColumnSearchProps("scale"),
-        render: (text, record, index) => {
-          if (text === null || text === "") {
+        ...this.getColumnSearchProps("scale_ref"),
+        render: (text, record) => {
+          if (!record.scale) {
             return null;
           }
+          const preview = this.getScalePreviewText(record);
+          const body = preview ? (
+            <div style={{width: "50vw", height: "50vh", overflow: "auto"}}>
+              <TextArea readOnly value={preview} style={{width: "100%", minHeight: "50vh", boxSizing: "border-box", whiteSpace: "pre-wrap"}} />
+            </div>
+          ) : null;
+          const link = (
+            <Link to={`/scales/${record.scale}`}>{record.scale}</Link>
+          );
+          if (!body) {
+            return link;
+          }
           return (
-            <Popover
-              trigger="hover"
-              placement="left"
-              content={
-                <div style={{width: "50vw", height: "50vh", overflow: "auto"}}>
-                  <TextArea readOnly value={text} style={{width: "100%", minHeight: "50vh", boxSizing: "border-box", whiteSpace: "pre-wrap"}} />
-                </div>
-              }
-            >
-              <div style={{maxWidth: "200px", cursor: "pointer"}}>{Setting.getShortText(text, 80)}</div>
+            <Popover trigger="hover" placement="left" content={body}>
+              <span style={{cursor: "pointer"}}>{link}</span>
             </Popover>
           );
         },
@@ -325,9 +295,6 @@ class TaskListPage extends BaseListPage {
         width: "90px",
         sorter: (a, b) => (Number(a.score) || 0) - (Number(b.score) || 0),
         render: (text, record) => {
-          if (record.isTemplate) {
-            return null;
-          }
           if (!this.parseReportResult(record.result)) {
             return null;
           }
@@ -469,7 +436,7 @@ class TaskListPage extends BaseListPage {
     columns = Setting.filterTableColumns(columns, this.props.formItems ?? this.state.formItems);
 
     if (!this.props.account || !Setting.isAdminUser(this.props.account)) {
-      columns = columns.filter(column => !["provider", "type", "isTemplate", "state", "template", "scale"].includes(column.key));
+      columns = columns.filter(column => !["provider", "type", "scale"].includes(column.key));
     }
 
     if (ConfTask.TaskMode !== "Labeling") {

@@ -21,12 +21,6 @@ import (
 	"xorm.io/core"
 )
 
-// Task template visibility for the Template dropdown (non-admin users only see Public).
-const (
-	TaskStatePublic = "Public"
-	TaskStateHidden = "Hidden"
-)
-
 type TaskResultItem struct {
 	Name         string  `json:"name"`
 	Score        float64 `json:"score"`
@@ -71,14 +65,13 @@ type Task struct {
 	Activity string  `xorm:"varchar(100)" json:"activity"`
 	Grade    string  `xorm:"varchar(100)" json:"grade"`
 
-	Path       string   `xorm:"varchar(100)" json:"path"`
-	Template   string   `xorm:"varchar(200)" json:"template"`
-	IsTemplate bool     `xorm:"bool" json:"isTemplate"`
-	State      string   `xorm:"varchar(50)" json:"state"`
-	Scale      string   `xorm:"mediumtext" json:"scale"`
-	Example    string   `xorm:"varchar(200)" json:"example"`
-	Labels     []string `xorm:"mediumtext" json:"labels"`
-	Log        string   `xorm:"mediumtext" json:"log"`
+	Path string `xorm:"varchar(100)" json:"path"`
+	// Scale is the id (owner/name) of the Scale rubric; DB column scale_ref (varchar).
+	Scale string `xorm:"varchar(200) 'scale_ref'" json:"scale"`
+
+	Example string   `xorm:"varchar(200)" json:"example"`
+	Labels  []string `xorm:"mediumtext" json:"labels"`
+	Log     string   `xorm:"mediumtext" json:"log"`
 
 	Result string `xorm:"mediumtext" json:"result"`
 
@@ -137,17 +130,6 @@ func GetTasks(owner string) ([]*Task, error) {
 	return tasks, nil
 }
 
-// GetPublicTaskTemplates returns template tasks for the Template dropdown (is_template + not Hidden: Public, empty, or NULL).
-func GetPublicTaskTemplates(owner string) ([]*Task, error) {
-	tasks := []*Task{}
-	session := adapter.engine.Where("owner = ? AND is_template = ? AND (state = ? OR state = '' OR state IS NULL)", owner, true, TaskStatePublic).Desc("created_time")
-	err := session.Find(&tasks)
-	if err != nil {
-		return tasks, err
-	}
-	return tasks, nil
-}
-
 func getTask(owner string, name string) (*Task, error) {
 	task := Task{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&task)
@@ -170,22 +152,22 @@ func GetTask(id string) (*Task, error) {
 	return getTask(owner, name)
 }
 
-// GetTaskEffectiveScale returns the scale to use for this task: if Template is set, returns the template task's Scale; otherwise task.Scale.
+// GetTaskEffectiveScale returns rubric text: from referenced Scale.Text when Task.Scale is set.
 func GetTaskEffectiveScale(task *Task) (string, error) {
 	if task == nil {
 		return "", fmt.Errorf("task is nil")
 	}
-	if task.Template == "" {
-		return task.Scale, nil
+	if task.Scale == "" {
+		return "", nil
 	}
-	tpl, err := GetTask(task.Template)
+	s, err := GetScale(task.Scale)
 	if err != nil {
 		return "", err
 	}
-	if tpl == nil {
-		return task.Scale, nil
+	if s == nil {
+		return "", nil
 	}
-	return tpl.Scale, nil
+	return s.Text, nil
 }
 
 func UpdateTask(id string, task *Task) (bool, error) {

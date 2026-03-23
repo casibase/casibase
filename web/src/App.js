@@ -70,6 +70,8 @@ import WorkflowListPage from "./WorkflowListPage";
 import WorkflowEditPage from "./WorkflowEditPage";
 import TaskListPage from "./TaskListPage";
 import TaskEditPage from "./TaskEditPage";
+import ScaleListPage from "./ScaleListPage";
+import ScaleEditPage from "./ScaleEditPage";
 import FormListPage from "./FormListPage";
 import FormEditPage from "./FormEditPage";
 import FormDataPage from "./FormDataPage";
@@ -256,6 +258,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/sr"});
     } else if (uri.includes("/tasks")) {
       this.setState({selectedMenuKey: "/tasks"});
+    } else if (uri.includes("/scales")) {
+      this.setState({selectedMenuKey: "/scales"});
     } else if (uri.includes("/forms")) {
       this.setState({selectedMenuKey: "/forms"});
     } else if (uri.includes("/articles")) {
@@ -656,6 +660,7 @@ class App extends Component {
         "###"));
     } else if (Setting.isTaskUser(this.state.account)) {
       res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
+      res.push(Setting.getItem(<Link to="/scales">{i18next.t("general:Scales")}</Link>, "/scales"));
 
       if (window.location.pathname === "/") {
         Setting.goToLinkSoft(this, "/tasks");
@@ -713,6 +718,7 @@ class App extends Component {
         Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"),
         Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"),
         Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"),
+        Setting.getItem(<Link to="/scales">{i18next.t("general:Scales")}</Link>, "/scales"),
         Setting.getItem(<Link to="/forms">{i18next.t("general:Forms")}</Link>, "/forms"),
         Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows"),
         Setting.getItem(<Link to="/hospitals">{i18next.t("med:Hospitals")}</Link>, "/hospitals"),
@@ -870,6 +876,8 @@ class App extends Component {
         <Route exact path="/sr" render={(props) => this.renderSigninIfNotSignedIn(<PythonSrPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks" render={(props) => this.renderSigninIfNotSignedIn(<TaskListPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks/:owner/:taskName" render={(props) => this.renderSigninIfNotSignedIn(<TaskEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/scales" render={(props) => this.renderSigninIfNotSignedIn(<ScaleListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/scales/:owner/:scaleName" render={(props) => this.renderSigninIfNotSignedIn(<ScaleEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/forms" render={(props) => this.renderSigninIfNotSignedIn(<FormListPage account={this.state.account} {...props} />)} />
         <Route exact path="/forms/:formName" render={(props) => this.renderSigninIfNotSignedIn(<FormEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/forms/:formName/data" render={(props) => this.renderSigninIfNotSignedIn(<FormDataPage key={props.match.params.formName} account={this.state.account} {...props} />)} />

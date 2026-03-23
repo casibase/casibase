@@ -131,25 +131,6 @@ func (c *ApiController) GetTask() {
 	c.ResponseOk(task)
 }
 
-// GetTaskTemplates
-// @Title GetTaskTemplates
-// @Tag Task API
-// @Description get selectable task templates under owner "admin" for the Template dropdown (excludes Hidden templates; empty or Public state is included).
-// @Success 200 {array} object.Task The Response object
-// @router /get-task-templates [get]
-func (c *ApiController) GetTaskTemplates() {
-	if c.GetSessionUsername() == "" {
-		c.ResponseError(c.T("auth:Please sign in first"))
-		return
-	}
-	tasks, err := object.GetPublicTaskTemplates("admin")
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	c.ResponseOk(object.GetMaskedTasks(tasks, true))
-}
-
 // UpdateTask
 // @Title UpdateTask
 // @Tag Task API
@@ -176,17 +157,6 @@ func (c *ApiController) UpdateTask() {
 	if existingTask == nil {
 		c.ResponseError(c.T("general:The task does not exist"))
 		return
-	}
-
-	if !c.IsAdmin() {
-		task.IsTemplate = existingTask.IsTemplate
-		task.State = existingTask.State
-	} else if !task.IsTemplate {
-		task.State = ""
-	} else if task.State == object.TaskStateHidden {
-		task.State = object.TaskStateHidden
-	} else {
-		task.State = object.TaskStatePublic
 	}
 
 	// Check ownership for non-admins
@@ -220,17 +190,6 @@ func (c *ApiController) AddTask() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
-	}
-
-	if !c.IsAdmin() {
-		task.IsTemplate = false
-		task.State = ""
-	} else if task.IsTemplate {
-		if task.State == object.TaskStateHidden {
-			task.State = object.TaskStateHidden
-		} else {
-			task.State = object.TaskStatePublic
-		}
 	}
 
 	success, err := object.AddTask(&task)
