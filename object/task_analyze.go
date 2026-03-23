@@ -18,6 +18,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
+	"unicode/utf8"
+
+	"github.com/beego/beego/logs"
 )
 
 const analyzeTaskPrompt = `请对以下教学设计文本进行深度分析，根据提供的评价量表对每个二级评价项进行评分和详细分析。
@@ -61,28 +65,45 @@ const analyzeTaskPrompt = `请对以下教学设计文本进行深度分析，�
 }`
 
 func AnalyzeTask(task *Task, lang string) (*TaskResult, error) {
+	taskID := task.GetId()
+	logs.Info("[analyze-task] start task=%s provider=%s lang=%s", taskID, task.Provider, lang)
+
 	effectiveScale, err := GetTaskEffectiveScale(task)
 	if err != nil {
+		logs.Error("[analyze-task] GetTaskEffectiveScale failed task=%s: %v", taskID, err)
 		return nil, err
 	}
 	if effectiveScale == "" {
 		return nil, fmt.Errorf("任务量表不能为空")
 	}
+	scaleRunes := utf8.RuneCountInString(effectiveScale)
+	logs.Info("[analyze-task] rubric loaded task=%s scaleRef=%s rubricLen=%d runes", taskID, task.Scale, scaleRunes)
+
 	if task.DocumentText == "" {
 		return nil, fmt.Errorf("任务文档不能为空，请先上传文档")
 	}
+	docRunes := utf8.RuneCountInString(task.DocumentText)
+	logs.Info("[analyze-task] document ready task=%s documentLen=%d runes", taskID, docRunes)
 
 	question := fmt.Sprintf(analyzeTaskPrompt, effectiveScale, task.DocumentText)
+	promptRunes := utf8.RuneCountInString(question)
+	logs.Info("[analyze-task] prompt built task=%s fullPromptLen=%d runes (rubric+template+document)", taskID, promptRunes)
 
 	var answer string
+	aiStart := time.Now()
 	if strings.Contains(strings.ToLower(task.Name), "demo") {
+		logs.Info("[analyze-task] using GetAnswerFake (task name contains \"demo\") task=%s", taskID)
 		answer, _, err = GetAnswerFake(task.Provider, question, lang)
 	} else {
+		logs.Info("[analyze-task] calling AI model task=%s provider=%s (this may take several minutes)...", taskID, task.Provider)
 		answer, _, err = GetAnswer(task.Provider, question, lang)
 	}
+	aiElapsed := time.Since(aiStart)
 	if err != nil {
+		logs.Error("[analyze-task] AI call failed task=%s after %v: %v", taskID, aiElapsed, err)
 		return nil, fmt.Errorf("从AI模型获取分析失败: %v", err)
 	}
+	logs.Info("[analyze-task] AI returned task=%s elapsed=%v answerLen=%d bytes", taskID, aiElapsed, len(answer))
 
 	answer = strings.TrimSpace(answer)
 	// Strip markdown code block if present
@@ -96,10 +117,13 @@ func AnalyzeTask(task *Task, lang string) (*TaskResult, error) {
 		answer = strings.TrimSpace(answer)
 	}
 
+	logs.Info("[analyze-task] parsing JSON task=%s bodyLen=%d bytes", taskID, len(answer))
 	var result TaskResult
 	if err = json.Unmarshal([]byte(answer), &result); err != nil {
+		logs.Error("[analyze-task] JSON unmarshal failed task=%s: %v", taskID, err)
 		return nil, fmt.Errorf("解析AI分析结果为JSON失败: %v\n原始回复: %s", err, answer)
 	}
 
+	logs.Info("[analyze-task] done task=%s score=%.2f categories=%d", taskID, result.Score, len(result.Categories))
 	return &result, nil
 }
