@@ -335,31 +335,27 @@ class TaskEditPage extends React.Component {
             </Row>
           ) : null
         }
-        {
-          (Setting.isAdminUser(this.props.account) || this.state.publicScales.length > 0) ? (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("task:Scale"), i18next.t("task:Scale - Tooltip"))} :
-              </Col>
-              <Col span={22} >
-                <Select
-                  virtual={false}
-                  style={{width: "100%"}}
-                  placeholder={i18next.t("general:None")}
-                  allowClear
-                  value={this.state.task.scale ?? ""}
-                  onChange={(value) => {
-                    this.setState({task: {...this.state.task, scale: value || ""}});
-                  }}
-                  options={[
-                    {value: "", label: i18next.t("general:None")},
-                    ...this.state.publicScales.map((s) => ({value: `${s.owner}/${s.name}`, label: s.displayName ? `${s.displayName} (${s.owner}/${s.name})` : `${s.owner}/${s.name}`})),
-                  ]}
-                />
-              </Col>
-            </Row>
-          ) : null
-        }
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("task:Scale"), i18next.t("task:Scale - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              placeholder={i18next.t("general:None")}
+              allowClear
+              value={this.state.task.scale ?? ""}
+              onChange={(value) => {
+                this.setState({task: {...this.state.task, scale: value || ""}});
+              }}
+              options={[
+                {value: "", label: i18next.t("general:None")},
+                ...this.state.publicScales.map((s) => ({value: `${s.owner}/${s.name}`, label: s.displayName ? `${s.displayName} (${s.owner}/${s.name})` : `${s.owner}/${s.name}`})),
+              ]}
+            />
+          </Col>
+        </Row>
         {
           this.getEffectiveScale() ? (
             <Row style={{marginTop: "20px"}} >
@@ -467,7 +463,7 @@ class TaskEditPage extends React.Component {
                 >
                   {i18next.t("task:Analyze")}
                 </Button>
-                {Setting.isAdminUser(this.props.account) && this.state.task.result ? (
+                {this.state.task.result ? (
                   <Button
                     style={{marginBottom: "20px", marginLeft: "8px", width: "200px"}}
                     onClick={this.clearReport}

@@ -660,7 +660,9 @@ class App extends Component {
         "###"));
     } else if (Setting.isTaskUser(this.state.account)) {
       res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
-      res.push(Setting.getItem(<Link to="/scales">{i18next.t("general:Scales")}</Link>, "/scales"));
+      if (Setting.isAdminUser(this.state.account)) {
+        res.push(Setting.getItem(<Link to="/scales">{i18next.t("general:Scales")}</Link>, "/scales"));
+      }
 
       if (window.location.pathname === "/") {
         Setting.goToLinkSoft(this, "/tasks");
