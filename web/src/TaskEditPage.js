@@ -115,6 +115,9 @@ class TaskEditPage extends React.Component {
   }
 
   analyzeTask() {
+    if (!String(this.state.task?.scale || "").trim()) {
+      return;
+    }
     this.analyzeStartTime = Date.now();
     this.setState({analyzing: true, analyzeProgress: 0});
     const durationMs = ANALYZE_PROGRESS_DURATION_SEC * 1000;
@@ -457,7 +460,7 @@ class TaskEditPage extends React.Component {
               <Col span={22} >
                 <Button
                   loading={this.state.analyzing}
-                  disabled={!this.state.task.documentText || !!this.state.task.result}
+                  disabled={!this.state.task.documentText || !!this.state.task.result || !String(this.state.task.scale || "").trim()}
                   style={{marginBottom: "20px", width: "200px"}}
                   type="primary"
                   onClick={() => this.analyzeTask()}
