@@ -65,9 +65,8 @@ type Task struct {
 	Activity string  `xorm:"varchar(100)" json:"activity"`
 	Grade    string  `xorm:"varchar(100)" json:"grade"`
 
-	Path string `xorm:"varchar(100)" json:"path"`
-	// Scale is the id (owner/name) of the Scale rubric; DB column scale_ref (varchar).
-	Scale string `xorm:"varchar(200) 'scale_ref'" json:"scale"`
+	Path  string `xorm:"varchar(100)" json:"path"`
+	Scale string `xorm:"varchar(100)" json:"scale"`
 
 	Example string   `xorm:"varchar(200)" json:"example"`
 	Labels  []string `xorm:"mediumtext" json:"labels"`

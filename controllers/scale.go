@@ -107,13 +107,7 @@ func (c *ApiController) GetPublicScales() {
 		c.ResponseError(c.T("auth:Please sign in first"))
 		return
 	}
-	var scales []*object.Scale
-	var err error
-	if c.IsAdmin() {
-		scales, err = object.GetScales("admin")
-	} else {
-		scales, err = object.GetPublicScales("admin")
-	}
+	scales, err := object.GetPublicScales("admin")
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

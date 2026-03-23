@@ -289,35 +289,6 @@ class TaskListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("task:Score"),
-        dataIndex: "score",
-        key: "score",
-        width: "90px",
-        sorter: (a, b) => (Number(a.score) || 0) - (Number(b.score) || 0),
-        render: (text, record) => {
-          if (!this.parseReportResult(record.result)) {
-            return null;
-          }
-          const s = record.score;
-          if (s === null || s === undefined || Number.isNaN(Number(s))) {
-            return null;
-          }
-          const label = formatTaskListScoreNumber(s);
-          if (!label) {
-            return null;
-          }
-          return (
-            <Tag
-              color={getTaskScoreTagColor(s)}
-              bordered={false}
-              style={{marginInlineEnd: 0, fontWeight: 600, minWidth: 36, textAlign: "center"}}
-            >
-              {label}
-            </Tag>
-          );
-        },
-      },
-      {
         title: i18next.t("store:File"),
         dataIndex: "documentUrl",
         key: "documentUrl",
@@ -343,22 +314,38 @@ class TaskListPage extends BaseListPage {
         dataIndex: "result",
         key: "result",
         width: "100px",
-        render: (text, record, index) => {
+        sorter: (a, b) => (Number(a.score) || 0) - (Number(b.score) || 0),
+        render: (text, record) => {
           const parsed = this.parseReportResult(record.result);
           if (!parsed) {
             return null;
           }
-          return (
-            <Popover
-              trigger="hover"
-              placement="left"
-              content={
-                <div style={{width: "50vw", height: "50vh", overflow: "auto"}}>
-                  <TaskAnalysisReport result={parsed} />
-                </div>
-              }
+          const s = record.score;
+          const hasNumericScore = s !== null && s !== undefined && !Number.isNaN(Number(s));
+          const label = hasNumericScore ? formatTaskListScoreNumber(s) : null;
+          const showScoreTag = hasNumericScore && !!label;
+          const popoverContent = (
+            <div style={{width: "50vw", height: "50vh", overflow: "auto"}}>
+              <TaskAnalysisReport result={parsed} />
+            </div>
+          );
+          const scoreFontStyle = {fontSize: "17px", fontWeight: 600};
+          const trigger = showScoreTag ? (
+            <Tag
+              color={getTaskScoreTagColor(s)}
+              bordered={false}
+              style={{marginInlineEnd: 0, minWidth: 40, textAlign: "center", cursor: "pointer", lineHeight: 1.35, padding: "4px 10px", ...scoreFontStyle}}
             >
-              <span style={{cursor: "pointer"}}>{parsed.score !== null && parsed.score !== undefined ? `${parsed.score}${i18next.t("task:Score Unit")}` : i18next.t("task:Report")}</span>
+              {label}
+            </Tag>
+          ) : (
+            <span style={{cursor: "pointer", ...(parsed.score !== null && parsed.score !== undefined ? scoreFontStyle : {})}}>
+              {parsed.score !== null && parsed.score !== undefined ? `${parsed.score}${i18next.t("task:Score Unit")}` : i18next.t("task:Report")}
+            </span>
+          );
+          return (
+            <Popover trigger="hover" placement="left" content={popoverContent}>
+              {trigger}
             </Popover>
           );
         },
