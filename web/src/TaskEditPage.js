@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Progress, Row, Select, Space, Spin, Typography, Upload} from "antd";
+import {Button, Card, Col, Input, Progress, Row, Select, Spin, Typography, Upload} from "antd";
 
 const ANALYZE_PROGRESS_DURATION_SEC = 300;
 const ANALYZE_PROGRESS_TICK_MS = 500;
@@ -381,17 +381,29 @@ class TaskEditPage extends React.Component {
             </Col>
             <Col span={22}>
               {this.state.task.documentUrl ? (
-                <Card size="small" style={{maxWidth: 560}}>
-                  <Space align="center">
-                    <span style={{fontSize: 28, color: this.state.task.documentUrl.endsWith(".pdf") ? "#cf1322" : "#1890ff"}}>
+                <Card
+                  size="small"
+                  style={{
+                    display: "inline-block",
+                    width: "auto",
+                    maxWidth: "100%",
+                    verticalAlign: "top",
+                  }}
+                >
+                  <div style={{display: "flex", alignItems: "center", gap: 12, flexWrap: "nowrap", minWidth: 0}}>
+                    <span style={{fontSize: 28, flexShrink: 0, color: this.state.task.documentUrl.endsWith(".pdf") ? "#cf1322" : "#1890ff"}}>
                       {this.state.task.documentUrl.endsWith(".pdf") ? <FilePdfOutlined /> : <FileWordOutlined />}
                     </span>
-                    <Typography.Text ellipsis style={{maxWidth: 420}}>{this.getDocumentFileName()}</Typography.Text>
-                    <Button type="link" size="small" icon={<DownloadOutlined />} href={this.state.task.documentUrl} target="_blank" rel="noopener noreferrer">
+                    <div style={{minWidth: 0, maxWidth: "min(960px, calc(100vw - 220px))", flex: "0 1 auto"}}>
+                      <Typography.Text ellipsis={{tooltip: true}} style={{width: "100%"}}>
+                        {this.getDocumentFileName()}
+                      </Typography.Text>
+                    </div>
+                    <Button type="link" size="small" icon={<DownloadOutlined />} href={this.state.task.documentUrl} target="_blank" rel="noopener noreferrer" style={{flexShrink: 0}}>
                       {i18next.t("general:Download")}
                     </Button>
-                    <Button type="text" size="small" danger icon={<CloseOutlined />} onClick={this.clearDocument} aria-label={i18next.t("general:Delete")} />
-                  </Space>
+                    <Button type="text" size="small" danger icon={<CloseOutlined />} onClick={this.clearDocument} aria-label={i18next.t("general:Delete")} style={{flexShrink: 0}} />
+                  </div>
                 </Card>
               ) : (
                 <Upload
