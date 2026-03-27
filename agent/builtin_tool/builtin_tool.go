@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
+	"github.com/casibase/casibase/agent/builtin_tool/image"
 	"github.com/casibase/casibase/agent/builtin_tool/time"
 )
 
@@ -43,6 +44,7 @@ func NewToolRegistry() *ToolRegistry {
 	registry.RegisterTool(&timetools.TimestampToLocalTimeTool{}) // timestamp to local time
 	registry.RegisterTool(&timetools.TimezoneConversionTool{})   // timezone conversion
 	registry.RegisterTool(&timetools.WeekdayTool{})              // weekday calculator
+	registry.RegisterTool(&imagetools.GenerateImageTool{})       // generate images from text descriptions
 
 	return registry
 }
