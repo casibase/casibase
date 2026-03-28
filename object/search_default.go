@@ -35,7 +35,7 @@ func (p *DefaultSearchProvider) Search(relatedStores []string, embeddingProvider
 		return nil, nil, err
 	}
 
-	qVector, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text, lang)
+	qVector, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text, embeddingProviderName, lang)
 	if err != nil {
 		return nil, embeddingResult, err
 	}

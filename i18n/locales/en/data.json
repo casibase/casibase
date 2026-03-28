@@ -201,7 +201,7 @@
     "no qVector found": "no qVector found",
     "parseBase64Image() error: invalid image format": "parseBase64Image() error: invalid image format",
     "provider kubeconfig content is empty": "provider kubeconfig content is empty",
-    "queryVectorSafe() error, %s": "queryVectorSafe() error, %s",
+    "queryVectorSafe() error, provider: %s, %s": "queryVectorSafe() error, provider: %s, %s",
     "server address not found": "server address not found",
     "the STT provider type: %s is not supported": "the STT provider type: %s is not supported",
     "the TTS provider type: %s is not supported": "the TTS provider type: %s is not supported",

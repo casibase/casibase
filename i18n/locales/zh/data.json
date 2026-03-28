@@ -201,7 +201,7 @@
     "no qVector found": "未找到 qVector",
     "parseBase64Image() error: invalid image format": "parseBase64Image() 错误：无效的图像格式",
     "provider kubeconfig content is empty": "提供商 kubeconfig 内容为空",
-    "queryVectorSafe() error, %s": "queryVectorSafe() 错误，%s",
+    "queryVectorSafe() error, provider: %s, %s": "queryVectorSafe() 错误，提供商：%s，%s",
     "server address not found": "未找到服务器地址",
     "the STT provider type: %s is not supported": "不支持的 STT 提供商类型：%s",
     "the TTS provider type: %s is not supported": "不支持的 TTS 提供商类型：%s",

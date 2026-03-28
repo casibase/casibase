@@ -51,7 +51,7 @@ func filterTextFiles(files []*storage.Object) []*storage.Object {
 }
 
 func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string, index int, embeddingProviderName string, modelSubType string, lang string) (bool, int, error) {
-	data, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text, lang)
+	data, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text, embeddingProviderName, lang)
 	if err != nil {
 		return false, 0, err
 	}
@@ -244,14 +244,14 @@ func queryVectorWithContext(embeddingProvider embedding.EmbeddingProvider, text 
 	return vector, embeddingResult, err
 }
 
-func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string, lang string) ([]float32, *embedding.EmbeddingResult, error) {
+func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string, providerName string, lang string) ([]float32, *embedding.EmbeddingResult, error) {
 	var res []float32
 	var embeddingResult *embedding.EmbeddingResult
 	var err error
 	for i := 0; i < 10; i++ {
 		res, embeddingResult, err = queryVectorWithContext(embeddingProvider, text, i, lang)
 		if err != nil {
-			err = fmt.Errorf(i18n.Translate(lang, "object:queryVectorSafe() error, %s"), err.Error())
+			err = fmt.Errorf(i18n.Translate(lang, "object:queryVectorSafe() error, provider: %s, %s"), providerName, err.Error())
 			if i > 0 {
 				logs.Error("\tFailed (%d): %s", i+1, err.Error())
 			}

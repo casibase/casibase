@@ -60,7 +60,7 @@ func (p *HierarchySearchProvider) Search(relatedStores []string, embeddingProvid
 		return nil, nil, err
 	}
 
-	qVector, embeddingResult, err := queryVectorSafe(embeddingProviderObj, question, lang)
+	qVector, embeddingResult, err := queryVectorSafe(embeddingProviderObj, question, embeddingProviderName, lang)
 	if err != nil {
 		return nil, nil, err
 	}

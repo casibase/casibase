@@ -401,7 +401,7 @@ func refreshVector(vector *Vector, lang string) (bool, error) {
 		return false, err
 	}
 
-	data, _, err := queryVectorSafe(embeddingProviderObj, vector.Text, lang)
+	data, _, err := queryVectorSafe(embeddingProviderObj, vector.Text, vector.Provider, lang)
 	if err != nil {
 		return false, err
 	}
