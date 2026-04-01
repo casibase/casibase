@@ -19,11 +19,15 @@ import genai "google.golang.org/genai"
 func GenaiRawMessagesToMessages(question string, history []*RawMessage) []*genai.Content {
 	var messages []*genai.Content
 	for _, rawMessage := range history {
+		role := genai.RoleUser
+		if rawMessage.Author == "AI" || rawMessage.Author == genai.RoleModel {
+			role = genai.RoleModel
+		}
 		messages = append(messages, &genai.Content{
 			Parts: []*genai.Part{
 				{Text: rawMessage.Text},
 			},
-			Role: rawMessage.Author,
+			Role: role,
 		})
 	}
 	messages = append(messages, &genai.Content{
@@ -33,4 +37,21 @@ func GenaiRawMessagesToMessages(question string, history []*RawMessage) []*genai
 		Role: genai.RoleUser,
 	})
 	return messages
+}
+
+func buildSystemInstruction(prompt string, knowledgeMessages []*RawMessage) *genai.Content {
+	systemMessages := getSystemMessages(prompt, knowledgeMessages)
+	if len(systemMessages) == 0 {
+		return nil
+	}
+
+	var parts []*genai.Part
+	for _, msg := range systemMessages {
+		parts = append(parts, &genai.Part{Text: msg.Text})
+	}
+
+	// SystemInstruction doesn't need a role (defaults to user if empty)
+	return &genai.Content{
+		Parts: parts,
+	}
 }
