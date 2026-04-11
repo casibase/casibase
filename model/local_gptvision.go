@@ -69,9 +69,25 @@ func getImageRefinedText(text string) (string, error) {
 
 func IsVisionModel(subType string) bool {
 	visionModels := []string{
+		// GPT-5.4 series (latest)
+		"gpt-5.4", "gpt-5.4-pro", "gpt-5.4-mini", "gpt-5.4-nano",
+		// GPT-5.3 series
+		"gpt-5.3-codex", "gpt-5.3-chat",
+		// GPT-5.2 series
+		"gpt-5.2", "gpt-5.2-chat", "gpt-5.2-codex",
+		// GPT-5.1 series
+		"gpt-5.1", "gpt-5.1-chat", "gpt-5.1-codex", "gpt-5.1-codex-mini", "gpt-5.1-codex-max",
+		// GPT-5 series
+		"gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-5-codex", "gpt-5-pro",
+		// o-series (latest first)
+		"o4-mini", "codex-mini", "o3-pro", "o3", "o1-pro", "o1",
+		// GPT-4.1 series
+		"gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano",
+		// GPT-4.5 / GPT-4o series
+		"gpt-4.5", "gpt-4.5-preview", "gpt-4.5-preview-2025-02-27",
 		"gpt-4o", "gpt-4o-2024-08-06", "gpt-4o-mini", "gpt-4o-mini-2024-07-18",
-		"gpt-4.5-preview", "gpt-4.5-preview-2025-02-27", "gpt-4.1",
-		"gpt-4.1-mini", "gpt-4.1-nano", "o1", "o1-pro", "o3", "o4-mini",
+		// Specialized
+		"computer-use-preview",
 	}
 
 	for _, visionModel := range visionModels {

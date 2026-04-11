@@ -60,12 +60,29 @@ func GetOpenAiMaxTokens(model string) int {
 
 func getOpenAiModelType(model string) string {
 	chatModels := []string{
-		"gpt-3.5-turbo", "gpt-4-turbo", "gpt-4", "gpt-4o",
-		"gpt-4o-2024-08-06", "gpt-4o-mini", "gpt-4o-mini-2024-07-18", "gpt-4.1",
-		"gpt-4.1-mini", "gpt-4.1-nano", "gpt-4.5", "gpt-4.5-mini", "gpt-4.5-nano",
-		"o1", "o1-pro", "o3", "o3-mini", "o4-mini",
-		"gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-5.1", "gpt-5.1-mini", "gpt-5.1-nano",
-		"gpt-5.2", "gpt-5.2-mini", "gpt-5.2-nano", "gpt-5.2-chat", "gpt-5-chat-latest",
+		// GPT-5.4 series (latest)
+		"gpt-5.4", "gpt-5.4-pro", "gpt-5.4-mini", "gpt-5.4-nano",
+		// GPT-5.3 series
+		"gpt-5.3-codex", "gpt-5.3-chat",
+		// GPT-5.2 series
+		"gpt-5.2", "gpt-5.2-chat", "gpt-5.2-codex",
+		// GPT-5.1 series
+		"gpt-5.1", "gpt-5.1-chat", "gpt-5.1-codex", "gpt-5.1-codex-mini", "gpt-5.1-codex-max",
+		// GPT-5 series
+		"gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-5-chat", "gpt-5-codex", "gpt-5-pro",
+		// o-series reasoning models (latest first)
+		"o4-mini", "codex-mini", "o3-pro", "o3", "o3-mini", "o1-pro", "o1", "o1-preview", "o1-mini",
+		// GPT-4.1 series
+		"gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano",
+		// GPT-4.5 / GPT-4o series
+		"gpt-4.5", "gpt-4o", "gpt-4o-2024-08-06", "gpt-4o-mini", "gpt-4o-mini-2024-07-18",
+		// GPT-4 series
+		"gpt-4-turbo", "gpt-4",
+		// Specialized / open-weight
+		"computer-use-preview", "gpt-oss-120b", "gpt-oss-20b",
+		// GPT-3.5 (legacy)
+		"gpt-3.5-turbo",
+		// Other
 		"deep-research", "custom-model",
 	}
 
@@ -76,7 +93,7 @@ func getOpenAiModelType(model string) string {
 	}
 
 	imageModels := []string{
-		"dall-e-3", "dall-e-2", "gpt-image-1",
+		"gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini", "dall-e-3", "dall-e-2",
 	}
 
 	for _, chatModel := range chatModels {

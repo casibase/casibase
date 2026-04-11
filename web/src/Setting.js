@@ -1184,22 +1184,47 @@ export function getCompatibleProviderOptions(category) {
   if (category === "Model") {
     return (
       [
-        {"id": "gpt-3.5-turbo", "name": "gpt-3.5-turbo"},
-        {"id": "gpt-4", "name": "gpt-4"},
-        {"id": "gpt-4-turbo", "name": "gpt-4-turbo"},
+        // GPT-5.4 series (latest)
+        {"id": "gpt-5.4", "name": "gpt-5.4"},
+        {"id": "gpt-5.4-pro", "name": "gpt-5.4-pro"},
+        {"id": "gpt-5.4-mini", "name": "gpt-5.4-mini"},
+        {"id": "gpt-5.4-nano", "name": "gpt-5.4-nano"},
+        // GPT-5.3 series
+        {"id": "gpt-5.3-codex", "name": "gpt-5.3-codex"},
+        {"id": "gpt-5.3-chat", "name": "gpt-5.3-chat"},
+        // GPT-5.2 series
+        {"id": "gpt-5.2", "name": "gpt-5.2"},
+        // GPT-5.1 series
+        {"id": "gpt-5.1", "name": "gpt-5.1"},
+        // GPT-5 series
+        {"id": "gpt-5", "name": "gpt-5"},
+        {"id": "gpt-5-mini", "name": "gpt-5-mini"},
+        {"id": "gpt-5-nano", "name": "gpt-5-nano"},
+        {"id": "gpt-5-chat", "name": "gpt-5-chat"},
+        {"id": "gpt-5-pro", "name": "gpt-5-pro"},
+        // o-series (latest first)
+        {"id": "o4-mini", "name": "o4-mini"},
+        {"id": "codex-mini", "name": "codex-mini"},
+        {"id": "o3-pro", "name": "o3-pro"},
+        {"id": "o3", "name": "o3"},
+        {"id": "o3-mini", "name": "o3-mini"},
+        {"id": "o1-pro", "name": "o1-pro"},
+        {"id": "o1", "name": "o1"},
+        // GPT-4.1 series
+        {"id": "gpt-4.1", "name": "gpt-4.1"},
+        {"id": "gpt-4.1-mini", "name": "gpt-4.1-mini"},
+        {"id": "gpt-4.1-nano", "name": "gpt-4.1-nano"},
+        // GPT-4.5 / GPT-4o series
+        {"id": "gpt-4.5", "name": "gpt-4.5"},
         {"id": "gpt-4o", "name": "gpt-4o"},
         {"id": "gpt-4o-2024-08-06", "name": "gpt-4o-2024-08-06"},
         {"id": "gpt-4o-mini", "name": "gpt-4o-mini"},
         {"id": "gpt-4o-mini-2024-07-18", "name": "gpt-4o-mini-2024-07-18"},
-        {"id": "gpt-4.1", "name": "gpt-4.1"},
-        {"id": "gpt-4.1-mini", "name": "gpt-4.1-mini"},
-        {"id": "gpt-4.1-nano", "name": "gpt-4.1-nano"},
-        {"id": "gpt-4.5-preview", "name": "gpt-4.5-preview"},
-        {"id": "o1", "name": "o1"},
-        {"id": "o1-pro", "name": "o1-pro"},
-        {"id": "o3", "name": "o3"},
-        {"id": "o3-mini", "name": "o3-mini"},
-        {"id": "o4-mini", "name": "o4-mini"},
+        // GPT-4 series (legacy)
+        {"id": "gpt-4-turbo", "name": "gpt-4-turbo"},
+        {"id": "gpt-4", "name": "gpt-4"},
+        // GPT-3.5 (legacy)
+        {"id": "gpt-3.5-turbo", "name": "gpt-3.5-turbo"},
       ]
     );
   } else if (category === "Embedding") {
@@ -1375,37 +1400,67 @@ export function redirectToLogin() {
 }
 
 const openaiModels = [
-  {id: "dall-e-3", name: "dall-e-3"},
-  {id: "gpt-image-1", name: "gpt-image-1"},
-  {id: "gpt-3.5-turbo", name: "gpt-3.5-turbo"},
-  {id: "gpt-4", name: "gpt-4"},
-  {id: "gpt-4-turbo", name: "gpt-4-turbo"},
+  // GPT-5.4 series (latest)
+  {id: "gpt-5.4", name: "gpt-5.4"},
+  {id: "gpt-5.4-pro", name: "gpt-5.4-pro"},
+  {id: "gpt-5.4-mini", name: "gpt-5.4-mini"},
+  {id: "gpt-5.4-nano", name: "gpt-5.4-nano"},
+  // GPT-5.3 series
+  {id: "gpt-5.3-codex", name: "gpt-5.3-codex"},
+  {id: "gpt-5.3-chat", name: "gpt-5.3-chat"},
+  // GPT-5.2 series
+  {id: "gpt-5.2", name: "gpt-5.2"},
+  {id: "gpt-5.2-chat", name: "gpt-5.2-chat"},
+  {id: "gpt-5.2-codex", name: "gpt-5.2-codex"},
+  // GPT-5.1 series
+  {id: "gpt-5.1", name: "gpt-5.1"},
+  {id: "gpt-5.1-chat", name: "gpt-5.1-chat"},
+  {id: "gpt-5.1-codex", name: "gpt-5.1-codex"},
+  {id: "gpt-5.1-codex-mini", name: "gpt-5.1-codex-mini"},
+  {id: "gpt-5.1-codex-max", name: "gpt-5.1-codex-max"},
+  // GPT-5 series
+  {id: "gpt-5", name: "gpt-5"},
+  {id: "gpt-5-mini", name: "gpt-5-mini"},
+  {id: "gpt-5-nano", name: "gpt-5-nano"},
+  {id: "gpt-5-chat", name: "gpt-5-chat"},
+  {id: "gpt-5-codex", name: "gpt-5-codex"},
+  {id: "gpt-5-pro", name: "gpt-5-pro"},
+  // o-series reasoning models (latest first)
+  {id: "o4-mini", name: "o4-mini"},
+  {id: "codex-mini", name: "codex-mini"},
+  {id: "o3-pro", name: "o3-pro"},
+  {id: "o3", name: "o3"},
+  {id: "o3-mini", name: "o3-mini"},
+  {id: "o1-pro", name: "o1-pro"},
+  {id: "o1", name: "o1"},
+  {id: "o1-preview", name: "o1-preview"},
+  {id: "o1-mini", name: "o1-mini"},
+  // GPT-4.1 series
+  {id: "gpt-4.1", name: "gpt-4.1"},
+  {id: "gpt-4.1-mini", name: "gpt-4.1-mini"},
+  {id: "gpt-4.1-nano", name: "gpt-4.1-nano"},
+  // GPT-4.5 / GPT-4o series
+  {id: "gpt-4.5", name: "gpt-4.5"},
   {id: "gpt-4o", name: "gpt-4o"},
   {id: "gpt-4o-2024-08-06", name: "gpt-4o-2024-08-06"},
   {id: "gpt-4o-mini", name: "gpt-4o-mini"},
   {id: "gpt-4o-mini-2024-07-18", name: "gpt-4o-mini-2024-07-18"},
-  {id: "gpt-4.1", name: "gpt-4.1"},
-  {id: "gpt-4.1-mini", name: "gpt-4.1-mini"},
-  {id: "gpt-4.1-nano", name: "gpt-4.1-nano"},
-  {id: "gpt-4.5", name: "gpt-4.5"},
-  {id: "gpt-4.5-mini", name: "gpt-4.5-mini"},
-  {id: "gpt-4.5-nano", name: "gpt-4.5-nano"},
-  {id: "o1", name: "o1"},
-  {id: "o1-pro", name: "o1-pro"},
-  {id: "o3", name: "o3"},
-  {id: "o3-mini", name: "o3-mini"},
-  {id: "o4-mini", name: "o4-mini"},
-  {id: "gpt-5", name: "gpt-5"},
-  {id: "gpt-5-mini", name: "gpt-5-mini"},
-  {id: "gpt-5-nano", name: "gpt-5-nano"},
-  {id: "gpt-5.1", name: "gpt-5.1"},
-  {id: "gpt-5.1-mini", name: "gpt-5.1-mini"},
-  {id: "gpt-5.1-nano", name: "gpt-5.1-nano"},
-  {id: "gpt-5.2", name: "gpt-5.2"},
-  {id: "gpt-5.2-mini", name: "gpt-5.2-mini"},
-  {id: "gpt-5.2-nano", name: "gpt-5.2-nano"},
-  {id: "gpt-5.2-chat", name: "gpt-5.2-chat"},
-  {id: "gpt-5-chat-latest", name: "gpt-5-chat-latest"},
+  // GPT-4 series (legacy)
+  {id: "gpt-4-turbo", name: "gpt-4-turbo"},
+  {id: "gpt-4", name: "gpt-4"},
+  // Specialized / open-weight
+  {id: "computer-use-preview", name: "computer-use-preview"},
+  {id: "gpt-oss-120b", name: "gpt-oss-120b"},
+  {id: "gpt-oss-20b", name: "gpt-oss-20b"},
+  // GPT-3.5 (legacy)
+  {id: "gpt-3.5-turbo", name: "gpt-3.5-turbo"},
+  // Image generation models (latest first)
+  {id: "gpt-image-1.5", name: "gpt-image-1.5"},
+  {id: "gpt-image-1", name: "gpt-image-1"},
+  {id: "gpt-image-1-mini", name: "gpt-image-1-mini"},
+  {id: "dall-e-3", name: "dall-e-3"},
+  {id: "dall-e-2", name: "dall-e-2"},
+  // Other
   {id: "deep-research", name: "deep-research"},
 ];
 
