@@ -1711,44 +1711,50 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "Volcano Engine") {
     return [
-      {id: "doubao-seed-1.6-vision", name: "doubao-seed-1.6-vision"},
-      {id: "doubao-seed-1-6", name: "doubao-seed-1-6"},
-      {id: "doubao-seed-1-6-thinking", name: "doubao-seed-1-6-thinking"},
-      {id: "doubao-seed-1-6-flash", name: "doubao-seed-1-6-flash"},
-      {id: "doubao-1-5-thinking-pro", name: "doubao-1-5-thinking-pro"},
-      {id: "doubao-1-5-thinking-vision-pro", name: "doubao-1-5-thinking-vision-pro"},
-      {id: "deepseek-v3.1", name: "deepseek-v3.1"},
-      {id: "deepseek-v3.2", name: "deepseek-v3.2"},
-      {id: "deepseek-r1", name: "deepseek-r1"},
-      {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
-      {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
-      {id: "doubao-1-5-pro-32k", name: "doubao-1-5-pro-32k"},
-      {id: "doubao-1-5-pro-256k", name: "doubao-1-5-pro-256k"},
-      {id: "doubao-1-5-lite-32k", name: "doubao-1-5-lite-32k"},
-      {id: "doubao-pro-32k", name: "doubao-pro-32k"},
-      {id: "doubao-pro-256k", name: "doubao-pro-256k"},
-      {id: "doubao-lite-4k", name: "doubao-lite-4k"},
-      {id: "doubao-lite-32k", name: "doubao-lite-32k"},
-      {id: "doubao-lite-128k", name: "doubao-lite-128k"},
-      {id: "kimi-k2", name: "kimi-k2"},
-      {id: "deepseek-v3", name: "deepseek-v3"},
-      {id: "doubao-1-5-vision-pro", name: "doubao-1-5-vision-pro"},
-      {id: "doubao-1-5-vision-lite", name: "doubao-1-5-vision-lite"},
-      {id: "doubao-1-5-ui-tars", name: "doubao-1-5-ui-tars"},
-      {id: "doubao-1-5-vision-pro-32k", name: "doubao-1-5-vision-pro-32k"},
-      {id: "doubao-vision-pro-32k", name: "doubao-vision-pro-32k"},
-      {id: "doubao-vision-lite-32k", name: "doubao-vision-lite-32k"},
-      {id: "doubao-embedding", name: "doubao-embedding"},
-      {id: "doubao-embedding-large", name: "doubao-embedding-large"},
-      {id: "doubao-embedding-vision", name: "doubao-embedding-vision"},
-      {id: "doubao-seedance-1-0-pro", name: "doubao-seedance-1-0-pro"},
-      {id: "doubao-seedance-1-0-lite-t2v", name: "doubao-seedance-1-0-lite-t2v"},
-      {id: "doubao-seaweed", name: "doubao-seaweed"},
-      {id: "wan2-1-14b", name: "wan2-1-14b"},
-      {id: "doubao-seedream-4.0", name: "doubao-seedream-4.0"},
-      {id: "doubao-seedream-3-0-t2i", name: "doubao-seedream-3-0-t2i"},
-      {id: "doubao-seededit-3.0-i2i", name: "doubao-seededit-3.0-i2i"},
-      {id: "doubao-realtime", name: "doubao-realtime"},
+      // Seed 2.0 series
+      {id: "doubao-seed-2-0-pro-260215", name: "doubao-seed-2-0-pro-260215"},
+      {id: "doubao-seed-2-0-lite-260215", name: "doubao-seed-2-0-lite-260215"},
+      {id: "doubao-seed-2-0-mini-260215", name: "doubao-seed-2-0-mini-260215"},
+      {id: "doubao-seed-2-0-code-preview-260215", name: "doubao-seed-2-0-code-preview-260215"},
+      // Seed 1.8
+      {id: "doubao-seed-1-8-251228", name: "doubao-seed-1-8-251228"},
+      // Seed character & code
+      {id: "doubao-seed-character-251128", name: "doubao-seed-character-251128"},
+      {id: "doubao-seed-code-preview-251028", name: "doubao-seed-code-preview-251028"},
+      // Seed 1.6 series
+      {id: "doubao-seed-1-6-251015", name: "doubao-seed-1-6-251015"},
+      {id: "doubao-seed-1-6-lite-251015", name: "doubao-seed-1-6-lite-251015"},
+      {id: "doubao-seed-1-6-flash-250828", name: "doubao-seed-1-6-flash-250828"},
+      {id: "doubao-seed-1-6-vision-250815", name: "doubao-seed-1-6-vision-250815"},
+      {id: "doubao-seed-translation-250915", name: "doubao-seed-translation-250915"},
+      // Doubao 1.5 series
+      {id: "doubao-1-5-pro-32k-250115", name: "doubao-1-5-pro-32k-250115"},
+      {id: "doubao-1-5-pro-32k-character-250715", name: "doubao-1-5-pro-32k-character-250715"},
+      {id: "doubao-1-5-lite-32k-250115", name: "doubao-1-5-lite-32k-250115"},
+      {id: "doubao-1-5-vision-pro-32k-250115", name: "doubao-1-5-vision-pro-32k-250115"},
+      // GLM model
+      {id: "glm-4-7-251222", name: "glm-4-7-251222"},
+      // DeepSeek models
+      {id: "deepseek-v3-2-251201", name: "deepseek-v3-2-251201"},
+      {id: "deepseek-v3-1-terminus", name: "deepseek-v3-1-terminus"},
+      {id: "deepseek-v3-250324", name: "deepseek-v3-250324"},
+      {id: "deepseek-r1-250528", name: "deepseek-r1-250528"},
+      // Embedding models
+      {id: "doubao-embedding-vision-251215", name: "doubao-embedding-vision-251215"},
+      // Video generation models
+      {id: "doubao-seedance-2-0-260128", name: "doubao-seedance-2-0-260128"},
+      {id: "doubao-seedance-2-0-fast-260128", name: "doubao-seedance-2-0-fast-260128"},
+      {id: "doubao-seedance-1-5-pro-251215", name: "doubao-seedance-1-5-pro-251215"},
+      {id: "doubao-seedance-1-0-pro-250528", name: "doubao-seedance-1-0-pro-250528"},
+      {id: "doubao-seedance-1-0-pro-fast-251015", name: "doubao-seedance-1-0-pro-fast-251015"},
+      {id: "doubao-seedance-1-0-lite-t2v-250428", name: "doubao-seedance-1-0-lite-t2v-250428"},
+      {id: "doubao-seedance-1-0-lite-i2v-250428", name: "doubao-seedance-1-0-lite-i2v-250428"},
+      // Image generation models
+      {id: "doubao-seedream-5-0-260128", name: "doubao-seedream-5-0-260128"},
+      {id: "doubao-seedream-5-0-lite-260128", name: "doubao-seedream-5-0-lite-260128"},
+      {id: "doubao-seedream-4-5-251128", name: "doubao-seedream-4-5-251128"},
+      {id: "doubao-seedream-4-0-250828", name: "doubao-seedream-4-0-250828"},
+      {id: "doubao-seedream-3-0-t2i-250415", name: "doubao-seedream-3-0-t2i-250415"},
     ];
   } else if (type === "DeepSeek") {
     return [
