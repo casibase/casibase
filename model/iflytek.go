@@ -40,51 +40,57 @@ func (p *iFlytekModelProvider) GetPricing() string {
 	return `URL:
 https://xinghuo.xfyun.cn/sparkapi
 
-| Service Volume     | QPS | Validity | Version          | Unit Price       | Original Price |
-|--------------------|-----|----------|------------------|------------------|----------------|
-| 2 million tokens   | 2   | 1 year   | Spark4.0 Ultra   |     FREE         | ¥ 0            |
-| 5 million tokens   | 2   | 1 year   | Spark4.0 Ultra   |     FREE         | ¥ 0            |
-| 3 million tokens   | 3   | 1 year   | Spark4.0 Ultra   | ¥0.70/10k tokens | ¥ 210          |
-|15 million tokens   | 3   | 1 year   | Spark4.0 Ultra   | ¥0.67/10k tokens | ¥ 1000         |
-|500 million tokens  | 5   | 1 year   | Spark4.0 Ultra   | ¥0.065/10k tokens| ¥ 3250         |
-|1000 million tokens | 10  | 1 year   | Spark4.0 Ultra   | ¥0.060/10k tokens| ¥ 6000         |
-|10000 million tokens| 20  | 1 year   | Spark4.0 Ultra   | ¥0.055/10k tokens| ¥ 55000        |
-|50000 million tokens| 50  | 1 year   | Spark4.0 Ultra   | ¥0.050/10k tokens| ¥ 250000       |
-| 5 million tokens   | 2   | 1 year   | Spark Max        |     FREE         | ¥ 0            |
-|500 million tokens  | 2   | 1 year   | Spark Max        |     FREE         | ¥ 0            |
-| 3 million tokens   | 3   | 1 year   | Spark Max        | ¥0.30/10k tokens | ¥ 90           |
-|15 million tokens   | 3   | 1 year   | Spark Max        | ¥0.29/10k tokens | ¥ 435          |
-|500 million tokens  | 5   | 1 year   | Spark Max        | ¥0.027/10k tokens| ¥ 1350         |
-|1000 million tokens | 10  | 1 year   | Spark Max        | ¥0.025/10k tokens| ¥ 2500         |
-|10000 million tokens| 20  | 1 year   | Spark Max        | ¥0.023/10k tokens| ¥ 23000        |
-|50000 million tokens| 50  | 1 year   | Spark Max        | ¥0.021/10k tokens| ¥ 105000       |
-| 2 million tokens   | 2   | 1 year   | Spark Max-32K    |     FREE         | ¥ 0            |
-| 5 million tokens   | 2   | 1 year   | Spark Max-32K    |     FREE         | ¥ 0            |
-| 3 million tokens   | 3   | 1 year   | Spark Max-32K    | ¥0.32/10k tokens | ¥ 96           |
-|15 million tokens   | 3   | 1 year   | Spark Max-32K    | ¥0.31/10k tokens | ¥ 465          |
-|500 million tokens  | 5   | 1 year   | Spark Max-32K    | ¥0.029/10k tokens| ¥ 1450         |
-|1000 million tokens | 10  | 1 year   | Spark Max-32K    | ¥0.027/10k tokens| ¥ 2700         |
-|10000 million tokens| 20  | 1 year   | Spark Max-32K    | ¥0.025/10k tokens| ¥ 25000        |
-|50000 million tokens| 50  | 1 year   | Spark Max-32K    | ¥0.023/10k tokens| ¥ 115000       |
-| 5 million tokens   | 2   | 1 year   | Spark Pro        |     FREE         | ¥ 0            |
-|500 million tokens  | 2   | 1 year   | Spark Pro        |     FREE         | ¥ 0            |
-| 3 million tokens   | 3   | 1 year   | Spark Pro        |¥0.07/10k  tokens | ¥ 21           |
-|15 million tokens   | 3   | 1 year   | Spark Pro        |¥0.068/10k tokens | ¥ 102          |
-|500 million tokens  | 5   | 1 year   | Spark Pro        |¥0.0065/10k tokens| ¥ 325          |
-|1000 million tokens | 10  | 1 year   | Spark Pro        |¥0.0060/10k tokens| ¥ 600          |
-|10000 million tokens| 20  | 1 year   | Spark Pro        |¥0.0055/10k tokens| ¥ 5500         |
-|50000 million tokens| 50  | 1 year   | Spark Pro        |¥0.0050/10k tokens| ¥ 25000        |
-| 2 million tokens   | 2   | 1 year   | Spark Pro-128K   |     FREE         | ¥ 0            |
-| 5 million tokens   | 2   | 1 year   | Spark Pro-128K   |     FREE         | ¥ 0            |
-| 3 million tokens   | 3   | 1 year   | Spark Pro-128K   |¥0.13/10k  tokens | ¥ 39           |
-|15 million tokens   | 3   | 1 year   | Spark Pro-128K   |¥0.127/10k tokens | ¥ 190          |
-|500 million tokens  | 5   | 1 year   | Spark Pro-128K   |¥0.012/10k tokens | ¥ 600          |
-|1000 million tokens | 10  | 1 year   | Spark Pro-128K   |¥0.0115/10k tokens| ¥ 1150         |
-|10000 million tokens| 20  | 1 year   | Spark Pro-128K   |¥0.0108/10k tokens| ¥ 10800        |
-|50000 million tokens| 50  | 1 year   | Spark Pro-128K   |¥0.0100/10k tokens| ¥ 50000        |
-|     Unlimited      | 2   |Unlimited | Spark Lite       |     FREE         | ¥ 0            |
+| Model ID       | Unit Price          | Notes                                                         |
+|----------------|---------------------|---------------------------------------------------------------|
+| spark-x2       | ¥0.30/10k tokens    | Deep reasoning model, 64K input / 128K output                 |
+| spark-x1.5     | ¥0.20/10k tokens    | Deep reasoning model, 64K context                             |
+| spark4.0-ultra | ¥0.70/10k tokens    | Flagship non-thinking model, 32K context                      |
+| spark-pro      | ¥0.07/10k tokens    | Professional-grade model, 8K context                          |
+| spark-pro-128k | ¥0.13/10k tokens    | Pro with 128K context window                                  |
+| spark-lite     | FREE                | Lightweight model, free forever, 8K context                   |
 
+Note: Spark Max and Spark Max-32K packages were discontinued in March 2026 and merged into Ultra.
 `
+}
+
+// getBaseURL returns the API base URL for the given subType.
+// X2 and X1.5 deep-reasoning models use different endpoints from the standard models.
+func (p *iFlytekModelProvider) getBaseURL() string {
+	switch p.subType {
+	case "spark-x2":
+		return "https://spark-api-open.xf-yun.com/x2"
+	case "spark-x1.5":
+		return "https://spark-api-open.xf-yun.com/v2"
+	default:
+		return "https://spark-api-open.xf-yun.com/v1"
+	}
+}
+
+// getAPIModelName maps the casibase subType to the iFlytek HTTP API model name.
+func (p *iFlytekModelProvider) getAPIModelName() string {
+	switch p.subType {
+	case "spark-x2", "spark-x1.5":
+		return "spark-x"
+	case "spark4.0-ultra":
+		return "4.0Ultra"
+	case "spark-max":
+		return "generalv3.5"
+	case "spark-max-32k":
+		return "max-32k"
+	case "spark-pro":
+		return "generalv3"
+	case "spark-pro-128k":
+		return "pro-128k"
+	case "spark-lite":
+		return "lite"
+	// Legacy model names kept for backward compatibility
+	case "spark-v1.5":
+		return "lite"
+	case "spark-v2.0":
+		return "generalv3"
+	default:
+		return "generalv3"
+	}
 }
 
 func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult, lang string) error {
@@ -93,6 +99,10 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult, lang str
 	modelResult.Currency = "CNY"
 
 	switch p.subType {
+	case "spark-x2":
+		price = float64(tokenCount) / 10000 * 0.30
+	case "spark-x1.5":
+		price = float64(tokenCount) / 10000 * 0.20
 	case "spark4.0-ultra":
 		if tokenCount <= 3000000 {
 			price = float64(tokenCount) / 10000 * 0.70
@@ -108,6 +118,7 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult, lang str
 			price = float64(tokenCount) / 10000 * 0.050
 		}
 	case "spark-max":
+		// Spark Max was discontinued in March 2026, backend upgraded to Ultra pricing
 		if tokenCount <= 3000000 {
 			price = float64(tokenCount) / 10000 * 0.30
 		} else if tokenCount <= 15000000 {
@@ -122,6 +133,7 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult, lang str
 			price = float64(tokenCount) / 10000 * 0.021
 		}
 	case "spark-max-32k":
+		// Spark Max-32K was discontinued in March 2026, backend upgraded to Ultra pricing
 		if tokenCount <= 3000000 {
 			price = float64(tokenCount) / 10000 * 0.32
 		} else if tokenCount <= 15000000 {
@@ -165,6 +177,17 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult, lang str
 		}
 	case "spark-lite":
 		price = 0.0
+	// Legacy model names kept for backward compatibility
+	case "spark-v1.5":
+		price = 0.0
+	case "spark-v2.0":
+		if tokenCount <= 3000000 {
+			price = float64(tokenCount) / 10000 * 0.07
+		} else if tokenCount <= 15000000 {
+			price = float64(tokenCount) / 10000 * 0.068
+		} else {
+			price = float64(tokenCount) / 10000 * 0.0065
+		}
 	default:
 		return fmt.Errorf(i18n.Translate(lang, "embedding:calculatePrice() error: unknown model type: %s"), p.subType)
 	}
@@ -174,8 +197,9 @@ func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult, lang str
 }
 
 func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
-	const BaseUrl = "https://spark-api-open.xf-yun.com/v1"
-	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.secretKey, p.temperature, 0, 0, 0, BaseUrl, "generalv3", 0, 0, "CNY")
+	baseURL := p.getBaseURL()
+	apiModelName := p.getAPIModelName()
+	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.secretKey, p.temperature, 0, 0, 0, baseURL, apiModelName, 0, 0, "CNY")
 	if err != nil {
 		return nil, err
 	}

@@ -233,10 +233,18 @@ func getContextLength(typ string) int {
 			return 131072
 		}
 	} else if strings.Contains(typ, "spark") {
-		if strings.Contains(typ, "v1.5") {
+		if strings.Contains(typ, "pro-128k") || strings.Contains(typ, "128k") {
+			return 131072
+		} else if strings.Contains(typ, "x2") {
+			return 65536
+		} else if strings.Contains(typ, "x1.5") {
+			return 65536
+		} else if strings.Contains(typ, "4.0-ultra") || strings.Contains(typ, "max-32k") {
+			return 32768
+		} else if strings.Contains(typ, "max") || strings.Contains(typ, "pro") || strings.Contains(typ, "lite") {
 			return 8192
 		} else {
-			return 4096
+			return 8192
 		}
 	} else if strings.Contains(typ, "command") {
 		if strings.Contains(typ, "r") || strings.Contains(typ, "r-plus") {

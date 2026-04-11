@@ -354,7 +354,7 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "OpenRouter") {
                   this.updateProviderField("subType", "openai/gpt-4");
                 } else if (value === "iFlytek") {
-                  this.updateProviderField("subType", "spark-v2.0");
+                  this.updateProviderField("subType", "spark4.0-ultra");
                 } else if (value === "Baidu Cloud") {
                   this.updateProviderField("subType", "ernie-4.0-8k");
                 } else if (value === "MiniMax") {
