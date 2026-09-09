@@ -146,6 +146,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_silicon_flow.png`,
         url: "https://www.siliconflow.com/",
       },
+      "APIMart": {
+        logo: `${StaticBaseUrl}/img/social_apimart.svg`,
+        url: "https://apimart.ai/",
+      },
       "GitHub": {
         logo: `${StaticBaseUrl}/img/social_github.png`,
         url: "https://github.com/",
@@ -606,6 +610,7 @@ export function getProviderTypeOptions(category) {
         {id: "Tencent Cloud", name: "Tencent Cloud"},
         {id: "Yi", name: "Yi"},
         {id: "Silicon Flow", name: "Silicon Flow"},
+        {id: "APIMart", name: "APIMart"},
         {id: "GitHub", name: "GitHub"},
         {id: "Writer", name: "Writer"},
         {id: "OpenCode", name: "OpenCode"},
@@ -1210,6 +1215,16 @@ export function getModelSubTypeOptions(type) {
       {id: "meituan-longcat/LongCat-2.0", name: "meituan-longcat/LongCat-2.0"},
       {id: "nex-agi/Nex-N2-Pro", name: "nex-agi/Nex-N2-Pro"},
     ];
+  } else if (type === "APIMart") {
+    return [
+      {id: "gpt-5", name: "gpt-5"},
+      {id: "gpt-4o", name: "gpt-4o"},
+      {id: "gpt-4o-mini", name: "gpt-4o-mini"},
+      {id: "claude-sonnet-4.5", name: "claude-sonnet-4.5"},
+      {id: "claude-haiku-4.5", name: "claude-haiku-4.5"},
+      {id: "gemini-2.0-flash", name: "gemini-2.0-flash"},
+      {id: "gemini-2.0-flash-thinking", name: "gemini-2.0-flash-thinking"},
+    ];
   } else if (type === "Grok") {
     return [
       {id: "grok-3-latest", name: "grok-3-latest"},
@@ -1393,7 +1408,7 @@ export function getProviderAzureApiVersionOptions() {
 }
 
 export function getQuickSetupModelTypes() {
-  return ["OpenAI", "Claude", "Gemini", "DeepSeek", "Grok", "Ollama", "OpenRouter", "Mistral", "MiniMax", "Azure", "OpenAI Compatible", "Alibaba Cloud", "Moonshot", "Silicon Flow", "Volcano Engine", "Baidu Cloud", "Amazon Bedrock", "Hugging Face", "iFlytek", "ChatGLM", "Cohere", "Baichuan", "StepFun", "Tencent Cloud", "Yi", "GitHub", "Writer", "Local", "OpenCode"];
+  return ["OpenAI", "Claude", "Gemini", "DeepSeek", "Grok", "Ollama", "OpenRouter", "Mistral", "MiniMax", "Azure", "OpenAI Compatible", "Alibaba Cloud", "Moonshot", "Silicon Flow", "Volcano Engine", "Baidu Cloud", "Amazon Bedrock", "Hugging Face", "iFlytek", "ChatGLM", "Cohere", "Baichuan", "StepFun", "Tencent Cloud", "Yi", "APIMart", "GitHub", "Writer", "Local", "OpenCode"];
 }
 
 export function getModelProviderMetadata(type) {
@@ -1423,6 +1438,7 @@ export function getModelProviderMetadata(type) {
     "StepFun": {desc: "Step-2, Step-1...", needsApiKey: true, needsUrl: false, needsClientId: false, needsRegion: false, defaultSubType: "step-2-16k"},
     "Tencent Cloud": {desc: "Hunyuan models", needsApiKey: true, needsUrl: true, needsClientId: false, needsRegion: false, defaultSubType: "hunyuan-pro", urlPlaceholder: "https://hunyuan.tencentcloudapi.com"},
     "Yi": {desc: "Yi Lightning, Yi Vision", needsApiKey: true, needsUrl: false, needsClientId: false, needsRegion: false, defaultSubType: "yi-lightning"},
+    "APIMart": {desc: "500+ models, image & video", needsApiKey: true, needsUrl: false, needsClientId: false, needsRegion: false, defaultSubType: "gpt-4o"},
     "GitHub": {desc: "GitHub Models catalog", needsApiKey: true, needsUrl: false, needsClientId: false, needsRegion: false, defaultSubType: "gpt-4o"},
     "Writer": {desc: "Palmyra X5, X4...", needsApiKey: true, needsUrl: false, needsClientId: false, needsRegion: false, defaultSubType: "palmyra-x5"},
     "Local": {desc: "Self-hosted model endpoint", needsApiKey: true, needsUrl: true, needsClientId: false, needsRegion: false, defaultSubType: "custom-model", urlPlaceholder: "http://localhost:8000/v1"},

@@ -48,6 +48,21 @@ OpenAgent is an open-source personal AI assistant that brings together powerful 
 
 ---
 
+## Sponsors
+
+<table>
+  <tr>
+    <td width="300" align="center">
+      <a href="https://go.apimart.ai/gh-openagent" target="_blank"><img src="https://cdn.openagentai.org/img/sponsor_apimart.png" alt="APIMart" width="280"></a>
+    </td>
+    <td>
+      Thanks to APIMart for sponsoring this project! APIMart is a low-cost API platform for AI image &amp; video generation &mdash; GPT-Image-2 from $0.006/image, 160+ images per dollar. One async API covers both image and video: submit a task, get an ID, fetch results via polling or callback. Batch tens of thousands of images without timeouts, switch models without changing code. Pay-as-you-go with no monthly fee &mdash; <a href="https://go.apimart.ai/gh-openagent" target="_blank">sign up here</a> to get started.
+    </td>
+  </tr>
+</table>
+
+---
+
 ## Quick Start
 
 Pre-built binaries for **Linux**, **macOS**, and **Windows** (`x86_64` / `arm64`). The installer downloads the latest release and starts OpenAgent on **port 14000**.
@@ -99,7 +114,7 @@ Connect every major LLM provider and switch between them per conversation — no
 
 <div align="center">
 
-`OpenAI` · `Azure OpenAI` · `Anthropic Claude` · `Google Gemini` · `DeepSeek` · `Mistral` · `Grok` · `Qwen` · `Doubao` · `Moonshot` · `ChatGLM` · `Baichuan` · `Ernie` · `iFlytek` · `HuggingFace` · `Cohere` · `Amazon Bedrock` · `OpenRouter` · `Ollama` · `and more`
+`OpenAI` · `Azure OpenAI` · `Anthropic Claude` · `Google Gemini` · `DeepSeek` · `Mistral` · `Grok` · `Qwen` · `Doubao` · `Moonshot` · `ChatGLM` · `Baichuan` · `Ernie` · `iFlytek` · `HuggingFace` · `Cohere` · `Amazon Bedrock` · `OpenRouter` · `Ollama` · `APIMart` · `and more`
 
 </div>
 

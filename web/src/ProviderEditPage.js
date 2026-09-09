@@ -213,7 +213,7 @@ class ProviderEditPage extends React.Component {
 
   isTemperatureEnabled(provider) {
     if (provider.category === "Model") {
-      if (["OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama", "Writer"].includes(provider.type)) {
+      if (["OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "APIMart", "Ollama", "Writer"].includes(provider.type)) {
         return true;
       } else if (provider.type === "OpenAI") {
         if (provider.subType.includes("o1") || provider.subType.includes("o3") || provider.subType.includes("o4")) {
@@ -228,7 +228,7 @@ class ProviderEditPage extends React.Component {
 
   isTopPEnabled(provider) {
     if (provider.category === "Model") {
-      if (["OpenRouter", "Baidu Cloud", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama", "Writer"].includes(provider.type)) {
+      if (["OpenRouter", "Baidu Cloud", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "APIMart", "Ollama", "Writer"].includes(provider.type)) {
         return true;
       } else if (provider.type === "OpenAI") {
         if (provider.subType.includes("o1") || provider.subType.includes("o3") || provider.subType.includes("o4")) {
@@ -464,7 +464,7 @@ class ProviderEditPage extends React.Component {
                         }
                       </Select>
                     )}
-                    {["OpenAI", "OpenRouter", "Local", "OpenAI Compatible", "Ollama", "DeepSeek", "Moonshot", "Grok", "Silicon Flow", "Mistral", "StepFun"].includes(provider.type) && (
+                    {["OpenAI", "OpenRouter", "Local", "OpenAI Compatible", "Ollama", "DeepSeek", "Moonshot", "Grok", "Silicon Flow", "APIMart", "Mistral", "StepFun"].includes(provider.type) && (
                       <Button
                         type="primary"
                         icon={<SyncOutlined spin={this.state.isFetchingModels} />}
