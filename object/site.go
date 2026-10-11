@@ -38,6 +38,10 @@ type Site struct {
 
 	FigureUrl string `xorm:"varchar(500)" json:"figureUrl"`
 
+	GuardrailName    string `xorm:"varchar(100)" json:"guardrailName"`
+	GuardrailOwner   string `xorm:"varchar(100)" json:"guardrailOwner"`
+	GuardrailLogoUrl string `xorm:"varchar(500)" json:"guardrailLogoUrl"`
+
 	CheckUserBalance bool `xorm:"bool" json:"checkUserBalance"`
 
 	Issuer              string `xorm:"varchar(500)" json:"issuer"`

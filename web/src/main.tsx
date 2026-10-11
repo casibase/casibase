@@ -23,6 +23,7 @@ import ErrorBoundary from "./components/common/ErrorBoundary";
 import {ThemeProvider} from "./hooks/use-theme";
 import {AccountProvider} from "./hooks/use-account";
 import {SiteProvider} from "./hooks/use-site";
+import {GuardrailProvider} from "./components/layout/Guardrail";
 import {useLanguageVersion} from "./hooks/use-language";
 import {TooltipProvider} from "./components/ui/tooltip";
 import {Toaster} from "./components/ui/sonner";
@@ -39,7 +40,9 @@ function Root() {
           <BrowserRouter>
             <AccountProvider>
               <SiteProvider>
-                <App />
+                <GuardrailProvider>
+                  <App />
+                </GuardrailProvider>
                 <Toaster />
               </SiteProvider>
             </AccountProvider>

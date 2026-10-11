@@ -23,6 +23,7 @@ import {FileTypeIcon} from "@/components/common/FileTypeIcon";
 import * as ProviderSetting from "@/lib/provider-setting";
 import * as Setting from "@/lib/setting";
 import {cn, isComposing} from "@/lib/utils";
+import {GuardrailNote} from "@/components/layout/Guardrail";
 
 export const ACCEPTED_FILE_TYPES = "image/*, .txt, .md, .yaml, .csv, .docx, .pdf, .xlsx, .pptx";
 const SUPPORTED_EXTENSIONS = new Set(["txt", "md", "yaml", "csv", "docx", "pdf", "xlsx", "pptx"]);
@@ -287,6 +288,7 @@ export const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(f
           </Button>
         )}
       </div>
+      <GuardrailNote />
     </div>
   );
 });

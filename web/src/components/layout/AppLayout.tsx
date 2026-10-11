@@ -3,6 +3,7 @@ import {Outlet, useSearchParams} from "react-router-dom";
 import {SidebarInset, SidebarProvider} from "@/components/ui/sidebar";
 import {Loading} from "@/components/common/Loading";
 import {Header} from "@/components/layout/Header";
+import {GuardrailSeal} from "@/components/layout/Guardrail";
 import {PoweredBy} from "@/components/layout/PoweredBy";
 import {AppSidebar} from "@/components/layout/Sidebar";
 
@@ -49,7 +50,10 @@ export function AppLayout({fullBleed = false}: {fullBleed?: boolean}) {
 
       {!fullBleed && (
         <footer id="footer" className="shrink-0 border-t bg-background py-3 text-center text-xs text-muted-foreground">
-          <PoweredBy />
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-3">
+            <GuardrailSeal />
+            <PoweredBy />
+          </div>
         </footer>
       )}
     </div>

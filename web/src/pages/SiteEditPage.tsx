@@ -128,6 +128,15 @@ export default function SiteEditPage() {
             <ImageUrlInput value={site.logoUrl ?? ""} onChange={(value) => updateField("logoUrl", value)} upload={uploadImage} />
           </FormRow>
           {text("figureUrl", "figure:Virtual figure URL")}
+          <FormRow label="安全护栏名称" tooltip="保护本实例的 AI 安全护栏名称。填写后，页脚、对话输入框下方和页面右侧会显示安全护栏标识；留空则不显示">
+            <Input value={site.guardrailName ?? ""} onChange={(e) => updateField("guardrailName", e.target.value)} />
+          </FormRow>
+          <FormRow label="安全护栏提供方" tooltip="提供安全护栏的单位，显示在安全护栏侧边栏里">
+            <Input value={site.guardrailOwner ?? ""} onChange={(e) => updateField("guardrailOwner", e.target.value)} />
+          </FormRow>
+          <FormRow label="安全护栏标志" tooltip="显示在页脚徽标和安全护栏侧边栏里，留空则显示盾牌图标">
+            <ImageUrlInput value={site.guardrailLogoUrl ?? ""} onChange={(value) => updateField("guardrailLogoUrl", value)} upload={uploadImage} />
+          </FormRow>
         </FormSection>
 
         <FormSection title={i18next.t("general:Content")} description={i18next.t("general:Content desc")}>
