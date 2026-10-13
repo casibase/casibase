@@ -450,12 +450,41 @@ func (store *Store) GetStorageProviderObj(lang string) (storage.StorageProvider,
 	return NewSubpathStorageProvider(storageProvider, store.StorageSubpath), nil
 }
 
+// getDefaultImageProviderName returns the image provider of the owner's default store, then of admin's:
+// a store created by a store admin has no image provider of its own unless the admin picked one.
+func getDefaultImageProviderName(owner string) (string, error) {
+	owners := []string{owner}
+	if owner != "admin" {
+		owners = append(owners, "admin")
+	}
+
+	for _, defaultOwner := range owners {
+		defaultStore, err := GetDefaultStore(defaultOwner)
+		if err != nil {
+			return "", err
+		}
+		if defaultStore != nil && defaultStore.ImageProvider != "" {
+			return defaultStore.ImageProvider, nil
+		}
+	}
+
+	return "", nil
+}
+
 func (store *Store) GetImageProviderObj(lang string) (storage.StorageProvider, error) {
-	if store.ImageProvider == "" {
+	imageProvider := store.ImageProvider
+	if imageProvider == "" {
+		var err error
+		imageProvider, err = getDefaultImageProviderName(store.Owner)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if imageProvider == "" {
 		return nil, fmt.Errorf(i18n.Translate(lang, "object:The image provider for store: %s should not be empty"), store.GetId())
 	}
 
-	provider, err := GetProviderByOwnerAndName(store.Owner, store.ImageProvider)
+	provider, err := GetProviderByOwnerAndName(store.Owner, imageProvider)
 	if err != nil {
 		return nil, err
 	}
@@ -464,7 +493,7 @@ func (store *Store) GetImageProviderObj(lang string) (storage.StorageProvider, e
 	}
 
 	if conf.IsCasdoorAvailable() {
-		return storage.NewCasdoorProvider(store.ImageProvider, lang)
+		return storage.NewCasdoorProvider(imageProvider, lang)
 	}
 
 	return nil, fmt.Errorf(i18n.Translate(lang, "object:The image provider for store: %s should not be empty"), store.GetId())

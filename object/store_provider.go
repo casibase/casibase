@@ -134,6 +134,14 @@ func (store *Store) Populate(origin string, lang string) error {
 }
 
 func SyncDefaultProvidersToStore(store *Store) error {
+	if store.ImageProvider == "" {
+		imageProvider, err := getDefaultImageProviderName(store.Owner)
+		if err != nil {
+			return err
+		}
+		store.ImageProvider = imageProvider
+	}
+
 	defaultStore, err := GetDefaultStore(store.Owner)
 	if err != nil {
 		return err
@@ -142,9 +150,6 @@ func SyncDefaultProvidersToStore(store *Store) error {
 		return nil
 	}
 
-	if store.ImageProvider == "" && defaultStore.ImageProvider != "" {
-		store.ImageProvider = defaultStore.ImageProvider
-	}
 	if store.TextToSpeechProvider == "Browser Built-In" && defaultStore.TextToSpeechProvider != "" {
 		store.TextToSpeechProvider = defaultStore.TextToSpeechProvider
 	}
