@@ -388,7 +388,7 @@ export function isAdminUser(account: any) {
 }
 
 export function isChatAdminUser(account: any) {
-  return !!account && (account.type === "chat-admin" || account.tag === "教师");
+  return !!account && (account.type === "chat-admin" || account.tag === "教师" || account.tag === "家长");
 }
 
 export function canViewAllUsers(account: any) {
