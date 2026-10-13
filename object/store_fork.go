@@ -22,7 +22,8 @@ import (
 	"xorm.io/xorm"
 )
 
-func pickForkStoreName(owner, base string) (string, error) {
+// pickForkStoreName picks a name no store has under any owner: chats refer to a store by name alone.
+func pickForkStoreName(base string) (string, error) {
 	if base == "" {
 		return "", fmt.Errorf("empty store name")
 	}
@@ -44,7 +45,7 @@ func pickForkStoreName(owner, base string) (string, error) {
 			candidate = trunc + suffix
 		}
 
-		exists, err := adapter.engine.Where("owner = ? AND name = ?", owner, candidate).Exist(&Store{})
+		exists, err := adapter.engine.Where("name = ?", candidate).Exist(&Store{})
 		if err != nil {
 			return "", err
 		}
@@ -125,7 +126,7 @@ func ForkStore(srcOwner, srcName, targetOwner string) (*Store, error) {
 		return nil, fmt.Errorf("source store not found")
 	}
 
-	newName, err := pickForkStoreName(targetOwner, srcName)
+	newName, err := pickForkStoreName(srcName)
 	if err != nil {
 		return nil, err
 	}

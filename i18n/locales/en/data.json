@@ -233,6 +233,7 @@
     "Please set a custom display name for this agent (the default \"New Store\" name is not allowed)": "Please set a custom display name for this agent (the default \"New Store\" name is not allowed)",
     "Please upload a custom avatar for this agent (the default avatar is not allowed)": "Please upload a custom avatar for this agent (the default avatar is not allowed)",
     "The agent does not exist": "The agent does not exist",
+    "The name: %s is already used by another agent": "The name: %s is already used by another agent",
     "The store name cannot be empty": "The store name cannot be empty",
     "This agent needs at least 100 vectors before it can be submitted for review": "This agent needs at least 100 vectors before it can be submitted for review",
     "This agent needs at least 200 messages before it can be submitted for review": "This agent needs at least 200 messages before it can be submitted for review",

@@ -233,6 +233,7 @@
     "Please set a custom display name for this agent (the default \"New Store\" name is not allowed)": "请为该智能体设置自定义显示名称（不能使用默认的 \"New Store\" 名称）",
     "Please upload a custom avatar for this agent (the default avatar is not allowed)": "请为该智能体上传自定义头像（不能使用默认头像）",
     "The agent does not exist": "智能体不存在",
+    "The name: %s is already used by another agent": "名称：%s 已被其他智能体使用",
     "The store name cannot be empty": "存储库名称不能为空",
     "This agent needs at least 100 vectors before it can be submitted for review": "该智能体至少需要 100 条向量才能提交审核",
     "This agent needs at least 200 messages before it can be submitted for review": "该智能体至少需要 200 条消息才能提交审核",

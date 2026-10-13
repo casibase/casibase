@@ -338,6 +338,12 @@ func GetStoreForGetApi(id string) (*Store, error) {
 	return resolveStoreWhenAdminIdMisses(id)
 }
 
+// IsStoreNameUsedByOthers reports whether another owner already has a store with this name.
+// Chats refer to a store by name alone, so a name has to stay unique across owners.
+func IsStoreNameUsedByOthers(owner string, name string) (bool, error) {
+	return adapter.engine.Where("name = ? and owner <> ?", name, owner).Exist(&Store{})
+}
+
 func UpdateStore(id string, store *Store) (bool, error) {
 	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
 	if err != nil {

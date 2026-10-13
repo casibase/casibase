@@ -290,6 +290,18 @@ func (c *ApiController) UpdateStore() {
 		store.Owner = oldStore.Owner
 	}
 
+	if store.Name != oldStore.Name {
+		used, err := object.IsStoreNameUsedByOthers(store.Owner, store.Name)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		if used {
+			c.ResponseError(fmt.Sprintf(c.T("store:The name: %s is already used by another agent"), store.Name))
+			return
+		}
+	}
+
 	if oldStore.IsDefault && !store.IsDefault {
 		c.ResponseError(c.T("store:given that there must be one default store in OpenAgent, you cannot set this store to non-default. You can directly set another store as default"))
 		return
@@ -405,6 +417,16 @@ func (c *ApiController) AddStore() {
 
 	if !c.IsGlobalAdmin() && c.IsStoreAdmin() {
 		store.Owner = c.GetSessionUsername()
+	}
+
+	used, err := object.IsStoreNameUsedByOthers(store.Owner, store.Name)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	if used {
+		c.ResponseError(fmt.Sprintf(c.T("store:The name: %s is already used by another agent"), store.Name))
+		return
 	}
 
 	err = object.SyncDefaultProvidersToStore(&store)
