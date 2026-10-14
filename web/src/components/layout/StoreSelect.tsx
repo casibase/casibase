@@ -52,15 +52,17 @@ export function StoreSelect({account}: {account: any}) {
         if (res.status !== "ok") {
           return;
         }
-        const list = res.data ?? [];
+        // a nameless store row can't be picked, and would match an empty homepage
+        const list = (res.data ?? []).filter((store: any) => store.name);
         setStores(list);
         // a saved choice, even "All", is the user's and is never overridden;
         // the first visit starts on the store bound to the user, else the first one
+        // ("" was saved by an older picker that bound everyone to a nameless store)
         const saved = localStorage.getItem("store");
-        if (saved !== null) {
+        if (saved !== null && saved !== "") {
           setValue(saved);
         } else {
-          const bound = list.find((store: any) => store.name === account?.homepage);
+          const bound = account?.homepage ? list.find((store: any) => store.name === account.homepage) : undefined;
           change(bound ? bound.name : (list[0]?.name ?? ""));
         }
       }).catch(() => undefined);
@@ -89,7 +91,7 @@ export function StoreSelect({account}: {account: any}) {
   }
 
   // a user whose homepage names a store is pinned to it
-  const isBound = stores.some((store) => store.name === account?.homepage);
+  const isBound = !!account?.homepage && stores.some((store) => store.name === account.homepage);
   const options = [
     {value: "All", label: i18next.t("store:All"), keywords: i18next.t("store:All")},
     ...stores.map((store) => ({value: store.name, label: <StoreLabel store={store} />, keywords: `${store.displayName ?? ""} ${store.name}`})),
