@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strings"
 
+	"golang.org/x/sync/errgroup"
 	"xorm.io/xorm"
 )
 
@@ -61,37 +62,60 @@ func GetPublishedStoresFromAllDbs() ([]*Store, error) {
 		return stores, nil
 	}
 
+	dbNames := []string{}
 	for _, dbName := range strings.Split(hubDbNames, ",") {
 		dbName = strings.TrimSpace(dbName)
-		if dbName == "" || dbName == adapter.DbName {
-			continue
+		if dbName != "" && dbName != adapter.DbName {
+			dbNames = append(dbNames, dbName)
 		}
+	}
 
-		extraAdapter := NewAdapterWithDbName(adapter.driverName, adapter.dataSourceName, dbName)
-
-		// Fetch site-built-in from this DB to obtain its public Endpoint.
-		extraSite := &Site{Owner: "admin", Name: "site-built-in"}
-		_, siteErr := extraAdapter.engine.Get(extraSite)
-		if siteErr != nil {
-			extraAdapter.close()
-			return nil, fmt.Errorf("failed to get site-built-in from hub DB [%s]: %w", dbName, siteErr)
-		}
-		endpoint := strings.TrimRight(extraSite.Endpoint, "/")
-
-		extraStores := []*Store{}
-		queryErr := extraAdapter.engine.Desc("created_time").Where("publish_state = ?", "Published").Find(&extraStores)
-		extraAdapter.close()
-		if queryErr != nil {
-			return nil, fmt.Errorf("failed to get published stores from hub DB [%s]: %w", dbName, queryErr)
-		}
-		for _, s := range extraStores {
-			s.HubDbName = dbName
-			s.Endpoint = endpoint
-		}
+	// A hub can list dozens of instances; query them a few at a time instead of one after another.
+	results := make([][]*Store, len(dbNames))
+	g := errgroup.Group{}
+	g.SetLimit(hubQueryConcurrency)
+	for i, dbName := range dbNames {
+		g.Go(func() error {
+			extraStores, err := getPublishedStoresFromHubDb(dbName)
+			results[i] = extraStores
+			return err
+		})
+	}
+	if err = g.Wait(); err != nil {
+		return nil, err
+	}
+	for _, extraStores := range results {
 		stores = append(stores, extraStores...)
 	}
 
 	return stores, nil
+}
+
+// hubQueryConcurrency is how many hub databases are queried at the same time.
+const hubQueryConcurrency = 8
+
+func getPublishedStoresFromHubDb(dbName string) ([]*Store, error) {
+	extraAdapter := NewAdapterWithDbName(adapter.driverName, adapter.dataSourceName, dbName)
+	defer extraAdapter.close()
+
+	// Fetch site-built-in from this DB to obtain its public Endpoint.
+	extraSite := &Site{Owner: "admin", Name: "site-built-in"}
+	_, err := extraAdapter.engine.Get(extraSite)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get site-built-in from hub DB [%s]: %w", dbName, err)
+	}
+	endpoint := strings.TrimRight(extraSite.Endpoint, "/")
+
+	extraStores := []*Store{}
+	err = extraAdapter.engine.Desc("created_time").Where("publish_state = ?", "Published").Find(&extraStores)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get published stores from hub DB [%s]: %w", dbName, err)
+	}
+	for _, s := range extraStores {
+		s.HubDbName = dbName
+		s.Endpoint = endpoint
+	}
+	return extraStores, nil
 }
 
 func isConfiguredHubDbName(hubDbName string) (bool, error) {

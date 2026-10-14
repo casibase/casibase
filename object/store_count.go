@@ -17,6 +17,7 @@ package object
 import (
 	"strings"
 
+	"golang.org/x/sync/errgroup"
 	"xorm.io/xorm"
 )
 
@@ -117,12 +118,14 @@ func FillStoreActivityCounts(stores []*Store) error {
 		storesByDb[store.HubDbName] = append(storesByDb[store.HubDbName], store)
 	}
 
+	g := errgroup.Group{}
+	g.SetLimit(hubQueryConcurrency)
 	for hubDbName, dbStores := range storesByDb {
-		if err := fillStoreActivityCountsForDb(hubDbName, dbStores); err != nil {
-			return err
-		}
+		g.Go(func() error {
+			return fillStoreActivityCountsForDb(hubDbName, dbStores)
+		})
 	}
-	return nil
+	return g.Wait()
 }
 
 func fillStoreActivityCountsForDb(hubDbName string, stores []*Store) error {

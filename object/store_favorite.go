@@ -16,6 +16,7 @@ package object
 
 import (
 	"github.com/the-open-agent/openagent/util"
+	"golang.org/x/sync/errgroup"
 	"xorm.io/xorm"
 )
 
@@ -163,12 +164,14 @@ func FillStoreFavoriteCounts(stores []*Store) error {
 		storesByDb[store.HubDbName] = append(storesByDb[store.HubDbName], store)
 	}
 
+	g := errgroup.Group{}
+	g.SetLimit(hubQueryConcurrency)
 	for hubDbName, dbStores := range storesByDb {
-		if err := fillStoreFavoriteCountsForDb(hubDbName, dbStores); err != nil {
-			return err
-		}
+		g.Go(func() error {
+			return fillStoreFavoriteCountsForDb(hubDbName, dbStores)
+		})
 	}
-	return nil
+	return g.Wait()
 }
 
 func fillStoreFavoriteCountsForDb(hubDbName string, stores []*Store) error {
