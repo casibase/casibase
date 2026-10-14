@@ -29,7 +29,7 @@ interface NavNode {
   children?: NavNode[];
 }
 
-export const IdentityNavKeys = ["/identity", "/users", "/casdoor-resources", "/permissions"];
+export const IdentityNavKeys = ["/identity", "/users", "/casdoor-resources", "/permissions", "/student-accounts"];
 
 function getNavTree(): NavNode {
   const leaf = (key: string, title: string, extra?: Partial<NavNode>): NavNode => ({key, title, ...extra});
@@ -72,6 +72,7 @@ function getNavTree(): NavNode {
         leaf("/users", i18next.t("general:Users"), {casdoor: true}),
         leaf("/casdoor-resources", i18next.t("general:Resources"), {casdoor: true}),
         leaf("/permissions", i18next.t("general:Permissions"), {casdoor: true}),
+        leaf("/student-accounts", i18next.t("account:Student Accounts"), {casdoor: true}),
       ]},
       {key: "/admin", title: i18next.t("general:Admin"), children: [
         leaf("/sites", i18next.t("general:Sites"), {locked: true}),

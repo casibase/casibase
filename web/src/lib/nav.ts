@@ -168,6 +168,7 @@ export function getNavGroups(account: Account | null | undefined, site?: any, fo
         {key: "/users", label: i18next.t("general:Users"), href: profileUrl.replace("/account", "/users")},
         {key: "/casdoor-resources", label: i18next.t("general:Casdoor Resources"), href: profileUrl.replace("/account", "/resources")},
         {key: "/permissions", label: i18next.t("general:Permissions"), href: profileUrl.replace("/account", "/permissions")},
+        ...(Setting.isLocalAdminUser(account) ? [{key: "/student-accounts", label: i18next.t("account:Student Accounts")}] : []),
       ],
     });
   }

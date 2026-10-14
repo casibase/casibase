@@ -1,7 +1,17 @@
 {
   "account": {
+    "Student accounts can only be added when signing in with Casdoor": "Student accounts can only be added when signing in with Casdoor",
+    "The account was not created": "The account was not created",
     "The default store is not found": "The default store is not found",
-    "The store: %s is not found": "The store: %s is not found"
+    "The name is required": "The name is required",
+    "The password must have at least 6 characters": "The password must have at least 6 characters",
+    "The phone number is already used by another account": "The phone number is already used by another account",
+    "The phone number is invalid": "The phone number is invalid",
+    "The store: %s is not found": "The store: %s is not found",
+    "The username appears more than once in this list": "The username appears more than once in this list",
+    "The username is already taken": "The username is already taken",
+    "The username may only contain letters, digits and single - _ . between them": "The username may only contain letters, digits and single - _ . between them",
+    "Too many student accounts in one request": "Too many student accounts in one request"
   },
   "application": {
     "Missing required parameters": "Missing required parameters"

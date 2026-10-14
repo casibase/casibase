@@ -1,7 +1,17 @@
 {
   "account": {
+    "Student accounts can only be added when signing in with Casdoor": "只有通过统一身份认证登录时才能添加学生账号",
+    "The account was not created": "账号没有建成",
     "The default store is not found": "未找到默认存储",
-    "The store: %s is not found": "未找到存储：%s"
+    "The name is required": "姓名不能为空",
+    "The password must have at least 6 characters": "密码至少 6 位",
+    "The phone number is already used by another account": "手机号已被其他账号使用",
+    "The phone number is invalid": "手机号格式不对",
+    "The store: %s is not found": "未找到存储：%s",
+    "The username appears more than once in this list": "表里有重复的用户名",
+    "The username is already taken": "用户名已被占用，请换一个",
+    "The username may only contain letters, digits and single - _ . between them": "用户名只能用字母和数字（中间可以有单个 - _ .），不能为空",
+    "Too many student accounts in one request": "一次提交的账号太多"
   },
   "application": {
     "Missing required parameters": "缺少必需参数"

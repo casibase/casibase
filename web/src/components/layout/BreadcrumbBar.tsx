@@ -32,6 +32,7 @@ const RESOURCE_LABELS: Record<string, string> = {
   "user-notifications": "general:Notifications",
   "sessions": "general:Sessions",
   "snapshots": "general:Snapshots",
+  "student-accounts": "account:Student Accounts",
   "sites": "general:Sites",
   "comments": "general:Comments",
   "resources": "general:Resources",

@@ -152,6 +152,8 @@ export default function App() {
           <Route path="/sessions" element={page("SessionListPage")} />
           <Route path="/snapshots" element={page("SnapshotListPage")} />
 
+          <Route path="/student-accounts" element={page("StudentAccountPage")} />
+
           <Route path="/analysis" element={page("AnalysisListPage")} />
           <Route path="/analysis/:owner/:storeName" element={page("AnalysisEditPage")} />
           <Route path="/sites" element={page("SiteListPage")} />

@@ -65,6 +65,10 @@ func GetUsers() ([]*User, error) {
 	return casdoorsdk.GetUsers()
 }
 
+func AddUser(user *User) (bool, error) {
+	return casdoorsdk.AddUser(user)
+}
+
 func GetOrganization(name string) (*Organization, error) {
 	return casdoorsdk.GetOrganization(name)
 }
