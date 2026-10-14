@@ -19,6 +19,7 @@ import (
 	"math"
 	"regexp"
 	"strings"
+	"sync"
 	"unicode"
 
 	"github.com/pkoukk/tiktoken-go"
@@ -116,9 +117,25 @@ func getCompatibleModel(model string) string {
 	return openai.GPT4
 }
 
+var tiktokenCache sync.Map
+
+func getTiktoken(model string) (*tiktoken.Tiktoken, error) {
+	if tkm, ok := tiktokenCache.Load(model); ok {
+		return tkm.(*tiktoken.Tiktoken), nil
+	}
+
+	tkm, err := tiktoken.EncodingForModel(model)
+	if err != nil {
+		return nil, err
+	}
+
+	actual, _ := tiktokenCache.LoadOrStore(model, tkm)
+	return actual.(*tiktoken.Tiktoken), nil
+}
+
 func GetTokenSize(model string, prompt string) (int, error) {
 	modelToUse := getCompatibleModel(model)
-	tkm, err := tiktoken.EncodingForModel(modelToUse)
+	tkm, err := getTiktoken(modelToUse)
 	if err != nil {
 		return 0, err
 	}

@@ -15,7 +15,6 @@
 package model
 
 import (
-	"github.com/pkoukk/tiktoken-go"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -182,7 +181,7 @@ func OpenaiNumTokensFromMessages(messages []openai.ChatCompletionMessage, model 
 	tokensPerMessage, tokensPerName := getModelTokenCounts(modelToUse)
 
 	// Get tiktoken encoding using the compatibility layer
-	tkm, err := tiktoken.EncodingForModel(modelToUse)
+	tkm, err := getTiktoken(modelToUse)
 	if err != nil {
 		return 0, err
 	}

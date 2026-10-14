@@ -29,7 +29,6 @@ import (
 	"github.com/openai/openai-go/v2/packages/param"
 	"github.com/openai/openai-go/v2/responses"
 	"github.com/openai/openai-go/v2/shared"
-	"github.com/pkoukk/tiktoken-go"
 	"github.com/the-open-agent/openagent/i18n"
 	"github.com/the-open-agent/openagent/proxy"
 )
@@ -846,7 +845,7 @@ func openaiNumTokensFromMessages(messages responses.ResponseInputParam, model st
 	tokensPerMessage, _ := getModelTokenCounts(modelToUse)
 
 	// Get tiktoken encoding using the compatibility layer
-	tkm, err := tiktoken.EncodingForModel(modelToUse)
+	tkm, err := getTiktoken(modelToUse)
 	if err != nil {
 		return 0, err
 	}
