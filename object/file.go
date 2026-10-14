@@ -185,7 +185,7 @@ func DeleteFile(file *File, lang string) (bool, error) {
 		return false, err
 	}
 
-	_, err = DeleteVectorsByFile(file.Owner, file.Store, objectKey)
+	_, err = DeleteVectorsByFile(file.Store, objectKey)
 	if err != nil {
 		return false, err
 	}
@@ -263,7 +263,7 @@ func updateFileStatus(owner string, storeName string, objectKey string, status F
 		cols = append(cols, "token_count")
 		file.TokenCount = tokenCount
 	}
-	_, err := adapter.engine.ID(core.PK{owner, name}).Cols(cols...).Update(file)
+	_, err := adapter.engine.Where("owner = ? and store = ? and (name = ? or name = ?)", owner, storeName, name, objectKey).Cols(cols...).Update(file)
 	return err
 }
 

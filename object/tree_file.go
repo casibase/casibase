@@ -125,7 +125,7 @@ func DeleteTreeFile(storeId string, key string, isLeaf bool, lang string) (bool,
 			return false, err
 		}
 
-		_, err = DeleteVectorsByFile(store.Owner, store.Name, key)
+		_, err = DeleteVectorsByFile(store.Name, key)
 		if err != nil {
 			logs.Error("Failed to delete vectors for file %s: %v", key, err)
 			return false, err
@@ -147,7 +147,7 @@ func DeleteTreeFile(storeId string, key string, isLeaf bool, lang string) (bool,
 				return false, err
 			}
 
-			_, err = DeleteVectorsByFile(store.Owner, store.Name, object.Key)
+			_, err = DeleteVectorsByFile(store.Name, object.Key)
 			if err != nil {
 				logs.Error("Failed to delete vectors for file %s: %v", object.Key, err)
 				return false, err

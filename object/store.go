@@ -361,7 +361,29 @@ func UpdateStore(id string, store *Store) (bool, error) {
 		store.ExternalApiKey = generateStoreApiKey()
 	}
 
-	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(store)
+	session := adapter.engine.NewSession()
+	defer session.Close()
+
+	err = session.Begin()
+	if err != nil {
+		return false, err
+	}
+
+	_, err = session.ID(core.PK{owner, name}).AllCols().Update(store)
+	if err != nil {
+		session.Rollback()
+		return false, err
+	}
+
+	if store.Owner != owner || store.Name != name {
+		err = renameStoreReferences(session, owner, name, store.Owner, store.Name)
+		if err != nil {
+			session.Rollback()
+			return false, err
+		}
+	}
+
+	err = session.Commit()
 	if err != nil {
 		return false, err
 	}
@@ -568,7 +590,7 @@ func RefreshStoreVectors(store *Store, lang string) (bool, error) {
 		return false, err
 	}
 
-	_, err = DeleteVectorsByStore(store.Owner, store.Name)
+	_, err = DeleteVectorsByStore(store.Name)
 	if err != nil {
 		return false, err
 	}
@@ -635,7 +657,7 @@ func RefreshFileVectors(file *File, lang string) (bool, error) {
 		return false, fmt.Errorf(i18n.Translate(lang, "object:The file URL for: %s is empty"), file.Name)
 	}
 
-	_, err = DeleteVectorsByFile(store.Owner, store.Name, objectKey)
+	_, err = DeleteVectorsByFile(store.Name, objectKey)
 	if err != nil {
 		return false, err
 	}
