@@ -87,16 +87,42 @@ func (c *ApiController) chatCompletionsViaStore(store *object.Store, request ope
 		return
 	}
 
-	prompt := store.Prompt
-	if systemPrompt != "" {
-		prompt = systemPrompt
+	if contains, forbiddenWord := store.ContainsForbiddenWords(question); contains {
+		c.ResponseError(fmt.Sprintf("Your message contains a forbidden word: \"%s\"", forbiddenWord))
+		return
 	}
 
-	chat, _, aiMsg, err := createApiChatSession(store, modelProviderRecord.Name, question)
+	// The caller's system message adds to the agent's prompt instead of replacing it,
+	// many clients send a default one the agent's author never sees.
+	prompt := store.Prompt
+	if systemPrompt != "" {
+		if prompt != "" {
+			prompt += "\n\n" + systemPrompt
+		} else {
+			prompt = systemPrompt
+		}
+	}
+
+	chat, userMsg, aiMsg, err := createApiChatSession(store, modelProviderRecord.Name, question)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
+
+	knowledge, vectorScores, err := getApiKnowledge(store, modelProviderRecord, userMsg, question, lang)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	if store.KnowledgeCount != 0 {
+		imageCatalog, err := object.GetImageKnowledgeCatalog(store)
+		if err != nil {
+			fmt.Printf("image knowledge catalog: %s\n", err.Error())
+		} else if imageCatalog != "" {
+			prompt += "\n\n" + imageCatalog
+		}
+	}
+	aiMsg.VectorScores = vectorScores
 
 	writer := newOpenAIWriter(c.Ctx.ResponseWriter, request, requestId)
 
@@ -119,9 +145,9 @@ func (c *ApiController) chatCompletionsViaStore(store *object.Store, request ope
 			IsVision:  model.IsVisionModel(modelProviderRecord.SubType),
 			SessionID: chat.Name,
 		}
-		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, prompt, []*model.RawMessage{}, toolSession, lang)
+		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, prompt, knowledge, toolSession, lang)
 	} else {
-		modelResult, err = modelProviderObj.QueryText(question, writer, history, prompt, []*model.RawMessage{}, nil, lang)
+		modelResult, err = modelProviderObj.QueryText(question, writer, history, prompt, knowledge, nil, lang)
 	}
 	if err != nil {
 		c.ResponseError(err.Error())

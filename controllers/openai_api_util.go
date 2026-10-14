@@ -19,6 +19,7 @@ import (
 
 	"github.com/beego/beego/context"
 	"github.com/sashabaranov/go-openai"
+	"github.com/the-open-agent/openagent/i18n"
 	"github.com/the-open-agent/openagent/model"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/util"
@@ -46,6 +47,38 @@ func parseOpenAIMessages(messages []openai.ChatCompletionMessage) (question, sys
 		history = history[:len(history)-1]
 	}
 	return question, systemPrompt, history, nil
+}
+
+// getApiKnowledge searches the agent's knowledge base for the question like a chat in the web UI does,
+// and records the embedding cost on the question message. Without an embedding model it answers without knowledge.
+func getApiKnowledge(store *object.Store, modelProvider *object.Provider, questionMsg *object.Message, question string, lang string) ([]*model.RawMessage, []object.VectorScore, error) {
+	if store.KnowledgeCount == 0 {
+		return nil, nil, nil
+	}
+
+	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext(store.Owner, "", lang)
+	if err != nil || embeddingProviderObj == nil {
+		return nil, nil, nil
+	}
+
+	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(store.Name, store.VectorStores, store.SearchProvider, embeddingProvider, embeddingProviderObj, modelProvider, store.Owner, question, store.KnowledgeCount, lang)
+	if err != nil && err.Error() != "no knowledge vectors found" {
+		return nil, nil, fmt.Errorf(i18n.Translate(lang, "message_answer:object.GetNearestKnowledge() error, %s"), err.Error())
+	}
+
+	if embeddingResult != nil {
+		questionMsg.TokenCount = embeddingResult.TokenCount
+		questionMsg.Price = embeddingResult.Price
+		questionMsg.Currency = embeddingResult.Currency
+		if embeddingResult.Data != nil {
+			questionMsg.Data = embeddingResult.Data
+		}
+		if _, err = object.UpdateMessage(questionMsg.GetId(), questionMsg, false); err != nil {
+			return nil, nil, err
+		}
+	}
+
+	return knowledge, vectorScores, nil
 }
 
 // newOpenAIWriter sets streaming headers when needed and returns a configured OpenAIWriter.
