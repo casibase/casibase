@@ -37,7 +37,7 @@ const CATEGORIES = ["Storage", "Model", "Embedding", "Blockchain", "Video", "Tex
 const CURRENCIES = ["USD", "CNY", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "HKD", "SGD"];
 
 // the types whose API lists its models, so the sub type can be picked from the live list
-const FETCHABLE_MODEL_TYPES = ["OpenAI", "OpenRouter", "Local", "OpenAI Compatible", "Ollama", "DeepSeek", "Moonshot", "Grok", "Silicon Flow", "APIMart", "Mistral", "StepFun"];
+const FETCHABLE_MODEL_TYPES = ["OpenAI", "OpenRouter", "Local", "OpenAI Compatible", "Ollama", "DeepSeek", "Moonshot", "Grok", "Silicon Flow", "Mistral", "StepFun"];
 const SELF_PRICED_TYPES = ["Local", "Ollama", "OpenAI Compatible"];
 
 const CATEGORY_DEFAULTS: Record<string, {type: string; subType?: string}> = {
@@ -59,8 +59,8 @@ const EMBEDDING_DEFAULT_SUB_TYPES: Record<string, string> = {
   "Azure": "text-embedding-ada-002",
 };
 
-const TEMPERATURE_TYPES = ["OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "APIMart", "Ollama", "Writer"];
-const TOP_P_TYPES = ["OpenRouter", "Baidu Cloud", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "APIMart", "Ollama", "Writer"];
+const TEMPERATURE_TYPES = ["OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama", "Writer"];
+const TOP_P_TYPES = ["OpenRouter", "Baidu Cloud", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama", "Writer"];
 // the APIs that take a temperature up to 2 instead of 1
 const WIDE_TEMPERATURE_TYPES = ["Alibaba Cloud", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Ollama", "Writer"];
 

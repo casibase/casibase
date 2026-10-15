@@ -56,17 +56,6 @@ OpenAgent 是一个开源个人 AI 助手，将强大的大语言模型、私有
 
 > [想出现在这里？](mailto:admin@casibase.org)
 
-<table>
-  <tr>
-    <td width="300" align="center">
-      <a href="https://go.apimart.ai/gh-openagent" target="_blank"><img src="https://cdn.openagentai.org/img/sponsor_apimart.png" alt="APIMart" width="280"></a>
-    </td>
-    <td>
-      感谢 APIMart 赞助了本项目！APIMart 是专注 AI 图片/视频生成的低价 API 平台，GPT-Image-2 低至 $0.006/张，1 美元可出图 160+ 张。图片、视频一套异步 API 通吃，提交任务拿 ID、回调取结果，跑批万张不超时、换模型不改代码。按量付费、无月费，通过此<a href="https://go.apimart.ai/gh-openagent" target="_blank">注册链接</a>注册即可开用。
-    </td>
-  </tr>
-</table>
-
 ---
 
 ## 快速开始
@@ -115,7 +104,7 @@ docker-compose up
 
 <div align="center">
 
-`OpenAI` · `Azure OpenAI` · `Anthropic Claude` · `Google Gemini` · `DeepSeek` · `Mistral` · `Grok` · `通义千问` · `豆包` · `月之暗面` · `智谱 ChatGLM` · `百川` · `文心一言` · `讯飞星火` · `HuggingFace` · `Cohere` · `Amazon Bedrock` · `OpenRouter` · `Ollama` · `APIMart` · `以及更多`
+`OpenAI` · `Azure OpenAI` · `Anthropic Claude` · `Google Gemini` · `DeepSeek` · `Mistral` · `Grok` · `通义千问` · `豆包` · `月之暗面` · `智谱 ChatGLM` · `百川` · `文心一言` · `讯飞星火` · `HuggingFace` · `Cohere` · `Amazon Bedrock` · `OpenRouter` · `Ollama` · `以及更多`
 
 </div>
 

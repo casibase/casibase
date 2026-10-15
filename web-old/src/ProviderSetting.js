@@ -146,10 +146,6 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_silicon_flow.png`,
         url: "https://www.siliconflow.com/",
       },
-      "APIMart": {
-        logo: `${StaticBaseUrl}/img/social_apimart.svg`,
-        url: "https://apimart.ai/",
-      },
       "Writer": {
         logo: `${StaticBaseUrl}/img/social_writer.png`,
         url: "https://writer.com",
@@ -615,7 +611,6 @@ export function getProviderTypeOptions(category) {
         {id: "Tencent Cloud", name: "Tencent Cloud"},
         {id: "Yi", name: "Yi"},
         {id: "Silicon Flow", name: "Silicon Flow"},
-        {id: "APIMart", name: "APIMart"},
         {id: "Writer", name: "Writer"},
         {id: "OpenCode", name: "OpenCode"},
       ]
@@ -1265,26 +1260,6 @@ export function getModelSubTypeOptions(type) {
       {id: "meituan-longcat/LongCat-2.0", name: "meituan-longcat/LongCat-2.0"},
       {id: "nex-agi/Nex-N2-Pro", name: "nex-agi/Nex-N2-Pro"},
     ];
-  } else if (type === "APIMart") {
-    return [
-      {id: "gpt-6-astra", name: "gpt-6-astra"},
-      {id: "gpt-5.6-sol", name: "gpt-5.6-sol"},
-      {id: "gpt-5.6-terra", name: "gpt-5.6-terra"},
-      {id: "gpt-5.6-luna", name: "gpt-5.6-luna"},
-      {id: "claude-opus-5", name: "claude-opus-5"},
-      {id: "claude-sonnet-5", name: "claude-sonnet-5"},
-      {id: "claude-haiku-4.5", name: "claude-haiku-4.5"},
-      {id: "gemini-3.8-flash", name: "gemini-3.8-flash"},
-      {id: "gemini-3.1-pro-preview", name: "gemini-3.1-pro-preview"},
-      {id: "deepseek-v4-pro", name: "deepseek-v4-pro"},
-      {id: "deepseek-flash", name: "deepseek-flash"},
-      {id: "qwen3.8-max", name: "qwen3.8-max"},
-      {id: "glm-5.3", name: "glm-5.3"},
-      {id: "kimi-k3", name: "kimi-k3"},
-      {id: "grok-4.6", name: "grok-4.6"},
-      {id: "MiniMax-M3", name: "MiniMax-M3"},
-      {id: "doubao-seed-2-1-pro-260915", name: "doubao-seed-2-1-pro-260915"},
-    ];
   } else if (type === "Grok") {
     return [
       {id: "grok-4.6", name: "grok-4.6"},
@@ -1471,7 +1446,7 @@ export function getProviderAzureApiVersionOptions() {
 }
 
 export function getQuickSetupModelTypes() {
-  return ["OpenAI", "Claude", "Gemini", "DeepSeek", "Grok", "Ollama", "OpenRouter", "Mistral", "MiniMax", "Azure", "OpenAI Compatible", "Alibaba Cloud", "Moonshot", "Silicon Flow", "Volcano Engine", "Baidu Cloud", "Amazon Bedrock", "Hugging Face", "iFlytek", "ChatGLM", "Cohere", "Baichuan", "StepFun", "Tencent Cloud", "Yi", "APIMart", "Writer", "Local", "OpenCode"];
+  return ["OpenAI", "Claude", "Gemini", "DeepSeek", "Grok", "Ollama", "OpenRouter", "Mistral", "MiniMax", "Azure", "OpenAI Compatible", "Alibaba Cloud", "Moonshot", "Silicon Flow", "Volcano Engine", "Baidu Cloud", "Amazon Bedrock", "Hugging Face", "iFlytek", "ChatGLM", "Cohere", "Baichuan", "StepFun", "Tencent Cloud", "Yi", "Writer", "Local", "OpenCode"];
 }
 
 export function getModelProviderMetadata(type) {
@@ -1501,7 +1476,6 @@ export function getModelProviderMetadata(type) {
     "StepFun": {desc: "Step 3.7 Flash, Step 3.5...", needsApiKey: true, needsUrl: false, needsClientId: false, needsRegion: false, defaultSubType: "step-3.7-flash"},
     "Tencent Cloud": {desc: "Hunyuan models", needsApiKey: true, needsUrl: true, needsClientId: false, needsRegion: false, defaultSubType: "hunyuan-a13b", urlPlaceholder: "https://hunyuan.tencentcloudapi.com"},
     "Yi": {desc: "Yi Lightning, Yi Large...", needsApiKey: true, needsUrl: false, needsClientId: false, needsRegion: false, defaultSubType: "yi-lightning"},
-    "APIMart": {desc: "500+ models, image & video", needsApiKey: true, needsUrl: false, needsClientId: false, needsRegion: false, defaultSubType: "gpt-6-astra"},
     "Writer": {desc: "Palmyra X6, X5...", needsApiKey: true, needsUrl: false, needsClientId: false, needsRegion: false, defaultSubType: "palmyra-x6"},
     "Local": {desc: "Self-hosted model endpoint", needsApiKey: true, needsUrl: true, needsClientId: false, needsRegion: false, defaultSubType: "custom-model", urlPlaceholder: "http://localhost:8000/v1"},
     "OpenCode": {desc: "Delegate coding to OpenCode agent", needsApiKey: false, needsUrl: true, needsClientId: false, needsRegion: false, defaultSubType: "", urlPlaceholder: "http://localhost:4096", defaultUrl: "http://localhost:4096"},
