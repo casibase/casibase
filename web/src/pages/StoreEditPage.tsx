@@ -235,7 +235,7 @@ export default function StoreEditPage({basePath = "/stores"}: {basePath?: string
     const res: any = await ResourceBackend.uploadResource(store.owner, "avatar", "store", store.name, file);
     // the same object name is reused, so the browser would keep showing the old picture
     if (res.status === "ok" && typeof res.data === "string" && res.data !== "") {
-      return {...res, data: `${res.data}?t=${Date.now()}`};
+      return {...res, data: `${res.data}${res.data.includes("?") ? "&" : "?"}t=${Date.now()}`};
     }
     return res;
   };
