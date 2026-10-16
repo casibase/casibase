@@ -58,15 +58,15 @@ function isBlank(row: StudentAccount) {
 function getFieldTitle(field: Field) {
   switch (field) {
   case "name":
-    return i18next.t("account:Username");
+    return i18next.t("general:Username");
   case "displayName":
-    return i18next.t("account:Name");
+    return i18next.t("account:Real name");
   case "password":
-    return i18next.t("account:Password");
+    return i18next.t("general:Password");
   case "affiliation":
-    return i18next.t("account:School");
+    return i18next.t("video:School");
   case "grade":
-    return i18next.t("account:Grade");
+    return i18next.t("store:Grade");
   case "phone":
     return i18next.t("account:Phone (optional)");
   }
@@ -392,7 +392,7 @@ export default function StudentAccountPage() {
                   {field === "name" || field === "displayName" ? <span className="text-destructive"> *</span> : null}
                 </TableHead>
               ))}
-              <TableHead className="min-w-[160px]">{i18next.t("account:Result")}</TableHead>
+              <TableHead className="min-w-[160px]">{i18next.t("account:Creation result")}</TableHead>
               <TableHead className="w-12" />
             </TableRow>
           </TableHeader>
@@ -418,7 +418,7 @@ export default function StudentAccountPage() {
                   {row.status === "ok" ? (
                     <span className="inline-flex items-center gap-1 text-success">
                       <CheckCircle2 className="h-3.5 w-3.5" />
-                      {i18next.t("account:Created")}
+                      {i18next.t("account:Account created")}
                     </span>
                   ) : row.status === "error" ? (
                     <span className="text-destructive">{row.msg}</span>
