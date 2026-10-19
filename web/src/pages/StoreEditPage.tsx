@@ -23,6 +23,7 @@ import * as SkillBackend from "@/backend/SkillBackend";
 import * as StorageProviderBackend from "@/backend/StorageProviderBackend";
 import * as StoreBackend from "@/backend/StoreBackend";
 import * as ToolBackend from "@/backend/ToolBackend";
+import {Badge} from "@/components/ui/badge";
 import {Input} from "@/components/ui/input";
 import {Switch} from "@/components/ui/switch";
 import {Textarea} from "@/components/ui/textarea";
@@ -67,11 +68,39 @@ function useList(load: () => Promise<any>, deps: React.DependencyList) {
 }
 
 function providerOptions(providers: any[]) {
-  return providers.map((provider) => ({
-    value: provider.name,
-    keywords: `${provider.name} ${provider.displayName ?? ""} ${provider.type ?? ""}`,
-    label: <ProviderTypeLabel category={provider.category} type={provider.type} text={`${ProviderSetting.getProviderDisplayName(provider)} (${provider.name})`} />,
-  }));
+  return providers.map((provider) => {
+    const visionText = provider.isVision ? i18next.t("store:Understands images") : "";
+    const label = <ProviderTypeLabel category={provider.category} type={provider.type} text={`${ProviderSetting.getProviderDisplayName(provider)} (${provider.name})`} />;
+    return {
+      value: provider.name,
+      keywords: `${provider.name} ${provider.displayName ?? ""} ${provider.type ?? ""} ${visionText}`,
+      label,
+      itemLabel: provider.isVision ? (
+        <span className="inline-flex min-w-0 items-center gap-2">
+          {label}
+          <Badge variant="success" className="shrink-0">{visionText}</Badge>
+        </span>
+      ) : label,
+    };
+  });
+}
+
+function ModelVisionHint({provider, models}: {provider: any; models: any[]}) {
+  if (!provider) {
+    return null;
+  }
+  if (provider.isVision) {
+    return <p className="text-xs text-success">{i18next.t("store:This model understands pictures and photos sent in a chat")}</p>;
+  }
+
+  const isZh = i18next.language?.startsWith("zh");
+  const visionModels = [...new Set(models.filter((item) => item.isVision).map((item) => ProviderSetting.getProviderDisplayName(item)))];
+  return (
+    <p className="text-xs text-warning">
+      {i18next.t("store:This model cannot see pictures, pictures and photos sent in a chat do not reach it and it only reads the text")}
+      {visionModels.length > 0 ? ` ${i18next.t("store:Models that understand images")}${isZh ? "：" : ": "}${visionModels.join(isZh ? "、" : ", ")}` : ""}
+    </p>
+  );
 }
 
 const emptyOption = () => ({value: "", label: <span className="text-muted-foreground">{i18next.t("general:empty")}</span>, keywords: "empty"});
@@ -349,7 +378,10 @@ export default function StoreEditPage({basePath = "/stores"}: {basePath?: string
               {select("searchProvider", "store:Search provider", values(["Default", "Hierarchy"]))}
             </>
           ) : null}
-          {select("modelProvider", "provider:Model provider", [emptyOption(), ...providerOptions(byCategory("Model"))])}
+          <FormRow labelKey="provider:Model provider">
+            <SearchableSelect value={store.modelProvider ?? ""} options={[emptyOption(), ...providerOptions(byCategory("Model"))]} onChange={(value) => updateField("modelProvider", value)} />
+            <ModelVisionHint provider={byCategory("Model").find((provider) => provider.name === store.modelProvider)} models={byCategory("Model")} />
+          </FormRow>
           {extra ? (
             <>
               {select("embeddingProvider", "store:Embedding provider", [emptyOption(), ...providerOptions(byCategory("Embedding"))])}
@@ -436,7 +468,7 @@ export default function StoreEditPage({basePath = "/stores"}: {basePath?: string
             </>
           ) : null}
           <FormRow labelKey="store:Child model providers">
-            <MultiSelect creatable value={store.childModelProviders ?? []} options={providerOptions(byCategory("Model"))} onChange={(value) => updateField("childModelProviders", value)} />
+            <MultiSelect creatable value={store.childModelProviders ?? []} options={providerOptions(byCategory("Model")).map((option) => ({...option, label: option.itemLabel}))} onChange={(value) => updateField("childModelProviders", value)} />
           </FormRow>
           <FormRow labelKey="store:Forbidden words">
             <TagsInput value={store.forbiddenWords ?? []} onChange={(value) => updateField("forbiddenWords", value)} />

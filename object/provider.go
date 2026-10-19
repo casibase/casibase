@@ -81,17 +81,20 @@ type Provider struct {
 	EnableProxy bool   `json:"enableProxy"`
 	IsDefault   bool   `json:"isDefault"`
 	IsRemote    bool   `json:"isRemote"`
+	IsVision    bool   `xorm:"-" json:"isVision"`
 	State       string `xorm:"varchar(100)" json:"state"`
 	BrowserUrl  string `xorm:"varchar(200)" json:"browserUrl"`
 }
 
 func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *auth.User) *Provider {
-	if !isMaskEnabled {
-		return provider
-	}
-
 	if provider == nil {
 		return nil
+	}
+
+	provider.IsVision = provider.Category == "Model" && model.IsVisionModel(provider.SubType)
+
+	if !isMaskEnabled {
+		return provider
 	}
 
 	if provider.ClientSecret != "" {
