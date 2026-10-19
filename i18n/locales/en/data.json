@@ -132,7 +132,9 @@
     "Issue title cannot be longer than %d characters": "Issue title cannot be longer than %d characters"
   },
   "message_answer": {
+    "Content safety review failed: the model platform flagged this conversation (the question, the agent's prompt and knowledge base, or the generated answer) as possibly inappropriate and refused to answer. This is often a false positive, so please rephrase and try again. If it keeps happening, ask an administrator to check this agent's knowledge base.": "Content safety review failed: the model platform flagged this conversation (the question, the agent's prompt and knowledge base, or the generated answer) as possibly inappropriate and refused to answer. This is often a false positive, so please rephrase and try again. If it keeps happening, ask an administrator to check this agent's knowledge base.",
     "No embedding model configured, answering without knowledge base": "No embedding model configured, answering without knowledge base",
+    "Original error: %s": "Original error: %s",
     "object.GetNearestKnowledge() error, %s": "object.GetNearestKnowledge() error, %s"
   },
   "migration": {

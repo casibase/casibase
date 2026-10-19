@@ -449,25 +449,30 @@ func generateMessageAnswer(id string, responseWriter http.ResponseWriter, host s
 	}
 	emitStatus(fmt.Sprintf(i18n.Translate(lang, "chat:Generating answer with %s"), modelProviderDisplayName))
 
-	var modelResult *model.ModelResult
-	if mcpToolSet != nil {
-		messages := &model.ToolMessages{
-			Messages:  []*model.RawMessage{},
-			ToolCalls: nil,
+	queryModel := func(question string, prompt string) (*model.ModelResult, error) {
+		if mcpToolSet != nil {
+			messages := &model.ToolMessages{
+				Messages:  []*model.RawMessage{},
+				ToolCalls: nil,
+			}
+			toolSession := &model.ToolSession{
+				McpToolSet:   mcpToolSet,
+				ToolMessages: messages,
+				IsVision:     model.IsVisionModel(modelProvider.SubType),
+				SessionID:    chat.Name,
+			}
+			return model.QueryTextWithTools(modelProviderObj, question, writer, history, prompt, knowledge, toolSession, lang)
 		}
-		toolSession := &model.ToolSession{
-			McpToolSet:   mcpToolSet,
-			ToolMessages: messages,
-			IsVision:     model.IsVisionModel(modelProvider.SubType),
-			SessionID:    chat.Name,
-		}
-		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, prompt, knowledge, toolSession, lang)
-	} else {
 		if isReasonModel(modelProvider.SubType) {
-			modelResult, err = QueryCarrierText(question, writer, history, prompt, knowledge, modelProviderObj, chat.NeedTitle, store.SuggestionCount, lang)
-		} else {
-			modelResult, err = modelProviderObj.QueryText(question, writer, history, prompt, knowledge, nil, lang)
+			return QueryCarrierText(question, writer, history, prompt, knowledge, modelProviderObj, chat.NeedTitle, store.SuggestionCount, lang)
 		}
+		return modelProviderObj.QueryText(question, writer, history, prompt, knowledge, nil, lang)
+	}
+
+	modelResult, err := queryModel(question, prompt)
+	if err != nil && strings.Contains(err.Error(), "DataInspectionFailed") && (question != reviewQuestion || prompt != store.Prompt) && writer.MessageString() == "" && writer.ReasonString() == "" {
+		question, prompt = reviewQuestion, store.Prompt
+		modelResult, err = queryModel(question, prompt)
 	}
 	if err != nil {
 		if errors.Is(err, errMessageAnswerCanceled) {

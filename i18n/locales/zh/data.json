@@ -132,7 +132,9 @@
     "Issue title cannot be longer than %d characters": "问题标题不能超过 %d 个字符"
   },
   "message_answer": {
+    "Content safety review failed: the model platform flagged this conversation (the question, the agent's prompt and knowledge base, or the generated answer) as possibly inappropriate and refused to answer. This is often a false positive, so please rephrase and try again. If it keeps happening, ask an administrator to check this agent's knowledge base.": "内容安全审核未通过：大模型平台的内容安全审核认为本次对话（提问、智能体的提示词和知识库资料，或生成的回答）可能包含不当内容，已拒绝回答。这类拦截经常是误判，可以换一种说法再试；如果反复出现，请联系管理员检查该智能体的知识库资料。",
     "No embedding model configured, answering without knowledge base": "未配置嵌入模型，将不使用知识库直接回答",
+    "Original error: %s": "原始错误：%s",
     "object.GetNearestKnowledge() error, %s": "object.GetNearestKnowledge() 出错：%s"
   },
   "migration": {
