@@ -17,6 +17,7 @@ package object
 import (
 	"bytes"
 	"fmt"
+	"path"
 	"regexp"
 	"strings"
 	"time"
@@ -293,6 +294,21 @@ func dataURLMimeType(dataURL string) string {
 	return rest[:semi]
 }
 
+// getMessageFileKey keeps every inline file of every message at its own key: phones name
+// all camera photos "image.jpg", and OSS and local storage overwrite an existing key.
+func getMessageFileKey(message *Message, index int) string {
+	fileName := message.FileName
+	if index > 0 {
+		ext := path.Ext(fileName)
+		fileName = fmt.Sprintf("%s-%d%s", strings.TrimSuffix(fileName, ext), index, ext)
+	}
+
+	if message.Name == "" {
+		return util.SanitizePathSegment(fileName)
+	}
+	return fmt.Sprintf("%s/%s", util.SanitizePathSegment(message.Name), util.SanitizePathSegment(fileName))
+}
+
 func RefineMessageFiles(message *Message, origin string, lang string) error {
 	text := message.Text
 	// re := regexp.MustCompile(`data:image\/([a-zA-Z]*);base64,([^"]*)`)
@@ -336,14 +352,14 @@ func RefineMessageFiles(message *Message, origin string, lang string) error {
 			return err
 		}
 
-		for _, match := range matches {
+		for i, match := range matches {
 			var content []byte
 			content, err = parseBase64Image(match, lang)
 			if err != nil {
 				return err
 			}
 
-			filePath := fmt.Sprintf("%s/%s/%s/%s", util.SanitizePathSegment(message.Organization), util.SanitizePathSegment(message.User), util.SanitizePathSegment(message.Chat), util.SanitizePathSegment(message.FileName))
+			filePath := fmt.Sprintf("%s/%s/%s/%s", util.SanitizePathSegment(message.Organization), util.SanitizePathSegment(message.User), util.SanitizePathSegment(message.Chat), getMessageFileKey(message, i))
 
 			var fileUrl string
 			fileUrl, err = obj.PutObject(message.User, message.Chat, filePath, bytes.NewBuffer(content))
