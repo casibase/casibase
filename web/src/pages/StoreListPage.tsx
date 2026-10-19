@@ -15,7 +15,7 @@
 import * as React from "react";
 import i18next from "i18next";
 import dayjs from "dayjs";
-import {BarChart3, Copy, ExternalLink, MoreHorizontal, RefreshCw, Share2} from "lucide-react";
+import {BarChart3, Copy, ExternalLink, MoreHorizontal, QrCode, RefreshCw, Share2} from "lucide-react";
 import {Link, useNavigate} from "react-router-dom";
 import * as OrganizationUserBackend from "@/backend/OrganizationUserBackend";
 import * as StoreBackend from "@/backend/StoreBackend";
@@ -30,6 +30,8 @@ import {ProviderTypeLabel} from "@/components/common/ProviderLogo";
 import {useProviderMap} from "@/components/common/ProviderLogoLink";
 import {SearchableSelect} from "@/components/common/SearchableSelect";
 import {UserLabel} from "@/components/common/UserLabel";
+import {getChatUrl} from "@/components/store/StoreHubDrawer";
+import {StoreQrCodeDialog} from "@/components/store/StoreQrCodeDialog";
 import {CrudListPage} from "@/components/crud/CrudListPage";
 import {boolColumn, dateColumn, textColumn} from "@/components/crud/columns";
 import type {ColumnDef} from "@/components/crud/types";
@@ -196,6 +198,7 @@ export default function StoreListPage() {
   const providerMap = useProviderMap(account?.name);
   const [hideChat, setHideChat] = React.useState(getHideChat);
   const [shareStore, setShareStore] = React.useState<any>(null);
+  const [qrCodeStore, setQrCodeStore] = React.useState<any>(null);
   const [refreshing, setRefreshing] = React.useState<Set<string>>(new Set());
 
   const isLocalAdmin = Setting.isLocalAdminUser(account);
@@ -246,6 +249,10 @@ export default function StoreListPage() {
               <DropdownMenuItem onSelect={() => Setting.copyToClipboard(chatUrl)}>
                 <Copy />
                 {i18next.t("general:Copy Link")}
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setQrCodeStore(store)}>
+                <QrCode />
+                {i18next.t("store:QR Code")}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => {
@@ -394,6 +401,7 @@ export default function StoreListPage() {
         ]}
       />
       <ShareStoreDialog store={shareStore} onOpenChange={(open) => !open && setShareStore(null)} onShared={() => undefined} />
+      <StoreQrCodeDialog store={qrCodeStore} url={qrCodeStore ? getChatUrl(qrCodeStore) : ""} onOpenChange={(open) => !open && setQrCodeStore(null)} />
     </>
   );
 }

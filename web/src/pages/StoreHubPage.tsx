@@ -14,7 +14,7 @@
 
 import * as React from "react";
 import i18next from "i18next";
-import {ArrowDownWideNarrow, ArrowUpNarrowWide, Bot, Copy, Eye, GitFork, Info, Link2, MessageSquare, MessagesSquare, Search, Star} from "lucide-react";
+import {ArrowDownWideNarrow, ArrowUpNarrowWide, Bot, Copy, Eye, GitFork, Info, Link2, MessageSquare, MessagesSquare, QrCode, Search, Star} from "lucide-react";
 import {useNavigate} from "react-router-dom";
 import * as StoreBackend from "@/backend/StoreBackend";
 import {Badge} from "@/components/ui/badge";
@@ -26,6 +26,7 @@ import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 import {Loading} from "@/components/common/Loading";
 import {SearchableSelect} from "@/components/common/SearchableSelect";
 import {StoreAuthor, StoreAvatar, StoreHubDrawer, StoreTags, getChatUrl} from "@/components/store/StoreHubDrawer";
+import {StoreQrCodeDialog} from "@/components/store/StoreQrCodeDialog";
 import {useAccount} from "@/hooks/use-account";
 import {useSite} from "@/hooks/use-site";
 import * as Setting from "@/lib/setting";
@@ -64,6 +65,7 @@ export default function StoreHubPage() {
   const [view, setView] = React.useState<View>("all");
   const [favored, setFavored] = React.useState<any[] | null>(null);
   const [selected, setSelected] = React.useState<any>(null);
+  const [qrCodeStore, setQrCodeStore] = React.useState<any>(null);
   const [search, setSearch] = React.useState("");
   const [filters, setFilters] = React.useState({subject: "", grade: "", topic: ""});
   const [sortField, setSortField] = React.useState(DEFAULT_SORT);
@@ -275,6 +277,9 @@ export default function StoreHubPage() {
                       <Button variant="ghost" size="iconSm" className="h-5 w-5" aria-label={i18next.t("general:Copy")} onClick={() => Setting.copyToClipboard(chatUrl)}>
                         <Copy className="!h-3 !w-3" />
                       </Button>
+                      <Button variant="ghost" size="iconSm" className="h-5 w-5" aria-label={i18next.t("store:QR Code")} onClick={() => setQrCodeStore(store)}>
+                        <QrCode className="!h-3 !w-3" />
+                      </Button>
                     </div>
                     <div className="mt-auto flex items-center justify-between text-sm">
                       <button
@@ -309,6 +314,7 @@ export default function StoreHubPage() {
           viewAgent(store);
         }}
       />
+      <StoreQrCodeDialog store={qrCodeStore} url={qrCodeStore ? getChatUrl(qrCodeStore) : ""} onOpenChange={(open) => !open && setQrCodeStore(null)} />
     </div>
   );
 }

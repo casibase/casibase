@@ -12,14 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import * as React from "react";
 import i18next from "i18next";
-import {Bot, Copy, Link2, MessageSquare} from "lucide-react";
+import {Bot, Copy, Link2, MessageSquare, QrCode} from "lucide-react";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {Separator} from "@/components/ui/separator";
 import {Sheet, SheetContent, SheetDescription, SheetTitle} from "@/components/ui/sheet";
 import {UserLabel} from "@/components/common/UserLabel";
+import {StoreQrCodeDialog} from "@/components/store/StoreQrCodeDialog";
 import * as Setting from "@/lib/setting";
 
 /** The absolute chat URL of a store, on its own site when it comes from another hub. */
@@ -71,6 +73,7 @@ interface StoreHubDrawerProps {
 /** A published agent's details, slid in from the hub. */
 export function StoreHubDrawer({store, onClose, onStartChat, onViewAgent}: StoreHubDrawerProps) {
   const chatUrl = store ? getChatUrl(store) : "";
+  const [qrCodeOpen, setQrCodeOpen] = React.useState(false);
 
   const field = (labelKey: string, value: string | undefined) => (value ? (
     <div className="space-y-1">
@@ -109,6 +112,7 @@ export function StoreHubDrawer({store, onClose, onStartChat, onViewAgent}: Store
                 <div className="flex items-center gap-2 rounded-md border bg-muted/40 px-3 py-2">
                   <a href={chatUrl} target="_blank" rel="noopener noreferrer" className="min-w-0 flex-1 break-all text-xs underline-offset-4 hover:underline">{chatUrl}</a>
                   <Button variant="ghost" size="iconSm" aria-label={i18next.t("general:Copy")} onClick={() => Setting.copyToClipboard(chatUrl)}><Copy /></Button>
+                  <Button variant="ghost" size="iconSm" aria-label={i18next.t("store:QR Code")} onClick={() => setQrCodeOpen(true)}><QrCode /></Button>
                 </div>
               </div>
             </div>
@@ -120,6 +124,7 @@ export function StoreHubDrawer({store, onClose, onStartChat, onViewAgent}: Store
             </div>
           </>
         ) : null}
+        <StoreQrCodeDialog store={qrCodeOpen ? store : null} url={chatUrl} onOpenChange={setQrCodeOpen} />
       </SheetContent>
     </Sheet>
   );

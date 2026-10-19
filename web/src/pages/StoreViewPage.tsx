@@ -14,7 +14,7 @@
 
 import * as React from "react";
 import i18next from "i18next";
-import {AlertCircle, BarChart3, Bug, Eye, FolderOpen, GitFork, LayoutGrid, MessageSquare, Settings, ShieldCheck, Star} from "lucide-react";
+import {AlertCircle, BarChart3, Bug, Eye, FolderOpen, GitFork, LayoutGrid, MessageSquare, QrCode, Settings, ShieldCheck, Star} from "lucide-react";
 import {useNavigate, useParams} from "react-router-dom";
 import * as StoreBackend from "@/backend/StoreBackend";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
@@ -30,6 +30,7 @@ import {FileTree} from "@/components/store/FileTree";
 import {StoreAvatar, getChatUrl} from "@/components/store/StoreHubDrawer";
 import {InsightsSubs, type InsightsSub, StoreInsights} from "@/components/store/StoreInsights";
 import {StoreIssues} from "@/components/store/StoreIssues";
+import {StoreQrCodeDialog} from "@/components/store/StoreQrCodeDialog";
 import {StoreSecurity} from "@/components/store/StoreSecurity";
 import {useAccount} from "@/hooks/use-account";
 import * as Setting from "@/lib/setting";
@@ -67,6 +68,7 @@ function AgentHeader({store, favorite, starLoading, watchLoading, forking, onTog
     : favorite.hasForked ? i18next.t("store:You have already forked this agent") : "";
   const count = (n: number) => (n > 0 ? ` (${n})` : "");
   const tags = [store.subject, store.grade, store.topic].filter(Boolean);
+  const [qrCodeOpen, setQrCodeOpen] = React.useState(false);
 
   const forkButton = (
     <Button variant="outline" loading={forking} disabled={Boolean(forkDisabledReason)} onClick={onFork}>
@@ -116,7 +118,9 @@ function AgentHeader({store, favorite, starLoading, watchLoading, forking, onTog
                 <TooltipContent>{forkDisabledReason}</TooltipContent>
               </Tooltip>
             ) : forkButton}
+            <Button variant="outline" onClick={() => setQrCodeOpen(true)}><QrCode />{i18next.t("store:QR Code")}</Button>
             <Button onClick={onStartChat}><MessageSquare />{i18next.t("store:Start Chat")}</Button>
+            <StoreQrCodeDialog store={qrCodeOpen ? store : null} url={getChatUrl(store)} onOpenChange={setQrCodeOpen} />
           </div>
         </div>
         {store.brief ? <p className="mt-2 text-sm text-muted-foreground">{store.brief}</p> : null}
