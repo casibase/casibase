@@ -629,7 +629,7 @@ export default function ProviderEditPage() {
       add={(record) => ProviderBackend.addProvider(record)}
       update={(record) => ProviderBackend.updateProvider("admin", providerName, record)}
       editUrl={(record) => `/providers/${record.name}`}
-      readOnly={(record) => Boolean(record.isRemote)}
+      readOnly={(record) => Boolean(record.isRemote) || !Setting.isAdminUser(account)}
     >
       {(ctx, update) => (
         <div className="mt-6 space-y-4">

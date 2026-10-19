@@ -24,22 +24,6 @@ import (
 	"github.com/the-open-agent/openagent/util"
 )
 
-const localFileSystemStorageType = "Local File System"
-
-// requireProviderWritePermission stops store-level admins from pointing a storage provider at an
-// arbitrary host folder (which /storage would then serve to anyone), and from redirecting a provider
-// while reusing a masked secret, which would send that secret to an endpoint of their choosing.
-func (c *ApiController) requireProviderWritePermission(provider *object.Provider, oldProvider *object.Provider) bool {
-	if c.IsGlobalAdmin() {
-		return true
-	}
-	if provider.Type == localFileSystemStorageType || (oldProvider != nil && oldProvider.Type == localFileSystemStorageType) {
-		c.ResponseError(c.T("controllers:Only the global admin can configure local file system storage"))
-		return false
-	}
-	return c.requireSecretNotRedirected(provider.KeepsMaskedSecretWithNewEndpoint(oldProvider))
-}
-
 // GetGlobalProviders
 // @Title GetGlobalProviders
 // @Tag Provider API
@@ -147,21 +131,16 @@ func (c *ApiController) GetProvider() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-provider [post]
 func (c *ApiController) UpdateProvider() {
+	if !c.RequireGlobalAdmin() {
+		return
+	}
+
 	id := c.Input().Get("id")
 
 	var provider object.Provider
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &provider)
 	if err != nil {
 		c.ResponseError(err.Error())
-		return
-	}
-
-	oldProvider, err := object.GetProvider(id)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	if !c.requireProviderWritePermission(&provider, oldProvider) {
 		return
 	}
 
@@ -182,14 +161,14 @@ func (c *ApiController) UpdateProvider() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-provider [post]
 func (c *ApiController) AddProvider() {
+	if !c.RequireGlobalAdmin() {
+		return
+	}
+
 	var provider object.Provider
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &provider)
 	if err != nil {
 		c.ResponseError(err.Error())
-		return
-	}
-
-	if !c.requireProviderWritePermission(&provider, nil) {
 		return
 	}
 
@@ -211,19 +190,14 @@ func (c *ApiController) AddProvider() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /delete-provider [post]
 func (c *ApiController) DeleteProvider() {
+	if !c.RequireGlobalAdmin() {
+		return
+	}
+
 	var provider object.Provider
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &provider)
 	if err != nil {
 		c.ResponseError(err.Error())
-		return
-	}
-
-	oldProvider, err := object.GetProvider(provider.GetId())
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	if oldProvider != nil && !c.requireProviderWritePermission(oldProvider, oldProvider) {
 		return
 	}
 

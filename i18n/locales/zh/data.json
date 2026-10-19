@@ -82,7 +82,6 @@
     "No permission": "无权限",
     "No records to add": "没有要添加的记录",
     "No sessions to delete": "没有要删除的会话",
-    "Only the global admin can configure local file system storage": "只有全局管理员可以配置本地文件系统存储",
     "Only the global admin can configure tools or MCP servers that run commands on the host": "只有全局管理员可以配置会在服务器上执行命令的工具或MCP服务器",
     "Please re-enter the secret when changing where it is sent": "修改发送地址时请重新输入密钥",
     "The tool type: %s is disabled on this server": "本服务器已禁用该工具类型：%s",

@@ -125,6 +125,7 @@ export default function ProviderListPage() {
       newRecord={newProvider}
       editUrl={(r) => `/providers/${r.name}`}
       remove={(r) => ProviderBackend.deleteProvider(r)}
+      readOnly={!Setting.isAdminUser(account)}
       rowReadOnly={(r) => Boolean(r.isRemote)}
     />
   );

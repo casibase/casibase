@@ -82,7 +82,6 @@
     "No permission": "No permission",
     "No records to add": "No records to add",
     "No sessions to delete": "No sessions to delete",
-    "Only the global admin can configure local file system storage": "Only the global admin can configure local file system storage",
     "Only the global admin can configure tools or MCP servers that run commands on the host": "Only the global admin can configure tools or MCP servers that run commands on the host",
     "Please re-enter the secret when changing where it is sent": "Please re-enter the secret when changing where it is sent",
     "The tool type: %s is disabled on this server": "The tool type: %s is disabled on this server",
