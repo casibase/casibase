@@ -20,6 +20,7 @@ import (
 	"strings"
 
 	"github.com/sashabaranov/go-openai"
+	"github.com/the-open-agent/openagent/guardrail"
 	"github.com/the-open-agent/openagent/model"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/util"
@@ -90,6 +91,14 @@ func (c *ApiController) chatCompletionsViaStore(store *object.Store, request ope
 	if contains, forbiddenWord := store.ContainsForbiddenWords(question); contains {
 		c.ResponseError(fmt.Sprintf("Your message contains a forbidden word: \"%s\"", forbiddenWord))
 		return
+	}
+
+	if g := object.GetGuardrail(); g != nil {
+		question, _ = object.MaskQuestion(question)
+		if verdict := g.CheckInput(question, lang); verdict.IsBlocked() {
+			c.ResponseError(guardrail.GetRefusal(g.Name, "input", verdict))
+			return
+		}
 	}
 
 	// The caller's system message adds to the agent's prompt instead of replacing it,

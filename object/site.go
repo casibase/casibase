@@ -38,9 +38,10 @@ type Site struct {
 
 	FigureUrl string `xorm:"varchar(500)" json:"figureUrl"`
 
-	GuardrailName    string `xorm:"varchar(100)" json:"guardrailName"`
-	GuardrailOwner   string `xorm:"varchar(100)" json:"guardrailOwner"`
-	GuardrailLogoUrl string `xorm:"varchar(500)" json:"guardrailLogoUrl"`
+	GuardrailName     string `xorm:"varchar(100)" json:"guardrailName"`
+	GuardrailOwner    string `xorm:"varchar(100)" json:"guardrailOwner"`
+	GuardrailLogoUrl  string `xorm:"varchar(500)" json:"guardrailLogoUrl"`
+	GuardrailProvider string `xorm:"varchar(100)" json:"guardrailProvider"`
 
 	CheckUserBalance bool `xorm:"bool" json:"checkUserBalance"`
 
@@ -156,6 +157,7 @@ func UpdateSite(id string, site *Site) (bool, error) {
 	// endpoint, re-enable monitoring so the next public request can fill it in.
 	if site.Name == "site-built-in" {
 		siteEndpointNeedsAutoFill = !isPublicEndpoint(site.Endpoint)
+		ResetGuardrailCache()
 	}
 	return affected != 0, nil
 }

@@ -14,9 +14,9 @@ type LayerId = "prompt" | "content" | "agent" | "document" | "privacy" | "mark";
 const layers: Record<LayerId, {icon: typeof ScanSearch; name: string; items: string[]}> = {
   prompt: {icon: ScanSearch, name: "提示词防护", items: ["提示词注入检测", "越狱攻击拦截", "系统设定防泄露"]},
   content: {icon: MessageSquareWarning, name: "内容安全", items: ["输入输出双向审核", "有害与违规内容过滤", "未成年人不宜内容拦截"]},
-  agent: {icon: Wrench, name: "Agent 工具防护", items: ["工具调用权限控制", "高危操作拦截", "调用参数与结果校验"]},
-  document: {icon: FileSearch, name: "文档与知识库防护", items: ["上传文档隐藏指令检测", "知识库投毒识别"]},
-  privacy: {icon: Fingerprint, name: "隐私与数据保护", items: ["手机号、身份证号识别脱敏", "防止敏感数据外泄"]},
+  agent: {icon: Wrench, name: "Agent 工具防护", items: ["高危工具调用权限控制", "工具返回结果注入检测"]},
+  document: {icon: FileSearch, name: "文档与知识库防护", items: ["上传文档隐藏指令检测", "知识库投毒片段过滤"]},
+  privacy: {icon: Fingerprint, name: "隐私与数据保护", items: ["手机号、身份证号识别脱敏", "密钥与凭据脱敏"]},
   mark: {icon: BadgeCheck, name: "生成内容标识", items: ["AI 生成内容标注", "对话记录可追溯"]},
 };
 
@@ -189,6 +189,46 @@ export function GuardrailSeal({className}: {className?: string}) {
         <span className="text-[9px] font-medium uppercase tracking-[0.2em] opacity-60">Protected by</span>
         <span className="mt-1 text-[13px] font-semibold tracking-wide">{guardrail.name}</span>
       </span>
+    </button>
+  );
+}
+
+const categoryLabels: Record<string, string> = {
+  prompt_injection: "提示词注入",
+  jailbreak: "越狱攻击",
+  prompt_leak: "套取系统设定",
+  self_harm: "自伤自杀相关内容",
+  harmful: "有害或违规内容",
+  minor_unsafe: "不适合未成年人的内容",
+};
+
+const maskLabels: Record<string, string> = {phone: "手机号", id_card: "身份证号", secret: "密钥"};
+
+function describeGuardrailTag(tag: string, name: string) {
+  const [stage, value = ""] = tag.split(":");
+  if (stage === "masked") {
+    const kinds = Array.from(new Set(value.split(",").filter(Boolean))).map((kind) => maskLabels[kind] ?? kind);
+    return `${name}已对${kinds.join("、")}脱敏`;
+  }
+  const label = categoryLabels[value] ?? value;
+  return stage === "output" ? `${name}已撤回回答：${label}` : `${name}已拦截：${label}`;
+}
+
+/** under a chat message: the AI-generated label, and what the guardrail did to this message */
+export function GuardrailMessageNote({message, className}: {message: any; className?: string}) {
+  const {guardrail, setOpen} = React.useContext(GuardrailContext);
+  if (!guardrail) {
+    return null;
+  }
+  const isAi = message.author === "AI";
+  const action = message.guardrail ? describeGuardrailTag(message.guardrail, guardrail.name) : "";
+  if (!isAi && !action) {
+    return null;
+  }
+  return (
+    <button type="button" onClick={() => setOpen(true)} className={cn("inline-flex items-center gap-1 px-1 text-[11px] text-muted-foreground/80 hover:text-foreground", className)}>
+      <ShieldCheck className="h-3 w-3" strokeWidth={1.75} />
+      {[isAi ? "内容由 AI 生成" : "", action].filter(Boolean).join("，")}
     </button>
   );
 }

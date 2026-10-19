@@ -34,6 +34,10 @@ var (
 	fileContentGroup singleflight.Group
 )
 
+// UntrustedContentFilter, when set, screens text nobody typed into the chat (an
+// uploaded document, a tool result) before the model reads it.
+var UntrustedContentFilter func(kind string, text string) string
+
 type fileContentProvider struct {
 	providerType string
 	provider     ModelProvider
@@ -90,6 +94,9 @@ func replaceFileURLs(text string, providerType string, lang string) (string, err
 		content, err := getFileContent(rawURL, ext, lang)
 		if err != nil {
 			return "", err
+		}
+		if UntrustedContentFilter != nil {
+			content = UntrustedContentFilter("文档", content)
 		}
 		fmt.Fprintf(&result, "URL: %s\nContent:\n%s", rawURL, content)
 		last = match[1]

@@ -214,6 +214,8 @@ export function streamAnswer(chat: any, messages: any[], answer: any, handlers: 
   let text = "";
   let reasonText = "";
   const toolCalls: ToolCall[] = [];
+  // the guardrail's final say on the answer: a refusal, or the text with personal data masked
+  let guarded: any = null;
   const needTitle = Boolean(chat?.needTitle);
   const userText = getFirstUserMessageText(messages);
   let timer: number | null = null;
@@ -263,6 +265,9 @@ export function streamAnswer(chat: any, messages: any[], answer: any, handlers: 
       const parsed = parseAnswer(text, needTitle, userText);
       title(parsed.title);
       current = {...current, text: parsed.finalAnswer, suggestions: parsed.suggestions, isReasoningPhase: false, statusText: ""};
+      if (guarded) {
+        current = {...current, text: guarded.text, reasonText: guarded.reasonText, suggestions: guarded.suggestions ?? [], guardrail: guarded.guardrail};
+      }
       handlers.onDone(current);
     },
     (info: string) => emit({hintText: info}),
@@ -279,6 +284,10 @@ export function streamAnswer(chat: any, messages: any[], answer: any, handlers: 
       }
     },
     (status: string) => emit({statusText: status}),
+    (data: any) => {
+      guarded = data;
+      emit({text: data.text, reasonText: data.reasonText, suggestions: data.suggestions ?? [], guardrail: data.guardrail, isReasoningPhase: false});
+    },
   );
 
   return () => {

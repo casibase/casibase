@@ -15,6 +15,7 @@
 import * as React from "react";
 import i18next from "i18next";
 import {useNavigate, useParams} from "react-router-dom";
+import * as ProviderBackend from "@/backend/ProviderBackend";
 import * as ResourceBackend from "@/backend/ResourceBackend";
 import * as SiteBackend from "@/backend/SiteBackend";
 import {Input} from "@/components/ui/input";
@@ -24,6 +25,7 @@ import {ImageUrlInput} from "@/components/common/ImageUrlInput";
 import {Loading} from "@/components/common/Loading";
 import {NavItemTree} from "@/components/common/NavItemTree";
 import {PasswordInput} from "@/components/common/PasswordInput";
+import {SearchableSelect} from "@/components/common/SearchableSelect";
 import {UnauthorizedPage} from "@/components/common/UnauthorizedPage";
 import {EditPageShell} from "@/components/crud/EditPageShell";
 import {FormRow, FormSection} from "@/components/crud/FormRow";
@@ -41,6 +43,14 @@ export default function SiteEditPage() {
   const {account} = useAccount();
   const {reload: reloadSite} = useSite();
   const [saving, setSaving] = React.useState(false);
+  const [modelProviders, setModelProviders] = React.useState<any[]>([]);
+  React.useEffect(() => {
+    ProviderBackend.getProviders("admin").then((res: any) => {
+      if (res.status === "ok") {
+        setModelProviders((res.data ?? []).filter((provider: any) => provider.category === "Model"));
+      }
+    });
+  }, []);
   const {record: site, updateField, loading, denied} = useEditRecord<any>({
     fetch: () => SiteBackend.getSite("admin", siteName),
     deps: [siteName],
@@ -128,7 +138,7 @@ export default function SiteEditPage() {
             <ImageUrlInput value={site.logoUrl ?? ""} onChange={(value) => updateField("logoUrl", value)} upload={uploadImage} />
           </FormRow>
           {text("figureUrl", "figure:Virtual figure URL")}
-          <FormRow label="安全护栏名称" tooltip="保护本实例的 AI 安全护栏名称。填写后，页脚、对话输入框下方和页面右侧会显示安全护栏标识；留空则不显示">
+          <FormRow label="安全护栏名称" tooltip="保护本实例的 AI 安全护栏名称。填写后护栏开始工作：拦截提示词注入和越狱、审核提问和回答、对手机号和身份证号脱敏、过滤文档和知识库里的隐藏指令，页脚、对话输入框下方和页面右侧也会显示安全护栏标识；留空则全部关闭">
             <Input value={site.guardrailName ?? ""} onChange={(e) => updateField("guardrailName", e.target.value)} />
           </FormRow>
           <FormRow label="安全护栏提供方" tooltip="提供安全护栏的单位，显示在安全护栏侧边栏里">
@@ -136,6 +146,13 @@ export default function SiteEditPage() {
           </FormRow>
           <FormRow label="安全护栏标志" tooltip="显示在页脚徽标和安全护栏侧边栏里，留空则显示盾牌图标">
             <ImageUrlInput value={site.guardrailLogoUrl ?? ""} onChange={(value) => updateField("guardrailLogoUrl", value)} upload={uploadImage} />
+          </FormRow>
+          <FormRow label="安全护栏审核模型" tooltip="填写安全护栏名称后，每条提问和回答都会交给这个模型审核提示词注入、越狱、有害和不适合未成年人的内容；选快且便宜的模型。留空则用默认模型">
+            <SearchableSelect
+              value={site.guardrailProvider ?? ""}
+              options={[{value: "", label: <span className="text-muted-foreground">默认模型</span>, keywords: "default"}, ...modelProviders.map((provider) => ({value: provider.name, label: `${provider.displayName || provider.name} (${provider.name})`, keywords: `${provider.name} ${provider.displayName ?? ""}`}))]}
+              onChange={(value) => updateField("guardrailProvider", value)}
+            />
           </FormRow>
         </FormSection>
 

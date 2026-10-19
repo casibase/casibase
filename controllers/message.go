@@ -509,6 +509,14 @@ func (c *ApiController) AddMessage() {
 		}
 	}
 
+	if message.Author != "AI" {
+		var tag string
+		message.Text, tag = object.MaskQuestion(message.Text)
+		if tag != "" {
+			message.Guardrail = tag
+		}
+	}
+
 	success, err := object.AddMessage(&message)
 	if err != nil {
 		c.ResponseError(err.Error())

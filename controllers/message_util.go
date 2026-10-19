@@ -106,6 +106,28 @@ func writeInfoStream(responseWriter http.ResponseWriter, infoText string) error 
 	return nil
 }
 
+// writeGuardrailStream replaces the answer already streamed to the page: a
+// refusal when the guardrail blocked it, or the text with personal data masked.
+func writeGuardrailStream(responseWriter http.ResponseWriter, message *object.Message) error {
+	payload, err := json.Marshal(map[string]interface{}{
+		"text":        message.Text,
+		"reasonText":  message.ReasonText,
+		"suggestions": message.Suggestions,
+		"guardrail":   message.Guardrail,
+	})
+	if err != nil {
+		return err
+	}
+	_, err = responseWriter.Write([]byte(fmt.Sprintf("event: guardrail\ndata: %s\n\n", payload)))
+	if err != nil {
+		return err
+	}
+	if flusher, ok := responseWriter.(http.Flusher); ok {
+		flusher.Flush()
+	}
+	return nil
+}
+
 func writeStatusStream(responseWriter http.ResponseWriter, statusText string) error {
 	sseData := strings.ReplaceAll(statusText, "\n", "\ndata: ")
 	event := fmt.Sprintf("event: status\ndata: %s\n\n", sseData)

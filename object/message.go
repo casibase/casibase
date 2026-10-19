@@ -65,6 +65,7 @@ type Message struct {
 	IsAlerted         bool                 `json:"isAlerted"`
 	IsRegenerated     bool                 `json:"isRegenerated"`
 	WebSearchEnabled  bool                 `json:"webSearchEnabled"`
+	Guardrail         string               `xorm:"varchar(100)" json:"guardrail"`
 	ModelProvider     string               `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider string               `xorm:"varchar(100)" json:"embeddingProvider"`
 	Data              []float32            `xorm:"mediumtext" json:"data"`
@@ -480,7 +481,19 @@ func GetRecentRawMessages(chat string, createdTime string, memoryLimit int) ([]*
 		return nil, err
 	}
 
+	// A question the guardrail blocked never reached the model and must not reach it as history either.
+	blocked := map[string]bool{}
 	for _, message := range messages {
+		if strings.HasPrefix(message.Guardrail, "input:") {
+			blocked[message.Name] = true
+			blocked[message.ReplyTo] = true
+		}
+	}
+
+	for _, message := range messages {
+		if blocked[message.Name] {
+			continue
+		}
 		// Feed the human-corrected answer back as history so later turns build on the
 		// calibrated version instead of continuing from the model's mistake.
 		text := message.GetDisplayText()

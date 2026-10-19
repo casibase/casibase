@@ -391,6 +391,8 @@ func callMcpTool(toolCall openai.ToolCall, serverName, toolName, sessionID strin
 		contentBytes, err := json.Marshal(responseContent)
 		if err != nil {
 			response.Data = fmt.Sprintf(i18n.Translate(lang, "model:failed to marshal content: %v"), err)
+		} else if UntrustedContentFilter != nil {
+			response.Data = UntrustedContentFilter("工具返回结果", string(contentBytes))
 		} else {
 			response.Data = string(contentBytes)
 		}

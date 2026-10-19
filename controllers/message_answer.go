@@ -25,6 +25,7 @@ import (
 	"github.com/the-open-agent/openagent/carrier"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/embedding"
+	"github.com/the-open-agent/openagent/guardrail"
 	"github.com/the-open-agent/openagent/i18n"
 	"github.com/the-open-agent/openagent/mcp"
 	"github.com/the-open-agent/openagent/model"
@@ -211,6 +212,9 @@ func generateMessageAnswer(id string, responseWriter http.ResponseWriter, host s
 		}
 	}
 
+	// the agent's own prompt, before tools, skills and experience are appended to it
+	agentPrompt := store.Prompt
+
 	if chat.Tool != "" {
 		store.Tools = []string{chat.Tool}
 	}
@@ -282,6 +286,19 @@ func generateMessageAnswer(id string, responseWriter http.ResponseWriter, host s
 		}
 		if count > store.Frequency {
 			responseErrorStream(message, "You have queried too many times, please wait for a while")
+			return
+		}
+	}
+
+	g := object.GetGuardrail()
+	if g != nil && questionMessage != nil {
+		emitStatus(fmt.Sprintf("%s安全检查中", g.Name))
+		if verdict := g.CheckInput(question, lang); verdict.IsBlocked() {
+			fmt.Printf("guardrail: blocked question %s: %s (%s, %s)\n", questionMessage.Name, verdict.Category, verdict.Source, verdict.Reason)
+			message.Text = guardrail.GetRefusal(g.Name, "input", verdict)
+			message.Guardrail = object.GetGuardrailTag("input", verdict)
+			message.ErrorText = ""
+			finishMessageAnswer(responseWriter, message, chat, responseErrorStream)
 			return
 		}
 	}
@@ -368,6 +385,9 @@ func generateMessageAnswer(id string, responseWriter http.ResponseWriter, host s
 		}
 		if embeddingResult == nil {
 			embeddingResult = &embedding.EmbeddingResult{}
+		}
+		if g != nil {
+			knowledge = g.FilterKnowledge(knowledge)
 		}
 	}
 
@@ -536,10 +556,36 @@ func generateMessageAnswer(id string, responseWriter http.ResponseWriter, host s
 		message.ErrorText = ""
 		message.IsAlerted = false
 	}
+	message.Suggestions = textSuggestions
+
+	if g != nil && questionMessage != nil {
+		emitStatus(fmt.Sprintf("%s审核回答中", g.Name))
+		if verdict := g.CheckOutput(reviewQuestion, message.Text, agentPrompt, lang); verdict.IsBlocked() {
+			fmt.Printf("guardrail: withdrew answer %s: %s (%s, %s)\n", message.Name, verdict.Category, verdict.Source, verdict.Reason)
+			message.Text = guardrail.GetRefusal(g.Name, "output", verdict)
+			message.ReasonText = ""
+			message.Suggestions = []object.Suggestion{}
+			message.Guardrail = object.GetGuardrailTag("output", verdict)
+		} else {
+			var kinds, reasonKinds []string
+			message.Text, kinds = guardrail.MaskSensitive(message.Text)
+			message.ReasonText, reasonKinds = guardrail.MaskSensitive(message.ReasonText)
+			if len(kinds) == 0 {
+				kinds = reasonKinds
+			}
+			if len(kinds) > 0 {
+				message.Guardrail = "masked:" + strings.Join(kinds, ",")
+			}
+		}
+		if message.Guardrail != "" {
+			if err = writeGuardrailStream(responseWriter, message); err != nil {
+				responseErrorStream(message, err.Error())
+				return
+			}
+		}
+	}
 
 	tryStoreRemoteImage(message, host, lang)
-
-	message.Suggestions = textSuggestions
 
 	message.VectorScores = vectorScores
 
@@ -788,6 +834,28 @@ func (c *ApiController) GetAnswer() {
 	}
 
 	c.ResponseOk(answer)
+}
+
+// finishMessageAnswer saves an answer that was decided without asking the
+// model, sends it to the page and ends the stream.
+func finishMessageAnswer(responseWriter http.ResponseWriter, message *object.Message, chat *object.Chat, responseErrorStream func(*object.Message, string)) {
+	if _, err := object.UpdateMessage(message.GetId(), message, false); err != nil {
+		responseErrorStream(message, err.Error())
+		return
+	}
+	chat.IsGenerating = false
+	if _, err := object.UpdateChat(chat.GetId(), chat); err != nil {
+		responseErrorStream(message, err.Error())
+		return
+	}
+	if err := writeGuardrailStream(responseWriter, message); err != nil {
+		responseErrorStream(message, err.Error())
+		return
+	}
+	_, _ = responseWriter.Write([]byte("event: end\ndata: end\n\n"))
+	if flusher, ok := responseWriter.(http.Flusher); ok {
+		flusher.Flush()
+	}
 }
 
 func printAgentSessionStart(store *object.Store, modelProviderName string, mcpToolSet *mcp.ToolSet, history []*model.RawMessage) {

@@ -52,7 +52,7 @@ const eventSourceMap = new Map();
  * already streaming (a page opened again, a chat switched back to) takes the stream over:
  * the old listener is closed and the backend replays the answer from its start.
  */
-export function getMessageAnswer(owner, name, onMessage, onReason, onTool, onSearch, onVector, onError, onEnd, onInfo, onChat, onToolDelta, onStatus) {
+export function getMessageAnswer(owner, name, onMessage, onReason, onTool, onSearch, onVector, onError, onEnd, onInfo, onChat, onToolDelta, onStatus, onGuardrail?) {
   const key = `${owner}/${name}`;
   eventSourceMap.get(key)?.close();
   // EventSource cannot set Accept-Language, so pass the UI language as a query
@@ -119,6 +119,16 @@ export function getMessageAnswer(owner, name, onMessage, onReason, onTool, onSea
         onChat(JSON.parse(e.data));
       } catch {
         // ignore malformed chat events
+      }
+    });
+  }
+
+  if (onGuardrail) {
+    eventSource.addEventListener("guardrail", (e: any) => {
+      try {
+        onGuardrail(JSON.parse(e.data));
+      } catch {
+        // ignore malformed guardrail events
       }
     });
   }

@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import {Link} from "react-router-dom";
 import * as UserBackend from "@/backend/UserBackend";
+import {GuardrailMessageNote} from "@/components/layout/Guardrail";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {Button} from "@/components/ui/button";
 import {Textarea} from "@/components/ui/textarea";
@@ -359,6 +360,7 @@ function MessageItemInner(props: MessageItemProps) {
             ) : null}
           </div>
         ) : null}
+        {!isAi && !editing ? <GuardrailMessageNote message={message} /> : null}
 
         {isAi && !reasoningOnly && !correcting && !answering ? (
           <div className="flex flex-wrap items-center gap-0.5">
@@ -392,6 +394,7 @@ function MessageItemInner(props: MessageItemProps) {
                 <FileText />{message.vectorScores.length} {i18next.t("chat:Knowledge sources")}
               </Button>
             ) : null}
+            {!message.errorText ? <GuardrailMessageNote message={message} /> : null}
           </div>
         ) : null}
 
