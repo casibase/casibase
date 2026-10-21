@@ -1012,6 +1012,8 @@
     "Hide chat": "隐藏聊天",
     "Hide thinking": "隐藏思维链",
     "Hide thinking - Tooltip": "隐藏AI推理过程",
+    "Hide tool calls": "隐藏工具调用",
+    "Hide tool calls - Tooltip": "除管理员和智能体所有者外，不显示工具调用及其参数和运行结果",
     "High": "高",
     "Image provider": "图片提供商",
     "Image provider - Tooltip": "图片存储服务提供商",

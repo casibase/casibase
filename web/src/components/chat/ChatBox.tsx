@@ -385,6 +385,7 @@ export const ChatBox = React.forwardRef<ChatBoxHandle, ChatBoxProps>(function Ch
                 isGenerating={loading}
                 readOnly={Boolean(readOnly)}
                 hideThinking={store?.hideThinking === true}
+                hideToolCalls={store?.hideToolCalls === true}
                 readingMessage={tts.readingMessage}
                 isReading={tts.isReading}
                 isLoadingTts={tts.isLoading}

@@ -100,6 +100,7 @@ type Store struct {
 	ShowAutoRead            bool              `json:"showAutoRead"`
 	DisableFileUpload       bool              `json:"disableFileUpload"`
 	HideThinking            bool              `json:"hideThinking"`
+	HideToolCalls           bool              `json:"hideToolCalls"`
 	EnableExperienceReview  bool              `json:"enableExperienceReview"`
 	EnableExperienceLibrary bool              `json:"enableExperienceLibrary"`
 	ExperienceCount         int               `json:"experienceCount"`

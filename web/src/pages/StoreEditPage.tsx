@@ -476,6 +476,7 @@ export default function StoreEditPage({basePath = "/stores"}: {basePath?: string
           {toggle("showAutoRead", "store:Show auto read")}
           {toggle("disableFileUpload", "store:Disable file upload")}
           {toggle("hideThinking", "store:Hide thinking")}
+          {toggle("hideToolCalls", "store:Hide tool calls")}
           {toggle("enableExperienceReview", "store:Enable experience review")}
           {toggle("enableExperienceLibrary", "store:Enable experience library")}
           {store.enableExperienceLibrary ? (

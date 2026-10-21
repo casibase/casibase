@@ -57,7 +57,7 @@ import * as Setting from "@/lib/setting";
 import {cn, isComposing} from "@/lib/utils";
 
 /** The message as plain text for the clipboard, tool calls first, the way the answer was produced. */
-export function copyMessage(message: any) {
+export function copyMessage(message: any, includeToolCalls = true) {
   const parts: string[] = [];
   const pretty = (raw: string) => {
     try {
@@ -66,7 +66,7 @@ export function copyMessage(message: any) {
       return raw;
     }
   };
-  (message.toolCalls ?? []).forEach((toolCall: any) => {
+  (includeToolCalls ? message.toolCalls ?? [] : []).forEach((toolCall: any) => {
     let part = `Tool calls (1)\n${toolCall.name}`;
     if (toolCall.arguments) {
       part += `\nArguments:\n${pretty(toolCall.arguments)}`;
@@ -173,6 +173,7 @@ export interface MessageItemProps {
   /** a read-only view of someone else's chat: no editing, liking or regenerating */
   readOnly: boolean;
   hideThinking: boolean;
+  hideToolCalls: boolean;
   readingMessage: string | null;
   isReading: boolean;
   isLoadingTts: boolean;
@@ -186,7 +187,7 @@ export interface MessageItemProps {
 }
 
 function MessageItemInner(props: MessageItemProps) {
-  const {message, isLast, account, store, aiAvatar, isGenerating, readOnly, hideThinking} = props;
+  const {message, isLast, account, store, aiAvatar, isGenerating, readOnly, hideThinking, hideToolCalls} = props;
   const [editing, setEditing] = React.useState(false);
   const [editedText, setEditedText] = React.useState("");
   const [correcting, setCorrecting] = React.useState(false);
@@ -203,6 +204,7 @@ function MessageItemInner(props: MessageItemProps) {
   const resources = React.useMemo(() => extractGeneratedResources(message.toolCalls), [message.toolCalls]);
   // only a curator may make a correction a standing rule; the backend queues the rest for review
   const isCurator = Setting.isAdminUser(account) || (store?.owners ?? []).includes(account?.name);
+  const showToolCalls = !hideToolCalls || isCurator;
   const canCorrect = !readOnly && Boolean(account?.name) && !message.isReadOnly && isAi && Boolean(message.text) && !isGenerating;
   const answering = isGenerating && isLast && isAi && !message.errorText;
   // while reasoning streams in, it gets a bubble of its own above the (still empty) answer
@@ -258,7 +260,7 @@ function MessageItemInner(props: MessageItemProps) {
       return (
         <>
           {showReason ? <ReasoningSection reasonText={message.reasonText} isReasoningPhase={message.isReasoningPhase} /> : null}
-          <ToolCallSection toolCalls={toolCalls} />
+          {showToolCalls ? <ToolCallSection toolCalls={toolCalls} /> : null}
           <GeneratedResourceList resources={resources} />
           {displayText ? <MessageText text={displayText} /> : null}
         </>
@@ -347,7 +349,7 @@ function MessageItemInner(props: MessageItemProps) {
             {bubble()}
             {!isAi && !editing ? (
               <div className="flex shrink-0 opacity-0 transition-opacity group-hover/message:opacity-80">
-                <ActionButton label={i18next.t("general:Copy")} onClick={() => copyMessage(message)}><Copy /></ActionButton>
+                <ActionButton label={i18next.t("general:Copy")} onClick={() => copyMessage(message, showToolCalls)}><Copy /></ActionButton>
                 {!readOnly ? (
                   <ActionButton label={i18next.t("general:Edit")} onClick={() => {
                     setEditedText(message.text);
@@ -364,7 +366,7 @@ function MessageItemInner(props: MessageItemProps) {
 
         {isAi && !reasoningOnly && !correcting && !answering ? (
           <div className="flex flex-wrap items-center gap-0.5">
-            <ActionButton label={i18next.t("general:Copy")} onClick={() => copyMessage(message)}><Copy /></ActionButton>
+            <ActionButton label={i18next.t("general:Copy")} onClick={() => copyMessage(message, showToolCalls)}><Copy /></ActionButton>
             {!readOnly ? (
               <>
                 <ActionButton label={i18next.t("general:Like")} onClick={() => props.onLike(message, "like")}>
