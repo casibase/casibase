@@ -1013,7 +1013,7 @@
     "Hide thinking": "Hide thinking",
     "Hide thinking - Tooltip": "Hide AI reasoning process from display",
     "Hide tool calls": "Hide tool calls",
-    "Hide tool calls - Tooltip": "Hide the tool calls and their results from users other than admins and the store owners",
+    "Hide tool calls - Tooltip": "Hide the tool calls and their arguments and results from display",
     "High": "High",
     "Image provider": "Image provider",
     "Image provider - Tooltip": "Image storage service provider for media files",

@@ -204,7 +204,7 @@ function MessageItemInner(props: MessageItemProps) {
   const resources = React.useMemo(() => extractGeneratedResources(message.toolCalls), [message.toolCalls]);
   // only a curator may make a correction a standing rule; the backend queues the rest for review
   const isCurator = Setting.isAdminUser(account) || (store?.owners ?? []).includes(account?.name);
-  const showToolCalls = !hideToolCalls || isCurator;
+  const showToolCalls = !hideToolCalls;
   const canCorrect = !readOnly && Boolean(account?.name) && !message.isReadOnly && isAi && Boolean(message.text) && !isGenerating;
   const answering = isGenerating && isLast && isAi && !message.errorText;
   // while reasoning streams in, it gets a bubble of its own above the (still empty) answer
