@@ -17,6 +17,7 @@ package object
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/beego/beego/context"
@@ -271,6 +272,22 @@ func UpdateRecordFields(id string, fields map[string]interface{}, lang string) (
 	return affected != 0, nil
 }
 
+var dataUriRegex = regexp.MustCompile(`data:[^,"'\s\\]*;base64,[A-Za-z0-9+/]+=*`)
+
+// summarizeDataUris replaces the content of each base64 data URI (files and images pasted into
+// messages) with its size, so that the audit log does not store whole files.
+func summarizeDataUris(text string) string {
+	if !strings.Contains(text, ";base64,") {
+		return text
+	}
+	return dataUriRegex.ReplaceAllStringFunc(text, func(uri string) string {
+		i := strings.Index(uri, ";base64,") + len(";base64,")
+		data := uri[i:]
+		size := len(data)/4*3 - strings.Count(data, "=")
+		return fmt.Sprintf("%s[%d bytes]", uri[:i], size)
+	})
+}
+
 func NewRecord(ctx *context.Context) (*Record, error) {
 	ip := strings.Replace(util.GetIPFromRequest(ctx.Request), ": ", "", -1)
 	action := strings.Replace(ctx.Request.URL.Path, "/api/", "", -1)
@@ -283,7 +300,7 @@ func NewRecord(ctx *context.Context) (*Record, error) {
 	if len(ctx.Input.RequestBody) != 0 {
 		// Bodies of provider, site and account updates carry credentials, which must not be kept in
 		// the audit log where every admin can read them.
-		object = util.RedactSensitiveJson(string(ctx.Input.RequestBody))
+		object = util.RedactSensitiveJson(summarizeDataUris(string(ctx.Input.RequestBody)))
 	}
 
 	respBytes, err := json.Marshal(ctx.Input.Data()["json"])
